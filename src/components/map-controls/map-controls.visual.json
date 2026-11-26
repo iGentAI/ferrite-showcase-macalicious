@@ -1,0 +1,820 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "zoom-light",
+      "description": "The zoom pair of Maps over flat land, Aqua.",
+      "example": "visual-zoom",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0959,
+        "2x": 0.0069
+      },
+      "deltaBudget": {
+        "1x": 6.47,
+        "2x": 0.81
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Maps.png",
+        "crop": {
+          "x": 1968,
+          "y": 1405,
+          "width": 122,
+          "height": 44
+        }
+      }
+    },
+    {
+      "name": "zoom-dark",
+      "description": "The zoom pair of Maps over flat land, Dark Aqua.",
+      "example": "visual-zoom",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.09,
+        "2x": 0.0134
+      },
+      "deltaBudget": {
+        "1x": 5.29,
+        "2x": 1.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Maps.png",
+        "crop": {
+          "x": 1968,
+          "y": 1387,
+          "width": 122,
+          "height": 44
+        }
+      }
+    },
+    {
+      "name": "map-type-light",
+      "description": "The map-type control of Find My, Aqua.",
+      "example": "visual-map-type",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0895,
+        "2x": 0.0758
+      },
+      "deltaBudget": {
+        "1x": 10.57,
+        "2x": 9.86
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Find-My.png",
+        "crop": {
+          "x": 662,
+          "y": 1445,
+          "width": 472,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "map-type-light-masked",
+      "description": "As map-type-light with the three titles masked, to score the drawing alone.",
+      "example": "visual-map-type",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 18,
+          "y": 6,
+          "width": 44,
+          "height": 13
+        },
+        {
+          "x": 95,
+          "y": 6,
+          "width": 44,
+          "height": 13
+        },
+        {
+          "x": 172,
+          "y": 6,
+          "width": 44,
+          "height": 13
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0763,
+        "2x": 0.0616
+      },
+      "deltaBudget": {
+        "1x": 3.69,
+        "2x": 3.43
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Find-My.png",
+        "crop": {
+          "x": 662,
+          "y": 1445,
+          "width": 472,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "map-type-dark",
+      "description": "The map-type control of Find My, Dark Aqua.",
+      "example": "visual-map-type",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.087,
+        "2x": 0.0808
+      },
+      "deltaBudget": {
+        "1x": 9.33,
+        "2x": 8.69
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Find-My.png",
+        "crop": {
+          "x": 618,
+          "y": 1421,
+          "width": 472,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "map-type-dark-masked",
+      "description": "As map-type-dark with the three titles masked, to score the drawing alone.",
+      "example": "visual-map-type",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 18,
+          "y": 6,
+          "width": 44,
+          "height": 13
+        },
+        {
+          "x": 95,
+          "y": 6,
+          "width": 44,
+          "height": 13
+        },
+        {
+          "x": 172,
+          "y": 6,
+          "width": 44,
+          "height": 13
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0818,
+        "2x": 0.0832
+      },
+      "deltaBudget": {
+        "1x": 4.16,
+        "2x": 3.9
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Find-My.png",
+        "crop": {
+          "x": 618,
+          "y": 1421,
+          "width": 472,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "compass-light",
+      "description": "The compass of Maps, Aqua.",
+      "example": "visual-compass",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 0,
+          "y": 52.5,
+          "width": 56,
+          "height": 3.5
+        },
+        {
+          "x": 0,
+          "y": 21,
+          "width": 2,
+          "height": 6
+        },
+        {
+          "x": 54,
+          "y": 21,
+          "width": 2,
+          "height": 6
+        }
+      ],
+      "budget": {
+        "1x": 0.044,
+        "2x": 0.0207
+      },
+      "deltaBudget": {
+        "1x": 4.62,
+        "2x": 2.76
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Maps.png",
+        "crop": {
+          "x": 1974,
+          "y": 1284,
+          "width": 112,
+          "height": 112
+        }
+      }
+    },
+    {
+      "name": "compass-light-masked",
+      "description": "As compass-light with the 3D title masked, to score the drawing alone.",
+      "example": "visual-compass",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 0,
+          "y": 52.5,
+          "width": 56,
+          "height": 3.5
+        },
+        {
+          "x": 0,
+          "y": 21,
+          "width": 2,
+          "height": 6
+        },
+        {
+          "x": 54,
+          "y": 21,
+          "width": 2,
+          "height": 6
+        },
+        {
+          "x": 17,
+          "y": 18,
+          "width": 22,
+          "height": 20
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.1271,
+        "2x": 0.0458
+      },
+      "deltaBudget": {
+        "1x": 3.95,
+        "2x": 1.93
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Maps.png",
+        "crop": {
+          "x": 1974,
+          "y": 1284,
+          "width": 112,
+          "height": 112
+        }
+      }
+    },
+    {
+      "name": "compass-dark",
+      "description": "The compass of Maps, Dark Aqua.",
+      "example": "visual-compass",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 0,
+          "y": 52.5,
+          "width": 56,
+          "height": 3.5
+        },
+        {
+          "x": 0,
+          "y": 21,
+          "width": 2,
+          "height": 6
+        },
+        {
+          "x": 54,
+          "y": 21,
+          "width": 2,
+          "height": 6
+        }
+      ],
+      "budget": {
+        "1x": 0.0501,
+        "2x": 0.0181
+      },
+      "deltaBudget": {
+        "1x": 6.72,
+        "2x": 5.13
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Maps.png",
+        "crop": {
+          "x": 1974,
+          "y": 1266,
+          "width": 112,
+          "height": 112
+        }
+      }
+    },
+    {
+      "name": "compass-dark-masked",
+      "description": "As compass-dark with the 3D title masked, to score the drawing alone.",
+      "example": "visual-compass",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 0,
+          "y": 52.5,
+          "width": 56,
+          "height": 3.5
+        },
+        {
+          "x": 0,
+          "y": 21,
+          "width": 2,
+          "height": 6
+        },
+        {
+          "x": 54,
+          "y": 21,
+          "width": 2,
+          "height": 6
+        },
+        {
+          "x": 17,
+          "y": 18,
+          "width": 22,
+          "height": 20
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.1259,
+        "2x": 0.0428
+      },
+      "deltaBudget": {
+        "1x": 6.42,
+        "2x": 4.58
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Maps.png",
+        "crop": {
+          "x": 1974,
+          "y": 1266,
+          "width": 112,
+          "height": 112
+        }
+      }
+    },
+    {
+      "name": "show-light",
+      "description": "The Show pull-down of Maps, Aqua.",
+      "example": "visual-show",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1.5,
+          "height": 24
+        },
+        {
+          "x": 17,
+          "y": 21.5,
+          "width": 24,
+          "height": 2.5
+        },
+        {
+          "x": 75,
+          "y": 0,
+          "width": 5,
+          "height": 2
+        },
+        {
+          "x": 75,
+          "y": 22,
+          "width": 5,
+          "height": 2
+        }
+      ],
+      "budget": {
+        "1x": 0.0915,
+        "2x": 0.0694
+      },
+      "deltaBudget": {
+        "1x": 10.98,
+        "2x": 9.98
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Maps.png",
+        "crop": {
+          "x": 136,
+          "y": 1402,
+          "width": 224,
+          "height": 48
+        }
+      }
+    },
+    {
+      "name": "show-light-masked",
+      "description": "As show-light with the title masked, to score the drawing alone.",
+      "example": "visual-show",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1.5,
+          "height": 24
+        },
+        {
+          "x": 17,
+          "y": 21.5,
+          "width": 24,
+          "height": 2.5
+        },
+        {
+          "x": 75,
+          "y": 0,
+          "width": 5,
+          "height": 2
+        },
+        {
+          "x": 75,
+          "y": 22,
+          "width": 5,
+          "height": 2
+        },
+        {
+          "x": 9,
+          "y": 4,
+          "width": 40,
+          "height": 15
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0482,
+        "2x": 0.0481
+      },
+      "deltaBudget": {
+        "1x": 3.23,
+        "2x": 3.24
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Maps.png",
+        "crop": {
+          "x": 136,
+          "y": 1402,
+          "width": 224,
+          "height": 48
+        }
+      }
+    },
+    {
+      "name": "show-dark",
+      "description": "The Show pull-down of Maps, Dark Aqua.",
+      "example": "visual-show",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1.5,
+          "height": 24
+        },
+        {
+          "x": 17,
+          "y": 21.5,
+          "width": 24,
+          "height": 2.5
+        },
+        {
+          "x": 75,
+          "y": 0,
+          "width": 5,
+          "height": 2
+        },
+        {
+          "x": 75,
+          "y": 22,
+          "width": 5,
+          "height": 2
+        }
+      ],
+      "budget": {
+        "1x": 0.0904,
+        "2x": 0.0615
+      },
+      "deltaBudget": {
+        "1x": 10.99,
+        "2x": 9.68
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Maps.png",
+        "crop": {
+          "x": 136,
+          "y": 1384,
+          "width": 224,
+          "height": 48
+        }
+      }
+    },
+    {
+      "name": "show-dark-masked",
+      "description": "As show-dark with the title masked, to score the drawing alone.",
+      "example": "visual-show",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1.5,
+          "height": 24
+        },
+        {
+          "x": 17,
+          "y": 21.5,
+          "width": 24,
+          "height": 2.5
+        },
+        {
+          "x": 75,
+          "y": 0,
+          "width": 5,
+          "height": 2
+        },
+        {
+          "x": 75,
+          "y": 22,
+          "width": 5,
+          "height": 2
+        },
+        {
+          "x": 9,
+          "y": 4,
+          "width": 40,
+          "height": 15
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0431,
+        "2x": 0.0232
+      },
+      "deltaBudget": {
+        "1x": 6.78,
+        "2x": 5.85
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Maps.png",
+        "crop": {
+          "x": 136,
+          "y": 1384,
+          "width": 224,
+          "height": 48
+        }
+      }
+    },
+    {
+      "name": "locate-light",
+      "description": "The current-location button of Find My, Aqua.",
+      "example": "visual-locate",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0528,
+        "2x": 0.0573
+      },
+      "deltaBudget": {
+        "1x": 7.31,
+        "2x": 6.46
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Find-My.png",
+        "crop": {
+          "x": 2141,
+          "y": 1445,
+          "width": 78,
+          "height": 54
+        }
+      }
+    },
+    {
+      "name": "locate-light-masked",
+      "description": "As locate-light with the stand-in glyph masked, to score the drawing alone.",
+      "example": "visual-locate",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 11,
+          "y": 5,
+          "width": 17,
+          "height": 13
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0594,
+        "2x": 0.06
+      },
+      "deltaBudget": {
+        "1x": 3.1,
+        "2x": 3.08
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Find-My.png",
+        "crop": {
+          "x": 2141,
+          "y": 1445,
+          "width": 78,
+          "height": 54
+        }
+      }
+    },
+    {
+      "name": "locate-dark",
+      "description": "The current-location button of Find My, Dark Aqua.",
+      "example": "visual-locate",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.0775,
+        "2x": 0.0625
+      },
+      "deltaBudget": {
+        "1x": 6.4,
+        "2x": 4.92
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Find-My.png",
+        "crop": {
+          "x": 2097,
+          "y": 1421,
+          "width": 78,
+          "height": 54
+        }
+      }
+    },
+    {
+      "name": "locate-dark-masked",
+      "description": "As locate-dark with the stand-in glyph masked, to score the drawing alone.",
+      "example": "visual-locate",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 11,
+          "y": 5,
+          "width": 17,
+          "height": 13
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.1051,
+        "2x": 0.0685
+      },
+      "deltaBudget": {
+        "1x": 4.56,
+        "2x": 3.55
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Find-My.png",
+        "crop": {
+          "x": 2097,
+          "y": 1421,
+          "width": 78,
+          "height": 54
+        }
+      }
+    },
+    {
+      "name": "map-type-select",
+      "description": "Selecting another map type with a click: the pill moves to Satellite. No screenshot shows another selection.",
+      "example": "visual-map-type",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "text=Satellite"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 236,
+          "height": 25
+        },
+        "pixels": [
+          {
+            "x": 164,
+            "y": 12,
+            "color": "#ffffff",
+            "note": "the pill, now in the third segment (spec: Colours, selected segment, measured in the first segment)"
+          },
+          {
+            "x": 8,
+            "y": 12,
+            "color": "#e9e6e0",
+            "tolerance": 4,
+            "note": "the first segment is track again: the translucent grey over the land colour (spec: Colours, segmented track, measured #e8e7e5)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "map-type-select-dark",
+      "description": "The same in Dark Aqua.",
+      "example": "visual-map-type",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "text=Satellite"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 236,
+          "height": 25
+        },
+        "pixels": [
+          {
+            "x": 164,
+            "y": 12,
+            "color": "#6b6b72",
+            "note": "the pill in the third segment (spec: Colours, selected segment, measured #6c6c72 to #66666e)"
+          },
+          {
+            "x": 8,
+            "y": 12,
+            "color": "#343439",
+            "tolerance": 4,
+            "note": "track over the land colour (measured in Dark-Find-My @ 956,1446)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "zoom-pressed",
+      "description": "The plus half held down: its face darkens, the minus half does not change. No screenshot shows a pressed control.",
+      "example": "visual-zoom",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "[aria-label='Zoom in']"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 61,
+          "height": 22
+        },
+        "pixels": [
+          {
+            "x": 34,
+            "y": 5,
+            "color": "#e6e6e6",
+            "note": "pressed face (spec: States, pressed darkens the face about 10 %, inferred)"
+          },
+          {
+            "x": 6,
+            "y": 5,
+            "color": "#ffffff",
+            "note": "the other half keeps its face (spec: Colours, button face, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "zoom-focus",
+      "description": "Keyboard focus on the minus half: the focus ring outside its edge. No screenshot shows keyboard focus.",
+      "example": "visual-zoom",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 61,
+          "height": 22
+        },
+        "pixels": [
+          {
+            "x": 1,
+            "y": 10,
+            "color": "#2b6b98",
+            "tolerance": 8,
+            "note": "focus ring over the land colour: the shared focus-ring colour at 50% over #2b2d2f (inferred)"
+          },
+          {
+            "x": 10,
+            "y": 5,
+            "color": "#666869",
+            "note": "the face is unchanged (spec: Colours, button face, measured)"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+/*
+ * Notification Center (reference/spec/components/notification-center.md). The panel material is
+ * the shared --mac-material-notification-center; these are the values of the panel's own
+ * parts. Catalina draws them with vibrancy, so the colours are the ones measured over the
+ * default desktop picture, kept translucent where a composite could be solved.
+ */
+:root {
+  /* [measured, computed] #9cc3e1 on #b3daf8, #3a5172 on #162e4e (col 2700, y=142) */
+  --mac-notification-center-header-divider: light-dark(rgb(0 0 0 / 0.09), rgb(255 255 255 / 0.16));
+  /* [measured, computed] #8799ad on #9fb1c5, #545f6c on #313c49 (col 2950, y=2010) */
+  --mac-notification-center-footer-divider: light-dark(rgb(0 0 0 / 0.15), rgb(255 255 255 / 0.17));
+  /* [measured, computed] segments: #eef6fd and #a0bcd2 on #afd6f5; #a2b5d5 and #4e6484 on
+     #142b49, which in Dark Aqua take a blue tint to reach */
+  --mac-notification-center-segment-selected: light-dark(
+    rgb(255 255 255 / 0.8),
+    rgb(198 217 250 / 0.8)
+  );
+  --mac-notification-center-segment: light-dark(rgb(0 0 0 / 0.12), rgb(186 206 241 / 0.35));
+  /* [measured, computed] the control's outermost half point: in Aqua a line, #a8caea on
+     #b0d5f6; in Dark Aqua nothing, with a highlight on the row under it instead, #b8cfef on
+     #a2b8d8 and #6e85a5 on #4e6484 (col 2800, y=73..75) */
+  --mac-notification-center-segment-edge: light-dark(rgb(0 0 0 / 0.045), transparent);
+  --mac-notification-center-segment-highlight: light-dark(transparent, rgb(255 255 255 / 0.2));
+  /* [measured] */
+  --mac-notification-center-segment-text-selected: light-dark(#303132, #20252b);
+  --mac-notification-center-segment-text: light-dark(#f5f7f9, #ebecef);
+  --mac-notification-center-heading: light-dark(#345c79, #95accd);
+  --mac-notification-center-clear: light-dark(#415d6d, #aeb8c7);
+  --mac-notification-center-footer-text: light-dark(#f2f3f5, #e5e6e7);
+  /* [measured] the gear of the footer (row 2056, x=3298..3333) */
+  --mac-notification-center-gear: light-dark(#00071c, #97a2af);
+  /* [measured, computed] footer button: #8a9aab on #9fb2c5, #29333f on #303b49 (col 2950) */
+  --mac-notification-center-button: light-dark(rgb(0 0 0 / 0.13), rgb(0 0 0 / 0.14));
+  /* [provisional] a pressed footer button darkens further */
+  --mac-notification-center-button-pressed: rgb(0 0 0 / 0.25);
+  /* [measured, computed] leading edge: a line inside the panel, #bce1f9 on #b5ddf8 and
+     #4b5a6c on #1e3147, and a dark line outside it, #6384a3 on the picture and #020407 */
+  --mac-notification-center-edge: light-dark(rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.2));
+  --mac-notification-center-edge-outer: light-dark(rgb(0 0 0 / 0.2), rgb(0 0 0 / 0.9));
+  /* [provisional] text of an empty view: no screenshot shows one */
+  --mac-notification-center-empty: light-dark(#345c79, #95accd);
+}
+
+:root,
+[data-appearance] {
+  /* [measured] the inner line is half a point in Aqua and one point in Dark Aqua */
+  --mac-notification-center-edge-width: calc(0.5px + 0.5px * var(--mac-appearance-dark));
+}

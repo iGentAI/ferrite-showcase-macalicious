@@ -1,0 +1,47 @@
+/*
+ * Combo box values that no shared token holds. The field's bezel is the text field's and the
+ * button's is the shared control bezel. Screenshots: GoTo is Finder-Go-To-Folder, DT is
+ * System-Preferences-Date-and-Time, each light and dark.
+ */
+:root,
+[data-appearance] {
+  /* [measured] Dark Aqua draws the field's well half a point inside the control's frame, and
+     the button not: its edges are at x=154, y=208 and y=245 where Aqua's are at x=153, y=207
+     and y=246 (GoTo row 227, column 453; DT likewise). */
+  --mac-combo-box-field-inset: calc(0.5px * var(--mac-appearance-dark));
+  /* [measured] How far the divider lies outside the button: Aqua draws it on the button's
+     first device pixel (GoTo x=894), Dark Aqua on the field's last (x=893). */
+  --mac-combo-box-divider-outset: calc(0.5px * var(--mac-appearance-dark));
+}
+
+:root {
+  /* [measured, computed] The line between the field and the button. Aqua: the button's fill
+     under black at 7.5% (#6397e8 to #0763ec on #6ca3fb to #0b6bff, GoTo column 894). Dark
+     Aqua: the field's fill under black at 19% (#2f2f30 on #3a3a3b, column 893). */
+  --mac-combo-box-divider:
+    inset 0.5px 0 0 light-dark(rgb(0 0 0 / 0.075), transparent),
+    -0.5px 0 0 light-dark(transparent, rgb(0 0 0 / 0.19));
+  /* [measured, computed] The same line when disabled, before the button's bezel is halved.
+     Aqua: two device pixels, #e1e1e1 and #eaeaea on #f1f1f1 (DT row 314, x 1224 and 1225).
+     Dark Aqua: as enabled (#363637 on #3b3b3c, x=1223). */
+  --mac-combo-box-divider-disabled:
+    inset 0.5px 0 0 light-dark(rgb(0 0 0 / 0.077), transparent),
+    inset 1px 0 0 light-dark(rgb(0 0 0 / 0.06), transparent),
+    -0.5px 0 0 light-dark(transparent, rgb(0 0 0 / 0.19));
+  /* [measured, computed] Fill of a disabled field, half the enabled one: #f1f1f1 on #e3e3e3
+     is white at 50%, #3b3b3c on #363637 white at 2.5% (DT @ 1100,300). */
+  --mac-combo-box-background-disabled: light-dark(rgb(255 255 255 / 0.5), rgb(255 255 255 / 0.025));
+  /* [measured, computed] Shading inside a disabled field's edge. Aqua: one device pixel all
+     round, #e9e9e9 on #f1f1f1 (DT @ 1100,296). Dark Aqua: four rows under the top edge,
+     #383839, #383839, #39393a, #3a3a3b on #3b3b3c, and one above the bottom edge, #414142
+     (DT column 1100, y 297..300 and 332). */
+  --mac-combo-box-inner-shadow-disabled:
+    inset 0 0 0 0.5px light-dark(rgb(0 0 0 / 0.033), transparent),
+    inset 0 1px 0 light-dark(transparent, rgb(0 0 0 / 0.017)),
+    inset 0 1.5px 0 light-dark(transparent, rgb(0 0 0 / 0.017)),
+    inset 0 2px 0 light-dark(transparent, rgb(0 0 0 / 0.017)),
+    inset 0 -0.5px 0 light-dark(transparent, rgb(255 255 255 / 0.03));
+  /* [measured, computed] Chevron of a disabled combo box: #919191 on #f1f1f1 is black at
+     40%, #7b7b7c on #4f4f50 white at 25% (DT row 314). */
+  --mac-combo-box-arrow-disabled: light-dark(rgb(0 0 0 / 0.4), rgb(255 255 255 / 0.25));
+}

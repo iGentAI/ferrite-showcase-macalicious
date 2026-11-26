@@ -1,0 +1,169 @@
+---
+title: Full-Screen Window
+description: A window in full screen. It fills its Space without a frame, and the menu bar, with the title bar if that hides too, slides down over the content when the pointer reaches the top edge or keyboard focus moves into the bars.
+---
+
+<Example name="basic" both />
+
+A [Window](/components/window) that has entered full screen has no frame, corners or shadow,
+and the screen's menu bar is out of sight above it. `FullScreenWindow` is that window with
+the two bars placed and animated: the menu bar you give it, and the window's own
+[Title Bar](/components/title-bar). Base UI has no such primitive.
+
+## Usage
+
+```tsx
+import { FullScreenWindow } from "macalicious/full-screen-window";
+import { TitleBar } from "macalicious/title-bar";
+import { WindowBody } from "macalicious/window";
+import { WindowControls } from "macalicious/window-controls";
+import "macalicious/styles.css";
+
+<FullScreenWindow
+  height="100vh"
+  menuBar={<MyMenuBar />}
+  titleBar={
+    <TitleBar
+      variant="title-hidden"
+      title="Albums"
+      controls={<WindowControls zoomRole="exit-full-screen" minimizeDisabled onZoom={leave} />}
+    />
+  }
+>
+  <WindowBody background="content">…</WindowBody>
+</FullScreenWindow>
+```
+
+Or copy the source into your project: `npx macalicious add full-screen-window`.
+
+- `titleBar` is the window's bar and `menuBar` the screen's; the children are the content.
+  The menu bar is rendered only in full screen, in a slot 22 points high above the title bar.
+- By default the title bar stays at the top of the screen and only the menu bar hides. With
+  `autoHideToolbar` the title bar hides too, and both come down over the content, which then
+  starts at the top edge.
+- The bars come down when the pointer reaches the top 4 points of the window and go back
+  when it leaves them, and they stay down while keyboard focus is inside them. `revealed`
+  and `onRevealedChange` hand that decision to you; `defaultRevealed` only starts it.
+- In full screen the minimize button does nothing and the green button leaves full screen:
+  give the [Window Controls](/components/window-controls) `minimizeDisabled` and
+  `zoomRole="exit-full-screen"`.
+- A page cannot hide the browser's own bars. `element.requestFullscreen()` does that, and is
+  yours to call; this component only lays the window out.
+
+### One tree in and out of full screen
+
+`fullScreen={false}` shows the same window with an ordinary title bar, no menu bar and no
+reveal, so the content is not remounted when the window enters or leaves full screen. With
+the [Window Manager](/components/window-manager) that is all there is to do: a
+[Managed Window](/components/managed-window) hands its `render` function the window's props,
+`fullScreen` among them.
+
+<Example name="managed" />
+
+When a window is already around the content, pass `render={<div />}`: the root is then that
+element, without a second window, and the `Window` props are not for this component.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines,
+[Full-Screen Mode](https://web.archive.org/web/20200503161459/https://developer.apple.com/design/human-interface-guidelines/macos/app-architecture/fullscreen-mode/):
+
+- Offer full screen only where it makes sense: when people want to be immersed in a task. A
+  utility such as Calculator works better as a small window beside other applications.
+- Keep the toolbar visible when it is needed for the task, as Calendar does, and hide it when
+  the focus is on content, as Preview does. A hidden toolbar comes back when the pointer
+  moves to the top of the screen.
+- Keep every essential feature available: people should be able to finish what they are doing
+  without leaving full screen.
+- Use the extra space, but keep the transition smooth and the interface recognizable.
+- Let people choose when to leave full screen; do not leave it for them.
+
+## Variants and states
+
+<Example name="auto-hide" both />
+
+| State | How it is set | Look | Source |
+| --- | --- | --- | --- |
+| Bars hidden | default | The title bar at the top edge, or nothing but content with `autoHideToolbar` | Measured in the Split View captures, where each tile's bar starts at the top of the screen; with `autoHideToolbar` catalog (`NSApplication.PresentationOptions.autoHideToolbar`), no screenshot |
+| Bars revealed | pointer at the top edge, focus in the bars, `revealed` | Menu bar from 0 to 22 points, title bar under it, and the bars' shadow on the content | Measured in the full-screen Photos captures |
+| Title bar stays | default | The window's content starts under the title bar, and moves with it | Measured |
+| Title bar hides | `autoHideToolbar` | The bars lie over the content, which does not move | Catalog; provisional look |
+| Not in full screen | `fullScreen={false}` | An ordinary window | See [Window](/components/window) |
+| Key, main, inactive | `state` | As [Window](/components/window) | Inactive is measured on the inactive Split View tile |
+
+The bars slide over 0.2 seconds; with `prefers-reduced-motion` they fade in place.
+
+## Sizes
+
+A full-screen window is as large as its Space: give it `width` and `height` (both are
+[Window](/components/window) props) or let a manager do it. The menu bar slot is 22 points
+and the strip that reveals the bars 4; both can be changed with the variables below. There is
+no `size` prop.
+
+## API
+
+<PropsTable name="FullScreenWindowProps" />
+
+Every other prop is a [Window](/components/window) prop (`state`, `width`, `height`, and the
+rest) and goes to the root with `ref`, `className` and `style`.
+
+| Attribute, class or variable | On | Description |
+| --- | --- | --- |
+| `.mac-full-screen-window` | the root | The `Window`, or the element given as `render`. |
+| `data-full-screen` | the root | In full screen. |
+| `data-revealed` | the root | The bars are down. |
+| `data-auto-hide-toolbar` | the root | The title bar hides with the menu bar. |
+| `.mac-full-screen-window-bars` | the bars' container | In flow when the title bar stays, over the content when it hides. |
+| `.mac-full-screen-window-edge` | the strip along the top | What the pointer has to reach. |
+| `.mac-full-screen-window-panel` | the title bar's wrapper | What slides; it carries the shadow. |
+| `.mac-full-screen-window-menu-bar` | the menu bar's slot | 22 points high, above the title bar. |
+| `--mac-full-screen-window-menu-bar-height` | set on the root | Height of the menu bar slot; default `22px`. |
+| `--mac-full-screen-window-edge` | set on the root | Height of the strip that reveals the bars; default `4px`. |
+| `--mac-full-screen-window-bar-shadow` | token | The shadow the revealed bars cast on the content. |
+
+## Accessibility
+
+- The root is the labelled `region` of [Window](/components/window), named by its title bar.
+  Without a title in the bar give it `aria-label`.
+- The bars come before the content in the document, so Tab reaches the menu bar and the
+  window controls first. Focus moving into hidden bars brings them down, and they stay down
+  until focus leaves them: nothing that has the focus is ever off screen.
+- The pointer is not needed: everything the top edge reveals is revealed by Tab as well.
+- With `prefers-reduced-motion` the bars do not slide; they fade.
+- In forced-colours mode the bars' shadow is replaced by a line under them.
+- Leaving full screen is the green button's job and yours to wire to a key. Escape is the
+  browser's own key for leaving `requestFullscreen()`.
+
+## Visual comparison
+
+`full-screen-window.visual.json` compares two states with the reference screenshots, in both
+appearances, where the bars are empty so that no toolbar item, title or icon is in the crop:
+
+- `revealed`: the full-screen Photos window with the bars down. The menu bar is the
+  screen's and shows the desktop picture through its material, so its 22 points are masked
+  (22% of the crop); the title bar under it, its edge and the shadow on the content are scored.
+- `top`: the active Split View tile, where the menu bar is hidden and the window's bar is at
+  the very top of the screen, with 12 points of the page under it.
+
+Scores from `npm run visual -- full-screen-window/` in Chromium on Linux, at threshold 0.05:
+the share of pixels that differ visibly, and the mean colour difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `revealed-light` | Light-Full-Screen-App (1800, 0, 700, 200) | 0.00% | 0.67 | 0.00% | 0.33 |
+| `revealed-dark` | Dark-Full-Screen-App (1800, 0, 700, 200) | 0.00% | 1.33 | 0.00% | 1.34 |
+| `top-light` | Light-Split-Screen-Apps (1740, 0, 300, 100) | 0.00% | 0.35 | 0.00% | 0.30 |
+| `top-dark` | Dark-Split-Screen-Apps (1740, 0, 300, 100) | 0.00% | 4.85 | 0.00% | 4.77 |
+
+In Dark Aqua the captured bars are tinted, by the desktop picture in Photos and by the page
+under the bar in Safari; the library's title bar is the untinted one, which is the whole of
+the mean difference in the two dark rows ([Fidelity limits](/fidelity)).
+
+No screenshot shows a window whose title bar hides, or the bars on their way down. State
+checks cover them in a real browser: with the pointer away the content reaches the top edge;
+with the pointer on the top edge, and after Tab, the menu bar slot and the title bar are down
+and the shadow's first rows on white content match the measured ones.
+
+Measured: the 22 point menu bar, the 38 point bar under it, the bars' shadow (a fit to the
+Photos captures), the frameless square window. Provisional: the 0.2 second slide, the 4 point
+strip that reveals the bars, and the look of a title bar that hides with the menu bar.

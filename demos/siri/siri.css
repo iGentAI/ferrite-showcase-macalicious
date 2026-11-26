@@ -1,0 +1,203 @@
+/*
+ * Siri demo: what the demo puts into the library's Siri window and its result card. The
+ * window, the card, the buttons and the orb are the library's and are not restyled here; the
+ * classes below all start with .mac-siri-demo, which the library does not use.
+ *
+ * Measured on 10-15-Catalina-Light-Siri.png and 10-15-Catalina-Dark-Siri.png (2x: two pixels
+ * are one point). The window is at 19, 18 pt of each capture and the card at 12, 28 pt of the
+ * window; the distances below are points from the card's top-left corner.
+ *
+ *   header          26 pt, the library's
+ *   summary         glyph box 23.75..65.75 by 51.75..93.75, city and lines from x=87 with the
+ *                   city's line box at y=41.5, temperature right-aligned to x=304.5
+ *   hourly rows     39 pt each, from the end of the summary; label from x=17.5, glyph centred
+ *                   on x=158.5, degrees right-aligned to x=299.5
+ *
+ * Parts
+ *   .mac-siri-demo               the window's root: it takes the focus when it is shown again
+ *   .mac-siri-demo-type          the form of the Type to Siri field
+ *   .mac-siri-demo-reply         what Siri says back, under the request
+ *   .mac-siri-demo-examples      the example requests; .mac-siri-demo-example is one of them
+ *   .mac-siri-demo-icon          the placeholder in a card's header
+ *   .mac-siri-demo-glyph         the placeholder for a weather glyph, 18 pt
+ *   .mac-siri-demo-summary       the Weather card's summary block
+ *   .mac-siri-demo-conditions    the city and the three lines; .mac-siri-demo-city,
+ *                                .mac-siri-demo-line
+ *   .mac-siri-demo-temperature   the large temperature
+ *   .mac-siri-demo-hours         the hourly rows; .mac-siri-demo-hour is one row, with
+ *                                .mac-siri-demo-hour-label and .mac-siri-demo-degrees
+ *   .mac-siri-demo-result        the body of a card that answers with one value;
+ *                                .mac-siri-demo-caption, .mac-siri-demo-value
+ *
+ * States
+ *   .mac-siri-demo-glyph[data-size="large"]   the 42 pt placeholder of the summary
+ *
+ * The measured sizes are tokens in siri.tokens.css (--mac-siri-demo-*), each with its tag.
+ */
+
+/* The root takes the focus from a script, never from Tab: it shows no ring of its own. */
+.mac-siri-demo {
+  outline: none;
+}
+
+.mac-siri-demo-type {
+  flex: none;
+  padding-inline: var(--mac-space-window-margin);
+}
+
+/* One 16 pt line: with the prompt above it, the card under it starts on a whole point. */
+.mac-siri-demo-reply {
+  flex: none;
+  margin: 0;
+  padding-inline: var(--mac-space-window-margin);
+}
+
+.mac-siri-demo-examples {
+  flex: none;
+  margin: 0;
+  padding: 0 var(--mac-space-window-margin);
+  font: var(--mac-font-title-3);
+  list-style: none;
+}
+
+.mac-siri-demo-example {
+  padding-block: var(--mac-siri-demo-example-padding);
+}
+
+/* Placeholders, not artwork: a plain disc for the icon of the app that answers, and plain
+   shapes for the weather glyphs, in the card's own text colour at a third of its strength. */
+.mac-siri-demo-icon {
+  display: block;
+  inline-size: var(--mac-siri-demo-icon-size);
+  block-size: var(--mac-siri-demo-icon-size);
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.3;
+}
+
+.mac-siri-demo-glyph {
+  display: block;
+  flex: none;
+  inline-size: var(--mac-siri-demo-glyph-size);
+  block-size: var(--mac-siri-demo-glyph-size);
+  opacity: 0.3;
+}
+
+.mac-siri-demo-glyph:where([data-size="large"]) {
+  inline-size: var(--mac-siri-demo-glyph-size-large);
+  block-size: var(--mac-siri-demo-glyph-size-large);
+}
+
+/* The summary is as tall as its text: 109.5 pt in the Aqua capture, whose second line breaks
+   in two, and 94.5 pt in the Dark Aqua capture. */
+.mac-siri-demo-summary {
+  display: flex;
+  align-items: flex-start;
+  padding-block: var(--mac-siri-demo-summary-padding-top)
+    var(--mac-siri-demo-summary-padding-bottom);
+  padding-inline: var(--mac-siri-demo-summary-padding-start)
+    var(--mac-siri-demo-summary-padding-end);
+}
+
+/* The sun of both captures is 42 pt across (x=110..193, y=196..279 at 2x): centred 46.75 pt
+   under the block's top edge. */
+.mac-siri-demo-summary > .mac-siri-demo-glyph {
+  margin-block-start: var(--mac-siri-demo-glyph-offset);
+  margin-inline-end: var(--mac-siri-demo-glyph-gap);
+}
+
+/* The city and its lines take the room between the glyph and the temperature. */
+.mac-siri-demo-conditions {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.mac-siri-demo-city {
+  margin: 0;
+  font:
+    var(--mac-font-weight-bold) var(--mac-siri-demo-city-size) /
+    var(--mac-siri-demo-city-line-height) var(--mac-font-family-system);
+}
+
+/* Each line is a label of its own. In the captures (2x) the capitals of "Sunny", "Chance of",
+   "Rain: 20%" and "High" start at y=225, 256, 286 and 318, and those of "Chance of Rain: 0%"
+   and "High" at y=256 and 288: a label that breaks continues after 15 pt, and the next label
+   starts 15.75 pt after a label's last line. The break of the Aqua capture's second label is
+   in the data (pre-line keeps it), because where a label breaks by itself depends on the
+   font: "Chance of Rain: 0%" is 109 pt wide in the capture and about 121 pt in the fallback
+   font, so no one width breaks the same labels in both. */
+.mac-siri-demo-line {
+  margin: 0;
+  color: var(--mac-siri-card-secondary);
+  font-size: var(--mac-font-size-regular);
+  line-height: var(--mac-siri-demo-line-height);
+  white-space: pre-line;
+}
+
+.mac-siri-demo-line + .mac-siri-demo-line {
+  margin-block-start: var(--mac-siri-demo-line-gap);
+}
+
+.mac-siri-demo-city + .mac-siri-demo-line {
+  margin-block-start: var(--mac-siri-demo-city-gap);
+}
+
+/* The digits are centred 4 pt under the middle of the block: their box is at 33.75 pt of the
+   109.5 pt block and at 26.25 pt of the 94.5 pt one. The block's content box is centred
+   2.5 pt under its middle. */
+.mac-siri-demo-temperature {
+  position: relative;
+  inset-block-start: var(--mac-siri-demo-temperature-offset);
+  flex: none;
+  align-self: center;
+  margin: 0;
+  font:
+    var(--mac-font-weight-thin) var(--mac-siri-demo-temperature-size) /
+    var(--mac-siri-demo-temperature-line-height) var(--mac-font-family-system);
+}
+
+.mac-siri-demo-hours {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-siri-demo-hour {
+  display: grid;
+  box-sizing: border-box;
+  block-size: var(--mac-siri-demo-hour-height);
+  align-items: center;
+  justify-items: center;
+  padding: var(--mac-siri-demo-hour-padding-top) var(--mac-siri-demo-hour-padding-end) 0
+    var(--mac-siri-demo-hour-padding-start);
+  grid-template-columns: 1fr var(--mac-siri-demo-hour-glyph-column) 1fr;
+  line-height: var(--mac-line-height-regular);
+}
+
+.mac-siri-demo-hour-label {
+  justify-self: start;
+}
+
+.mac-siri-demo-degrees {
+  justify-self: end;
+  font-weight: var(--mac-font-weight-bold);
+}
+
+.mac-siri-demo-result {
+  padding: var(--mac-siri-demo-result-padding-top) var(--mac-siri-demo-result-padding-inline)
+    var(--mac-siri-demo-result-padding-bottom);
+}
+
+.mac-siri-demo-caption {
+  margin: 0;
+  color: var(--mac-siri-card-secondary);
+  font-size: var(--mac-font-size-regular);
+  line-height: var(--mac-line-height-regular);
+}
+
+.mac-siri-demo-value {
+  margin: var(--mac-siri-demo-value-margin) 0;
+  font:
+    var(--mac-font-weight-thin) var(--mac-siri-demo-value-size) /
+    var(--mac-siri-demo-value-line-height) var(--mac-font-family-system);
+}

@@ -1,0 +1,125 @@
+---
+title: Submenu
+description: A menu that opens beside one item of its parent menu. The parent item shows a triangle at its trailing edge.
+order: 62
+---
+
+<Example name="basic" />
+
+AppKit's `NSMenuItem.submenu`. The parts are built on the submenu parts of
+[Base UI's Menu](https://base-ui.com/react/components/menu): `Submenu` on Menu.SubmenuRoot,
+`SubmenuTrigger` on Menu.SubmenuTrigger, and `SubmenuPopup` is a [`MenuPopup`](/components/menu)
+placed beside its parent item.
+
+## Usage
+
+```tsx
+import { Menu, MenuPopup, MenuTrigger } from "macalicious/menu";
+import { MenuItem } from "macalicious/menu-item";
+import { Submenu, SubmenuPopup, SubmenuTrigger } from "macalicious/submenu";
+import "macalicious/menu.css";
+import "macalicious/menu-item.css";
+import "macalicious/submenu.css";
+
+<Menu>
+  <MenuTrigger>File</MenuTrigger>
+  <MenuPopup>
+    <MenuItem keyEquivalent="command+o">Open…</MenuItem>
+    <Submenu>
+      <SubmenuTrigger>Open Recent</SubmenuTrigger>
+      <SubmenuPopup>
+        <MenuItem>Letter.rtf</MenuItem>
+        <MenuItem>Clear Menu</MenuItem>
+      </SubmenuPopup>
+    </Submenu>
+  </MenuPopup>
+</Menu>
+```
+
+Or copy the source into your project: `npx macalicious add submenu`.
+
+Put a `Submenu` where an item of the parent menu would be. The submenu opens when the pointer
+has rested on the parent item for 0.2 s, on a click, or with Right Arrow, beside the item and
+with its first item level with it; when there is no room it opens on the other side.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines,
+[Menu Anatomy](https://web.archive.org/web/20200503171533/https://developer.apple.com/design/human-interface-guidelines/macos/menus/menu-anatomy/):
+
+- Use a submenu for a group of related commands that would make its parent menu too long.
+- Keep to one level of submenus; a submenu inside a submenu is hard to reach.
+- A submenu should hold more than a couple of items; otherwise put them in the parent menu.
+- Give the parent item a title that describes the submenu's items. It has no key equivalent.
+
+## Variants and states
+
+| State | Look | Basis |
+| --- | --- | --- |
+| Parent item | A filled triangle, 9 by 10 pt, 12 pt from the menu's edge, in the title's colour | Measured (Recent Items, Services, Recent Folders) |
+| Parent highlighted, or its submenu open | The item's highlight, white triangle | Provisional |
+| Parent disabled | Dimmed, triangle included; passed over by the arrow keys | Provisional |
+| Open submenu | A detached menu: its hairline over the parent's, its first item level with the parent item | Provisional |
+| Closing | At once; only the root menu fades | Provisional |
+
+No screenshot shows a submenu open, so everything but the parent item at rest is inferred.
+
+An open submenu in both appearances, drawn in place with the classes of the menu and of the
+parent item. The live example at the top opens its menus in a portal, so they take the
+appearance of the page:
+
+<Example name="appearances" both hideCode />
+
+## Sizes
+
+A submenu takes `size` like any menu; give it the size of its parent menu.
+
+## API
+
+`Submenu` takes the props of Base UI's Menu.SubmenuRoot (`open`, `defaultOpen`,
+`onOpenChange`, `disabled`, `closeParentOnEsc`). `SubmenuTrigger` takes those of
+Menu.SubmenuTrigger and `SubmenuPopup` those of [`MenuPopup`](/components/menu), and these:
+
+<PropsTable name="SubmenuTriggerProps" />
+
+<PropsTable name="SubmenuPopupProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-popup-open` | parent item | present or absent | Its submenu is open. Set by Base UI. |
+| `data-highlighted`, `data-disabled` | parent item | present or absent | As on a menu item. |
+
+Classes: `.mac-submenu-trigger` (the parent item, which is also a `.mac-menu-item`) and
+`.mac-submenu` (the popup, which is also a `.mac-menu`).
+
+## Accessibility
+
+- The parent item is a `menuitem` with `aria-haspopup="menu"` and `aria-expanded`; the submenu
+  has `role="menu"`.
+- Right Arrow, Return or Space on the parent item opens the submenu and moves into it. Left
+  Arrow or Escape closes it and returns to the parent item. Choosing an item closes every menu.
+- Base UI keeps the submenu open while the pointer moves diagonally from the parent item
+  towards it.
+- A disabled parent item cannot be opened and, like every disabled item, is passed over by the
+  arrow keys.
+
+## Visual comparison
+
+`npm run visual -- submenu` compares the Recent Items row of the Apple menu, with the
+separators around it, with the Apple-Menu screenshots in both appearances
+(`submenu.visual.json`). Scores at 2x, in Chromium on Linux with the fallback font; "drawing
+only" masks the title and halves the colour threshold:
+
+| Crop | Aqua, whole crop | Aqua, drawing only | Dark Aqua, whole crop | Dark Aqua, drawing only |
+| --- | --- | --- | --- | --- |
+| Recent Items row, pixels that differ | 4.05% | 0.66% | 4.24% | 0.14% |
+| Recent Items row, mean Δ of 255 | 10.42 | 5.59 | 8.63 | 3.49 |
+
+In Aqua the triangle itself differs: Catalina draws it navy over the sky, here it is black at
+85% like the title (vibrant text has no CSS equivalent). The mean Δ of the drawing is the
+menu's fill (see [Menu](/components/menu)).
+
+No screenshot shows an open submenu. That state is checked in a real browser instead: a
+submenu is opened from the keyboard (Down, Down, Right) and chosen pixels must show the parent
+item still highlighted with a white triangle, and the submenu's first item highlighted and
+level with it, in both appearances. Those values are inferred.

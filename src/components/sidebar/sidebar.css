@@ -1,0 +1,234 @@
+/*
+ * Sidebar / source list (NSOutlineView, source-list style, on the sidebar material). Rows are
+ * 24 pt high in a 26 pt pitch, icons 18 pt from the edge (24 pt in an outline), labels 13 pt.
+ * Parts, states and the inherited spacing hooks are listed on the docs page, under API.
+ */
+.mac-sidebar {
+  --_row: var(--mac-sidebar-row-height, 24px);
+  --_icon: var(--mac-sidebar-icon-size, 18px);
+  --_inset: 18px;
+  --_tint: var(--mac-sidebar-tint);
+  --_selection: var(--mac-color-sidebar-selection);
+  --_selected: var(--mac-sidebar-label-selected);
+  --_selected-tint: var(--mac-sidebar-tint-selected);
+
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  background: var(--mac-material-sidebar);
+  -webkit-backdrop-filter: var(--mac-material-filter);
+  backdrop-filter: var(--mac-material-filter);
+  color: var(--mac-sidebar-label);
+  font: var(--mac-font-body);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-sidebar:where([data-size="small"]) {
+  --_row: var(--mac-sidebar-row-height, 20px);
+  --_icon: var(--mac-sidebar-icon-size, 16px);
+}
+
+.mac-sidebar:where([data-size="large"]) {
+  --_row: var(--mac-sidebar-row-height, 32px);
+  --_icon: var(--mac-sidebar-icon-size, 32px);
+}
+
+/* An outline keeps room for the triangles: the icons start 6 pt further in. */
+.mac-sidebar:where(:has([aria-expanded])) {
+  --_inset: 24px;
+}
+
+.mac-sidebar:where([data-material="opaque"]) {
+  background: var(--mac-material-sidebar-opaque);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Inactive window: vibrancy is off and everything but the selected row is dimmed. */
+.mac-sidebar:where([data-window-state="inactive"] *) {
+  --_tint: var(--mac-sidebar-label-inactive);
+  --_selection: var(--mac-sidebar-selection-inactive);
+  --_selected: var(--mac-sidebar-label-selected-inactive);
+  --_selected-tint: var(--mac-sidebar-label-selected-inactive);
+
+  background: var(--mac-sidebar-material-inactive);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  color: var(--mac-sidebar-label-inactive);
+  /* The digits of a badge are knocked out of it: they show this material. The property is
+     the sidebar badge's documented hook for the background it sits on. */
+  --mac-sidebar-badge-knockout: var(--mac-sidebar-material-inactive);
+}
+
+/* Emphasised selection: the tree holds the focus and the window is key. */
+.mac-sidebar:where(:has(> .mac-sidebar-scroll:focus-within), [data-force~="focus"]):not(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  --_selection: var(--mac-color-sidebar-selection-emphasized);
+  --_selected: var(--mac-color-selected-content-text);
+  --_selected-tint: var(--mac-color-selected-content-text);
+}
+
+.mac-sidebar-scroll {
+  flex: 1 1 auto;
+}
+
+.mac-sidebar-tree {
+  padding-block: 5px;
+}
+
+/* Padding, not a margin: the last row's 2 pt of spacing must not collapse into it. */
+.mac-sidebar-section:where(:not(:first-child)) {
+  padding-block-start: var(--mac-sidebar-section-gap, 9px);
+}
+
+/* The header's baseline is 7 pt above the first row (6 pt in Finder). */
+.mac-sidebar-header {
+  box-sizing: border-box;
+  height: 20px;
+  padding: var(--mac-sidebar-header-inset, 2px) 10px 0;
+  overflow: hidden;
+  color: var(--_tint);
+  font: var(--mac-font-sidebar-header);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-sizing: border-box;
+  height: var(--_row);
+  margin-block-end: var(--mac-sidebar-row-spacing, 2px);
+  padding-inline: calc(var(--_inset) + var(--_level, 0) * 16px) 12px;
+}
+
+.mac-sidebar-item:where([aria-selected="true"]) {
+  --_tint: var(--_selected-tint);
+
+  background: var(--_selection);
+  color: var(--_selected);
+}
+
+.mac-sidebar-item:where([aria-disabled="true"]) {
+  opacity: 0.5;
+}
+
+/* In the flow, so that the row centres it: 13 pt frame ending 7.5 pt before the icon. It
+   takes the row's tint; two classes, to win over the triangle's own colour. */
+.mac-sidebar-item > .mac-sidebar-triangle {
+  margin-inline: -20.5px 3.5px;
+  color: var(--_tint);
+}
+
+.mac-sidebar-icon,
+.mac-sidebar-accessory {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--_tint);
+}
+
+/* The row's 4 pt gap is also the triangle's and the accessory's: the label's own distance
+   from the icon is added to it here, and is nothing by default. */
+.mac-sidebar-icon {
+  width: var(--_icon);
+  height: var(--_icon);
+  margin-inline-end: calc(var(--mac-sidebar-label-gap, 4px) - 4px);
+}
+
+/* The baseline is 17 pt under the row's top: half a point lower than a centred line. */
+.mac-sidebar-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-block-start: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Footer: a 16 pt glyph 12 pt from the pane's edge and bottom, the title 7 pt after it. */
+.mac-sidebar-footer {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 7px;
+  height: 40px;
+  margin: 0;
+  padding: 0 12px;
+  border: 0;
+  background: none;
+  color: var(--_tint);
+  font: inherit;
+  text-align: start;
+  cursor: default;
+  outline: none;
+}
+
+/* The plus is two 1.5 pt bars, 7 pt long, in a 1.5 pt ring. */
+.mac-sidebar-footer::before {
+  content: "";
+  flex: none;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid;
+  border-radius: 50%;
+  background:
+    linear-gradient(currentColor, currentColor) center / 7px 1.5px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 1.5px 7px no-repeat;
+}
+
+/* Filled: the plus cut out of a disc. */
+.mac-sidebar-footer:where([data-filled])::before {
+  border: 0;
+  background: currentColor;
+  /* raw-color-ok: mask alpha */
+  mask:
+    linear-gradient(#000 0 0) subtract,
+    linear-gradient(#000 0 0) center / 7px 1.5px no-repeat,
+    linear-gradient(#000 0 0) center / 1.5px 7px no-repeat;
+}
+
+@media (forced-colors: active) {
+  .mac-sidebar .mac-sidebar-footer:where([data-filled])::before {
+    background: ButtonText;
+  }
+}
+
+.mac-sidebar-footer:where(:active, [data-force~="pressed"]) {
+  color: inherit;
+}
+
+.mac-sidebar-footer:where(:focus-visible):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+@media (forced-colors: active) {
+  .mac-sidebar-item:where([aria-selected="true"]) {
+    --_tint: HighlightText;
+
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  /* The plus is drawn with gradients, which forced colours remove from an adjusted element:
+     keep them, in the button's system colour. */
+  .mac-sidebar-footer::before {
+    border-color: ButtonText;
+    background:
+      linear-gradient(ButtonText, ButtonText) center / 7px 1.5px no-repeat,
+      linear-gradient(ButtonText, ButtonText) center / 1.5px 7px no-repeat;
+    forced-color-adjust: none;
+  }
+}

@@ -1,0 +1,189 @@
+/*
+ * Table header (NSTableHeaderView).
+ *
+ * Parts
+ *   .mac-table-header             the row: 23 pt fill and a 1 pt bottom border
+ *   .mac-table-header-cell        one column heading; its trailing 1 pt is the separator
+ *   .mac-table-header-title       the title: text, or a button when the column sorts
+ *   .mac-table-header-indicator   the 7 x 4 pt sort chevron at the trailing end
+ *   .mac-table-header-resizer     the resize handle over the trailing edge
+ *
+ * States
+ *   [data-variant="plain"]             the same header on the content background
+ *   [data-variant="translucent"]       the plain header, 95% opaque (Console)
+ *   [data-top-border]                  1 pt line above the fill
+ *   [data-align="center" | "right"]    on a cell: title alignment
+ *   [aria-sort]                        on a cell: sorted (the indicator is rendered)
+ *   :active on a title button          pressed
+ *   :focus-visible                     keyboard focus ring inside the cell
+ *   [data-force~="pressed" | "focus"]  static previews on a cell (docs, visual tests)
+ *
+ * A header looks the same in a key, main and inactive window, without the focus ring.
+ *
+ * Hooks
+ *   --mac-table-header-title-inset    space before and after a title (5px 6px)
+ *   --mac-table-header-title-offset   moves the titles down; negative, up (0px)
+ */
+.mac-table-header {
+  --_fill: var(--mac-table-header-fill);
+  --_border: var(--mac-table-header-border);
+  --_separator: var(--mac-table-header-separator);
+
+  display: flex;
+  box-sizing: content-box;
+  height: 23px;
+  border-bottom: 1px solid var(--_border);
+  background: var(--_fill);
+  color: var(--mac-color-header-text);
+  font: var(--mac-font-table-header);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-table-header:where([data-variant="plain"], [data-variant="translucent"]) {
+  --_fill: var(--mac-table-header-plain-fill);
+  --_border: var(--mac-table-header-plain-border);
+  --_separator: var(--mac-table-header-plain-separator);
+}
+
+.mac-table-header:where([data-variant="translucent"]) {
+  --_fill: var(--mac-table-header-translucent-fill);
+}
+
+.mac-table-header:where([data-top-border]) {
+  border-top: 1px solid var(--_border);
+}
+
+.mac-table-header-cell {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  align-items: stretch;
+  box-sizing: border-box;
+  min-width: 0;
+  outline: none;
+}
+
+/* A heading on its way to another place: over the others, following the pointer. */
+.mac-table-header-cell:where([data-moving]) {
+  z-index: 1;
+  background: var(--_fill);
+}
+
+/* Column separator: the cell's last point, inset from the top and bottom of the fill. The
+   last heading has none. */
+.mac-table-header-cell:where(:not(:last-child))::after {
+  content: "";
+  position: absolute;
+  inset-block: 3px;
+  inset-inline-end: 0;
+  width: 1px;
+  background: var(--_separator);
+}
+
+/* The title's line: an 11 pt font whose cap top is 7 pt and whose baseline is 15 pt below
+   the top of the fill, which a 21 pt line half a point under the top of the 23 pt fill
+   gives (measured). The box is filled exactly, padding over and under the line, so that a
+   button, which centres its line in its box, has nothing left to centre: a title that sorts
+   and a plain one are then laid out alike and drawn on the same rows of pixels at 1x and 2x.
+   The offset moves the line's middle, 11 pt under the top of the fill at rest: up to
+   0.75 pt the line grows by twice the offset, past it the padding over the line grows. */
+.mac-table-header-title {
+  --_offset: var(--mac-table-header-title-offset, 0px);
+  --_over: max(0.5px, 2 * var(--_offset) - 1px);
+  --_under: max(0px, 1.5px - 2 * var(--_offset));
+
+  flex: 1 1 auto;
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  padding-block: var(--_over) var(--_under);
+  padding-inline: var(--mac-table-header-title-inset, 5px 6px);
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  line-height: calc(23px - var(--_over) - var(--_under));
+  text-align: start;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: inherit;
+  outline: none;
+  appearance: none;
+}
+
+.mac-table-header-cell:where([data-align="center"]) > .mac-table-header-title {
+  text-align: center;
+}
+
+.mac-table-header-cell:where([data-align="right"]) > .mac-table-header-title {
+  text-align: end;
+}
+
+/* A sorted column keeps 11 pt for the indicator: the title is aligned, and truncates, in
+   what is left of the column (measured on Activity Monitor's centred "% CPU"). */
+.mac-table-header-cell:where([aria-sort="ascending"], [aria-sort="descending"])
+> .mac-table-header-title {
+  padding-inline-end: 16px;
+}
+
+.mac-table-header-title:where(button:active),
+.mac-table-header-cell:where([data-force~="pressed"]) > .mac-table-header-title {
+  background: var(--mac-table-header-pressed);
+}
+
+.mac-table-header-title:where(:focus-visible),
+.mac-table-header-cell:where(:focus-visible),
+.mac-table-header-cell:where([data-force~="focus"]) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+.mac-table-header-title:where(:where([data-window-state="main"], [data-window-state="inactive"]) *),
+.mac-table-header-cell:where(:where([data-window-state="main"], [data-window-state="inactive"]) *) {
+  outline: none;
+}
+
+/* The descending chevron's right edge is 4 pt before the separator; its 4 pt box starts
+   10 pt below the top of the fill (measured in Activity Monitor). */
+.mac-table-header-indicator {
+  position: absolute;
+  inset-block-start: 10px;
+  inset-inline-end: 5px;
+  color: var(--mac-table-header-indicator);
+  pointer-events: none;
+}
+
+/* Ascending is the mirror image, and sits 1 pt higher (measured in Keychain Access). */
+.mac-table-header-indicator:where([data-direction="ascending"]) {
+  inset-block-start: 9px;
+  transform: scaleY(-1);
+}
+
+/* Resize handle: the separator and 3 pt on each side of it. */
+.mac-table-header-resizer {
+  position: absolute;
+  z-index: 1;
+  inset-block: 0;
+  inset-inline-end: -3px;
+  width: 7px;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+@media (forced-colors: active) {
+  .mac-table-header {
+    border-color: CanvasText;
+  }
+
+  .mac-table-header-cell:where(:not(:last-child))::after {
+    background: CanvasText;
+  }
+
+  .mac-table-header-indicator {
+    color: CanvasText;
+  }
+}

@@ -1,0 +1,173 @@
+/*
+ * Title bar (NSTitlebarView), and the surface of a unified toolbar. A grid: the window controls
+ * and the title share the first row (the title strip); children, usually a toolbar, take the
+ * second. The title is centred on the window while it fits beside the controls and starts right
+ * after them when it does not. The highlight, shadow and separator rows are inset box-shadows
+ * of one device pixel each, inside the bar's height. States and parts: the docs page, API.
+ */
+.mac-title-bar {
+  --_strip: 22px;
+  --_fill: var(--mac-material-titlebar);
+  --_shadow-row: var(--mac-title-bar-shadow-row);
+  --_separator: var(--mac-title-bar-separator);
+
+  position: relative;
+  display: grid;
+  flex: none;
+  grid-template-rows: var(--_strip) auto;
+  grid-template-columns: minmax(max-content, 1fr) minmax(0, auto) minmax(6px, 1fr);
+  box-sizing: border-box;
+  border-radius: var(--mac-radius-window) var(--mac-radius-window) 0 0;
+  background: var(--_fill);
+  box-shadow:
+    inset 0 var(--mac-hairline) 0 var(--mac-title-bar-highlight),
+    inset 0 calc(2 * var(--mac-hairline)) 0 var(--mac-title-bar-highlight-second),
+    inset 0 calc(-1 * var(--mac-hairline)) 0 var(--_separator),
+    inset 0 calc(-2 * var(--mac-hairline)) 0 var(--_shadow-row);
+  color: var(--mac-color-window-frame-text);
+  font: var(--mac-font-window-title);
+  letter-spacing: var(--mac-tracking-regular);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-title-bar:where([data-full-screen] *) {
+  border-radius: 0;
+}
+
+.mac-title-bar:where([data-divider="bar"]) {
+  --_shadow-row: var(--mac-title-bar-shadow-row-bar);
+  --_separator: var(--mac-title-bar-separator-bar);
+}
+
+.mac-title-bar:where([data-divider="line"]) {
+  --_fill: var(--mac-title-bar-line-fill);
+  --_shadow-row: var(--mac-title-bar-line);
+  --_separator: var(--mac-title-bar-line);
+}
+
+/* Window controls: 8 pt from the window edge, centred in the title strip. */
+.mac-title-bar-controls {
+  z-index: 1;
+  display: flex;
+  grid-area: 1 / 1;
+  align-items: center;
+  justify-self: start;
+  padding-inline: 8px 6px;
+}
+
+/* Proxy icon and title: centred on the window, or right after the controls when too long,
+   then 6 pt from the trailing edge (the last column's least width). */
+.mac-title-bar-title {
+  display: flex;
+  grid-area: 1 / 2;
+  gap: 4px;
+  align-items: center;
+  align-self: center;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+/* With a proxy icon the pair sits 1.75 pt left of the window's centre (Preview, TextEdit,
+   Finder). */
+.mac-title-bar-title:where(:has(> .mac-title-bar-icon)) {
+  padding-inline-end: 3.5px;
+}
+
+.mac-title-bar-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+}
+
+.mac-title-bar-title-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The accessory row (a toolbar) fills the bar; its own width must not push the title's
+   columns apart, so it contributes none. */
+.mac-title-bar-content {
+  grid-area: 2 / 1 / 3 / -1;
+  width: 0;
+  min-width: 100%;
+}
+
+/* Title hidden: controls and toolbar on one 38 pt row. The controls sit 13 pt from the window
+   edge; the toolbar's own 8 pt inset then puts its first item 13 pt after the zoom button. */
+.mac-title-bar:where([data-variant="title-hidden"]) {
+  grid-template-rows: minmax(38px, auto);
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.mac-title-bar:where([data-variant="title-hidden"]) > .mac-title-bar-controls {
+  padding-inline: 13px 5px;
+}
+
+.mac-title-bar:where([data-variant="title-hidden"]) > .mac-title-bar-content {
+  grid-area: 1 / 2;
+  width: auto;
+  min-width: 0;
+}
+
+/* A title in this layout is centred over the row and never takes a click from the toolbar. */
+.mac-title-bar:where([data-variant="title-hidden"]) > .mac-title-bar-title {
+  position: absolute;
+  inset: 0;
+  grid-area: 1 / 1 / -1 / -1;
+  justify-content: center;
+  padding-inline: 78px;
+  pointer-events: none;
+}
+
+/* Utility panel: a 16 pt strip, small title, controls 6 pt from the edge. */
+.mac-title-bar:where([data-variant="utility"]) {
+  --_strip: 16px;
+
+  font: var(--mac-font-window-title-small);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+.mac-title-bar:where([data-variant="utility"]) > .mac-title-bar-controls {
+  padding-inline: 6px;
+}
+
+/* Inactive window */
+.mac-title-bar:where([data-window-state="inactive"] *) {
+  --_fill: var(--mac-material-titlebar-inactive);
+  --_shadow-row: var(--mac-title-bar-shadow-row-inactive);
+  --_separator: var(--mac-title-bar-separator-inactive);
+
+  color: var(--mac-color-window-frame-text-inactive);
+}
+
+/* divider="line" inactive: as "bar"; no capture shows it. */
+.mac-title-bar:where([data-divider="bar"], [data-divider="line"]):where(
+  [data-window-state="inactive"] *
+) {
+  --_shadow-row: var(--mac-title-bar-shadow-row-bar-inactive);
+  --_separator: var(--mac-title-bar-separator-bar-inactive);
+}
+
+/* Translucent: the bar of a movie window, over the picture. After the rules above, so that
+   its fill is the one used in a key and in an inactive window. */
+.mac-title-bar:where([data-material="translucent"]) {
+  --_fill: var(--mac-title-bar-translucent);
+
+  -webkit-backdrop-filter: var(--mac-material-filter);
+  backdrop-filter: var(--mac-material-filter);
+}
+
+.mac-title-bar:where([data-material="translucent"]):where([data-window-state="inactive"] *) {
+  --_fill: var(--mac-title-bar-translucent-inactive);
+}
+
+@media (forced-colors: active) {
+  .mac-title-bar {
+    border-bottom: 1px solid CanvasText;
+  }
+}

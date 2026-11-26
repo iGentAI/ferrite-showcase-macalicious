@@ -1,0 +1,283 @@
+/*
+ * Date picker (NSDatePicker): a textual field with a stepper, a month calendar and a clock.
+ * The field and the calendar's frame are text field bezels (edge, fill, focus ring).
+ * Lengths are measured on the Notifications and Date & Time panes.
+ *
+ * States: [data-size], [data-disabled]; :focus on an element and [aria-selected="true"] on
+ * a day (grey in a window that is not key); [data-force~="focus"] on the textual picker
+ * previews the first element as selected.
+ */
+.mac-date-picker {
+  display: inline-flex;
+  align-items: center;
+  /* 4 pt to the stepper's outline, a hairline inside its box */
+  gap: calc(4px - var(--mac-hairline));
+  vertical-align: middle;
+}
+
+.mac-date-picker,
+.mac-date-picker-calendar,
+.mac-date-picker-clock {
+  --_selection: var(--mac-color-selected-content-background);
+  --_selected: var(--mac-color-selected-content-text);
+
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* The field: 23 pt high; the text starts 2.25 pt from the edge. */
+.mac-date-picker-field {
+  flex: 1 1 auto;
+  width: auto;
+  height: 23px;
+  padding: 0.5px 3.5px 0 2.25px;
+  font-variant-numeric: tabular-nums;
+  white-space: pre;
+  cursor: inherit;
+}
+
+/* [provisional] one point higher than the stepper of the size */
+.mac-date-picker-field:where([data-size="small"]) {
+  height: 20px;
+}
+
+.mac-date-picker-field:where([data-size="mini"]) {
+  height: 17px;
+}
+
+/* The selected element and the selected day [provisional for the element]. */
+.mac-date-picker-segment {
+  border-radius: 2px;
+  outline: none;
+}
+
+.mac-date-picker-segment:where(:focus, [data-force~="focus"] > * > :first-child),
+.mac-date-picker-calendar-grid :where([aria-selected="true"]) {
+  background: var(--_selection);
+  color: var(--_selected);
+}
+
+/* [provisional] a window that is not key */
+.mac-date-picker:where(:where([data-window-state="main"], [data-window-state="inactive"]) *),
+.mac-date-picker-calendar:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  --_selection: var(--mac-color-selected-content-background-unemphasized);
+  --_selected: var(--mac-color-label);
+}
+
+/* The calendar: 137.5 x 147 pt. The table starts 2.5 pt inside each side, where the divider
+   under the weekdays ends; columns are 18.5 pt, rows 18 pt. */
+.mac-date-picker-calendar {
+  display: inline-block;
+  width: 137.5px;
+  height: 147px;
+  padding: 0 2.5px;
+  color: var(--mac-color-label);
+  vertical-align: middle;
+}
+
+/* The bezels take --mac-date-picker-background as their fill (see FILL in the source). */
+.mac-date-picker:where([data-disabled]),
+.mac-date-picker-calendar:where([data-disabled]) {
+  --mac-date-picker-background: var(--mac-date-picker-background-disabled);
+}
+
+.mac-date-picker-calendar-grid {
+  width: 100%;
+  padding: 0 1.5px;
+  border-spacing: 0;
+  table-layout: fixed;
+  background:
+    linear-gradient(var(--mac-color-separator), var(--mac-color-separator)) 0 17px / 100% 1px
+    no-repeat;
+  font: var(--mac-font-control-small);
+  line-height: 18px;
+  text-align: right;
+}
+
+.mac-date-picker-calendar-grid :where(caption) {
+  height: 19.5px;
+  padding-left: 0.5px;
+  font: var(--mac-font-headline);
+  line-height: 19.5px;
+  text-align: left;
+}
+
+.mac-date-picker-calendar-grid :where(th, td) {
+  box-sizing: border-box;
+  width: 18.5px;
+  height: 18px;
+  padding: 0 2.5px 0 0;
+  font-weight: inherit;
+  outline: none;
+}
+
+.mac-date-picker-calendar-grid :where(th) {
+  color: var(--mac-color-label-secondary);
+  font-weight: var(--mac-font-weight-bold);
+}
+
+/* The selected day: 19 x 16 pt, corner 3 pt. */
+.mac-date-picker-calendar-grid :where([aria-selected="true"]) {
+  box-shadow: -0.5px 0 var(--_selection);
+  clip-path: inset(1px 0 1px -0.5px round 3px);
+}
+
+/* Dimmed: the days of other months, the title of a disabled calendar and [provisional] the
+   days outside min and max. A disabled calendar keeps its days at the label colour. */
+.mac-date-picker-calendar-grid :where([data-outside]:not([aria-selected="true"])),
+.mac-date-picker-calendar:where(:not([data-disabled])) :where([aria-disabled]),
+.mac-date-picker-calendar:where([data-disabled]) :where(caption) {
+  color: var(--mac-color-label-tertiary);
+}
+
+/* Previous month, today, next month: 14.25 pt apart, centred 10 pt below the edge. */
+.mac-date-picker-calendar-button {
+  position: absolute;
+  top: 2px;
+  right: 30.125px;
+  width: 14.25px;
+  height: 16px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mac-color-label-secondary);
+  appearance: none;
+  outline: none;
+}
+
+.mac-date-picker-calendar-button:where(:disabled) {
+  color: var(--mac-color-label-tertiary);
+}
+
+.mac-date-picker-calendar-button:where(:nth-of-type(2)) {
+  right: 15.875px;
+}
+
+.mac-date-picker-calendar-button:where(:nth-of-type(3)) {
+  right: 1.625px;
+  scale: -1 1;
+}
+
+.mac-date-picker-calendar-button::before {
+  content: "";
+  display: block;
+  width: 5.5px;
+  height: 7px;
+  margin: auto;
+  background: currentColor;
+  clip-path: polygon(0 50%, 100% 0, 100% 100%);
+}
+
+.mac-date-picker-calendar-button:where(:nth-of-type(2))::before {
+  width: 7px;
+  border-radius: 50%;
+  clip-path: none;
+}
+
+.mac-date-picker-calendar-button:where(:focus-visible):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 2px var(--mac-focus-ring-color);
+}
+
+/* The clock: 120 pt. The border is the rim, the padding box the face. */
+.mac-date-picker-clock {
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  box-sizing: border-box;
+  width: 120px;
+  height: 120px;
+  border: 5.5px solid transparent;
+  border-radius: 50%;
+  background:
+    linear-gradient(var(--mac-date-picker-clock-face), var(--mac-date-picker-clock-face))
+    padding-box,
+    var(--mac-date-picker-clock-rim) border-box;
+  box-shadow: var(--mac-date-picker-clock-shade);
+  color: var(--mac-date-picker-clock-ink);
+  font: var(--mac-font-control-regular);
+  font-size: 13.5px;
+  text-align: center;
+  vertical-align: middle;
+  forced-color-adjust: none;
+}
+
+/* Numerals: outer edges on a circle of 49.25 pt at the sides; centres span 43.5 pt from
+   top to bottom, half a point low. */
+.mac-date-picker-clock > :where([style]) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: calc(sin(var(--_n) * 30deg) * (49.25px - 50%) - 50%)
+    calc(0.5px - cos(var(--_n) * 30deg) * 43.5px - 50%);
+}
+
+.mac-date-picker-clock-period {
+  display: block;
+  padding-top: 65px;
+  color: var(--mac-date-picker-clock-period);
+}
+
+/* Hands: hour 3 x 33.5 pt, minute 3 x 51.75 pt, second 1 pt with a 6.75 pt tail, hub 6.5 pt. */
+.mac-date-picker-clock::before,
+.mac-date-picker-clock::after,
+.mac-date-picker-clock-period::before,
+.mac-date-picker-clock-period::after {
+  content: "";
+  position: absolute;
+  bottom: 50%;
+  left: calc(50% - 1.5px);
+  width: 3px;
+  height: 33.5px;
+  background: currentColor;
+  transform-origin: bottom;
+  rotate: calc(var(--_h) * 30deg + var(--_m) * 0.5deg + var(--_s) * 0.5deg / 60);
+}
+
+.mac-date-picker-clock::after {
+  height: 51.75px;
+  rotate: calc(var(--_m) * 6deg + var(--_s) * 0.1deg);
+}
+
+.mac-date-picker-clock-period::before {
+  z-index: 1;
+  bottom: calc(50% - 3.25px);
+  left: calc(50% - 3.25px);
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    var(--mac-date-picker-clock-second) 46%,
+    var(--mac-date-picker-clock-ink) 54%
+  );
+  rotate: none;
+}
+
+.mac-date-picker-clock-period::after {
+  z-index: 1;
+  bottom: calc(50% - 6.75px);
+  left: calc(50% - 0.5px);
+  width: 1px;
+  height: 58.5px;
+  background: var(--mac-date-picker-clock-second);
+  transform-origin: 50% 51.75px;
+  rotate: calc(var(--_s) * 6deg);
+}
+
+@media (forced-colors: active) {
+  .mac-date-picker,
+  .mac-date-picker-calendar {
+    --_selection: Highlight;
+    --_selected: HighlightText;
+  }
+
+  .mac-date-picker-calendar-button::before {
+    background: ButtonText;
+  }
+}

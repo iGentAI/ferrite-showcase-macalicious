@@ -1,0 +1,297 @@
+---
+title: Table View
+description: Rows in columns under a header, with row selection, sorting, resizable columns and only the visible rows rendered.
+---
+
+<Example name="basic" both />
+
+AppKit's `NSTableView` in its scroll view: Activity Monitor's process list, Keychain Access's
+items, Console's messages. It is built from a [scroll view](/components/scroll-view) and a
+[table header](/components/table-header). For a hierarchy use an
+[outline view](/components/outline-view); for rows of several lines without columns, a
+[list view](/components/list-view).
+
+## Usage
+
+```tsx
+import { TableView, type TableViewColumn } from "macalicious/table-view";
+import "macalicious/scroll-view.css"; // the stylesheets of the parts come first
+import "macalicious/table-header.css";
+import "macalicious/table-view.css";
+
+const columns: TableViewColumn[] = [
+  { id: "name", title: "Process Name", sortable: true },
+  { id: "cpu", title: "% CPU", width: 78, align: "right", sortable: true },
+];
+
+<TableView
+  aria-label="Processes"
+  columns={columns}
+  rowCount={processes.length}
+  getRowId={(row) => processes[row].pid}
+  getRowLabel={(row) => processes[row].name}
+  renderCell={(row, column) => processes[row][column.id]}
+  rowHeight={18}
+  alternatingRows
+  sort={sort}
+  onSortChange={setSort}
+  style={{ height: 300 }}
+/>
+```
+
+Or copy the source into your project: `npx macalicious add table-view`.
+
+The table does not hold your data. You give it the number of rows and a function that
+returns the content of one cell, and it calls that function only for the rows in view, so a
+table of many thousands of rows costs the same as one of thirty. Give the root a height.
+
+- **Columns.** Give every column but one a `width`; the column without one takes what is
+  left. With `onColumnResize` the columns that have a width can be resized: store the new
+  width and pass it back.
+- **Selection.** `value` holds the ids of the selected rows (`getRowId`; the row index
+  without it). Use ids, not indexes, when the rows can be sorted or filtered.
+- **Sorting.** The table shows the indicator of `sort` and calls `onSortChange` when a
+  sortable heading is clicked. Sorting the rows is yours.
+- **Cells.** A cell is one line that truncates at the end. Return text, or an element such
+  as an icon followed by a label. A control in a cell keeps its own clicks and keys.
+- **Text that is cut in its middle.** Wrap a cell's text in `TableViewCellText` with
+  `lineBreakMode="truncating-middle"` (AppKit's `lineBreakMode`): a name that does not fit
+  then keeps its ending, as Keychain Access shows its items (`com.apple.ac…unt.cloudkit-token`).
+  The text follows its column's `align`. The cut never falls inside a Unicode code point; a
+  sequence of several, such as a joined emoji or a letter with a combining mark, can still
+  be divided. In a column narrower than the ending that is kept, the ending is cut at its end.
+  The same part, without the prop, is the text beside an icon in a cell you lay out yourself.
+- **The header.** `header` chooses the header the table renders, and `headerProps` passes
+  props to it: `topBorder` for a table that is not directly under a toolbar. The table
+  header's two hooks for its titles work from the table's `style`.
+- **Scrolling.** `viewportRef` gives the element that scrolls: read `scrollTop` from it,
+  scroll with it, or listen to its `scroll` event. The header is pinned inside it, so a row
+  at `scrollTop` is under the header: a row is in view from 24 pt under the top (25 pt with
+  `topBorder`).
+
+<Example name="large-table" />
+
+<Example name="line-break-mode" />
+
+<Example name="scroll-to-end" />
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[table views](https://web.archive.org/web/20200503153039/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/table-views/):
+
+- Use a table for items that have several attributes worth comparing; the first column
+  identifies the item and the others describe it.
+- Label every column with a noun or short noun phrase in title case, and let people sort by
+  clicking a heading and resize the columns.
+- Use alternating row colours in tables of several columns, where they help the eye follow a
+  row.
+- Let text truncate rather than wrap, and give a window whose main feature is a table a
+  search field in its toolbar.
+
+## Variants and states
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Plain rows | default | Content background (white; `#1e1f21` in Dark Aqua) |
+| Alternating rows | `alternatingRows` | Every second row is `#f4f5f5` (white at 5% in Dark Aqua); the stripes continue below the last row |
+| Row pitch | `rowHeight` | 16 (System Information), 18 (Activity Monitor, Keychain Access), 19 (the AppKit default), 20, 21 (Console) |
+| Selected, not focused | a row in `value` | Grey highlight (`#dcdcdc`, `#464646`), 1 pt shorter than the pitch; text unchanged |
+| Selected, focused | the table has the keyboard focus in a key window | Accent highlight (`#0164e1`, `#0158d0` for blue), white text |
+| Window not key | `data-window-state` of `main` or `inactive` on an ancestor | Grey highlight even when focused; no focus ring |
+| Keyboard focus | Tab to the table | Focus ring inside the view's edge. A press on a row gives the table the focus without the ring |
+| Header | `header="standard"`, `"plain"`, `"translucent"`, `"none"` | See [table header](/components/table-header). The rows show through the translucent one as they scroll under it, as in Console |
+| Header with a top border | `headerProps={{ topBorder: true }}` | A 1 pt line above the header, which is then 25 pt: for a table that is not directly under a toolbar, as Keychain Access's |
+| Sorted column | `sort` | The heading's indicator; the rows are yours to sort |
+| Text cut in its middle | `TableViewCellText` with `lineBreakMode="truncating-middle"` | The start of the text, an ellipsis, and its last 17 characters (never more than half of it) |
+
+A table has no hover state. Measured: the backgrounds, the stripe, both selection colours and
+the highlight's height, the cell insets and the text position at 12 pt and 11 pt, in both
+appearances; that a long name is cut in its middle with 16 to 18 characters after the
+ellipsis (Keychain Access, 11 pt names in a 220 pt column). Provisional: the text position
+at 13 pt and the focus ring.
+
+A text is not cut in its middle the way AppKit cuts it: here the part before the ellipsis
+shrinks and the last characters are kept, where AppKit measures the text and keeps as much
+of both ends as fits. A few characters less can show than in AppKit, and a gap of up to one
+character can stay after the ellipsis.
+
+Not built: editing a cell in place (put a [text field](/components/text-field) in the cell),
+grid lines (no Catalina app in the screenshots shows them), drag and drop of rows and
+reordering columns by dragging a heading. No screenshot shows any of them.
+
+## Sizes
+
+| `size` | Cell text | Seen in |
+| --- | --- | --- |
+| `regular` | 13 pt | Font Book, the AppKit default |
+| `small` | 12 pt | Activity Monitor |
+| `mini` | 11 pt | Keychain Access, System Information |
+
+The size sets the text only. Choose `rowHeight` to go with it: 18 for the three sizes in most
+Catalina tables, 16 for the densest 11 pt lists. The header is 24 pt, and 25 pt with
+`headerProps={{ topBorder: true }}`, whatever the size.
+
+## API
+
+<PropsTable name="TableViewProps" />
+
+The remaining props are those of the [scroll view](/components/scroll-view) (`scrollerStyle`,
+`knobStyle`) and of its root element, which is the `grid`: `aria-label`, `style`, `ref`.
+
+<PropsTable name="TableViewCellTextProps" />
+
+`TableViewCellText` is a `span` and takes its attributes, `ref`, `className` and `style`.
+
+A column (`TableViewColumn`) has an `id`, a `title`, and optionally `width`, `minWidth`
+(20), `maxWidth`, `align` (`"left"`, `"center"`, `"right"`), `headerAlign` (the same
+values) and `sortable`. `align` places the cells and the heading; `headerAlign` places the
+heading alone, when it differs from its cells. Activity Monitor centres every heading, over
+right-aligned numbers and left-aligned names:
+
+```tsx
+{ id: "cpu", title: "% CPU", width: 78, align: "right", headerAlign: "center" }
+```
+
+A sort (`TableViewSort`) is `{ column, direction }` with a direction of `"ascending"` or
+`"descending"`.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-size` | root | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-alternating` | root | present or absent | Reflects `alternatingRows`. |
+| `aria-selected` | row | `true`, `false` | Whether the row is selected. |
+| `data-row` | row | a number | The row's index. |
+| `data-align` | cell | `center`, `right` | Reflects the column's `align`. The heading carries the [table header](/components/table-header)'s `data-align`, from `headerAlign` or `align`. |
+| `data-pointer-focus` | root | present or absent | Present from a press on a row, which gives the grid the focus, until the focus next arrives another way: the focus ring is not drawn. Set by the table. |
+| `data-line-break-mode` | cell text | `truncating-tail`, `truncating-middle`, or absent | Reflects `lineBreakMode` of a `TableViewCellText`. |
+
+| Class | Part |
+| --- | --- |
+| `.mac-table-view` | Root: the scroll view and the grid |
+| `.mac-table-view-content` | What scrolls: header and body |
+| `.mac-table-view-header` | The header, pinned to the top |
+| `.mac-table-view-body` | The full height of all rows, with the stripes |
+| `.mac-table-view-row` | A row |
+| `.mac-table-view-cell` | A cell |
+| `.mac-table-view-cell-text` | A cell's text as a part (`TableViewCellText`): two `span`s, the start that shrinks behind the ellipsis and the ending that stays |
+
+## Accessibility
+
+- The root is a `grid` named by your `aria-label`, with `aria-rowcount` and `aria-colcount`
+  for the whole table and `aria-rowindex` on each rendered row, so assistive technology knows
+  where the rendered rows are in the table. With multiple selection it is
+  `aria-multiselectable`.
+- The grid is one tab stop. It keeps the focus and names the current row with
+  `aria-activedescendant`. A click on a row gives the grid the focus, without the focus
+  ring, which is for focus that arrives from the keyboard (the grid is focused from script,
+  and Chromium and WebKit would draw the ring for that). A row out of view is
+  not in the document and cannot be named, so the current row is scrolled into view when
+  the keyboard focus enters the grid, and when the selection is changed from outside while
+  the grid has the focus. Scrolling the current row out of view with the pointer leaves it
+  unnamed until the next key.
+- Keys: Up and Down Arrow move the selection, with Shift they extend it; Page Up and Page
+  Down move by a view; Home and End go to the first and last row; Command-A selects every
+  row (multiple selection); Return calls `onRowAction`, as a double click does; typing the
+  first letters of a row's label (`getRowLabel`) selects it. The selected row is scrolled
+  into view.
+- Command-click adds or removes a row and Shift-click selects a range (multiple selection).
+  On other platforms Control stands in for Command.
+- With multiple selection, Control with Up, Down, Page Up, Page Down, Home or End moves the
+  current row without changing the selection, and Control-Space adds the current row to the
+  selection or takes it out. AppKit has no such keys; they are here so that any set of rows
+  can be selected without a pointer. A Mac keeps Control-Up and Control-Down for Mission
+  Control unless those shortcuts are turned off.
+- The current row follows a selection that is set from outside. When the current row leaves
+  the table, `getRowFallback` names the row to carry on from.
+- Sortable headings are buttons after the grid in the tab order, and announce `aria-sort`;
+  Option-Left and Option-Right Arrow on a heading resize its column.
+- Cells are announced as `gridcell`s, but the keyboard moves by row, not by cell, as in
+  AppKit. Put controls in cells sparingly: they are reached with Tab.
+- A `TableViewCellText` keeps its whole text in the document, in two parts in reading
+  order, so assistive technology and a search of the page find all of it whatever the
+  ellipsis hides. Sighted users see less: give the text a `title` when its middle matters.
+- The scrolling element that `viewportRef` gives is a `rowgroup` and not a tab stop. Scroll
+  it from script only for what the user asked for, such as following the newest row.
+- The selection is not shown by colour alone in forced-colours mode: it uses the system
+  highlight colours.
+
+## Visual comparison
+
+`visual-activity-monitor` and `visual-activity-monitor-dark` reproduce the start of Activity
+Monitor's table (12 pt text, 18 pt rows, stripes, a selection that has the focus, headings
+centred with `headerAlign` over right-aligned numbers), and
+`visual-keychain` the start of Keychain Access's item table (11 pt text, a grey selection).
+Each is compared twice: the whole crop, where the text is set in the fallback font off Apple
+platforms and the icon column's artwork is not reproduced, and with the text and the icon
+column masked at a colour distance of 0.05, which scores the header, the stripes, the
+selection and the row geometry. Results in Chromium on Linux:
+
+| Comparison | Whole crop, 2x | Whole crop, 1x | Text and icons masked, 2x | Masked, 1x |
+| --- | --- | --- | --- | --- |
+| Activity Monitor, Aqua | 6.58% of pixels differ, mean Δ 7.92 | 8.05%, 8.05 | 0.06%, 0.21 | 0.04%, 0.16 |
+| Activity Monitor, Dark Aqua | 7.18%, 8.98 | 8.60%, 8.84 | 0.14%, 0.36 | 0.19%, 0.31 |
+| Keychain Access, Aqua | 8.83%, 11.65 | 11.62%, 13.02 | 0.05%, 0.82 | 0.09%, 0.77 |
+| Keychain Access, Dark Aqua | 9.24%, 11.86 | 12.03%, 13.40 | 0.04%, 1.80 | 0.08%, 1.77 |
+
+With the text masked what remains is the header's sort indicator (see the table header's
+page), the last pixel column of the Dark Aqua crop, and in Keychain Access a header fill one
+level lighter than Activity Monitor's. The whole-crop figures are text in the fallback font
+and the missing icons.
+
+`visual-states` is checked with real input in both appearances: the grey selection at rest
+and the stripe showing in the last point of a selected row; the accent selection after a
+click, and no focus ring at the view's edge after it; the selection after two Down Arrows
+and after two Shift-Down Arrows; the focus ring
+after Tab; and the grey selection after a click in an inactive window. The Down Arrow,
+Shift-Down Arrow, Tab and inactive-window checks now run in Dark Aqua too, with the dark
+selection, stripe and focus ring colours. The accent selection after a click is also checked
+with the purple accent in both appearances; that colour is derived from the accent with the
+offset fitted to blue, not measured.
+
+The header's variants, the text cut in its middle and the scrolling element are compared
+with the screenshots that show them. `visual-console` and `visual-console-dark` are the start
+of Console's message table: the translucent header with Console's title insets over the rows
+of each capture, scrolled by 57 pt through `viewportRef` so that a stripe and then a row of
+text are under the header, as captured. `visual-keychain-items` is the start of Keychain
+Access's item table with the line over its header (`headerProps`), its title insets, and
+eight rows whose long names are cut in their middle.
+
+| Comparison | Whole crop, 2x | Whole crop, 1x | Text and icons masked, 2x | Masked, 1x |
+| --- | --- | --- | --- | --- |
+| Console, Aqua | 9.37% of pixels differ, mean Δ 12.76 | 9.51%, 10.33 | 0.11%, 0.17 | 0.02%, 0.14 |
+| Console, Dark Aqua | 10.45%, 13.31 | 10.99%, 11.20 | 0.12%, 0.55 | 0.20%, 0.51 |
+| Keychain Access items, Aqua | 12.12%, 15.36 | 16.17%, 17.45 | 0.02%, 0.46 | 0.04%, 0.38 |
+| Keychain Access items, Dark Aqua | 11.79%, 13.94 | 15.82%, 16.51 | 0.02%, 1.00 | 0.04%, 0.98 |
+
+The whole-crop figures are text: Console's rows are set in the fallback fixed-pitch font,
+whose letters are lighter and narrower than the capture's, and Keychain Access's names in
+the fallback font with the icons missing. With the text masked the Console crops score the
+header's fill over the stripe and over the row under it, where the translucent fill is one
+level from the plain one, and the Keychain Access crops the line over the header. The
+comparisons would not fail if the header were opaque or the names cut at their end, so both
+are checked on their own: `visual-translucent` puts a selected row under the header and
+expects the selection colour through it (`#f2f7fd` for white at 95% over `#0164e1`, `#30343a`
+in Dark Aqua), and the unit tests check which characters a text keeps.
+
+`scroll-to-end` is checked with real input: before a click its table of 200 rows shows the
+first ones, and after a click on Scroll to End, which sets `scrollTop` on the element
+`viewportRef` gives, the selected last row is at the bottom of the view.
+
+### Large tables
+
+Measured in Chromium on Linux with the `large-table` example (10,000 rows of 18 pt in a
+240 pt view), by the script `visual/output/b7/browser/table-view.mjs`, which is not part of
+`npm run check`:
+
+- 20 row elements are in the document at rest and at most 31 while scrolling, out of 10,000;
+  the whole grid is 95 elements at rest.
+- Scrolling through the whole table in 20 jumps, with a frame after each, took 338 ms: one
+  frame per jump. 200 scrolls of 120 pt took a frame each, with a median of 16.7 ms, a 95th
+  percentile of 16.9 ms and a longest frame of 20.2 ms.
+- No row or cell has an event handler: clicks, double clicks and keys are handled once, on
+  the grid. Command-A selects all 10,000 rows without rendering more of them.
+- The same script checks with a real pointer and keyboard that a click focuses the grid, that
+  the arrow, page, Home and End keys keep the selected row in view below the header, and
+  that dragging a column's edge resizes the heading and its cells together within the
+  column's limits.

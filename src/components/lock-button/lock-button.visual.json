@@ -1,0 +1,507 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "info-lock-light-artwork",
+      "description": "The small closed lock of Finder's Info window in its corner, Aqua. The padlock is substitute artwork in the measured 13 x 16 pt box: the crop is wider than the padlock so that the comparison holds its box and its place, and the score is that of the library's drawing against Apple's.",
+      "example": "visual-info-lock",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.074,
+        "2x": 0.0696
+      },
+      "deltaBudget": {
+        "1x": 4.49,
+        "2x": 4.58
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Get-Info.png",
+        "crop": {
+          "x": 560,
+          "y": 1704,
+          "width": 76,
+          "height": 56
+        }
+      }
+    },
+    {
+      "name": "info-lock-dark-artwork",
+      "description": "The small closed lock of Finder's Info window in its corner, Dark Aqua. The padlock is substitute artwork in the measured 13 x 16 pt box: the crop is wider than the padlock so that the comparison holds its box and its place, and the score is that of the library's drawing against Apple's.",
+      "example": "visual-info-lock",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.076,
+        "2x": 0.0757
+      },
+      "deltaBudget": {
+        "1x": 6.57,
+        "2x": 5.56
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Get-Info.png",
+        "crop": {
+          "x": 560,
+          "y": 1704,
+          "width": 76,
+          "height": 56
+        }
+      }
+    },
+    {
+      "name": "pane-lock-light",
+      "description": "The closed lock and its text at the foot of the Date & Time pane, Aqua. The padlock is substitute artwork drawn for the library and the text is in the fallback font off Apple platforms, so this scores placement, size and palette, not a pixel match.",
+      "example": "visual-pane-lock",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.152,
+        "2x": 0.121
+      },
+      "deltaBudget": {
+        "1x": 11.0,
+        "2x": 10.87
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Date-and-Time.png",
+        "crop": {
+          "x": 152,
+          "y": 1032,
+          "width": 476,
+          "height": 72
+        }
+      }
+    },
+    {
+      "name": "pane-lock-light-artwork",
+      "description": "As pane-lock-light with the text masked: the substitute padlock against Catalina's own artwork.",
+      "example": "visual-pane-lock",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 40,
+          "y": 15,
+          "width": 194,
+          "height": 16
+        }
+      ],
+      "budget": {
+        "1x": 0.059,
+        "2x": 0.031
+      },
+      "deltaBudget": {
+        "1x": 3.14,
+        "2x": 1.99
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Date-and-Time.png",
+        "crop": {
+          "x": 152,
+          "y": 1032,
+          "width": 476,
+          "height": 72
+        }
+      }
+    },
+    {
+      "name": "locked-light",
+      "description": "A locked and a disabled lock, Aqua. The pixels are those of the substitute padlock: its geometry is the library's own.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 83
+        },
+        "pixels": [
+          {
+            "x": 12.5,
+            "y": 18.5,
+            "color": "#e9f1f6",
+            "tolerance": 3,
+            "note": "left leg of the shackle, in the body while locked (stand-in artwork; steel taken from the measured palette of the Date & Time padlock)"
+          },
+          {
+            "x": 19.5,
+            "y": 17.5,
+            "color": "#ececec",
+            "note": "the page shows through the shackle"
+          },
+          {
+            "x": 19.25,
+            "y": 24.75,
+            "color": "#fddf8d",
+            "tolerance": 3,
+            "scale": 2,
+            "note": "a ridge of the gold body (stand-in artwork; gold taken from the measured palette)"
+          },
+          {
+            "x": 19.25,
+            "y": 64.25,
+            "color": "#f5e6bd",
+            "tolerance": 4,
+            "scale": 2,
+            "note": "the same ridge of the disabled lock at half opacity (the spec lists no disabled state; inferred from the other buttons)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unlocked-light",
+      "description": "After a real click the fixture unlocks: the shackle is raised, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#lock"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 83
+        },
+        "pixels": [
+          {
+            "x": 12.5,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "the left leg of the shackle is clear of the body (spec: States, unlocked: the shackle swung open, inferred)"
+          },
+          {
+            "x": 19.25,
+            "y": 24.75,
+            "color": "#fddf8d",
+            "tolerance": 3,
+            "scale": 2,
+            "note": "the body does not move"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The lock held down with the mouse, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "#lock"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 83
+        },
+        "pixels": [
+          {
+            "x": 12.5,
+            "y": 18.5,
+            "color": "#a3a9ac",
+            "tolerance": 3,
+            "note": "the padlock darkened to 70% (inferred, as for an image button)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the lock, reached with Tab, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 83
+        },
+        "pixels": [
+          {
+            "x": 4.5,
+            "y": 21,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the page, 2 pt outside the lock and its text, measured on a text field (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 1.5,
+            "y": 21,
+            "color": "#ececec",
+            "note": "page just outside the 3 pt ring"
+          },
+          {
+            "x": 12.5,
+            "y": 18.5,
+            "color": "#e9f1f6",
+            "tolerance": 3,
+            "note": "the padlock does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-light",
+      "description": "The same after Tab in an inactive window, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 83
+        },
+        "pixels": [
+          {
+            "x": 4.5,
+            "y": 21,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          },
+          {
+            "x": 12.5,
+            "y": 18.5,
+            "color": "#e9f1f6",
+            "tolerance": 3,
+            "note": "the padlock does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pane-lock-dark",
+      "description": "The closed lock and its text at the foot of the Date & Time pane, Dark Aqua. The padlock is substitute artwork drawn for the library and the text is in the fallback font off Apple platforms, so this scores placement, size and palette, not a pixel match.",
+      "example": "visual-pane-lock",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.156,
+        "2x": 0.125
+      },
+      "deltaBudget": {
+        "1x": 11.36,
+        "2x": 10.98
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Date-and-Time.png",
+        "crop": {
+          "x": 152,
+          "y": 1032,
+          "width": 476,
+          "height": 72
+        }
+      }
+    },
+    {
+      "name": "pane-lock-dark-artwork",
+      "description": "As pane-lock-dark with the text masked: the substitute padlock against Catalina's own artwork.",
+      "example": "visual-pane-lock",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 40,
+          "y": 15,
+          "width": 194,
+          "height": 16
+        }
+      ],
+      "budget": {
+        "1x": 0.059,
+        "2x": 0.031
+      },
+      "deltaBudget": {
+        "1x": 3.49,
+        "2x": 2.07
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Date-and-Time.png",
+        "crop": {
+          "x": 152,
+          "y": 1032,
+          "width": 476,
+          "height": 72
+        }
+      }
+    },
+    {
+      "name": "locked-dark",
+      "description": "A locked and a disabled lock, Dark Aqua. The pixels are those of the substitute padlock: its geometry is the library's own.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 83
+        },
+        "pixels": [
+          {
+            "x": 12.5,
+            "y": 18.5,
+            "color": "#e9f1f6",
+            "tolerance": 3,
+            "note": "left leg of the shackle, in the body while locked (stand-in artwork; steel taken from the measured palette of the Date & Time padlock)"
+          },
+          {
+            "x": 19.5,
+            "y": 17.5,
+            "color": "#323232",
+            "note": "the page shows through the shackle"
+          },
+          {
+            "x": 19.25,
+            "y": 24.75,
+            "color": "#fddf8d",
+            "tolerance": 3,
+            "scale": 2,
+            "note": "a ridge of the gold body (stand-in artwork; gold taken from the measured palette)"
+          },
+          {
+            "x": 19.25,
+            "y": 64.25,
+            "color": "#988960",
+            "tolerance": 4,
+            "scale": 2,
+            "note": "the same ridge of the disabled lock at half opacity (the spec lists no disabled state; inferred from the other buttons)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unlocked-dark",
+      "description": "After a real click the fixture unlocks: the shackle is raised, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#lock"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 83
+        },
+        "pixels": [
+          {
+            "x": 12.5,
+            "y": 18.5,
+            "color": "#323232",
+            "note": "the left leg of the shackle is clear of the body (spec: States, unlocked: the shackle swung open, inferred)"
+          },
+          {
+            "x": 19.25,
+            "y": 24.75,
+            "color": "#fddf8d",
+            "tolerance": 3,
+            "scale": 2,
+            "note": "the body does not move"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "The lock held down with the mouse, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": "#lock"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 83
+        },
+        "pixels": [
+          {
+            "x": 12.5,
+            "y": 18.5,
+            "color": "#a3a9ac",
+            "tolerance": 3,
+            "note": "the padlock darkened to 70% (inferred, as for an image button)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the lock, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 83
+        },
+        "pixels": [
+          {
+            "x": 4.5,
+            "y": 21,
+            "color": "#2d6c99",
+            "tolerance": 6,
+            "note": "ring over the page, 2 pt outside the lock and its text, measured on a text field (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 1.5,
+            "y": 21,
+            "color": "#323232",
+            "note": "page just outside the 3 pt ring"
+          },
+          {
+            "x": 12.5,
+            "y": 18.5,
+            "color": "#e9f1f6",
+            "tolerance": 3,
+            "note": "the padlock does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-dark",
+      "description": "The same after Tab in an inactive window, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 83
+        },
+        "pixels": [
+          {
+            "x": 4.5,
+            "y": 21,
+            "color": "#323232",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          },
+          {
+            "x": 12.5,
+            "y": 18.5,
+            "color": "#e9f1f6",
+            "tolerance": 3,
+            "note": "the padlock does not change"
+          }
+        ]
+      }
+    }
+  ]
+}

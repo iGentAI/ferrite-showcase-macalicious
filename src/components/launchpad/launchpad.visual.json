@@ -1,0 +1,301 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "search-light",
+      "description": "The search field over the blurred desktop, Aqua. The placeholder is masked: it is text, set in the fallback font off Apple platforms. The background is painted by the example as measured; the magnifier is the library's own drawing.",
+      "example": "visual-search",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 126,
+          "y": 14,
+          "width": 50,
+          "height": 16
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.005,
+        "2x": 0.0039
+      },
+      "deltaBudget": {
+        "1x": 2.6,
+        "2x": 2.7
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Launchpad.png",
+        "crop": {
+          "x": 1400,
+          "y": 30,
+          "width": 560,
+          "height": 90
+        }
+      }
+    },
+    {
+      "name": "search-dark",
+      "description": "The search field over the blurred desktop, Dark Aqua, placeholder masked as in search-light.",
+      "example": "visual-search",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 126,
+          "y": 14,
+          "width": 50,
+          "height": 16
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.005,
+        "2x": 0.005
+      },
+      "deltaBudget": {
+        "1x": 2.45,
+        "2x": 2.5
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Launchpad.png",
+        "crop": {
+          "x": 1400,
+          "y": 30,
+          "width": 560,
+          "height": 90
+        }
+      }
+    },
+    {
+      "name": "pages-light",
+      "description": "The two page dots, first page current, Aqua. Nothing is masked; the background is painted by the example as measured.",
+      "example": "visual-pages",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.011,
+        "2x": 0.0055
+      },
+      "deltaBudget": {
+        "1x": 2.5,
+        "2x": 2.35
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Launchpad.png",
+        "crop": {
+          "x": 1620,
+          "y": 1810,
+          "width": 120,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "pages-dark",
+      "description": "The two page dots, first page current, Dark Aqua.",
+      "example": "visual-pages",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0135,
+        "2x": 0.006
+      },
+      "deltaBudget": {
+        "1x": 1.1,
+        "2x": 0.9
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Launchpad.png",
+        "crop": {
+          "x": 1620,
+          "y": 1810,
+          "width": 120,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "scrim-light",
+      "description": "Launchpad over a flat mid grey, Aqua: the scrim, and the search field's fill and border over it.",
+      "example": "visual-scrim",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 320,
+          "height": 400
+        },
+        "pixels": [
+          {
+            "x": 10,
+            "y": 380,
+            "color": "#545454",
+            "note": "--mac-launchpad-scrim, 44% of #1c1c1c over #808080 (blur and saturation leave a flat grey unchanged); the tint is the spec's fit, computed from measured pixels"
+          },
+          {
+            "x": 60,
+            "y": 37.5,
+            "color": "#5f5f5f",
+            "note": "--mac-launchpad-search-fill, 6.5% white over the scrim's #545454; alpha computed from Launchpad @ 1500,60 over 1500,40"
+          },
+          {
+            "x": 160,
+            "y": 25.5,
+            "color": "#787878",
+            "note": "--mac-launchpad-search-border, 21% white over #545454, 1 pt wide; alpha computed from Launchpad @ 1500,50"
+          }
+        ]
+      }
+    },
+    {
+      "name": "keyboard-light",
+      "description": "Arrow Down from the freshly opened Launchpad focuses the first app, Aqua: focus ring and plate around its icon box. Inferred; no screenshot shows keyboard focus in Launchpad.",
+      "example": "visual-scrim",
+      "appearance": "light",
+      "actions": [
+        {
+          "key": "ArrowDown"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 320,
+          "height": 400
+        },
+        "pixels": [
+          {
+            "x": 101.5,
+            "y": 130,
+            "color": "#365fa5",
+            "tolerance": 4,
+            "note": "--mac-focus-ring-color at 50% over the scrim's #545454, 3 pt outside the 112 pt icon box (inferred)"
+          },
+          {
+            "x": 110,
+            "y": 130,
+            "color": "#767676",
+            "tolerance": 3,
+            "note": "--mac-launchpad-highlight, 20% white over #545454, inside the icon box beside the icon (inferred)"
+          },
+          {
+            "x": 90,
+            "y": 130,
+            "color": "#545454",
+            "note": "scrim outside the ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "Mouse button held on an app, Aqua: its icon is darkened by half. Inferred (spec: icon pressed).",
+      "example": "visual-scrim",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": ".mac-launchpad-item"
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 159,
+            "y": 130,
+            "color": "#202020",
+            "note": "the example's #404040 icon at brightness 0.5 (inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "scrim-dark",
+      "description": "Launchpad over a flat mid grey, Dark Aqua: the scrim, and the search field's fill and border over it.",
+      "example": "visual-scrim",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 320,
+          "height": 400
+        },
+        "pixels": [
+          {
+            "x": 10,
+            "y": 380,
+            "color": "#545454",
+            "note": "--mac-launchpad-scrim, 44% of #1c1c1c over #808080 (blur and saturation leave a flat grey unchanged); the tint is the spec's fit, computed from measured pixels"
+          },
+          {
+            "x": 60,
+            "y": 37.5,
+            "color": "#5f5f5f",
+            "note": "--mac-launchpad-search-fill, 6.5% white over the scrim's #545454; alpha computed from Launchpad @ 1500,60 over 1500,40"
+          },
+          {
+            "x": 160,
+            "y": 25.5,
+            "color": "#787878",
+            "note": "--mac-launchpad-search-border, 21% white over #545454, 1 pt wide; alpha computed from Launchpad @ 1500,50"
+          }
+        ]
+      }
+    },
+    {
+      "name": "keyboard-dark",
+      "description": "Arrow Down from the freshly opened Launchpad focuses the first app, Dark Aqua: focus ring and plate around its icon box. Inferred; no screenshot shows keyboard focus in Launchpad.",
+      "example": "visual-scrim",
+      "appearance": "dark",
+      "actions": [
+        {
+          "key": "ArrowDown"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 320,
+          "height": 400
+        },
+        "pixels": [
+          {
+            "x": 101.5,
+            "y": 130,
+            "color": "#407eaa",
+            "tolerance": 4,
+            "note": "--mac-focus-ring-color at 50% over the scrim's #545454, 3 pt outside the 112 pt icon box (inferred)"
+          },
+          {
+            "x": 110,
+            "y": 130,
+            "color": "#767676",
+            "tolerance": 3,
+            "note": "--mac-launchpad-highlight, 20% white over #545454, inside the icon box beside the icon (inferred)"
+          },
+          {
+            "x": 90,
+            "y": 130,
+            "color": "#545454",
+            "note": "scrim outside the ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "Mouse button held on an app, Dark Aqua: its icon is darkened by half. Inferred (spec: icon pressed).",
+      "example": "visual-scrim",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": ".mac-launchpad-item"
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 159,
+            "y": 130,
+            "color": "#202020",
+            "note": "the example's #404040 icon at brightness 0.5 (inferred)"
+          }
+        ]
+      }
+    }
+  ]
+}

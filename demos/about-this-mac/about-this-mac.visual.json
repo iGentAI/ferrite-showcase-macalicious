@@ -1,0 +1,147 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "window-light",
+      "description": "The About This Mac window at its frame, Aqua: the Overview pane of the light capture, which shows no serial number. The capture is a full screen, so the crop ends at the frame: the shadow is not compared, and the four corner squares are masked because the capture shows the desktop picture behind the window's rounded corners where the example paints a matte. The macOS Catalina badge is Apple's artwork: a plain disc stands in for it and the mask covers it. The text is set in the fallback font.",
+      "example": "visual-window",
+      "appearance": "light",
+      "masks": [
+        { "x": 50, "y": 108, "width": 155, "height": 155 },
+        { "x": 0, "y": 0, "width": 4, "height": 4 },
+        { "x": 582, "y": 0, "width": 4, "height": 4 },
+        { "x": 0, "y": 349, "width": 4, "height": 4 },
+        { "x": 582, "y": 349, "width": 4, "height": 4 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-About-This-Mac.png",
+        "crop": { "x": 1094, "y": 386, "width": 1172, "height": 706 }
+      },
+      "budget": { "1x": 0.063, "2x": 0.0505 },
+      "deltaBudget": { "1x": 7.0, "2x": 6.6 }
+    },
+    {
+      "name": "window-light-layout",
+      "description": "As window-light with the text masked as well (the tab titles, the title, the version line, the details, the button titles and the legal text), beside the stand-in badge and the four corners over the desktop picture, to score the frame, the title bar and its controls, the tab control and the buttons' drawing alone.",
+      "example": "visual-window",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 50, "y": 108, "width": 155, "height": 155 },
+        { "x": 0, "y": 0, "width": 4, "height": 4 },
+        { "x": 582, "y": 0, "width": 4, "height": 4 },
+        { "x": 0, "y": 349, "width": 4, "height": 4 },
+        { "x": 582, "y": 349, "width": 4, "height": 4 },
+        { "x": 141, "y": 13, "width": 54, "height": 13 },
+        { "x": 211, "y": 13, "width": 48, "height": 13 },
+        { "x": 275, "y": 13, "width": 45, "height": 13 },
+        { "x": 337, "y": 13, "width": 47, "height": 13 },
+        { "x": 400, "y": 13, "width": 43, "height": 13 },
+        { "x": 253, "y": 82, "width": 204, "height": 22 },
+        { "x": 252, "y": 108, "width": 162, "height": 13 },
+        { "x": 252, "y": 140, "width": 240, "height": 110 },
+        { "x": 259, "y": 272, "width": 89, "height": 13 },
+        { "x": 372, "y": 272, "width": 100, "height": 13 },
+        { "x": 110, "y": 336, "width": 356, "height": 12 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-About-This-Mac.png",
+        "crop": { "x": 1094, "y": 386, "width": 1172, "height": 706 }
+      },
+      "budget": { "1x": 0.0135, "2x": 0.0007 },
+      "deltaBudget": { "1x": 0.7, "2x": 0.3 }
+    },
+    {
+      "name": "window-dark",
+      "description": "The About This Mac window at its frame, Dark Aqua: the Overview pane of the dark capture, with its serial number. As in window-light the crop ends at the frame, the four corner squares over the desktop picture are masked, and so is the stand-in for the macOS Catalina badge. The text is set in the fallback font.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "masks": [
+        { "x": 50, "y": 108, "width": 155, "height": 155 },
+        { "x": 0, "y": 0, "width": 4, "height": 4 },
+        { "x": 582, "y": 0, "width": 4, "height": 4 },
+        { "x": 0, "y": 349, "width": 4, "height": 4 },
+        { "x": 582, "y": 349, "width": 4, "height": 4 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-About-This-Mac.png",
+        "crop": { "x": 1094, "y": 386, "width": 1172, "height": 706 }
+      },
+      "budget": { "1x": 0.065, "2x": 0.0535 },
+      "deltaBudget": { "1x": 6.9, "2x": 6.5 }
+    },
+    {
+      "name": "window-dark-layout",
+      "description": "As window-dark with the same regions masked as window-light-layout: the text, the stand-in badge and the four corners over the desktop picture. Scores the frame, the title bar and its controls, the tab control and the buttons' drawing alone.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 50, "y": 108, "width": 155, "height": 155 },
+        { "x": 0, "y": 0, "width": 4, "height": 4 },
+        { "x": 582, "y": 0, "width": 4, "height": 4 },
+        { "x": 0, "y": 349, "width": 4, "height": 4 },
+        { "x": 582, "y": 349, "width": 4, "height": 4 },
+        { "x": 141, "y": 13, "width": 54, "height": 13 },
+        { "x": 211, "y": 13, "width": 48, "height": 13 },
+        { "x": 275, "y": 13, "width": 45, "height": 13 },
+        { "x": 337, "y": 13, "width": 47, "height": 13 },
+        { "x": 400, "y": 13, "width": 43, "height": 13 },
+        { "x": 253, "y": 82, "width": 204, "height": 22 },
+        { "x": 252, "y": 108, "width": 162, "height": 13 },
+        { "x": 252, "y": 140, "width": 240, "height": 110 },
+        { "x": 259, "y": 272, "width": 89, "height": 13 },
+        { "x": 372, "y": 272, "width": 100, "height": 13 },
+        { "x": 110, "y": 336, "width": 356, "height": 12 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-About-This-Mac.png",
+        "crop": { "x": 1094, "y": 386, "width": 1172, "height": 706 }
+      },
+      "budget": { "1x": 0.009, "2x": 0.0006 },
+      "deltaBudget": { "1x": 0.95, "2x": 0.55 }
+    },
+    {
+      "name": "storage-light",
+      "description": "A pane no screenshot shows: Storage, after a click on its tab, Aqua. The tab takes the selected fill and Overview gives it up, and the pane shows the startup disk's capacity bar, filled for the 54.04 GB that are used of 249.85 GB.",
+      "example": "visual-window",
+      "appearance": "light",
+      "actions": [{ "click": "[role='tab']:nth-child(3)" }],
+      "expect": {
+        "size": { "width": 586, "height": 353 },
+        "pixels": [
+          {
+            "x": 298,
+            "y": 12,
+            "color": "#6f6f6f",
+            "note": "Storage, now selected: the selected fill 2 pt below the tab's top, measured on the capture's Overview tab (column x=1420, y=410); that the clicked tab takes it is inferred"
+          },
+          {
+            "x": 170,
+            "y": 12,
+            "color": "#fafafa",
+            "note": "Overview, no longer selected: the unselected fill 2 pt below the tab's top, measured on the capture's Displays tab (column x=1560, y=410)"
+          },
+          {
+            "x": 220,
+            "y": 146,
+            "color": "#1badf8",
+            "note": "the used part of the capacity bar: the fill of Disk Utility's bar, measured there (level indicator, storage variant); the pane's layout is provisional"
+          },
+          {
+            "x": 420,
+            "y": 146,
+            "color": "#ffffff",
+            "note": "the free part of the bar: 78% of its width is empty, in the empty fill measured on Disk Utility's bar"
+          },
+          {
+            "x": 300,
+            "y": 300,
+            "color": "#ececec",
+            "note": "the pane is the window background, measured in the capture's Overview pane"
+          }
+        ]
+      }
+    }
+  ]
+}

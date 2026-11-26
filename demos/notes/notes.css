@@ -1,0 +1,618 @@
+/*
+ * Notes: what the app adds to the library's controls. The window, toolbar, sidebar, list,
+ * split view and text view are the library's and are not restyled here; their documented
+ * hooks (the list's selection, the divider's colour, the text view's fill) are set where the
+ * app renders them.
+ *
+ * Parts
+ *   .mac-notes                 the window
+ *   .mac-notes-account         the account's name in the sidebar, with its spinner
+ *   .mac-notes-status          what the spinner means, for assistive technology only
+ *   .mac-notes-thumbnail       hairline frame of a picture's thumbnail in the note list
+ *   .mac-notes-browser         the note list beside the note, hidden while the gallery is shown
+ *   .mac-notes-paper           the editor pane's scrolling paper
+ *   .mac-notes-page            one note on it: the date line and the text
+ *   .mac-notes-date            the centred date line
+ *   .mac-notes-text            the note's text; its first line is the title
+ *   .mac-notes-attachment      a picture or a file in the text
+ *   .mac-notes-picture         a picture the user added
+ *   .mac-notes-file            a file that is not a picture, in the text
+ *   .mac-notes-file-icon       a document's icon: a page with its extension
+ *   .mac-notes-file-name       its name
+ *   .mac-notes-file-size       its size
+ *   .mac-notes-file-preview    what Quick Look shows of a file without a preview
+ *   .mac-notes-quick-look      a picture in the Quick Look panel
+ *   .mac-notes-quick-look-body what holds it there
+ *   .mac-notes-gallery         the Pinned and Notes groups of cards
+ *   .mac-notes-gallery-rest    the second, which takes the room left
+ *   .mac-notes-attachments     the Attachments Browser
+ *   .mac-notes-attachments-bar its kinds of attachment
+ *   .mac-notes-attachments-empty  what it says of a kind with none
+ *   .mac-notes-tile            one attachment's image in it
+ *   .mac-notes-tile-picture    a picture there
+ *   .mac-notes-table           a table in the text
+ *   .mac-notes-format-glyph    the "Aa" of the format button
+ *   .mac-notes-card            a note's card in gallery view
+ *   .mac-notes-panel-layer     where the Fonts and Colors panels stand, over the page
+ *   .mac-notes-panel           a panel in it
+ *   .mac-notes-section         the Pinned and Notes headings in the note list
+ *   .mac-notes-row-mark        a note's pin or lock mark before its title
+ *   .mac-notes-locked          what stands in a locked note's place until its password is entered
+ *   .mac-notes-locked-glyph    its padlock
+ *   .mac-notes-lock-sheet      the sheet that asks for a notes password
+ *   .mac-notes-lock-fields     its labels and fields
+ *   .mac-notes-rename          the field a folder's name is edited in
+ *   .mac-notes-preferences     the rows of the Preferences window
+ *   .mac-notes-selected-count  what the note's pane says while several notes are selected
+ *   .mac-notes-checklist       a checklist; its ticked items carry [data-checked]
+ *   .mac-notes-dashed          a dashed list
+ *   .mac-notes-menu-area       what takes a secondary click: the sidebar, the list, the note
+ *
+ * States
+ *   [data-contained] on the panel layer   the panels are in the flow of the element they were
+ *                                         put in, side by side, not over the page
+ *   [data-paragraph="body"] on a line     the note's first line, made body text: it is not the
+ *                                         title
+ *   [data-attachment-view="small"] on the paper   View > Attachment View > Small
+ */
+.mac-notes-account {
+  display: inline-flex;
+  gap: 9px;
+  align-items: center;
+}
+
+.mac-notes-status {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.mac-notes-thumbnail {
+  display: block;
+  box-shadow: 0 0 0 var(--mac-hairline) var(--mac-color-label-tertiary);
+}
+
+/* Kept in the page while the gallery is shown, so the notes keep what was typed in them. */
+.mac-notes-browser {
+  height: 100%;
+}
+
+/* The page is at least as tall as the pane, so a click under the text lands in the note. */
+.mac-notes-paper {
+  display: flex;
+  flex-direction: column;
+}
+
+.mac-notes-page {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 0 19px 24px;
+}
+
+.mac-notes-page:where([hidden]) {
+  display: none;
+}
+
+.mac-notes-date {
+  flex: none;
+  padding-block: 9px 6px;
+  color: var(--mac-notes-date);
+  font: var(--mac-font-body);
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/*
+ * The note's text. The view's place in the page and the text's font are set where the view is
+ * rendered; the rules here are for the content the user writes in it: a line made the title
+ * (as the first line is), and a heading.
+ */
+.mac-notes-text h1 {
+  margin: 0;
+  color: var(--mac-notes-title);
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 20px;
+}
+
+.mac-notes-text h2 {
+  margin: 0;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/*
+ * The first line is the title, also while the browser keeps it as bare text, unless Body was
+ * chosen for it (Format > Body marks it) or Heading (an `h2`, styled above).
+ */
+.mac-notes-text > :first-child:not([data-paragraph="body"], h2),
+.mac-notes-text:not(:has(> :is([data-paragraph="body"], h2):first-child))::first-line {
+  color: var(--mac-notes-title);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 20px;
+}
+
+.mac-notes-text h3 {
+  margin: 0;
+  font: inherit;
+  font-weight: 600;
+}
+
+.mac-notes-text pre {
+  margin: 0;
+  font-family: var(--mac-font-family-monospace);
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+.mac-notes-text {
+  zoom: var(--mac-notes-zoom, 1);
+}
+
+.mac-notes-checklist,
+.mac-notes-dashed {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-notes-dashed > li {
+  padding-inline-start: 18px;
+  text-indent: -18px;
+}
+
+.mac-notes-dashed > li::before {
+  display: inline-block;
+  width: 18px;
+  text-indent: 0;
+  content: "\2013";
+}
+
+.mac-notes-checklist > li {
+  position: relative;
+  min-height: 19px;
+  padding-inline-start: 24px;
+}
+
+.mac-notes-checklist > li::before {
+  position: absolute;
+  inset-block-start: 2px;
+  inset-inline-start: 2px;
+  box-sizing: border-box;
+  width: 15px;
+  height: 15px;
+  border: 1px solid var(--mac-color-label-tertiary);
+  border-radius: 50%;
+  cursor: default;
+  content: "";
+}
+
+.mac-notes-checklist > li[data-checked]::before {
+  border-color: var(--mac-accent);
+  background: radial-gradient(circle, var(--mac-accent) 0 4.5px, transparent 5px);
+}
+
+.mac-notes-checklist > li[data-checked] {
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-notes-attachment {
+  padding-block: 24px 12px;
+  padding-inline-start: 25px;
+}
+
+.mac-notes-attachment > :first-child {
+  box-shadow: 0 2px 9px var(--mac-notes-attachment-shadow);
+}
+
+.mac-notes-picture {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.mac-notes-paper[data-attachment-view="small"] .mac-notes-attachment {
+  zoom: 0.5;
+}
+
+.mac-notes-text a {
+  color: var(--mac-color-link);
+  text-decoration: underline;
+}
+
+.mac-notes-quick-look {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  object-fit: contain;
+}
+
+.mac-notes-quick-look-body {
+  display: flex;
+  height: 100%;
+}
+
+.mac-notes-file {
+  display: inline-grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: center;
+  max-width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: var(--mac-notes-selection);
+  cursor: default;
+}
+
+.mac-notes-file-icon {
+  display: inline-flex;
+  grid-row: span 2;
+  box-sizing: border-box;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  width: 32px;
+  height: 40px;
+  padding-bottom: 4px;
+  border: 1px solid var(--mac-color-separator);
+  border-radius: 2px;
+  background: var(--mac-notes-editor-background);
+  color: var(--mac-color-label-secondary);
+  font-size: 9px;
+  font-weight: 600;
+  user-select: none;
+}
+
+.mac-notes-file-name {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-notes-file-size {
+  color: var(--mac-color-label-secondary);
+  font-size: 11px;
+}
+
+.mac-notes-file audio {
+  grid-column: 1 / -1;
+  width: 280px;
+  margin-top: 8px;
+}
+
+.mac-notes-file-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  margin: auto;
+}
+
+.mac-notes-gallery {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--mac-notes-list-background);
+}
+
+.mac-notes-gallery > .mac-notes-section {
+  position: static;
+  flex: none;
+}
+
+.mac-notes-gallery-rest {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.mac-notes-attachments {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--mac-notes-list-background);
+}
+
+.mac-notes-attachments-bar {
+  display: flex;
+  flex: none;
+  justify-content: center;
+  padding-block: 12px;
+}
+
+.mac-notes-attachments .mac-notes-menu-area {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.mac-notes-attachments-empty {
+  flex: 1 1 0;
+}
+
+.mac-notes-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+}
+
+.mac-notes-tile-picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mac-notes-table {
+  width: 100%;
+  margin-block: 6px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.mac-notes-table td {
+  height: 19px;
+  padding: 3px 6px;
+  border: 1px solid var(--mac-color-separator);
+}
+
+.mac-notes-format-glyph {
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+/* Gallery view: a note as a card of paper with its first lines in miniature. */
+.mac-notes-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  box-sizing: border-box;
+  width: 84px;
+  height: 64px;
+  padding: 6px;
+  overflow: hidden;
+  border: 1px solid var(--mac-notes-card-border);
+  border-radius: 3px;
+  background: var(--mac-notes-editor-background);
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-body);
+  font-size: 4px;
+  line-height: 5px;
+  text-align: start;
+  white-space: normal;
+}
+
+.mac-notes-card-line:where(:first-child) {
+  color: var(--mac-color-label);
+  font-weight: 700;
+}
+
+/*
+ * The Fonts and Colors panels are windows of their own, in front of the notes and under any
+ * menu, at the top right of the page as AppKit first places them.
+ */
+.mac-notes-panel-layer {
+  position: fixed;
+  z-index: 800;
+  inset-block-start: 32px;
+  inset-inline-end: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: flex-end;
+  max-width: calc(100% - 32px);
+  pointer-events: none;
+}
+
+.mac-notes-panel-layer:where([data-contained]) {
+  position: static;
+  justify-content: flex-start;
+  max-width: none;
+}
+
+.mac-notes-panel {
+  pointer-events: auto;
+}
+
+.mac-notes-photos {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--mac-notes-photos-gap);
+  max-height: var(--mac-notes-photos-height);
+  overflow: auto;
+}
+
+.mac-notes-photo {
+  aspect-ratio: 1;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--mac-notes-photos-border);
+  background: none;
+  cursor: pointer;
+}
+
+.mac-notes-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mac-notes-preferences {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+}
+
+.mac-notes-selected-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-body);
+  font-size: 17px;
+}
+
+/* A secondary click's area around a pane: no box of its own, so the pane keeps its layout. */
+.mac-notes-menu-area {
+  display: contents;
+}
+
+.mac-notes [role="option"] {
+  position: relative;
+}
+
+.mac-notes [role="option"]:has(> .mac-notes-section) {
+  padding-block-start: 22px;
+}
+
+.mac-notes-section {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 0;
+  inset-inline: 0;
+  box-sizing: border-box;
+  height: 22px;
+  padding-inline: var(--_inset) 7px;
+  background: var(--mac-notes-list-background);
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-body);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 22px;
+}
+
+.mac-notes-row-mark {
+  display: inline-flex;
+  margin-inline-end: 4px;
+  vertical-align: -1px;
+}
+
+.mac-notes-locked {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 320px;
+  margin: 64px auto 0;
+  text-align: center;
+}
+
+.mac-notes-locked p,
+.mac-notes-lock-sheet p {
+  margin: 0;
+}
+
+.mac-notes-locked-glyph {
+  display: inline-flex;
+  transform: scale(2.4);
+  margin-block: 16px;
+}
+
+.mac-notes-lock-fields {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.mac-notes-lock-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mac-notes-people {
+  margin: 8px 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mac-notes-people li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mac-notes-people-role {
+  color: var(--mac-notes-date);
+}
+
+.mac-notes-people-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.mac-notes-people-add > :first-child {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.mac-notes-people-failure {
+  flex-basis: 100%;
+  margin: 4px 0;
+  color: var(--mac-notes-date);
+}
+
+.mac-notes-rename {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 0 2px;
+  border: 0;
+  border-radius: 2px;
+  outline: 2px solid var(--mac-accent);
+  background: var(--mac-color-control-background);
+  color: var(--mac-color-label);
+  font: inherit;
+}
+
+[data-drop-target="into"] {
+  outline: 2px solid var(--mac-accent);
+  outline-offset: -2px;
+}
+
+[data-drop-target="before"] {
+  box-shadow: inset 0 2px 0 var(--mac-accent);
+}
+
+[data-drop-target="after"] {
+  box-shadow: inset 0 -2px 0 var(--mac-accent);
+}
+
+@media (forced-colors: active) {
+  .mac-notes-thumbnail,
+  .mac-notes-card {
+    border: 1px solid CanvasText;
+    box-shadow: none;
+  }
+
+  .mac-notes-table td {
+    border-color: CanvasText;
+  }
+}

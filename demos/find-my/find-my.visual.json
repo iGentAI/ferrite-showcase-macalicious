@@ -1,0 +1,307 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "sidebar-light",
+      "description": "The sidebar of the Aqua capture and its one-point line, 262 pt wide and the window's whole height: the window controls, the People and Devices switch, the rule, the row of \"Me\", the row's line and \"Share My Location\". Masked: the disc of the row, where the capture has Apple's avatar and the demo the library's Avatar with its own silhouette. The text is set in the fallback font off Apple devices, and the glyph of \"Share My Location\" is a stand-in drawing.",
+      "example": "visual-window",
+      "appearance": "light",
+      "selector": "[data-crop='sidebar']",
+      "masks": [{ "x": 10, "y": 84, "width": 32, "height": 33 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Find-My.png",
+        "crop": { "x": 112, "y": 76, "width": 524, "height": 1446 }
+      },
+      "budget": { "1x": 0.0097, "2x": 0.0069 },
+      "deltaBudget": { "1x": 1.53, "2x": 1.49 }
+    },
+    {
+      "name": "sidebar-light-layout",
+      "description": "As sidebar-light with the text and the stand-in glyph masked as well (the titles of People and Devices, the two lines of the row, and \"Share My Location\" with its glyph), to score the frame's edge and corners, the window controls, the sidebar's fill and line, the switch's track and pill, the rule and the row's line.",
+      "example": "visual-window",
+      "appearance": "light",
+      "selector": "[data-crop='sidebar']",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 10, "y": 84, "width": 32, "height": 33 },
+        { "x": 48, "y": 43, "width": 42, "height": 14 },
+        { "x": 170, "y": 43, "width": 46, "height": 14 },
+        { "x": 48, "y": 85, "width": 100, "height": 33 },
+        { "x": 15, "y": 693, "width": 145, "height": 18 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Find-My.png",
+        "crop": { "x": 112, "y": 76, "width": 524, "height": 1446 }
+      },
+      "budget": { "1x": 0.0042, "2x": 0.0019 },
+      "deltaBudget": { "1x": 0.94, "2x": 0.9 }
+    },
+    {
+      "name": "controls-light",
+      "description": "The 103 pt along the window's bottom edge, Aqua: the end of the sidebar with its line, and on the map the map types, the location button, the zoom pair and the compass, each with 2 pt of the map around it. Masked: the rest of the map (seven rectangles; they also cover the Legal link), which is the demo's abstract placeholder where the capture has Apple's map; the titles of the three map types and of \"Share My Location\" with its glyph, the location button's glyph, a stand-in drawing, and the compass's 3D title.",
+      "example": "visual-window",
+      "appearance": "light",
+      "selector": "[data-crop='bottom']",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 263, "y": 0, "width": 872, "height": 6 },
+        { "x": 263, "y": 6, "width": 797, "height": 58 },
+        { "x": 1118, "y": 6, "width": 17, "height": 58 },
+        { "x": 263, "y": 64, "width": 12, "height": 26 },
+        { "x": 510, "y": 64, "width": 504, "height": 26 },
+        { "x": 1120, "y": 64, "width": 15, "height": 26 },
+        { "x": 263, "y": 90, "width": 872, "height": 13 },
+        { "x": 300, "y": 70, "width": 30, "height": 14 },
+        { "x": 372, "y": 70, "width": 40, "height": 14 },
+        { "x": 445, "y": 70, "width": 48, "height": 14 },
+        { "x": 1026, "y": 69, "width": 16, "height": 16 },
+        { "x": 1078, "y": 27, "width": 24, "height": 16 },
+        { "x": 15, "y": 73, "width": 145, "height": 18 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Find-My.png",
+        "crop": { "x": 112, "y": 1316, "width": 2270, "height": 206 }
+      },
+      "budget": { "1x": 0.0375, "2x": 0.0331 },
+      "deltaBudget": { "1x": 1.75, "2x": 1.81 }
+    },
+    {
+      "name": "map-light",
+      "description": "What the map's mask hides, Aqua: the dot of the current location with its ring, at its captured place, on the land colour.",
+      "example": "visual-window",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 1135, "height": 723 },
+        "pixels": [
+          {
+            "x": 698.75,
+            "y": 372.25,
+            "color": "#027aff",
+            "note": "the middle of the dot of the current location, measured: Light @ 1510,820"
+          },
+          {
+            "x": 691.75,
+            "y": 372.25,
+            "color": "#ffffff",
+            "scale": 2,
+            "note": "the dot's 2 pt ring, 7 pt left of its middle, measured: Light @ 1494,820; at 2x only, because at 1x the browser lays the drawing out half a pixel off"
+          },
+          {
+            "x": 500,
+            "y": 300,
+            "color": "#f9f5ed",
+            "note": "the map's land where the placeholder tile draws nothing, measured: Light @ 660,1470"
+          }
+        ]
+      }
+    },
+    {
+      "name": "devices-light",
+      "description": "Devices chosen with a click, Aqua: the pill of the switch moves to the second segment and leaves the track in the first. No capture shows it.",
+      "example": "visual-window",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": ".mac-find-my-switch .mac-catalyst-segmented-control-segment:not([data-checked])"
+        }
+      ],
+      "expect": {
+        "size": { "width": 1135, "height": 723 },
+        "pixels": [
+          {
+            "x": 145,
+            "y": 49,
+            "color": "#ffffff",
+            "note": "the pill, now in the Devices segment: the selected segment's colour, measured in the People segment: Light @ 300,174"
+          },
+          {
+            "x": 30,
+            "y": 49,
+            "color": "#e8e7e5",
+            "tolerance": 3,
+            "note": "the track, now bare in the People segment, measured in the Devices segment: Light @ 560,174"
+          }
+        ]
+      }
+    },
+    {
+      "name": "satellite-light",
+      "description": "Satellite chosen with a click, Aqua: the pill of the map types moves to the third segment and the placeholder's ground takes its satellite colour. No capture shows it.",
+      "example": "visual-window",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": ".mac-find-my-types .mac-map-controls-type-segment:nth-of-type(3) .mac-map-controls-type-option"
+        }
+      ],
+      "expect": {
+        "size": { "width": 1135, "height": 723 },
+        "pixels": [
+          {
+            "x": 437,
+            "y": 697.5,
+            "color": "#ffffff",
+            "note": "the pill, now in the Satellite segment: the map controls' selected segment (--mac-map-controls-segment), measured in the Map segment of the captures"
+          },
+          {
+            "x": 500,
+            "y": 300,
+            "color": "#454b45",
+            "note": "the placeholder's satellite ground (--mac-find-my-satellite-land), the demo's own colour: inferred, no capture shows a satellite view"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sidebar-dark",
+      "description": "The sidebar of the Dark Aqua capture and its one-point line, 262 pt wide and the window's whole height, in a window that is not key, as captured: the window controls, the People and Devices switch, the rule, the row of \"Me\", the row's line and \"Share My Location\". Masked: the disc of the row, where the capture has Apple's avatar and the demo the library's Avatar with its own silhouette. The text is set in the fallback font off Apple devices, and the glyph of \"Share My Location\" is a stand-in drawing.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "selector": "[data-crop='sidebar']",
+      "masks": [{ "x": 10, "y": 84, "width": 32, "height": 33 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Find-My.png",
+        "crop": { "x": 68, "y": 52, "width": 524, "height": 1446 }
+      },
+      "budget": { "1x": 0.0103, "2x": 0.0069 },
+      "deltaBudget": { "1x": 1.49, "2x": 1.46 }
+    },
+    {
+      "name": "sidebar-dark-layout",
+      "description": "As sidebar-dark with the text and the stand-in glyph masked as well (the titles of People and Devices, the two lines of the row, and \"Share My Location\" with its glyph), to score the frame's edge and corners, the window controls, the sidebar's fill and line, the switch's track and pill, the rule and the row's line.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "selector": "[data-crop='sidebar']",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 10, "y": 84, "width": 32, "height": 33 },
+        { "x": 48, "y": 43, "width": 42, "height": 14 },
+        { "x": 170, "y": 43, "width": 46, "height": 14 },
+        { "x": 48, "y": 85, "width": 100, "height": 33 },
+        { "x": 15, "y": 693, "width": 145, "height": 18 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Find-My.png",
+        "crop": { "x": 68, "y": 52, "width": 524, "height": 1446 }
+      },
+      "budget": { "1x": 0.0046, "2x": 0.00118 },
+      "deltaBudget": { "1x": 0.96, "2x": 0.9 }
+    },
+    {
+      "name": "controls-dark",
+      "description": "The 103 pt along the window's bottom edge, Dark Aqua, in a window that is not key, as captured: the end of the sidebar with its line, and on the map the map types, the location button, the zoom pair and the compass, each with 2 pt of the map around it. Masked: the rest of the map (seven rectangles; they also cover the Legal link), which is the demo's abstract placeholder where the capture has Apple's map; the titles of the three map types and of \"Share My Location\" with its glyph, the location button's glyph, a stand-in drawing, and the compass's 3D title.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "selector": "[data-crop='bottom']",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 263, "y": 0, "width": 872, "height": 6 },
+        { "x": 263, "y": 6, "width": 797, "height": 58 },
+        { "x": 1118, "y": 6, "width": 17, "height": 58 },
+        { "x": 263, "y": 64, "width": 12, "height": 26 },
+        { "x": 510, "y": 64, "width": 504, "height": 26 },
+        { "x": 1120, "y": 64, "width": 15, "height": 26 },
+        { "x": 263, "y": 90, "width": 872, "height": 13 },
+        { "x": 300, "y": 70, "width": 30, "height": 14 },
+        { "x": 372, "y": 70, "width": 40, "height": 14 },
+        { "x": 445, "y": 70, "width": 48, "height": 14 },
+        { "x": 1026, "y": 69, "width": 16, "height": 16 },
+        { "x": 1078, "y": 27, "width": 24, "height": 16 },
+        { "x": 15, "y": 73, "width": 145, "height": 18 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Find-My.png",
+        "crop": { "x": 68, "y": 1292, "width": 2270, "height": 206 }
+      },
+      "budget": { "1x": 0.0338, "2x": 0.0261 },
+      "deltaBudget": { "1x": 2.04, "2x": 2 }
+    },
+    {
+      "name": "map-dark",
+      "description": "What the map's mask hides, Dark Aqua: the dot of the current location with its ring, at its captured place, on the land colour.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 1135, "height": 723 },
+        "pixels": [
+          {
+            "x": 698.75,
+            "y": 372.25,
+            "color": "#0f86ff",
+            "note": "the middle of the dot of the current location, measured: Dark @ 1466,796"
+          },
+          {
+            "x": 691.75,
+            "y": 372.25,
+            "color": "#c7c7c7",
+            "scale": 2,
+            "note": "the dot's 2 pt ring, 7 pt left of its middle, measured: Dark @ 1450,796; at 2x only, because at 1x the browser lays the drawing out half a pixel off"
+          },
+          {
+            "x": 500,
+            "y": 300,
+            "color": "#2b2d2f",
+            "note": "the map's land where the placeholder tile draws nothing, measured: Dark @ 616,1446"
+          }
+        ]
+      }
+    },
+    {
+      "name": "devices-dark",
+      "description": "Devices chosen with a click, Dark Aqua: the pill of the switch moves to the second segment and leaves the track in the first. No capture shows it.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": ".mac-find-my-switch .mac-catalyst-segmented-control-segment:not([data-checked])"
+        }
+      ],
+      "expect": {
+        "size": { "width": 1135, "height": 723 },
+        "pixels": [
+          {
+            "x": 145,
+            "y": 49,
+            "color": "#6b6b72",
+            "note": "the pill, now in the Devices segment: the selected segment's colour, measured in the People segment: Dark @ 256,150"
+          },
+          {
+            "x": 30,
+            "y": 49,
+            "color": "#343439",
+            "tolerance": 3,
+            "note": "the track, now bare in the People segment, measured in the Devices segment: Dark @ 256,127"
+          }
+        ]
+      }
+    },
+    {
+      "name": "satellite-dark",
+      "description": "Satellite chosen with a click, Dark Aqua: the pill of the map types moves to the third segment and the placeholder's ground takes its satellite colour. No capture shows it.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": ".mac-find-my-types .mac-map-controls-type-segment:nth-of-type(3) .mac-map-controls-type-option"
+        }
+      ],
+      "expect": {
+        "size": { "width": 1135, "height": 723 },
+        "pixels": [
+          {
+            "x": 437,
+            "y": 697.5,
+            "color": "#6b6b72",
+            "note": "the pill, now in the Satellite segment: the map controls' selected segment (--mac-map-controls-segment), measured in the Map segment of the captures"
+          },
+          {
+            "x": 500,
+            "y": 300,
+            "color": "#454b45",
+            "note": "the placeholder's satellite ground (--mac-find-my-satellite-land), the demo's own colour: inferred, no capture shows a satellite view"
+          }
+        ]
+      }
+    }
+  ]
+}

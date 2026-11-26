@@ -1,0 +1,30 @@
+/*
+ * Time Machine pane. Every control is a library component placed by form.tsx; this file sets
+ * the pane's explanatory text, which is 12 pt in the secondary label colour: the label has no
+ * text style of that size.
+ *
+ *   .mac-system-preferences-time-machine-note    one line of 12 pt text
+ *   .mac-system-preferences-time-machine-keeps   the list of what Time Machine keeps: no
+ *                                                markers (each item starts with its bullet, as
+ *                                                captured), items at a 17 pt pitch
+ */
+.mac-system-preferences-time-machine-note {
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-icon-label-wrapped);
+  letter-spacing: var(--mac-tracking-regular);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.mac-system-preferences-time-machine-keeps {
+  display: grid;
+  grid-auto-rows: 17px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

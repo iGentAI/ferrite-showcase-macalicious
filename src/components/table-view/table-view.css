@@ -1,0 +1,179 @@
+/*
+ * Table view (NSTableView in an NSScrollView).
+ *
+ * Parts
+ *   .mac-table-view           the root: a scroll view and the grid; one tab stop
+ *   .mac-table-view-content   everything that scrolls: header and body
+ *   .mac-table-view-header    the table header, pinned to the top while the rows scroll
+ *   .mac-table-view-body      the rows' full height; carries the stripes, which continue
+ *                             below the last row
+ *   .mac-table-view-rows      the rendered rows, moved to their place in the body
+ *   .mac-table-view-row       one row, as tall as the row pitch
+ *   .mac-table-view-cell      one cell: a single line that truncates
+ *   .mac-table-view-cell-text a cell's text as a part: its first half shrinks behind the
+ *                             ellipsis, its second half, the ending, stays
+ *
+ * States
+ *   [data-alternating]                 striped rows
+ *   [data-size="small" | "mini"]       12 pt and 11 pt cell text
+ *   [aria-selected="true"] on a row    selected: grey, 1 pt shorter than the pitch
+ *   :focus-within in a key window      the selection is emphasised: accent, white text
+ *   :focus-visible                     keyboard focus ring inside the view's edge
+ *   [data-pointer-focus]               a press on a row gave the focus: no ring
+ *   :where([data-window-state="main"], [data-window-state="inactive"]) *
+ *                                      not the key window: grey selection, no ring
+ *   [data-align="center" | "right"]    on a cell
+ *   [data-line-break-mode]             on a cell's text: where it is cut
+ *   [data-force~="focus"]              static preview of the emphasised selection
+ */
+.mac-table-view {
+  --_selection: var(--mac-color-selected-content-background-unemphasized);
+
+  background: var(--mac-table-view-background);
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  outline: none;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* The text line sits lower in Catalina's 12 pt tables and higher in its 11 pt ones than
+   centring gives (measured in Activity Monitor and Keychain Access): --_shift is twice that. */
+.mac-table-view:where([data-size="small"]) {
+  --_shift: 2px;
+
+  font-size: 12px;
+}
+
+.mac-table-view:where([data-size="mini"]) {
+  --_shift: -1.5px;
+
+  font-size: 11px;
+}
+
+.mac-table-view-content {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-height: 100%;
+}
+
+.mac-table-view-header {
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  flex: none;
+}
+
+.mac-table-view-body {
+  flex: 1 0 auto;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* The second row of each pair is striped; the pattern scrolls with the rows. */
+.mac-table-view:where([data-alternating]) .mac-table-view-body {
+  background: repeating-linear-gradient(
+    transparent 0 var(--_row),
+    var(--mac-color-content-background-alternate) 0 calc(2 * var(--_row))
+  );
+}
+
+.mac-table-view-row {
+  display: flex;
+  box-sizing: border-box;
+  height: var(--_row);
+}
+
+/* The highlight is the pitch less its last point, where the row's own stripe shows. */
+.mac-table-view-row:where([aria-selected="true"]) {
+  background:
+    linear-gradient(var(--_selection), var(--_selection)) 0 0 / 100% calc(100% - 1px) no-repeat;
+}
+
+.mac-table-view:where(:focus-within, [data-force~="focus"]):not(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  --_selection: var(--mac-color-selected-content-background);
+}
+
+.mac-table-view:where(:focus-within, [data-force~="focus"]):not(
+    :where([data-window-state="main"], [data-window-state="inactive"]) *
+  )
+  .mac-table-view-row:where([aria-selected="true"]) {
+  color: var(--mac-color-selected-content-text);
+}
+
+/* A press on a row focuses the grid from script, which browsers take for the keyboard. */
+.mac-table-view:where(:focus-visible:not([data-pointer-focus])) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+.mac-table-view:where(:where([data-window-state="main"], [data-window-state="inactive"]) *) {
+  outline: none;
+}
+
+/* One line, centred in the highlight; text starts 3 pt from the column's edge and a
+   right-aligned value ends 4 pt before the next column's separator (both measured). */
+.mac-table-view-cell {
+  flex: 1 1 0;
+  box-sizing: border-box;
+  min-width: 0;
+  padding-inline: 3px 3.5px;
+  overflow: hidden;
+  line-height: calc(var(--_row) - 1px + var(--_shift, 0px));
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mac-table-view-cell:where([data-align="center"]) {
+  text-align: center;
+}
+
+.mac-table-view-cell:where([data-align="right"]) {
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+/* Spaces at the cut are kept. In a cell that lays an icon beside it, it takes what is left. */
+.mac-table-view-cell-text {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: pre;
+}
+
+/* The first part gives way before the second: only when nothing of it is left does the
+   second shrink too, cut at its own end, so the text never runs out of a narrow cell. */
+.mac-table-view-cell-text > :where(:first-child) {
+  flex: 0 99999 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mac-table-view-cell-text > :where(:last-child) {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Its parts are flex items, which the cell's text alignment does not place. */
+.mac-table-view-cell:where([data-align="center"]) .mac-table-view-cell-text {
+  justify-content: center;
+}
+
+.mac-table-view-cell:where([data-align="right"]) .mac-table-view-cell-text {
+  justify-content: flex-end;
+}
+
+/* As specific as the focused selection above, and after it: the system colours win. */
+@media (forced-colors: active) {
+  .mac-table-view .mac-table-view-row:where([aria-selected="true"]) {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+}

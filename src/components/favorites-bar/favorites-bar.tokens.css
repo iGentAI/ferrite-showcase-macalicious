@@ -1,0 +1,34 @@
+/*
+ * Favorites bar colours: light-dark(<Aqua>, <Dark Aqua>). Every value is inferred: no
+ * Catalina screenshot shows Safari's Favorites bar (all fourteen Safari captures have it
+ * hidden). The values are those of reference/spec/components/favorites-bar.md, which derives
+ * them from the surfaces next to the bar. "Inner" and "outer" are the two device-pixel rows
+ * at the bottom of the bar.
+ */
+:root {
+  /* [provisional] the fill continues the end of the toolbar gradient above the bar */
+  --mac-favorites-bar-fill: light-dark(#d0d0d0, #343536);
+  /* [provisional] the separator rows of the title bar */
+  --mac-favorites-bar-separator-inner: light-dark(#bdbdbd, #2a2a2a);
+  --mac-favorites-bar-separator-outer: light-dark(#a7a7a7, #000000);
+  /* [provisional] titles: the text colours of the Smart Search field */
+  --mac-favorites-bar-text: light-dark(#4c4c4c, rgb(255 255 255 / 0.85));
+  /* [provisional] the pill behind an item under the pointer, and while pressed or open */
+  --mac-favorites-bar-hover: light-dark(rgb(0 0 0 / 0.06), rgb(255 255 255 / 0.06));
+  --mac-favorites-bar-pressed: light-dark(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.1));
+  /* [provisional] inactive window: the rows under Safari's inactive tab bar, measured in
+     10-15-Catalina-<Light|Dark>-Safari-v13-Picture-in-Picture.png @ 700,228 (light) and
+     @ 700,202 (dark); that this bar takes them is inferred. The fill is the shared
+     --mac-material-titlebar-inactive. */
+  --mac-favorites-bar-separator-inner-inactive: light-dark(#e7e7e7, #222326);
+  --mac-favorites-bar-separator-outer-inactive: light-dark(#cecece, #000000);
+  /* [inferred] the bar is 25 pt high with its hairline, an item's highlight 19 pt with 4 pt
+     corners: no capture shows the bar (spec: favorites-bar, not seen) */
+  --mac-favorites-bar-height: 25px;
+  --mac-favorites-bar-item-height: 19px;
+  --mac-favorites-bar-item-radius: 4px;
+  /* [inferred] an item's icon box, and a chevron: 7 pt along its opening, 4 pt deep */
+  --mac-favorites-bar-icon-size: 16px;
+  --mac-favorites-bar-chevron-length: 7px;
+  --mac-favorites-bar-chevron-depth: 4px;
+}

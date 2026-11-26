@@ -1,0 +1,336 @@
+/*
+ * Find My demo: the layout of the sidebar's column and the map with what lies over it. The
+ * window, the window controls, the Catalyst chrome without a toolbar row and its sidebar, the
+ * People and Devices switch (the Catalyst segmented control), the map types, the separator,
+ * the list, the avatar, the image views, the
+ * image button, the borderless button and every map control are the library's; the drawings
+ * are placeholders (find-my-artwork.tsx).
+ *
+ * Measured on 10-15-Catalina-Light-Find-My.png (frame 1135 x 723 pt at x=112, y=76 of the 2x
+ * image) and 10-15-Catalina-Dark-Find-My.png (the same frame at x=68, y=52). Points from the
+ * window's top-left corner:
+ *
+ *   controls  the close button x 8..20, y 5..17: the place of a 22 pt title bar's, which
+ *             Find My does not draw
+ *   sidebar   x 0..261, then its one-point line; the map from x 262
+ *   switch    People and Devices: the track x 7.5..254, y 37..61.5
+ *   rows      a one-point rule at y 76; rows of 48 pt from y 77, their line from x 49.5;
+ *             the 29 pt disc centred at 25.75, 100.25; the name's capitals from y 87.5 and
+ *             the second line's from y 104.5, both from x 50
+ *   footer    "Share My Location": the 13 pt glyph x 16.5..29.5, centred at y 702; the title
+ *             from x 35.5
+ *   map       the dot of the current location centred at 698.75, 372.25; Legal from x 278,
+ *             its baseline at y 678.75; the map types x 277..508, y 686..708; the location
+ *             button x 1016.5..1051, y 686..707.5; the zoom pair's right edge at x 1117; the
+ *             compass 6 pt above it
+ *
+ * Parts
+ *   .mac-find-my                   the window
+ *   .mac-find-my-column            the sidebar's contents: switch, rule, list, footer
+ *   .mac-find-my-switch, -rule     the People and Devices switch and the rule under it
+ *   .mac-find-my-list              the list of people or devices (or the empty state)
+ *   .mac-find-my-avatar, -place    a row's disc and its second line
+ *   .mac-find-my-share             the content of "Share My Location": glyph and title
+ *   .mac-find-my-share-title       its title, a point above the glyph's middle
+ *   .mac-find-my-map               the map: clips the drawing, holds what lies over it
+ *     [data-map-type="map" | "hybrid" | "satellite"], [data-sharing]
+ *   .mac-find-my-picture, -art     the image view of the placeholder map and its drawing
+ *   .mac-find-my-marker            a marker: a device's disc and, when selected, its name
+ *   .mac-find-my-note              what the map says about the last thing done to it
+ *   .mac-find-my-legal             the Legal link
+ *   .mac-find-my-types             the map types, at the map's leading corner
+ *   .mac-find-my-controls          the location button beside the compass and the zoom pair
+ *   .mac-find-my-compass           the compass, half a point off the zoom pair's middle
+ *
+ * Every measured length and font size is a token in find-my.tokens.css (--mac-find-my-*).
+ * Literal here, as structure: zeros, the 100% and 50% sizes and places, the flex factors, the
+ * z-index, the 50% radius of a marker's disc, its line height of 1 and the name's -50%
+ * translation, the stroke widths of the SVG drawings (the share glyph's plus and the location
+ * dot's ring), and the 1 pt border in forced colours.
+ */
+
+/* The chrome's strip holds the window controls; the sidebar's scroll area starts under it
+   (--mac-catalyst-chrome-toolbar-inset, 22 pt), so the switch is 15 pt below that: the
+   track's top 37 pt from the window's top edge. */
+.mac-find-my-column {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: var(--mac-find-my-column-min-height);
+}
+
+/* The sidebar's scrolling column is 262 pt wide, its line included: the track ends 8 pt
+   before that, at 254. */
+.mac-find-my-column > .mac-find-my-switch {
+  flex: none;
+  min-width: 0;
+  margin: var(--mac-find-my-switch-margin-top) var(--mac-find-my-switch-margin-right) 0
+    var(--mac-find-my-switch-margin-left);
+}
+
+.mac-find-my-column > .mac-find-my-rule {
+  margin-block-start: var(--mac-find-my-rule-margin-top);
+}
+
+.mac-find-my-column > .mac-find-my-list {
+  flex: 1 1 0;
+  min-height: 0;
+  background: none;
+}
+
+/* The disc's middle is a point right of the gutter's. */
+.mac-find-my-list .mac-find-my-avatar {
+  margin-inline-start: var(--mac-find-my-avatar-margin-start);
+}
+
+/* The second line is 12 pt and follows the name directly: 16 pt from baseline to baseline,
+   and half a point more. */
+.mac-find-my-list .mac-find-my-place {
+  position: relative;
+  top: var(--mac-find-my-place-offset);
+  margin-block: 0;
+  font-size: var(--mac-find-my-place-size);
+}
+
+.mac-find-my-share {
+  display: flex;
+  gap: var(--mac-find-my-share-gap);
+  align-items: center;
+  padding-inline: var(--mac-find-my-share-padding-start) var(--mac-find-my-share-padding-end);
+  color: var(--mac-color-label-secondary);
+  white-space: nowrap;
+}
+
+.mac-find-my-share-glyph {
+  flex: none;
+}
+
+/* The title's baseline is a point above where centring on the glyph puts it (measured: the
+   L of Location from y 696.5 to 706 in the capture). */
+.mac-find-my-share-title {
+  position: relative;
+  inset-block-start: var(--mac-find-my-share-title-offset);
+}
+
+.mac-find-my-share-plus {
+  fill: none;
+  stroke: var(--mac-find-my-sidebar);
+  stroke-width: 1.25px;
+  stroke-linecap: round;
+}
+
+/* Map: it fills the chrome's content. */
+.mac-find-my-map {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--mac-find-my-land);
+}
+
+.mac-find-my-map:where([data-map-type="hybrid"], [data-map-type="satellite"]) {
+  background: var(--mac-find-my-satellite-land);
+}
+
+/* The map runs under the chrome's strip: the tiles' attribution (the map's top trailing corner, given
+   this class by the demo) sits below the strip, as the note does, so it can be read and clicked. */
+.mac-find-my-map .mac-find-my-attribution {
+  top: calc(var(--mac-catalyst-chrome-strip-height, 22px) + var(--mac-maps-attribution-inset));
+}
+
+/* The image view fills the map and centres the drawing, whose origin is the view's middle. */
+.mac-find-my-map > .mac-find-my-picture {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  background: none;
+}
+
+.mac-find-my-art {
+  display: block;
+  overflow: visible;
+}
+
+.mac-find-my-art-band {
+  fill: var(--mac-find-my-band);
+}
+
+.mac-find-my-art-disc {
+  fill: var(--mac-find-my-disc);
+}
+
+.mac-find-my-art-stripe {
+  fill: var(--mac-find-my-stripe);
+}
+
+.mac-find-my-art-block {
+  fill: var(--mac-find-my-block);
+}
+
+.mac-find-my-art-bar {
+  fill: var(--mac-find-my-bar);
+}
+
+.mac-find-my-map:where([data-map-type="hybrid"], [data-map-type="satellite"])
+  .mac-find-my-art-disc {
+  fill: var(--mac-find-my-satellite-disc);
+}
+
+.mac-find-my-map:where([data-map-type="hybrid"], [data-map-type="satellite"])
+  .mac-find-my-art-stripe {
+  fill: var(--mac-find-my-satellite-stripe);
+}
+
+.mac-find-my-map:where([data-map-type="hybrid"], [data-map-type="satellite"])
+  .mac-find-my-art-block {
+  fill: var(--mac-find-my-satellite-block);
+}
+
+/* The satellite view has the ground alone; the hybrid view lays the bands and bars over it. */
+.mac-find-my-map:where([data-map-type="satellite"])
+:where(.mac-find-my-art-band, .mac-find-my-art-bar) {
+  display: none;
+}
+
+.mac-find-my-map:where([data-map-type="hybrid"]) .mac-find-my-art-band {
+  fill: var(--mac-find-my-hybrid-band);
+}
+
+.mac-find-my-map:where([data-map-type="hybrid"]) .mac-find-my-art-bar {
+  fill: var(--mac-find-my-hybrid-bar);
+}
+
+.mac-find-my-art-location {
+  fill: var(--mac-find-my-location);
+  stroke: var(--mac-find-my-location-ring);
+  stroke-width: 2px;
+}
+
+/* Shown while the location is shared. */
+.mac-find-my-art-halo {
+  display: none;
+  fill: var(--mac-find-my-halo);
+}
+
+.mac-find-my-map:where([data-sharing]) .mac-find-my-art-halo {
+  display: inline;
+}
+
+/* A marker is a point, moved from the middle of the map by its inline transform: its disc is
+   hung about it and its name under it. */
+.mac-find-my-marker {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.mac-find-my-marker-disc {
+  position: absolute;
+  top: calc(var(--mac-find-my-marker-size) / -2);
+  left: calc(var(--mac-find-my-marker-size) / -2);
+  display: grid;
+  place-items: center;
+  width: var(--mac-find-my-marker-size);
+  height: var(--mac-find-my-marker-size);
+  border-radius: 50%;
+  background: var(--mac-find-my-marker);
+  box-shadow: 0 0 0 var(--mac-hairline) var(--mac-find-my-marker-ring);
+  color: var(--mac-find-my-marker-glyph);
+  font: var(--mac-font-body);
+  font-weight: var(--mac-font-weight-semibold);
+  font-size: var(--mac-find-my-marker-glyph-size);
+  line-height: 1;
+}
+
+.mac-find-my-marker:where([data-selected]) > .mac-find-my-marker-disc {
+  box-shadow: 0 0 0 var(--mac-find-my-marker-selected-ring) var(--mac-find-my-location);
+}
+
+.mac-find-my-marker-name {
+  position: absolute;
+  top: var(--mac-find-my-marker-name-top);
+  left: 0;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  font-weight: var(--mac-font-weight-bold);
+  font-size: var(--mac-find-my-marker-name-size);
+  line-height: var(--mac-find-my-marker-name-line-height);
+  text-shadow:
+    0 0 var(--mac-find-my-marker-halo-blur) var(--mac-find-my-marker-halo),
+    0 0 var(--mac-find-my-marker-halo-blur) var(--mac-find-my-marker-halo),
+    0 0 var(--mac-find-my-marker-halo-blur-wide) var(--mac-find-my-marker-halo);
+  white-space: nowrap;
+  translate: -50% 0;
+}
+
+/* The note of the last action, under the strip at the map's top leading corner. */
+.mac-find-my-map > .mac-find-my-note {
+  position: absolute;
+  z-index: 1;
+  top: var(--mac-find-my-note-top);
+  left: var(--mac-find-my-note-left);
+  padding: var(--mac-find-my-note-padding-block) var(--mac-find-my-note-padding-inline);
+  border-radius: var(--mac-find-my-note-radius);
+  background: var(--mac-find-my-note-plate);
+  pointer-events: none;
+}
+
+/* With nothing to say the note has no plate. It stays in the page, so that a screen reader
+   knows the status before its first message and announces it. */
+.mac-find-my-map > .mac-find-my-note:empty {
+  padding: 0;
+  background: none;
+}
+
+/* Legal: small underlined text, a point right of the map types and 4 pt above them. */
+.mac-find-my-map > .mac-find-my-legal {
+  position: absolute;
+  z-index: 1;
+  bottom: var(--mac-find-my-legal-bottom);
+  left: var(--mac-find-my-legal-left);
+  color: var(--mac-color-label-secondary);
+  font-size: var(--mac-find-my-legal-size);
+  line-height: var(--mac-find-my-legal-line-height);
+  text-decoration: underline;
+}
+
+/* The map types: 15 pt from the map's leading edge, the track's top 37 pt above the window's
+   bottom edge. The library's corner placement would stand a quarter of a point higher. */
+.mac-find-my-map > .mac-find-my-types {
+  position: absolute;
+  z-index: 1;
+  bottom: var(--mac-find-my-types-bottom);
+  left: var(--mac-find-my-types-left);
+}
+
+/* The location button beside the compass over the zoom pair: the library's groups, placed by
+   the demo at the capture's distances from the map's trailing corner. */
+.mac-find-my-map > .mac-find-my-controls {
+  position: absolute;
+  z-index: 1;
+  right: var(--mac-find-my-controls-right);
+  bottom: var(--mac-find-my-controls-bottom);
+}
+
+/* The compass stands half a point right of the zoom pair's middle. */
+.mac-find-my-controls .mac-find-my-compass {
+  position: relative;
+  left: var(--mac-find-my-compass-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-find-my-art-location {
+    fill: CanvasText;
+  }
+
+  .mac-find-my-marker-disc {
+    border: 1px solid CanvasText;
+  }
+}

@@ -1,0 +1,99 @@
+---
+title: Building a window
+description: What makes an element a Catalina window, the three window states, and how the controls inside follow them.
+group: Overview
+order: 3
+---
+
+In Catalina almost everything sits in a window, and a window is in one of three states that
+change how it and its contents are drawn. This page explains the one convention the whole
+library shares for that, then builds on it. It follows [Getting started](/installation).
+
+## The three states
+
+AppKit gives a window two separate flags, whether it is the *key* window and whether it is the
+*main* window
+([`isKeyWindow`](https://developer.apple.com/documentation/appkit/nswindow/iskeywindow),
+[`isMainWindow`](https://developer.apple.com/documentation/appkit/nswindow/ismainwindow)). The
+library folds them into one attribute with three values, `data-window-state`, on the window's
+root element:
+
+| `data-window-state` | The window | Frame | Window controls | Controls inside |
+| --- | --- | --- | --- | --- |
+| `key`, or no attribute | receives keyboard input | active | coloured | accent colour, focus ring, emphasised selection |
+| `main` | is the front window while a panel or its own sheet is key | active, same as key | all three grey | no accent, no focus ring, unemphasised selection |
+| `inactive` | is behind another window, or the whole page is in the background | flat title bar, dimmed title, smaller shadow, opaque materials | all three grey | as in a main window |
+
+The existence of the two AppKit properties was checked against Apple's reference pages linked
+above. The descriptions in the table (what key and main mean, and how each state is drawn) are
+this project's reading of AppKit and of the reference screenshots and were **not checked
+against Apple's documentation**. The screenshots show a window that is not key in a few
+places, and its chrome there is measured (window controls, title bar and toolbar, sidebar);
+no screenshot shows a control of a window's content, such as a checkbox or a pop-up button,
+in such a window, so those looks are provisional
+([Fidelity limits](/fidelity#what-is-measured-and-what-is-not)).
+
+The same content in each state. Nothing differs between the three surfaces except the
+attribute, and the shadow token of the inactive one:
+
+<Example name="window-states" both />
+
+## The rules
+
+- **An attribute on an ancestor, not a prop.** A control never takes its window's state as a
+  prop and never reads a context. Its stylesheet asks one question, "is an ancestor marked
+  `main` or `inactive`?", so changing a window's state re-renders nothing inside it.
+- **No attribute means key.** A control on a plain page, outside any window, looks active.
+- **Only two things set it**: a window component, on its own root element, and
+  `trackWindowActivation()` from `macalicious/lib/window-activation`, on `<html>`, which marks
+  the whole page `inactive` while the browser window is in the background. Call it once when
+  your application starts; it returns a function that undoes it.
+- **A state that is not key wins, wherever it is.** CSS cannot select the nearest ancestor
+  that carries an attribute, so when `<html>` is inactive every window on the page is
+  inactive, whatever its own attribute says. Two consequences: windows do not nest, and exactly
+  one window on a page should be key.
+- **Popups are windows of their own.** Menus, popovers, sheets and alerts that Base UI renders
+  through a portal sit outside their window's element. Like their AppKit counterparts they are
+  key while they are open, so they follow only the state on `<html>`.
+
+The reasoning, and the exact selectors a component's stylesheet uses, are in
+[Contributing](/contributing#window-state).
+
+## Making one window key
+
+With more than one window on a page, something has to decide which is key. That is one piece
+of state, kept wherever the windows are rendered, and it only ever changes two attributes:
+
+<Example name="key-window" />
+
+Press in either window, or move into it with Tab: it becomes key and the other one inactive.
+The buttons are the same components in both and receive no props about it.
+
+## The surface
+
+The examples on this page draw the window surface with tokens on a plain element, which is
+all a simple dialog needs:
+
+| Part | Token |
+| --- | --- |
+| Background | `--mac-color-window-background` |
+| Corner radius | `--mac-radius-window` |
+| Shadow | `--mac-shadow-window`, and `--mac-shadow-window-inactive` for an inactive window |
+| Edge to a control | `--mac-space-window-margin` (20 pt) |
+| Between controls | `--mac-space-control-gap` (12 pt) |
+| Text | `--mac-color-label`, `--mac-font-body` |
+
+Shadows take no part in layout. Leave room around a window if its shadow must not be clipped
+by a scrolling or `overflow: hidden` ancestor. All tokens are listed in [Theming](/theming).
+
+## Window chrome components
+
+A full window (title bar with the close, minimise and zoom controls, toolbar, status bar) is
+built from the window chrome components. Each has its own page with props and examples; the
+window component takes the state as a prop and writes `data-window-state` for you:
+
+<PageList group="Components" only="window,window-shadow,title-bar,window-controls,toolbar,toolbar-button,toolbar-segmented-control,toolbar-pop-up,toolbar-search-field,toolbar-labelled-item,window-tab-bar,scope-bar,path-bar,status-bar,window-banner" empty="None of the window chrome components (window, title bar, window controls, toolbar and the rest) is built into this site yet. Until they are, mark a window as on this page: a plain element with the tokens above and data-window-state." />
+
+## Next
+
+[Building an app](/building-an-app): several windows on a desktop.

@@ -1,0 +1,303 @@
+---
+title: Help Viewer
+description: The Help Viewer of macOS 10.15, showing the macOS User Guide in a floating panel with its table of contents in an outline, a history behind Back and Forward and a search of every guide's topics, built from the library alone.
+layout: full
+order: 125
+---
+
+<Example name="basic" />
+
+Choose an entry of the table of contents, or a topic under its triangle; the page follows, and
+Back and Forward walk the pages you opened. Type in the search field for the topics that
+mention a word, and choose one to read it. Nothing is fetched: the guide's text is the demo's
+own, short and generic, and the pictures the real guide shows (a round photograph, an illustration
+of a laptop and the Finder's icon before each search result) are replaced by pictures of the
+served desktop's own windows and its Finder icon. A guide's page and its first topic show a picture
+of the application. A reload brings the first screenshot's state back.
+
+## What it shows
+
+- A [Window](/components/window) of the `panel` variant, which casts the smaller shadow of a
+  floating panel, with a [Title Bar](/components/title-bar) in the `utility` layout: a 16 pt
+  title strip with the small [Window Controls](/components/window-controls) and, on the same
+  surface, a [Toolbar](/components/toolbar), 49 pt together. The bar is the window's drag
+  region. The frame's corners are rounded by 3 pt, as measured, through the window's radius
+  token set on this window.
+- The toolbar: Back and Forward as a
+  [Toolbar Segmented Control](/components/toolbar-segmented-control) of the `navigation`
+  variant with momentary segments, a [Toolbar Button](/components/toolbar-button) for the table
+  of contents, a [Share Menu](/components/share-menu) on a second one, and a
+  [Toolbar Search Field](/components/toolbar-search-field) that a flexible space keeps at the
+  trailing edge. Every glyph is a [System Image](/components/system-image): `go-back`,
+  `go-forward`, `sidebar`, `share` and, on the pages, `chevron-down`.
+- The body: a [Split View](/components/split-view) of the table of contents, 203 pt wide, and
+  the page. The first pane is `collapsible` and controlled: hidden, it has a size of 0 and
+  leaves its divider at the window's edge, which is what the Dark Aqua capture shows. The
+  divider takes its measured colour through the split view's `--mac-split-view-divider-color`.
+- The table of contents: an [Outline View](/components/outline-view) with 26 pt rows. An entry
+  is an item whose children are its topics; the outline is controlled, so the demo keeps the
+  expanded entries and selects the row of the page that is shown.
+- The page: a [Scroll View](/components/scroll-view) around one of three pages. The welcome
+  page carries `data-appearance="light"`, because the real one has no dark style and is white
+  in Dark Aqua too. Its rule is a [Separator](/components/separator) and its link a
+  [Label](/components/label) rendered as a button, in the colours measured on that page, which
+  the demo sets as the two shared tokens on the page's element.
+- The results: a list of links, each with a title and a description as
+  [Labels](/components/label), the count as a small label, "Show all" as a label rendered as a
+  button, a [Separator](/components/separator), and an [Empty State](/components/empty-state)
+  when nothing is found. A result is highlighted under the pointer and with keyboard focus.
+- The data is in `help-viewer-data.ts`: the entries with their topics, each topic's summary
+  and text, and `searchHelp`, which lists the topics whose title or summary contains the text,
+  the ranked ones first. The history is a list of pages and searches in the component's state;
+  served by the desktop, it and the open rows of the contents are kept in
+  `help-viewer-kept.ts`, a Book pop-up in the toolbar goes to a server's book, and a pop-up over
+  the results limits them to one book. None of these appears on the unserved page.
+
+| Control | What it does |
+| --- | --- |
+| Back, Forward | Go one step back or forward in the history of pages and searches. Each is unavailable at its end of the history. |
+| The sidebar button | Hides the table of contents, or shows it again. Unavailable while search results are shown. |
+| Share | Opens a menu of four services. Choosing one closes the menu: nothing is sent anywhere. Unavailable while search results are shown. |
+| Search | Shows "All Help" with the number of topics that mention the text and the first six of them. More text narrows the list; clearing the field, with Escape or its clear button too, returns to the page the search started from. |
+| An entry of the table of contents | Shows the entry's own page, which lists its topics as links. Its triangle, or Right Arrow, shows its topics in the outline. |
+| A topic | Shows the topic's page. |
+| The divider | Drag it to resize the table of contents between 140 and 320 pt. A double click, or Return, hides the list and shows it again. |
+| "Table of Contents" on the welcome page | Shows or hides the table of contents, like the sidebar button. |
+| A search result | Opens its topic as a new step of the history; Back returns to the results. |
+| Show all | Lists every result. |
+
+The component takes three props for the state it starts in, so that an example can show each
+capture: `defaultSidebarOpen`, `defaultQuery` and `searchRanking`, the ids of the topics a
+search lists first. The two search captures list different topics for "File";
+`lightRanking` and `darkRanking` in the data file hold the two orders.
+
+## Hosting the window
+
+<Example name="hosted" />
+
+`HelpViewer` renders the library's `Window` as its root and passes every `Window` prop to it,
+so it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component hands to the window controls and to
+the title bar, which with its toolbar is this window's drag region. These are the props a
+[Managed Window](/components/managed-window)'s `render` form supplies, so the component can be
+spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { app } from "./app";
+
+<ManagedWindow
+  id={app.id}
+  title={app.name}
+  resizable={app.resizable}
+  minWidth={app.minSize.width}
+  minHeight={app.minSize.height}
+  defaultFrame={{ x: 80, y: 60, ...app.defaultSize }}
+  render={(props) => <app.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `defaultSidebarOpen` | `boolean` | Whether the table of contents is shown at first; `true` by default. |
+| `defaultQuery` | `string` | Text the search field holds at first: the viewer opens on its results, one step after the welcome page. |
+| `searchRanking` | `readonly string[]` | The ids of the topics a search lists first; the Aqua capture's order by default. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press with the primary button, or a double click, on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 877 by 722 by default, as captured. |
+| `state` | `"key" \| "main" \| "inactive"` | The window's state. |
+| the rest | `WindowProps` | `fullScreen`, `style`, `className`, `ref`, pointer and focus events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `helpViewerApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (877 by 722), `minSize` (540 by 300, at which the toolbar's
+items fit and the page keeps its smallest width beside the table of contents as it opens),
+`resizable` and `menus`, the menu titles after the Apple menu.
+
+At other sizes the table of contents keeps its width and the page takes the rest; the welcome
+page's margins grow with the pane, and the search field gives up width before the buttons do.
+
+On the desktop, the Edit menu holds the rows from Undo to Select All: they act on the search or find
+field that has the keyboard, and where no field has it, Copy takes the text selected on the page and
+Select All selects the page. What cannot act is dimmed and says why.
+
+## Styling hooks
+
+The demo's measured lengths are custom properties in `help-viewer.tokens.css`, each tagged
+measured or provisional with the place it was read; `help-viewer.css` reads them with
+`var()`. Set one on the window or an ancestor to change that measure. The class names are
+listed at the head of `help-viewer.css`.
+
+| Property | Default | Controls |
+| --- | --- | --- |
+| `--mac-help-viewer-hero-height` | `286px` | Title block: height |
+| `--mac-help-viewer-hero-padding-block-start` | `44.5px` | Title block: padding block start |
+| `--mac-help-viewer-hero-art-size` | `109px` | Title block picture: size |
+| `--mac-help-viewer-hero-title-margin-top` | `28px` | Title: margin top |
+| `--mac-help-viewer-hero-title-font-size` | `32px` | Title: font size |
+| `--mac-help-viewer-hero-title-line-height` | `38px` | Title: line height |
+| `--mac-help-viewer-hero-subtitle-margin-top` | `10.5px` | Subtitle: margin top |
+| `--mac-help-viewer-hero-subtitle-font-size` | `18px` | Subtitle: font size |
+| `--mac-help-viewer-hero-subtitle-line-height` | `22px` | Subtitle: line height |
+| `--mac-help-viewer-welcome-body-padding-block` | `12px 20px` | Welcome page body: padding block |
+| `--mac-help-viewer-welcome-body-margin-min` | `20px` | Welcome page body: least side margin |
+| `--mac-help-viewer-welcome-body-margin-max` | `34px` | Welcome page body: greatest side margin |
+| `--mac-help-viewer-welcome-body-margin-offset` | `26.4px` | Welcome page body: side margin, as the slope less this |
+| `--mac-help-viewer-welcome-body-margin-slope` | `6.897%` | Welcome page body: side margin's share of the pane's width |
+| `--mac-help-viewer-contents-link-gap` | `6.5px` | "Table of Contents": gap |
+| `--mac-help-viewer-contents-link-margin-bottom` | `10px` | "Table of Contents": margin bottom |
+| `--mac-help-viewer-contents-glyph-margin-top` | `-3px` | "Table of Contents" glyph: margin top |
+| `--mac-help-viewer-device-art-width` | `387px` | Illustration: width |
+| `--mac-help-viewer-device-art-height` | `222px` | Illustration: height |
+| `--mac-help-viewer-device-art-margin-top` | `35.5px` | Illustration: margin top |
+| `--mac-help-viewer-device-art-radius` | `6px` | Illustration: radius |
+| `--mac-help-viewer-welcome-heading-margin-top` | `33px` | Welcome heading: margin top |
+| `--mac-help-viewer-welcome-heading-font-size` | `18px` | Welcome heading: font size |
+| `--mac-help-viewer-welcome-heading-line-height` | `22px` | Welcome heading: line height |
+| `--mac-help-viewer-welcome-text-margin-top` | `12px` | Welcome text: margin top |
+| `--mac-help-viewer-welcome-text-line-height` | `18px` | Welcome text: line height |
+| `--mac-help-viewer-results-padding-block` | `17.5px 20px` | Results page: padding block |
+| `--mac-help-viewer-results-inset` | `21px` | Results page: inset of the heading, Show all and the web link |
+| `--mac-help-viewer-results-header-gap` | `7.5px` | Results header: gap |
+| `--mac-help-viewer-results-count-offset` | `-2.5px` | Results count: offset down |
+| `--mac-help-viewer-result-list-margin-top` | `11.5px` | Result list: margin top |
+| `--mac-help-viewer-result-icon-size` | `18px` | Result icon: size (and its column's width) |
+| `--mac-help-viewer-result-column-gap` | `7px` | Result: column gap |
+| `--mac-help-viewer-result-margin` | `0 2px 4px` | Result: margin |
+| `--mac-help-viewer-result-padding` | `8px 19px 9.5px` | Result: padding |
+| `--mac-help-viewer-result-icon-margin-top` | `-1px` | Result icon: margin top |
+| `--mac-help-viewer-result-icon-radius` | `4px` | Result icon: radius |
+| `--mac-help-viewer-result-summary-margin-top` | `6.5px` | Result description: margin top |
+| `--mac-help-viewer-show-all-gap` | `4px` | Show all: gap |
+| `--mac-help-viewer-show-all-margin-top` | `11.5px` | Show all: margin top |
+| `--mac-help-viewer-results-rule-margin` | `23.5px 20px 0` | Rule under the results: margin |
+| `--mac-help-viewer-web-margin-top` | `13.5px` | Web link: margin top |
+| `--mac-help-viewer-web-arrow-margin-inline-start` | `3px` | Web link arrow: margin inline start |
+| `--mac-help-viewer-topic-max-width` | `640px` | Topic page: max width |
+| `--mac-help-viewer-topic-padding` | `20px 21px` | Topic page: padding |
+| `--mac-help-viewer-topic-title-margin` | `2px 0 10px` | Topic title: margin |
+| `--mac-help-viewer-topic-text-margin-bottom` | `8px` | Topic paragraph: margin bottom |
+| `--mac-help-viewer-topic-list-gap` | `6px` | Topic list: gap |
+| `--mac-help-viewer-topic-list-margin-top` | `4px` | Topic list: margin top |
+| `--mac-help-viewer-service-icon-size` | `16px` | Share menu service icon: size |
+| `--mac-help-viewer-service-icon-radius` | `4px` | Share menu service icon: radius |
+
+## Accessibility
+
+- The window is a `region` named by its title, "macOS User Guide". The toolbar is one tab
+  stop; the arrow keys move between Back, Forward, the two buttons and the search field.
+- The toolbar's buttons show only a glyph and are named with `aria-label`. Back and Forward
+  are in a group named "History". The sidebar button's name says what it will do: "Hide Table
+  of Contents" or "Show Table of Contents". An item that is unavailable stays reachable in the
+  toolbar and says so with `aria-disabled`.
+- The table of contents is a `treegrid` named "Table of Contents" and one tab stop. An entry
+  with topics has `aria-expanded`; Right Arrow expands it, Left Arrow collapses it or goes to
+  the entry, and typing selects by title. Moving the selection opens the page of the row.
+- The divider is a focusable separator named "Resize the table of contents"; the arrow keys
+  resize the list and Return hides it or shows it again.
+- Each page is an `article`, or for the results a `region`, named by its heading, the page's
+  only `h1`. The count of results is a `status`, so a change of it is announced while typing.
+- A result is a link named by its title and its description. It is highlighted under the
+  pointer and with keyboard focus, where it also has the focus ring. "Show all" and the
+  welcome page's "Table of Contents" are buttons; the latter has `aria-expanded`.
+- The round picture and the icons are decorative and hidden from assistive technology; a page's
+  picture and the welcome page's say what they show in their `alt` text.
+- The welcome page's link is `#007aff` on white as captured, a contrast of 4.0 to 1, which is
+  under the 4.5 to 1 that text of its size asks for.
+- A title of the table of contents that does not fit its row is cut with an ellipsis and has
+  no tooltip; its page's heading has it in full.
+
+## Fidelity
+
+`help-viewer.visual.json` compares the demo with the four Help screenshots, the whole capture
+with the panel's shadow each time: the welcome page with the table of contents in Aqua
+(`welcome-light`), the welcome page without it in Dark Aqua (`welcome-dark`), and the results
+of a search for "File" in both appearances (`search-light`, `search-dark`). The comparisons use
+real input for what the captures show: a click on the selected row gives the table of contents
+its keyboard focus, a click in the search field gives it its focus ring, and in Aqua the
+pointer is put over the first result, which highlights its row.
+
+**Every comparison masks the artwork, whole.** The round picture above the guide's title, the
+illustration under the rule and the icon before each of the six results are not reproduced:
+the demo has a flat disc, a flat panel and a flat square there, each with the same generic
+mark, and nothing in them follows what the captures show. Scoring them would measure a
+difference that is intended, so their boxes are left out of every score.
+
+Each capture is compared twice: once with only the artwork masked, and once more
+(`*-layout-*`, at the stricter threshold of 0.05) with the text and the glyphs masked too: the
+window's title, the four toolbar glyphs, the search field's magnifier and text, the titles of
+the table of contents, and every line of text on the page. What those score is the frame and
+its shadow, the bar and the bezels of its toolbar, the focused search field, the selected row,
+the disclosure triangles, the divider, the page's fills, the highlighted result and the rules.
+
+Scores from `npm run visual -- help-viewer/` (Chromium on Linux, fallback font), share of
+pixels that differ and mean colour distance out of 255:
+
+| Comparison | 1x | 2x |
+| --- | --- | --- |
+| `welcome-light` | 3.58%, 4.94 | 2.95%, 5.16 |
+| `welcome-layout-light` | 0.30%, 0.39 | 0.07%, 0.46 |
+| `welcome-dark` | 1.97%, 3.10 | 1.61%, 3.26 |
+| `welcome-layout-dark` | 0.12%, 0.47 | 0.00%, 0.53 |
+| `search-light` | 4.98%, 6.19 | 4.23%, 6.40 |
+| `search-layout-light` | 0.27%, 0.22 | 0.05%, 0.25 |
+| `search-dark` | 4.55%, 5.38 | 3.82%, 5.42 |
+| `search-layout-dark` | 0.18%, 0.37 | 0.01%, 0.32 |
+
+The budgets in `help-viewer.visual.json` are set just above these. The whole-window scores are
+nearly all text; with it masked the four windows differ in 0.00 to 0.07% of their pixels at 2x.
+
+Taken from the spec's measurements of the screenshots and laid out to them: the 877 by 722 pt
+frame, its 3 pt corners and its 49 pt bar with 11 pt window controls; Back and Forward 25 pt
+each from 8 pt, the two 37 pt buttons from 67 and 112 pt and the 323 pt search field 8 pt from
+the trailing edge; the 203 pt table of contents with 26 pt rows from the bar down, triangles
+8 pt and titles 20 pt from the edge; the 286 pt title block with its gradient from white to
+`#f2f2f2`, the title's capitals from 189 pt and the subtitle's from 234 pt under the bar; the
+rule 328 pt under the bar and 20 pt from the pane's edges (34 pt without the table of
+contents); the illustration's box, 387 by 222 pt, from 365 pt; "All Help" 21 pt from the edge,
+result rows of 56 pt at a pitch of 60 pt from 55 pt under the bar, 2 pt from the window's
+edges, with the title 46 pt from the edge and the description 22.5 pt under it; the rule 20 pt
+from the edges. The colours that are the app's own are in `help-viewer.tokens.css`, each with
+the place it was measured.
+
+What differs, and why:
+
+- **The pictures.** Placeholders, as said above, and masked.
+- **Two-line titles in the table of contents.** The capture wraps three titles ("Use Apple
+  devices together", "Music, books, news, and more", "Resources for your Apple devices") onto
+  two lines in rows of 42 pt. The library's outline view has one row height, so the demo
+  keeps them on one 26 pt row, cut with an ellipsis where they do not fit, and the rows after
+  them stand 16, 32 and 48 pt higher than in the capture. The layout comparison scores the
+  three triangles that are out of place because of it.
+- **Disclosure triangles.** In the capture's 26 pt rows the triangles are centred in the row;
+  the library's outline view centres them in the highlight, which is the row less its last
+  point, so they stand 1 pt higher.
+- **Toolbar in Dark Aqua.** The library's bar and bezels are a few levels more neutral than
+  this capture's: the bar `#39393a` where it has `#3a3c3d`, a bezel `#646465` where it has
+  `#67696a`.
+- **Focus ring of the search field.** In the Aqua capture the bezel's edge shows through the
+  ring as a darker line (`#6e98dd` along the top, `#5b84ca` along the bottom); the library's
+  ring is one colour, `#7aa3e9`.
+- **Shadow.** The Aqua capture has a darker pixel directly outside the frame (`#d9d9d9` where
+  the library's panel shadow gives `#e1e1e1`).
+- **Glyphs.** The library's sidebar image is 15 by 11 pt where the capture's is 15 by 12, and
+  its share image stands three quarters of a point lower. The glyph before "Table of Contents"
+  on the welcome page is the sidebar image too, where the capture has a list in a frame. The
+  arrow after "See more results on the web" is an original drawing.
+- **Text.** Set in the fallback font off Apple devices, so lines end a few points from where
+  the screenshots end them. The second result's description wraps as captured.
+- **The count.** 558 is the number both captures give for "File". The demo reaches it with a
+  real index: the guide's own 27 topics, of which 8 mention the word, and 550 invented topics
+  of other applications' guides, one per application and command. "Show all" lists them.
+- **"See more results on the web"** is text in the link colour, not a link: the demo opens no
+  web page.
+- **Not in a screenshot (provisional):** the table of contents in Dark Aqua and with an entry
+  expanded; the divider of a hidden table of contents in Aqua; every page other than the
+  welcome page and the results (a topic's and an entry's page, whose layout and dark fill
+  follow the results page); the highlight of a result in Dark Aqua; the full list after "Show
+  all" and a search that finds nothing; the welcome page's margins at widths other than the two
+  captured, which are interpolated; the Share menu and its services; the window when it is not
+  key and every size other than the captured one.
+- **Not built:** floating above other windows. The served desktop has a guide for each
+  application but About This Mac, Force Quit and Help Viewer, and books for macOS Help, What’s New
+  and Tips; an application's Help row opens its guide, or else a search.

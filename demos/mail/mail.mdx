@@ -1,0 +1,421 @@
+---
+title: Mail
+description: The Mail viewer of macOS 10.15 with its New Message and Preferences windows, a mailbox sidebar with badges, a message list, search and recipient tokens, built from the library alone.
+layout: full
+order: 60
+---
+
+<Example name="basic" />
+
+Choose a mailbox and a message, type in the search field, flag or delete a message, reply to
+it, write a new one. Mail is simulated: nothing is fetched and nothing is sent, the people are
+invented and so is every message, and each glyph and icon is an original stand-in drawing.
+
+## What it shows
+
+- A [Window](/components/window) with a unified [Title Bar](/components/title-bar) and
+  [Toolbar](/components/toolbar): [Toolbar Buttons](/components/toolbar-button), momentary
+  [Toolbar Segmented Controls](/components/toolbar-segmented-control) for Delete and Junk and
+  for Reply, Reply All and Forward, and a [Toolbar Search Field](/components/toolbar-search-field).
+- The Favorites bar, a [Scope Bar](/components/scope-bar): Mailboxes shows or hides the
+  mailbox list, and the scopes go to the Inbox, Sent and Drafts until a mailbox's menu or a drag
+  from the sidebar puts others there.
+- A [Split View](/components/split-view) of three panes with dividers that can be dragged;
+  Preferences > Viewing > Use classic layout puts the list above the message, in the columns
+  From, Subject and Date Received, whose heads sort it.
+  The mailbox list is a [Sidebar](/components/sidebar) whose rows carry a
+  [Sidebar Badge](/components/sidebar-badge): unread messages for the Inbox, the number of
+  drafts for Drafts. Junk, Trash and Archive are listed only while they hold a message, which
+  is why the Dark Aqua screenshot has a Trash row and the Aqua one does not.
+- The message list is a [List View](/components/list-view) of 70 pt rows: sender and date,
+  subject and two lines of the text. An unread message has a
+  [New Item Dot](/components/new-item-dot), a flagged one a [Tag Dot](/components/tag-dot) in
+  the flag's colour. Above it, the sort order is a borderless
+  [Pull Down Button](/components/pull-down-button) and the filter an
+  [Image Button](/components/image-button) that shows only the unread messages.
+- The message itself is a [Scroll View](/components/scroll-view) of
+  [Labels](/components/label), with "Details" a
+  [Borderless Button](/components/borderless-button); a pane with nothing to show holds an
+  [Empty State](/components/empty-state).
+- Selecting a message reads it; Command-click and Shift select several, which reads none, and
+  every command then acts on all of them. Delete (or the Delete key in the list) moves the
+  selection to the Trash, Junk and Archive to those mailboxes, Move to… to any mailbox, and the
+  row that takes its place is selected. Rows drag onto a mailbox in the sidebar. Return or a
+  double click on a row starts a reply.
+- Mailbox > New Mailbox makes a mailbox of the person's own, listed under On My Mac and in every
+  Move to menu. Rename and Delete are in the Mailbox menu and the row's contextual menu; deleting
+  one moves its messages to the Trash rather than erasing them.
+- Mailbox > New Smart Mailbox lists the messages that meet its conditions, wherever they are: From,
+  To, Cc, Subject, Message Content, flagged, unread, attachments, a mailbox, or the date received.
+  It holds nothing of its own; Junk and Drafts are left out unless it was saved from a search that looked through them, the Trash and Sent only when it
+  says so. Edit, Duplicate, Rename and Delete are in the Mailbox menu and the row's contextual menu.
+  On a desktop it is kept with the person's settings. It searches what the window holds: the first
+  4,000 characters of a message not opened yet, and the pages loaded.
+- Search looks through the sender, subject and text of the messages in all mailboxes, leaving
+  out the Trash and Junk as the General preferences say; the unread filter narrows a search
+  as it narrows a mailbox. The scope bar under the toolbar narrows it to the mailbox shown,
+  `from:` and `subject:` (or the field's suggestions) make tokens, and Save makes a Smart Mailbox
+  of it.
+- Edit > Find opens a bar over the message: its matches are marked and counted, and Find Next,
+  Find Previous and Use Selection for Find step through them, in a window of its own too.
+- View > Organize by Conversation groups the list by subject, with Re: and Fwd: taken off, among
+  people who overlap. A thread's row opens with its triangle; selected whole, the pane shows all its
+  messages, with those of other mailboxes marked. Mute acts on the thread, whichever way the list
+  is shown.
+- Preferences > Rules runs its rules once on each message delivered to the Inbox, and
+  Message > Apply Rules on the selection.
+- Preferences > Signatures keeps signatures; a New Message starts with the one chosen, and its
+  Signature pop-up swaps it. A signature the person edits in the message becomes their own text.
+- The toolbar's menus are [Toolbar Pop Up](/components/toolbar-pop-up) controls: Move to… is
+  a toolbar pull-down with a glyph and a title, and the flag button is a split pull-down,
+  whose main part flags the message and whose narrow part opens the menu of flag colours.
+
+## New Message
+
+<Example name="compose" />
+
+The New Message window is a second `Window`, with the toolbar on a title bar without a title.
+To and Cc are [Token Field Completions](/components/token-field-completions) without a bezel:
+type a name and a comma or Return, or pick one of the address book's names from the list; a
+token's chevron (or Space on a selected token) opens a menu that moves it to the other field
+or removes it. Subject is a [Text Field](/components/text-field) without a bezel and the
+message a rich text view (the `RichTextView` of [Text View](/components/text-view)) in Mail's
+message font, Helvetica 12, the default of Mail > Preferences > Fonts & Colors. Send is
+available once there is a recipient and puts the message in the Sent mailbox. Header Fields,
+Emoji and Photo Browser are toolbar pull-downs ([Toolbar Pop Up](/components/toolbar-pop-up)):
+the first hides the Cc field, while that field is empty, and the second puts a character where
+the insertion point is.
+
+### Styling the message
+
+The text of a message is styled from every place Mail offers:
+
+| From | What it does |
+| --- | --- |
+| The format bar | The toolbar's Aa button, Show Format Bar, shows it under the header fields and hides it again; it is hidden at first, as in the screenshots. It holds the font family and size [Toolbar Pop Ups](/components/toolbar-pop-up), the text colour [Color Well](/components/color-well), Bold, Italic, Underline and Strikethrough, and the four alignments ([Toolbar Segmented Controls](/components/toolbar-segmented-control)). |
+| The Format menu | On a desktop, the menu bar's Format menu while the New Message window is the one last used: Font (Show Fonts, Bold, Italic, Underline, Bigger, Smaller, Show Colors) and Text (Align Left, Center, Justify, Align Right). Bold, Italic and Underline are checked as the text at the insertion point has them, and so is its paragraph's alignment. While a send or a save is under way, or a message is held, every item is dimmed. |
+| The keys of the Format menu | Command-B, Command-I and Command-U; Command-plus and Command-minus, Bigger and Smaller by a point; `Command-{`, `Command-\|` and `Command-}`, Align Left, Center and Align Right; Command-T, Show Fonts; Shift-Command-C, Show Colors. Command is Control off Apple platforms. In To, Cc and Subject only the two panels open, since their text has no styles. |
+| The Fonts panel | A [Font Panel](/components/font-panel): family, typeface, size, underline, strikethrough and colour. Command-T or its close button closes it. |
+| The Colors panel | A [Color Panel](/components/color-panel): the text colour. Shift-Command-C or its close button closes it. |
+
+Each command acts on the selection, or at the insertion point on what is typed next, through
+the browser's own editing commands, so Undo takes it back. The format bar and the Fonts panel
+show the format where the insertion point is, or of the selection's first character, as in
+AppKit. The two panels float at the top right of the page, in front of the windows.
+
+Send hands over the message twice: `body` is its text as plain text, with its line breaks,
+which the viewer shows and a reply quotes, and `html` holds the styles. A draft given with
+`html` opens with that styled text, rebuilt from what formatting writes alone, so nothing in
+it runs or loads.
+
+The window gives the Format menu to the desktop's menu bar through `useDesktopAppMenu`
+(`demos/desktop/desktop-app-menus.ts`); the viewer gives none, so while it is the window last
+used the menu has no commands of Mail's. A page with a menu bar of its own shows them with
+`useDesktopAppMenuItems("mail", "Format")`:
+
+<Example name="format-menu" />
+
+Not built: the list and indentation controls of Mail's format bar.
+
+While it is open it is the key window and the viewer behind it is inactive
+(`data-window-state`), which is the state both reference screenshots show: flat title bar,
+grey window controls, outlined toolbar buttons, grey selection. A press on either window makes
+that one key. On the documentation site the attach, markup, photo browser and include-original buttons are
+disabled, and closing the window discards what was written instead of saving a draft.
+
+## Preferences
+
+<Example name="preferences" />
+
+Mail's preferences are a [Preferences Window](/components/preferences-window) with a
+[Preferences Toolbar](/components/preferences-toolbar) of eight panes; the window's title and
+height follow the selected one. The General pane is the one in the screenshots: seven
+[Pop Up Buttons](/components/pop-up-button), two of them with an icon before the title,
+[Checkboxes](/components/checkbox) and a [Help Button](/components/help-button). Changes take
+effect at once, as in Mail. Three settings do something in the demo:
+
+| Setting | Effect |
+| --- | --- |
+| General, include results from: Trash | Search finds messages in the Trash (on by default). |
+| General, include results from: Junk | Search finds messages in the Junk mailbox. |
+| Signatures, Place signature above quoted text | Where a reply's signature goes. |
+| Signatures, Always match my default message font | Checked and dimmed: a signature is plain text, so it always has the message's font. |
+| Viewing, Show most recent message at the top | The order of the message list when sorted by date. |
+| Viewing, Show To/Cc label, contact photos | A row says To or Cc, and has a monogram. |
+| Viewing, Use Smart Addresses | Off, people are shown by their addresses. |
+| Composing, Check spelling as I type | The message's `spellcheck`. |
+| Composing, Automatically Cc myself | A new message or reply has the person on Cc. |
+| Composing, Quote the text of the original message | Off, a reply starts unquoted; Include Original Message puts the quote in or takes it out. Forward always quotes. |
+| Fonts & Colors, Message font | The font of a New Message and of a message shown, in the reader's own choice: it is not sent with the message. |
+| Fonts & Colors, Use fixed-width font | A message with no styled text. |
+
+The checks that mean nothing here are dimmed and say why (remote content, groups, the filter's
+checks). On the served desktop so are the General settings it cannot act on. Only the General pane
+has a reference screenshot; the contents of the other seven are plausible stand-ins.
+
+The app opens its preferences with Command-comma (Control-comma off Apple platforms) while
+the keyboard focus is in one of its windows, and through the `preferencesOpen` prop, which is how a
+menu bar's Preferences command reaches it; the button under the first example stands for that
+command.
+
+## Hosting the window
+
+`Mail` renders the library's `Window` as its root and passes every `Window` prop to it, so it
+does not assume it fills the page. Place it with `style`; a window manager gives it `state`,
+the size, and eight more props that the component takes out before the rest goes to the
+`Window`. These are the props a [Managed Window](/components/managed-window)'s `render` form
+supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { mailApp } from "./app";
+
+<ManagedWindow
+  id={mailApp.id}
+  defaultFrame={{ x: 80, y: 60, ...mailApp.defaultSize }}
+  render={(props) => <mailApp.component {...props} />}
+/>;
+```
+
+The New Message and Preferences windows are not inside the viewer's element: they are
+rendered into the viewer's offset parent, or into the element given as `windowsContainer`,
+and positioned over the viewer (a new message 225 pt right and 145 pt below its corner, as in
+the Aqua screenshot); they follow the viewer when its owner moves it. The app decides which of its own windows is in front: that one has the
+`state` the manager gave the app, and the others are inactive.
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `messages` | `MailMessage[]` | The messages the mailboxes start with; seven invented ones by default. |
+| `contacts` | `string[]` | The names the address fields complete. |
+| `defaultMailbox`, `onMailboxChange` | `MailboxId`, `(mailbox: MailboxId) => void` | The mailbox selected at first (`"inbox"`), and the one the user selects. |
+| `defaultMessage` | `string \| null` | The message selected at first; by default the most recent of the first mailbox. |
+| `defaultDraft` | `MailDraft \| null` | A New Message window that is open at first, as the key window. |
+| `composeOffset` | `{ x: number; y: number }` | Where a New Message window opens, from the viewer's corner. |
+| `material` | `"translucent" \| "opaque"` | The mailbox list's surface: vibrant over a desktop (the default), or opaque on a plain page. |
+| `defaultSettings` | `MailSettings` | The settings the Preferences window starts with. |
+| `preferencesOpen`, `defaultPreferencesOpen`, `onPreferencesOpenChange` | `boolean`, `boolean`, `(open: boolean) => void` | The Preferences window, controlled or not. |
+| `windowsContainer` | `HTMLElement` | The element the other two windows are rendered into. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `controlsProps` | `WindowControlsProps` | Further props for the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Called for the title bar outside its controls. |
+| `heldMessages` | `MailMessage[]` | The messages, when the owner holds them: every change is then only reported, through the four props below. Pass `messages={[]}` and `defaultMessage={null}` with it. |
+| `onMessageChange` | `(id, change) => void` | With `heldMessages`: read or unread, a flag, mute or a move the viewer made. |
+| `onSend` | `(draft, { draftId }) => boolean \| Promise<boolean>` | With `heldMessages`: a New Message window sends; it closes when this answers true. Without it, Send keeps the message in its window. |
+| `onSaveDraft`, `onErase` | `(draft, draftId?) => void`, `(id) => void` | With `heldMessages`: a closed New Message window that holds something; a message the Trash holds, deleted again. |
+| `onGetMail`, `renderMessageBody`, `composeProps`, `onComposeChange`, `me` | function, function, object, function, `string` | The Get Mail button; what the message pane shows for a message; for the New Message window, a notice, a send under way (`sending`) and a message held as it is (`held`); whether one is open; the user's own address, for replies (people are compared by their mailbox, whatever full name goes with it). |
+| `notice` | `ReactNode` | A line shown over the message list as an alert: a mailbox that could not be loaded, a message that could not be read, or older messages not loaded yet. |
+| `width`, `height` | `number \| string` | The frame; 1061 by 711 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `mailApp` and as `app`: `id`, `name`,
+`component`, `defaultSize` (1061 by 711), `minSize` (980 by 360), `resizable` and `menus`, the
+menu titles after the Apple menu. It also exports `MailCompose` and `MailPreferences`, whose
+roots are the `Window` and the `PreferencesWindow`.
+
+On the desktop served by its Ferrite application (`ferrite-apps/desktop`), the app's
+component is `MailLive` (`mail-live.tsx`): real mail between the desktop's accounts. The
+mailboxes are the signed-in person's own, kept on the server. A New Message is addressed by
+account name (`martin`, `martin@macalicious`, or a card in the person's Contacts that names a
+desktop user, which the address fields complete); its styled text keeps every style of the
+editor. The message arrives at once in each recipient's Inbox, with a notification. Read,
+flags, mute, moves, drafts (a closed New Message window that holds something) and the Trash
+are kept on the server; search covers every mailbox. A received message shows its styled text
+rebuilt from what formatting writes alone, so nothing in it runs or loads. There is no internet
+mail: an outside address is refused by name. Sending to and receiving from the internet needs
+a mail provider account and its key, which only the desktop's owner can supply, and none is
+configured. Only the desktop build made for that application turns this on
+(`VITE_MACALICIOUS_API=1`); on this site and anywhere else the window is the plain `Mail` over
+its invented messages and nothing is fetched.
+
+When a send gets no answer, or a server error, Mail cannot tell whether the message went. The
+New Message window then holds the message as it is and says so: nothing in it can change, and
+Send sends it again under the same idempotency key, so it is delivered once whatever happened
+the first time. Until then the window cannot be closed either, since a draft sent later would go
+under another key; Edit Anyway lets the message go, and says that sending it again may then
+deliver it twice.
+
+A New Message window's message is saved as a draft about three seconds after it last changed, on
+File > Save (Command-S), when the page goes away, and when the Mail viewer closes or Mail quits
+with the window open, so what was written is in Drafts after any of those. A save that fails is
+tried again, and a draft emptied of everything is removed. A save whose answer is lost can leave a
+second copy of the draft in Drafts; nothing written is lost. A message too large for a request that
+outlives the page is kept in this browser as the page goes and saved when Mail next starts here, so
+its last changes reach Drafts then. Reloading the page,
+or closing Mail, in the moment a send is under way can leave a draft of a message that was also
+sent: the text is kept in case the send does not arrive, and the extra draft can be deleted.
+
+Mailbox > Take All Accounts Offline stops Mail reading the mailboxes: it shows what it had loaded,
+kept in this browser across a reload, and a message not yet read says it has not been downloaded. A
+message sent waits in the Outbox, which shows in the sidebar while it holds anything and is kept in
+this browser under the send's idempotency key. Take All Accounts Online sends what waits, and an
+answer lost on the way changes nothing: Get Mail sends it again under the same key, and it is
+delivered once. What the server refuses stays in the Outbox with its reason until it is deleted.
+Flags, moves, erasures, drafts and attachment reads still reach the server while offline: it is a
+choice in this browser, not a second copy of the mailboxes to reconcile. Another browser of the
+person is not offline, and files attached to a message that waits more than a day can be cleared
+from the server, which then refuses it by name.
+
+**Known limits:** the mailboxes are read when the window opens, when it gains focus, when the
+desktop's personal live stream says the person's Mail changed (mail delivered to them, or a
+change in another of their browsers), with Get Mail and after the person's own sends and saves,
+one read at a time; while that stream is not connected, new mail shows at the next of the
+others. A person sends at most 200 messages a day, and a Guest User sends none. A read keeps the window's own copy of a message whose
+flag, read state or move is still being sent, and takes the server's once that change is
+answered. The first two pages (1,000 messages) are read, and search covers what is read: with
+older mail on the server, the list says so with a Load More button that reads one page more.
+Search asks the server for a word past the first 4,000 characters of a long message, and the list reads on to any hit it does not hold yet. Edit > Attachments > Insert Attachments at End of Message starts off, as in real Mail: a file sits at the insertion point of a rich text message, and the reader shows it there; on, a message's files sit under its text. The two Windows-Friendly rows are kept and change nothing, and say so: Mail strips resource forks, and a file from a browser or the drive has none. Preferences > Accounts > Download attachments automatically off reads a picture or a recording only when it is asked for. Attach, File > Attach
+Files and a drag from Finder or the computer add files, up to 10 of up to 10 MB each, uploaded as
+they are chosen and kept with a draft; the message shows them, with Save to Downloads and
+Download. Deleting a message does not free its files' bytes, which every copy shares. A draft save carries an
+idempotency key: when its answer is lost and the window is closed again with the same draft,
+the save is made again under the same key and the server stores the draft once (a draft changed
+meanwhile is a new save); nothing typed is replaced by an earlier save.
+
+## Styling hooks
+
+The demo's measured lengths and font sizes are custom properties in `mail.tokens.css`,
+declared on `:root` and on every element with `data-appearance`, as its colours are; set one
+on a window with `style` to change it. That file tags each with where it comes from: the
+message list, the New Message window and the Preferences pane are measured in the captures;
+the message pane's margins, header and paragraphs are provisional, since no measurement of
+them is recorded, and so are the message font, the format bar and the place of the Fonts and
+Colors panels, which no capture shows. Left as literals in `mail.css`, because they are
+structure rather than measurements: zeros, the 100% heights, the monogram's 50% radius, the
+flex factors, the 1 pt lines under the sort bar, the header, each field of a new message and
+its format bar, the empty form row's 0 height, the two-line clamp and the panels' stacking
+order.
+
+| Property | Default | Controls |
+| --- | --- | --- |
+| `--mac-mail-sort-height` | `23px` | The sort bar over the message list, with its line: height |
+| `--mac-mail-sort-padding-start` | `14.5px` | The sort bar over the message list: leading padding |
+| `--mac-mail-sort-padding-end` | `3px` | The sort bar over the message list: trailing padding |
+| `--mac-mail-row-sender-gap` | `6px` | A message row's first line: gap between its items |
+| `--mac-mail-row-line-height` | `15px` | A message row's lines: line height |
+| `--mac-mail-message-padding-top` | `17px` | The message pane's content: top padding |
+| `--mac-mail-message-padding-right` | `28.75px` | The message pane's content: right padding |
+| `--mac-mail-message-padding-bottom` | `20px` | The message pane's content: bottom padding |
+| `--mac-mail-message-padding-left` | `36px` | The message pane's content: left padding |
+| `--mac-mail-header-gap` | `16px` | The message's header: gap between the monogram and the lines |
+| `--mac-mail-header-margin-bottom` | `16px` | The message's header: bottom margin |
+| `--mac-mail-header-padding-bottom` | `14px` | The message's header: bottom padding |
+| `--mac-mail-header-text-gap` | `3px` | The header's lines: gap between them |
+| `--mac-mail-header-line-gap` | `12px` | A line of the header: gap between its items |
+| `--mac-mail-avatar-size` | `36px` | The sender's monogram: width and height |
+| `--mac-mail-avatar-margin-top` | `2px` | The sender's monogram: top margin |
+| `--mac-mail-paragraph-margin-bottom` | `12px` | A paragraph of the message: bottom margin |
+| `--mac-mail-hover-bar-top` | `1px` | The buttons over a message: distance from its top |
+| `--mac-mail-hover-bar-gap` | `6px` | The buttons over a message: gap between them |
+| `--mac-mail-hover-bar-padding` | `1px 6px` | The buttons over a message: padding |
+| `--mac-mail-hover-bar-radius` | `5px` | The buttons over a message: corner radius |
+| `--mac-mail-compose-field-gap` | `6px` | A header field of a new message: gap between its items |
+| `--mac-mail-quote-rule-width` | `2px` | A quote level: width of its rule |
+| `--mac-mail-quote-padding` | `8px` | A quote level: inset from its rule |
+| `--mac-mail-compose-field-min-height` | `33px` | A header field of a new message: least height |
+| `--mac-mail-compose-field-margin-start` | `24px` | A header field of a new message: leading margin |
+| `--mac-mail-compose-field-padding-top` | `6px` | A header field of a new message: top padding |
+| `--mac-mail-compose-field-padding-bottom` | `5px` | A header field of a new message: bottom padding |
+| `--mac-mail-compose-text-padding-top` | `12px` | The text area of a new message: top padding |
+| `--mac-mail-compose-text-padding-right` | `20px` | The text area of a new message: right padding |
+| `--mac-mail-compose-text-padding-left` | `24px` | The text area of a new message: left padding |
+| `--mac-mail-compose-message-font` | `12px / 1.1667 Helvetica, Arial, sans-serif` | The text of a new message: Mail's message font |
+| `--mac-mail-format-bar-gap` | `3px` | The format bar of a new message: gap between its controls |
+| `--mac-mail-format-bar-padding-block` | `5px` | The format bar of a new message: top and bottom padding |
+| `--mac-mail-format-bar-padding-end` | `20px` | The format bar of a new message: trailing padding |
+| `--mac-mail-panels-gap` | `12px` | The Fonts and Colors panels: gap between them |
+| `--mac-mail-panels-padding-top` | `30px` | The Fonts and Colors panels: distance from the page's top edge |
+| `--mac-mail-panels-padding` | `12px` | The Fonts and Colors panels: distance from the page's other edges |
+| `--mac-mail-preferences-form-padding-end` | `68px` | The Preferences form: trailing padding |
+| `--mac-mail-preferences-checks-gap` | `6px` | A group of Preferences checkboxes: gap between them |
+| `--mac-mail-preferences-checks-margin-top` | `16px` | A group of Preferences checkboxes: top margin |
+| `--mac-mail-preferences-checks-margin-start` | `20px` | A group of Preferences checkboxes: leading margin |
+| `--mac-mail-preferences-indent-margin-top` | `8px` | An indented group of Preferences checkboxes: top margin |
+| `--mac-mail-preferences-indent-margin-start` | `38px` | An indented group of Preferences checkboxes: leading margin |
+| `--mac-mail-preferences-heading-margin-top` | `16px` | A heading over Preferences checkboxes: top margin |
+| `--mac-mail-preferences-heading-margin-start` | `20px` | A heading over Preferences checkboxes: leading margin |
+| `--mac-mail-preferences-footer-margin-top` | `-17.5px` | The Preferences help button: top margin (it shares the last checkbox's row) |
+| `--mac-mail-preferences-footer-margin-end` | `-4px` | The Preferences help button: trailing margin |
+| `--mac-mail-live-notice-padding` | `6px` | A New Message window's notice on the served desktop: top and bottom padding |
+
+## Accessibility
+
+- Each window is a `region`: the viewer is named by its title ("Inbox (4 messages)"), a new
+  message by its subject, or "New Message" while it has none, the preferences by the selected
+  pane.
+- The viewer's toolbar is one tab stop with arrow keys between its items; a command that
+  needs a selected message is disabled, and stays reachable, while there is none.
+- The mailbox list is a `tree` and the message list a `listbox`: the arrow keys move the
+  selection and typing selects by name. The Favorites bar's scopes are a radio group.
+- A message row's marks are named: "Unread", "Muted", "Red flag". An empty list or search
+  result is announced through a `status` element.
+- To, Cc and Subject are labelled by the text before them; the recipients of each field are a
+  list box of options beside the text.
+- The message is a multi-line `textbox` named "Message". The Aa button is a toggle named
+  "Show Format Bar" (`aria-pressed`). The format bar is a `toolbar` named "Format": one tab
+  stop, with the arrow keys between its controls; its segments are named Bold, Italic,
+  Underline, Strikethrough, Align left, Center, Align right and Justify, and each shows whether
+  it is on with `aria-pressed`. The Fonts and Colors panels are regions named by their titles.
+- Opening a new message from the toolbar moves the keyboard focus to its To field. The
+  windows do not contain the focus: Tab moves on through the page, as between any two windows
+  of one page.
+
+## Fidelity
+
+`mail.visual.json` compares the scene of the Mail screenshots (the viewer, inactive, behind a
+key New Message window, from the viewer's top-left corner to the New Message window's
+bottom-right corner) and the Preferences window with the Mail-Preferences screenshots, in both
+appearances, each as captured and again with the text and the stand-in artwork masked. Scores
+from `npm run visual -- mail/` in Chromium on Linux with the fallback font: the share of
+pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 3.70% | 3.03 | 3.49% | 3.10 |
+| `window-light-layout` (masked) | 0.56% | 0.39 | 0.34% | 0.33 |
+| `window-dark` | 2.20% | 2.85 | 2.03% | 2.89 |
+| `window-dark-layout` (masked) | 0.39% | 1.01 | 0.22% | 0.97 |
+| `preferences-light` | 10.42% | 10.92 | 8.58% | 10.62 |
+| `preferences-light-layout` (masked) | 5.40% | 1.87 | 0.79% | 0.64 |
+| `preferences-dark` | 10.28% | 10.85 | 8.64% | 10.49 |
+| `preferences-dark-layout` (masked) | 3.11% | 2.77 | 0.68% | 1.66 |
+
+The masked rows count a pixel as differing at a colour distance of 0.05, half the default.
+The Preferences window is mostly text and icons, which is what its unmasked rows measure.
+
+- Every glyph of the two toolbars and the sidebar, the eight Preferences toolbar icons and the
+  two icons inside pop-up buttons are original stand-in drawings; Apple's artwork is not
+  reproduced. The desktop picture around the windows is not reproduced either: the two corners
+  of it inside the comparison are masked.
+- The messages are invented, so the text of the message row and of the message differs from
+  the capture's. The comparison's New Message window holds the capture's recipient and
+  subject.
+- The Favorites bar is a Scope Bar on the toolbar surface, set to Mail's 24 pt. Mail draws
+  "Mailboxes" without a bezel and its items in the regular weight; the Scope Bar draws its
+  action with a round-rect bezel and its scopes in bold.
+- "Sort by Date" is 12 pt semibold in Mail; the borderless Pull Down Button sets it in the
+  13 pt control font.
+- In an inactive window the library's toolbar buttons are a little darker than Mail's in
+  Aqua (`#ececec` where the capture has `#f4f4f4`) and have no visible fill in Dark Aqua,
+  where the capture has `#3a3b3e` on `#2b2c2f`; the search field's inactive outline differs
+  as well. These are what remains in the masked window comparisons, with the shadow the New
+  Message window casts on the viewer, which is lighter than the capture's.
+- The colours of the viewer's panes are measured in the captures, where the viewer is
+  inactive, and are used in a key window too; no screenshot shows Mail's viewer as the key
+  window.
+- A New Message window is always in front of the viewer, also while the viewer is key: the
+  demo does not reorder its windows. Closing it discards the text; nothing is saved as a
+  draft.
+- No capture shows text in a new message, its format bar, or the Fonts and Colors panels. The
+  message font is Mail's default, Helvetica 12 (set in Arial where Helvetica is missing); the
+  format bar's controls are the library's toolbar controls at TextEdit's 16 pt, under the
+  header fields, and their widths are provisional.
+- The library's toolbar pull-down has the measure of Finder's, 46 pt with a 14 pt glyph;
+  Mail's New Message window has 39 pt ones, and its Emoji button has no chevron. The three
+  pull-downs of that toolbar are therefore 7 pt wider each, and the buttons at its trailing
+  edge sit up to 14 pt left of the capture's. Move to… has a chevron at its trailing edge
+  that Mail's does not show, and the flag button's menu part is the library's 19 pt where
+  Mail's is 16.5 pt, so its divider is 2.5 pt left of the capture's.
+- The token's menu, the flag menu, the search results, seven of the eight Preferences panes
+  and everything the demo does when a button is pressed have no reference screenshot; they
+  are composed from library components to Catalina's conventions.

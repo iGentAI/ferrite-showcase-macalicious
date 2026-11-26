@@ -1,0 +1,41 @@
+/*
+ * The find bar above an editor's text (Notes, TextEdit), and how a browser with the CSS Custom
+ * Highlight API tints what it found.
+ *
+ * Parts
+ *   .mac-notes-find           the bar
+ *   .mac-notes-find-count     how many matches it found
+ *   .mac-notes-find-replace   its Replace row
+ */
+::highlight(mac-find) {
+  background-color: var(--mac-color-find-highlight);
+}
+
+::highlight(mac-find-current) {
+  background-color: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-content-text);
+}
+
+.mac-notes-find {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  padding: 5px 8px;
+  border-block-end: var(--mac-hairline) solid var(--mac-color-separator);
+  font: var(--mac-font-body);
+  font-size: 11px;
+}
+
+.mac-notes-find-count {
+  flex: none;
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-notes-find-replace {
+  display: flex;
+  flex: 1 1 100%;
+  gap: 6px;
+  align-items: center;
+}

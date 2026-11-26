@@ -1,0 +1,172 @@
+---
+title: Toolbar Pop-Up
+description: The pop-up, pull-down and split buttons of a toolbar. A toolbar button with a down chevron that opens a menu, such as Finder's Group and Action buttons.
+order: 64
+---
+
+<Example name="basic" both />
+
+AppKit's `NSPopUpButton` with the textured rounded bezel, and `NSMenuToolbarItem`. Three
+components, each a [toolbar button](/components/toolbar-button) with a chevron:
+
+- `ToolbarPullDown` opens a menu of commands below itself. Built on
+  [Base UI's Menu](https://base-ui.com/react/components/menu) with the library's
+  [menu](/components/menu).
+- `ToolbarPopUp` shows the current choice and opens the choices over itself. It is a
+  [pop-up button](/components/pop-up-button), on Base UI's Select, drawn as a toolbar button.
+- `ToolbarSplitPullDown` is a main part that acts when clicked and a narrow part that opens a
+  menu, in one bezel: the two segments of a momentary
+  [toolbar segmented control](/components/toolbar-segmented-control).
+
+## Usage
+
+```tsx
+import { MenuItem, MenuSeparator } from "macalicious/menu-item";
+import { PopUpButtonItem } from "macalicious/pop-up-button";
+import { ToolbarPopUp, ToolbarPullDown, ToolbarSplitPullDown } from "macalicious/toolbar-pop-up";
+import "macalicious/styles.css";
+
+<ToolbarPullDown image={gearGlyph} aria-label="Action">
+  <MenuItem onClick={newFolder}>New Folder</MenuItem>
+  <MenuSeparator />
+  <MenuItem onClick={getInfo}>Get Info</MenuItem>
+</ToolbarPullDown>
+
+<ToolbarPopUp value={font} onValueChange={setFont} aria-label="Font" style={{ width: 120 }}>
+  <PopUpButtonItem value="helvetica">Helvetica</PopUpButtonItem>
+  <PopUpButtonItem value="menlo">Menlo</PopUpButtonItem>
+</ToolbarPopUp>
+
+<ToolbarSplitPullDown image={penGlyph} aria-label="Highlight" onClick={highlight}
+  menuLabel="Highlight colors">
+  <MenuItem onClick={yellow}>Yellow</MenuItem>
+</ToolbarSplitPullDown>
+```
+
+Or copy the source into your project: `npx macalicious add toolbar-pop-up`.
+
+The children are the menu: menu items for the pull-down and the split button, pop-up button
+items for the pop-up. `image` is a glyph of your own, about 14 pt high, drawn with
+`currentColor`; no Apple artwork is included. Inside a [toolbar](/components/toolbar) the
+buttons join its arrow-key navigation; they also work on their own.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines,
+[Toolbars](https://web.archive.org/web/20200503121036/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/toolbars/)
+and
+[Pull-Down Buttons](https://web.archive.org/web/20200503154252/https://developer.apple.com/design/human-interface-guidelines/macos/buttons/pull-down-buttons/):
+
+- Offer an Action pull-down button in the toolbar for the commands of the selected item,
+  instead of a contextual menu for the toolbar; the same commands should be in the menu bar.
+- Use a pull-down button for commands and a pop-up button for one choice out of several.
+- Keep 8 pt between a toolbar pop-up and the items beside it.
+
+## Variants and states
+
+<Example name="kinds" both />
+
+| State | How it is triggered | Look | Basis |
+| --- | --- | --- | --- |
+| Normal | – | The toolbar button's bezel, 22 pt high; glyph or title, then the chevron 5 pt from the trailing edge | Measured (Finder's Group and Action buttons) |
+| Open | click, Space, Return or Down Arrow | The toolbar button's "on" bezel while the menu is open | Provisional |
+| Disabled | `disabled` | The bezel stays, glyph and chevron dim | Measured (Preview's Highlight button) |
+| Split | `ToolbarSplitPullDown` | One bezel, a 1 pt divider, a 19 pt menu part with the small heavy chevron | Measured (Preview's Highlight button) |
+| Compact | `compact` | 5 pt before the content and the chevron 4 pt after it, 7 pt wide | Measured (Preview's View button) |
+| Keyboard focus, window not key | as the toolbar button | See [Toolbar Button](/components/toolbar-button) | – |
+
+The pull-down's chevron is 7.5 x 4.5 pt with a 1.5 pt stroke; the split button's is 7 x 4.5 pt
+with a 1.75 pt stroke. A pull-down with a 14 pt glyph is 46 pt wide, as in Finder: 10 pt, the
+glyph, 9.5 pt, the chevron, 5 pt.
+
+### Compact
+
+Preview's View button is narrower than Finder's buttons: 36 pt with a 15 pt glyph, laid out as
+5 pt, the glyph, 4 pt, the chevron, 5 pt, and its chevron is 7 pt wide. `compact` on a
+`ToolbarPullDown` or a `ToolbarPopUp` gives that layout; the bezel and the states are unchanged.
+
+<Example name="compact" both />
+
+## Sizes
+
+Toolbar controls have one size: 22 pt high. A pull-down button is as wide as its content, 46 pt
+with a 14 pt glyph, or 36 pt with a 15 pt glyph when it is `compact`; give
+a pop-up a `width`, because its title changes with the choice. `style` on the split button
+sizes its main part.
+
+## API
+
+`ToolbarPullDown` takes the props below; every other prop goes to the button (a
+`ToolbarButton` that is Base UI's Menu.Trigger).
+
+<PropsTable name="ToolbarPullDownProps" />
+
+`ToolbarPopUp` takes the props of [`PopUpButton`](/components/pop-up-button) except `size`,
+`bordered` and `render`, plus `compact`.
+
+<PropsTable name="ToolbarPopUpProps" />
+
+`ToolbarSplitPullDown` takes the props below; `onClick`, `aria-label`, `style`, `ref` and the
+other button props go to the main part, `className` to the group.
+
+<PropsTable name="ToolbarSplitPullDownProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-pressed` | button, menu part | present or absent | The menu is open: the "on" bezel. |
+| `data-popup-open` | button, menu part | present or absent | Set by Base UI while the menu is open. |
+| `data-compact` | button | present or absent | Reflects `compact`. |
+| `data-disabled` | button, both parts | present or absent | Disabled. |
+
+Classes: `.mac-toolbar-pop-up` beside `.mac-toolbar-button` on the button,
+`.mac-toolbar-pop-up-image`, `.mac-toolbar-pop-up-arrow`; on the split button
+`.mac-toolbar-pop-up-split` beside `.mac-toolbar-segmented-control`, and
+`.mac-toolbar-pop-up-menu-part` on its menu part.
+
+## Accessibility
+
+- A pull-down is a `<button>` with `aria-haspopup="menu"` and `aria-expanded`; a pop-up has
+  `role="combobox"` with a `listbox`, as the pop-up button.
+- A button that shows only a glyph needs an `aria-label`. The split button needs two names:
+  `aria-label` for the main part and `menuLabel` for the part that opens the menu.
+- Down Arrow, Return or Space opens the menu; the arrow keys move, Return or Space chooses,
+  Escape closes and returns focus to the button.
+- In a toolbar, Left and Right Arrow move between the items and the toolbar is one tab stop;
+  the two parts of a split button are two items. On its own a split button is one tab stop
+  with arrow keys between its parts.
+- The chevron is decoration and hidden from assistive technology.
+
+## Visual comparison
+
+`npm run visual -- toolbar-pop-up/` compares three examples with the reference screenshots in
+both appearances (`toolbar-pop-up.visual.json`): the Group and Action buttons of a Finder
+toolbar, the disabled Highlight split button of Preview and Preview's compact View button. The
+glyphs are masked, because they
+are stand-ins drawn for this library; a pixel counts as differing at a colour distance of 0.05.
+Share of pixels that differ at 2x, in Chromium on Linux:
+
+| Crop | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Finder, Group and Action | 0.44% | 0.34% |
+| Preview, Highlight split button (disabled) | 0.46% | 0.49% |
+| Preview, View button (compact) | 1.22% | 1.12% |
+
+What differs on the View button is the antialiasing along the chevron's arms: Apple's chevron
+is a little sharper than the scaled one drawn here. Preview's glyphs are also lighter than
+Finder's, on which the toolbar button's text colour is measured (`#737373` on `#f6f6f6` where
+Finder has `#565656`; `#fbfbfb` on `#686969` in Dark Aqua, where the token gives `#f2f2f2`), so
+the example sets `--mac-toolbar-button-text` to Preview's ink and the comparison scores the
+compact layout, not that colour.
+
+The open state is checked in a real browser (the `expect` comparisons): while the mouse is held
+down on the Action button it has the "on" bezel and the button beside it is unchanged.
+
+Provisional, or not compared:
+
+- **The open look**: no screenshot shows a toolbar pop-up with its menu open.
+- **A pop-up with a title**: the screenshots show none in a toolbar; its paddings are those of
+  the pull-down.
+- **An enabled split button, and the Disk Utility View button with its label below**: not
+  compared. A label below an item is a
+  [toolbar labelled item](/components/toolbar-labelled-item).
+- **Glyphs** are not included; the examples draw simple stand-ins.

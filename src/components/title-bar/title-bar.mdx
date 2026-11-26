@@ -1,0 +1,213 @@
+---
+title: Title Bar
+description: The bar at the top of a window, holding the window controls, the title and, in the unified and title-hidden layouts, the toolbar on the same surface.
+order: 12
+---
+
+<Example name="basic" both />
+
+AppKit draws the title bar and an attached toolbar as one continuous surface. `TitleBar` is
+that surface: window controls at the leading edge, the title centred on the window, and its
+children, usually a [Toolbar](/components/toolbar), below or beside them. Base UI has no title
+bar, so the element is written here.
+
+## Usage
+
+```tsx
+import { TitleBar } from "macalicious/title-bar";
+import { Toolbar } from "macalicious/toolbar";
+import { WindowControls } from "macalicious/window-controls";
+import "macalicious/title-bar.css";
+
+<TitleBar variant="unified" title="Network" controls={<WindowControls />}>
+  <Toolbar aria-label="Finder">{/* toolbar items */}</Toolbar>
+</TitleBar>
+```
+
+Inside a [Window](/components/window) the title names the window for assistive technology with
+nothing to wire up.
+
+## Guidelines
+
+Not verified: this section paraphrases Apple's Human Interface Guidelines and was not checked
+against Apple's text.
+
+- Title a window with the display name of what it shows: the document, the folder, the pane.
+  Never a file path.
+- A document window may show a 16 pt proxy icon before its title: pass `icon`.
+- Hide the title only when the window's content makes it obvious, as Safari and System
+  Preferences do, and keep the toolbar on the controls' row (`variant="title-hidden"`).
+- The whole bar moves the window. Do not put controls in it that need a drag gesture of their
+  own.
+
+## Variants and states
+
+<Example name="variants" both />
+
+| Variant | Height | Use |
+| --- | --- | --- |
+| `standard` | 22 pt | Plain title bar: dialogs, Get Info, Go to Folder |
+| `unified` | 22 pt strip plus the toolbar: 55 pt with an icon-only toolbar, 68 pt with labels | Finder, Preview, Console |
+| `title-hidden` | 38 pt | Controls and toolbar on one row; a title, if given, is centred over it: Safari, System Preferences |
+| `utility` | 16 pt strip, plus a toolbar if there are children | Utility panels such as Help; use small window controls |
+
+| State | How it is set | Look |
+| --- | --- | --- |
+| Key or main window | no attribute, `key` or `main` on the window | Vertical gradient under two highlight rows; a shadow row and a separator at the bottom |
+| Inactive window | `data-window-state="inactive"` on an ancestor | Flat fill, dimmed title, lighter bottom rows |
+| Followed by another bar | `divider="bar"` | The lighter pair of bottom rows Catalina draws above a tab bar or a scope bar |
+| Followed by a bar, Dictionary's way | `divider="line"` | Both bottom rows in one colour: a single 1 pt line; the fill is the upper part of the gradient that the bar shares with the scope bar |
+| Full screen | `data-full-screen` on the window | Square top corners |
+
+The two top rows and the two bottom rows are each one device pixel and are part of the bar's
+height. The top rows are measured under a window's inner rim, so a bar outside a
+[Window](/components/window) is a little dimmer along its top edge. A title that does not fit
+beside the controls starts right after them and is cut at the end.
+
+### The bottom rows above another bar
+
+Catalina does not draw one divider above every scope bar. The rows were read in the four
+captures that show a title bar with a small scope bar under it, across the width of the
+window (window at 112, 76; device pixel rows counted from the window's top):
+
+| Capture | Rows | Aqua | Dark Aqua | Draw it with |
+| --- | --- | --- | --- | --- |
+| Console, 68 pt bar | 134, 135 | `#c3c3c3`, `#adadad` | `#4b4c4c`, `#585858` in most columns, down to `#404142`, `#4d4d4e` in others | `divider="bar"` |
+| Dictionary, 55 pt bar | 108, 109 | `#bdbdbd`, `#bdbdbd` | `#5d5e5f`, `#5d5e5f` | `divider="line"` |
+
+Console's rows are those of `divider="bar"`, `#c4c4c4` over `#aeaeae` in Aqua. Its Dark Aqua
+rows vary across the window and mostly read 8 levels lighter than the stored `#434445` over
+`#505152`, and so does the bar's fill beside them (`#3c3d3d` where the Finder bar ends at
+`#343536`): the rows stand 15 and 28 levels above the fill in both, so the difference is the
+capture's, a dark window taking colour from the desktop behind it, not the divider's, and
+Console needs nothing of its own. Dictionary's rows are a different drawing: one colour in
+both rows, darker than the pair's first row in Aqua and 26 and 13 levels lighter than the pair
+in Dark Aqua. `divider="line"` draws them, from `--mac-title-bar-line`. No capture shows it in
+an inactive window; there it takes the rows of `divider="bar"` (provisional).
+
+## Translucent
+
+<Example name="translucent" both />
+
+A movie window has no opaque bar: QuickTime Player lays its title bar over the top of the
+picture, and the picture shows through. `material="translucent"` gives the bar that fill, a dark
+tint over a blur of whatever is behind it, in any of the four layouts. It is dark in Aqua and
+in Dark Aqua alike: the bar carries `data-appearance="dark"`, so its window controls, its title
+and a toolbar inside it are drawn in Dark Aqua. The material only fills the bar. Laying the bar
+over the content is the window's layout: position the bar yourself, as the example does.
+
+| Material | Look | Use |
+| --- | --- | --- |
+| `opaque` | The gradient of the table above | Every ordinary window |
+| `translucent` | A dark tint, 79% to 82% opaque, over a blur of what is behind; a flatter tint in an inactive window (provisional); opaque greys with Reduce transparency (provisional) | A bar laid over a picture or a movie |
+
+## Drag region
+
+The bar reports, and does nothing else. `onDragRegionPointerDown` runs when the primary button
+goes down on the bar itself; `onDragRegionDoubleClick` when the bar itself is double-clicked.
+Neither runs for a press on a control inside the bar: a button, link, field, checkbox, switch,
+radio button, tab, slider, combo box, list, menu, a label (a press on it goes to its control),
+editable text, or anything marked `data-window-no-drag`. Neither runs either when the bar's own
+`onPointerDown` or `onDoubleClick`, or a handler that saw the event first, cancels it with
+`preventDefault()`, so a window can veto a press on its bar. The bar carries
+`data-window-drag-region`, so a manager can also find it from an event on the window. A window
+without a title bar makes other surfaces drag regions with `windowDragRegion()` from
+`macalicious/lib/window-drag-region` ([Window](/components/window)), which applies the same test.
+
+## Sizes
+
+A title bar has no `size` prop; its height follows from `variant` (the table above): 22 pt,
+38 pt, a 22 pt strip plus the toolbar, or the 16 pt utility strip. Its width is the window's.
+
+## API
+
+<PropsTable name="TitleBarProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-variant` | `standard`, `unified`, `title-hidden`, `utility` | Reflects `variant`. |
+| `data-title-bar` | as `data-variant` | The same value under a name that toolbar items inside select on. |
+| `data-divider` | `content`, `bar`, `line` | Reflects `divider`. |
+| `data-material` | `opaque`, `translucent` | Reflects `material`. |
+| `data-appearance` | `dark`, or the caller's | A translucent bar always carries `dark`: it is dark in both appearances, whatever the caller passes. An opaque bar sets nothing and keeps a `data-appearance` its caller gives it. |
+| `data-window-drag-region` | present | Marks the bar as the window's drag region. |
+
+Parts: `.mac-title-bar-controls`, `.mac-title-bar-title`, `.mac-title-bar-icon`,
+`.mac-title-bar-title-text` and `.mac-title-bar-content` (the children).
+
+## Accessibility
+
+- The title element gets the id that its `Window` points `aria-labelledby` at. Outside a
+  `Window` the title is plain text.
+- The proxy icon is decorative and hidden from assistive technology.
+- The drag region is pointer-only by design: moving, zooming and minimizing must also be
+  available from the window controls or a menu command. That is why the bar has pointer
+  handlers without a role.
+- The window controls and toolbar items inside keep their own keyboard behaviour.
+
+## Visual comparison
+
+`title-bar.visual.json` compares, in both appearances, the plain 22 pt bar (Finder Get Info), its
+leading end with the window controls (System Information), the unified 55 pt surface (Finder
+Network) and the inactive bar (Safari behind Picture in Picture). `divider="line"` is compared
+with the two Dictionary captures twice: the whole 55 pt surface where the toolbar is empty, and
+its two bottom rows alone at a strict threshold, which the pair of `divider="bar"` fails in
+every pixel. The translucent bar is compared
+with the two QuickTime Player captures where the movie behind it is nearly black and flat, so
+that no picture has to be drawn; the whole bar over the picture is scored by the
+[QuickTime Player](/demos/quicktime-player) demo. The whole Get Info bar
+includes a stand-in proxy icon and the title in the fallback font, so its score is mostly
+artwork and text; `plain-light-bar` and `plain-dark-bar` mask both.
+The scores are in the table below.
+
+Scores from `npm run visual -- title-bar` in Chromium on Linux with the fallback font: the share of
+pixels that differ by more than the comparison's threshold, and the mean colour difference out
+of 255. A masked comparison leaves out stand-in artwork and fallback-font text.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `plain-light` | Light-Finder-Get-Info (112, 76, 530, 44) | 15.61% | 14.79 | 14.08% | 14.49 |
+| `plain-light-bar` (masked) | Light-Finder-Get-Info (112, 76, 530, 44) | 1.89% | 1.40 | 1.39% | 1.35 |
+| `plain-dark` | Dark-Finder-Get-Info (112, 76, 530, 44) | 15.54% | 17.19 | 13.66% | 17.01 |
+| `plain-dark-bar` (masked) | Dark-Finder-Get-Info (112, 76, 530, 44) | 1.54% | 4.46 | 0.72% | 4.32 |
+| `plain-leading-light` | Light-System-Information (112, 76, 530, 44) | 0.84% | 0.89 | 0.61% | 0.90 |
+| `plain-leading-dark` | Dark-System-Information (112, 76, 530, 44) | 0.51% | 2.90 | 0.18% | 2.74 |
+| `unified-surface-light` | Light-Finder-Network (1096, 76, 200, 110) | 0.00% | 0.52 | 0.00% | 0.60 |
+| `unified-surface-dark` | Dark-Finder-Network (1200, 76, 200, 110) | 0.00% | 0.33 | 0.00% | 0.40 |
+| `line-surface-light` | Light-Dictionary (392, 76, 200, 110) | 0.00% | 0.42 | 0.00% | 0.45 |
+| `line-surface-dark` | Dark-Dictionary (392, 76, 200, 110) | 0.00% | 0.37 | 0.00% | 0.42 |
+| `line-rows-light` | Light-Dictionary (392, 184, 200, 2) | 0.00% | 0.49 | 0.00% | 0.33 |
+| `line-rows-dark` | Dark-Dictionary (392, 184, 200, 2) | 0.00% | 0.86 | 0.00% | 0.26 |
+| `inactive-light` (masked) | Light-Safari-v13-Picture-in-Picture (330, 104, 440, 76) | 3.18% | 1.00 | 0.06% | 0.19 |
+| `inactive-dark` (masked) | Dark-Safari-v13-Picture-in-Picture (358, 78, 440, 76) | 1.58% | 2.05 | 0.07% | 1.65 |
+| `inactive-light-whole` | Light-Safari-v13-Picture-in-Picture (330, 104, 440, 76) | 0.43% | 1.23 | 0.41% | 0.45 |
+| `inactive-dark-whole` | Dark-Safari-v13-Picture-in-Picture (358, 78, 440, 76) | 0.43% | 2.27 | 0.40% | 1.88 |
+| `translucent-surface-light` | Light-QuickTime (2412, 76, 400, 44) | 0.00% | 2.50 | 0.00% | 2.45 |
+| `translucent-surface-dark` | Dark-QuickTime (2112, 76, 400, 44) | 0.00% | 1.57 | 0.00% | 1.61 |
+
+The two `-whole` rows score the inactive crop with nothing masked, at the default threshold, so
+they include the stand-in sidebar glyph; the masked rows use the stricter threshold 0.05. The
+two `line-rows` rows use the threshold 0.01.
+
+In Dictionary and in Console the title bar and the scope bar under it share one gradient, so a
+title bar followed by a scope bar holds only its upper part and ends lighter than a bar that
+stands alone. `divider="line"` fills the bar with that part, `--mac-title-bar-line-fill`,
+measured in the two Dictionary captures (columns x 392 to 591, the mean of each device row,
+window at 112, 76): `#e5e5e5` / `#434446` on rows 2 to 4, 221.7 / (63, 64, 66) on row 50 and
+212.5 / (58, 59, 61) on row 107, linear in between within one level. The token holds the first
+colour for the first 2 pt and runs to `#d4d4d4` / `#3a3b3c` at the bar's bottom. The Finder fill
+the bar used before ends at `#cdcdcd` / `#343536`, 8 and 6 levels darker; with it the
+`line-surface` rows scored a mean difference of 4.02 and 4.93 under budgets of 4.4 and 5.3,
+now 0.42 and 0.37 under 0.9 and 0.8. Console shows the same gradient (227 on row 2, 209 on
+row 133, 202 at the bottom of its scope bar) but draws the pair of `divider="bar"`, which keeps
+the Finder fill.
+
+Measured: the heights, the gradient's first and last stops, the highlight, shadow and separator
+rows, the single line and the fill of `divider="line"`, the key title colour, the title baseline, the translucent tint (one value, the mean of
+the fits of the two QuickTime captures, which are 7 levels apart). Provisional: the title colour in an inactive
+window (no capture shows an inactive window with a title); the translucent bar in an inactive
+window and with Reduce transparency; the blur behind the translucent bar, which is the
+library's shared material filter and not AppKit's blend. Not reproducible: a title too long
+for the bar is cut at the end, where AppKit cuts it in the middle; in Dark Aqua a toolbar over
+scrolled light content turns lighter on a Mac, and here it stays opaque; the title is set in
+San Francisco only on Apple devices ([Fidelity limits](/fidelity)).

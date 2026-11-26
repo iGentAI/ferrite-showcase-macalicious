@@ -1,0 +1,60 @@
+/*
+ * Web view colours, light-dark(<Aqua>, <Dark Aqua>), from the Safari 13 Favorites, Reader
+ * and Tab Overview captures; pixel positions are on the docs page.
+ */
+:root {
+  /* [measured] start page and Tab Overview canvas */
+  --mac-web-view-start: light-dark(#e7e9ea, #2c2d30);
+  --mac-web-view-overview: light-dark(#e7e8e9, #2c2d30);
+  /* [measured] heading and tile titles; the muted second line */
+  --mac-web-view-start-text: light-dark(#343637, #ffffff);
+  --mac-web-view-start-detail: light-dark(#aeb0b1, #6d6e71);
+  /* [measured] a tile with no artwork */
+  --mac-web-view-tile: light-dark(#f3f3f4, #6a6b6c);
+  /* [measured, computed] its edge and fitted shadow */
+  --mac-web-view-tile-shadow:
+    inset 0 0 0 1px light-dark(rgb(0 0 0 / 0.03), rgb(0 0 0 / 0.02)), 0 3px 8px rgb(0 0 0 / 0.12);
+  /* [provisional] the letter of a letter tile */
+  --mac-web-view-tile-text: light-dark(#9395a1, #c8c9cf);
+
+  /* [measured] Reader canvas, sheet and text */
+  --mac-web-view-reader-canvas: light-dark(#e6e6e6, #323233);
+  --mac-web-view-reader-paper: light-dark(#ffffff, #4a4a4d);
+  --mac-web-view-reader-text: light-dark(#1b1b1b, #d7d7d8);
+  /* [measured, computed] fitted sheet shadow */
+  --mac-web-view-reader-shadow: 0 5.5px 14px light-dark(rgb(0 0 0 / 0.275), rgb(0 0 0 / 0.3));
+
+  /* [measured] Tab Overview title band and title */
+  --mac-web-view-thumbnail-band: light-dark(#ececec, #303134);
+  --mac-web-view-thumbnail-text: light-dark(#242424, #dfdfe0);
+  /* [measured, computed] border over the shadowed canvas; fitted shadow */
+  --mac-web-view-thumbnail-border: light-dark(rgb(0 0 0 / 0.105), rgb(0 0 0 / 0.115));
+  --mac-web-view-thumbnail-shadow: 0 7px 17px 1px rgb(0 0 0 / 0.19);
+  /* [measured] new-tab tile and its + */
+  --mac-web-view-new-tab: light-dark(#d0d1d2, #3f4143);
+  --mac-web-view-new-tab-glyph: light-dark(#68696a, #a8a9aa);
+  /* [measured] type: the start page's heading, the letter of a tile, Reader's text and title */
+  --mac-web-view-heading-font:
+    var(--mac-font-weight-bold) 20px / 24px var(--mac-font-family-system);
+  --mac-web-view-tile-font: var(--mac-font-weight-semibold) 40px / 1 var(--mac-font-family-system);
+  --mac-web-view-reader-font:
+    var(--mac-font-weight-regular) 20px / 29px var(--mac-font-family-system);
+  --mac-web-view-reader-title-font:
+    var(--mac-font-weight-bold) 36px / 43px var(--mac-font-family-system);
+  /* [measured] favourite tile: 80 pt, 8 pt corners; thumbnail title band 25 pt */
+  --mac-web-view-tile-size: 80px;
+  --mac-web-view-tile-radius: 8px;
+  --mac-web-view-thumbnail-title-height: 25px;
+  /* [measured] start page grid: pitch and row; Reader's sheet */
+  --mac-web-view-pitch: 115px;
+  --mac-web-view-row: 148px;
+  --mac-web-view-reader-width: 786px;
+  /* [provisional] widest tile title; widest line of an error page */
+  --mac-web-view-label-width: 111px;
+  --mac-web-view-error-width: 520px;
+  /* [provisional] not captured: a pressed thumbnail, the loading line, an error's headline */
+  --mac-web-view-thumbnail-pressed-brightness: 0.85;
+  --mac-web-view-progress-height: 2px;
+  --mac-web-view-error-title-font:
+    var(--mac-font-weight-bold) 22px / 26px var(--mac-font-family-system);
+}

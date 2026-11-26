@@ -1,0 +1,357 @@
+---
+title: QuickTime Player
+description: The movie window of QuickTime Player in macOS 10.15, dark in both appearances, with a translucent title bar and the floating playback controller over a full-bleed picture, a simulated transport with time codes, scrubbing, rewind and fast-forward speeds, volume, a Share menu and Picture in Picture, which also plays a movie of your own for real.
+layout: full
+order: 85
+---
+
+<Example name="basic" />
+
+Press Play, or the space bar with the window focused: the time code runs and the playhead
+moves. Leave the pointer still for three seconds and the title bar and the controller fade
+until it moves again. Drag the timeline, step the speed with the rewind and fast-forward
+buttons, change the volume, open the Share menu, or float the picture. No media is included:
+the transport is a model driven by a timer, nothing is heard, and the picture is one original
+generated still of a river valley.
+
+## What it shows
+
+- A [Window](/components/window) with `data-appearance="dark"`: a movie window is dark in Aqua
+  and in Dark Aqua alike, and the attribute gives everything inside its Dark Aqua look. The
+  picture fills the frame; the bars lie over it.
+- A [Title Bar](/components/title-bar) in its plain 22 pt form and its translucent material
+  (`material="translucent"`), with the [Window Controls](/components/window-controls), a
+  stand-in proxy icon in its `icon` slot and the movie's name. The demo's stylesheet only lays
+  it over the top of the picture and fades it.
+- The controller: a [HUD Window](/components/hud-window) in its `controller` variant, 440 by
+  75 pt, holding the library's `HudWindowButton`s (mute, full volume, rewind, play or pause,
+  fast-forward, AirPlay, Share, Picture in Picture), two `HudWindowSlider`s (the `knob` for the
+  volume, the `scrubber` for the timeline) and two `HudWindowText`s for the time codes. The
+  demo only places them where the captures have them and draws the glyphs; the Share glyph is
+  the library's `share` [System Image](/components/system-image).
+- Share is a [Share Menu](/components/share-menu) whose trigger is the controller's button;
+  AirPlay opens a [Menu](/components/menu) of two radio [Menu Items](/components/menu-item),
+  this computer and an invented device. Both menus follow the page's appearance, as
+  Catalina's do.
+- Picture in Picture moves the picture into the library's
+  [Picture in Picture](/components/picture-in-picture) window, whose play button is the
+  movie's. It floats inside the QuickTime window, because the demo has no screen to put it on.
+- The placeholder picture is held by an [Image View](/components/image-view), which names it for
+  assistive technology; a small HUD panel shows the speed while the movie scans.
+
+The transport is a pure model, `quicktime-player-clock.ts`: a position in frames, a length, a
+frame rate, and a rate. Play runs at normal speed and stops at the end; Play at the end starts
+over. Fast-forward and rewind go to 2x and with every further press to 5x, 10x, 30x and 60x,
+then round to 2x again; a rewind stops at the start. While the movie scans, the middle button
+is Play and returns to normal speed. The component's timer tells the model how much real time
+has passed, so playback keeps time when a page's timers are slowed down.
+
+| Key | Where | Does |
+| --- | --- | --- |
+| Space | anywhere in the window, except on a button | Play or pause |
+| Left, Right | the window itself focused | Step one frame back or forward, and pause |
+| Left, Right, Page Up, Page Down, Home, End | the timeline | One frame, ten seconds, the start and the end |
+| Left, Right, Page Up, Page Down, Home, End | the volume slider | One and ten hundredths, silent and full |
+
+## Playing a movie of your own
+
+Give `src` the address of a video the browser can play (the `blob:` address of a file, for
+one) and the window plays it in a `<video>` of its own: Play and Pause, the timeline, the frame
+steps, the scan speeds (fast-forward as the movie's playback rate, rewind by moving it back),
+the volume and Mute act on the movie, and its own length replaces `duration`. Picture in
+Picture floats the movie in the browser's own window where the browser has one (Chromium,
+Safari), and otherwise in the floating window inside this one, which shows a live copy of the
+picture. AirPlay opens the browser's own picker of screens (the Remote Playback API in
+Chromium, the AirPlay picker in Safari) instead of the invented device, and is disabled where
+the browser has neither; while the movie plays on another screen the window says so. A double
+click on the picture, or Control-Command-F, fills the screen. A movie the
+browser cannot decode is reported in the window. Another `src` given while a movie plays starts
+at its beginning and, once it has loaded, goes on as the one it replaced did: playing, at the
+same forward speed (normal speed after a rewind); a paused movie's replacement waits for Play.
+`onTimeChange` hears the place, the length and
+whether it plays.
+
+The [Desktop](/demos/desktop) opens QuickTime Player as `QuickTimePlayerApp`
+(`quicktime-player-app.tsx`): an Open window, a titled window around the browser of the
+[Open Panel](/components/open-panel) (`OpenPanelBrowser`), that lists the person's
+Recents and the folders of their drive, as a list, icons, columns or a gallery, with "From This Computer…", which uploads the
+chosen movie into Movies; then the movie window, which plays the file as read back from the
+drive. Several movies chosen open in a window each, and View > Play All Movies plays them all. The
+window's volume and the movie it shows are kept with the person's settings, so a reload brings them
+back. The title opens a menu of the file's commands and the proxy icon drags the file; the controller
+moves with a drag on its background; the Movie Inspector works out the format, data rate and frame rate
+from the file and the playing picture, and Window > Show Export Progress lists exports with a Stop. Command-O in the movie window returns to the Open window. File > New Movie Recording, New
+Audio Recording and New Screen Recording (`quicktime-player-recording.tsx`) record the camera, the
+microphone or a screen the browser's picker gives with `MediaRecorder`; a take goes into Movies with
+a dated name when it stops, or when its window closes, then opens. The Edit menu's Trim, Rotate, Flip
+and Remove commands, and Export As, make a new movie (`quicktime-player-replay.ts`). Where the browser
+has WebCodecs encoders for WebM (`quicktime-player-encode.ts`), each frame is taken from its exact place
+and the sound from the decoded file, at 30 frames a second, into a WebM written here
+(`quicktime-player-webm.ts`) that knows its length and can seek. Elsewhere the movie replays through a
+canvas and `MediaRecorder` in real time, in the browser's recording format. Either way the result is a
+generation worse than its source. Undo and Redo go between the replayed movies,
+and Save writes the result into the movie's file, whose earlier bytes the drive keeps as a version for File > Revert To; a file whose extension says another format than the recording stays as it is, and Save As writes a new one. View > Show Clips (`quicktime-player-clips.tsx`)
+shows the movie's clips with a still of each, and Edit > Split Clip splits one at the playhead; a split
+changes no picture, so it is no replay, and the window does not call the movie edited or keep the split
+once it closes. Edit > Cut, Copy, Paste and Delete act on the clips chosen in the strip, by a click, Command-click or Shift-click; Select All chooses every clip and opens the strip, and Copy then takes the whole movie; in the Open panel, Undo to Select All act on the search field; a drag in the strip
+puts a clip in another place, a drag out of it gives the clip as a file to what takes it, a movie dropped on it joins it, and Edit > Add Clip to End… and Insert Clip After Selection… join another movie: each replays the clips in
+their new order, so Play All Movies, Save and Export As all have them. A clip of another shape shows whole on
+black. A copied clip stays in the page, since a browser takes no movie onto the system's clipboard. View >
+Float on Top keeps the window over other windows; File > Move To… puts its file in another folder of the
+drive. In full screen, where the screen has its own shape, `scaling` lays the picture out: View >
+Fit to Screen keeps it whole, Fill Screen crops it to cover the screen, and Panoramic draws it on a canvas,
+its centre in true shape and stretched more towards the ends (`panoramicStrips`). On the desktop that the Ferrite
+application serves, the drive is the person's own (`demos/desktop/desktop-files.ts`) and Recents
+and the place in each movie are kept by the application (`/api/quicktime-player/recents`), so a
+movie opens where it was left. Where a saved movie is split into clips is kept with it
+(`/api/quicktime-player/clips/<file>`) and comes back when it opens: a
+split marks the movie edited, and rotating, flipping and trimming keep the splits. Elsewhere there is no drive: the chosen file plays in the page
+only. A host can pass its own `drive` (the `QuickTimeDrive` interface of
+`quicktime-player-drive.ts`).
+
+## Hosting the window
+
+`QuickTimePlayer` renders the library's `Window` as its root and passes every `Window` prop to
+it, so it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component hands to the window controls and
+the title bar. These are the props a [Managed Window](/components/managed-window)'s `render`
+form supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { quicktimePlayerApp } from "./app";
+
+<ManagedWindow
+  id={quicktimePlayerApp.id}
+  defaultFrame={{ x: 80, y: 60, ...quicktimePlayerApp.defaultSize }}
+  minWidth={quicktimePlayerApp.minSize.width}
+  minHeight={quicktimePlayerApp.minSize.height}
+  render={(props) => <quicktimePlayerApp.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `title` | `string` | The movie's name in the title bar; it names the window. Default: "Untitled Movie"; the capture's title is a third party's and is not repeated. |
+| `duration` | `number \| string` | The length, in frames or as a time code; `"00:12:49:22"` by default. Read when the window opens. |
+| `defaultPosition` | `number \| string` | Where the playhead starts, in frames or as a time code; 0 by default. |
+| `defaultPlaying` | `boolean` | Play as soon as the window opens. |
+| `defaultVolume` | `number` | The volume at first, 0 to 1; 1 by default. |
+| `frameRate` | `number` | Frames in a second, a whole number: the timebase of the time codes; 30 by default. |
+| `poster` | `ReactNode` | A still shown instead of the placeholder picture. |
+| `children` | `ReactNode` | The movie itself, shown instead of the placeholder and the poster: your own `<video>`, for example. The demo does not drive it. |
+| `src` | `string` | A movie the window plays itself, in its own `<video>` (above). |
+| `onTimeChange` | `(seconds, duration, playing) => void` | With `src`: the movie's place and length in seconds, and whether it plays. |
+| `onPlayingChange`, `onSeek`, `onVolumeLevelChange` | functions | Called with the new state, the frame sought and the volume, so that a movie of your own can follow the controller. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 1470 by 827 by default, as in the light capture. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer and key events and so on. |
+
+Two custom properties, set on the window, move the controller, which QuickTime Player lets
+its user drag: `--mac-quicktime-player-controller-bottom`, its distance from the window's
+bottom edge (15.3% of the window's height by default), and
+`--mac-quicktime-player-controller-shift`, its distance to the right of the centre (0).
+
+`app.ts` exports the descriptor a desktop page reads, as `quicktimePlayerApp` and as `app`:
+`id`, `name`, `component` (`QuickTimePlayerApp`, above), `defaultSize` (1470 by 827),
+`minSize` (480 by 270, the 440 pt controller with 20 pt beside it), `resizable`,
+`sizesItself` (the window asks for the Open panel's frame, 760 by 460, then a movie's) and
+`menus`, the menu titles after the Apple menu.
+
+## Styling hooks
+
+The demo's measured lengths are custom properties in `quicktime-player.tokens.css`, declared
+on `:root` and `[data-appearance]`; set one on the window with `style` to change it. That file
+tags each with where it comes from: the speed's place and the note's margins are provisional,
+the controller and its items are measured in both captures. The controller's place keeps its
+two hooks, `--mac-quicktime-player-controller-bottom` (default `15.3%`) and
+`--mac-quicktime-player-controller-shift` (default `0px`). Left as literals in
+`quicktime-player.css`, because they are structure rather than measurements: zeros, the 100%
+and container-unit sizes of the picture, the 1 pt box of the visually hidden status, and the
+250 ms fade.
+
+| Property | Default | Controls |
+| --- | --- | --- |
+| `--mac-quicktime-player-hud-width` | `440px` | The floating controller: width (it is centred by half of it) |
+| `--mac-quicktime-player-hud-height` | `75px` | The floating controller: height |
+| `--mac-quicktime-player-mute-top` | `18.5px` | The mute button: distance from the controller's top |
+| `--mac-quicktime-player-mute-left` | `12px` | The mute button: distance from the controller's left |
+| `--mac-quicktime-player-mute-width` | `12px` | The mute button: width |
+| `--mac-quicktime-player-mute-height` | `12px` | The mute button: height |
+| `--mac-quicktime-player-volume-top` | `19px` | The volume slider: distance from the top |
+| `--mac-quicktime-player-volume-left` | `31px` | The volume slider: distance from the left |
+| `--mac-quicktime-player-volume-width` | `51px` | The volume slider: width |
+| `--mac-quicktime-player-volume-height` | `11px` | The volume slider: height |
+| `--mac-quicktime-player-full-volume-top` | `17px` | The full-volume button: distance from the top |
+| `--mac-quicktime-player-full-volume-left` | `88px` | The full-volume button: distance from the left |
+| `--mac-quicktime-player-full-volume-width` | `20px` | The full-volume button: width |
+| `--mac-quicktime-player-full-volume-height` | `15px` | The full-volume button: height |
+| `--mac-quicktime-player-rewind-top` | `17px` | The rewind button: distance from the top |
+| `--mac-quicktime-player-rewind-left` | `153px` | The rewind button: distance from the left |
+| `--mac-quicktime-player-rewind-width` | `24px` | The rewind button: width |
+| `--mac-quicktime-player-rewind-height` | `15px` | The rewind button: height |
+| `--mac-quicktime-player-play-top` | `12px` | The play button: distance from the top |
+| `--mac-quicktime-player-play-left` | `210px` | The play button: distance from the left |
+| `--mac-quicktime-player-play-width` | `22px` | The play button: width |
+| `--mac-quicktime-player-play-height` | `25px` | The play button: height |
+| `--mac-quicktime-player-fast-forward-top` | `17px` | The fast-forward button: distance from the top |
+| `--mac-quicktime-player-fast-forward-left` | `263px` | The fast-forward button: distance from the left |
+| `--mac-quicktime-player-fast-forward-width` | `24px` | The fast-forward button: width |
+| `--mac-quicktime-player-fast-forward-height` | `15px` | The fast-forward button: height |
+| `--mac-quicktime-player-airplay-top` | `18px` | The AirPlay button: distance from the top |
+| `--mac-quicktime-player-airplay-left` | `331px` | The AirPlay button: distance from the left |
+| `--mac-quicktime-player-airplay-width` | `16px` | The AirPlay button: width |
+| `--mac-quicktime-player-airplay-height` | `14px` | The AirPlay button: height |
+| `--mac-quicktime-player-share-top` | `16px` | The share button: distance from the top |
+| `--mac-quicktime-player-share-left` | `371px` | The share button: distance from the left |
+| `--mac-quicktime-player-share-width` | `11px` | The share button: width |
+| `--mac-quicktime-player-share-height` | `15px` | The share button: height |
+| `--mac-quicktime-player-picture-in-picture-top` | `17.5px` | The Picture in Picture button: distance from the top |
+| `--mac-quicktime-player-picture-in-picture-left` | `407.5px` | The Picture in Picture button: distance from the left |
+| `--mac-quicktime-player-picture-in-picture-width` | `20.5px` | The Picture in Picture button: width |
+| `--mac-quicktime-player-picture-in-picture-height` | `16.5px` | The Picture in Picture button: height |
+| `--mac-quicktime-player-timeline-top` | `49px` | The timeline slider: distance from the top |
+| `--mac-quicktime-player-timeline-left` | `91px` | The timeline slider: distance from the left |
+| `--mac-quicktime-player-timeline-width` | `258px` | The timeline slider: width |
+| `--mac-quicktime-player-timeline-height` | `15px` | The timeline slider: height |
+| `--mac-quicktime-player-time-top` | `48.5px` | The two time codes: distance from the top |
+| `--mac-quicktime-player-elapsed-left` | `11.5px` | The elapsed time: distance from the left |
+| `--mac-quicktime-player-duration-right` | `12px` | The duration: distance from the right |
+| `--mac-quicktime-player-speed-top` | `34px` | The speed shown while scanning: distance from the window's top |
+| `--mac-quicktime-player-speed-left` | `12px` | The speed shown while scanning: distance from the window's left |
+| `--mac-quicktime-player-note-padding-inline` | `20px` | The note shown while the picture floats: inline padding |
+
+## Accessibility
+
+- The window is a `region` named by the movie's name. It can take the focus from a click on
+  the picture or from a script, without being a tab stop, so that the space bar and the arrow
+  keys work on the window as they do in QuickTime Player.
+- The controller is a `group` named "Playback controls". Every control in it is a tab stop,
+  in reading order: Mute, Volume, Full Volume, Rewind, Play or Pause, Fast Forward, AirPlay,
+  Share, Picture in Picture, Timeline. The buttons show only a glyph and are named with
+  `aria-label`; Mute and Picture in Picture are toggles and say so with `aria-pressed`. With a
+  movie of your own, an AirPlay button the browser cannot serve stays a tab stop and is
+  announced as disabled.
+- The middle button is named for what it will do: "Play" while the movie is paused or
+  scanning, "Pause" while it plays at normal speed.
+- Both sliders hold a native range input. The timeline's value is read as time codes,
+  "00:03:16:12 of 00:12:49:22". The running time is not announced as it changes: a live
+  region that spoke every second would be noise.
+- The speed of a rewind or fast-forward is announced by a polite `status` ("Fast forward
+  5×"); the badge that shows it is hidden from assistive technology.
+- The bars fade only from a playing movie that nothing has touched for three seconds. They
+  stay while one of their controls shows the keyboard focus, they come back with any key or
+  pointer movement, and while hidden they take no press, so a first tap shows them instead of
+  activating a control nobody can see. The fade is an opacity change of a quarter of a
+  second, and there is none with `prefers-reduced-motion`.
+- The placeholder picture is an image whose text alternative says what it is: an abstract
+  placeholder for a movie frame. While the picture floats or plays elsewhere, a line of text
+  says where it went.
+- The controller's glyphs add light to what is behind them, so their contrast depends on the
+  picture, as noted on the [HUD Window](/components/hud-window) page; with
+  `prefers-reduced-transparency` the controller and the title bar are opaque.
+
+## Fidelity
+
+**The picture is an original generated still.** The two QuickTime captures show a third
+party's movie. The toolkit reproduces Catalina's chrome, not that movie, so the demo does not
+ship it and does not imitate it: the picture is a misty river valley at golden hour, and no
+outline and no colour of it comes from the captures. For the same reason the
+picture is left out of the comparisons with the captures, which are about the chrome only.
+
+`quicktime-player.visual.json` has an example for each capture, since they show the same dark
+window at two sizes and at two moments: `visual-window` (Aqua, 1470 by 827 pt, 00:03:16:12)
+and `visual-window-dark` (Dark Aqua, 1346 by 757 pt, 00:04:40:02). What is compared with a
+capture, what is masked, and what is held another way:
+
+- **Not compared: the window as a whole.** Nearly all of the window is the picture, and the
+  harness lets a comparison leave at most 75% of its crop out of the score, so the picture
+  cannot be masked out of a crop of the whole window. Crops of the chrome are compared
+  instead.
+- **Compared, with the bar's fill masked: the window controls.** `window-controls-*` is the
+  left 68 by 22 pt of the title bar: the three window controls at x 8, 28 and 48 pt, y 5 pt,
+  with the bar's two highlight rows above them and its two bottom rows below. The bar is
+  translucent, so its fill is partly the picture: everything between the edge rows is masked
+  except the three 12 pt squares that hold the controls (62% of the crop). The corners of
+  those squares, which are fill, and the highlight rows, which let about a seventh of the
+  picture through, stay in the score.
+- **Compared, nothing masked: the bar's bottom rows.** `title-bar-bottom-*` is the last point
+  of the bar across the whole window. Both rows are opaque in the demo, so this score does
+  not depend on the picture.
+- **Held by expected pixels, not compared: the bar's fill and highlight rows, and the
+  controller.** They are translucent over the picture, so in a capture they are partly the
+  movie. With a picture behind them the title bar's strip mismatches the Aqua capture
+  by 17% at 2x, its highlight rows alone by 13%, and the crop of the controller by 96%:
+  scores of the placeholder against a movie, which say nothing of the chrome, so those
+  comparisons are not kept. Instead `title-bar-material-*` and `controller-geometry-*` check
+  pixels against colours computed from the tokens. That needs known colours behind them, so
+  the two visual examples pass a flat backdrop as the `poster` instead of the generated still:
+  a plain gradient (`#30353d` to `#5d6672`) behind the bar and one flat grey, `#707070`, behind
+  the controller. No pixel of the generated still is compared.
+- **In no comparison:** the title, its proxy icon and the two time codes, which are text in
+  the fallback font and artwork of the demo's own.
+
+Scores from `npm run visual -- quicktime-player/` in Chromium on Linux with the fallback font:
+the share of pixels that differ by more than the threshold, 0.05 in all four, and the mean
+colour difference out of 255.
+
+| Comparison | Scores | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `window-controls-light` | the window controls and the bar's edge rows beside them, fill masked | 10.39% | 4.73 | 2.73% | 3.93 |
+| `title-bar-bottom-light` | the bar's two bottom rows, the whole width | 0.00% | 3.52 | 7.47% | 3.37 |
+| `window-controls-dark` | as `window-controls-light`, Dark Aqua capture | 5.46% | 3.39 | 1.50% | 2.62 |
+| `title-bar-bottom-dark` | as `title-bar-bottom-light`, Dark Aqua capture | 0.00% | 2.31 | 5.74% | 2.25 |
+
+In `title-bar-bottom-*` the separator matches, `#000000`. The row above it is the library's
+opaque `#2a2a2a`, where the capture's row lets the movie through (`#2a2a2b` to `#404243` in
+the Aqua capture): the mismatch at 2x is that row where the movie behind it is light.
+
+The expected-pixel checks pass or fail and have no score:
+
+| Check | Holds |
+| --- | --- |
+| `title-bar-material-light`, `title-bar-material-dark` | The bar's 22 pt across the window; its fill near the top and near the bottom, `#43474b` and `#3a3d41`, which is the measured tint over what the material's filter makes of the placeholder's gradient; at 2x its two highlight rows, `#888a8c` and `#797b7e`, its shadow row and its separator. |
+| `controller-geometry-light`, `controller-geometry-dark` | The controller's 440 by 75 pt at the place measured in each capture (x 515.5 to 955.5 and y 624.5 to 699.5 pt in the Aqua one, x 453 to 893 and y 566.5 to 641.5 pt in the Dark Aqua one), to half a point at 2x and to a point at 1x: the panel's computed colour inside each of its four edges and the band's outside. Then seven glyphs (all but Share, a thin outline), the volume knob at its maximum, and the timeline's played part, its bar and the rest, each at its measured place in its computed colour. |
+
+These checks hold the layout and the demo's use of the tokens. They do not show that the
+materials look like Catalina's over a movie, and no comparison in the library does: the
+[HUD Window](/components/hud-window) page checks the controller over a flat grey too, for the
+same reason, and compares only its opaque volume knob with the captures.
+
+Measured in the captures and reproduced: the two frames; the 22 pt title bar over the
+picture, whose two highlight rows and last row are the Dark Aqua title bar's; its fill, which
+follows the picture with a slope of 0.21 at the top and 0.18 at the bottom over a grey of
+`#4b4d4e` falling to `#3b3c3e`; the window controls and the title block with its 11 by
+14.5 pt icon; the controller's 440 by 75 pt, its place (centred, its bottom edge 127.5 of
+827 pt and 115.5 of 757 pt above the window's, 15.3% by default), and the places of its nine
+glyphs, two sliders and two time codes, which are the [HUD Window](/components/hud-window)
+page's measurements.
+
+What differs, and why:
+
+- **The title bar's fill** is the library's translucent title bar material
+  ([Title Bar](/components/title-bar), `material="translucent"`): one value for both captures,
+  the mean of the tints measured in the two, which are 7 levels apart; the bar's row above the
+  last is the library's opaque `#2a2a2a`, where the captures' row lets the movie through.
+- **Text.** Set in the fallback font off Apple devices; its digits are wider than San
+  Francisco's, so the elapsed time reaches the start of the timeline.
+- **Glyphs and the proxy icon** are original drawings at the measured sizes.
+- **The timeline's bar** stands where the time puts it, 25.5% and 36.4% along its travel,
+  which is 0.4 and 0.7 pt left of the captures' and between two device pixels.
+- **Vibrancy.** The controller's material is the library's: a tint over a blur of the page
+  behind it, not AppKit's blend of the movie, and provisional as on the HUD Window page.
+- **The fade.** A HUD cannot fade without losing its material: while the wrapper around it
+  is less than opaque, the browser gives the panel nothing to blur and its glyphs nothing to
+  add their light to, so for the quarter of a second of the fade the panel is a plain tint
+  with dimmer glyphs. The title bar fades as it is.
+
+Not in a screenshot (provisional): the order and the wrap of the scanning speeds and the
+middle button's return to normal speed, the three seconds before the bars fade, the speed
+badge, the bars of a window that is not key, the contents of the Share and AirPlay menus and
+the line shown while the picture is elsewhere.
+
+Not built: sound and real media (the volume is a number, and `children` are shown, not
+driven), dragging the controller (two custom properties place it), full screen, the menu
+bar's commands (trim, export, recording), and QuickTime Player's J, K and L keys.

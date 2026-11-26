@@ -1,0 +1,672 @@
+/*
+ * Safari demo: layout of the window's content and the look of the demo's own placeholder
+ * pages. Every control is the library's and keeps its own style; this file only sizes and
+ * places them.
+ *
+ * Parts
+ *   .mac-safari                 the window; a size container, so the toolbar can centre the
+ *                               address field on the window
+ *   .mac-safari-toolbar-lead    the space before the address field
+ *   .mac-safari-field           the address field: 40.5% of the window, centred on it
+ *   .mac-safari-content         everything under the bars; the video floats in it
+ *   .mac-safari-split           the sidebar and the page, filling the content
+ *   .mac-safari-sidebar         the Bookmarks pane, which the library's sidebar fills; the
+ *                               switch is the sidebar's header
+ *   .mac-safari-view            the web view, filling its pane
+ *   .mac-safari-page            a placeholder page; [data-tint] picks its colour
+ *   .mac-safari-picture         a drawing in place of a photograph
+ *   .mac-safari-video           the same in place of a video; [data-away] while the video is
+ *                               in Picture in Picture, [data-floating] in that window
+ *   .mac-safari-artwork         a favourite's tile: a letter in the site's colour
+ *   .mac-safari-miniature       the schematic of a page in the Tab Overview
+ *   .mac-safari-preferences-*   the General pane's fine print
+ *
+ * On the Ferrite desktop app (safari-web.tsx)
+ *   .mac-safari-web             a real page's frame, on the page ground
+ *   .mac-safari-outside-*       the page of a site Safari opens only in a browser tab
+ *   .mac-safari-favorites-bar   the row of Favorites under the toolbar
+ *   .mac-safari-reader-*        headings and code of a fetched page's Reader
+ *   .mac-safari-history-*       the History page: its bar, days and rows
+ */
+.mac-safari {
+  container-type: inline-size;
+}
+
+/* The window takes the keyboard back when a closed tab had it (`tabIndex={-1}`): it is the key
+   window already, so it draws no ring of its own. */
+.mac-safari:focus {
+  outline: none;
+}
+
+/* The field is 536 pt in the 1324 pt capture and 507 pt in the 1254 pt one, centred on the
+   window; the items before it end 176.5 pt from the window's edge, and two 8 pt gaps follow. */
+.mac-safari-toolbar-lead {
+  flex: none;
+  width: max(0px, var(--mac-safari-toolbar-lead-width) - var(--mac-safari-toolbar-lead-offset));
+}
+
+.mac-safari-field {
+  flex: 0 1 auto;
+  width: calc(var(--mac-safari-field-width) - var(--mac-safari-field-width-offset));
+  min-width: var(--mac-safari-field-min-width);
+}
+
+.mac-safari-private-note {
+  flex: none;
+  margin: 0;
+  padding: 8px 16px;
+  text-align: center;
+  background: var(--mac-safari-private-fill);
+  color: var(--mac-safari-private-text);
+}
+
+.mac-safari-downloads {
+  width: 300px;
+}
+
+.mac-safari-downloads-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mac-safari-downloads-list {
+  max-height: 240px;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.mac-safari-downloads-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-block: 4px;
+  user-select: none;
+}
+
+.mac-safari-downloads-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-safari-suggestions {
+  position: absolute;
+  z-index: 3;
+  inset-block-start: 0;
+  inset-inline-start: 50%;
+  width: min(520px, 90%);
+  transform: translateX(-50%);
+  padding-block: 4px;
+  background: var(--mac-color-window-background);
+  border-radius: 0 0 6px 6px;
+  box-shadow: var(--mac-shadow-menu);
+}
+
+.mac-safari-suggestion {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 3px 12px;
+  cursor: default;
+}
+
+.mac-safari-suggestion[data-chosen],
+.mac-safari-suggestion:hover {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-content-text);
+}
+
+.mac-safari-suggestion-kind {
+  flex: none;
+  width: 72px;
+  opacity: 0.7;
+  font-size: 11px;
+}
+
+.mac-safari-suggestion-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-safari-suggestion-url {
+  flex: none;
+  opacity: 0.7;
+  font-size: 11px;
+}
+
+.mac-safari-reader-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mac-safari-reader-row {
+  display: flex;
+  gap: 6px;
+}
+
+.mac-safari .mac-safari-tab-pinned {
+  flex: 0 0 var(--mac-safari-pinned-tab-width);
+  min-width: var(--mac-safari-pinned-tab-width);
+  /* It has no close button to leave room for, and the bar's room would hide its letter. */
+  padding-inline: 0;
+}
+
+.mac-safari-add-bookmark {
+  display: grid;
+  gap: 8px;
+  margin-block: 12px;
+}
+
+.mac-safari-reader-larger {
+  font-size: 1.4em;
+}
+
+.mac-safari-tab-menu {
+  display: contents;
+}
+
+.mac-safari-find {
+  flex: none;
+}
+
+.mac-safari-find-field {
+  width: 240px;
+}
+
+.mac-safari-content {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.mac-safari-status-bar {
+  flex: none;
+  height: var(--mac-safari-status-bar-height);
+  overflow: hidden;
+  padding-inline: var(--mac-safari-status-bar-inset);
+  border-top: 1px solid var(--mac-safari-sidebar-divider);
+  font-size: var(--mac-safari-status-bar-font-size);
+  line-height: var(--mac-safari-status-bar-height);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mac-safari-split {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.mac-safari-sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+/* The switch: 13.5 pt under the toolbar, 9.5 pt from the sidebar's edge; a line under it. The
+   capture's first row starts right under the line: the list's own 5 pt of space above its
+   first row is tucked 4 pt under the switch. */
+.mac-safari-sidebar-switch {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  flex: none;
+  box-sizing: border-box;
+  height: var(--mac-safari-switch-height);
+  margin-block-end: var(--mac-safari-switch-margin-bottom);
+  padding: var(--mac-safari-switch-padding);
+  border-block-end: 1px solid var(--mac-safari-sidebar-divider);
+}
+
+.mac-safari-sidebar-list {
+  flex: 1 1 auto;
+}
+
+.mac-safari-page-pane {
+  position: relative;
+}
+
+.mac-safari-view {
+  position: absolute;
+  inset: 0;
+}
+
+/* Placeholder pages */
+:where(.mac-safari-page, .mac-safari-picture, .mac-safari-artwork, .mac-safari-miniature) {
+  --_tint: var(--mac-safari-tint-1);
+}
+
+:where(.mac-safari-page, .mac-safari-picture, .mac-safari-artwork, .mac-safari-miniature):where(
+  [data-tint="2"]
+) {
+  --_tint: var(--mac-safari-tint-2);
+}
+
+:where(.mac-safari-page, .mac-safari-picture, .mac-safari-artwork, .mac-safari-miniature):where(
+  [data-tint="3"]
+) {
+  --_tint: var(--mac-safari-tint-3);
+}
+
+:where(.mac-safari-page, .mac-safari-picture, .mac-safari-artwork, .mac-safari-miniature):where(
+  [data-tint="4"]
+) {
+  --_tint: var(--mac-safari-tint-4);
+}
+
+:where(.mac-safari-page, .mac-safari-picture, .mac-safari-artwork, .mac-safari-miniature):where(
+  [data-tint="5"]
+) {
+  --_tint: var(--mac-safari-tint-5);
+}
+
+:where(.mac-safari-page, .mac-safari-picture, .mac-safari-artwork, .mac-safari-miniature):where(
+  [data-tint="6"]
+) {
+  --_tint: var(--mac-safari-tint-6);
+}
+
+.mac-safari-page {
+  box-sizing: border-box;
+  max-width: var(--mac-safari-page-max-width);
+  margin-inline: auto;
+  padding: var(--mac-safari-page-padding);
+  font:
+    var(--mac-font-weight-regular) var(--mac-safari-page-font-size) /
+    var(--mac-safari-page-line-height) var(--mac-font-family-system);
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.mac-safari-page a {
+  color: var(--_tint);
+}
+
+.mac-safari-page-header {
+  display: flex;
+  gap: var(--mac-safari-page-header-gap);
+  align-items: center;
+  justify-content: space-between;
+  margin-block-end: var(--mac-safari-page-header-margin-bottom);
+}
+
+.mac-safari-page-wordmark {
+  padding: var(--mac-safari-wordmark-padding);
+  border-radius: var(--mac-safari-wordmark-radius);
+  background: var(--_tint);
+  color: var(--mac-safari-on-tint);
+  font:
+    var(--mac-font-weight-bold) var(--mac-safari-wordmark-font-size) /
+    var(--mac-safari-wordmark-line-height) var(--mac-font-family-system);
+}
+
+.mac-safari-page-nav {
+  display: flex;
+  gap: var(--mac-safari-page-nav-gap);
+  font-weight: var(--mac-font-weight-semibold);
+}
+
+.mac-safari-page-heading {
+  margin: 0 0 var(--mac-safari-heading-margin-bottom);
+  font:
+    var(--mac-font-weight-bold) var(--mac-safari-heading-font-size) /
+    var(--mac-safari-heading-line-height) var(--mac-font-family-system);
+}
+
+.mac-safari-page-results {
+  display: grid;
+  gap: var(--mac-safari-results-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-safari-page-result-host {
+  display: block;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-body);
+}
+
+/* A sky over a field, in two gradients. */
+.mac-safari-picture {
+  aspect-ratio: 3 / 2;
+  margin-block: 0 var(--mac-safari-picture-margin-bottom);
+  background:
+    linear-gradient(to top, var(--_tint) 38%, transparent 38%),
+    linear-gradient(var(--mac-safari-wash-strong), var(--mac-safari-wash));
+}
+
+/* The video is a picture in a video's shape. While it floats, a note stands in its place. */
+.mac-safari-video {
+  aspect-ratio: 16 / 9;
+}
+
+/* The floating frame fills its window, on an opaque ground: the washes are translucent. */
+.mac-safari-video:where([data-floating]) {
+  margin: 0;
+  background-color: var(--mac-color-window-background);
+}
+
+.mac-safari-video:where([data-away]) {
+  display: grid;
+  place-items: center;
+  background: var(--mac-safari-wash);
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-body);
+}
+
+.mac-safari-video-actions {
+  margin: var(--mac-safari-video-actions-margin);
+}
+
+/* In Reader the picture spans the sheet, whose padding is 70 pt. */
+.mac-safari-picture:where([data-reader]) {
+  margin: var(--mac-safari-reader-picture-margin-block)
+    calc(-1 * var(--mac-safari-reader-sheet-padding));
+}
+
+.mac-safari-reader-paragraph {
+  margin: 0 0 var(--mac-safari-reader-paragraph-margin-bottom);
+}
+
+.mac-safari-artwork {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background: var(--mac-safari-artwork-ground);
+  color: var(--_tint);
+}
+
+/* Tab Overview miniatures: blocks sized in percent, so they follow the thumbnail. */
+.mac-safari-miniature {
+  display: flex;
+  flex-direction: column;
+  gap: 5%;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 6% 18%;
+}
+
+.mac-safari-miniature:where([data-kind="start"]) {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8% 5%;
+  align-content: start;
+  padding: 12% 20%;
+  background: var(--mac-web-view-start);
+}
+
+.mac-safari-miniature-tile {
+  aspect-ratio: 1;
+  border-radius: var(--mac-safari-miniature-tile-radius);
+  background: var(--mac-safari-wash-strong);
+}
+
+.mac-safari-miniature-header {
+  width: 30%;
+  height: 8%;
+  background: var(--_tint);
+}
+
+.mac-safari-miniature-heading {
+  width: 40%;
+  height: 6%;
+  background: var(--mac-safari-wash-strong);
+}
+
+.mac-safari-miniature-picture {
+  height: 34%;
+  background:
+    linear-gradient(to top, var(--_tint) 38%, transparent 38%),
+    linear-gradient(var(--mac-safari-wash-strong), var(--mac-safari-wash));
+}
+
+.mac-safari-miniature-line {
+  height: 3%;
+  background: var(--mac-safari-wash);
+}
+
+/* Preferences: the three lines of small text under the "safe" files checkbox. */
+/* The General pane, 430 pt under the bar in the captures. The help button sits in its corner,
+   beside the end of the form. */
+.mac-safari-preferences-general {
+  position: relative;
+  min-height: var(--mac-safari-preferences-min-height);
+}
+
+.mac-safari-preferences-help {
+  position: absolute;
+  inset-block-end: var(--mac-safari-preferences-help-bottom);
+  inset-inline-end: var(--mac-safari-preferences-help-end);
+}
+
+/* The first row is 18 pt under the bar in the captures, where the pane's margin is 20 pt. */
+.mac-safari-preferences-form {
+  margin-block-start: var(--mac-safari-preferences-form-margin-top);
+}
+
+/* Between two groups of rows the captures have 23 pt, and 25 pt under the button. */
+.mac-safari-preferences-gap {
+  height: var(--mac-safari-preferences-gap);
+}
+
+.mac-safari-preferences-gap[data-after="button"] {
+  height: var(--mac-safari-preferences-gap-after-button);
+}
+
+.mac-safari-preferences-safe {
+  margin: var(--mac-safari-preferences-safe-margin);
+}
+
+.mac-safari-preferences-reason {
+  max-width: var(--mac-safari-preferences-reason-max-width);
+  margin: 0;
+  color: var(--mac-color-secondary-label);
+  font:
+    var(--mac-font-weight-regular) var(--mac-font-size-small) / var(--mac-line-height-small)
+    var(--mac-font-family-system);
+}
+
+.mac-safari-preferences-note {
+  max-width: var(--mac-safari-preferences-note-max-width);
+  margin: var(--mac-safari-preferences-note-margin);
+  color: var(--mac-color-label);
+  font:
+    var(--mac-font-weight-regular) var(--mac-font-size-small) / var(--mac-line-height-small)
+    var(--mac-font-family-system);
+}
+
+/* Real pages: the view's canvas, the page's ground, is set on it (safari-web.tsx). */
+
+.mac-safari-outside-text {
+  max-width: var(--mac-safari-outside-text-max-width);
+  margin: 0 auto;
+}
+
+.mac-safari-outside-actions {
+  margin: var(--mac-safari-outside-actions-margin);
+}
+
+.mac-safari-favorites-bar {
+  display: flex;
+  flex: none;
+  gap: var(--mac-safari-favorites-bar-gap);
+  align-items: center;
+  box-sizing: border-box;
+  height: var(--mac-safari-favorites-bar-height);
+  padding: var(--mac-safari-favorites-bar-padding);
+  overflow: hidden;
+  border-block-end: 1px solid var(--mac-color-separator);
+  background: var(--mac-color-window-background);
+}
+
+.mac-safari-favorites-bar-item {
+  flex: none;
+  max-width: var(--mac-safari-favorites-bar-item-max-width);
+  padding: var(--mac-safari-favorites-bar-item-padding);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--mac-safari-favorites-bar-item-radius);
+  background: none;
+  color: var(--mac-color-label);
+  font: var(--mac-font-icon-label);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  appearance: none;
+}
+
+.mac-safari-favorites-bar-item:hover {
+  background: var(--mac-safari-favorites-bar-item-hover);
+}
+
+.mac-safari-favorites-bar-item:active {
+  background: var(--mac-safari-favorites-bar-item-pressed);
+}
+
+.mac-safari-favorites-bar-item:focus-visible {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+.mac-safari-reader-heading {
+  margin: var(--mac-safari-reader-heading-margin);
+  font-size: var(--mac-safari-reader-heading-font-size);
+}
+
+.mac-safari-reader-code {
+  padding: var(--mac-safari-reader-code-padding);
+  overflow: auto;
+  background: var(--mac-safari-wash);
+  font-family: var(--mac-font-family-monospace);
+  font-size: var(--mac-safari-reader-code-font-size);
+}
+
+.mac-safari-start-history {
+  margin: var(--mac-safari-start-history-margin);
+  text-align: center;
+}
+
+.mac-safari-history {
+  padding: var(--mac-safari-history-padding);
+}
+
+.mac-safari-history-bar,
+.mac-safari-history-day,
+.mac-safari-history-note {
+  max-width: var(--mac-safari-history-max-width);
+  margin-inline: auto;
+}
+
+.mac-safari-history-bar {
+  display: flex;
+  gap: var(--mac-safari-history-bar-gap);
+  align-items: center;
+  margin-block-end: var(--mac-safari-history-bar-margin-bottom);
+}
+
+.mac-safari-history-title-bar {
+  flex: 1 1 auto;
+  margin: 0;
+  font: var(--mac-font-large-title);
+}
+
+.mac-safari-history-search {
+  width: var(--mac-safari-history-search-width);
+}
+
+.mac-safari-history-heading {
+  margin: var(--mac-safari-history-heading-margin);
+  font: var(--mac-font-headline);
+}
+
+.mac-safari-history-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-safari-history-row {
+  display: flex;
+  gap: var(--mac-safari-history-row-gap);
+  padding: var(--mac-safari-history-row-padding);
+  border-radius: var(--mac-safari-history-row-radius);
+  color: var(--mac-color-label);
+  text-decoration: none;
+}
+
+.mac-safari-history-row:hover {
+  background: var(--mac-safari-favorites-bar-item-hover);
+}
+
+.mac-safari-history-row[data-selected],
+.mac-safari-sidebar-list [data-chosen] {
+  background: var(--mac-color-selection, var(--mac-safari-favorites-bar-item-hover));
+}
+
+.mac-safari-history-body {
+  display: contents;
+}
+
+::highlight(safari-find) {
+  background-color: var(--mac-safari-find-match);
+}
+
+::highlight(safari-find-current) {
+  background-color: var(--mac-safari-find-current);
+}
+
+/* A frame would keep the pointer from a drag of the desktop's: Finder's files cross a page. */
+:root[data-desktop-dragging] .mac-safari iframe {
+  pointer-events: none;
+}
+
+.mac-safari-content[data-desktop-drop="accept"] {
+  outline: 2px solid var(--mac-color-selection, var(--mac-safari-favorites-bar-item-hover));
+  outline-offset: -2px;
+}
+
+.mac-safari-sidebar-list [data-safari-drop="before"] {
+  box-shadow: inset 0 2px 0 var(--mac-color-selection, var(--mac-safari-favorites-bar-item-hover));
+}
+
+.mac-safari-sidebar-list [data-safari-drop="into"] {
+  background: var(--mac-color-selection, var(--mac-safari-favorites-bar-item-hover));
+}
+
+.mac-safari-save-format {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding-block: 8px;
+}
+
+.mac-safari-clear-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-block: 8px;
+}
+
+.mac-safari-history-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-safari-history-url,
+.mac-safari-history-note {
+  color: var(--mac-color-label-secondary);
+}

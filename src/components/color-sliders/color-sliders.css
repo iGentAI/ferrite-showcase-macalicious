@@ -1,0 +1,43 @@
+/*
+ * Colour sliders (the sliders picker of NSColorPanel): a column of the model's pop-up button,
+ * one row per colour component and the hex field. The controls are the library's own; this
+ * stylesheet only lays them out, in small control text.
+ */
+.mac-color-sliders {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-sizing: border-box;
+  inline-size: 200px;
+  max-inline-size: 100%;
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+/* A row: the name above, then the slider and a 40 pt number field. */
+.mac-color-sliders-channel {
+  display: grid;
+  grid-template-columns: 1fr 40px;
+  align-items: center;
+  column-gap: 8px;
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+.mac-color-sliders-name {
+  grid-column: 1 / -1;
+}
+
+/* The hex field: its label and a 64 pt field, at the trailing edge. */
+.mac-color-sliders-hex {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.mac-color-sliders-hex > :where(*) {
+  inline-size: 64px;
+}

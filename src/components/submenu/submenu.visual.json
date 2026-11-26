@@ -1,0 +1,249 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "recent-items-light",
+      "description": "The Recent Items parent row of the Apple menu with its disclosure triangle and the separators around it, Aqua.",
+      "example": "visual-recent-items",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.053,
+        "2x": 0.051
+      },
+      "deltaBudget": {
+        "1x": 10.4,
+        "2x": 11.5
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Apple-Menu.png",
+        "crop": {
+          "x": 0,
+          "y": 190,
+          "width": 470,
+          "height": 86
+        }
+      }
+    },
+    {
+      "name": "recent-items-light-drawing",
+      "description": "As recent-items-light with the title masked, to score the drawing alone: text is set in the fallback font off Apple platforms.",
+      "example": "visual-recent-items",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 30,
+          "y": 13,
+          "width": 150,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0089,
+        "2x": 0.0071
+      },
+      "deltaBudget": {
+        "1x": 5.7,
+        "2x": 5.8
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Apple-Menu.png",
+        "crop": {
+          "x": 0,
+          "y": 190,
+          "width": 470,
+          "height": 86
+        }
+      }
+    },
+    {
+      "name": "recent-items-dark",
+      "description": "The Recent Items parent row of the Apple menu with its disclosure triangle and the separators around it, Dark Aqua.",
+      "example": "visual-recent-items",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.056,
+        "2x": 0.053
+      },
+      "deltaBudget": {
+        "1x": 8.4,
+        "2x": 9.7
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Apple-Menu.png",
+        "crop": {
+          "x": 0,
+          "y": 190,
+          "width": 470,
+          "height": 86
+        }
+      }
+    },
+    {
+      "name": "recent-items-dark-drawing",
+      "description": "As recent-items-dark with the title masked, to score the drawing alone: text is set in the fallback font off Apple platforms.",
+      "example": "visual-recent-items",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 30,
+          "y": 13,
+          "width": 150,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0032,
+        "2x": 0.0019
+      },
+      "deltaBudget": {
+        "1x": 3.4,
+        "2x": 3.7
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Apple-Menu.png",
+        "crop": {
+          "x": 0,
+          "y": 190,
+          "width": 470,
+          "height": 86
+        }
+      }
+    },
+    {
+      "name": "open-light",
+      "description": "A submenu opened from the keyboard (Down, Down, Right), Aqua: the parent row stays highlighted, the submenu's first row is level with it and highlighted. No screenshot shows an open submenu.",
+      "example": "visual-open",
+      "appearance": "light",
+      "actions": [
+        {
+          "key": "ArrowDown"
+        },
+        {
+          "key": "ArrowDown"
+        },
+        {
+          "key": "ArrowRight"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 320,
+          "height": 100
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 42,
+            "color": "#3e88f3",
+            "tolerance": 3,
+            "note": "parent row, in its left inset: the menu selection (blue menu highlight at 85%) over the menu fill; that the parent stays highlighted while its submenu is open is inferred (spec: submenu, States)"
+          },
+          {
+            "x": 141,
+            "y": 42.5,
+            "color": "#ffffff",
+            "tolerance": 3,
+            "note": "disclosure triangle of the highlighted parent: white, inferred by analogy with highlighted key equivalents (spec: submenu, Colours)"
+          },
+          {
+            "x": 14,
+            "y": 23,
+            "color": "#ebebeb",
+            "tolerance": 3,
+            "note": "the row above the parent is not highlighted: menu material over the window background, computed from the measured tint"
+          },
+          {
+            "x": 165,
+            "y": 42,
+            "color": "#3e88f3",
+            "tolerance": 3,
+            "note": "first row of the submenu, highlighted and level with the parent row (spec: Open submenu vertical offset, inferred)"
+          },
+          {
+            "x": 165,
+            "y": 30.5,
+            "color": "#e8e8e8",
+            "tolerance": 4,
+            "note": "the submenu's 4 pt top padding lies above the parent row's top edge (inferred). The fill is the menu material over the window background darkened by the parent menu's shadow, which falls under the submenu: between #e5e5e5 (shadow at 10%) and #ebebeb (no shadow), computed from the measured tint"
+          },
+          {
+            "x": 165,
+            "y": 61,
+            "color": "#e8e8e8",
+            "tolerance": 4,
+            "note": "second row of the submenu: menu fill, as above"
+          }
+        ]
+      }
+    },
+    {
+      "name": "open-dark",
+      "description": "A submenu opened from the keyboard (Down, Down, Right), Dark Aqua. No screenshot shows an open submenu.",
+      "example": "visual-open",
+      "appearance": "dark",
+      "actions": [
+        {
+          "key": "ArrowDown"
+        },
+        {
+          "key": "ArrowDown"
+        },
+        {
+          "key": "ArrowRight"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 320,
+          "height": 100
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 42,
+            "color": "#0e6bd9",
+            "tolerance": 3,
+            "note": "parent row, highlighted while its submenu is open: blue menu highlight at 88% over the dark menu fill (inferred state)"
+          },
+          {
+            "x": 141,
+            "y": 42.5,
+            "color": "#ffffff",
+            "tolerance": 3,
+            "note": "disclosure triangle of the highlighted parent (inferred)"
+          },
+          {
+            "x": 14,
+            "y": 23,
+            "color": "#3a3b3c",
+            "tolerance": 3,
+            "note": "the row above the parent: dark menu material over the window background, computed from the measured tint"
+          },
+          {
+            "x": 165,
+            "y": 42,
+            "color": "#0e6bd9",
+            "tolerance": 3,
+            "note": "first row of the submenu, highlighted and level with the parent row (inferred)"
+          },
+          {
+            "x": 165,
+            "y": 30.5,
+            "color": "#3a3b3c",
+            "tolerance": 3,
+            "note": "the submenu's top padding lies above the parent row's top edge (inferred)"
+          },
+          {
+            "x": 165,
+            "y": 61,
+            "color": "#3a3b3c",
+            "tolerance": 3,
+            "note": "second row of the submenu: menu fill"
+          }
+        ]
+      }
+    }
+  ]
+}

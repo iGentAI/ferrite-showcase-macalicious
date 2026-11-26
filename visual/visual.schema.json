@@ -1,0 +1,268 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Macalicious visual comparisons",
+  "description": "Comparisons between rendered examples and crops of reference screenshots, and checks of states no screenshot shows. One file per component or demo folder, named <folder>.visual.json. The runner and lint apply these rules from visual/lib/spec.mjs, together with the ones a schema cannot say: budget caps, the tight companion of a loose comparison, the masked share of a crop, a comparison in each appearance, and, in the run, a 2x budget within the accepted slack of its score.",
+  "type": "object",
+  "required": ["comparisons"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "pending": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Why the folder has no comparison with a screenshot in both appearances yet. Lint lists the folder as unfinished instead of failing. Remove it when the comparisons are in."
+    },
+    "noReference": {
+      "type": "object",
+      "description": "The appearance in which no reference screenshot shows the control, with the reason. The other appearance must be compared.",
+      "additionalProperties": false,
+      "maxProperties": 1,
+      "properties": {
+        "light": { "type": "string", "minLength": 1 },
+        "dark": { "type": "string", "minLength": 1 }
+      }
+    },
+    "comparisons": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/comparison" }
+    }
+  },
+  "definitions": {
+    "accent": {
+      "enum": ["blue", "purple", "pink", "red", "orange", "yellow", "green", "graphite"]
+    },
+    "cropRect": {
+      "type": "object",
+      "required": ["x", "y", "width", "height"],
+      "additionalProperties": false,
+      "properties": {
+        "x": { "type": "integer", "minimum": 0 },
+        "y": { "type": "integer", "minimum": 0 },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "maskRect": {
+      "type": "object",
+      "required": ["x", "y", "width", "height"],
+      "additionalProperties": false,
+      "properties": {
+        "x": { "type": "number", "minimum": 0 },
+        "y": { "type": "number", "minimum": 0 },
+        "width": { "type": "number", "exclusiveMinimum": 0 },
+        "height": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "comparison": {
+      "type": "object",
+      "required": ["name", "example", "appearance"],
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": ["reference", "budget", "deltaBudget"],
+          "not": {
+            "anyOf": [
+              { "required": ["expect"] },
+              {
+                "required": ["forcedColors"],
+                "properties": { "forcedColors": { "const": true } }
+              }
+            ]
+          }
+        },
+        {
+          "required": ["expect"],
+          "not": {
+            "anyOf": [
+              { "required": ["reference"] },
+              { "required": ["budget"] },
+              { "required": ["deltaBudget"] },
+              { "required": ["masks"] },
+              { "required": ["threshold"] }
+            ]
+          }
+        }
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+          "description": "Unique within the file; used in output file names."
+        },
+        "description": { "type": "string" },
+        "example": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+          "description": "File name, without extension, of an example in this folder's examples/ directory."
+        },
+        "appearance": { "enum": ["light", "dark"] },
+        "accent": { "$ref": "#/definitions/accent" },
+        "highlight": { "$ref": "#/definitions/accent" },
+        "windowState": {
+          "enum": ["key", "main", "inactive"],
+          "default": "key",
+          "description": "Value of data-window-state on <html> for this run: the state of the window the example is in. Omitted or key leaves the attribute off."
+        },
+        "selector": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Element to capture. Default: #visual-root, the example's own box."
+        },
+        "actions": {
+          "type": "array",
+          "description": "Real input performed before the capture, in order.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "minProperties": 1,
+            "maxProperties": 1,
+            "properties": {
+              "hover": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Selector to move the pointer over."
+              },
+              "press": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Selector to press and hold the mouse button on."
+              },
+              "click": { "type": "string", "minLength": 1, "description": "Selector to click." },
+              "tab": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Number of Tab key presses (keyboard focus)."
+              },
+              "key": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Key to press, in Playwright notation."
+              }
+            }
+          }
+        },
+        "forcedColors": {
+          "type": "boolean",
+          "default": false,
+          "description": "Render with the browser's forced-colours mode on (forced-colors: active), as Windows High Contrast does. Only with expect: no screenshot shows forced colours."
+        },
+        "reference": {
+          "type": "object",
+          "required": ["file", "crop"],
+          "additionalProperties": false,
+          "properties": {
+            "file": {
+              "type": "string",
+              "pattern": "^[^/\\\\]+$",
+              "description": "File name in reference/screenshots/."
+            },
+            "crop": {
+              "$ref": "#/definitions/cropRect",
+              "description": "Region of the screenshot, in image pixels. Must be a multiple of the scale in both dimensions."
+            },
+            "scale": {
+              "type": "integer",
+              "enum": [1, 2],
+              "default": 2,
+              "description": "Device pixels per point in the screenshot. Every Catalina reference is 2."
+            },
+            "matte": {
+              "type": "string",
+              "pattern": "^#[0-9a-fA-F]{6}$",
+              "default": "#ffffff",
+              "description": "Colour placed behind transparent reference pixels (window captures have transparent margins)."
+            }
+          }
+        },
+        "masks": {
+          "type": "array",
+          "description": "Regions excluded from the score, in points relative to the captured element. For text set in the fallback font; say why in the description. Together they may cover at most 75% of the crop.",
+          "items": { "$ref": "#/definitions/maskRect" }
+        },
+        "threshold": {
+          "type": "number",
+          "minimum": 0.01,
+          "maximum": 0.1,
+          "default": 0.1,
+          "description": "Colour distance (0..1) above which a pixel counts as mismatched. Use 0.05 for a comparison of the drawing alone (text masked): it shows a half-point change of a corner radius or of a hairline's alpha, which 0.1 hides."
+        },
+        "budget": {
+          "type": "object",
+          "description": "Highest accepted mismatch (0..1) per device scale; the run fails above it. Required for both scales. Set it just above the measured score: at 2x the run also fails, in Chromium on Linux where budgets are set, when it is more than 0.001 (a tenth of a percentage point), or three tenths of the score if that is more, above the score; another browser or platform reports that without failing. At most 0.25 at 1x and 0.1 at 2x, or up to 0.3 beside a comparison of the same example and crop that masks the text (everything this one masks, and more) and is within those limits.",
+          "required": ["1x", "2x"],
+          "additionalProperties": false,
+          "properties": {
+            "1x": { "type": "number", "minimum": 0, "maximum": 0.3 },
+            "2x": { "type": "number", "minimum": 0, "maximum": 0.3 }
+          }
+        },
+        "deltaBudget": {
+          "type": "object",
+          "description": "Highest accepted mean colour difference per channel (0..255) per device scale; the run fails above it. Required for both scales. Catches a surface that is slightly the wrong colour everywhere, which the mismatch fraction does not count. At most 16 at 1x and 8 at 2x, or up to 32 beside a tight companion, as for budget.",
+          "required": ["1x", "2x"],
+          "additionalProperties": false,
+          "properties": {
+            "1x": { "type": "number", "minimum": 0, "maximum": 32 },
+            "2x": { "type": "number", "minimum": 0, "maximum": 32 }
+          }
+        },
+        "expect": {
+          "type": "object",
+          "description": "For a state no reference screenshot shows: the size of the capture and the colours of chosen pixels, taken from the spec or the tokens. Used instead of reference.",
+          "required": ["pixels"],
+          "additionalProperties": false,
+          "properties": {
+            "size": {
+              "type": "object",
+              "description": "Size of the captured element, in points.",
+              "required": ["width", "height"],
+              "additionalProperties": false,
+              "properties": {
+                "width": { "type": "number", "exclusiveMinimum": 0 },
+                "height": { "type": "number", "exclusiveMinimum": 0 }
+              }
+            },
+            "pixels": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["x", "y", "color", "note"],
+                "additionalProperties": false,
+                "properties": {
+                  "x": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Points from the left edge of the capture."
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Points from the top edge of the capture."
+                  },
+                  "color": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+                  "tolerance": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 8,
+                    "default": 2,
+                    "description": "Accepted difference per colour channel, in 8-bit levels."
+                  },
+                  "scale": {
+                    "enum": [1, 2],
+                    "description": "Check this pixel at one device scale only (a hairline is half a point: only 2x shows it)."
+                  },
+                  "note": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Where the expected colour comes from: the spec entry, the token, and whether it is measured or inferred."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

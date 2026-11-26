@@ -1,0 +1,265 @@
+/*
+ * Siri: the assistant's window.
+ *
+ * Parts
+ *   .mac-siri              344 x 600 pt panel: 28 pt top strip, results, 59 pt bottom strip
+ *   .mac-siri-close        12 pt disc in the top strip
+ *   .mac-siri-results      the scrolling region; a 1 pt line lies under its first point
+ *   .mac-siri-prompt       text above the results
+ *   .mac-siri-card         a result: 320 pt card with a 26 pt header band
+ *   .mac-siri-help         12 pt disc in the bottom strip
+ *   .mac-siri-orb          40 pt button: the orb, or the waveform while listening
+ *
+ * States
+ *   [data-listening]                            the waveform replaces the orb
+ *   .mac-siri-wave[data-animated]               its bars move (never with reduced motion)
+ *   :active, [data-force~="pressed"]            a button under the pointer's press
+ *   :focus-visible, [data-force~="focus"]       focus ring
+ *   :where([data-window-state="main"], [data-window-state="inactive"]) *
+ *                                               no focus ring outside the key window
+ *
+ * Hooks
+ *   --mac-siri-width, --mac-siri-height   size of the window (344px, 600px)
+ *   --mac-siri-card-glow                  background layers over a card's fill
+ *
+ * The waveform animates transforms only; --_level and --_shape, set by the component, give
+ * each bar its height.
+ */
+.mac-siri {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  box-sizing: border-box;
+  inline-size: var(--mac-siri-width, 344px);
+  block-size: var(--mac-siri-height, 600px);
+  flex-direction: column;
+  padding-block-start: 28px;
+  border-radius: 8px;
+  background: var(--mac-material-hud);
+  backdrop-filter: var(--mac-material-filter);
+  box-shadow:
+    0 0 0 var(--mac-hairline) var(--mac-siri-hairline),
+    var(--mac-siri-shadow);
+  color: var(--mac-siri-text);
+  font: var(--mac-font-body);
+}
+
+/* The rim lies over the content. */
+.mac-siri::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--mac-siri-rim);
+  content: "";
+  pointer-events: none;
+}
+
+.mac-siri-close,
+.mac-siri-help {
+  position: absolute;
+  box-sizing: border-box;
+  inline-size: 12px;
+  block-size: 12px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  appearance: none;
+  background: var(--mac-siri-button);
+  color: var(--mac-siri-glyph);
+}
+
+.mac-siri-close {
+  inset-block-start: 8px;
+  inset-inline-start: 10px;
+}
+
+.mac-siri-close-glyph {
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+}
+
+.mac-siri-help {
+  inset-block-end: 24px;
+  inset-inline-start: 12px;
+  font: var(--mac-font-control-mini);
+  font-weight: var(--mac-font-weight-bold);
+  line-height: 12px;
+  text-align: center;
+}
+
+.mac-siri-close:where(:active, [data-force~="pressed"]),
+.mac-siri-help:where(:active, [data-force~="pressed"]) {
+  background: var(--mac-siri-button-pressed);
+}
+
+/* Catalina's overlay scrollers are hidden while nothing scrolls. */
+.mac-siri-results {
+  display: flex;
+  overflow: hidden auto;
+  flex: 1;
+  min-block-size: 0;
+  flex-direction: column;
+  box-shadow: inset 0 1px 0 var(--mac-siri-rim);
+  gap: 8px;
+  scrollbar-width: none;
+}
+
+.mac-siri-prompt {
+  flex: none;
+  margin: 0;
+  padding: 12px 20px 8px;
+  font: var(--mac-font-title-2);
+}
+
+.mac-siri-card {
+  overflow: hidden;
+  flex: none;
+  margin-inline: 12px;
+  border-radius: 8px;
+  background: var(--mac-siri-card-glow, none), var(--mac-siri-card-fill);
+  color: var(--mac-siri-card-text);
+  font-size: 13.5px;
+}
+
+.mac-siri-card-header {
+  display: flex;
+  box-sizing: border-box;
+  block-size: 26px;
+  align-items: center;
+  padding-block-start: 1.5px;
+  padding-inline: 8.5px 12px;
+  background: var(--mac-siri-card-header);
+  gap: 7px;
+}
+
+.mac-siri-card-icon {
+  display: flex;
+  flex: none;
+  inline-size: 14px;
+  block-size: 14px;
+  align-items: center;
+  justify-content: center;
+}
+
+.mac-siri-card-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.mac-siri-bottom {
+  display: flex;
+  box-sizing: border-box;
+  flex: none;
+  block-size: 59px;
+  justify-content: center;
+  border-block-start: 1px solid var(--mac-siri-rim);
+}
+
+.mac-siri-orb {
+  display: flex;
+  inline-size: 40px;
+  block-size: 40px;
+  align-items: center;
+  justify-content: center;
+  margin-block-start: 6.75px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  appearance: none;
+  background: none;
+}
+
+.mac-siri-orb:where(:active, [data-force~="pressed"]) {
+  opacity: 0.7;
+}
+
+/* The library's own orb: three soft lights and a white core in a glass sphere. */
+.mac-siri-orb-art {
+  inline-size: 100%;
+  block-size: 100%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 52% 50%, var(--mac-siri-orb-core) 4%, transparent 26%),
+    radial-gradient(46% 13% at 54% 52%, var(--mac-siri-orb-teal), transparent),
+    radial-gradient(circle at 62% 66%, var(--mac-siri-orb-blue), transparent 36%),
+    radial-gradient(circle at 38% 64%, var(--mac-siri-orb-pink), transparent 28%),
+    radial-gradient(circle at 44% 32%, var(--mac-siri-orb-teal), transparent 26%),
+    radial-gradient(circle, transparent 62%, var(--mac-siri-orb-glass) 69%, transparent 71%);
+}
+
+.mac-siri-wave {
+  display: flex;
+  block-size: 30px;
+  align-items: center;
+  gap: 3px;
+}
+
+.mac-siri-wave-bar {
+  --_scale: calc(0.14 + 0.86 * var(--_level) * var(--_shape));
+
+  inline-size: 3px;
+  block-size: 100%;
+  border-radius: 1.5px;
+  background: linear-gradient(
+    var(--mac-siri-orb-teal),
+    var(--mac-siri-orb-blue),
+    var(--mac-siri-orb-pink)
+  );
+  transform: scaleY(var(--_scale));
+}
+
+@keyframes mac-siri-wave {
+  from {
+    transform: scaleY(calc(var(--_scale) * 0.3));
+  }
+}
+
+.mac-siri-close:where(:focus-visible, [data-force~="focus"]),
+.mac-siri-help:where(:focus-visible, [data-force~="focus"]),
+.mac-siri-orb:where(:focus-visible, [data-force~="focus"]),
+.mac-siri-results:where(:focus-visible, [data-force~="focus"]) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+.mac-siri-results:where(:focus-visible, [data-force~="focus"]) {
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+.mac-siri-close:where(:where([data-window-state="main"], [data-window-state="inactive"]) *),
+.mac-siri-help:where(:where([data-window-state="main"], [data-window-state="inactive"]) *),
+.mac-siri-orb:where(:where([data-window-state="main"], [data-window-state="inactive"]) *),
+.mac-siri-results:where(:where([data-window-state="main"], [data-window-state="inactive"]) *) {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mac-siri-wave:where([data-animated]) > .mac-siri-wave-bar {
+    animation: mac-siri-wave 0.8s ease-in-out infinite alternate;
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-siri,
+  .mac-siri-card {
+    border: 1px solid CanvasText;
+  }
+
+  .mac-siri-close,
+  .mac-siri-help {
+    border: 1px solid ButtonText;
+  }
+
+  .mac-siri-orb {
+    border: 1px solid ButtonText;
+  }
+
+  .mac-siri-orb-art,
+  .mac-siri-wave-bar {
+    forced-color-adjust: none;
+  }
+}

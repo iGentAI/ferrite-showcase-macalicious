@@ -1,0 +1,23 @@
+/*
+ * Scroll view: scroller colours (reference/spec/components/scroll-view.md). Only the dark
+ * overlay knob is shown in the reference screenshots; everything else is inferred there.
+ */
+:root {
+  /* [measured, computed] overlay knob for light content: #7c7c7c over #fafafa (Safari
+     Picture in Picture @ 2840,760) */
+  --mac-scroll-view-knob-dark: rgb(0 0 0 / 0.5);
+  /* [provisional] overlay knob for dark content and its outline; no screenshot shows one */
+  --mac-scroll-view-knob-light: rgb(255 255 255 / 0.5);
+  --mac-scroll-view-knob-light-outline: rgb(0 0 0 / 0.3);
+  /* [provisional] the default knob follows the appearance: the dark half is measured (above) */
+  --mac-scroll-view-knob: light-dark(rgb(0 0 0 / 0.5), rgb(255 255 255 / 0.5));
+  --mac-scroll-view-knob-outline: light-dark(transparent, rgb(0 0 0 / 0.3));
+  /* [provisional] track under an overlay knob while the pointer is over it */
+  --mac-scroll-view-track-overlay: light-dark(rgb(255 255 255 / 0.9), rgb(0 0 0 / 0.1));
+  --mac-scroll-view-track-overlay-border: light-dark(rgb(0 0 0 / 0.09), rgb(255 255 255 / 0.1));
+  /* [provisional] legacy, always visible scroll bar (the spec's inferred Catalina values) */
+  --mac-scroll-view-track: light-dark(#fafafa, #2b2b2b);
+  --mac-scroll-view-track-border: light-dark(#e8e8e8, #3b3b3b);
+  --mac-scroll-view-knob-legacy: light-dark(#c1c1c1, #6b6b6b);
+  --mac-scroll-view-knob-legacy-hover: light-dark(#7d7d7d, #959595);
+}

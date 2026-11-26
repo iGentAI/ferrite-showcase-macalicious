@@ -1,0 +1,74 @@
+/*
+ * Colour swatch picker: the eight accent swatches, which do not depend on the accent in
+ * effect, and their decorations. Candidates for src/styles/tokens/.
+ */
+:root {
+  /* Swatch fills [measured] Light- and Dark-System-Preferences-General @ 618+48k,369 (k is
+     the swatch index), equal within one level to Theme-<Light|Dark>-<Accent> @ 1484+48k,617 */
+  --mac-color-swatch-picker-blue: light-dark(#027aff, #027aff);
+  --mac-color-swatch-picker-purple: light-dark(#953d96, #a550a7);
+  --mac-color-swatch-picker-pink: light-dark(#f74f9e, #f7509e);
+  --mac-color-swatch-picker-red: light-dark(#e0383f, #fe5258);
+  --mac-color-swatch-picker-orange: light-dark(#f7821c, #f8821b);
+  --mac-color-swatch-picker-yellow: light-dark(#fcb828, #fbb927);
+  --mac-color-swatch-picker-green: light-dark(#62ba47, #63ba46);
+  --mac-color-swatch-picker-graphite: light-dark(#989898, #8c8c8c);
+
+  /* The 1 pt edge of each swatch: darker than the fill in Aqua, lighter in Dark Aqua
+     [measured] same files @ 615+48k,369 */
+  --mac-color-swatch-picker-blue-ring: light-dark(#0262cc, #4596ff);
+  --mac-color-swatch-picker-purple-ring: light-dark(#783179, #b874b9);
+  --mac-color-swatch-picker-pink-ring: light-dark(#c5407f, #fa75b2);
+  --mac-color-swatch-picker-red-ring: light-dark(#b42e33, #ff777a);
+  --mac-color-swatch-picker-orange-ring: light-dark(#c56917, #fa9c53);
+  --mac-color-swatch-picker-yellow-ring: light-dark(#ca9321, #fcc65e);
+  --mac-color-swatch-picker-green-ring: light-dark(#4e9638, #84c86e);
+  --mac-color-swatch-picker-graphite-ring: light-dark(#7a7a7a, #a3a3a3);
+
+  /* Edge of a swatch of any other colour, painted over its fill. The measured light edges
+     are the fill times 0.80; the dark ones are the fill mixed with about 20% white
+     [measured, computed] from the sixteen values above */
+  --mac-color-swatch-picker-ring: light-dark(rgb(0 0 0 / 0.2), rgb(255 255 255 / 0.2));
+
+  /* Centre dot of the chosen swatch [measured] General @ 630,369, both appearances */
+  --mac-color-swatch-picker-dot: #ffffff;
+  /* Soft shadow under the dot, Aqua only: the two rows below it are the fill darkened by 10%
+     and 5% (#046de5, #0474f2 under the blue dot; #873787, #8d3b8e under the purple one). The
+     value is the strength at the centre of a radial falloff that composites to those rows
+     [measured, computed] Light-System-Preferences-General @ 630,376..377;
+     Theme-Light-Purple @ 1544,624..625 */
+  --mac-color-swatch-picker-dot-shadow: light-dark(rgb(0 0 0 / 0.15), transparent);
+}
+
+:root {
+  /* Hairline (top, side, bottom) around an unchosen thumbnail. Sides: #dadada on #ececec,
+     #2b2c2d on #2f3031. In Aqua the top is #b6b6b6 and the bottom #a5a5a5. Stored as the black
+     that composites to them [measured, computed] Light-System-Preferences-General @ 786,232
+     and column 854, y 186..187 and 276..278; Dark-System-Preferences-General @ 614,232 */
+  --mac-color-swatch-picker-thumbnail-border: light-dark(rgb(0 0 0 / 0.229), rgb(0 0 0 / 0.085))
+    light-dark(rgb(0 0 0 / 0.076), rgb(0 0 0 / 0.085))
+    light-dark(rgb(0 0 0 / 0.301), rgb(0 0 0 / 0.085));
+  /* Aqua only: the rows beyond that hairline, #dadada above it and #b6b6b6, #dbdbdb below it
+     [measured, computed] same column */
+  --mac-color-swatch-picker-thumbnail-shadow:
+    0 -0.5px 0 0 light-dark(rgb(0 0 0 / 0.076), transparent),
+    0 0.5px 0 0 light-dark(rgb(0 0 0 / 0.169), transparent),
+    0 1px 0 0 light-dark(rgb(0 0 0 / 0.072), transparent);
+  /* [provisional] Ring of the chosen thumbnail in a window that is not key: grey in place of
+     the accent. No screenshot shows it. */
+  --mac-color-swatch-picker-thumbnail-ring-inactive: light-dark(
+    rgb(0 0 0 / 0.25),
+    rgb(255 255 255 / 0.3)
+  );
+}
+
+:root,
+[data-accent] {
+  /* Ring of the chosen thumbnail: the accent colour itself, #027aff for blue in both
+     appearances [measured] Light-System-Preferences-General @ 613,232;
+     Dark-System-Preferences-General @ 785,232 */
+  --mac-color-swatch-picker-thumbnail-ring: light-dark(
+    var(--mac-accent-light),
+    var(--mac-accent-dark)
+  );
+}

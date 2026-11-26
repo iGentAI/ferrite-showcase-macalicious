@@ -1,0 +1,36 @@
+/*
+ * Accessibility pane. Every control is a library component placed by form.tsx; this file sets
+ * the headline of the Overview and places the note shown for a category that is not captured.
+ *
+ *   .mac-system-preferences-accessibility-headline   the centred headline of the Overview:
+ *                                                    15 pt bold, a size the label has only
+ *                                                    in regular weight
+ *   .mac-system-preferences-accessibility-empty      fills the box of a category
+ *   .mac-system-preferences-accessibility-served     a category's settings on the served desktop, one a line
+ */
+.mac-system-preferences-accessibility-headline {
+  margin: 0;
+  color: var(--mac-color-label);
+  font: var(--mac-font-title-3);
+  font-weight: var(--mac-font-weight-bold);
+  /* The two lines of the captures are 19.5 pt apart. */
+  line-height: 19.5px;
+  text-align: center;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.mac-system-preferences-accessibility-empty {
+  position: absolute;
+  inset: 0;
+}
+
+.mac-system-preferences-accessibility-served {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  padding: 16px 20px;
+}

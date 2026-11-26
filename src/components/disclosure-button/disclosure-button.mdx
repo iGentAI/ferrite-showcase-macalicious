@@ -1,0 +1,117 @@
+---
+title: Disclosure Button
+description: A small square button with a chevron that expands and collapses the view it belongs to. Built from the documented behaviour; no reference screenshot shows it.
+order: 16
+---
+
+<Example name="basic" both />
+
+AppKit calls this control a *disclosure button* (`NSButton` with the rounded-disclosure bezel
+style): the button beside the Save As field of a Save dialog. It is built on
+[Base UI's Button](https://base-ui.com/react/components/button) and adds the expanded state.
+
+**No visual reference.** None of the Catalina screenshots contains a disclosure button (no
+Save dialog was captured). The component is built from Apple's description of the control,
+the measured push-button bezel and the measured chevron of the pull-down button. See
+[Visual comparison](#visual-comparison).
+
+## Usage
+
+```tsx
+import { DisclosureButton } from "macalicious/disclosure-button";
+import "macalicious/disclosure-button.css";
+
+<DisclosureButton
+  expanded={expanded}
+  onExpandedChange={setExpanded}
+  aria-controls="file-browser"
+  aria-label="Show the file browser"
+/>
+```
+
+Leave out `expanded` to let the button keep its own state (`defaultExpanded` sets the start).
+Or copy the source into your project: `npx macalicious add disclosure-button`. See
+[Installation](/installation).
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for disclosure controls:
+
+- A disclosure button shows and hides functionality that belongs to one control. The chevron
+  points down while that functionality is hidden and up while it is shown; the view grows or
+  shrinks accordingly.
+- Put it close to the control it belongs to, and use at most one per view.
+- To reveal the children of a row or a section of a view, use a
+  [disclosure triangle](/components/disclosure-triangle) instead.
+
+<Example name="save-as" />
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Collapsed | – | Push-button bezel, chevron pointing down |
+| Expanded | `expanded` or `defaultExpanded` | The chevron points up; the bezel does not change and never takes the accent |
+| Pressed | `:active` | The fill darkens in Aqua and lightens in Dark Aqua |
+| Keyboard focus | `:focus-visible` | Focus ring in the accent colour |
+| Disabled | `disabled` | Bezel at half opacity, chevron at 25% |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | Unchanged, but no focus ring |
+
+## Sizes
+
+<Example name="sizes" />
+
+| Size | Box | Bezel |
+| --- | --- | --- |
+| `regular` | 21 pt | 20 pt square (provisional) |
+| `small` | 18 pt | 17 pt (provisional) |
+| `mini` | 15 pt | 14 pt (provisional) |
+
+The chevron is the same in every size.
+
+## API
+
+<PropsTable name="DisclosureButtonProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `aria-expanded` | `true`, `false` | The state, for assistive technology. |
+| `data-expanded` | present or absent | Present while expanded. |
+| `data-size` | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-disabled` | present or absent | Set by Base UI while the button is disabled. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+## Accessibility
+
+- Renders a native `<button>` with `aria-expanded`. Space and Return toggle it; Tab reaches it.
+- It has no title, so it needs an `aria-label`. Point `aria-controls` at the element it shows
+  and hides.
+- The chevron is decorative and hidden from assistive technology.
+- In forced-colours mode the bezel is drawn with system colours.
+
+## Visual comparison
+
+There is no screenshot to compare with: the spec lists the disclosure button as not seen.
+Everything about its look is therefore provisional. What it is built from:
+
+| Part | Source |
+| --- | --- |
+| Bezel: edge, fill, highlight and shadow rows, corner radius | Measured on the push button; that this button shares them is inferred |
+| 20 pt square | Inferred from the push button's measured 20 pt body |
+| Chevron, 6 x 3 pt with a 1.2 pt stroke | The spec's path, taken from the measured chevron of the pull-down button |
+| Pressed fill | Inferred |
+
+`npm run visual -- disclosure-button` checks the component against those values in a real
+browser (the `expect` comparisons of `disclosure-button.visual.json`): the hairlines, the fill
+and the chevron's apex at rest, the chevron turned after a real click, the pressed fill under a
+real mouse press, the focus ring after a real Tab, the disabled fill, the small and mini
+bezels, and that the ring is absent in an inactive window. These checks hold the component to
+the spec; they do not show that Catalina draws a disclosure button this way. The pressed fill
+is the shared pressed bezel of the spec's token sheet (`#f0f0f0`, white at 36% in Dark Aqua);
+the spec's disclosure-button page infers a fill darkened by about 10%, which is darker, and no
+screenshot settles which is right.

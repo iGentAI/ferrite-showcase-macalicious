@@ -1,0 +1,50 @@
+/*
+ * Document tabs: View > Show All Tabs covers the window with a picture of each tab.
+ */
+
+.mac-textedit-tabs-overview {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 20px;
+  padding: 20px;
+  overflow: auto;
+  background: var(--mac-color-window-background);
+}
+
+.mac-textedit-tabs-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  inline-size: 200px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mac-color-label);
+  font: inherit;
+  text-align: center;
+}
+
+.mac-textedit-tabs-picture {
+  position: relative;
+  overflow: hidden;
+  block-size: 150px;
+  border: 1px solid var(--mac-color-separator);
+  border-radius: 4px;
+  background: var(--mac-color-control-background);
+}
+
+.mac-textedit-tabs-card:where([aria-current="true"]) .mac-textedit-tabs-picture {
+  border-color: var(--mac-color-selected-content-background);
+}
+
+.mac-textedit-tabs-picture > * {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  transform-origin: top left;
+  visibility: visible;
+}

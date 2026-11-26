@@ -1,0 +1,312 @@
+---
+title: Script Editor
+description: The Script Editor window of macOS 10.15, with Record, Stop, Run and Compile and two pane toggles in the toolbar, a navigation bar of the language and the script's handlers, a script in AppleScript's formatting styles that can be edited and compiled, and the Description, Result and Log views under it.
+layout: full
+order: 120
+---
+
+<Example name="basic" />
+
+Type in the script and press Compile, the hammer: the script is checked, indented by its
+blocks and coloured, as Script Editor does it. Run, the triangle, compiles and then shows a
+result. The three buttons of the bottom bar choose the view under the script, and the two at
+the end of the toolbar show and hide the panes. The script is the Mail rule action of the
+reference screenshots. Nothing is sent to another application: a page has none to script, so
+Run works out only the simplest statements, and Record has nothing to record. When the
+`macalicious-desktop` Ferrite application serves the desktop, the window is a real Script
+Editor for JavaScript instead, and Record writes the applications brought forward and the
+appearance set to Light or Dark: see [On the desktop's server](#on-the-desktops-server).
+
+## What it shows
+
+- A [Window](/components/window) with a unified [Title Bar](/components/title-bar) and a
+  [Toolbar](/components/toolbar): four [Toolbar Buttons](/components/toolbar-button) with a
+  glyph each, and a [Toolbar Segmented Control](/components/toolbar-segmented-control) of two
+  momentary segments that are toggles (`aria-pressed`), whose glyph takes the accent colour
+  while its pane is shown. The close button of the
+  [Window Controls](/components/window-controls) carries the dot of an edited document until
+  the script compiles.
+- The navigation bar: two small [Pop-Up Buttons](/components/pop-up-button) without a bezel,
+  the language and the script's handlers, each ending at a line.
+- The script: a rich [Text View](/components/text-view) that the browser edits in place, in
+  Verdana 12 on a 15 pt line, a tab for every level of 29 pt. Its paper is white in both
+  appearances, as in the captures: the element around it has `data-appearance="light"`, so
+  the text view's colours, its insertion point and its selection are Aqua's.
+- Two [Split Views](/components/split-view): a vertical one of the script and the accessory
+  view, and a horizontal one that adds the Bundle Contents pane, a small
+  [Form](/components/form) of [Text Fields](/components/text-field).
+- The accessory view under a header that names it: the Description, an editable
+  [Rich Text View](/components/text-view) that takes the Font menu's styles, or the Result
+  or the Log, read-only plain ones.
+- A [Status Bar](/components/status-bar) in its `flat` variant with three
+  [Image Buttons](/components/image-button) that choose the accessory view.
+
+| Command | Where | What it does |
+| --- | --- | --- |
+| Compile | the hammer | Reads the script from the view, checks that its blocks, comments and strings are closed, each block by an `end` of its own kind, and renders it again indented and in the formatting styles. An error is shown in the Result view and the script stays as it was typed. |
+| Run | the triangle | Compiles, then works out the statements at the top level that set a variable, `log`, `return`, `display dialog` or are an expression of numbers, strings, `+ - * / &` and brackets. The last value is the result. Blocks, and so handlers and everything told to an application, are passed over. A script in JavaScript is not run: the result says so. |
+| Record, Stop | the dot and the square | Record makes Run and Compile unavailable until Stop; both note it in the log. On the desktop, while it records, another application coming to the front and the appearance set to Light or Dark each write their lines at the end of the script, in its language, and Stop compiles them. What happens inside an application is not reported to Script Editor, so it is not recorded. |
+| Language | the first pop-up button | AppleScript, or JavaScript, which is left unstyled and is not checked. |
+| Element | the second pop-up button | The script's handlers, as it is typed now; choosing one selects its line. |
+| Accessory view, Bundle contents | the two toggles | Show and hide the view under the script and the pane beside it. |
+| Description, Result, Log | the bottom bar | Choose the accessory view, and show it if it is hidden. |
+| Open Script, Save Script, Library | the navigation bar and the bottom bar | Only on the desktop's server: open a saved script, save this one, and list what a script can call. |
+| Record, Stop, Run, Compile | `Shift-Command-R`, `Command-.`, `Command-R`, `Command-K`, the Script menu | As the toolbar's buttons. A key leaves the keyboard where it was in the script. During a run on the server Stop is dimmed and says why: such a run can't be stopped, and ends within 5 seconds. |
+| Show or hide Bundle Contents, the Accessory View | `Command-0`, `Option-Command-0`, the View menu | As the two toggles. |
+| Description, Result, Log | `Command-1`, `-2`, `-3`, the View menu | As the bottom bar. |
+| Open…, Open Recent, Save…, Duplicate, Rename…, Move To… | `Command-O`, none, `Command-S`, `Shift-Command-S`, none, none, the File menu | Only on the desktop's server. Open… is the drive's Open panel, on Documents/Scripts, for `.js` files. Save writes into the file the script is, and asks for a name when it has none or when the file was saved over elsewhere. Duplicate writes the changes first; an unsaved copy then takes the window. Rename and Move To change the file on the drive, and are dimmed until the script has one. |
+| New | `Command-N`, the File menu | Another window, with a script of its own. |
+| Show Fonts, Show Colors | `Command-T`, `Shift-Command-C`, the Font menu | Show or hide the [Fonts panel](/components/font-panel) and the [Colors panel](/components/color-panel), which float at the top right of the page and style the selection. |
+| Bold, Italic, Underline | `Command-B`, `-I`, `-U`, the Font menu | Set or clear the style of the selection in the Description or in the script; the menu checks the styles where the insertion point is. |
+| Bigger, Smaller | `Command-+`, `Command--`, the Font menu | One point more or less for the selection. |
+| Outline, Kern, Ligatures, Baseline | the Font menu | On the characters of the selection. |
+| Copy Style, Paste Style | `Option-Command-C`, `Option-Command-V`, the Font menu | Carries the style of the selection to another. |
+| Writing Direction | the Format menu's Text submenu | On the lines of the selection. |
+| Spelling and Grammar | `Shift-Command-;`, `Command-;`, the Edit menu | The desktop's panel and word list on the text last used. Check Spelling While Typing starts off, as a script is code. |
+| Substitutions | the Edit menu | In the Description only: a curly quote or a long dash in the script would be a syntax error. |
+| Share, Page Setup… | the File menu | Share hands the text in the window to another app as a file. AirDrop and Page Setup… are dimmed, saying why. |
+| A script from Finder or the Dock tile, or dropped on the window | | Opens in the window, and asks first over unsaved changes. Two at once leave the last in the window. |
+| A drive item dropped on the script | | Its path on the drive goes in the text where it was let go. |
+| Align Left, Center, Justify, Align Right | `Command-{`, `Command-\|`, none, `Command-}`, Format > Text | Align the paragraphs the selection touches; the item of the insertion point's paragraph is checked. |
+
+The Font and Format menus are AppKit's standard ones, which Script Editor has; no capture shows
+them open. Format holds the same Font submenu and the Text submenu of the four alignments. Their
+commands act on the view last used, the Description or the script. In the script they style
+what has not been compiled: Compile sets the script in AppleScript's formatting styles again,
+as Script Editor does. On the desktop the menu bar's Font and Format menus hold these commands
+while the window is open (Control stands for Command off Apple platforms). The Description is
+not part of a saved script, so its styles last as long as the window: there is no save and
+reload of them.
+
+<Example name="result" />
+
+## Source walkthrough
+
+The demo is seven files in `demos/script-editor/`.
+
+**`script-editor-data.ts`** is everything the editor knows about a script, as pure functions:
+
+- `styleLine(line, state)` cuts a line into runs of one style each: `keyword`, `command`,
+  `class`, `parameter`, `variable`, `literal`, `string`, `number`, `pattern`, `template`, `comment` or `plain`. Terms are matched
+  longest first, so "perform mail action with messages" is found before "with", and `state`
+  carries a block comment to the next line.
+- `compile(source)` walks the lines with a stack of the blocks that `tell`, `repeat`, `try`,
+  `if … then`, a handler and their like open and `end` closes, prints each line at its
+  depth, and reports what is not closed or is closed by the `end` of another kind.
+- `run(source)` evaluates the simple statements, and `handlersOf(source)` lists the handlers.
+
+**`script-editor.tsx`** is the window. The script view is uncontrolled, like every editable
+rich text view of the library: React renders the lines of the last compilation once, the
+browser edits them, and a command reads the text back from the element. Rendering again is a
+new `key`:
+
+```tsx
+const compileScript = () => {
+  const written = readScript(script.current);
+  const compiled = compile(written, language);
+  if (!compiled.ok) {
+    setResult(compiled.error);
+    show("result");
+    return null;
+  }
+  setSource(compiled.source);
+  setRevision((count) => count + 1);
+  return compiled.source;
+};
+
+<div className="mac-script-editor-paper" data-appearance="light">
+  <RichTextView key={revision} ref={script} aria-label="Script" onInput={() => setEdited(true)}>
+    {lines.map((runs, index) => (
+      <div key={index} className="mac-script-editor-line">
+        {runs.map((piece, at) => (
+          <span key={at} className="mac-script-editor-run" data-style={piece.style}>
+            {piece.text}
+          </span>
+        ))}
+      </div>
+    ))}
+  </RichTextView>
+</div>
+```
+
+The panes are split views whose optional panes are simply not rendered while they are
+hidden:
+
+```tsx
+<SplitView orientation="vertical">
+  <SplitViewPane minSize={60}>{/* the script */}</SplitViewPane>
+  {accessory ? (
+    <>
+      <SplitViewDivider aria-label="Resize the accessory view" />
+      <SplitViewPane defaultSize={187} minSize={60}>{/* header and view */}</SplitViewPane>
+    </>
+  ) : null}
+</SplitView>
+```
+
+The bottom bar is the library's flat status bar with the three buttons as its leading
+content:
+
+```tsx
+<StatusBar
+  variant="flat"
+  leading={
+    <div role="group" aria-label="Accessory views">
+      <ImageButton aria-label="Description" aria-current={view === "description"} onClick={() => show("description")}>
+        <DescriptionGlyph />
+      </ImageButton>
+      {/* Result, Log */}
+    </div>
+  }
+/>
+```
+
+**`script-editor.css`** holds the layout, the two bars of the demo's own (the navigation bar
+and the header, flat strips over a hairline), and the formatting styles, one rule for each
+`data-style`. **`script-editor.tokens.css`** holds the colours measured in the captures that
+no shared token has: the bars and their lines, the divider, the record dot and the three
+colours of the formatting styles. **`script-editor-glyphs.tsx`** holds the nine original
+drawings, and **`app.ts`** the descriptor the [Desktop](/demos/desktop) reads.
+**`script-editor-server.ts`** is the browser half of the server features: the requests to
+`/api/script-editor/`, how a run's reply becomes the Result and the Log, and the Library's
+text.
+
+## Hosting the window
+
+`ScriptEditor` renders the library's `Window` as its root and passes every `Window` prop to
+it, so it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component hands to the window controls and
+the title bar. These are the props a [Managed Window](/components/managed-window)'s `render`
+form supplies, so the component can be spread with them as they come.
+
+<Example name="hosted" />
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `title` | `string` | The window's title; the Aqua capture's by default. |
+| `defaultSource` | `string` | The script the window opens with, a tab for every level; the Mail rule action of the captures by default. |
+| `defaultDescription` | `string` | The text of the Description view at first. |
+| `defaultView`, `onViewChange` | `"description" \| "result" \| "log" \| "library"` and a function | The accessory view shown at first, and its changes. The Library is there only with a server. |
+| `defaultLanguage` | `"AppleScript" \| "JavaScript"` | The language the window opens in; AppleScript by default. |
+| `server` | `ScriptEditorServer` | What runs JavaScript scripts and keeps saved ones; the desktop application's when it serves the page, none elsewhere. |
+| `onCompile` | `(source: string) => void` | Called with the script after it has compiled. |
+| `onRun` | `(result: string) => void` | Called with the result after the script has run; `""` when it has none. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 700 by 705 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `scriptEditorApp` and as `app`:
+`id`, `name`, `component`, `defaultSize` (700 by 705), `minSize` (360 by 300), `resizable`
+and `menus`, the menu titles after the Apple menu.
+
+### On the desktop's server
+
+When the `macalicious-desktop` Ferrite application serves the desktop
+(`servedByDesktopApp()` in `demos/desktop/desktop-server.ts`), `ScriptEditor` is given that
+application's server, and the window becomes a real one. Everywhere else, in this
+documentation, `npm run desktop:build`, the tests and the visual comparison, it is the
+window described above and asks no server anything.
+
+- It opens as "Untitled", in JavaScript, on a script that reads today's calendar events and
+  reminders, logs them and returns a summary, with the Result view shown.
+- Run sends a JavaScript script to `POST /api/script-editor/run`, which runs it against the
+  person's own desktop apps. Run is unavailable until the reply arrives. The Result view
+  shows the returned value (a string as it is, anything else as JSON) or the error; the Log
+  gets the script's `console.log` lines, a line for each app call (`→ notes.make ✓`,
+  `→ files.read ✗ not_found: …`) and the outcome with its time. The apps a script opens and
+  an appearance it sets are passed to the desktop. A reply that another script is running
+  (429) is retried once; a request that fails or times out is an error line in the Result.
+  An AppleScript with a `tell application` block is translated to the same calls and run there, and a
+  statement the translation does not know stops it before anything runs, naming the line. Any other
+  AppleScript is still worked out on the page, and the Result says so.
+- Two more items in the navigation bar: **Open**, a pull-down button named "Open Script",
+  lists the `.js` files in Documents/Scripts of the person's drive and opens the one chosen,
+  whose name becomes the title; **Save…**, a borderless button named "Save Script", asks for
+  a name in a sheet, the title by default, and saves the script under it. A name in use is
+  asked about first, and replaced only after Replace.
+- A script with unsaved changes is kept with the person's desktop values (`scriptEditor.draft`, and
+  `scriptEditor.draft2` and so on for further windows), with its language, name, file, Description
+  and bundle fields, and comes back when that window opens again. A script over about 60 KB is not
+  kept: the last version that fit stays, and the window says so above the script. A saved script's
+  Description and bundle fields go in its file, as a comment on its last line that Script Editor
+  takes back off when it opens the file, so a copy of the file has them and the script runs as it
+  stands. Export as Text writes the code alone. A further window comes back with the desktop's windows after a reload. The scripts opened last are
+  `scriptEditor.recents`.
+- A fourth button in the bottom bar, "Library", shows the dictionary of what a script can
+  call: how to call an action, then every action grouped by app with its summary and
+  parameters.
+
+The new controls are the library's components and the bars' existing classes
+(`mac-script-editor-navigation-item`, `mac-script-editor-view`, `mac-script-editor-accessory`);
+the window adds no data attribute or CSS variable of its own for them, and one class,
+`mac-script-editor-panel-layer`, where the Open panel stands. The Font menu's
+panels float in `mac-script-editor-panels`, placed by the `--mac-script-editor-panels-*`
+tokens, and the Description is `mac-script-editor-description`.
+
+## Accessibility
+
+- The window is a `region` named by its title. The toolbar is one tab stop; the arrow keys
+  move between its six buttons. Each shows a glyph only and is named: "Record", "Stop",
+  "Run", "Compile", "Accessory view" and "Bundle contents". A button that has nothing to do
+  is marked unavailable (`aria-disabled`) and stays reachable; the two toggles report their
+  state with `aria-pressed`.
+- The pop-up buttons are named "Language" and "Element". On the desktop's server the
+  navigation bar adds a pull-down button named "Open Script", whose menu items are the saved
+  scripts' names, and a button named "Save Script", which opens a sheet (a `dialog` named
+  "Save Script", with a text field named "Save As:" and the buttons Cancel and Save; a name in
+  use turns it into a question with Cancel and Replace).
+- The script is a multi-line `textbox` named "Script". Tab moves on from it, as in every web
+  page; a level of indentation is typed as a tab only by pasting one, and Compile indents
+  the script anyway.
+- The dividers are `separator`s named for what they resize, and the arrow keys move them.
+- The accessory view is a `textbox` named "Description", "Result" or "Log"; the last two are
+  read-only. The header over it repeats that name as text. On the desktop's server it can
+  also be the read-only "Library".
+- The three buttons of the bottom bar are in a group named "Accessory views"; the one whose
+  view is shown has `aria-current="true"`. The view is told by its name, not by the glyph's
+  colour alone. On the desktop's server a fourth, "Library", joins them.
+- The colours of the formatting styles are Script Editor's and are decoration: keywords are
+  also bold and classes italic, and nothing is said by colour only.
+
+## Fidelity
+
+`script-editor.visual.json` compares the whole window with the Script Editor screenshots in
+both appearances, each as captured and again with the text and the stand-in drawings masked.
+The dark screenshot has another title and its script is scrolled, so it has an example of
+its own. Scores from `npm run visual -- script-editor/` in Chromium on Linux with fallback
+fonts: the share of pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 7.68% | 8.09 | 6.21% | 7.93 |
+| `window-light-layout` (masked) | 1.16% | 0.55 | 0.10% | 0.35 |
+| `window-dark` | 6.99% | 7.73 | 5.55% | 6.97 |
+| `window-dark-layout` (masked) | 1.05% | 1.21 | 0.10% | 1.06 |
+
+Measured in the screenshots and reproduced: the 700 by 705 pt frame, the four 38 pt buttons
+46 pt apart and the 73 pt pane toggles, the 19 pt navigation bar with its two lines, the
+script's first baseline and its 15 pt lines and 29 pt levels, the divider, the 23 pt header,
+the 164 pt accessory view, the 23 pt bottom bar with its three glyphs where the capture has
+them, the white paper in both appearances and the colours of the formatting styles.
+
+Two more comparisons, `accessory-hidden-light` and `accessory-hidden-dark`, drive the real
+window: a click on the accessory view toggle, after which the script's paper must reach the
+bottom bar. They check two pixels each against values of the spec, since no screenshot shows
+that state.
+
+What differs, and why:
+
+- **Text.** The script is set in Verdana where it is installed and in DejaVu Sans, which has
+  nearly its widths, elsewhere; the chrome's text is in the fallback font off Apple devices.
+  The second pop-up button's title is wider in it, so the line after it stands 4 pt further
+  right than in the capture.
+- **Glyphs.** The record dot, the square, the triangle, the hammer, the two pane glyphs and
+  the three glyphs of the bottom bar are original drawings.
+- **The scroller.** The dark capture shows the script's overlay scroller, which appears only
+  while something scrolls; the comparison's mask covers it.
+- **Not in a screenshot (provisional):** the Result and Log views and their headers, the
+  Bundle Contents pane, a hidden accessory view, the window's edited state, the lighter blue
+  of a pane toggle in Dark Aqua under another accent than blue, and the window when it is not
+  key.

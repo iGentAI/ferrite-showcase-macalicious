@@ -1,0 +1,200 @@
+/*
+ * Home tile (the accessory and scene tiles of the Home app, iPad metrics at 77%).
+ *
+ * Active: opaque white, black text, tinted glyph. Inactive: a tint over the blurred backdrop
+ * with tone-on-tone text and glyph. No border and no shadow in either state.
+ *
+ * States
+ *   [data-kind="scene"]            the wide tile with one line (accessory by default)
+ *   [data-active]                  the accessory is on / the scene is active
+ *   :active, [data-force~="pressed"]   pressed: the tile shrinks a little (provisional)
+ *   [data-disabled]                no response: dimmed (provisional)
+ *   :focus-visible, [data-force~="focus"]   focus ring, key window only (provisional)
+ */
+.mac-homekit-tile-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7.5px;
+}
+
+.mac-homekit-tile {
+  --_text: var(--mac-homekit-tile-text);
+  --_status: var(--mac-homekit-tile-status);
+  --_icon: var(--mac-homekit-tile-text);
+
+  position: relative;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  width: 101.5px;
+  height: 101.5px;
+  margin: 0;
+  padding: 0 6px 8.5px 11.5px;
+  border: 0;
+  border-radius: 13px;
+  background: var(--mac-homekit-tile-fill);
+  backdrop-filter: blur(var(--mac-homekit-tile-blur));
+  -webkit-backdrop-filter: blur(var(--mac-homekit-tile-blur));
+  color: var(--_text);
+  font: var(--mac-homekit-tile-font);
+  text-align: start;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+  transition: scale var(--mac-homekit-tile-press-duration) ease-out;
+}
+
+.mac-homekit-tile:where([data-active]) {
+  --_text: var(--mac-homekit-tile-active-text);
+  --_status: var(--mac-homekit-tile-active-status);
+  --_icon: var(--mac-homekit-tile-tint);
+
+  background: var(--mac-homekit-tile-active-fill);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* More contrast for an inactive tile, on request or when the reader's system asks for it. */
+.mac-homekit-tile:where([data-contrast="more"]):where(:not([data-active])) {
+  --_text: var(--mac-homekit-tile-text-contrast);
+  --_status: var(--mac-homekit-tile-status-contrast);
+  --_icon: var(--mac-homekit-tile-text-contrast);
+}
+
+@media (prefers-contrast: more) {
+  .mac-homekit-tile:where(:not([data-active])) {
+    --_text: var(--mac-homekit-tile-text-contrast);
+    --_status: var(--mac-homekit-tile-status-contrast);
+    --_icon: var(--mac-homekit-tile-text-contrast);
+  }
+}
+
+/* Glyph: a 24.5 pt slot, 12 pt from the tile's top and leading edges. */
+.mac-homekit-tile-icon {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24.5px;
+  height: 24.5px;
+  color: var(--_icon);
+}
+
+/* Badge: a 13 pt circle on the glyph's lower right, in the glyph's colour. */
+.mac-homekit-tile-badge {
+  position: absolute;
+  top: 11.5px;
+  left: 10.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.mac-homekit-tile-badge > * {
+  color: var(--mac-homekit-tile-active-fill);
+}
+
+/* Text: three lines of one line each, cut with an ellipsis; the last baseline is 11 pt above
+   the tile's bottom edge. */
+.mac-homekit-tile-text {
+  display: block;
+  min-width: 0;
+}
+
+.mac-homekit-tile-room,
+.mac-homekit-tile-name,
+.mac-homekit-tile-status {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-homekit-tile-status {
+  color: var(--_status);
+}
+
+/* Scene: 211 x 54 pt, glyph at the leading edge, title 44 pt in, both centred vertically. */
+.mac-homekit-tile:where([data-kind="scene"]) {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 211px;
+  height: 54px;
+  padding: 0 10px 0 44px;
+  font: var(--mac-homekit-tile-scene-font);
+}
+
+.mac-homekit-tile:where([data-kind="scene"]) .mac-homekit-tile-icon {
+  top: calc(50% - 12.25px);
+  left: 9.5px;
+}
+
+/* Pressed (provisional): the tile shrinks to 95%, as on the iPad. */
+.mac-homekit-tile:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  scale: var(--mac-homekit-tile-pressed-scale);
+}
+
+/* No response (provisional). */
+.mac-homekit-tile:where([data-disabled]) {
+  opacity: var(--mac-bezel-opacity-disabled);
+}
+
+.mac-homekit-tile:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-homekit-tile {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-homekit-tile {
+    --_text: ButtonText;
+    --_status: ButtonText;
+    --_icon: ButtonText;
+
+    border: 1px solid ButtonText;
+    background: ButtonFace;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .mac-homekit-tile:where([data-active]) {
+    --_text: HighlightText;
+    --_status: HighlightText;
+    --_icon: HighlightText;
+
+    background: Highlight;
+    forced-color-adjust: none;
+  }
+
+  .mac-homekit-tile:where([data-disabled]) {
+    --_text: GrayText;
+    --_status: GrayText;
+    --_icon: GrayText;
+
+    opacity: 1;
+  }
+
+  .mac-homekit-tile:where(:focus-visible) {
+    outline-color: Highlight;
+  }
+}

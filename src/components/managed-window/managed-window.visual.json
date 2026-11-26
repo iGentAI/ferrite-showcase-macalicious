@@ -1,0 +1,124 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "corner-top-left-light",
+      "description": "Top-left corner of the key Finder window, drawn by a manager at that frame: the crop the plain window is measured with, Aqua.",
+      "example": "visual-corner-top-left",
+      "appearance": "light",
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Network.png",
+        "crop": { "x": 0, "y": 0, "width": 252, "height": 120 },
+        "matte": "#ffffff"
+      },
+      "budget": { "1x": 0.002, "2x": 0.0031 },
+      "deltaBudget": { "1x": 0.9, "2x": 1.2 }
+    },
+    {
+      "name": "corner-top-left-dark",
+      "description": "Top-left corner of the key Finder window, drawn by a manager at that frame, Dark Aqua.",
+      "example": "visual-corner-top-left",
+      "appearance": "dark",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Network.png",
+        "crop": { "x": 0, "y": 0, "width": 252, "height": 120 },
+        "matte": "#ffffff"
+      },
+      "budget": { "1x": 0.001, "2x": 0.0012 },
+      "deltaBudget": { "1x": 1.6, "2x": 2 }
+    },
+    {
+      "name": "frame-light",
+      "description": "The window at its default frame (20, 40, 120 by 80) on a 300 by 200 desktop, Aqua.",
+      "example": "visual-zoom",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 300, "height": 200 },
+        "pixels": [
+          {
+            "x": 80,
+            "y": 80,
+            "color": "#ececec",
+            "note": "inside the frame: the window body, --mac-color-window-background"
+          },
+          {
+            "x": 250,
+            "y": 170,
+            "color": "#ffffff",
+            "note": "far from the frame and its shadow: the desktop, --mac-color-control-background"
+          }
+        ]
+      }
+    },
+    {
+      "name": "zoomed-light",
+      "description": "After a press on the window and Control-Option-Z, Aqua: the window fills the desktop below the 20 pt top inset.",
+      "example": "visual-zoom",
+      "appearance": "light",
+      "actions": [{ "click": ".mac-window" }, { "key": "Control+Alt+KeyZ" }],
+      "expect": {
+        "pixels": [
+          {
+            "x": 250,
+            "y": 170,
+            "color": "#ececec",
+            "note": "the zoomed window's body, --mac-color-window-background"
+          },
+          {
+            "x": 10,
+            "y": 30,
+            "color": "#ececec",
+            "note": "the zoomed window reaches the left edge and the inset"
+          },
+          {
+            "x": 150,
+            "y": 4,
+            "color": "#ffffff",
+            "tolerance": 8,
+            "note": "above the inset the desktop still shows, --mac-color-control-background, under the far edge of the window's shadow"
+          }
+        ]
+      }
+    },
+    {
+      "name": "frame-dark",
+      "description": "The window at its default frame, Dark Aqua.",
+      "example": "visual-zoom",
+      "appearance": "dark",
+      "expect": {
+        "pixels": [
+          {
+            "x": 80,
+            "y": 80,
+            "color": "#323232",
+            "note": "inside the frame: the window body, --mac-color-window-background"
+          },
+          {
+            "x": 250,
+            "y": 170,
+            "color": "#1e1e1e",
+            "tolerance": 4,
+            "note": "far from the frame: the desktop, --mac-color-control-background"
+          }
+        ]
+      }
+    },
+    {
+      "name": "zoomed-dark",
+      "description": "After a press on the window and Control-Option-Z, Dark Aqua.",
+      "example": "visual-zoom",
+      "appearance": "dark",
+      "actions": [{ "click": ".mac-window" }, { "key": "Control+Alt+KeyZ" }],
+      "expect": {
+        "pixels": [
+          {
+            "x": 250,
+            "y": 170,
+            "color": "#323232",
+            "note": "the zoomed window's body, --mac-color-window-background"
+          }
+        ]
+      }
+    }
+  ]
+}

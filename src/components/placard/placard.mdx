@@ -1,0 +1,133 @@
+---
+title: Placard
+description: A strip of small controls at the bottom edge of a window, beside the horizontal scroll bar, such as a magnification pop-up or page buttons. Not in the reference screenshots; every visual value is inferred.
+---
+
+<Example name="basic" both />
+
+A placard is a view at the bottom edge of a window, in the row of the horizontal scroll bar. It
+held controls for quick changes to the view of the content: buttons to switch pages, a pop-up
+to adjust the magnification. AppKit has no class for it; applications placed a small control in
+the scroll view's scroller area themselves.
+
+**No visual reference.** None of the 294 reference screenshots shows a placard, and Apple
+discourages them. The purpose follows the Human Interface Guidelines; every measurement and
+colour on this page is inferred from the always-visible scroll bar the placard sits beside,
+and is provisional.
+
+The buttons are built on [Base UI's Button](https://base-ui.com/react/components/button); the
+strip itself is a plain group.
+
+## Usage
+
+```tsx
+import { Placard, PlacardButton, PlacardLabel } from "macalicious/placard";
+import "macalicious/placard.css";
+
+<Placard aria-label="Pages">
+  <PlacardButton aria-label="Previous Page" onClick={previous}>…</PlacardButton>
+  <PlacardLabel>Page 3 of 12</PlacardLabel>
+  <PlacardButton aria-label="Next Page" onClick={next}>…</PlacardButton>
+</Placard>
+```
+
+Or copy the source into your project: `npx macalicious add placard`.
+
+<Example name="pages" />
+
+A `PlacardButton` with `popUp` shows the pop-up arrowheads and can be the trigger of a
+[menu](/components/menu):
+
+<Example name="magnification" />
+
+The placard is placed by the caller. The [scroll view](/components/scroll-view) has no slot
+for one: put the placard in a row under the scroll view, as the example does, or lay it over
+the bottom left corner of a view with overlay scroll bars. It is as wide as its content; give
+a button a `width` to keep a changing title from moving its neighbours.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[placards](https://web.archive.org/web/20200503140902/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/placards/):
+
+- **Avoid using placards.** They are seldom used in modern applications and their use is
+  discouraged. Toolbars and menus are the preferred ways to let people manipulate the view of
+  content.
+- Historically a placard provided controls for quick modifications to the view of content
+  within a window: for example, buttons to switch pages or a pop-up button to adjust the
+  magnification.
+
+Use this component for a period interface, not for a new one.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | The scroll bar track's fill, a hairline at the top and at the trailing edge, hairlines between neighbours |
+| Pop-up button | `popUp` | Two arrowheads after the title |
+| Pressed, menu open | `:active`, or `data-popup-open` from a menu trigger | Its part of the strip darkens (Aqua) or lightens (Dark Aqua) by 10% |
+| Keyboard focus | `:focus-visible` | Focus ring inside the button; none in a window that is not key |
+| Disabled | `disabled` | Title at 25% |
+
+All of it is provisional.
+
+## Sizes
+
+| Size | Height | Font | Beside |
+| --- | --- | --- | --- |
+| `regular` | 15 pt | 10 pt | a regular scroll bar |
+| `small`, `mini` | 11 pt | 9 pt | a small scroll bar |
+
+The heights are those of the [scroll view](/components/scroll-view)'s always-visible scroll
+bars, which are themselves inferred.
+
+## API
+
+<PropsTable name="PlacardProps" />
+
+<PropsTable name="PlacardButtonProps" />
+
+<PropsTable name="PlacardLabelProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-size` | placard | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-pop-up` | button | present or absent | Reflects `popUp`. |
+| `data-disabled` | button | present or absent | Set by Base UI while the button is disabled. |
+| `data-popup-open` | button | present or absent | Set by a Base UI menu trigger while its menu is open; drawn as pressed. |
+| `data-force` | button | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+Classes: `.mac-placard`, `.mac-placard-button` and `.mac-placard-label`.
+
+## Accessibility
+
+- The strip is a `group`; name it with `aria-label`. Pass `role="toolbar"` only if you also
+  give it a toolbar's arrow-key navigation.
+- `PlacardButton` is a native button: Space and Return activate it, Tab reaches each one, and
+  a disabled one leaves the tab order. A button that holds only a glyph needs an `aria-label`.
+- The pop-up arrowheads are decoration. A button that opens a menu gets `aria-haspopup` and
+  `aria-expanded` from the menu trigger it is rendered by.
+- Text in a placard is 10 pt, or 9 pt when small: small for reading. Keep it to a value or a
+  few words, and do not put anything there that is not available elsewhere.
+- A placard button is 15 pt high, less than the 24 pt target size WCAG 2.2 asks for. That is
+  the historical control; one more reason to prefer a toolbar or a menu.
+- In forced-colours mode the hairlines use the text colour.
+
+## Visual comparison
+
+No comparison with a screenshot is possible: no placard is in the reference set, which
+`placard.visual.json` records as pending. `npm run visual -- placard` instead renders a regular
+and a small placard in a real browser and checks pixels against the values the spec infers.
+The checks pass in both appearances at 1x and 2x.
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| At rest | Fill `#fafafa` (Dark Aqua `#2b2b2b`); hairlines `#e8e8e8` (`#3b3b3b`) at the top, at the trailing edge and between two buttons; heights of 15 and 11 pt | Inferred from the scroll bar track |
+| Pressed | The pressed button's fill, 10% darker or lighter; the other button unchanged | Inferred |
+| Keyboard focus | Ring colour in the 3 pt band inside the button, fill inside it | Focus ring token; placement inferred |
+| Window not key | No ring on the focused button | Inferred |
+
+Provisional: everything, including the height, the fill, the hairlines, the text size, the
+padding of 6 pt, the pop-up arrowheads and the pressed look.

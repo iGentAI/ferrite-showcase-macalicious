@@ -1,0 +1,197 @@
+---
+title: Popover
+description: A small view that appears beside the control or area it belongs to, with an arrow pointing at it, and goes away when the work in it is done.
+---
+
+<Example name="basic" both />
+
+A popover (`NSPopover`) shows content about one thing on screen without leaving the window: the
+details of a Calendar event, of a reminder, of a place on a map. The parts are built on Base
+UI's [Popover](https://base-ui.com/react/components/popover) and keep its anatomy;
+`PopoverPopup` combines Base UI's portal, positioner, popup and arrow, because a Catalina
+popover is always assembled the same way.
+
+## Usage
+
+```tsx
+import { Popover, PopoverDescription, PopoverPopup, PopoverTitle, PopoverTrigger } from "macalicious/popover";
+import { PushButton } from "macalicious/push-button";
+import "macalicious/styles.css";
+
+<Popover>
+  <PopoverTrigger render={<PushButton />}>Show Event</PopoverTrigger>
+  <PopoverPopup side="right" style={{ width: 260 }}>
+    <PopoverTitle>Make Catalina Screenshots</PopoverTitle>
+    <PopoverDescription>Oct 3, 2019 2 PM to 4:45 PM</PopoverDescription>
+  </PopoverPopup>
+</Popover>
+```
+
+Or copy the source into your project: `npx macalicious add popover`.
+
+- `PopoverTrigger` renders a `<button>`; pass the real control with `render`. To point at
+  something that is not a control, such as an event block or a table row, leave the trigger
+  out, control the popover with `open` and `onOpenChange`, and give `PopoverPopup` an `anchor`:
+  an element, a ref or a rectangle.
+- `side` is NSPopover's preferred edge, the side of the anchor the popover appears on, and
+  `align` its alignment along that side. With no room there the popover moves to the opposite
+  side, and the arrow follows the anchor.
+- The content is yours to lay out. It has 12 pt of padding; set `--mac-popover-padding` to `0`
+  for content that reaches the edges, such as full-width separators. `PopoverTitle` and
+  `PopoverDescription` name and describe the popover; a popover without a title needs an
+  `aria-label`.
+- `PopoverSeparator` is a line between groups of content, in the colour lines have on the
+  popover: `#dbdbdb` in Aqua and `#4b4b4b` in Dark Aqua, lighter there than a window's
+  [Separator](/components/separator) would be. It is as wide as its container; give it a
+  margin to inset it, as Reminders does (14 pt).
+- The material is translucent, and a page can only blend it with what is behind it in the
+  page. The captures record it as `#f2f2f2` and `#282828` over every backdrop measured, so to
+  match one, set the material's opaque form on the popup:
+  `style={{ "--mac-material-popover": "var(--mac-material-popover-opaque)" }}`.
+- It is transient: a click outside, the focus moving elsewhere or Escape closes it. For one
+  that stays until the application closes it, cancel those reasons:
+
+```tsx
+import { Popover } from "macalicious/popover";
+
+<Popover
+  onOpenChange={(open, details) => {
+    if (!open && (details.reason === "outside-press" || details.reason === "focus-out")) {
+      details.cancel();
+    }
+  }}
+>
+  …
+</Popover>
+```
+
+## Guidelines
+
+From the Human Interface Guidelines for macOS,
+[Popovers](https://web.archive.org/web/20200503140859/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/popovers/):
+
+- Use a popover for a small amount of content or a few controls that belong to one thing on
+  screen. It is not an alert: do not use it to warn.
+- Point the arrow as directly as possible at the element that opened the popover, and do not
+  cover that element.
+- Show one popover at a time, and never open a popover from a popover.
+- Close a popover when people click outside it or finish what it offers; add a Done or a
+  Cancel button only when losing the work in it would matter.
+- Keep it small. Content that needs room belongs in a window or a sheet.
+
+## Variants and states
+
+<Example name="sides" />
+
+| Prop | Values | Source |
+| --- | --- | --- |
+| `side` | `bottom` (default), `top`, `left`, `right`, and the logical `inline-start`, `inline-end` | Measured with the arrow on the left edge (Calendar, Reminders); the same arrow turned for the other edges is provisional |
+| `arrow` | `true` (default); `false` leaves it out and puts the popover 4 pt from its anchor | The arrow is measured; a popover without one is provisional |
+
+<Example name="without-arrow" />
+
+| State | Look | Source |
+| --- | --- | --- |
+| Open | The popover material, a 0.5 pt outer line, an inner rim (half a point of white in Aqua, 1 pt in Dark Aqua) and the popover shadow, arrow included | Measured on Calendar's event popover in both appearances |
+| Opening, closing | Scales from 0.9 at the arrow and fades, in 0.2 s | Provisional: the screenshots are stills |
+| Reduced motion | Fades only | Provisional |
+
+## Sizes
+
+A popover is as large as its content; set a width with `style`. The corner radius is 5 pt as
+drawn (6 pt nominal), and the arrow is 13 pt long on a 29 pt base. Calendar's event popover is
+289 pt wide, Reminders' detail popover 290 pt and Maps' place card 320 pt.
+
+## API
+
+`Popover` takes Base UI's Popover Root props, `PopoverTrigger` its Trigger props,
+`PopoverPopup` its Popup props, and `PopoverTitle`, `PopoverDescription` and `PopoverClose` the
+props of the parts they are named after, plus these:
+
+### Popover
+
+<PropsTable name="PopoverProps" />
+
+### PopoverTrigger
+
+<PropsTable name="PopoverTriggerProps" />
+
+### PopoverPopup
+
+<PropsTable name="PopoverPopupProps" />
+
+### PopoverTitle
+
+<PropsTable name="PopoverTitleProps" />
+
+### PopoverDescription
+
+<PropsTable name="PopoverDescriptionProps" />
+
+### PopoverClose
+
+<PropsTable name="PopoverCloseProps" />
+
+### PopoverSeparator
+
+<PropsTable name="PopoverSeparatorProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-side`, `data-align` | popup, arrow | a side, an alignment | Where the popover was placed, after any flip. |
+| `data-open`, `data-closed` | popup | present or absent | Set by Base UI. |
+| `data-starting-style`, `data-ending-style` | popup | present or absent | Set by Base UI while the popover scales and fades. |
+| `data-instant` | popup | present or absent | Set by Base UI when it is shown or hidden without the animation. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-popover-padding` | `12px` | Padding of the panel. |
+| `--mac-popover-separator` | black at 9.5%, white at 16.3% in Dark Aqua | Colour of a `PopoverSeparator`. |
+
+Classes: `.mac-popover` (the popup), `.mac-popover-positioner`, `.mac-popover-title`,
+`.mac-popover-description`, `.mac-popover-separator` and `.mac-popover-arrow`.
+
+## Accessibility
+
+- The popover is a `dialog` that is not modal, named by its `PopoverTitle` (or `aria-label`)
+  and described by its `PopoverDescription`. The trigger carries `aria-expanded` and points to
+  it.
+- The focus moves into the popover when it opens and returns to the trigger when it closes.
+  Escape closes it. Tab leaves it for the rest of the page, which closes a transient popover.
+- `modal` on `Popover` keeps the focus inside (`"trap-focus"`) or also blocks the rest of the
+  page (`true`); a Catalina popover is neither.
+- The arrow is decoration and hidden from assistive technology.
+- With reduced motion the popover fades without scaling. In forced colours it has a border and
+  the arrow a solid outline.
+
+## Visual comparison
+
+`popover.visual.json` compares two parts of Calendar's event popover in each appearance: its
+right edge with both corners, the hairline, the rim, the separators and the shadow, where the
+popover lies beyond the Calendar window; and the arrow on its left edge. The event's text and
+controls are Calendar's content and are left out of the examples, so no text is in the crops
+and there are no masked twins. The capture records the popover's material already blended with
+what was behind it, `#282828` in Dark Aqua also over the capture's empty margin, so the dark
+example uses the opaque form of the material.
+
+Scores from `npm run visual -- popover` in Chromium on Linux: the share of pixels that differ
+by more than the threshold (0.05), and the mean colour difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `calendar-edge-light` | Light-Calendar (2330, 799, 140, 390) | 1.33% | 2.30 | 0.92% | 2.09 |
+| `calendar-arrow-light` | Light-Calendar (1824, 963, 40, 72) | 5.59% | 3.04 | 2.06% | 2.06 |
+| `calendar-edge-dark` | Dark-Calendar (2576, 474, 140, 430) | 0.09% | 0.39 | 0.14% | 0.52 |
+| `calendar-arrow-dark` | Dark-Calendar (2072, 648, 40, 72) | 10.69% | 3.83 | 6.49% | 3.03 |
+
+The arrow is the weakest part: its outline is fitted by hand to the capture, and the join of its
+rim and shadow with the panel's differs from AppKit's by a pixel in places.
+
+`arrow-up-light` and `arrow-up-dark` open a popover below its anchor and check pixels: the
+arrow is filled, turned to point up (read in Dark Aqua, where the page beside the tip differs
+from the fill) and joined to the panel. They pass at 1x and 2x.
+
+Measured: the fill, the outer line, the rim, the shadow, the corner radius, the arrow's size and
+outline on the left edge. Provisional: the arrow on the other three edges, a popover without an
+arrow, the 12 pt default padding, the animation, the reduced-motion and forced-colours looks.
+Not built: a detachable popover, which becomes a panel when dragged away.

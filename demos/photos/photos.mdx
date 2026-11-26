@@ -1,0 +1,481 @@
+---
+title: Photos
+description: The Photos window of macOS 10.15, with Back, the zoom slider, Info, Share, Favorite, Rotate and a search field in the toolbar under a centred title, the sidebar of the library with an outline of albums, and the selected album's header over a grid of thumbnails, which are original generated photographs.
+layout: full
+order: 116
+---
+
+<Example name="basic" />
+
+Click a picture and try Favorite and Rotate, drag the zoom slider, type "disc" in the search
+field, choose Favorites under "Showing", and double-click a picture to open it: Back returns to
+the album. The window opens as the reference screenshots show it, on the album "Wallpapers"
+with its 17 pictures, under the title "My Albums".
+
+**The pictures are original generated photographs.** The captures show Apple's desktop
+pictures. The toolkit reproduces Catalina's chrome, not those pictures, so the demo does not
+ship them and does not imitate them: each picture is an invented landscape, travel, food or
+pet photograph in `art/` (a 480 px thumbnail and a 1200 px version for the picture opened on
+its own), with no people in it. It keeps the name of the grey placeholder it falls back to
+without art ("Disc 1", "Bands 2"). What is kept from the captures is the shape of each
+thumbnail, 4:3, 16:10, 16:9 or square, so that the grid has the captured cells. As a page of
+its own nothing is read from or written to a photo library.
+
+## On the Ferrite desktop
+
+On the desktop served by the `macalicious-desktop` Ferrite application
+(`ferrite-apps/desktop`), the window the desktop opens (`DesktopPhotos` in
+`photos-desktop.tsx`) is the person's own photo library, kept on Ferrite:
+
+- **Import** with the + button in the toolbar, by dropping pictures on the pane, or by dragging
+  them from a Finder window (JPEG, PNG, GIF and WebP pictures; MP4, MOV and WebM movies, which this
+  browser must be able to play). Each original is uploaded to the person's
+  drive, into Pictures, in pieces under
+  the gateway's 256 KiB request limit (`photos-drive.ts`, through the drive's helper
+  `demos/desktop/desktop-files.ts`), so Finder shows it. The date taken and the camera are read
+  from the picture's EXIF data in the browser (`photos-exif.ts`), and a thumbnail is made in a
+  canvas before the upload.
+- **Browse** the Photos row by Years, Months or Days (the toolbar's segmented control and
+  Command-1 to 4; a year's or a month's title opens it in the finer view) or as All Photos, and
+  Favorites, Recents (added in the last 30 days), Imports, Photo Booth, Places (a map of the
+  photos with a location, on OpenStreetMap tiles, or the same photos as a grid), Recently Deleted,
+  Hidden when View shows it, Media Types when a kind exists (kinds a browser can't read never
+  show, as an empty row does not on a Mac; the Shared rows show dimmed and say why), and the
+  person's albums, folders and smart albums in the sidebar. The search field matches a photo's name, title, caption, keywords,
+  place, month and year, camera, albums, and "favorite" or "edited".
+- **Describe** photos in the floating Info window (Command-I): title, caption, keywords, date,
+  place and camera settings, for one photo or several. The Keyword Manager (Command-K) keeps the
+  list of keywords.
+- **Name people.** While the page is idle, each photo's thumbnail is searched for faces with a
+  model served by the desktop itself: no picture leaves it, and only the boxes go to its server.
+  People and Info offer each face a name, or Not a Face. A person is the faces and photos given
+  their name, since a face is not matched to another; a face under about a twentieth of a
+  thumbnail's long side is not found.
+- **Find what a picture shows.** While Photos is open, each thumbnail is read by a second model on
+  the desktop's own assets (EfficientNet-Lite0, Apache 2.0), about a second a picture, in a worker.
+  Only its words reach the server. A search finds a picture by them (beach, dog, plane), the search
+  field lists them under Scenes, and six pictures of one scene on more than one day make a memory.
+  It names sixteen scenes, from ImageNet's classes, not everything Photos on a Mac can name.
+- **View** a photo full size with a double click or Space; Previous and Next in the toolbar,
+  or the arrow keys, step through what the pane lists, and Back, Space or Escape returns. Z zooms,
+  Option-S shows a strip of thumbnails, F opens the full-screen viewer, and a slideshow plays
+  from View or the header.
+- **Edit** without changing the original, with Return on a selection: Adjust (Auto Enhance, and
+  the Light and Color sliders, Black & White, Definition, Sharpen, Noise Reduction and Vignette),
+  Filters (Vivid, Dramatic, Mono,
+  Silvertone, Noir and their warm and cool kinds) and Crop (dragging the corners, an aspect,
+  Straighten, Rotate and Flip). An edit is kept as a recipe and drawn from the original in a
+  canvas (`photos-edit.ts`, computed on the pixels so every engine draws it alike); Revert to
+  Original forgets it.
+- **Favorite**, **Rotate**, **Hide**, **Delete** (to Recently Deleted, where a photo stays 30
+  days and can be recovered or, after a confirmation, deleted immediately; in an album, Delete
+  only takes it out of the album), **albums**, **folders** and **smart albums** (from the File
+  menu, the sidebar's row menu or New Album; dragging photos onto a row adds them, from another
+  album it moves them and with Option adds them), **Export** to the drive or as a download, with
+  a format and a size, **Share**, and **Set
+  Desktop Picture**, from the Share menu or a right click. Set Desktop Picture draws the photo with
+  its edit and hands it to the desktop with the ticket of the person's choice
+  (`takePictureTicket` in `demos/desktop/desktop-personal.ts`); the desktop's own settings keep
+  the choice, and Photos keeps no picture of its own.
+
+The library's records, thumbnails, edits and albums are kept per person by the module
+`ferrite-apps/desktop/src/apps/photos` (`photos-library.ts` is the page's side of it). Photo
+Booth's pictures are added to the same library.
+
+## What it shows
+
+- A [Window](/components/window) whose [Title Bar](/components/title-bar) hides its title
+  strip: the window controls and the [Toolbar](/components/toolbar) share one 38 pt row, and
+  the title is centred over it.
+- The toolbar: [Toolbar Buttons](/components/toolbar-button) for Back, Favorite and Rotate,
+  the last two unavailable until a picture is selected; a small [Slider](/components/slider)
+  between two glyphs; Info, which opens a [Popover](/components/popover); the
+  [Share Menu](/components/share-menu); and a
+  [Toolbar Search Field](/components/toolbar-search-field).
+- A [Split View](/components/split-view) of the [Sidebar](/components/sidebar) and the
+  pictures. The sidebar has four sections, and two outline rows with their
+  [disclosure triangles](/components/disclosure-triangle): My Albums, expanded, and My
+  Projects, collapsed. The selection is the grey of a sidebar that does not have the keyboard.
+- The album's header: [Labels](/components/label) for the date range and the count, two
+  [Borderless Buttons](/components/borderless-button) in the link colour, and a
+  [Pull-Down Button](/components/pull-down-button) without a bezel whose menu holds
+  [radio items](/components/menu-item). In a pane too narrow for one line, as in the
+  narrowest window with the widest sidebar, the row under the title wraps and the header
+  grows to hold it.
+- The grid: an [Icon View](/components/icon-view) with 128 pt cells, multiple selection,
+  the arrow keys and type-select. An open picture is an [Image View](/components/image-view),
+  and a source with nothing in it an [Empty State](/components/empty-state).
+
+| Command | Where | What it does |
+| --- | --- | --- |
+| Choose a source | the sidebar | Photos is the whole library, Recents the twelve items added last, Imports the latest import, Wallpapers the album of the captures. People, Places and Activity are empty. |
+| Expand, collapse | the triangles, or Right and Left Arrow | Shows and hides the rows of My Albums and My Projects. Collapsing a folder over the selected row selects the folder, which lists its albums; a double click opens one. |
+| Select | the grid | A click, Command-click and Shift-click, the arrow keys, Command-A, or typing the start of a name. A click beside the pictures deselects. |
+| Favorite | the toolbar | Marks the selected pictures, or unmarks them when all are marked. A favorite carries a heart. |
+| Rotate | the toolbar | Turns the selected pictures a quarter to the left. A turned picture counts as edited. |
+| Zoom | the slider | Cells of 64 to 256 pt; 128 pt, as captured, in the middle. |
+| Search | the search field | Lists the pictures whose title, keywords or month and year start with every word typed. |
+| Showing | the header | All Items, Favorites, Edited, Photos or Videos. |
+| Open | a double click, or Return | Shows one picture as large as the pane. Back returns to the grid with the picture selected. A search or a choice under Showing that leaves the picture out closes it. |
+| Info, Share | the toolbar | Info describes the selection, or else what the pane lists. Share reports the chosen service through `onShare`. |
+| Show as Memory, Slideshow | the header | Shows the album under Memories; opens the pictures one after another, three seconds each. |
+
+## Source walkthrough
+
+The demo itself is six files in `demos/photos/`; the files of the Ferrite desktop's library
+(`photos-desktop.tsx`, `photos-editor.tsx`, `photos-served-data.ts`, `photos-library.ts`,
+`photos-drive.ts`, `photos-edit.ts` and `photos-exif.ts`) are described
+under [On the Ferrite desktop](#on-the-ferrite-desktop).
+
+**`photos-data.ts`** is the library. A `Photo` has a title, a date, a pixel size, a kind and
+the albums it is in; a `PhotosSource` is a row of the sidebar and says what the pane shows
+for it. `photosOf(source, photos, memory)` returns the pictures of a source, `matches` and
+`passes` are the search and the Showing menu, `dateRange` and `countText` write the header's
+line, and `fitted` gives a thumbnail its size in a square cell:
+
+```ts
+fitted(photo, 128); // 4:3 -> 128 x 96, 16:10 -> 128 x 80, 16:9 -> 128 x 72, 1:1 -> 128 x 128
+```
+
+**`photos-artwork.tsx`** holds every drawing: the placeholder pictures, the glyphs of the
+sidebar and of the toolbar, and the heart on a favorite. All are original and drawn with
+`currentColor` or neutral greys.
+
+**`photos.tsx`** is the window. Its state is the selected source, the expanded folders, the
+zoom, the search text, the choice of the Showing menu, the selection, the open picture, and
+the favorites and quarter turns by picture. What the pane lists is derived from it:
+
+```tsx
+const collection = useMemo(() => photosOf(sourceId, photos, memory), [sourceId, photos, memory]);
+const listed = useMemo(
+  () =>
+    collection?.filter(
+      (photo) =>
+        matches(photo, query) &&
+        passes(photo, filter, {
+          favorite: favorites.has(photo.id),
+          edited: (turns[photo.id] ?? 0) % 4 !== 0,
+        }),
+    ) ?? [],
+  [collection, query, filter, favorites, turns],
+);
+// What Favorite, Rotate and Info act on: the open picture, and else the selected ones.
+const current = picture ? [picture] : listed.filter((photo) => selected.has(photo.id));
+```
+
+The chrome is the title bar with its toolbar. `variant="title-hidden"` puts the window
+controls and the toolbar on one row and centres the title over it; the title names where Back
+goes, which for an album is its folder:
+
+```tsx
+<TitleBar variant="title-hidden" title={title} controls={<WindowControls />}>
+  <Toolbar aria-label="Toolbar" style={{ "--mac-toolbar-gap": "10px" }}>
+    <ToolbarButton aria-label="Back" disabled={!back} onClick={back}>
+      <SystemImage name="go-back" />
+    </ToolbarButton>
+    <div className="mac-photos-zoom">
+      <ZoomGlyph />
+      <Slider aria-label="Zoom" size="small" step={5} value={zoom} onValueChange={setZoom} />
+      <ZoomGlyph large />
+    </div>
+    <ToolbarSpace />
+    {/* Info in a Popover, then the ShareMenu */}
+    <ToolbarButton
+      aria-label="Favorite"
+      aria-pressed={allFavorite}
+      disabled={current.length === 0}
+      onClick={toggleFavorite}
+    >
+      <HeartGlyph filled={allFavorite} />
+    </ToolbarButton>
+    {/* Rotate */}
+    <ToolbarSearchField value={query} onValueChange={setQuery} />
+  </Toolbar>
+</TitleBar>
+```
+
+The sidebar is controlled: its value is the source, and the folders' `expanded` state is the
+window's, so that opening an album from its folder can expand the folder too.
+
+```tsx
+<Sidebar aria-label="Library" material="opaque" value={sourceId} onValueChange={choose}>
+  <SidebarSection title="Albums">
+    <SidebarItem
+      value="my-albums"
+      label="My Albums"
+      icon={<SourceGlyph name="stack" />}
+      expanded={expanded["my-albums"]}
+      onExpandedChange={(next) => setExpanded((old) => ({ ...old, "my-albums": next }))}
+    >
+      <SidebarItem value="wallpapers" label="Wallpapers" icon={<PhotoArtwork photo={key} cropped />} />
+    </SidebarItem>
+  </SidebarSection>
+</Sidebar>
+```
+
+The grid is the icon view. Its icon box is the square cell, the thumbnail is fitted into it,
+and the selection ring and the badges are drawn on the thumbnail by `renderIcon`:
+
+```tsx
+<IconView
+  aria-label={heading}
+  count={listed.length}
+  renderIcon={renderThumbnail}
+  getItemLabel={(index) => listed[index].title}
+  getItemId={(index) => listed[index].id}
+  iconSize={size}
+  cellWidth={size + 8.25} // cells of 128 pt are 144.25 pt apart in the captures
+  rowHeight={size + 16}
+  value={selection}
+  onValueChange={setSelection}
+  onItemAction={(index) => open(listed[index].id)}
+/>
+```
+
+Photos shows no titles under its thumbnails, and the icon view has no cell without a label.
+The demo gives the label's line no height (`font-size: 0` on the view, in `style`); the title
+stays in the document as the name of its option, so assistive technology and type-select
+still have it.
+
+**`photos.css`** places the toolbar's controls where the capture has them and sets the
+header's type, the thumbnail with its ring and badges, and the open picture.
+**`photos.tokens.css`** holds the colours measured in the captures that no shared token has
+(the pane's fill, the divider, the header's rule, the title's black and white, and the grey of
+the zoom glyphs) and every length and font size of `photos.css` (see
+[Styling hooks](#styling-hooks)).
+
+**`app.ts`** is the descriptor the [Desktop](/demos/desktop) reads.
+
+## Hosting the window
+
+`Photos` renders the library's `Window` as its root and passes every `Window` prop to it, so
+it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component hands to the window controls and
+the title bar. These are the props a [Managed Window](/components/managed-window)'s `render`
+form supplies, so the component can be spread with them as they come.
+
+<Example name="hosted" />
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `photos` | `Photo[]` | The library; the demo's 24 placeholders by default. |
+| `defaultSource` | a source's id, such as `"photos"` or `"wallpapers"` | The sidebar row selected at first; `"wallpapers"`, as captured. |
+| `defaultZoom` | `number` | The zoom slider's value at first, 0 to 100; `50`, which is the captured 128 pt. |
+| `onShare` | `(service, photos) => void` | Called with the service chosen in the Share menu and the pictures to share. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 1200 by 720 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `photosApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (1200 by 720), `minSize` (760 by 360), `resizable` and
+`menus`, the menu titles after the Apple menu.
+
+## Styling hooks
+
+The demo's measured lengths and font sizes are custom properties in `photos.tokens.css`,
+declared on `:root`; set one on the window with `style` to change it. That file tags each
+with where it comes from: the toolbar, the sidebar's icons and the album's header are
+measured in the two captures; the header's wrapped lines, the Info popover, the selection
+ring, the badges, an album's tile and the open picture's margin, which no capture shows, are
+provisional. Left as literals in `photos.css`, because they are structure rather than
+measurements: zeros, the 100% heights and positions, the flex factors, the open picture's
+container units and the aspect hook's fallback of 1, and the 1 pt forced-colours rule.
+
+| Property | Default | Controls |
+| --- | --- | --- |
+| `--mac-photos-back-width` | `32px` | The Back button: width |
+| `--mac-photos-back-margin-start` | `1px` | The Back button: leading margin |
+| `--mac-photos-zoom-gap` | `6px` | The zoom slider with its glyphs: gap between them |
+| `--mac-photos-zoom-height` | `22px` | The zoom slider with its glyphs: height |
+| `--mac-photos-zoom-margin-start` | `5px` | The zoom slider with its glyphs: leading margin |
+| `--mac-photos-zoom-slider-width` | `63px` | The zoom slider's track: width |
+| `--mac-photos-zoom-glyph-large-margin-start` | `-1.5px` | The large zoom glyph: leading margin |
+| `--mac-photos-tool-width` | `40px` | Info, Share, Favorite and Rotate: width |
+| `--mac-photos-search-width` | `167px` | The search field: width and flex basis |
+| `--mac-photos-search-margin-start` | `1px` | The search field: leading margin |
+| `--mac-photos-source-icon-shift` | `-6px` | A sidebar row's drawing: shift from its laid-out place |
+| `--mac-photos-header-min-height` | `75px` | The album's header: least height |
+| `--mac-photos-header-padding-top` | `11px` | The album's header: top padding |
+| `--mac-photos-header-padding-right` | `13px` | The album's header: right padding |
+| `--mac-photos-header-padding-bottom` | `5.5px` | The album's header: bottom padding |
+| `--mac-photos-header-padding-left` | `12px` | The album's header: left padding |
+| `--mac-photos-rule-inset` | `11px` | The rule under the header: distance from either edge |
+| `--mac-photos-title-size` | `28px` | The album's title: font size |
+| `--mac-photos-title-line-height` | `34px` | The album's title: line height |
+| `--mac-photos-meta-column-gap` | `15px` | The line under the title: gap between its items |
+| `--mac-photos-meta-min-height` | `16px` | The line under the title: least height |
+| `--mac-photos-meta-margin-top` | `8.5px` | The line under the title: top margin |
+| `--mac-photos-showing-gap` | `4px` | "Showing" and its menu: gap between them |
+| `--mac-photos-showing-margin-block` | `-2.5px` | "Showing" and its menu: block margin (negative: the menu overhangs the line) |
+| `--mac-photos-meta-row-gap` | `4px` | The line under the title: gap between its lines when it wraps |
+| `--mac-photos-info-width` | `240px` | The Info popover: width |
+| `--mac-photos-selection-width` | `3px` | A selected thumbnail: width of its ring |
+| `--mac-photos-favorite-inset` | `5px` | A thumbnail's heart: distance from its bottom and leading edges |
+| `--mac-photos-favorite-shade-blur` | `1.5px` | A thumbnail's heart: blur of its shade |
+| `--mac-photos-duration-inset-bottom` | `4px` | A video thumbnail's duration: distance from its bottom edge |
+| `--mac-photos-duration-inset-end` | `5px` | A video thumbnail's duration: distance from its trailing edge |
+| `--mac-photos-duration-shade-blur` | `2px` | A video thumbnail's duration: blur of its shade |
+| `--mac-photos-tile-radius` | `6px` | An album's tile in a folder: corner radius |
+| `--mac-photos-viewer-padding` | `20px` | The pane of an open picture: padding |
+| `--mac-photos-group-padding-top` | `14px` | Ferrite desktop: a day, month or year of the library: top padding |
+| `--mac-photos-group-title-size` | `17px` | Ferrite desktop: a group's title: font size |
+| `--mac-photos-group-title-line-height` | `22px` | Ferrite desktop: a group's title: line height |
+| `--mac-photos-cell-default` | `128px` | Ferrite desktop: a group's cells: side when the zoom slider sets none |
+| `--mac-photos-cell-gap` | `2px` | Ferrite desktop: a group's cells: gap between them |
+| `--mac-photos-drop-width` | `3px` | Ferrite desktop: the outline while pictures are dragged over the pane: width |
+| `--mac-photos-name-width` | `260px` | Ferrite desktop: the popover that names an album: width |
+| `--mac-photos-edit-panel-width` | `260px` | Ferrite desktop: the editor's Adjust, Filters and Crop pane: width |
+| `--mac-photos-filter-preview` | `96px` | Ferrite desktop: a filter's preview: side |
+| `--mac-photos-crop-handle` | `14px` | Ferrite desktop: a corner of the crop: side |
+| `--mac-photos-crop-line` | `1.5px` | Ferrite desktop: the crop's outline and corners: line width |
+
+## Accessibility
+
+- The window is a `region` named by its title.
+- The toolbar is one tab stop; the arrow keys move between its buttons and the search field.
+  The buttons show a glyph only and are named "Back", "Info", "Share", "Favorite" and
+  "Rotate"; one that has nothing to do is marked unavailable (`aria-disabled`) and stays
+  reachable. Favorite reports with `aria-pressed` whether the selected pictures are all
+  favorites.
+- The zoom slider is a `slider` named "Zoom" and a tab stop of its own: the arrow keys change
+  it by a step, Page Up and Page Down by more, Home and End go to its ends.
+- The search field is a `searchbox` named "Search"; its clear button is named "Clear".
+- The sidebar is a `tree` named "Library" with a `group` for each section and `aria-expanded`
+  on the two folders. The arrow keys move the selection, Right and Left Arrow expand and
+  collapse, and typing selects by the start of a label.
+- The album's name is the pane's `h1`. "Showing" is a button named with its choice ("Showing:
+  All Items") that opens a `menu` of `menuitemradio`s.
+- The grid is a `listbox` named after the album, with `aria-multiselectable`; each picture is
+  an `option` named by its title, and its drawing is hidden. Whether a picture is a favorite
+  is told by the Favorite button once the picture is selected, not by its option.
+- An open picture is an `img` named by its title. Opening one moves the keyboard to Back,
+  because the grid that had it is gone; Back returns it to the grid. A picture that closes
+  for another reason, a source chosen in the sidebar or a search, leaves the keyboard where
+  it is.
+- "No Results" and the other texts of an empty list are a `status`, so they are announced.
+- The divider is a `separator` named "Resize the sidebar" that the arrow keys move.
+
+## Fidelity
+
+`photos.visual.json` compares the window with the Photos screenshots in both appearances:
+whole with the pictures and the placeholder glyphs masked, then with the text and the
+library's glyphs masked too, then the toolbar, the sidebar and
+the header each on its own. Scores from `npm run visual -- photos/` in Chromium on Linux with
+the fallback font: the share of pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` (pictures and placeholder glyphs masked) | 1.48% | 1.85 | 1.18% | 1.80 |
+| `window-light-layout` (pictures, text and glyphs masked) | 0.23% | 0.35 | 0.03% | 0.26 |
+| `toolbar-light` (text and glyphs masked) | 2.73% | 1.76 | 0.18% | 0.80 |
+| `sidebar-light` (text, icons and thumbnail masked) | 0.09% | 1.06 | 0.07% | 1.06 |
+| `header-light` (text masked) | 0.06% | 0.27 | 0.05% | 0.06 |
+| `window-dark` (pictures and placeholder glyphs masked) | 1.47% | 1.72 | 1.19% | 1.69 |
+| `window-dark-layout` (pictures, text and glyphs masked) | 0.15% | 0.27 | 0.03% | 0.20 |
+| `toolbar-dark` (text and glyphs masked) | 1.66% | 2.24 | 0.11% | 1.54 |
+| `sidebar-dark` (text, icons and thumbnail masked) | 0.09% | 0.40 | 0.08% | 0.41 |
+| `header-dark` (text masked) | 0.06% | 0.23 | 0.04% | 0.05 |
+
+### Placeholders
+
+None of these is Apple's artwork, and none is fitted to what the captures show:
+
+- **The 24 pictures**, 17 of them in the album: original generated photographs, none drawn
+  after a captured picture. Without its art a picture is a flat grey with one of six shapes
+  (a disc, two bands, a triangle, a ring, a diagonal, two squares).
+- **The album's thumbnail** in the sidebar, and the album's and the project's tile in their
+  folder: the first picture of each, cropped square.
+- **The glyphs of the sidebar**: Photos, Memories, People, Places, Recents, Imports, Activity
+  and the stack of My Albums and My Projects.
+- **The glyphs of the toolbar**: the two picture frames at the ends of the zoom slider, the
+  heart of Favorite and Rotate; and the three service glyphs of the Share menu, the heart
+  on a favorite's thumbnail and the length on a video's.
+
+The chevron of Back, Info's mark (the [System Image](/components/system-image)
+`info-outline`), the Share button's glyph, the search field's magnifier, the disclosure
+triangles and the chevron of the Showing menu are the library's own drawings.
+
+### Masks
+
+Masks are in points from the window's top-left corner; the three crops use the same
+rectangles from their own corner.
+
+- **Pictures, in every window comparison: 15 rectangles.** Two for each of the seven columns
+  of the grid, 130 pt wide from x 193, 337, 481, 626, 770, 914 and 1058, and one of 20 by
+  20 pt over the album's thumbnail in the sidebar at x 33, y 330 (it is in `sidebar-*` too).
+  Each grid rectangle is the union of where the capture has a picture and where the demo has
+  its placeholder: the first row y 121 to 233 in the first column and y 129 to 225 in the
+  others; below it y 237 to 509 in the first column, y 237 to 537 in the second and third,
+  y 233 to 369 in the fourth and y 237 to 365 in the last three. The two differ in height
+  because of the rows (below), so these masks also hide up to 8 pt of the pane's fill above
+  and below a picture. They are 31% of the window.
+- **Placeholder glyphs, in every window comparison: 14.** The two zoom glyphs and the glyphs
+  of Info, Favorite and Rotate in the toolbar, and the icon of nine rows of the sidebar
+  (x 17 to 39). Info's mask stays from the time its glyph was a stand-in; the library's
+  `info-outline` is compared with the Reminders captures on the System Image page. The
+  whole-window comparisons mask only these; the `-layout` ones mask them
+  inside the larger rectangles below.
+- **Text and stand-in glyphs of the toolbar, in `window-*-layout` and `toolbar-*`: 9.** The
+  chevron of Back, the two zoom glyphs, the title, the glyphs of Info, Share, Favorite and
+  Rotate, and the search field's placeholder text.
+- **Text and icons of the sidebar, in `window-*-layout` and `sidebar-*`: 14.** The four
+  headers, the icon and label of nine rows (x 17 to 120), and the label of the album's row.
+- **Text of the header, in `window-*-layout` and `header-*`: 6.** The title, the date range,
+  the count, the two links and the title of the Showing menu.
+
+Not masked, so that it is scored: the frame, the toolbar's fill and edge rows, the window
+controls, every bezel, the slider, the search field's magnifier, the sidebar's material and
+selection, the triangles, the divider, the header's rule, the chevron of the Showing menu and
+the pane's fill.
+
+### Measured and reproduced
+
+The 1200 by 720 pt frame and the 38 pt toolbar; the fills of Back (x 79 to 111), of Info,
+Share, Favorite and Rotate (40 pt each from x 824, 874, 924 and 974) and of the search field
+(x 1025 to 1192); the zoom slider's 63 pt track with its 11 pt knob in the middle and the two
+glyphs beside it; the centred title; the 179 pt sidebar and its 1 pt divider, the headers and
+rows on the captured baselines with icons from x 18 and labels from x 41, the album's row one
+level in and its 24 pt selection; the 75 pt header with the title's baseline at y 76, the
+line of the date range on its baseline at y 104 with its items where the capture has them,
+"Showing" ending 15 pt from the edge, and the half-point rule 11 pt from both edges; the
+pane's fill and the colours of the divider and the rule; the cells of 128 pt, 144.25 pt
+apart from 13 pt inside the pane, to within half a point.
+
+### Known differences
+
+- **The rows of the grid.** In Photos a row is as tall as its tallest thumbnail and the rows
+  are 16 pt apart, so the captured rows start at y 121, 233 and 329. The
+  [Icon View](/components/icon-view) lays every row out at one height, the square cell and
+  16 pt: the demo's rows of cells start at y 121, 265 and 409, each thumbnail centred in its
+  cell. The first row's pictures are 16 pt lower than the captured ones, the second row's
+  56 pt and the third row's 80 pt. The columns are the captured ones. The library has no
+  thumbnail grid with rows of their own height, and the demo does not make one privately.
+- **No titles under the pictures.** As captured; but the icon view always has a label, so its
+  line is given no height here (see the walkthrough). A view with titles shown, which Photos
+  offers under View, Metadata, is not built.
+- **The sidebar's icon inset.** Photos keeps its icons 18 pt from the edge although it has
+  outline rows; the library's sidebar moves the icons of an outline to 24 pt, as Disk Utility
+  has them. The demo's drawings hang 6 pt to the left of their icon box and the label gap is
+  set to follow, which puts icons and labels where the capture has them; the box itself, and
+  with it the room between a triangle and its icon, is the library's.
+- **The sidebar's material** is the library's opaque one, a level darker than the capture in
+  Aqua (`#e7e8e8` where Photos has `#e8e9e9`) and a level of blue darker in Dark Aqua
+  (`#2c2d2f` for `#2c2d30`); the selection over it follows.
+- **The toolbar's fill** is the library's title bar, two levels lighter than the capture at
+  its lower edge in Aqua and about six levels lighter in Dark Aqua, which is the mean Δ of
+  `toolbar-dark`.
+- **The chevron of the Showing menu** is the library's for a pull-down button without a
+  bezel, which is smaller and lighter than the captured one, 9 pt wide.
+- **Text.** Set in the fallback font off Apple devices, which is nearly all of the
+  `window-light` and `window-dark` scores. The 28 pt bold title is 5% wider in it.
+- **Glyphs.** Stand-in drawings, listed above.
+- **Not in a screenshot (provisional):** the ring of a selected picture and the heart of a
+  favorite, the open picture, a folder's tiles, the Info popover, the Share menu's services,
+  the choices of the Showing menu, the search, the pictures of every source but the album,
+  the range of the zoom slider, the slideshow and the memory, the minimum size, and the
+  window when it is not key.
+- **Not built:** Years, Months and Days, editing, people and places, shared albums, dragging
+  to select or to an album, and the header scrolling away with the pictures: here it stays
+  above the grid.

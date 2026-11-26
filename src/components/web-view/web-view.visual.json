@@ -1,0 +1,326 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "reader-light",
+      "description": "The top of Safari's Reader page, Aqua: the grey canvas, the white sheet 22 pt under the view's top edge and its shadow, across the whole 786 pt sheet. The crop ends above the article's title, so it holds no text and no site content and nothing is masked. Threshold 0.02, because the shadow is too faint for a higher one to count any pixel.",
+      "example": "visual-reader",
+      "appearance": "light",
+      "threshold": 0.02,
+      "budget": { "1x": 0.0007, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.15, "2x": 0.17 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Reader-Mode.png",
+        "crop": { "x": 570, "y": 202, "width": 1732, "height": 160 }
+      }
+    },
+    {
+      "name": "reader-dark",
+      "description": "The top of Safari's Reader page, Dark Aqua: canvas, sheet and shadow, with no text in the crop. Threshold as explained for reader-light.",
+      "example": "visual-reader",
+      "appearance": "dark",
+      "threshold": 0.02,
+      "budget": { "1x": 0.0005, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.15, "2x": 0.17 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Reader-Mode.png",
+        "crop": { "x": 500, "y": 202, "width": 1732, "height": 160 }
+      }
+    },
+    {
+      "name": "favorites-light",
+      "description": "The first two columns of the Favorites grid on Safari's start page, Aqua: the canvas, the heading's place, the 80 pt tiles at their 115 x 148 pt pitch, their corners, edges and shadows. Masked: the heading and the tile titles, which are text set in the fallback font off Apple platforms, and the middle of every tile, where the capture has site artwork (Apple's logo, a folder's miniatures) that the library does not reproduce and the example replaces with letters. The first row's tiles hold a stand-in for artwork on the capture's #f2f2f2 ground, covering the tile as an image does; the second row's are the library's own placeholder tile, as in the capture.",
+      "example": "visual-favorites",
+      "appearance": "light",
+      "masks": [
+        { "x": 8, "y": 4, "width": 104, "height": 20 },
+        { "x": 22, "y": 54, "width": 50, "height": 60 },
+        { "x": 137, "y": 54, "width": 50, "height": 60 },
+        { "x": 14, "y": 199, "width": 67, "height": 45 },
+        { "x": 139, "y": 203, "width": 48, "height": 59 },
+        { "x": 0, "y": 133, "width": 213, "height": 16 },
+        { "x": 0, "y": 281, "width": 213, "height": 31 }
+      ],
+      "threshold": 0.02,
+      "budget": { "1x": 0.0008, "2x": 0.0012 },
+      "deltaBudget": { "1x": 0.24, "2x": 0.26 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Favorites.png",
+        "crop": { "x": 1090, "y": 212, "width": 426, "height": 624 }
+      }
+    },
+    {
+      "name": "favorites-dark",
+      "description": "The first two columns of the Favorites grid, Dark Aqua, with the heading, the titles and the artwork in the middle of every tile masked for the reasons given for favorites-light.",
+      "example": "visual-favorites",
+      "appearance": "dark",
+      "masks": [
+        { "x": 8, "y": 4, "width": 104, "height": 20 },
+        { "x": 22, "y": 54, "width": 50, "height": 60 },
+        { "x": 137, "y": 54, "width": 50, "height": 60 },
+        { "x": 14, "y": 199, "width": 67, "height": 45 },
+        { "x": 139, "y": 203, "width": 48, "height": 59 },
+        { "x": 0, "y": 133, "width": 213, "height": 16 },
+        { "x": 0, "y": 281, "width": 213, "height": 31 }
+      ],
+      "threshold": 0.02,
+      "budget": { "1x": 0.0029, "2x": 0.0022 },
+      "deltaBudget": { "1x": 0.25, "2x": 0.21 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Favorites.png",
+        "crop": { "x": 1020, "y": 212, "width": 426, "height": 624 }
+      }
+    },
+    {
+      "name": "new-tab-light",
+      "description": "The new-tab tile of the Tab Overview, whole, Aqua: the canvas, the flat tile with its border and the large +. Nothing is masked: the tile has no text and no site content.",
+      "example": "visual-new-tab",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": { "1x": 0.003, "2x": 0.0024 },
+      "deltaBudget": { "1x": 0.32, "2x": 0.33 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Tab-Overview.png",
+        "crop": { "x": 2056, "y": 256, "width": 626, "height": 480 }
+      }
+    },
+    {
+      "name": "new-tab-dark",
+      "description": "The new-tab tile of the Tab Overview, whole, Dark Aqua. The dark capture's window is 70 pt narrower, so its tiles are 276 x 211 pt and the + is smaller with them: the example is the narrow one.",
+      "example": "visual-new-tab-narrow",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": { "1x": 0.0026, "2x": 0.0019 },
+      "deltaBudget": { "1x": 0.29, "2x": 0.26 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Tab-Overview.png",
+        "crop": { "x": 1950, "y": 256, "width": 592, "height": 462 }
+      }
+    },
+    {
+      "name": "thumbnail-top-light",
+      "description": "The top leading corner of the first Tab Overview thumbnail, Aqua: canvas, shadow, the square 1 pt border and the title band. The crop stops before the title, which is centred in the tile, and above the miniature, so it holds no text and no site content. Threshold 0.02, for the shadow.",
+      "example": "visual-thumbnail-top",
+      "appearance": "light",
+      "threshold": 0.02,
+      "budget": { "1x": 0.0005, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.38, "2x": 0.35 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Tab-Overview.png",
+        "crop": { "x": 170, "y": 236, "width": 270, "height": 90 }
+      }
+    },
+    {
+      "name": "thumbnail-top-dark",
+      "description": "The top leading corner of the first Tab Overview thumbnail, Dark Aqua, with no text and no site content in the crop.",
+      "example": "visual-thumbnail-top",
+      "appearance": "dark",
+      "threshold": 0.02,
+      "budget": { "1x": 0.0005, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.22, "2x": 0.23 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Tab-Overview.png",
+        "crop": { "x": 170, "y": 236, "width": 270, "height": 90 }
+      }
+    },
+    {
+      "name": "thumbnail-foot-light",
+      "description": "The bottom leading corner of the first Tab Overview thumbnail, Aqua: its border and the shadow beside and under it. The mask covers the miniature inside the border, which is a picture of a third-party page that the library does not reproduce.",
+      "example": "visual-thumbnail-foot",
+      "appearance": "light",
+      "masks": [{ "x": 21, "y": 0, "width": 79, "height": 29 }],
+      "threshold": 0.02,
+      "budget": { "1x": 0.0005, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.78, "2x": 0.75 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Tab-Overview.png",
+        "crop": { "x": 170, "y": 656, "width": 200, "height": 120 }
+      }
+    },
+    {
+      "name": "thumbnail-foot-dark",
+      "description": "The bottom leading corner of the first Tab Overview thumbnail, Dark Aqua, with the miniature of the third-party page masked. The dark capture's tiles are 211 pt high, so the crop starts 9 pt higher.",
+      "example": "visual-thumbnail-foot",
+      "appearance": "dark",
+      "masks": [{ "x": 21, "y": 0, "width": 79, "height": 29 }],
+      "threshold": 0.02,
+      "budget": { "1x": 0.0005, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.35, "2x": 0.34 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Tab-Overview.png",
+        "crop": { "x": 170, "y": 638, "width": 200, "height": 120 }
+      }
+    },
+    {
+      "name": "progress-light",
+      "description": "The loading line at 50% in the key window, Aqua. No screenshot shows a page loading: the line's place and height are inferred.",
+      "example": "visual-progress",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 200, "height": 40 },
+        "pixels": [
+          {
+            "x": 50,
+            "y": 1,
+            "color": "#027aff",
+            "note": "the line: the accent colour (--mac-accent, blue; spec: web-view, States, loading: a thin accent-blue bar, documented not shown)"
+          },
+          {
+            "x": 150,
+            "y": 1,
+            "color": "#ffffff",
+            "note": "the page beyond the line's end at 50% (spec: Default page background, measured)"
+          },
+          {
+            "x": 50,
+            "y": 3,
+            "color": "#ffffff",
+            "note": "the page under the line, which is 2 pt high (inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "progress-dark",
+      "description": "The loading line at 50% in the key window, Dark Aqua, on the page surface, which in Dark Aqua is the text background colour (inferred: a page defines its own).",
+      "example": "visual-progress",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 200, "height": 40 },
+        "pixels": [
+          {
+            "x": 50,
+            "y": 1,
+            "color": "#027aff",
+            "note": "the line: the accent colour (--mac-accent, blue)"
+          },
+          {
+            "x": 150,
+            "y": 1,
+            "color": "#1e1e1e",
+            "note": "the page beyond the line's end (--mac-color-text-background)"
+          },
+          { "x": 50, "y": 3, "color": "#1e1e1e", "note": "the page under the line" }
+        ]
+      }
+    },
+    {
+      "name": "progress-accent-light",
+      "description": "The loading line follows the accent colour: purple, Aqua.",
+      "example": "visual-progress",
+      "appearance": "light",
+      "accent": "purple",
+      "expect": {
+        "size": { "width": 200, "height": 40 },
+        "pixels": [
+          {
+            "x": 50,
+            "y": 1,
+            "color": "#963d96",
+            "note": "the purple accent (--mac-accent-light, measured); that the line follows the accent is inferred"
+          }
+        ]
+      }
+    },
+    {
+      "name": "progress-forced-colors-light",
+      "description": "Forced colours: the loading line keeps the system's highlight colour instead of being replaced by the canvas. The colours are the browser's emulated system colours, not Catalina's.",
+      "example": "visual-progress",
+      "appearance": "light",
+      "forcedColors": true,
+      "expect": {
+        "size": { "width": 200, "height": 40 },
+        "pixels": [
+          {
+            "x": 50,
+            "y": 1,
+            "color": "#37336d",
+            "tolerance": 6,
+            "note": "the line: Highlight over Canvas; Chromium emulates Highlight as rgb(5 0 73) at 80%"
+          },
+          { "x": 150, "y": 1, "color": "#ffffff", "note": "the page beyond the line's end: Canvas" }
+        ]
+      }
+    },
+    {
+      "name": "progress-inactive-light",
+      "description": "The loading line in an inactive window, with keyboard focus on the view: no accent colour and no focus ring, Aqua.",
+      "example": "visual-progress",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 200, "height": 40 },
+        "pixels": [
+          {
+            "x": 50,
+            "y": 1,
+            "color": "#bfbfbf",
+            "note": "the line without the accent: black at 25% over white (--mac-color-label-tertiary; inferred)"
+          },
+          { "x": 1.5, "y": 20, "color": "#ffffff", "note": "no focus ring outside the key window" }
+        ]
+      }
+    },
+    {
+      "name": "progress-inactive-dark",
+      "description": "The loading line in an inactive window, with keyboard focus on the view, Dark Aqua.",
+      "example": "visual-progress",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 200, "height": 40 },
+        "pixels": [
+          {
+            "x": 50,
+            "y": 1,
+            "color": "#565656",
+            "note": "the line without the accent: white at 25% over #1e1e1e (--mac-color-label-tertiary; inferred)"
+          },
+          { "x": 1.5, "y": 20, "color": "#1e1e1e", "note": "no focus ring outside the key window" }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the view, reached with Tab: the ring is drawn inside its edge, Aqua.",
+      "example": "visual-progress",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 200, "height": 40 },
+        "pixels": [
+          {
+            "x": 1.5,
+            "y": 20,
+            "color": "#8cb5fb",
+            "tolerance": 3,
+            "note": "the shared focus ring colour (--mac-focus-ring-color, measured elsewhere) over white; that a web view shows a ring is inferred"
+          },
+          { "x": 4.5, "y": 20, "color": "#ffffff", "note": "the page inside the 3 pt ring" }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the view, reached with Tab, Dark Aqua.",
+      "example": "visual-progress",
+      "appearance": "dark",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 200, "height": 40 },
+        "pixels": [
+          {
+            "x": 1.5,
+            "y": 20,
+            "color": "#25638f",
+            "tolerance": 3,
+            "note": "the shared focus ring colour over #1e1e1e"
+          },
+          { "x": 4.5, "y": 20, "color": "#1e1e1e", "note": "the page inside the 3 pt ring" }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+---
+title: Split View (Full Screen)
+description: Two full-screen windows side by side in one Space, with the black divider between them. Drag the divider or use the arrow keys to resize the tiles; a press or keyboard focus makes a tile the active one.
+---
+
+<Example name="basic" both />
+
+Split View is what Catalina offers from the green button's menu: two applications share the
+screen, each in a full-screen window of its own, and the one used last is active. This is
+the system's tiling of two windows, not the [Split View](/components/split-view) that divides
+one window into panes. Base UI has no such primitive.
+
+## Usage
+
+```tsx
+import {
+  SplitViewFullScreen,
+  SplitViewFullScreenDivider,
+  SplitViewFullScreenTile,
+} from "macalicious/split-view-full-screen";
+import { TitleBar } from "macalicious/title-bar";
+import { WindowBody } from "macalicious/window";
+import "macalicious/styles.css";
+
+<SplitViewFullScreen defaultSplit={0.44} defaultActive="trailing" style={{ height: "100vh" }}>
+  <SplitViewFullScreenTile side="leading">
+    <TitleBar variant="title-hidden" title="Notes" />
+    <WindowBody>…</WindowBody>
+  </SplitViewFullScreenTile>
+  <SplitViewFullScreenDivider />
+  <SplitViewFullScreenTile side="trailing">
+    <TitleBar variant="title-hidden" title="Browser" />
+    <WindowBody>…</WindowBody>
+  </SplitViewFullScreenTile>
+</SplitViewFullScreen>
+```
+
+Or copy the source into your project: `npx macalicious add split-view-full-screen`.
+
+- The children are a leading tile, the divider and a trailing tile, in that order. Give the
+  root the size of the screen.
+- A tile is a full-screen [Window](/components/window): its children are a
+  [Title Bar](/components/title-bar) and a body. The active tile's window is key and the
+  other one inactive, so the bars and controls inside draw themselves accordingly. In the
+  captures the tiles' bars have no window controls.
+- `split` is the leading tile's share of the width the divider leaves, from 0 to 1. It
+  stays between `min` and `max`, which stand for the two applications' minimum window widths.
+- While the divider is dragged nothing renders: `onSplitChange` is called once, on release,
+  and once for every key that moves the divider.
+
+<Example name="controlled" />
+
+## Guidelines
+
+The macOS Human Interface Guidelines have no page for the Split View of two applications
+(their Split Views page is about panes in one window). A tile is a full-screen window, and
+what they say about
+[Full-Screen Mode](https://web.archive.org/web/20200503161459/https://developer.apple.com/design/human-interface-guidelines/macos/app-architecture/fullscreen-mode/)
+holds for it:
+
+- Keep the toolbar visible when it is needed for the task, and hide it when the focus is on
+  content.
+- Keep every essential feature available without leaving full screen.
+- Let people choose when to leave full screen: do not leave it for them.
+
+## Variants and states
+
+| State | How it is set | Look | Source |
+| --- | --- | --- | --- |
+| Active tile | `active`, `defaultActive`; a press or keyboard focus in the other tile | Its window is key; the other is inactive, with the flat bar and grey controls | Measured: Safari active, Notes inactive |
+| Split | `split`, `defaultSplit`; the divider | The leading tile's share | Measured once, 740 to 928 points; any other share follows from it |
+| Divider dragged | pointer | The tiles follow the pointer; `data-dragging` on the root | Provisional: Catalina dims the tiles while they are resized, which is not drawn |
+| Divider focused | Tab | Focus ring around the handle; none while the page is not key | Provisional: Catalina's divider takes no keyboard focus |
+| Reset | double click on the divider | Equal tiles | Catalog (macOS User Guide, as the spec records it) |
+
+## Sizes
+
+The divider is 12 points wide and its handle 4 by 64, centred on the height of the screen,
+with round ends; both are measured and fixed. The tiles share the rest: the leading one takes
+`split` of it and the trailing one what is left. There is no `size` prop.
+
+## API
+
+### SplitViewFullScreen
+
+<PropsTable name="SplitViewFullScreenProps" />
+
+### SplitViewFullScreenTile
+
+<PropsTable name="SplitViewFullScreenTileProps" />
+
+Every other prop is a [Window](/components/window) prop, except `state`, `variant`,
+`fullScreen`, `width` and `height`, which the Split View decides.
+
+### SplitViewFullScreenDivider
+
+<PropsTable name="SplitViewFullScreenDividerProps" />
+
+| Attribute, class or variable | On | Description |
+| --- | --- | --- |
+| `.mac-split-view-full-screen` | the root | The Space: a flex row, clipped. |
+| `data-active` | the root | `leading` or `trailing`: the tile that is key. |
+| `data-dragging` | the root | While the divider follows the pointer. |
+| `.mac-split-view-full-screen-tile` | a tile | Also a `.mac-window` in full screen. |
+| `data-side` | a tile | `leading` or `trailing`. |
+| `.mac-split-view-full-screen-divider` | the divider | The 12 point gutter; its `::before` is the handle. |
+| `--mac-split-view-full-screen-divider` | token | The gutter's colour, black in both appearances. |
+| `--mac-split-view-full-screen-handle` | token | The handle's colour. |
+
+`ref`, `className`, `style` and other props go to the element of the part they are given to.
+
+## Accessibility
+
+- Each tile is the labelled `region` of [Window](/components/window), named by its title
+  bar. Without a title in the bar give the tile `aria-label`.
+- The divider is a focusable `separator` with `aria-orientation="vertical"`, the leading
+  tile's share in percent as its value, and the leading tile in `aria-controls` (an `id`
+  given to that tile is the one named, in server-rendered markup too when the tile is a
+  direct child): the window
+  splitter pattern of the WAI-ARIA Authoring Practices. Its name is "Resize tiles"; pass
+  `aria-label` to name the applications.
+- Left and Right Arrow move the divider by `step` (1% of the width), Home and End take it to
+  `min` and `max`. In a right-to-left page the arrows and the drag are mirrored. Catalina has
+  no keyboard resizing in Split View: the keys are this library's addition.
+- Keyboard focus moving into a tile makes it the active one, as a press does, so the key
+  window is always the one being typed in.
+- A touch on the divider resizes and does not pan the page (`touch-action: none`).
+- In forced-colours mode the gutter is a band between two edges with the handle in the
+  system's text colour.
+
+## Visual comparison
+
+`split-view-full-screen.visual.json` compares two crops of the Split View screenshots (Notes
+on the left, Safari on the right) in both appearances:
+
+- `divider`: the gutter and its handle at the middle of the screen. The tiles hold
+  application content there (Notes' paper texture, a web page), which is masked except for
+  the 2 points beside the gutter (69% of the crop).
+- `toolbars`: the top of the gutter between the inactive leading bar and the active trailing
+  one, with 2 points of what is under them. No toolbar item or text is in the crop, and
+  nothing is masked.
+
+Scores from `npm run visual -- split-view-full-screen/` in Chromium on Linux, at threshold
+0.05: the share of pixels that differ visibly, and the mean colour difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `divider-light` | Light-Split-Screen-Apps (1440, 900, 104, 300) | 0.00% | 0.25 | 0.08% | 0.35 |
+| `divider-dark` | Dark-Split-Screen-Apps (1440, 900, 104, 300) | 0.00% | 0.24 | 0.08% | 0.34 |
+| `toolbars-light` | Light-Split-Screen-Apps (1468, 0, 48, 80) | 0.00% | 0.15 | 0.00% | 0.14 |
+| `toolbars-dark` | Dark-Split-Screen-Apps (1468, 0, 48, 80) | 0.00% | 1.54 | 0.00% | 1.53 |
+
+In Dark Aqua the capture's active bar is tinted by the page under it, which is the mean
+difference in the last row ([Fidelity limits](/fidelity)).
+
+State checks cover what no screenshot shows: the focus ring around the handle after Tab, and
+the gutter 1% of the width further left or right after an arrow key.
+
+Measured: the gutter's width and colour, the handle's size, place and colour, the tiles'
+square frames and their bars. Provisional: the focus ring and the keyboard resizing, the
+default limits of a quarter and three quarters of the width, and the tiles not dimming while
+the divider is dragged.

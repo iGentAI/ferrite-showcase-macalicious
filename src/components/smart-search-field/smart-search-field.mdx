@@ -1,0 +1,182 @@
+---
+title: Smart Search Field
+description: Safari's address and search field, which shows the page's host centred with a padlock until it is edited, and holds the Reader, Reload and audio buttons.
+order: 61
+---
+
+<Example name="basic" both />
+
+The field in the middle of Safari's toolbar. While it is not being edited it shows only the
+page's host, centred, with a padlock for a secure page, or a magnifying glass and the
+placeholder when it is empty. Focusing it shows the whole text, left aligned and selected.
+It is built on [Base UI's Input](https://base-ui.com/react/components/input); inside a
+[Toolbar](/components/toolbar) the input and the accessory buttons are the toolbar's own, so
+they join its arrow-key navigation.
+
+## Usage
+
+```tsx
+import { SmartSearchField, SmartSearchFieldButton } from "macalicious/smart-search-field";
+import "macalicious/smart-search-field.css";
+
+<SmartSearchField
+  value={text}
+  onValueChange={setText}
+  onSubmit={load}
+  secure
+  trailing={<SmartSearchFieldButton glyph="reload" aria-label="Reload this page" />}
+/>
+```
+
+`value` is the text being edited: it changes with every keystroke (`onValueChange`), Return
+hands it to `onSubmit`, and Escape puts back the text the field had when editing began or was
+last submitted. After either key the field gives up the focus and shows the host again. What
+it shows then is `displayValue` when given, otherwise the host of an address
+(`https://www.example.com/page` shows as `example.com`; a user name and password in the
+address are never shown) and any other text unchanged.
+
+<Example name="browser" />
+
+Native input props go to the input, so `name`, `disabled`, `readOnly`, `onChange` and `aria-*`
+work as on an input. The exceptions: `className`, `style` and `ref` belong to the root element
+(the bezel) and `inputRef` reaches the input, to focus it from a Command-L handler; the
+preview attribute `data-force` lands on the root.
+
+`leading` and `trailing` take `SmartSearchFieldButton`s: the Reader button, which stays filled
+while `pressed`, Reload or Stop, the Reader's text options, and the audio button. Its glyphs
+(`reader`, `reload`, `stop`, `text-size`, `audio`) are original drawings to the measured
+sizes; pass children to draw something else.
+
+<Example name="accessories" />
+
+## Guidelines
+
+- Centre the field on the window and give it a fixed width while the window is wide enough:
+  535 pt in a 1324 pt Safari window, 507 pt in a 1254 pt one.
+- Show the padlock only for a page loaded over a secure connection.
+- Offer the Reader button only when the page has a reader view, and replace Reload with Stop
+  while a page loads.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Page loaded | text in the field | Host, centred; padlock before it with `secure` |
+| Empty | no text | Magnifier and placeholder, centred |
+| Editing | focus in the input | Magnifier and text at the leading edge; focus ring 3 pt outside the fill and a hairline inside it, in the key window only |
+| Reader on | `pressed` on the leading button | The 28 pt leading cell filled, its glyph in the field's fill colour |
+| Accessory pressed | `:active` | Glyph in the text colour (provisional) |
+| Disabled | `disabled` | Dimmed text and glyphs (provisional); pass `disabled` to the buttons too |
+| Inactive window | `data-window-state="inactive"` on an ancestor | Flat bezel (an outline in Aqua), dimmed padlock and glyphs; the text keeps its colour |
+| Forced colours | `forced-colors: active` | A solid field border; the on button in the highlight colour |
+
+Nothing in the field animates, so there is nothing to reduce for `prefers-reduced-motion`.
+
+## Sizes
+
+One size: the field is 22 pt high, as wide as its container and at least 120 pt. Set `width`
+in `style` for a fixed width.
+
+## API
+
+<PropsTable name="SmartSearchFieldProps" />
+
+<PropsTable name="SmartSearchFieldButtonProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-empty` | root | present or absent | The field holds no text. |
+| `data-secure` | root | present or absent | Reflects `secure`. |
+| `data-disabled` | root, button | present or absent | Reflects `disabled`. |
+| `data-pressed` | button | present or absent | Reflects `pressed`. |
+| `data-glyph` | glyph | the glyph's name | Which glyph an `svg` draws. |
+| `data-force` | root, button | `focus`; `pressed` on a button | Documentation and visual tests only. |
+
+Parts: `.mac-smart-search-field-input`, `.mac-smart-search-field-display`,
+`.mac-smart-search-field-text`, `.mac-smart-search-field-glyph`,
+`.mac-smart-search-field-leading`, `.mac-smart-search-field-trailing` and
+`.mac-smart-search-field-button`.
+
+## Accessibility
+
+- A native text input. It is named by its placeholder unless `aria-label` or
+  `aria-labelledby` is given; to name it with a visible label, pass the label's id as
+  `aria-labelledby`.
+- The centred host and padlock are a visual stand-in, hidden from assistive technology: the
+  input's value is always the whole text. `secure` is therefore not announced; say so in the
+  page's own status or in the label if it matters.
+- A click or Tab into the field selects the whole text, so typing replaces it. Return submits
+  and Escape restores; both give up the focus. Both keys are the field's own: Return does not
+  also submit a form the field is in, and Escape does not also dismiss a dialog it is in.
+  Keys pressed while an input method composes
+  are left to it, and a key whose default your `onKeyDown` prevents is left to you.
+- Accessory buttons are native buttons in the tab order, before and after the input. They
+  show only a glyph, so each needs an `aria-label`. `pressed` sets `aria-pressed`.
+- The focus rings of the field and of its buttons show only in the key window.
+- There is no list of suggestions: the field is not a combobox. Command-L is the
+  application's to handle.
+
+## Visual comparison
+
+`smart-search-field.visual.json` compares the field with a page loaded in both appearances,
+the empty field (Aqua), the empty field being edited with its focus ring (Dark Aqua, focused
+with a real click), the field in Reader mode (Aqua) and the field of the inactive window
+behind the Picture in Picture video in both appearances, each whole and with the text masked.
+The focus ring in Aqua and its absence in a window that is not key, the Reader button's fill
+in Dark Aqua, a pressed accessory and the disabled glyph colour are checked pixel by pixel.
+Two more checks press keys in a real browser, with the field in a form in a native modal
+dialog: Return runs `onSubmit` without submitting the form, and Escape leaves the dialog open.
+
+Scores from `npm run visual -- smart-search-field` in Chromium on Linux with the fallback
+font: the share of pixels that differ by more than the comparison's threshold, and the mean
+colour difference out of 255. A masked comparison leaves out the fallback-font text.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `page-light` | Light-Safari-v13 (896, 88, 1080, 52) | 5.89% | 5.31 | 1.62% | 2.17 |
+| `page-light-bezel` (masked) | Light-Safari-v13 (896, 88, 1080, 52) | 8.99% | 4.22 | 0.06% | 0.61 |
+| `page-dark` | Dark-Safari-v13 (856, 88, 1020, 52) | 6.06% | 4.72 | 1.62% | 1.91 |
+| `page-dark-bezel` (masked) | Dark-Safari-v13 (856, 88, 1020, 52) | 5.03% | 3.74 | 0.09% | 0.56 |
+| `placeholder-light` | Light-Safari-v13-Favorites (896, 88, 1080, 52) | 5.91% | 5.17 | 2.34% | 2.10 |
+| `placeholder-light-bezel` (masked) | Light-Safari-v13-Favorites (896, 88, 1080, 52) | 10.05% | 4.74 | 0.04% | 0.68 |
+| `focused-dark` | Dark-Safari-v13-Favorites (846, 82, 1040, 64) | 5.60% | 4.94 | 3.01% | 1.92 |
+| `focused-dark-bezel` (masked) | Dark-Safari-v13-Favorites (846, 82, 1040, 64) | 8.51% | 4.31 | 0.05% | 0.53 |
+| `reader-light` | Light-Safari-v13-Reader-Mode (896, 88, 1080, 52) | 6.05% | 5.20 | 1.38% | 1.80 |
+| `reader-light-bezel` (masked) | Light-Safari-v13-Reader-Mode (896, 88, 1080, 52) | 9.18% | 4.38 | 0.35% | 0.75 |
+| `inactive-light` | Light-Safari-v13-Picture-in-Picture (1056, 116, 1028, 52) | 2.96% | 4.72 | 2.53% | 3.01 |
+| `inactive-light-bezel` (masked) | Light-Safari-v13-Picture-in-Picture (1056, 116, 1028, 52) | 10.77% | 2.55 | 0.20% | 0.33 |
+| `inactive-dark` | Dark-Safari-v13-Picture-in-Picture (1084, 90, 1028, 52) | 6.94% | 5.19 | 2.55% | 4.18 |
+| `inactive-dark-bezel` (masked) | Dark-Safari-v13-Picture-in-Picture (1084, 90, 1028, 52) | 4.75% | 2.52 | 0.24% | 1.09 |
+
+The 1x scores are high because a half-point border cannot match its averaged counterpart;
+the 2x scores are the ones to read.
+
+Measured (Light- and Dark-Safari-v13, column 1100, rows y 91 to 137): the 22 pt fill and its
+gradient (`#fdfdfd`, then `#fcfcfc` to `#f3f3f3`; in Dark Aqua `#8b8b8c`, `#737475`, then
+`#6e6e70` to `#6b6b6d` on the toolbar, stored as white at 40%, 27.8% and 25.3%); Aqua's
+hairline border, `#cccccc` on top, `#c7c7c7` at the sides and `#a6a6a6` below, and the
+`#cdcdcd` row under it, stored as black at 10.1%, 10.4%, 23.5% and 5.5%; the corner, 4.25 pt
+on the border in Aqua and 3.75 pt on the fill in Dark Aqua (the spec's fits); the text colour
+(`#4c4c4c`, dark `#ffffff`) and its baseline, 16 pt below the fill's top; the padlock (8 by
+10 pt, 5 pt before the text, `#9f9e9e`); the glyph colour (`#7a7a79`, dark `#e9e9ea`); the
+Reader glyph's 28 pt cell and the 6.5 pt between trailing glyphs and from the edge; the
+placeholder (`#b8b8b7`) and magnifier (`#9e9e9e`) and their place, 3 pt right of centre; the
+editing layout and the focus ring's two bands (Dark-Safari-v13-Favorites); the Reader button's
+on fill (`#676767` to `#636363` in Light-Safari-v13-Reader-Mode, `#e3e3e4` under an `#e9e9e9`
+row in the dark capture); and the inactive window (the Picture in Picture captures): an
+`#dbdbdb` outline with an `#ececec` row inside it in Aqua, `#3b3c3f` under `#4f5053` and
+`#404143` rows in Dark Aqua, glyphs `#b3b3b3` (dark `#7f7f81`), padlock `#cacaca`.
+
+The host and the placeholder are San Francisco only on Apple devices. The fallback font sets
+them 5 to 15 pt wider, which would move the centred padlock and magnifier, so the comparison
+examples take that width back with `--mac-tracking-regular`, the tracking token meant for a
+fallback font; the text itself is still masked in the tight comparisons.
+
+Provisional: the focus ring in Aqua (it follows the shared focus ring token, as in the dark
+capture), editing with text in the field (only the empty field is captured: the magnifier is
+kept and the text follows it), a pressed accessory, the disabled look, the Stop glyph, the
+Reader button's on fill in an inactive window, and the text colour while editing. Not
+implemented: the list of suggestions and completions, the page icon Safari shows while
+editing, and the private-browsing appearance.

@@ -1,0 +1,16 @@
+/*
+ * Level indicator colours (reference/spec/components/level-indicator.md). The fills of the
+ * standard styles are the shared system colours (green, yellow, red).
+ */
+:root {
+  /* [provisional] track of the standard styles. No screenshot shows an NSLevelIndicator; the
+     values are the measured progress bar track, which AppKit draws with the same recipe. */
+  --mac-level-indicator-track: light-dark(rgb(0 0 0 / 0.07), rgb(255 255 255 / 0.14));
+  --mac-level-indicator-track-border: light-dark(rgb(0 0 0 / 0.19), rgb(255 255 255 / 0.14));
+  /* [measured] Disk Utility's capacity bar: empty part and border (col 1200), used part and
+     its outline (col 740) */
+  --mac-level-indicator-storage-empty: light-dark(#ffffff, #38393a);
+  --mac-level-indicator-storage-border: light-dark(#d1d1d1, #808080);
+  --mac-level-indicator-storage-fill: light-dark(#1badf8, #2f7095);
+  --mac-level-indicator-storage-fill-border: light-dark(#17a1e9, #19adf8);
+}

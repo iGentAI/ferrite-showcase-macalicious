@@ -1,0 +1,182 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "pending": "No reference: no screenshot shows the Colors panel or its pickers (spec: color-panel, not seen). The checks below hold the list and the pencils, in a real browser, to the colours they are given and to the shared selection tokens.",
+  "comparisons": [
+    {
+      "name": "palettes-light",
+      "description": "The list with Blue chosen and the pencils with Maraschino chosen, Aqua. Rows of the list are 19 pt from y 20.5; a pencil's body shows its colour between 30% and 70% of its width.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 460, "height": 220 },
+        "pixels": [
+          {
+            "x": 37,
+            "y": 30,
+            "color": "#000000",
+            "note": "swatch of the first row: Black, the colour given"
+          },
+          {
+            "x": 37,
+            "y": 49,
+            "color": "#0000ff",
+            "note": "swatch of the second row: Blue, the colour given"
+          },
+          {
+            "x": 150,
+            "y": 49,
+            "color": "#0164e1",
+            "note": "the chosen row: emphasised selection, token --mac-color-selected-content-background (measured on Finder list rows; inferred for this list)"
+          },
+          {
+            "x": 37,
+            "y": 68,
+            "color": "#996633",
+            "note": "swatch of the third row: Brown, the colour given"
+          },
+          {
+            "x": 150,
+            "y": 68,
+            "color": "#ffffff",
+            "note": "a row that is not chosen: the list's background, --mac-color-text-background"
+          },
+          {
+            "x": 248.3,
+            "y": 54,
+            "color": "#000000",
+            "note": "first pencil of the first row: Licorice"
+          },
+          { "x": 431.7, "y": 54, "color": "#ffffff", "note": "last pencil of the first row: Snow" },
+          {
+            "x": 248.3,
+            "y": 122,
+            "color": "#ff2600",
+            "note": "first pencil of the third row, the chosen one: Maraschino"
+          },
+          {
+            "x": 431.7,
+            "y": 156,
+            "color": "#ff8ad8",
+            "note": "last pencil of the fourth row: Carnation"
+          }
+        ]
+      }
+    },
+    {
+      "name": "palettes-dark",
+      "description": "The same in Dark Aqua: the colours are the ones given; the list's background and the selection follow the appearance.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 460, "height": 220 },
+        "pixels": [
+          {
+            "x": 37,
+            "y": 49,
+            "color": "#0000ff",
+            "note": "swatch of the second row: Blue, the colour given"
+          },
+          {
+            "x": 150,
+            "y": 49,
+            "color": "#0158d0",
+            "note": "the chosen row: emphasised selection in Dark Aqua, token --mac-color-selected-content-background (measured elsewhere; inferred for this list)"
+          },
+          {
+            "x": 150,
+            "y": 68,
+            "color": "#1e1e1e",
+            "note": "a row that is not chosen: --mac-color-text-background"
+          },
+          { "x": 248.3, "y": 122, "color": "#ff2600", "note": "the chosen pencil: Maraschino" },
+          { "x": 431.7, "y": 54, "color": "#ffffff", "note": "Snow" }
+        ]
+      }
+    },
+    {
+      "name": "chosen-with-keys-light",
+      "description": "The list after Tab and Down Arrow: the choice moves from Blue to Brown, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }, { "key": "ArrowDown" }],
+      "expect": {
+        "size": { "width": 460, "height": 220 },
+        "pixels": [
+          {
+            "x": 150,
+            "y": 49,
+            "color": "#ffffff",
+            "note": "Blue is no longer chosen: the list's background"
+          },
+          {
+            "x": 150,
+            "y": 68,
+            "color": "#0164e1",
+            "note": "Brown is chosen: emphasised selection (token, inferred for this list)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "chosen-with-click-dark",
+      "description": "The pencils after a click on Licorice: it is the chosen one and stands 6 pt above its row, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "click": "[aria-label='Licorice']" }],
+      "expect": {
+        "size": { "width": 460, "height": 220 },
+        "pixels": [
+          {
+            "x": 248.3,
+            "y": 40,
+            "color": "#000000",
+            "note": "the body of the raised Licorice pencil, 6 pt above where a pencil's body starts (inferred)"
+          },
+          {
+            "x": 265,
+            "y": 40,
+            "color": "#e9c9a0",
+            "tolerance": 4,
+            "note": "the wood of the tip of its neighbour, Lead, which is not raised: token --mac-color-palette-pencil-wood (inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inactive-light",
+      "description": "The list in a window that is not key: the chosen row is unemphasised, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "expect": {
+        "size": { "width": 460, "height": 220 },
+        "pixels": [
+          {
+            "x": 150,
+            "y": 49,
+            "color": "#dcdcdc",
+            "note": "unemphasised selection, token --mac-color-selected-content-background-unemphasized (measured in Contacts; inferred for this list)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inactive-dark",
+      "description": "The list in a window that is not key, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "expect": {
+        "size": { "width": 460, "height": 220 },
+        "pixels": [
+          {
+            "x": 150,
+            "y": 49,
+            "color": "#464646",
+            "note": "unemphasised selection in Dark Aqua (token; inferred for this list)"
+          }
+        ]
+      }
+    }
+  ]
+}

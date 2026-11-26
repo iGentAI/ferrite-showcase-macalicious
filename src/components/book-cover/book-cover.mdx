@@ -1,0 +1,125 @@
+---
+title: Book Cover
+description: A book in the Books library, drawn as its cover with square corners and a soft shadow on the page.
+---
+
+<Example name="basic" both />
+
+The library of Books shows each book as its cover and nothing else: a picture 145.5 pt wide
+with square corners, lifted from the page by a soft shadow that is deepest under it. Books
+draws it itself (a collection view item; no AppKit class and no system style), and Base UI has
+no primitive for it: `BookCover` is a styled element whose `render` prop, through Base UI's
+`useRender`, makes it a link or a button. The cards of the other store and media apps are
+[Card Grid](/components/card-grid).
+
+## Usage
+
+```tsx
+import { BookCover } from "macalicious/book-cover";
+import "macalicious/book-cover.css";
+
+<BookCover render={<a href={book.url} />}>
+  <img src={book.cover} alt={book.title} />
+</BookCover>
+```
+
+Or copy the source into your project: `npx macalicious add book-cover`. See
+[Installation](/installation).
+
+The picture is the cover's only child. It is stretched over the cell, and an `<img>` is
+cropped to it, so a cover of other proportions loses its edges; set
+`--mac-book-cover-aspect` to the picture's own proportions to show all of it. The library
+ships no artwork: the examples on this page draw gradients.
+
+<Example name="library" both />
+
+## Guidelines
+
+The Human Interface Guidelines have no page for the cover. What Books does:
+
+- The cover stands for the book: no title under it, no border around it.
+- Covers stand on the plain page colour, which the shadow needs to show.
+- A cover is one target: make the whole cover the link or the button.
+
+## Variants and states
+
+One variant. The states apply when the cover is a link or a button. Pressed and
+keyboard-focused are transient, so this gallery pins them.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | The picture, square corners, shadow `0 1px 3px` black at 31% in both appearances |
+| Hover | – | No change |
+| Pressed | `:active` on a link or button cover | Dimmed by a tenth |
+| Keyboard focus | `:focus-visible` | Focus ring around the cover |
+| Disabled | the cover is a disabled button, or has `aria-disabled="true"` | Half opacity. The look only: with `aria-disabled` the cover still receives its events, so leave out its handler or its `href` as well |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No focus ring; nothing else changes |
+| No picture | no children | The placeholder fill, `#e9e9eb`, Dark Aqua `#48494d` |
+
+Measured, in both appearances: the cover's size, its square corners and the shadow on every
+side. Provisional, because no screenshot shows them: the pressed and disabled looks, the focus
+ring and the placeholder fill. Books shows a single book, so the distance between covers is
+not known; the library example uses 30 pt.
+
+## Sizes
+
+One size: 145.5 x 190 pt, the cell of the Books library. `--mac-book-cover-width` changes
+the width and `--mac-book-cover-aspect` the proportions (291 / 380 by default); the height
+follows from the two.
+
+## API
+
+<PropsTable name="BookCoverProps" />
+
+The remaining props are those of a `<div>`, or of the element given to Base UI's `render`
+prop, and go to that element with `ref`.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-force` | cover | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+Class: `.mac-book-cover`.
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-book-cover-width` | `145.5px` | Width of the cell. |
+| `--mac-book-cover-aspect` | `291 / 380` | Proportions of the cell. |
+| `--mac-book-cover-shadow` | `0 1px 3px` black at 31% | The shadow, the same in both appearances. |
+| `--mac-book-cover-placeholder` | `#e9e9eb`, `#48494d` in Dark Aqua | Behind a picture that is missing or transparent. |
+
+## Accessibility
+
+- A cover is static unless you render it as a link or a button with `render`. Then it is one
+  tab stop and Return (and Space, for a button) activates it.
+- The cover has no text of its own. Name it with the picture's `alt`, or with `aria-label` on
+  the cover and an empty `alt`; a static cover with `aria-label` needs `role="img"` for the
+  label to be read.
+- The focus ring is drawn only in a key window. In forced-colours mode the cover has a
+  border, one point wide, in the system's text colour, because the shadow is not drawn there.
+
+## Visual comparison
+
+`npm run visual -- book-cover` compares the cover's two right-hand corners, with the shadow
+around them, with the Books capture in both appearances. The capture's cover is white there,
+and so is the fixture's picture; nothing is masked, and a pixel counts as differing at a colour
+distance of 0.05. Share of pixels that differ, in Chromium on Linux:
+
+| Comparison | Aqua 2x | Aqua 1x | Dark Aqua 2x | Dark Aqua 1x |
+| --- | --- | --- | --- | --- |
+| Top-right corner, 20 x 17 pt (`927,224,40,34`) | 0.00% | 0.00% | 0.00% | 0.00% |
+| Bottom-right corner, 20 x 20 pt (`927,604,40,40`) | 0.00% | 0.00% | 0.00% | 0.00% |
+
+The top crop ends above the lettering of the capture's cover. The shadow is one CSS shadow
+fitted to the capture's falloff on three sides; the mean difference that remains is under a
+third of a level in 255.
+
+No screenshot shows a pressed or focused cover or a window that is not key. Those states are
+checked in a real browser (the `expect` comparisons): a cover that is a button keeps the
+cell's size and its picture reaches every edge; pressed, the picture is at 90% brightness; Tab
+puts the focus ring around it in a key window and none in another.
+
+Not built: the rest of the Books window. Its toolbar is
+[Media App Chrome](/components/media-app-chrome); the capture shows no caption, progress or
+badge on a cover, so none is drawn.

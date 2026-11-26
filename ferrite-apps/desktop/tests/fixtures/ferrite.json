@@ -1,0 +1,328 @@
+{
+  "services": [
+    {
+      "name": "site",
+      "primitive": "blob", "volume_mib": 1024,
+      "workload": {
+        "read_qps": 512,
+        "write_qps": 128,
+        "record_size_kb": 64,
+        "keying": "PerKey",
+        "hot_set_gib": 0
+      }
+    },
+    {
+      "name": "requests",
+      "primitive": "queue", "volume_mib": 512,
+      "workload": {
+        "read_qps": 256,
+        "write_qps": 128,
+        "record_size_kb": 0,
+        "keying": "PerKey",
+        "hot_set_gib": 0
+      }
+    },
+    {
+      "name": "live",
+      "primitive": "queue", "volume_mib": 256,
+      "workload": {
+        "read_qps": 5,
+        "write_qps": 5,
+        "record_size_kb": 0,
+        "keying": "PerKey",
+        "hot_set_gib": 0
+      }
+    },
+    {
+      "name": "frames",
+      "primitive": "queue", "volume_mib": 256,
+      "workload": {
+        "read_qps": 50,
+        "write_qps": 50,
+        "record_size_kb": 8,
+        "keying": "PerKey",
+        "hot_set_gib": 0
+      }
+    },
+    {
+      "name": "data",
+      "primitive": "store", "volume_mib": 2048,
+      "workload": {
+        "read_qps": 262,
+        "write_qps": 177,
+        "record_size_kb": 1,
+        "keying": "PerKey",
+        "hot_set_gib": 0
+      }
+    },
+    {
+      "name": "files",
+      "primitive": "blob", "volume_mib": 2048,
+      "workload": {
+        "read_qps": 40,
+        "write_qps": 20,
+        "record_size_kb": 192,
+        "keying": "PerKey",
+        "hot_set_gib": 0
+      }
+    }
+  ],
+  "applications": [
+    {
+      "name": "macalicious-desktop",
+      "artifact_key": "apps/macalicious-desktop@v1",
+      "artifact_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "bindings": [
+        { "handle": "site", "kind": "blob", "service": "site" },
+        { "handle": "requests", "kind": "queue", "service": "requests" },
+        { "handle": "live", "kind": "queue", "service": "live" },
+        { "handle": "frames", "kind": "queue", "service": "frames" },
+        { "handle": "data", "kind": "store", "service": "data" },
+        { "handle": "files", "kind": "blob", "service": "files" }
+      ],
+      "routes": [
+        { "prefix": "/health", "binding": "requests", "kind": "api", "public": true },
+        { "prefix": "/favicon.ico", "binding": "requests", "kind": "api", "public": true },
+        {
+          "prefix": "/api/",
+          "binding": "requests",
+          "kind": "api",
+          "public": true,
+          "forward_headers": [
+            "cookie",
+            "sec-fetch-site",
+            "content-type",
+            "idempotency-key",
+            "origin",
+            "referer",
+            "x-macalicious-write",
+            "x-macalicious-person"
+          ]
+        },
+        { "prefix": "/live/", "binding": "live", "kind": "stream", "public": true },
+        {
+          "prefix": "/",
+          "binding": "requests",
+          "kind": "api",
+          "public": true,
+          "forward_headers": ["accept-encoding", "if-none-match"]
+        }
+      ],
+      "egress": [
+        {
+          "handle": "web",
+          "destinations": [
+            "https://cloudflare-dns.com/dns-query",
+            "https://en.wikipedia.org/",
+            "https://www.apple.com/",
+            "https://text.npr.org/",
+            "https://www.bbc.com/",
+            "https://arstechnica.com/",
+            "https://news.ycombinator.com/",
+            "https://developer.mozilla.org/",
+            "https://marginalia-search.com/",
+            "https://lite.cnn.com/",
+            "https://www.aljazeera.com/",
+            "https://512pixels.net/",
+            "https://daringfireball.net/",
+            "https://lobste.rs/",
+            "https://docs.python.org/",
+            "https://doc.rust-lang.org/"
+          ]
+        },
+        {
+          "handle": "web-2",
+          "destinations": [
+            "https://go.dev/",
+            "https://www.typescriptlang.org/",
+            "https://react.dev/",
+            "https://www.w3.org/",
+            "https://www.rfc-editor.org/",
+            "https://simple.wikipedia.org/",
+            "https://en.wiktionary.org/",
+            "https://www.wikipedia.org/",
+            "https://www.gutenberg.org/",
+            "https://www.gnu.org/",
+            "https://example.com/",
+            "https://upload.wikimedia.org/",
+            "https://ichef.bbci.co.uk/",
+            "https://cdn.arstechnica.net/",
+            "https://thumb.wikimedia.org/"
+          ]
+        },
+        {
+          "handle": "archive",
+          "destinations": [
+            "https://archive.org/advancedsearch.php",
+            "https://archive.org/metadata/"
+          ]
+        },
+        {
+          "handle": "radio",
+          "destinations": ["https://all.api.radio-browser.info/json/stations/search"]
+        },
+        {
+          "handle": "youtube",
+          "destinations": [
+            "https://www.youtube.com/oembed",
+            "https://www.googleapis.com/youtube/v3/search"
+          ]
+        },
+        {
+          "handle": "news",
+          "destinations": [
+            "https://feeds.bbci.co.uk/news/rss.xml",
+            "https://feeds.npr.org/1001/rss.xml",
+            "https://www.theguardian.com/world/rss",
+            "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+            "https://www.aljazeera.com/xml/rss/all.xml",
+            "https://www.cbsnews.com/latest/rss/main",
+            "https://feeds.arstechnica.com/arstechnica/index",
+            "https://www.theverge.com/rss/index.xml",
+            "https://www.wired.com/feed/rss",
+            "https://www.engadget.com/rss.xml",
+            "https://techcrunch.com/feed/",
+            "https://feeds.macrumors.com/MacRumors-All",
+            "https://9to5mac.com/feed/",
+            "https://daringfireball.net/feeds/main",
+            "https://www.nasa.gov/news-release/feed/",
+            "https://www.sciencedaily.com/rss/all.xml"
+          ]
+        },
+        {
+          "handle": "news-2",
+          "destinations": [
+            "https://www.smithsonianmag.com/rss/latest_articles/",
+            "https://variety.com/feed/",
+            "https://www.vogue.com/feed/rss",
+            "https://www.eater.com/rss/index.xml",
+            "https://www.atlasobscura.com/feeds/latest",
+            "https://feeds.bbci.co.uk/sport/rss.xml",
+            "https://feeds.bbci.co.uk/news/business/rss.xml",
+            "https://feeds.bbci.co.uk/news/technology/rss.xml",
+            "https://feeds.bbci.co.uk/news/science_and_environment/rss.xml",
+            "https://feeds.bbci.co.uk/news/health/rss.xml",
+            "https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml",
+            "https://feeds.npr.org/1014/rss.xml",
+            "https://feeds.npr.org/1007/rss.xml",
+            "https://feeds.npr.org/1128/rss.xml",
+            "https://feeds.npr.org/1053/rss.xml",
+            "https://www.theguardian.com/uk/business/rss"
+          ]
+        },
+        {
+          "handle": "news-3",
+          "destinations": [
+            "https://www.theguardian.com/politics/rss",
+            "https://www.theguardian.com/uk/sport/rss",
+            "https://www.theguardian.com/fashion/rss",
+            "https://www.theguardian.com/food/rss",
+            "https://www.theguardian.com/uk/travel/rss"
+          ]
+        },
+        {
+          "handle": "podcasts",
+          "destinations": [
+            "https://itunes.apple.com/search",
+            "https://itunes.apple.com/lookup",
+            "https://itunes.apple.com/us/rss/toppodcasts/limit=25/json",
+            "https://access.acast.com/rss/",
+            "https://anchor.fm/s/",
+            "https://api.riverside.fm/hosting/",
+            "https://api.substack.com/feed/podcast/",
+            "https://audioboom.com/channels/",
+            "https://feed.podbean.com/",
+            "https://feeds.acast.com/public/",
+            "https://feeds.captivate.fm/",
+            "https://feeds.feedburner.com/",
+            "https://feeds.fireside.fm/",
+            "https://feeds.megaphone.fm/",
+            "https://feeds.npr.org/",
+            "https://feeds.publicradio.org/public_feeds/"
+          ]
+        },
+        {
+          "handle": "podcasts-2",
+          "destinations": [
+            "https://feeds.redcircle.com/",
+            "https://feeds.simplecast.com/",
+            "https://feeds.soundcloud.com/users/",
+            "https://feeds.transistor.fm/",
+            "https://feeds.twit.tv/",
+            "https://mcsorleys.barstoolsports.com/feed/",
+            "https://media.rss.com/",
+            "https://podcastfeeds.nbcnews.com/",
+            "https://podcasts.files.bbci.co.uk/",
+            "https://rss.amperwave.net/",
+            "https://rss.art19.com/",
+            "https://rss.buzzsprout.com/",
+            "https://rss.libsyn.com/shows/",
+            "https://rss2.flightcast.com/",
+            "https://www.omnycontent.com/d/playlist/",
+            "https://www.spreaker.com/show/"
+          ]
+        },
+        {
+          "handle": "books",
+          "destinations": [
+            "https://www.gutenberg.org/",
+            "https://standardebooks.org/",
+            "https://librivox.org/api/feed/audiobooks"
+          ]
+        },
+        {
+          "handle": "dns",
+          "destinations": ["https://cloudflare-dns.com/dns-query", "https://dns.google/resolve"]
+        },
+        {
+          "handle": "rdap",
+          "destinations": [
+            "https://rdap.verisign.com/com/v1/domain/",
+            "https://rdap.verisign.com/net/v1/domain/",
+            "https://rdap.publicinterestregistry.org/rdap/domain/",
+            "https://rdap.arin.net/registry/ip/"
+          ]
+        },
+        {
+          "handle": "dictionary",
+          "destinations": [
+            "https://en.wiktionary.org/api/rest_v1/page/definition/",
+            "https://api.dictionaryapi.dev/api/v2/entries/en/",
+            "https://api.datamuse.com/",
+            "https://en.wikipedia.org/w/api.php"
+          ]
+        },
+        {
+          "handle": "stocks",
+          "destinations": [
+            "https://quote.cnbc.com/quote-html-webservice/restQuote/",
+            "https://ts-api.cnbc.com/harmony/app/charts/",
+            "https://symlookup.cnbc.com/symservice/symlookup.do",
+            "https://www.cnbc.com/id/10001147/device/rss/rss.html",
+            "https://www.cnbc.com/id/15839135/device/rss/rss.html"
+          ]
+        },
+        {
+          "handle": "weather",
+          "destinations": [
+            "https://api.open-meteo.com/v1/forecast",
+            "https://geocoding-api.open-meteo.com/v1/search"
+          ]
+        },
+        {
+          "handle": "rates",
+          "destinations": ["https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"]
+        },
+        {
+          "handle": "maps-search",
+          "destinations": ["https://nominatim.openstreetmap.org/"]
+        },
+        {
+          "handle": "maps-route",
+          "destinations": ["https://routing.openstreetmap.de/"]
+        }
+      ],
+      "compute": { "memory_mb": 256, "cpu_percent": 50 }
+    }
+  ]
+}

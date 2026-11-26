@@ -1,0 +1,155 @@
+---
+title: Picture in Picture
+description: A small borderless video window that floats in a corner of the screen. Under the pointer it shows close, return-to-window and play or pause buttons; it can be dragged to another corner and resized.
+---
+
+<Example name="basic" both />
+
+The window Safari and other players send a video to, so that it keeps playing above
+everything else. `PictureInPicture` draws the window and its controls and keeps where it is,
+how wide it is and whether it plays; the video is whatever you put inside. Base UI has no
+such primitive; the three controls are Base UI buttons.
+
+## Usage
+
+```tsx
+import { PictureInPicture } from "macalicious/picture-in-picture";
+import "macalicious/picture-in-picture.css";
+
+<div style={{ position: "relative", height: "100vh" }}>
+  <PictureInPicture
+    open={floating}
+    onOpenChange={setFloating}
+    onReturn={showInPage}
+    playing={playing}
+    onPlayingChange={setPlaying}
+  >
+    <video src="movie.mp4" />
+  </PictureInPicture>
+</div>
+```
+
+Or copy the source into your project: `npx macalicious add picture-in-picture`.
+
+- The window is placed in a corner of the nearest positioned ancestor, 20 points from its
+  edges: that element is the screen. Inside a
+  [Window Manager](/components/window-manager) it is the desktop.
+- The child fills the window and is clipped to its corners. The component does not play
+  anything: `playing` and `onPlayingChange` only say which glyph the middle button shows and
+  what it asks for; call `play()` and `pause()` on your video from there.
+- The close button and Escape close the window; the return button calls `onReturn` first.
+  A closed window is not rendered. While it is open, the player it came from shows a
+  placeholder, which is yours to draw.
+- Dragging the window and dropping it moves it to the corner of the quarter it was dropped
+  in. The corner of the window that points to the middle of the screen is its resize handle.
+  A press becomes a drag once the pointer has moved 4 points, so a click on the video still
+  reaches it, and a press on a link, a form control or a `<video controls>` inside never
+  moves the window.
+  Nothing renders while either goes on: `onCornerChange` and `onWidthChange` are called
+  once, on release.
+- A page cannot float a window above other applications. For a real `<video>`,
+  `video.requestPictureInPicture()` opens the system's own window where the browser has
+  one; this component is the window inside a page.
+
+<Example name="controlled" />
+
+## Guidelines
+
+The macOS Human Interface Guidelines of Catalina's time have no page for Picture in
+Picture. What follows is the system's behaviour as the measured spec records it from the
+macOS User Guide, not checked here against Apple's text:
+
+- The window snaps to one of the four corners of the screen and stays above other windows.
+- It keeps the video's aspect ratio when it is resized.
+- Its controls appear only under the pointer, so that nothing covers the video otherwise.
+- The player the video came from says that the video is playing in Picture in Picture, and
+  the return button brings it back there.
+
+## Variants and states
+
+| State | How it is set | Look | Source |
+| --- | --- | --- | --- |
+| Idle | default | The video alone: 4 point corners, no border, the window's shadow | Measured in the Safari Picture in Picture captures |
+| Under the pointer, or focus inside | `:hover`, `:focus-within`, `data-force="hover"` | A black scrim at 50% with a close button top left, a return button top right and play or pause in the middle, white glyphs | Provisional: no screenshot shows it; the spec infers the layout from AVKit |
+| Button under the pointer, pressed | `:hover`, `:active` | A white disc at 20%, at 35% | Provisional |
+| Button focused | `:focus-visible` | Focus ring; none while the page is not key | Provisional |
+| Corner | `corner`, `defaultCorner`; drag; arrow keys | `top-right` (default), `top-left`, `bottom-right`, `bottom-left` | Top right is measured; the other three are catalog |
+| Playing | `playing`, `defaultPlaying` | The middle button shows pause, otherwise play | Provisional glyphs, drawn for this library |
+
+Catalina also places the window freely when it is dragged with Command held. That is not
+implemented: the window always snaps to a corner.
+
+## Sizes
+
+The window is `width` points wide and as high as `aspectRatio` makes it (16:9 by default).
+It opens 420 points wide, about a quarter of a 1680 point screen, and resizing keeps it
+between `minWidth` and `maxWidth` (210 and 840). The plus and minus keys change the width by
+32 points. The window in the captures is 528 by 297. There is no `size` prop.
+
+## API
+
+<PropsTable name="PictureInPictureProps" />
+
+| Attribute, class or variable | On | Description |
+| --- | --- | --- |
+| `.mac-picture-in-picture` | the root | The window; `position: absolute` in its corner. |
+| `data-corner` | the root | `top-left`, `top-right`, `bottom-left` or `bottom-right`. |
+| `data-playing` | the root | The video is playing. |
+| `data-dragging` | the root | While the pointer moves or resizes the window. |
+| `.mac-picture-in-picture-video` | the video's wrapper | Clips the child to the window's corners. |
+| `.mac-picture-in-picture-controls` | the scrim | Holds the three buttons. |
+| `.mac-picture-in-picture-button` | a button | `data-kind` is `close`, `return` or `play`. |
+| `.mac-picture-in-picture-resize` | the resize handle | The 10 point corner opposite the screen's corner. |
+| `--mac-picture-in-picture-inset` | set on the root or above | Distance from the edges of the screen; default `20px`. |
+| `--mac-picture-in-picture-shadow` | token | The window's shadow. |
+| `--mac-picture-in-picture-scrim`, `-glyph`, `-button-hover`, `-button-pressed`, `-backdrop` | tokens | The controls' colours, and the fill behind a video that does not cover the window. |
+
+`ref`, `className`, `style` and every other prop go to the root.
+
+## Accessibility
+
+- The window is a `group` named "Picture in Picture"; pass `aria-label` to name the video.
+- The controls are buttons named "Close", "Return to Window", and "Pause" or "Play". They are
+  in the tab order whether or not they are showing, and focus inside the window shows them.
+- With focus on a button, the arrow keys move the window to the corner in that direction,
+  plus and minus resize it, and Escape closes it. Catalina's window takes no keyboard focus
+  at all: these keys are this library's addition, so that everything the pointer does can be
+  done without one.
+- Hidden controls take no click: on a touch screen the first touch shows them and the
+  second one acts.
+- A touch on the window moves it and does not pan the page (`touch-action: none`).
+- Give the video itself a text alternative or captions as you would in the page.
+- In forced-colours mode the window has an edge instead of its shadow, and the buttons the
+  system's button colours.
+
+## Visual comparison
+
+`picture-in-picture.visual.json` compares the window's top-right and bottom-right corners
+with the Safari Picture in Picture screenshots in both appearances: the 4 point radius, the
+borderless edge and the shadow on the desktop. The video frame is the content of someone's
+video and is masked (30% of the top crop, where the 4 point square at the corner stays in,
+and 16% of the bottom one). The desktop picture behind the window is replaced by a colour
+ramp fitted to the same rows of the Desktop screenshots, so the picture's grain stays in the
+scores.
+
+Scores from `npm run visual -- picture-in-picture/` in Chromium on Linux: the share of pixels
+that differ visibly, and the mean colour difference out of 255. The top corner is over the
+smooth sky and is scored at threshold 0.05; the bottom corner is over the sea, whose grain
+alone exceeds that threshold on 3% of the pixels, and is scored at the default 0.1.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `corner-top-light` | Light-Safari-v13-Picture-in-Picture (3280, 48, 80, 96) | 0.15% | 1.55 | 0.13% | 1.90 |
+| `corner-top-dark` | Dark-Safari-v13-Picture-in-Picture (3280, 48, 80, 96) | 0.00% | 1.07 | 0.00% | 1.11 |
+| `corner-bottom-light` | Light-Safari-v13-Picture-in-Picture (3260, 652, 100, 100) | 0.00% | 3.04 | 0.02% | 4.32 |
+| `corner-bottom-dark` | Dark-Safari-v13-Picture-in-Picture (3260, 652, 100, 100) | 0.00% | 1.75 | 0.00% | 2.09 |
+
+State checks cover what no screenshot shows, in a real browser: the idle window without
+controls, the scrim and the three controls under the pointer, the focus ring after Tab, the
+window in another corner after an arrow key, narrower after the minus key, and gone after
+Escape.
+
+Measured: the corner radius, the absence of a border, the 20 point distance from the screen's
+edges, the shadow (a fit to the captures against the Desktop screenshots). Provisional: the
+scrim, the buttons' sizes, places, glyphs and fills, the keyboard commands, and the default,
+smallest and largest widths.

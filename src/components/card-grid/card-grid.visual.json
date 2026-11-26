@@ -1,0 +1,1562 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "corner-top-light",
+      "description": "Top-left corner of a landscape card on TV's shelf, Aqua: the gap before it with both cards' shadows, the hairline edge and the corner. Nothing is masked: the artwork of this card is white at its edges, and so is the stand-in. The budgets are set for a corner of 12px: at 11px or 12.5px the dark twin fails.",
+      "example": "visual-corner-top",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0033,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.57,
+        "2x": 0.25
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-TV.png",
+        "crop": {
+          "x": 1396,
+          "y": 226,
+          "width": 80,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "corner-top-dark",
+      "description": "Top-left corner of a landscape card on TV's shelf, Dark Aqua. Nothing is masked, as in corner-top-light.",
+      "example": "visual-corner-top",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0102,
+        "2x": 0.0028
+      },
+      "deltaBudget": {
+        "1x": 0.78,
+        "2x": 0.28
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-TV.png",
+        "crop": {
+          "x": 1396,
+          "y": 226,
+          "width": 80,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "corner-bottom-light",
+      "description": "Bottom-right corner of a landscape card on TV's shelf, Aqua: no hairline along the bottom, the shadow below and beside it, up to the next card. Nothing is masked.",
+      "example": "visual-corner-bottom",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0085,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 0.86,
+        "2x": 0.47
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-TV.png",
+        "crop": {
+          "x": 1964,
+          "y": 532,
+          "width": 78,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "corner-bottom-dark",
+      "description": "Bottom-right corner of a landscape card on TV's shelf, Dark Aqua. Nothing is masked.",
+      "example": "visual-corner-bottom",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0251,
+        "2x": 0.0033
+      },
+      "deltaBudget": {
+        "1x": 2.19,
+        "2x": 0.37
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-TV.png",
+        "crop": {
+          "x": 1964,
+          "y": 532,
+          "width": 78,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "shelf-header-light",
+      "description": "The whole of TV's first shelf across the window, Aqua: the title, See All and the four cards with the page under them. The cards are masked because their artwork is licensed and the stand-ins are flat colour.",
+      "example": "visual-shelf-header",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 39,
+          "y": 48,
+          "width": 288.5,
+          "height": 162.5
+        },
+        {
+          "x": 347.5,
+          "y": 48,
+          "width": 288.5,
+          "height": 162.5
+        },
+        {
+          "x": 656,
+          "y": 48,
+          "width": 288.5,
+          "height": 162.5
+        },
+        {
+          "x": 964.5,
+          "y": 48,
+          "width": 288.5,
+          "height": 162.5
+        }
+      ],
+      "budget": {
+        "1x": 0.016,
+        "2x": 0.0095
+      },
+      "deltaBudget": {
+        "1x": 2.07,
+        "2x": 1.83
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-TV.png",
+        "crop": {
+          "x": 114,
+          "y": 150,
+          "width": 2584,
+          "height": 460
+        }
+      }
+    },
+    {
+      "name": "shelf-header-light-layout",
+      "description": "As shelf-header-light with the title and See All masked too (set in the fallback font off Apple platforms), to score the layout alone: the 40 pt margins, the 48 pt header, the card size and the 20 pt gaps, which show as soon as a card leaves its mask, and the shadows around the cards.",
+      "example": "visual-shelf-header",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 39,
+          "y": 48,
+          "width": 288.5,
+          "height": 162.5
+        },
+        {
+          "x": 347.5,
+          "y": 48,
+          "width": 288.5,
+          "height": 162.5
+        },
+        {
+          "x": 656,
+          "y": 48,
+          "width": 288.5,
+          "height": 162.5
+        },
+        {
+          "x": 964.5,
+          "y": 48,
+          "width": 288.5,
+          "height": 162.5
+        },
+        {
+          "x": 37,
+          "y": 13,
+          "width": 142,
+          "height": 22
+        },
+        {
+          "x": 1197,
+          "y": 13,
+          "width": 58,
+          "height": 22
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0048,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.72,
+        "2x": 0.32
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-TV.png",
+        "crop": {
+          "x": 114,
+          "y": 150,
+          "width": 2584,
+          "height": 460
+        }
+      }
+    },
+    {
+      "name": "shelf-header-dark",
+      "description": "The whole of TV's first shelf across the window, Dark Aqua. The cards are masked (licensed artwork), and so are the two paging chevrons in the margins of this capture, which the component does not draw.",
+      "example": "visual-shelf-header",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 39,
+          "y": 48,
+          "width": 288.5,
+          "height": 162.5
+        },
+        {
+          "x": 347.5,
+          "y": 48,
+          "width": 288.5,
+          "height": 162.5
+        },
+        {
+          "x": 656,
+          "y": 48,
+          "width": 288.5,
+          "height": 162.5
+        },
+        {
+          "x": 964.5,
+          "y": 48,
+          "width": 288.5,
+          "height": 162.5
+        },
+        {
+          "x": 11,
+          "y": 113,
+          "width": 16,
+          "height": 32
+        },
+        {
+          "x": 1265,
+          "y": 113,
+          "width": 16,
+          "height": 32
+        }
+      ],
+      "budget": {
+        "1x": 0.013,
+        "2x": 0.0093
+      },
+      "deltaBudget": {
+        "1x": 1.38,
+        "2x": 1.45
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-TV.png",
+        "crop": {
+          "x": 114,
+          "y": 150,
+          "width": 2584,
+          "height": 460
+        }
+      }
+    },
+    {
+      "name": "shelf-header-dark-layout",
+      "description": "As shelf-header-dark with the title and See All masked too, to score the layout alone.",
+      "example": "visual-shelf-header",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 39,
+          "y": 48,
+          "width": 288.5,
+          "height": 162.5
+        },
+        {
+          "x": 347.5,
+          "y": 48,
+          "width": 288.5,
+          "height": 162.5
+        },
+        {
+          "x": 656,
+          "y": 48,
+          "width": 288.5,
+          "height": 162.5
+        },
+        {
+          "x": 964.5,
+          "y": 48,
+          "width": 288.5,
+          "height": 162.5
+        },
+        {
+          "x": 37,
+          "y": 13,
+          "width": 142,
+          "height": 22
+        },
+        {
+          "x": 1197,
+          "y": 13,
+          "width": 58,
+          "height": 22
+        },
+        {
+          "x": 11,
+          "y": 113,
+          "width": 16,
+          "height": 32
+        },
+        {
+          "x": 1265,
+          "y": 113,
+          "width": 16,
+          "height": 32
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.23,
+        "2x": 0.18
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-TV.png",
+        "crop": {
+          "x": 114,
+          "y": 150,
+          "width": 2584,
+          "height": 460
+        }
+      }
+    },
+    {
+      "name": "album-light",
+      "description": "Music's album cell, Aqua: a square card with its shadow and two lines of text. The middle of the cover is masked (licensed artwork), with a mark of it that reaches the top edge; its outer 3 pt, near black in the capture, are compared with a flat stand-in.",
+      "example": "visual-album",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 13,
+          "y": 13,
+          "width": 162,
+          "height": 162
+        },
+        {
+          "x": 80,
+          "y": 10,
+          "width": 26,
+          "height": 3
+        }
+      ],
+      "budget": {
+        "1x": 0.057,
+        "2x": 0.048
+      },
+      "deltaBudget": {
+        "1x": 7.7,
+        "2x": 7.72
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Music.png",
+        "crop": {
+          "x": 612,
+          "y": 246,
+          "width": 376,
+          "height": 450
+        }
+      }
+    },
+    {
+      "name": "album-light-drawing",
+      "description": "As album-light with the two lines of text masked too (other words than the capture's, in the fallback font), to score the cover's corners, edge and shadow alone.",
+      "example": "visual-album",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 13,
+          "y": 13,
+          "width": 162,
+          "height": 162
+        },
+        {
+          "x": 80,
+          "y": 10,
+          "width": 26,
+          "height": 3
+        },
+        {
+          "x": 8,
+          "y": 182,
+          "width": 118,
+          "height": 30
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0037,
+        "2x": 0.0016
+      },
+      "deltaBudget": {
+        "1x": 0.72,
+        "2x": 0.31
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Music.png",
+        "crop": {
+          "x": 612,
+          "y": 246,
+          "width": 376,
+          "height": 450
+        }
+      }
+    },
+    {
+      "name": "album-dark",
+      "description": "Music's album cell, Dark Aqua. The middle of the cover is masked: licensed artwork.",
+      "example": "visual-album",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 13,
+          "y": 13,
+          "width": 162,
+          "height": 162
+        },
+        {
+          "x": 80,
+          "y": 10,
+          "width": 26,
+          "height": 3
+        }
+      ],
+      "budget": {
+        "1x": 0.057,
+        "2x": 0.049
+      },
+      "deltaBudget": {
+        "1x": 6.46,
+        "2x": 6.43
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Music.png",
+        "crop": {
+          "x": 612,
+          "y": 246,
+          "width": 376,
+          "height": 450
+        }
+      }
+    },
+    {
+      "name": "album-dark-drawing",
+      "description": "As album-dark with the two lines of text masked too, to score the cover's corners, edge and shadow alone.",
+      "example": "visual-album",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 13,
+          "y": 13,
+          "width": 162,
+          "height": 162
+        },
+        {
+          "x": 80,
+          "y": 10,
+          "width": 26,
+          "height": 3
+        },
+        {
+          "x": 8,
+          "y": 182,
+          "width": 118,
+          "height": 30
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.56,
+        "2x": 0.21
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Music.png",
+        "crop": {
+          "x": 612,
+          "y": 246,
+          "width": 376,
+          "height": 450
+        }
+      }
+    },
+    {
+      "name": "episode-light",
+      "description": "Podcasts' episode card, Aqua: the artwork's shadow and the text under it. The artwork is masked (licensed); the text is other words than the capture's.",
+      "example": "visual-episode",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 13,
+          "y": 14,
+          "width": 252,
+          "height": 252
+        }
+      ],
+      "budget": {
+        "1x": 0.107,
+        "2x": 0.095
+      },
+      "deltaBudget": {
+        "1x": 10.13,
+        "2x": 10.72
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Podcasts.png",
+        "crop": {
+          "x": 688,
+          "y": 412,
+          "width": 600,
+          "height": 776
+        }
+      }
+    },
+    {
+      "name": "episode-light-drawing",
+      "description": "As episode-light with the caption, title, description and duration masked too, to score the artwork's place and shadow alone.",
+      "example": "visual-episode",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 13,
+          "y": 14,
+          "width": 252,
+          "height": 252
+        },
+        {
+          "x": 11,
+          "y": 275,
+          "width": 126,
+          "height": 13
+        },
+        {
+          "x": 11,
+          "y": 292,
+          "width": 218,
+          "height": 17
+        },
+        {
+          "x": 11,
+          "y": 314,
+          "width": 256,
+          "height": 47
+        },
+        {
+          "x": 11,
+          "y": 363,
+          "width": 50,
+          "height": 14
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0021,
+        "2x": 0.0006
+      },
+      "deltaBudget": {
+        "1x": 0.22,
+        "2x": 0.32
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Podcasts.png",
+        "crop": {
+          "x": 688,
+          "y": 412,
+          "width": 600,
+          "height": 776
+        }
+      }
+    },
+    {
+      "name": "episode-dark",
+      "description": "Podcasts' episode card, Dark Aqua. The artwork is masked: licensed.",
+      "example": "visual-episode",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 13,
+          "y": 14,
+          "width": 252,
+          "height": 252
+        }
+      ],
+      "budget": {
+        "1x": 0.117,
+        "2x": 0.105
+      },
+      "deltaBudget": {
+        "1x": 10.91,
+        "2x": 11.34
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Podcasts.png",
+        "crop": {
+          "x": 688,
+          "y": 412,
+          "width": 600,
+          "height": 776
+        }
+      }
+    },
+    {
+      "name": "episode-dark-drawing",
+      "description": "As episode-dark with the text masked too, to score the artwork's place and shadow alone.",
+      "example": "visual-episode",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 13,
+          "y": 14,
+          "width": 252,
+          "height": 252
+        },
+        {
+          "x": 11,
+          "y": 275,
+          "width": 126,
+          "height": 13
+        },
+        {
+          "x": 11,
+          "y": 292,
+          "width": 218,
+          "height": 17
+        },
+        {
+          "x": 11,
+          "y": 314,
+          "width": 256,
+          "height": 47
+        },
+        {
+          "x": 11,
+          "y": 363,
+          "width": 50,
+          "height": 14
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0021,
+        "2x": 0.0006
+      },
+      "deltaBudget": {
+        "1x": 0.28,
+        "2x": 0.26
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Podcasts.png",
+        "crop": {
+          "x": 688,
+          "y": 412,
+          "width": 600,
+          "height": 776
+        }
+      }
+    },
+    {
+      "name": "lockups-light",
+      "description": "The App Store's lockup list, Aqua: the section's line, its header and two rows of three lockups with their offer buttons. The app icons and their shadows are masked (licensed artwork); the text is other words than the capture's.",
+      "example": "visual-lockups",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 0,
+          "y": 63,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 321,
+          "y": 63,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 642,
+          "y": 63,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 0,
+          "y": 132,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 321,
+          "y": 132,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 642,
+          "y": 132,
+          "width": 50,
+          "height": 53
+        }
+      ],
+      "budget": {
+        "1x": 0.094,
+        "2x": 0.081
+      },
+      "deltaBudget": {
+        "1x": 10.11,
+        "2x": 10.35
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mac-App-Store.png",
+        "crop": {
+          "x": 634,
+          "y": 1310,
+          "width": 1890,
+          "height": 400
+        }
+      }
+    },
+    {
+      "name": "lockups-light-drawing",
+      "description": "As lockups-light with every piece of text masked too (header, titles, subtitles, offers and captions), to score the drawing alone: both lines, the 69 pt rows, the three columns and the capsules at their trailing edges.",
+      "example": "visual-lockups",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 0,
+          "y": 63,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 321,
+          "y": 63,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 642,
+          "y": 63,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 0,
+          "y": 132,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 321,
+          "y": 132,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 642,
+          "y": 132,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 0,
+          "y": 24,
+          "width": 372,
+          "height": 23
+        },
+        {
+          "x": 885,
+          "y": 24,
+          "width": 60,
+          "height": 23
+        },
+        {
+          "x": 64,
+          "y": 62,
+          "width": 156,
+          "height": 52
+        },
+        {
+          "x": 385,
+          "y": 62,
+          "width": 156,
+          "height": 52
+        },
+        {
+          "x": 706,
+          "y": 62,
+          "width": 156,
+          "height": 52
+        },
+        {
+          "x": 64,
+          "y": 131,
+          "width": 156,
+          "height": 52
+        },
+        {
+          "x": 385,
+          "y": 131,
+          "width": 156,
+          "height": 52
+        },
+        {
+          "x": 706,
+          "y": 131,
+          "width": 156,
+          "height": 52
+        },
+        {
+          "x": 243,
+          "y": 81,
+          "width": 48,
+          "height": 14
+        },
+        {
+          "x": 564,
+          "y": 81,
+          "width": 48,
+          "height": 14
+        },
+        {
+          "x": 885,
+          "y": 81,
+          "width": 48,
+          "height": 14
+        },
+        {
+          "x": 243,
+          "y": 150,
+          "width": 48,
+          "height": 14
+        },
+        {
+          "x": 564,
+          "y": 150,
+          "width": 48,
+          "height": 14
+        },
+        {
+          "x": 885,
+          "y": 150,
+          "width": 48,
+          "height": 14
+        },
+        {
+          "x": 232,
+          "y": 103.5,
+          "width": 70,
+          "height": 10
+        },
+        {
+          "x": 553,
+          "y": 172.5,
+          "width": 70,
+          "height": 10
+        },
+        {
+          "x": 874,
+          "y": 172.5,
+          "width": 70,
+          "height": 10
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0021,
+        "2x": 0.0006
+      },
+      "deltaBudget": {
+        "1x": 0.1,
+        "2x": 0.06
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mac-App-Store.png",
+        "crop": {
+          "x": 634,
+          "y": 1310,
+          "width": 1890,
+          "height": 400
+        }
+      }
+    },
+    {
+      "name": "lockups-dark",
+      "description": "The App Store's lockup list, Dark Aqua. The app icons are masked: licensed artwork.",
+      "example": "visual-lockups",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 0,
+          "y": 63,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 321,
+          "y": 63,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 642,
+          "y": 63,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 0,
+          "y": 132,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 321,
+          "y": 132,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 642,
+          "y": 132,
+          "width": 50,
+          "height": 53
+        }
+      ],
+      "budget": {
+        "1x": 0.101,
+        "2x": 0.083
+      },
+      "deltaBudget": {
+        "1x": 10.35,
+        "2x": 10.01
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mac-App-Store.png",
+        "crop": {
+          "x": 634,
+          "y": 1310,
+          "width": 1890,
+          "height": 400
+        }
+      }
+    },
+    {
+      "name": "lockups-dark-drawing",
+      "description": "As lockups-dark with every piece of text masked too, to score the drawing alone.",
+      "example": "visual-lockups",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 0,
+          "y": 63,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 321,
+          "y": 63,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 642,
+          "y": 63,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 0,
+          "y": 132,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 321,
+          "y": 132,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 642,
+          "y": 132,
+          "width": 50,
+          "height": 53
+        },
+        {
+          "x": 0,
+          "y": 24,
+          "width": 372,
+          "height": 23
+        },
+        {
+          "x": 885,
+          "y": 24,
+          "width": 60,
+          "height": 23
+        },
+        {
+          "x": 64,
+          "y": 62,
+          "width": 156,
+          "height": 52
+        },
+        {
+          "x": 385,
+          "y": 62,
+          "width": 156,
+          "height": 52
+        },
+        {
+          "x": 706,
+          "y": 62,
+          "width": 156,
+          "height": 52
+        },
+        {
+          "x": 64,
+          "y": 131,
+          "width": 156,
+          "height": 52
+        },
+        {
+          "x": 385,
+          "y": 131,
+          "width": 156,
+          "height": 52
+        },
+        {
+          "x": 706,
+          "y": 131,
+          "width": 156,
+          "height": 52
+        },
+        {
+          "x": 243,
+          "y": 81,
+          "width": 48,
+          "height": 14
+        },
+        {
+          "x": 564,
+          "y": 81,
+          "width": 48,
+          "height": 14
+        },
+        {
+          "x": 885,
+          "y": 81,
+          "width": 48,
+          "height": 14
+        },
+        {
+          "x": 243,
+          "y": 150,
+          "width": 48,
+          "height": 14
+        },
+        {
+          "x": 564,
+          "y": 150,
+          "width": 48,
+          "height": 14
+        },
+        {
+          "x": 885,
+          "y": 150,
+          "width": 48,
+          "height": 14
+        },
+        {
+          "x": 232,
+          "y": 103.5,
+          "width": 70,
+          "height": 10
+        },
+        {
+          "x": 553,
+          "y": 172.5,
+          "width": 70,
+          "height": 10
+        },
+        {
+          "x": 874,
+          "y": 172.5,
+          "width": 70,
+          "height": 10
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0113,
+        "2x": 0.0017
+      },
+      "deltaBudget": {
+        "1x": 0.94,
+        "2x": 0.12
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mac-App-Store.png",
+        "crop": {
+          "x": 634,
+          "y": 1310,
+          "width": 1890,
+          "height": 400
+        }
+      }
+    },
+    {
+      "name": "rest-light",
+      "description": "A landscape card at rest: the hairline along its top and side, none along its bottom, and the shadow under it, which a whole-crop score is too coarse to gate one by one, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 356,
+          "height": 106
+        },
+        "pixels": [
+          {
+            "x": 88,
+            "y": 8.25,
+            "color": "#e6e6e6",
+            "scale": 2,
+            "note": "top hairline over white artwork (spec: card-grid, TV card inner border, measured at TV @ 1700,246)"
+          },
+          {
+            "x": 8.25,
+            "y": 53,
+            "color": "#e6e6e6",
+            "scale": 2,
+            "note": "side hairline over white artwork (measured at TV @ 1426,400)"
+          },
+          {
+            "x": 88,
+            "y": 97.75,
+            "color": "#ffffff",
+            "scale": 2,
+            "note": "last row of the artwork: no hairline along the bottom (measured, TV col 1700 @ 570)"
+          },
+          {
+            "x": 88,
+            "y": 98.25,
+            "color": "#c9c9c9",
+            "tolerance": 3,
+            "scale": 2,
+            "note": "shadow in the first half point under the card (spec: Shadows, TV cards, measured at TV @ 1700,571)"
+          },
+          {
+            "x": 88,
+            "y": 102.75,
+            "color": "#e5e5e5",
+            "tolerance": 3,
+            "scale": 2,
+            "note": "shadow 5 pt under the card (spec: Shadows, measured at TV @ 1700,580)"
+          },
+          {
+            "x": 88,
+            "y": 53,
+            "color": "#ffffff",
+            "note": "the artwork, here white, is not tinted"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rest-dark",
+      "description": "A landscape card at rest: its hairline and the shadow under it, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 356,
+          "height": 106
+        },
+        "pixels": [
+          {
+            "x": 88,
+            "y": 8.25,
+            "color": "#e6e6e6",
+            "scale": 2,
+            "note": "top hairline over white artwork, the same as in Aqua (measured at TV Dark @ 1426,400)"
+          },
+          {
+            "x": 88,
+            "y": 98.25,
+            "color": "#18191b",
+            "scale": 2,
+            "note": "shadow in the first half point under the card (spec: Shadows, TV cards, measured at TV Dark @ 1700,571)"
+          },
+          {
+            "x": 88,
+            "y": 53,
+            "color": "#ffffff",
+            "note": "the artwork, here white, is not tinted"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "A card that is a button while the mouse is held down on it: its artwork dims by a tenth, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "#first"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 356,
+          "height": 106
+        },
+        "pixels": [
+          {
+            "x": 40,
+            "y": 30,
+            "color": "#e6e6e6",
+            "note": "white artwork at 90% brightness; inferred, no screenshot shows a pressed card (spec: States, pressed, about 10%)"
+          },
+          {
+            "x": 268,
+            "y": 53,
+            "color": "#ffffff",
+            "note": "the other card is not dimmed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the first card, reached with Tab: the ring goes around its artwork, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 356,
+          "height": 106
+        },
+        "pixels": [
+          {
+            "x": 88,
+            "y": 6.75,
+            "color": "#8ab2f8",
+            "tolerance": 5,
+            "note": "the shared focus ring colour, measured on the Go to Folder field (spec: focus-ring), over the page with the card's faint upper shadow (#fbfbfb); that a card shows the standard ring is inferred"
+          },
+          {
+            "x": 88,
+            "y": 4.25,
+            "color": "#fefefe",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the artwork's edge (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 268,
+            "y": 6.75,
+            "color": "#fbfbfb",
+            "tolerance": 3,
+            "note": "no ring around the other card"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the first card, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 356,
+          "height": 106
+        },
+        "pixels": [
+          {
+            "x": 88,
+            "y": 6.75,
+            "color": "#246490",
+            "tolerance": 6,
+            "note": "the shared dark focus ring colour, measured in Automator (spec: focus-ring), over TV's dark page; inferred as above"
+          },
+          {
+            "x": 88,
+            "y": 4.25,
+            "color": "#1e2022",
+            "note": "page just outside the ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-light",
+      "description": "Keyboard focus on the first card in an inactive window: no focus ring, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 356,
+          "height": 106
+        },
+        "pixels": [
+          {
+            "x": 88,
+            "y": 6.75,
+            "color": "#fbfbfb",
+            "tolerance": 3,
+            "note": "the page with the card's upper shadow, no ring: a window that is not key shows none (CONTRIBUTING, Window state)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-main-dark",
+      "description": "Keyboard focus on the first card in a window that is main but not key: no focus ring, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "main",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 356,
+          "height": 106
+        },
+        "pixels": [
+          {
+            "x": 88,
+            "y": 6.75,
+            "color": "#1d1f21",
+            "note": "the page with the card's upper shadow, no ring (CONTRIBUTING, Window state)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "shelf-focus-light",
+      "description": "A shelf of static cards takes keyboard focus with Tab: the focus ring is drawn inside the shelf's box, and nothing has scrolled yet. No screenshot shows keyboard focus on a shelf.",
+      "example": "visual-shelf-keys",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 120
+        },
+        "pixels": [
+          {
+            "x": 1.5,
+            "y": 60,
+            "color": "#8cb5fb",
+            "tolerance": 4,
+            "note": "focus ring inside the shelf's leading edge: --mac-focus-ring-color (50% #186af6) over the white page; inferred"
+          },
+          {
+            "x": 80,
+            "y": 60,
+            "color": "#c00000",
+            "note": "the first card, red in this fixture, is behind the 20 pt margin"
+          }
+        ]
+      }
+    },
+    {
+      "name": "shelf-keys-light",
+      "description": "The same shelf after Tab and one press of the right arrow key: it has scrolled by one card and the gap, 140 pt, although its cards are static. The second card is where the first was and the third is in view.",
+      "example": "visual-shelf-keys",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowRight"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 120
+        },
+        "pixels": [
+          {
+            "x": 80,
+            "y": 60,
+            "color": "#00a000",
+            "note": "the second card, green in this fixture, has scrolled to where the first was"
+          },
+          {
+            "x": 220,
+            "y": 60,
+            "color": "#0000c0",
+            "note": "the third card, blue in this fixture, is in view"
+          }
+        ]
+      }
+    },
+    {
+      "name": "shelf-end-light",
+      "description": "The same shelf after Tab and End: it is at its end, 280 pt along. The third card is where the first was and the fourth ends 20 pt before the edge.",
+      "example": "visual-shelf-keys",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "End"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 120
+        },
+        "pixels": [
+          {
+            "x": 80,
+            "y": 60,
+            "color": "#0000c0",
+            "note": "the third card, blue in this fixture, has scrolled to where the first was"
+          },
+          {
+            "x": 220,
+            "y": 60,
+            "color": "#808080",
+            "note": "the fourth card, grey in this fixture, is in view"
+          },
+          {
+            "x": 290,
+            "y": 60,
+            "color": "#ffffff",
+            "note": "the 20 pt margin after the last card: the shelf is at its end"
+          }
+        ]
+      }
+    },
+    {
+      "name": "lockup-wrap-light",
+      "description": "Two lockups in one column, Aqua: a title that takes two lines leaves its subtitle one, a short title leaves it two, and both rows stay 69 pt, as the App Store's row of Total War: THREE KINGDOMS does. The fixture fills the words with their own colour, so a pixel finds each line.",
+      "example": "visual-lockup-wrap",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 301, "height": 138 },
+        "pixels": [
+          {
+            "x": 30,
+            "y": 68.5,
+            "color": "#ffffff",
+            "note": "under the first row's icon, before its line starts 64 pt in: the row ends at 69 pt, so three lines of text did not make it taller"
+          },
+          {
+            "x": 30,
+            "y": 100,
+            "color": "#8e8e93",
+            "note": "the second row's icon, the system grey, from 78 to 128 pt down: the second row starts at 69 pt"
+          },
+          {
+            "x": 30,
+            "y": 133,
+            "color": "#ffffff",
+            "note": "under the second row's icon: nothing overflows the 138 pt"
+          },
+          {
+            "x": 80,
+            "y": 15,
+            "color": "#ff00ff",
+            "note": "first row: the title's first line (the fixture fills titles magenta and subtitles cyan)"
+          },
+          {
+            "x": 80,
+            "y": 33,
+            "color": "#ff00ff",
+            "note": "first row: the title wraps to a second line"
+          },
+          {
+            "x": 80,
+            "y": 51,
+            "color": "#00ffff",
+            "note": "first row: the subtitle has the one line the title left"
+          },
+          {
+            "x": 80,
+            "y": 63,
+            "color": "#ffffff",
+            "note": "first row: no fourth line, the subtitle is cut at three lines together"
+          },
+          {
+            "x": 80,
+            "y": 85,
+            "color": "#ff00ff",
+            "note": "second row: a short title takes one line"
+          },
+          {
+            "x": 80,
+            "y": 104,
+            "color": "#00ffff",
+            "note": "second row: the subtitle's first line"
+          },
+          {
+            "x": 80,
+            "y": 118,
+            "color": "#00ffff",
+            "note": "second row: the subtitle wraps to the second line the title left"
+          },
+          {
+            "x": 80,
+            "y": 131,
+            "color": "#ffffff",
+            "note": "second row: no fourth line"
+          }
+        ]
+      }
+    }
+  ]
+}

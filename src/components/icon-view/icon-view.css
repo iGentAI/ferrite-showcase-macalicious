@@ -1,0 +1,140 @@
+/*
+ * Icon view (Finder's icon view), inside a scroll view.
+ *
+ * Parts
+ *   .mac-icon-view              the root: a scroll view, sized by the caller
+ *   .mac-icon-view-items        the grid, as tall as all rows together
+ *   .mac-icon-view-item         one cell: icon box above the label
+ *   .mac-icon-view-icon         the icon box and, 4 pt around it, the selection's backdrop
+ *   .mac-icon-view-label        up to two centred lines of 12 pt text
+ *   .mac-icon-view-tag          what precedes the name on its line (a tag dot), 6 pt before it
+ *   .mac-icon-view-label-text   the name itself, which carries the selection highlight
+ *   .mac-icon-view-detail       a line under the name, from `getItemDetail`
+ *
+ * States
+ *   [aria-selected="true"]      on an item: backdrop behind the icon, and a highlight behind
+ *                               the label that is grey, or the accent colour with white text
+ *                               while the view holds focus in a key window
+ *   [data-force~="focus"]       on the root: pins the emphasised highlight (docs, tests)
+ *   :focus-visible              the scroll view draws the focus ring inside the view's edge
+ *
+ * Hooks
+ *   --mac-icon-view-background   the view's background (default: the control background;
+ *                                Finder's windows are #1e2022 in Dark Aqua)
+ *
+ * Private: --_columns, --_gap, --_icon, --_cell and --_row come from props and the measured
+ * width. Until the width is measured the grid fills its columns itself.
+ */
+.mac-icon-view {
+  background: var(--mac-icon-view-background, var(--mac-color-control-background));
+  color: var(--mac-color-label);
+  font: var(--mac-font-icon-label-wrapped);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Columns of one width, a whole number of points apart, centred as a block: Finder's grid. */
+.mac-icon-view-items {
+  display: grid;
+  grid-template-columns: repeat(var(--_columns, auto-fill), var(--_cell));
+  grid-auto-rows: var(--_row);
+  justify-content: safe center;
+  box-sizing: border-box;
+  column-gap: var(--_gap, 8px);
+}
+
+/*
+ * A cell: 4 pt, the 72 pt backdrop around a 64 pt icon, 3 pt, two label lines, 5 pt. The
+ * icon box is 8 pt below the top of a 116 pt row and 14 pt below that of a 226 pt row
+ * (measured): a taller row keeps the content in its middle, a point up. Only the icon, the
+ * tag and the name's text take the pointer: a click beside them is a click on the view's
+ * background.
+ */
+.mac-icon-view-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  padding-block-start: calc(max(0px, (var(--_row) - var(--_icon) - 52px) / 2 - 1px) + 4px);
+  overflow: hidden;
+  text-align: center;
+  pointer-events: none;
+}
+
+.mac-icon-view-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--_icon);
+  height: var(--_icon);
+  margin-block-end: 3px;
+  padding: 4px;
+  border-radius: 4px;
+  pointer-events: auto;
+}
+
+.mac-icon-view-item:where([aria-selected="true"]) > .mac-icon-view-icon {
+  background: var(--mac-icon-view-plate);
+}
+
+.mac-icon-view-label {
+  display: -webkit-box;
+  max-width: 100%;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+/* The gap is 6 pt, less the 2 pt by which the name's highlight extends before its text. */
+.mac-icon-view-tag {
+  margin-inline-end: 4px;
+  pointer-events: auto;
+}
+
+.mac-icon-view-detail {
+  overflow: hidden;
+  max-width: 100%;
+  color: var(--mac-color-system-blue);
+  font: var(--mac-font-small-system);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Inline, so that a two-line name gets a highlight per line. */
+.mac-icon-view-label-text {
+  padding-inline: 2px;
+  border-radius: 3px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  pointer-events: auto;
+}
+
+.mac-icon-view-item:where([aria-selected="true"]) .mac-icon-view-label-text {
+  background: var(--mac-color-selected-content-background-unemphasized);
+}
+
+.mac-icon-view:where(:focus-within, [data-force~="focus"]):not(
+    :where([data-window-state="main"], [data-window-state="inactive"]) *
+  )
+  .mac-icon-view-item:where([aria-selected="true"])
+  .mac-icon-view-label-text {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-content-text);
+}
+
+@media (forced-colors: active) {
+  .mac-icon-view-item:where([aria-selected="true"]) > .mac-icon-view-icon {
+    outline: 1px solid Highlight;
+    outline-offset: -1px;
+  }
+
+  /* As specific as the focused selection above, and after it: the system colours win. */
+  .mac-icon-view .mac-icon-view-item:where([aria-selected="true"]) .mac-icon-view-label-text {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+}

@@ -1,0 +1,165 @@
+---
+title: Segmented Control
+description: A row of segments that each work as a button, for closely related choices.
+order: 22
+---
+
+<Example name="basic" both />
+
+AppKit calls this control a *segmented control* (`NSSegmentedControl`). This is the style used
+inside window content; a toolbar has its own. It is built on
+[Base UI's Toggle Group](https://base-ui.com/react/components/toggle-group) and Toggle, which
+supply the group, the single tab stop, the arrow keys and the pressed state of each segment.
+
+## Usage
+
+```tsx
+import { Segment, SegmentedControl } from "macalicious/segmented-control";
+import "macalicious/segmented-control.css";
+
+<SegmentedControl aria-label="View" defaultValue={["list"]}>
+  <Segment value="icons">Icons</Segment>
+  <Segment value="list">List</Segment>
+  <Segment value="columns">Columns</Segment>
+</SegmentedControl>
+```
+
+As in Base UI the value is an array, also when one segment is selected. Or copy the source into
+your project: `npx macalicious add segmented-control`. See [Installation](/installation).
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[segmented controls](https://web.archive.org/web/20200503185450/https://developer.apple.com/design/human-interface-guidelines/macos/selectors/segmented-controls/):
+
+- Use a segmented control for closely related choices that affect an object, a state or a
+  view. For the panes of a window use a tab view.
+- Put text or icons in the segments of one control, not a mix of both.
+- Keep the segments the same width where you can; that is the default here.
+- A label may introduce the control. Without one, give the group an accessible name.
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | One push-button bezel divided by 1 pt lines (`rounded`), or a bezel per segment 1 pt apart (`separated`) |
+| Selected | the group's `value` | Accent bezel, white title |
+| Pressed | `:active` | Accent bezel; a selected segment deepens |
+| Keyboard focus | `:focus-visible` | Focus ring around the focused segment |
+| Disabled | `disabled` on the control or a segment | Title at 25%; a disabled control's bezel at half opacity |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | A selected segment is grey, a pressed one darkens, no focus ring |
+
+### Tracking modes
+
+`trackingMode` is AppKit's: `select-one` behaves like radio buttons, `select-any` like
+checkboxes, and `momentary` makes every segment a plain button, such as an add and remove pair.
+
+<Example name="tracking-modes" />
+
+## Sizes
+
+<Example name="sizes" />
+
+| Size | Height | Font |
+| --- | --- | --- |
+| `regular` | 21 pt box, 20 pt bezel (measured) | 13 pt |
+| `small` | 18 pt box (provisional) | 11 pt |
+| `mini` | 15 pt box, 14 pt bezel (measured) | 9 pt |
+
+The element's box is AppKit's alignment rectangle; the bezel is drawn inside it, as for a push
+button. With `distribution="fit"` a segment is as wide as its content, or as the `width` you
+give it in `style`.
+
+## Accent colour
+
+A selected or pressed segment follows the accent colour. Set `data-accent` on any ancestor. See
+[Theming](/theming).
+
+<Example name="accents" />
+
+## API
+
+### SegmentedControl
+
+<PropsTable name="SegmentedControlProps" />
+
+### Segment
+
+<PropsTable name="SegmentProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-tracking-mode` | control | `select-one`, `select-any`, `momentary` | Reflects `trackingMode`. |
+| `data-variant` | control | `rounded`, `separated` | Reflects `variant`. |
+| `data-size` | control | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-distribution` | control | `fill-equally`, `fit` | Reflects `distribution`. |
+| `data-pressed` | segment | present or absent | Set by Base UI on a selected segment. |
+| `data-disabled` | both | present or absent | Set by Base UI. |
+| `data-force` | segment | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+| Class | Element |
+| --- | --- |
+| `mac-segmented-control` | The group. |
+| `mac-segmented-control-segment` | A segment, a native `<button>`. |
+
+## Accessibility
+
+- The control is a group and needs a name: `aria-label` or `aria-labelledby`.
+- Each segment is a native button. In the selecting modes it carries `aria-pressed`; a
+  momentary segment is a plain button without it.
+- The control is one tab stop. The arrow keys move focus between segments and wrap around
+  (`loopFocus={false}` stops at the ends); Space and Return activate the focused segment.
+- A disabled segment is skipped by the arrow keys.
+- A segment with only an icon needs an `aria-label`. Draw icons with `currentColor`, so they
+  turn white on the accent.
+- In forced-colours mode the bezel and the dividers are drawn with system colours and a
+  selected segment with the system highlight.
+
+## Visual comparison
+
+`npm run visual -- segmented-control` compares five examples with the reference screenshots
+(`segmented-control.visual.json`). The bezel is the push button's; the dividers, the selected
+segment's outline and the mini metrics are measured here. Share of pixels that differ at 2x at
+a colour distance of 0.05, half the default, and the mean difference per channel out of 255,
+in Chromium on Linux:
+
+| Crop | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Desktop and Screen Saver, add and remove pair, remove disabled | 0.07%, Δ 0.21 | 0.04%, Δ 0.34 |
+| Connect to Server, three icon segments, Action glyph masked | 0.04%, Δ 0.16 | 0.02%, Δ 0.91 |
+| Screen Time, separated style, title masked | 0.36%, Δ 0.47 | 0.18%, Δ 0.87 |
+| Print, mini pair | 0.25%, Δ 1.91 | 0.03%, Δ 2.26 |
+| Sound, select-one with a selected segment, titles masked | 0.02%, Δ 0.41 | 0.06%, Δ 0.47 |
+
+With their titles unmasked, at the default colour distance, the Screen Time crop scores 2.9%
+and 2.5% and the Sound crop 9.9% and 9.4%: that is the titles, set in the fallback font instead
+of San Francisco. The Print sheet lies over a blurred document, so that crop's background is
+an approximation and its mean difference is higher. At 1x the crops score 8% to 21%: there is
+no 1x reference, so the 2x screenshot is averaged down ([Fidelity limits](/fidelity)). The
+glyphs in the examples are original drawings to the measured sizes; the Action gear of Connect
+to Server is masked.
+
+The only selected segment in the screenshots is the blue one in the Sound pane's tab strip,
+which the spec identifies as the same control. No accent screenshot shows a segmented control,
+so the other accents are not compared with a screenshot; the selected segment uses the accent
+bezel measured for
+the default button. No screenshot shows a pressed segment, keyboard focus, a segmented control
+in a window that is not key, or the small size. Those are checked in a real browser against
+values from the spec and the tokens (the `expect` comparisons): the example is pressed with
+the mouse or focused with Tab, and chosen pixels must have the expected colour.
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| At rest | Fill, divider and a disabled segment | Measured |
+| Pressed | A pressed segment takes the accent bezel; a selected one deepens to 88% | Gradient measured; that a pressed segment uses it, and the darkening, inferred |
+| Keyboard focus | Ring colour and extent around the focused segment | Measured on a text field's ring; placement inferred |
+| Main and inactive window | Selected segment grey; a pressed segment darkens; no focus ring | Inferred |
+| Purple accent | The selected segment takes the purple bezel; unselected segments do not change | Bezel colours measured on the purple controls of General; that the segment takes them, inferred |
+
+These checks hold the component to the spec; where the spec infers a value, they do not show
+that Catalina looks that way. The small size is not checked anywhere.

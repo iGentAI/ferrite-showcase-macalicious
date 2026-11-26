@@ -1,0 +1,156 @@
+Macalicious
+Copyright (c) 2026 iGent AI
+
+The original work in this repository is released under the MIT licence in
+LICENSE. This file says what that covers and lists the material in the
+repository, or used by it, that the MIT licence does not cover.
+
+
+1. Original work, under the MIT licence
+---------------------------------------
+
+- The component library: src/, bin/, scripts/, the build and test
+  configuration at the root.
+- The application demos in demos/, apart from the vendored files and the
+  artwork listed below.
+- The documentation site and guides in docs/, the visual comparison harness in
+  visual/, and the tests in test/.
+- The measurements and catalogue in reference/: reference/spec/ (dimensions,
+  colours and layouts measured from the reference screenshots) and
+  reference/manifest.json (file names, source URLs, dimensions and SHA-256
+  hashes of those screenshots). The screenshots themselves are not original
+  work and are not in the repository; see section 2.
+- The Ferrite application in ferrite-apps/desktop/, apart from the vendored
+  source packages listed in section 5.
+
+
+2. Reference screenshots (512 Pixels), not in this repository
+-------------------------------------------------------------
+
+The visual reference is the macOS 10.15 Catalina gallery of the 512 Pixels
+Aqua Screenshot Library:
+
+    https://512pixels.net/projects/aqua-screenshot-library/macos-10-15-catalina/
+
+The 294 screenshots are third-party images. They are not in the repository:
+reference/screenshots/ is listed in .gitignore. `npm run reference:fetch` downloads them from
+512 Pixels to a developer's machine for local comparison and verifies each
+against the hash in reference/manifest.json. The MIT licence grants no rights
+in them.
+
+Some demo data reproduces text that is visible in those screenshots, so that a
+demo can be compared with its capture: for example one dictionary article
+(demos/dictionary/dictionary-data.ts), the title and author of the one book in
+the Books capture (demos/books/books-data.ts), and log lines in the Console
+captures (demos/console/console-data.ts). The files say where they do this.
+
+
+3. Apple
+--------
+
+Macalicious reproduces the appearance and behaviour of the macOS 10.15
+Catalina interface, which is Apple's design. macOS, Catalina, Aqua, Finder,
+Safari, the names of the other applications and San Francisco are trademarks
+of Apple Inc. This project is not affiliated with or endorsed by Apple, and
+the MIT licence grants no rights in Apple's designs or trademarks.
+
+No file taken from macOS is in the repository: no Apple font, icon, desktop
+picture, sound or system image. Controls are drawn in CSS, glyphs are redrawn
+as CSS shapes or inline SVG, and text falls back to Inter where San Francisco
+is not installed. Alert sounds are synthesised in the browser.
+
+
+4. Generated artwork
+--------------------
+
+293 WebP images in the demos were produced with an image model
+(gpt-image-2.5, added on 8 October 2026):
+
+- demos/desktop/icons/ (56): icons for the applications, folders, documents,
+  volumes and the Trash.
+- demos/desktop/art/ (2) and
+  demos/system-preferences/panes/desktop-and-screen-saver/art/ (26): desktop
+  pictures and their thumbnails.
+- demos/app-store/art/ (61), demos/photos/art/ (48), demos/news/art/ (34),
+  demos/books/art/ (17), demos/safari/art/ (12), demos/tv/art/ (12),
+  demos/music/art/ (8), demos/podcasts/art/ (8), demos/messages/art/ (5), and
+  one each in demos/facetime/art/, demos/photo-booth/art/, demos/preview/art/
+  and demos/quicktime-player/art/: covers, photographs, story pictures,
+  invented application artwork and portraits of invented people.
+
+These files are not Apple's, but the icons and several of the desktop pictures
+were made to resemble Catalina's: the icons follow the subject, shape and
+colour of the Catalina application icons closely, and some desktop pictures
+carry the names of Apple's (catalina-day, mojave-day, solar-gradients-day).
+The MIT licence is offered for whatever rights exist in the generated files
+and cannot grant any right in the Apple designs they resemble.
+
+The 12 WebP images in demos/help-viewer/pictures/ are captures of this
+project's own desktop, taken by capture.mjs in the same folder; they show the
+generated icons and desktop picture.
+
+
+5. Vendored software and data, each under its own licence
+---------------------------------------------------------
+
+- Reckless chess engine 0.9.0 and its neural network, GNU Affero General
+  Public License version 3 only. tools/reckless-wasm/ is a browser port of the
+  engine; demos/chess/vendor/reckless/ holds the compiled reckless.wasm, the
+  upstream network in eight compressed parts (about 45 MB), and
+  reckless-source.tar.gz, the corresponding source, which the Chess window's
+  About panel links to. demos/chess/chess-reckless.ts and
+  demos/chess/chess-reckless.worker.ts are the browser integration and are
+  included in that source archive. Licence texts: tools/reckless-wasm/LICENSE
+  and demos/chess/vendor/reckless/LICENSE.txt. The MIT licence does not apply
+  to any of these files. The AGPL requires that people who use the engine over
+  a network are offered its source; a deployment that serves Chess must keep
+  that offer working.
+- sql.js 1.15.2, MIT licence: demos/automator/vendor/ (licence in LICENCE
+  there).
+- MediaPipe BlazeFace short-range face detector, Apache License 2.0:
+  demos/photo-booth/vendor/blaze_face_short_range.tflite (licence in LICENCE
+  there).
+- EfficientNet-Lite0 image classifier, as published by MediaPipe, Apache
+  License 2.0: demos/photos/vendor/efficientnet_lite0.tflite (licence in
+  LICENCE there).
+- A NASA astronaut portrait, in the public domain as a work of the United
+  States government: demos/photo-booth/vendor/face-fixture.jpg, the picture
+  the face detection tests find a face in. It shows a real person; NASA asks
+  that such images are not used to suggest endorsement.
+- SCOWL English word lists, as packaged by Debian's wamerican:
+  demos/desktop/text-spelling-words.ts, under the terms reproduced in
+  demos/desktop/text-spelling-words.NOTICE.txt.
+- A ReadMe file from the CPython macOS installer, Python Software Foundation
+  License Version 2: demos/textedit/textedit-cpython-readme.rtf, an input of
+  the RTF tests. It was downloaded unchanged on 15 October 2026 from
+  python/cpython, Mac/BuildScript/resources/ReadMe.rtf at commit
+  fdec4df45ab69fc25019565992d95b26b4e37523 (4,599 bytes, SHA-256
+  a4b74a92deed585c84d15feb82aa3b84ee898c115185137048b582811cc91510). CPython's
+  licence at that commit is reproduced in LICENSES/CPython-PSF-2.0.txt.
+- tinywasm 0.9.1 (MIT OR Apache-2.0), vendored through the Ferrite source
+  package wasm-runtime at ferrite-apps/desktop/src/wasm/, and a precompiled
+  quickjs-ng module (MIT) embedded in ferrite-apps/desktop/src/qjs/module.rs
+  through the Ferrite source package qjs-engine. The generated headers of those files
+  name their sources. The upstream licence files of both are reproduced
+  verbatim in LICENSES/.
+- The Ferrite source packages themselves (qjs-engine, wasm-runtime,
+  serde-codec, sha256-hmac, at ferrite-apps/desktop/src/qjs, src/wasm,
+  src/codec and src/crypto) are iGent AI's and are MIT licensed.
+
+
+6. Used but not included
+------------------------
+
+- Inter (SIL Open Font License) is the optional fallback font. It comes from
+  the npm package @fontsource-variable/inter and is not in the repository.
+- Base UI (@base-ui/react), React and the development tools are npm
+  dependencies under their own licences; package-lock.json names each one.
+- The Ferrite SDK (ferrite-app, ferrite-app-test) is taken by path from a
+  checkout of https://github.com/iGentAI/ferrite-sdk (MIT) and is not in the
+  repository.
+- A deployed desktop fetches public content at run time through the
+  destinations declared in ferrite-apps/desktop/ferrite.json (for example
+  Project Gutenberg, Standard Ebooks, Wiktionary, Wikipedia, the Internet
+  Archive, news feeds, podcast feeds and OpenStreetMap). None of that content
+  is in the repository; each application credits its sources in its window.
+

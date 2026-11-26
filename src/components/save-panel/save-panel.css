@@ -1,0 +1,110 @@
+/*
+ * Save panel (NSSavePanel). No screenshot of the reference set shows one: every value here is
+ * [provisional], taken from the measured parts it is made of (the form of the Print sheet,
+ * the field and pop-up heights, the Open panel's browser).
+ *
+ * The root is the content of a sheet or a window and has no frame, fill or margin of its own.
+ * A form of two columns, right-aligned labels and controls, centred as a block; in the
+ * expanded form the browser follows, bleeding to the edges of the surface, and then the
+ * button row.
+ *
+ * States
+ *   [data-expanded]                      the file browser is shown
+ *
+ * Hooks
+ *   --mac-save-panel-field-width         width of the fields and the Where button (252px)
+ *   --mac-save-panel-bleed               how far the browser reaches past the content box, to
+ *                                        the edges of the surface around it (the 20 pt margin
+ *                                        of a sheet or window)
+ *   --mac-save-panel-browser-height      height of the browser (320px)
+ *   --mac-save-panel-button-min-width    least width of Cancel and the default button (70px)
+ */
+.mac-save-panel {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 0;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  letter-spacing: var(--mac-tracking-regular);
+}
+
+/* Rows 8 pt apart: a 30 pt pitch for the 22 pt fields. */
+.mac-save-panel-form {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  gap: 8px var(--mac-space-label-gap);
+  justify-content: center;
+}
+
+.mac-save-panel-row {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  align-items: center;
+}
+
+.mac-save-panel-label {
+  grid-column: 1;
+  text-align: end;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.mac-save-panel-control {
+  display: flex;
+  grid-column: 2;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+
+.mac-save-panel-field {
+  width: var(--mac-save-panel-field-width, 252px);
+}
+
+/* The disclosure button stands 8 pt after the name field, outside the column of fields, so
+   that the fields keep one width. */
+.mac-save-panel-disclosure {
+  margin-inline-end: -29px;
+}
+
+.mac-save-panel-browser {
+  flex: 0 0 auto;
+  height: var(--mac-save-panel-browser-height, 320px);
+  margin: 12px calc(-1 * var(--mac-save-panel-bleed, var(--mac-space-window-margin))) 0;
+  border-block: 1px solid var(--mac-color-separator);
+}
+
+.mac-save-panel-browser + .mac-save-panel-form {
+  margin-block-start: 12px;
+}
+
+/* The button row: 20 pt under the last row, the buttons 12 pt apart at the trailing end;
+   New Folder, in the expanded form, at the leading end. */
+.mac-save-panel-actions {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+  align-items: center;
+  justify-content: flex-end;
+  margin-block-start: var(--mac-space-window-margin);
+}
+
+.mac-save-panel:where([data-expanded]) > .mac-save-panel-actions {
+  margin-block-start: 12px;
+}
+
+.mac-save-panel-cancel {
+  margin-inline-start: auto;
+}
+
+.mac-save-panel-button {
+  min-width: var(--mac-save-panel-button-min-width, 70px);
+}
+
+@media (forced-colors: active) {
+  .mac-save-panel-browser {
+    border-color: CanvasText;
+  }
+}

@@ -1,0 +1,137 @@
+---
+title: Text View
+description: Multi-line text that fills its pane, plain or rich, with Catalina's text colours and selection highlight and no bezel.
+order: 35
+---
+
+<Example name="basic" both />
+
+The AppKit view is `NSTextView` in a scroll view: the document area of TextEdit, a note, a
+message body. Base UI has no multi-line text primitive, so `TextView` is a native `<textarea>`
+and `RichTextView` an editable element.
+
+## Usage
+
+```tsx
+import { RichTextView, TextView } from "macalicious/text-view";
+import "macalicious/text-view.css";
+
+<TextView aria-label="Note" value={text} onValueChange={setText} />
+<RichTextView aria-label="Document"><b>Title</b><br />Body text</RichTextView>
+```
+
+Or copy the source into your project: `npx macalicious add text-view`.
+
+A text view has no size of its own: it fills the width and height of its parent, so put it in
+the pane it belongs to. It scrolls when the text is longer than the pane.
+
+`RichTextView` holds styled content that the browser edits in place. It is uncontrolled: its
+children are the initial content, and you read the result from the element.
+
+What surrounds an AppKit text view is not part of this component. The ruler and the format
+bar above a document are a component of their own (`ruler` in the measured spec, built with
+the data views), as are the scroll view and its scrollers; the find bar is the bar measured
+with the scope bar. A text view starts directly under whatever bar is placed above it.
+
+<Example name="rich" both />
+
+With `insertsTab`, Tab inserts a tab character instead of moving to the next control:
+
+<Example name="inserts-tab" />
+
+## Guidelines
+
+Apple's Human Interface Guidelines cover text views under text fields:
+
+- Use a text view for text that runs over several lines or that people format; use a text
+  field for a single value.
+- Let the view fill its pane and scroll; do not give it a bezel there.
+- Keep the text selectable in a read-only view, so that it can be copied.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look | Status |
+| --- | --- | --- | --- |
+| Editable | – | Text background `#ffffff` / `#1e1e1e`, text black / white, 13 / 16 pt | measured (TextEdit) |
+| Placeholder | `placeholder`, while empty | Placeholder text colour | provisional |
+| Read-only | `readOnly` | Identical; no editing | documented |
+| Disabled | `disabled` | Tertiary label colour | provisional |
+| Fixed pitch | `monospace` | 11 / 14 pt in the monospaced font | size measured in Console |
+| Selected text | a selection in the key window | Highlight colour (`#b4d7ff` for blue) | Aqua measured (Contacts); Dark Aqua inferred |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | Selection turns grey | provisional |
+| Focused | the view has the keyboard | No focus ring, as in AppKit: the insertion point shows it | documented |
+
+Set `--mac-text-view-background` for another fill, such as a note's colour; set `font` through
+`style` for a document font. The variable takes any CSS background, a gradient or an image
+of your own included.
+
+<Example name="paper" both />
+
+The Notes editor is drawn on paper: `#f9f9f7` in Aqua and `#232425` in Dark Aqua, each with a
+fine texture. The example uses those measured colours. The texture itself is Apple's bitmap
+artwork, which this library neither ships nor imitates.
+
+## Sizes
+
+A text view has no control sizes. The text sits 5 pt from the left and right edges.
+
+## API
+
+<PropsTable name="TextViewProps" />
+
+<PropsTable name="RichTextViewProps" />
+
+| Attribute or variable | Values | Description |
+| --- | --- | --- |
+| `data-monospace` | present or absent | Reflects `monospace`. |
+| `data-rich` | present | On a `RichTextView`. |
+| `data-disabled` | present or absent | On a disabled `RichTextView`. |
+| `--mac-text-view-background` | a colour | The view's fill. Default: the text background colour. |
+
+Class: `.mac-text-view`.
+
+## Accessibility
+
+- `TextView` is a native `<textarea>`; `RichTextView` has `role="textbox"` and
+  `aria-multiline`. Both need a name: a label or `aria-label`.
+- By default Tab moves to the next control, as on the web. With `insertsTab`, Tab inserts a
+  tab character as in an AppKit text view; Escape followed by Tab then leaves the view, and
+  Shift-Tab always moves backwards, so the keyboard is never trapped. A tab is not inserted
+  past `maxLength`, and the insertion can be undone like typed text. Say so near the view if
+  you switch it on.
+- A text view draws no focus ring, following AppKit; the insertion point marks the focus. If
+  the view is small or sits among other controls, consider a [Text Field](/components/text-field)
+  instead.
+- A disabled `RichTextView` is not editable, leaves the tab order and sets `aria-disabled`.
+- The browser provides the editing keys; the macOS-only key bindings (Control-A, Control-E and
+  the like) work only on Apple platforms.
+
+## Visual comparison
+
+`npm run visual -- text-view` compares the top left of a TextEdit document in both
+appearances. Scores from the run that accompanied this component (Chromium on Linux; 2x, whole
+crop and with the line of text masked):
+
+| Comparison (reference crop, 2x pixels) | Aqua, whole crop | Aqua, text masked | Dark Aqua, whole crop | Dark Aqua, text masked |
+| --- | --- | --- | --- | --- |
+| `text-edit` (TextEdit `116,236,400,60`) | 7.56% | 0.00% | 7.43% | 0.00% |
+
+A text view is fill and text, so the masked figure only confirms the fill. The whole-crop
+figure is the font: TextEdit's Helvetica 12 is replaced by a metric-compatible fallback on
+Linux. Read from the captures: the first glyph and the baseline land on the reference's pixels,
+and the line is 2% narrower. The crop starts 2 pt inside the window, because Dark Aqua's
+window rim covers the first point.
+
+The selection highlight and the grey selection of a window that is not key are checked pixel
+by pixel after a real Select All. Provisional: the dark selection colour (the highlight token
+`#40638b`; the spec infers `#35638f`), the disabled and placeholder looks. Not reproduced:
+Notes' paper texture, which is Apple's bitmap artwork; the measured paper colours are in the
+`paper` example.
+
+`find-highlight-light` and `find-highlight-dark` check the find highlight token on a white
+page: `#ffff00` in Aqua, the catalogue's value, and `#b1d832` in Dark Aqua, measured on the
+word Preview found in a PDF (`10-15-Catalina-Dark-Preview-Search.png` at 2033,584,70,39). No
+capture shows found text in Aqua. A text view has no search of its own: mark what your search
+finds with `background: var(--mac-color-find-highlight)`.

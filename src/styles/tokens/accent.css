@@ -1,0 +1,426 @@
+/*
+ * Accent colour and highlight colour, as in System Preferences › General.
+ *
+ *   <html data-accent="purple">                           one of the eight Catalina accents
+ *   <html data-accent="purple" data-highlight="green">    highlight chosen separately
+ *   <div data-accent="custom" style="…">                  any other colour: set the two inputs
+ *                                                         named below inline (see Theming guide)
+ *
+ * Both attributes work on any element and re-theme that subtree.
+ *
+ * How it is wired, in file order:
+ *
+ *   1. Inputs. A preset sets the pure accent for each appearance (the swatch in the picker).
+ *   2. Measured accent tables. For the eight presets, the bezel stops, hairlines, checkbox
+ *      edge, glyph shadow and control fill are the values read from 16 of the accent
+ *      screenshots (Theme-<Light|Dark>-<Accent>), because one formula cannot produce them:
+ *      orange is nearly flat in dark, graphite is a cool grey in light and inverts its glyphs
+ *      in dark. Not everything accent-tinted is in those tables: the emphasised selection and
+ *      the focus ring are measured for blue only, and the menu selection and the pressed
+ *      stops are formulas, each tagged where it is declared.
+ *   3. Custom-accent fallbacks. The same tokens derived from the two inputs by a formula
+ *      fitted to blue, at zero specificity, so they apply only where no preset does:
+ *      data-accent="custom".
+ *   4. Composites. Gradients and shadows assembled from the tokens above.
+ *
+ * A token that contains var() is substituted on the element where it is declared and inherited
+ * as a finished value, so blocks 3 and 4 must match every element that can change an input:
+ * that is why they list [data-accent] next to :root, and why a custom accent needs
+ * data-accent="custom" on the element that sets the inputs.
+ */
+
+/* 1. Inputs: controlAccentColor, the picker swatch [measured] Theme-*-<Accent> @ 1484+48k,617.
+      Blue and orange read the same in both appearances; pink, yellow and green differ by one
+      or two levels, and purple, red and graphite are visibly different swatches. */
+:root,
+[data-accent="blue"] {
+  /* [measured] */
+  --mac-accent-light: #027aff;
+  --mac-accent-dark: #027aff;
+}
+[data-accent="purple"] {
+  --mac-accent-light: #963d96;
+  --mac-accent-dark: #a650a7;
+}
+[data-accent="pink"] {
+  --mac-accent-light: #f74e9f;
+  --mac-accent-dark: #f7509e;
+}
+[data-accent="red"] {
+  --mac-accent-light: #e0373e;
+  --mac-accent-dark: #ff5258;
+}
+[data-accent="orange"] {
+  --mac-accent-light: #f7821c;
+  --mac-accent-dark: #f7821c;
+}
+[data-accent="yellow"] {
+  --mac-accent-light: #fcb828;
+  --mac-accent-dark: #fdb828;
+}
+[data-accent="green"] {
+  --mac-accent-light: #62b947;
+  --mac-accent-dark: #62ba46;
+}
+[data-accent="graphite"] {
+  --mac-accent-light: #989898;
+  --mac-accent-dark: #8c8c8c;
+}
+
+/*
+ * 2. Measured accent tables [measured].
+ *
+ * Read from the pop-up button cap of each accent screenshot, column x=1750: the same gradient
+ * as the default button and the selected tab. Stops are the fill rows at 0, 25, 50, 75 and 100%
+ * (y 662, 671, 680, 690, 699). In dark the first two fill rows carry the top highlight, so the
+ * 0% stop is the third row (y 664) and the highlight is added by the composite in block 4.
+ *
+ *   bezel-top … -bottom   the five gradient stops
+ *   bezel-edge-*          light only: the bezel's hairline is a darker gradient of the accent.
+ *                         Dark uses the neutral translucent outline in controls.css.
+ *   control-edge          light only: hairline of a checked checkbox or radio button (y 1312)
+ *   glyph-shadow          light only: the 0.5 pt shadow under a white glyph (radio dot @ 1496,900)
+ */
+:root:not([data-accent]),
+[data-accent="blue"] {
+  /* [measured] Theme-Light-Blue, Theme-Dark-Blue; the other accents likewise */
+  --mac-accent-bezel-top: light-dark(#6ca5fb, #1869e6);
+  --mac-accent-bezel-upper: light-dark(#589afc, #1767e2);
+  --mac-accent-bezel-middle: light-dark(#3d88fd, #1764db);
+  --mac-accent-bezel-lower: light-dark(#1c76ff, #1561d3);
+  --mac-accent-bezel-bottom: light-dark(#076bff, #155ecd);
+  --mac-accent-bezel-edge-top: light-dark(#4c92fa, transparent);
+  --mac-accent-bezel-edge-side: light-dark(#297bfe, transparent);
+  --mac-accent-bezel-edge-bottom: light-dark(#0361ff, transparent);
+  --mac-accent-control-edge: light-dark(#2d7ffc, transparent);
+  --mac-accent-glyph-shadow: light-dark(#216ee4, transparent);
+}
+[data-accent="purple"] {
+  --mac-accent-bezel-top: light-dark(#cc89c4, #a541a3);
+  --mac-accent-bezel-upper: light-dark(#c77abe, #a23fa0);
+  --mac-accent-bezel-middle: light-dark(#be63b3, #9d3e9b);
+  --mac-accent-bezel-lower: light-dark(#b54ba8, #973b95);
+  --mac-accent-bezel-bottom: light-dark(#af3ba1, #933991);
+  --mac-accent-bezel-edge-top: light-dark(#c171b8, transparent);
+  --mac-accent-bezel-edge-side: light-dark(#b754aa, transparent);
+  --mac-accent-bezel-edge-bottom: light-dark(#ac359c, transparent);
+  --mac-accent-control-edge: light-dark(#b858ac, transparent);
+  --mac-accent-glyph-shadow: light-dark(#a34999, transparent);
+}
+[data-accent="pink"] {
+  --mac-accent-bezel-top: light-dark(#ee7dc1, #dd3c7e);
+  --mac-accent-bezel-upper: light-dark(#ee6cba, #da3a7c);
+  --mac-accent-bezel-middle: light-dark(#ec53af, #d23978);
+  --mac-accent-bezel-lower: light-dark(#eb36a3, #cb3674);
+  --mac-accent-bezel-bottom: light-dark(#eb259b, #c53570);
+  --mac-accent-bezel-edge-top: light-dark(#eb60b4, transparent);
+  --mac-accent-bezel-edge-side: light-dark(#ea42a5, transparent);
+  --mac-accent-bezel-edge-bottom: light-dark(#ea1e94, transparent);
+  --mac-accent-control-edge: light-dark(#eb45a7, transparent);
+  --mac-accent-glyph-shadow: light-dark(#d13894, transparent);
+}
+[data-accent="red"] {
+  --mac-accent-bezel-top: light-dark(#da7b70, #f73f35);
+  --mac-accent-bezel-upper: light-dark(#d6695e, #f33e34);
+  --mac-accent-bezel-middle: light-dark(#d14f44, #eb3c34);
+  --mac-accent-bezel-lower: light-dark(#cb3324, #e23a31);
+  --mac-accent-bezel-bottom: light-dark(#c72111, #dc382f);
+  --mac-accent-bezel-edge-top: light-dark(#d25d52, transparent);
+  --mac-accent-bezel-edge-side: light-dark(#cc3f30, transparent);
+  --mac-accent-bezel-edge-bottom: light-dark(#c6200b, transparent);
+  --mac-accent-control-edge: light-dark(#cd4234, transparent);
+  --mac-accent-glyph-shadow: light-dark(#b63428, transparent);
+}
+[data-accent="orange"] {
+  --mac-accent-bezel-top: light-dark(#efaa4c, #ff8f00);
+  --mac-accent-bezel-upper: light-dark(#eea035, #fe8c00);
+  --mac-accent-bezel-middle: light-dark(#ed9010, #ff8800);
+  --mac-accent-bezel-lower: light-dark(#ec8000, #ff8400);
+  --mac-accent-bezel-bottom: light-dark(#ed7401, #fc7f00);
+  --mac-accent-bezel-edge-top: light-dark(#ec9825, transparent);
+  --mac-accent-bezel-edge-side: light-dark(#eb8800, transparent);
+  --mac-accent-bezel-edge-bottom: light-dark(#ea7601, transparent);
+  --mac-accent-control-edge: light-dark(#ec8800, transparent);
+  --mac-accent-glyph-shadow: light-dark(#d37500, transparent);
+}
+[data-accent="yellow"] {
+  --mac-accent-bezel-top: light-dark(#f1be65, #fbbe03);
+  --mac-accent-bezel-upper: light-dark(#f1b751, #f7ba00);
+  --mac-accent-bezel-middle: light-dark(#efad32, #efb401);
+  --mac-accent-bezel-lower: light-dark(#f0a010, #e6ae00);
+  --mac-accent-bezel-bottom: light-dark(#ef9802, #e0a900);
+  --mac-accent-bezel-edge-top: light-dark(#eeb043, transparent);
+  --mac-accent-bezel-edge-side: light-dark(#efa61c, transparent);
+  --mac-accent-bezel-edge-bottom: light-dark(#ef9a00, transparent);
+  --mac-accent-control-edge: light-dark(#efa51f, transparent);
+  --mac-accent-glyph-shadow: light-dark(#d59119, transparent);
+}
+[data-accent="green"] {
+  --mac-accent-bezel-top: light-dark(#93c276, #3cc125);
+  --mac-accent-bezel-upper: light-dark(#86ba64, #39bd25);
+  --mac-accent-bezel-middle: light-dark(#70b049, #39b824);
+  --mac-accent-bezel-lower: light-dark(#5aa42c, #37b124);
+  --mac-accent-bezel-bottom: light-dark(#4c9d19, #35ac20);
+  --mac-accent-bezel-edge-top: light-dark(#7cb458, transparent);
+  --mac-accent-bezel-edge-side: light-dark(#61a837, transparent);
+  --mac-accent-bezel-edge-bottom: light-dark(#439a11, transparent);
+  --mac-accent-control-edge: light-dark(#65a939, transparent);
+  --mac-accent-glyph-shadow: light-dark(#569530, transparent);
+}
+[data-accent="graphite"] {
+  --mac-accent-bezel-top: light-dark(#b2b2b7, #999999);
+  --mac-accent-bezel-upper: light-dark(#acacb1, #999999);
+  --mac-accent-bezel-middle: light-dark(#a2a2a7, #999999);
+  --mac-accent-bezel-lower: light-dark(#98989d, #999999);
+  --mac-accent-bezel-bottom: light-dark(#919196, #999999);
+  --mac-accent-bezel-edge-top: light-dark(#a6a6ab, transparent);
+  --mac-accent-bezel-edge-side: light-dark(#929297, transparent);
+  --mac-accent-bezel-edge-bottom: light-dark(#7b7b80, transparent);
+  --mac-accent-control-edge: light-dark(#919296, transparent);
+  --mac-accent-glyph-shadow: light-dark(#7e7f84, transparent);
+}
+
+/* Blue only: measured where the other accents are not shown in any screenshot. */
+:root:not([data-accent]),
+[data-accent="blue"] {
+  /* selectedContentBackgroundColor [measured] Activity-Monitor selected row */
+  --mac-color-selected-content-background: light-dark(#0164e1, #0158d0);
+  /* Accent selection in a focused sidebar: the accent through the sidebar material
+     [measured] Disk-Utility */
+  --mac-color-sidebar-selection-emphasized: light-dark(#136fe6, #0772eb);
+  /* keyboardFocusIndicatorColor, a flat band [measured, computed]: the colour that at 50%
+     composites in sRGB to the measured ring, #82abf1 on #ececec (Go-To-Folder; #7ca5eb on
+     the #e3e3e3 toolbar of Sharing) and #2d6c99 on #2f3032 (Automator; #3674a1 on #3f4042 in
+     Dictionary). The token sheet's row (2,122,255 and 22,168,255) reproduces neither and is
+     not used: it gives #77b3f6 and #246d99. */
+  --mac-focus-ring-color: light-dark(rgb(24 106 246 / 0.5), rgb(43 168 255 / 0.5));
+}
+
+/*
+ * 3. Custom-accent fallbacks [provisional].
+ *
+ * Every token of block 2 derived from the inputs with relative colour syntax. The constants
+ * reproduce the measured blue column and are applied unchanged to any other input, which the
+ * measured accents show is only an approximation. :where() keeps the specificity at zero so
+ * that a preset always wins, wherever it appears in the cascade.
+ */
+:where(:root, [data-accent]) {
+  --mac-accent-bezel-top: light-dark(
+    oklch(from var(--mac-accent-light) calc(l + 0.117) calc(c * 0.642) calc(h + 0.9)),
+    oklch(from var(--mac-accent-dark) calc(l - 0.052) calc(c * 0.938) calc(h + 2.3))
+  );
+  --mac-accent-bezel-upper: light-dark(
+    oklch(from var(--mac-accent-light) calc(l + 0.085) calc(c * 0.736) calc(h + 0.7)),
+    oklch(from var(--mac-accent-dark) calc(l - 0.059) calc(c * 0.926) calc(h + 2.3))
+  );
+  --mac-accent-bezel-middle: light-dark(
+    oklch(from var(--mac-accent-light) calc(l + 0.038) calc(c * 0.872) calc(h + 1.7)),
+    oklch(from var(--mac-accent-dark) calc(l - 0.071) calc(c * 0.902) calc(h + 2.3))
+  );
+  --mac-accent-bezel-lower: light-dark(
+    oklch(from var(--mac-accent-light) calc(l - 0.005) calc(c * 1.01) calc(h + 2.2)),
+    oklch(from var(--mac-accent-dark) calc(l - 0.084) calc(c * 0.872) calc(h + 2.1))
+  );
+  --mac-accent-bezel-bottom: light-dark(
+    oklch(from var(--mac-accent-light) calc(l - 0.029) calc(c * 1.078) calc(h + 2.9)),
+    oklch(from var(--mac-accent-dark) calc(l - 0.095) calc(c * 0.853) calc(h + 2.1))
+  );
+  --mac-accent-bezel-edge-top: light-dark(
+    oklch(from var(--mac-accent-light) calc(l + 0.062) calc(c * 0.782) calc(h + 0.8)),
+    transparent
+  );
+  --mac-accent-bezel-edge-side: light-dark(
+    oklch(from var(--mac-accent-light) calc(l + 0.007) calc(c * 0.967) calc(h + 2.3)),
+    transparent
+  );
+  --mac-accent-bezel-edge-bottom: light-dark(
+    oklch(from var(--mac-accent-light) calc(l - 0.048) calc(c * 1.132) calc(h + 4.1)),
+    transparent
+  );
+  --mac-accent-control-edge: light-dark(
+    oklch(from var(--mac-accent-light) calc(l + 0.014) calc(c * 0.931) calc(h + 1.7)),
+    transparent
+  );
+  --mac-accent-glyph-shadow: light-dark(
+    oklch(from var(--mac-accent-light) calc(l - 0.041) calc(c * 0.892) calc(h + 1.9)),
+    transparent
+  );
+
+  /* The tokens below also serve the seven presets other than blue, for which no screenshot
+     shows the element. Blue's measured values are in block 2. */
+
+  /* selectedContentBackgroundColor: the accent darkened, by the amount measured for blue */
+  --mac-color-selected-content-background: light-dark(
+    oklch(from var(--mac-accent-light) calc(l - 0.069) calc(c * 0.947) calc(h + 1.5)),
+    oklch(from var(--mac-accent-dark) calc(l - 0.107) calc(c * 0.914) calc(h + 2.3))
+  );
+  /* Accent selection in a focused sidebar: the plain accent, without the material blend */
+  --mac-color-sidebar-selection-emphasized: light-dark(
+    var(--mac-accent-light),
+    var(--mac-accent-dark)
+  );
+  /* keyboardFocusIndicatorColor: the accent at 50%, shifted in Aqua by the steps measured for
+     blue, and lightened and desaturated in Dark Aqua by blue's lightness and chroma steps.
+     Blue's 12 degree hue shift in Dark Aqua is particular to blue and is not carried over,
+     so a custom accent equal to blue gets #44689b there, not the measured #2d6c99. */
+  --mac-focus-ring-color: light-dark(
+    oklch(from var(--mac-accent-light) calc(l - 0.037) calc(c * 1.025) calc(h + 3.4) / 0.5),
+    oklch(from var(--mac-accent-dark) calc(l + 0.104) calc(c * 0.754) h / 0.5)
+  );
+
+  /* Defaults that only graphite overrides (block 2). */
+  /* alternateSelectedControlTextColor: titles and glyphs on an accent fill. Dark is not pure
+     white: #e0e9f9 over the blue bezel is white at 85% [measured] */
+  --mac-color-control-text-on-accent: light-dark(#ffffff, rgb(255 255 255 / 0.85));
+  /* Dark only: the first device-pixel row of an accent bezel, over the 5% row beneath it
+     (#5d97ef, then #2472e7, over #1869e6) [measured, computed] */
+  --mac-accent-bezel-highlight: light-dark(transparent, rgb(255 255 255 / 0.263));
+  /* Checkbox and radio "on" fill: equal to the gradient's 50% stop for every accent but
+     graphite. Flat in light; in dark the control draws the gradient below. [measured] */
+  --mac-accent-control-fill: var(--mac-accent-bezel-middle);
+}
+
+/* Graphite departs from the other seven accents, Theme-*-Graphite. It overrides three of the
+   defaults above. */
+[data-accent="graphite"] {
+  /* [measured] Checkbox and radio fill is not the gradient's 50% stop in light */
+  --mac-accent-control-fill: light-dark(#99999e, #999999);
+  /* [provisional] Measured: dark checkbox and radio glyphs are near-black (#252525 on
+     #999999). Inferred: the title of a dark graphite default button, which no screenshot
+     shows, is assumed to follow the glyphs; the token colours both. */
+  --mac-color-control-text-on-accent: light-dark(#ffffff, rgb(0 0 0 / 0.76));
+  /* [measured, computed] Dark: the first highlight row is weaker (#b3b3b3) */
+  --mac-accent-bezel-highlight: light-dark(transparent, rgb(255 255 255 / 0.216));
+}
+
+/*
+ * Highlight colour (selectedTextBackgroundColor): the chip in the Highlight color pop-up
+ * [measured] Theme-*-<Accent> @ 1510,680; blue also on selected text in Contacts. It follows the
+ * accent unless data-highlight is set on the same element.
+ */
+:root:not([data-accent], [data-highlight]),
+[data-accent="blue"]:not([data-highlight]),
+[data-highlight="blue"] {
+  /* [measured] */
+  --mac-highlight-light: #b4d7ff;
+  --mac-highlight-dark: #40638b;
+}
+[data-accent="purple"]:not([data-highlight]),
+[data-highlight="purple"] {
+  --mac-highlight-light: #dfc6df;
+  --mac-highlight-dark: #705770;
+}
+[data-accent="pink"]:not([data-highlight]),
+[data-highlight="pink"] {
+  --mac-highlight-light: #fdcbe2;
+  --mac-highlight-dark: #88566e;
+}
+[data-accent="red"]:not([data-highlight]),
+[data-highlight="red"] {
+  --mac-highlight-light: #f6c3c5;
+  --mac-highlight-dark: #8b5858;
+}
+[data-accent="orange"]:not([data-highlight]),
+[data-highlight="orange"] {
+  --mac-highlight-light: #fcd9bb;
+  --mac-highlight-dark: #886547;
+}
+[data-accent="yellow"]:not([data-highlight]),
+[data-highlight="yellow"] {
+  --mac-highlight-light: #fee9be;
+  --mac-highlight-dark: #8a754a;
+}
+[data-accent="green"]:not([data-highlight]),
+[data-highlight="green"] {
+  --mac-highlight-light: #d0eac7;
+  --mac-highlight-dark: #5d7653;
+}
+[data-accent="graphite"]:not([data-highlight]),
+[data-highlight="graphite"] {
+  --mac-highlight-light: #e0e0e0;
+  --mac-highlight-dark: #686868;
+}
+
+/* A custom accent, and data-highlight="accent", mix the highlight from the accent
+   [provisional]. Zero specificity, so a preset always wins. */
+:where(:root, [data-accent], [data-highlight="accent"]) {
+  --mac-highlight-light: color-mix(in srgb, var(--mac-accent-light) 30%, white);
+  --mac-highlight-dark: color-mix(in srgb, var(--mac-accent-dark) 50%, #1e1e1e);
+}
+
+/* 4. Composites. Keep these selector lists in sync with the inputs above. */
+:root,
+[data-accent],
+[data-highlight] {
+  /* selectedTextBackgroundColor / selectedControlColor [measured] for the presets */
+  --mac-highlight: light-dark(var(--mac-highlight-light), var(--mac-highlight-dark));
+}
+
+:root,
+[data-accent] {
+  /* controlAccentColor [measured] for the presets */
+  --mac-accent: light-dark(var(--mac-accent-light), var(--mac-accent-dark));
+
+  /* Highlighted menu item and open menu-bar title: the accent drawn through the vibrant menu,
+     so the composite shifts with what is behind it [provisional]. Fitted for blue only:
+     the alphas reproduce #3f7ee7 and #2c6dd5 as stored, over the Day and Dark wallpapers.
+     The same alphas are applied to the other seven accents and to a custom accent, whose
+     measured menu selections (the token sheet's accent matrix) were not fitted. */
+  --mac-accent-menu-selection: light-dark(
+    rgb(from var(--mac-accent-light) r g b / 0.85),
+    rgb(from var(--mac-accent-dark) r g b / 0.88)
+  );
+
+  /* Checkbox and radio "on" gradient: flat in light, the bezel gradient in dark [measured] */
+  --mac-accent-control-fill-top: light-dark(
+    var(--mac-accent-control-fill),
+    var(--mac-accent-bezel-top)
+  );
+  --mac-accent-control-fill-bottom: light-dark(
+    var(--mac-accent-control-fill),
+    var(--mac-accent-bezel-bottom)
+  );
+
+  /* Pressed accent bezel [provisional]: no pressed control is captured. Each stop is
+     multiplied by 0.88, the order of the factor measured between normal and "on" toolbar
+     buttons. */
+  --mac-accent-bezel-pressed-top: color-mix(in srgb, var(--mac-accent-bezel-top) 88%, black);
+  --mac-accent-bezel-pressed-upper: color-mix(in srgb, var(--mac-accent-bezel-upper) 88%, black);
+  --mac-accent-bezel-pressed-middle: color-mix(in srgb, var(--mac-accent-bezel-middle) 88%, black);
+  --mac-accent-bezel-pressed-lower: color-mix(in srgb, var(--mac-accent-bezel-lower) 88%, black);
+  --mac-accent-bezel-pressed-bottom: color-mix(in srgb, var(--mac-accent-bezel-bottom) 88%, black);
+
+  /*
+   * Accent (emphasised) bezel: default push button, pop-up button cap, selected tab. Used with
+   * the bezel recipe and the neutral accent borders in controls.css. [measured]
+   *   fill       the five-stop gradient; it is not linear, it darkens faster in its upper half
+   *   under      light: the accent-coloured hairline, painted under a transparent border
+   *   highlight  dark: the two top rows, white over the fill
+   */
+  --mac-bezel-accent-fill: linear-gradient(
+    to bottom,
+    var(--mac-accent-bezel-top),
+    var(--mac-accent-bezel-upper) 25%,
+    var(--mac-accent-bezel-middle) 50%,
+    var(--mac-accent-bezel-lower) 75%,
+    var(--mac-accent-bezel-bottom)
+  );
+  --mac-bezel-accent-under: linear-gradient(
+    to bottom,
+    var(--mac-accent-bezel-edge-top),
+    var(--mac-accent-bezel-edge-side) 50%,
+    var(--mac-accent-bezel-edge-bottom)
+  );
+  --mac-bezel-accent-highlight:
+    inset 0 0.5px 0 var(--mac-accent-bezel-highlight),
+    inset 0 1px 0 light-dark(transparent, rgb(255 255 255 / 0.05));
+  /* [provisional] see the pressed stops above */
+  --mac-bezel-accent-fill-pressed: linear-gradient(
+    to bottom,
+    var(--mac-accent-bezel-pressed-top),
+    var(--mac-accent-bezel-pressed-upper) 25%,
+    var(--mac-accent-bezel-pressed-middle) 50%,
+    var(--mac-accent-bezel-pressed-lower) 75%,
+    var(--mac-accent-bezel-pressed-bottom)
+  );
+}

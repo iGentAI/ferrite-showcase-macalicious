@@ -1,0 +1,194 @@
+---
+title: Time Machine Browser
+description: The full-screen restore interface of Time Machine. A window in front of a receding stack of its earlier states, arrows and a date beside it, Cancel and Restore below, and a timeline of backups at the edge of the screen.
+---
+
+<Example name="basic" both />
+
+Entering Time Machine takes over the screen: the current window moves to the middle in front of
+a stack of the same window at earlier backups, over a blurred desktop picture. The arrows and
+the timeline move through the backups, the date of the one shown stands between the arrows,
+Restore copies the selected items back and Cancel leaves.
+
+The component draws that screen around a window you give it. It reads no backups and restores
+nothing: the backups arrive through `backups`, and the choices leave through `onValueChange`,
+`onRestore` and `onCancel`. Its buttons are built on
+[Base UI's Button](https://base-ui.com/react/components/button).
+
+## Usage
+
+```tsx
+import { TimeMachineBrowser } from "macalicious/time-machine-browser";
+import { Window } from "macalicious/window";
+import "macalicious/time-machine-browser.css";
+
+<TimeMachineBrowser
+  backups={[
+    { value: "2019-10-06T10:17", label: "Yesterday at 10:17 AM", mark: "Yesterday" },
+    { value: "2019-10-07T15:34", label: "Today at 3:34 PM", mark: "Today" },
+    { value: "now", label: "Now", caption: "Now" },
+  ]}
+  value={backup}
+  onValueChange={setBackup}
+  title="Downloads"
+  restorable={selection.length > 0}
+  onRestore={(backup) => restore(backup, selection)}
+  onCancel={leave}
+  style={{ height: "100vh" }}
+>
+  <Window width={770} height={436}>…the folder as it was in that backup…</Window>
+</TimeMachineBrowser>
+```
+
+Or copy the source into your project: `npx macalicious add time-machine-browser`. The front
+window is a [window](/components/window) of your own, with whatever is in it.
+
+- **`backups`** are in the order of the timeline, oldest first; the last one is normally the
+  present, with `caption: "Now"`. `label` is the date shown between the arrows. `mark` puts a
+  day's name on a long tick above a backup: give it to the first backup of each day.
+- **The stack** shows `stack` windows. One stands for each backup older than the one shown and
+  carries a title bar with `title`; the windows beyond the oldest backup are blank. So the
+  stack shrinks to blank windows as you go back.
+- **The desktop picture** is yours: the browser paints a blue gradient of the measured colours.
+  Set `--mac-time-machine-browser-backdrop` to a picture, blurred beforehand; see
+  [Sizes](#sizes) for why not `background` and `filter`.
+
+Controlled, with the content of the window following the backup and Restore enabled by a
+selection:
+
+<Example name="controlled" />
+
+## Guidelines
+
+Paraphrased from the measured spec and from Apple's support article on restoring items with
+Time Machine; not checked against a published Human Interface Guidelines page.
+
+- Show the same window the person was looking at, at the same size, so that what changes
+  between backups is its content only.
+- Dim the items that do not exist in the backup shown rather than removing them, and enable
+  Restore only when something restorable is selected.
+- Start at the present ("Now"), and let the arrows and the timeline move one backup at a time.
+- Leave with Cancel or Escape without changing anything.
+
+## Variants and states
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Backup shown | `value`, or the arrows, the timeline and the keyboard | Its tick is red; its date is between the arrows; the stack has one titled window per older backup |
+| Oldest backup | the first of `backups` is shown | The up arrow is disabled; every window of the stack is blank |
+| Newest backup | the last of `backups` is shown | The down arrow is disabled |
+| Restore disabled | default (`restorable` is `false`) | Face at 60% and a dim title |
+| Restore enabled | `restorable` | As Cancel |
+| Pressed | `:active` on a button | The face brightens |
+| Keyboard focus | `:focus-visible` | Focus ring round the button; inside the edge of the timeline |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No focus ring |
+
+The buttons, the ticks and the timeline labels are not painted over the picture but added to
+it (`mix-blend-mode: plus-lighter`), as the captures measure: a button is the picture plus 60
+levels on every channel, over four different backdrops in the two appearances. They therefore
+need no values of their own for Dark Aqua and follow any picture you put behind them.
+
+Measured, in both appearances: the perspective of the stack, the blank window, the buttons
+with their disabled look, the arrows, the date, the ticks, the day marks and the red tick.
+Measured in Aqua only: the titled windows of the stack with their fading (the Dark Aqua capture
+shows the oldest backup, so its stack is blank; the dark title bars follow the same rule and
+are provisional). Provisional: the enabled Restore, the pressed face, and the placeholder
+backdrop. Not drawn: the magnified tick and its date under the pointer, which macOS shows on
+the timeline.
+
+## Sizes
+
+The browser fills the element it is in: give that element, or the browser itself, a height.
+The front window keeps the size you give it and is centred, 57 pt below the middle; the arrows
+stand 21 pt beside it and the buttons 23 pt under it, so leave about 150 pt free on each side
+of the window and 120 pt above it for the stack. The timeline takes the trailing 140 pt, its
+ticks the last 36 of them, and has room for one tick every 16 pt; more backups than fit
+scroll in it, without a scroller, and the backup shown is kept in view.
+
+Nothing between the browser's root and its buttons may open a stacking context, or the
+buttons are added to nothing: that is why the picture is the root's own `background`, set
+through `--mac-time-machine-browser-backdrop`, and why a `filter`, `opacity` or `transform` on
+the root is to be avoided.
+
+## API
+
+<PropsTable name="TimeMachineBrowserProps" />
+
+`className`, `style`, `ref` and other attributes go to the root element. A backup is
+`{ value: string; label: string; mark?: string; caption?: string }` (the type
+`TimeMachineBackup`).
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `aria-selected` | `.mac-time-machine-browser-tick` | `true`, `false` | The backup shown. |
+| `data-mark` | `.mac-time-machine-browser-tick` | present | The backup has a day mark above it. |
+| `data-step` | `.mac-time-machine-browser-button` | `older`, `newer` | The two arrows. |
+| `data-disabled` | `.mac-time-machine-browser-button` | present | A disabled arrow, or Restore. |
+| `data-empty` | `.mac-time-machine-browser-layer` | present | A window of the stack with no backup behind it. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-time-machine-browser-backdrop` | a gradient of the measured blues | The background of the screen: any CSS background, for example a blurred picture. |
+
+## Accessibility
+
+- The root is a `dialog` named "Time Machine"; name it otherwise with `aria-label`. It does
+  not trap the keyboard or make the rest of the page inert: do that where you open it.
+- The timeline is a `listbox` named by `timelineLabel`, with one `option` per backup, named by
+  its `label`. It is one stop in the tab order. Up and Down move to the backup before and
+  after, Home and End to the oldest and the newest; the selection follows at once. A click on
+  a tick selects its backup.
+- The arrows are buttons named by `olderLabel` and `newerLabel`. At either end the arrow is
+  disabled but keeps the keyboard focus, so stepping with Return or Space does not lose it.
+- The date between the arrows is an `output`: a change of backup is announced.
+- Escape anywhere in the browser calls `onCancel`, unless a control inside kept the key.
+  Restore is a button; make Return press it from your own content if you want the key
+  equivalent.
+- The stack, the day marks and the captions are decoration and hidden from assistive
+  technology.
+- Nothing in the browser moves on its own, so there is nothing for `prefers-reduced-motion` to
+  switch off. In forced-colours mode the buttons and the windows of the stack get a border and
+  the selected tick the highlight colour.
+
+## Visual comparison
+
+The references are the two Time Machine captures. The desktop picture, the Finder window's
+content and its thumbnails are not reproduced, so four parts of the screen are compared, each
+laid out on the whole 1680 by 1050 pt screen and clipped: the leading end of the stack, Cancel
+and Restore, the arrows with the date, and the lower end of the timeline. Behind each part the
+example paints a gradient of the colours measured around it in the capture. Results in Chromium
+on Linux with the fallback font:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Stack, Aqua | 0.63% of pixels differ | 0.89% |
+| Stack, Dark Aqua | 0.32% | 0.30% |
+| Buttons, Aqua | 0.90% | 0.80% |
+| Buttons, Dark Aqua | 0.93% | 0.83% |
+| Buttons with the titles masked, Aqua | 0.04% | 0.00% |
+| Buttons with the titles masked, Dark Aqua | 0.04% | 0.00% |
+| Arrows and date, Aqua | 3.18% | 4.72% |
+| Arrows and date, Dark Aqua | 2.67% | 3.32% |
+| Arrows with the date masked, Aqua | 0.17% | 1.93% |
+| Arrows with the date masked, Dark Aqua | 0.11% | 0.05% |
+| Timeline, Aqua | 1.39% | 1.36% |
+| Timeline, Dark Aqua | 1.31% | 1.35% |
+| Timeline with the labels masked, Aqua | 0.09% | 0.17% |
+| Timeline with the labels masked, Dark Aqua | 0.01% | 0.01% |
+
+The stack and the masked comparisons count a pixel as different at a colour distance of 0.05,
+half the default. What remains in the stack is the ring round each window control, which the
+stack does not draw, and one device pixel along some leading edges; in the others, corner and
+chevron antialiasing. The titles, the date and the labels are set in the fallback font. In the
+Aqua capture the 603 pt window starts on a whole point where centring gives a half point, so
+the Aqua examples add half a point at the top. The arrows of the Aqua capture also start on a
+half point, which a 1x display cannot show; their 1x figure is the highest of the masked ones.
+
+The examples beside and under the window draw the window without its shadow, because the
+colours measured there already hold the shadow of the window in the capture. Keyboard focus on
+Cancel and the pressed Cancel are checked by pixel (`cancel-focus-light`,
+`cancel-pressed-dark`), and so is a timeline with more backups than fit, at its newest and,
+after Home, at its oldest backup (`timeline-long-newest`, `timeline-long-oldest`), since no
+screenshot shows them. Not compared: the front window, which
+is the [window](/components/window) component's, and the titles on the stack's title bars,
+which the capture shows with a folder icon.

@@ -1,0 +1,23 @@
+/*
+ * Colour wheel: the colours of the two picker areas. They are the HSB colour model itself, the
+ * same in both appearances: the six hues at full saturation and brightness, white where the
+ * saturation is zero and black where the brightness is. No screenshot shows the Colors panel,
+ * so nothing here is measured.
+ */
+:root {
+  /* [provisional] The six HSB hues (NSColor hue 0 to 1) are documented; where they lie is
+     not. Around the disc they run anticlockwise from red at three o'clock, so a clockwise
+     gradient lists them backwards; across the spectrum they run from red at the left. */
+  --mac-color-wheel-hues-around: #ff0000, #ff00ff, #0000ff, #00ffff, #00ff00, #ffff00, #ff0000;
+  --mac-color-wheel-hues-across: #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000;
+  /* [catalog] Saturation 0 is white: at the disc's centre and along the spectrum's top edge */
+  --mac-color-wheel-white: #ffffff;
+  --mac-color-wheel-white-clear: rgb(255 255 255 / 0);
+  /* [catalog] Brightness 0 is black: over the whole disc, and along the spectrum's bottom edge */
+  --mac-color-wheel-black: #000000;
+  --mac-color-wheel-black-clear: rgb(0 0 0 / 0);
+  /* [provisional] Hairline around the areas, and the marker's ring and its outline */
+  --mac-color-wheel-edge: light-dark(rgb(0 0 0 / 0.2), rgb(255 255 255 / 0.25));
+  --mac-color-wheel-marker: #ffffff;
+  --mac-color-wheel-marker-edge: rgb(0 0 0 / 0.6);
+}

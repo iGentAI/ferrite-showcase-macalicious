@@ -1,0 +1,51 @@
+/*
+ * Submenu (NSMenuItem.submenu). The parent item is a menu item (menu-item.css, which also
+ * keeps it highlighted while its submenu is open) and the submenu a detached menu (menu.css);
+ * this file adds the disclosure triangle and what differs for a nested menu.
+ *
+ * States
+ *   .mac-submenu-trigger[data-popup-open]   parent item while its submenu is open
+ *   .mac-submenu-trigger[data-disabled]     dimmed, triangle included
+ */
+
+/* The triangle takes the place of a key equivalent: 9 x 10 pt, 12 pt from the menu's edge,
+   in the title's colour. */
+.mac-submenu-trigger {
+  padding-inline-end: 33px;
+}
+
+.mac-submenu-trigger::after {
+  content: "";
+  position: absolute;
+  inset-block-start: calc(50% - 5px);
+  inset-inline-end: 12px;
+  width: 9px;
+  height: 10px;
+  background: currentColor;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+.mac-submenu-trigger:where(:dir(rtl))::after {
+  clip-path: polygon(100% 0, 0 50%, 100% 100%);
+}
+
+/* A submenu closes at once when the pointer moves on; only a root menu fades. */
+.mac-submenu:where([data-ending-style]) {
+  transition: none;
+}
+
+/* The triangle is a painted background, which forced colours would replace with the canvas. */
+@media (forced-colors: active) {
+  .mac-submenu-trigger::after {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
+
+  .mac-submenu-trigger:where([data-highlighted], [data-popup-open])::after {
+    background: HighlightText;
+  }
+
+  .mac-submenu-trigger:where([data-disabled])::after {
+    background: GrayText;
+  }
+}

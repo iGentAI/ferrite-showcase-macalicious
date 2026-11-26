@@ -1,0 +1,92 @@
+---
+title: Empty State
+description: Placeholder text centred in a content area that has nothing to show, plain or in Automator's grey capsule.
+order: 37
+---
+
+<Example name="basic" both />
+
+AppKit has no class for it: apps centre a label in the empty pane (“No Selection”), and
+Automator sets its instruction in a capsule. Base UI has no primitive for static text either,
+so `EmptyState` renders a plain element through Base UI's `useRender`, which keeps the
+`render` prop working.
+
+## Usage
+
+```tsx
+import { EmptyState } from "macalicious/empty-state";
+import "macalicious/empty-state.css";
+
+<EmptyState>No Selection</EmptyState>
+<EmptyState variant="capsule">Drag actions or files here to build your workflow.</EmptyState>
+```
+
+Or copy the source into your project: `npx macalicious add empty-state`.
+
+It fills its parent and centres the text both ways, so render it in place of the pane's
+content and remove it as soon as there is content.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines on loading and empty content:
+
+- Never leave people looking at a blank area with no explanation: say what the area is for or
+  what to do to fill it.
+- Keep it to a short phrase or one sentence; two lines at most.
+- Remove it the moment content exists.
+
+## Variants and states
+
+<Example name="capsule" both />
+
+| `variant` | Look | Status |
+| --- | --- | --- |
+| `plain` | 20 pt text in the tertiary label colour, no background | provisional: not in the screenshots |
+| `capsule` | 13 pt text in a 26 pt capsule, fill `#b3b3b3` with white text (Dark Aqua `#515151` with `#7c7c7c`) | measured (Automator) |
+
+An empty state has no states of its own: it is not focusable, and a window that is not key
+does not change it. The text keeps 20 pt from the pane's edges and wraps inside the pane.
+
+<Example name="no-results" />
+
+## Sizes
+
+An empty state has one size per variant.
+
+## API
+
+<PropsTable name="EmptyStateProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-variant` | `plain`, `capsule` | Reflects `variant`. |
+
+Classes: `.mac-empty-state` (fills the pane) and `.mac-empty-state-text` (the text, and the
+capsule).
+
+## Accessibility
+
+- It is static text with no role, and is not focusable.
+- When it appears as the result of an action, such as a search with no results, put it in a
+  live region (`role="status"` on it or on the pane) so that it is announced.
+- The plain variant's tertiary colour is faint by design, as in Catalina. Do not use it for
+  instructions people must read to continue; use the capsule or ordinary label text.
+- In forced-colours mode the text uses `CanvasText` and the capsule gets a border.
+
+## Visual comparison
+
+`npm run visual -- empty-state` compares the capsule of Automator's empty workflow area in
+both appearances. Scores from the run that accompanied this component (Chromium on Linux,
+fallback font Inter; 2x, whole crop and with the sentence masked):
+
+| Comparison (reference crop, 2x pixels) | Aqua, whole crop | Aqua, text masked | Dark Aqua, whole crop | Dark Aqua, text masked |
+| --- | --- | --- | --- | --- |
+| `automator` (Automator `1150,780,690,90`) | 6.85% | 0.23% | 4.86% | 0.13% |
+
+The capsule is as wide as its text. The comparison's example tightens the letter spacing by
+0.15 pt so that the capsule has the reference's width with the fallback font, which an
+application does not do. The masked figure, at a threshold of 0.05, is the capsule alone: its
+fill is exact, and what remains is antialiasing on its round ends.
+
+Provisional, because no screenshot shows it: the plain variant (size and colour inferred from
+common AppKit practice).

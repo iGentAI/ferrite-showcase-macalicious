@@ -1,0 +1,380 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "find-my-light",
+      "description": "The People and Devices switch of Find My, Aqua: 260 x 40 pt of the sidebar with the track, the pill of the selected segment and its shadow. The two titles are masked: they are set in the fallback font off Apple devices.",
+      "example": "visual-find-my",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 50,
+          "y": 13,
+          "width": 38,
+          "height": 13
+        },
+        {
+          "x": 171,
+          "y": 13,
+          "width": 42,
+          "height": 13
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0034,
+        "2x": 0.0011
+      },
+      "deltaBudget": {
+        "1x": 1.2,
+        "2x": 0.89
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Find-My.png",
+        "crop": {
+          "x": 114,
+          "y": 136,
+          "width": 520,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "find-my-dark",
+      "description": "The People and Devices switch of Find My, Dark Aqua, titles masked.",
+      "example": "visual-find-my",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 50,
+          "y": 13,
+          "width": 38,
+          "height": 13
+        },
+        {
+          "x": 171,
+          "y": 13,
+          "width": 42,
+          "height": 13
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.017,
+        "2x": 0.0018
+      },
+      "deltaBudget": {
+        "1x": 1.41,
+        "2x": 0.83
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Find-My.png",
+        "crop": {
+          "x": 70,
+          "y": 112,
+          "width": 520,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "find-my-light-text",
+      "description": "The same crop with nothing masked, Aqua: it adds the two titles, 10.5 pt Medium, in the fallback font off Apple devices.",
+      "example": "visual-find-my",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0336,
+        "2x": 0.0312
+      },
+      "deltaBudget": {
+        "1x": 4.44,
+        "2x": 4.65
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Find-My.png",
+        "crop": {
+          "x": 114,
+          "y": 136,
+          "width": 520,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "find-my-dark-text",
+      "description": "The same crop with nothing masked, Dark Aqua.",
+      "example": "visual-find-my",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.042,
+        "2x": 0.0278
+      },
+      "deltaBudget": {
+        "1x": 3.61,
+        "2x": 3.4
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Find-My.png",
+        "crop": {
+          "x": 70,
+          "y": 112,
+          "width": 520,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "states-light",
+      "description": "What no screenshot shows, Aqua: three segments of 80 pt, the first selected.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 260,
+          "height": 45
+        },
+        "pixels": [
+          {
+            "x": 50,
+            "y": 22,
+            "color": "#ffffff",
+            "note": "the pill in the first segment (spec: Colours, pill, measured)"
+          },
+          {
+            "x": 130,
+            "y": 22,
+            "color": "#e8e7e6",
+            "tolerance": 2,
+            "note": "the track in the second segment: grey at 12% over the sidebar (spec: track, as a recipe)"
+          },
+          {
+            "x": 5,
+            "y": 22,
+            "color": "#f8f7f5",
+            "note": "the sidebar beside the track: the shadow does not leave the track"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-dark",
+      "description": "What no screenshot shows, Dark Aqua: three segments of 80 pt, the first selected.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 260,
+          "height": 45
+        },
+        "pixels": [
+          {
+            "x": 50,
+            "y": 22,
+            "color": "#6b6b72",
+            "note": "the pill in the first segment (spec: Colours, pill, measured)"
+          },
+          {
+            "x": 130,
+            "y": 22,
+            "color": "#343538",
+            "tolerance": 2,
+            "note": "the track in the second segment: grey at 24% over the sidebar"
+          }
+        ]
+      }
+    },
+    {
+      "name": "click-light",
+      "description": "A click on the second segment, Aqua: the pill moves there and leaves the track in the first.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "[data-segment='week']"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 260,
+          "height": 45
+        },
+        "pixels": [
+          {
+            "x": 130,
+            "y": 22,
+            "color": "#ffffff",
+            "note": "the pill, now in the second segment"
+          },
+          {
+            "x": 50,
+            "y": 22,
+            "color": "#e8e7e6",
+            "tolerance": 2,
+            "note": "the track, bare in the first segment"
+          }
+        ]
+      }
+    },
+    {
+      "name": "click-dark",
+      "description": "A click on the second segment, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "[data-segment='week']"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 260,
+          "height": 45
+        },
+        "pixels": [
+          {
+            "x": 130,
+            "y": 22,
+            "color": "#6b6b72",
+            "note": "the pill, now in the second segment"
+          },
+          {
+            "x": 50,
+            "y": 22,
+            "color": "#343538",
+            "tolerance": 2,
+            "note": "the track, bare in the first segment"
+          }
+        ]
+      }
+    },
+    {
+      "name": "keyboard-light",
+      "description": "Tab, then Right Arrow, Aqua: the selection and the focus move to the second segment, whose ring is inside the pill.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowRight"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 260,
+          "height": 45
+        },
+        "pixels": [
+          {
+            "x": 130,
+            "y": 22,
+            "color": "#ffffff",
+            "note": "the pill, now in the second segment"
+          },
+          {
+            "x": 93.5,
+            "y": 22,
+            "color": "#8cb5fb",
+            "tolerance": 8,
+            "note": "focus ring token rgb(24 106 246 / 0.5) over the pill, inside its leading edge"
+          },
+          {
+            "x": 50,
+            "y": 22,
+            "color": "#e8e7e6",
+            "tolerance": 2,
+            "note": "the track, bare in the first segment"
+          }
+        ]
+      }
+    },
+    {
+      "name": "keyboard-dark",
+      "description": "Tab, then Right Arrow, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowRight"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 260,
+          "height": 45
+        },
+        "pixels": [
+          {
+            "x": 130,
+            "y": 22,
+            "color": "#6b6b72",
+            "note": "the pill, now in the second segment"
+          },
+          {
+            "x": 93.5,
+            "y": 22,
+            "color": "#4b8ab9",
+            "tolerance": 8,
+            "note": "focus ring token rgb(43 168 255 / 0.5) over the pill, inside its leading edge"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-inactive-light",
+      "description": "Tab in a window that is not key, Aqua: the selected segment takes the focus without a ring.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 260,
+          "height": 45
+        },
+        "pixels": [
+          {
+            "x": 13.5,
+            "y": 22,
+            "color": "#ffffff",
+            "note": "no ring inside the pill's leading edge (CONTRIBUTING, Window state)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-inactive-dark",
+      "description": "Tab in a window that is not key, Dark Aqua: no ring.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 260,
+          "height": 45
+        },
+        "pixels": [
+          {
+            "x": 13.5,
+            "y": 22,
+            "color": "#6b6b72",
+            "note": "no ring inside the pill's leading edge"
+          }
+        ]
+      }
+    }
+  ]
+}

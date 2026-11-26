@@ -1,0 +1,68 @@
+/*
+ * Colours and sizes of Activity Monitor's own that no shared token holds.
+ */
+:root {
+  /* [measured] The line over the footer, the cell dividers and the rules of the summary box:
+     10-15-Catalina-Light-Activity-Monitor.png col 1000 y=1110 and y=1182, row 1250 x=766;
+     the same pixels of the dark capture. */
+  --mac-activity-monitor-rule: light-dark(#c6c6c6, #a6a6a6);
+  /* [measured] The System value and the lower series of the graph: row 1166 x=685 and
+     row 1309 x=1113, the same in both captures. */
+  --mac-activity-monitor-lower: #ff3b30;
+  /* [measured] The User value and the upper series of the graph: row 1206 x=686 and
+     row 1304 x=1113, the same in both captures. */
+  --mac-activity-monitor-upper: #1dadf8;
+  /* [provisional] Colours of the stand-in process icons, which replace application artwork. */
+  --mac-activity-monitor-icon-paper: light-dark(#ffffff, #ececec);
+  --mac-activity-monitor-icon-edge: light-dark(#b0b0b0, #8e8e8e);
+  --mac-activity-monitor-icon-ink: #2a2b2d;
+  --mac-activity-monitor-icon-trace: #5bd36a;
+  --mac-activity-monitor-icon-files: #3d9df2;
+  --mac-activity-monitor-icon-disc: #98989d;
+
+  /* Sizes, in points, measured on 10-15-Catalina-Light-Activity-Monitor.png and the dark
+     capture unless a line says otherwise; the same in both appearances. activity-monitor.css
+     says where each lies. */
+  /* [measured] the toolbar: the bezels 8 pt from the window's edge and 8 pt apart, so the
+     fills start half a point inside and are 9 pt apart */
+  --mac-activity-monitor-toolbar-gap: 9px;
+  --mac-activity-monitor-toolbar-inset: 0.5px;
+  /* [measured] the Process Name cell: the 16 pt icon's box 20 pt from the window's edge, the
+     name 46 pt from it, past the cell's own 3 pt */
+  --mac-activity-monitor-name-gap: 10px;
+  --mac-activity-monitor-name-padding-start: 17px;
+  --mac-activity-monitor-icon-size: 16px;
+  /* [measured] the footer, 117 pt with its line, and the 580 x 90 pt box 12 pt under the line:
+     196.5 pt cells either side of the 185 pt graph cell; the statistics' rules 8 pt from the
+     box's edge and 8.5 pt before a divider, on a 20 pt pitch */
+  --mac-activity-monitor-footer-height: 117px;
+  --mac-activity-monitor-footer-padding-top: 12px;
+  --mac-activity-monitor-statement-padding: 4px 12px;
+  --mac-activity-monitor-panel-gap: 8px;
+  --mac-activity-monitor-panel-padding: 12px;
+  --mac-activity-monitor-summary-width: 580px;
+  --mac-activity-monitor-summary-height: 90px;
+  --mac-activity-monitor-graph-width: 185px;
+  --mac-activity-monitor-statistics-padding-top: 4px;
+  --mac-activity-monitor-statistics-padding-edge: 8px;
+  --mac-activity-monitor-statistics-padding-divider: 8.5px;
+  --mac-activity-monitor-statistic-gap: 8px;
+  --mac-activity-monitor-statistic-height: 20px;
+  --mac-activity-monitor-statistic-line-height: 20px;
+  --mac-activity-monitor-statistic-padding-start: 4px;
+  --mac-activity-monitor-statistic-padding-end: 2.5px;
+  /* [measured] the graph cell: 9 pt semibold capitals over a rule 22 pt under the box's edge,
+     inset 11.5 pt from both dividers; the newest point 3 pt before the trailing divider and the
+     baseline 1 pt above the box's bottom edge */
+  --mac-activity-monitor-graph-title-height: 23px;
+  --mac-activity-monitor-graph-title-margin-inline: 11.5px;
+  --mac-activity-monitor-graph-title-padding-top: 5px;
+  --mac-activity-monitor-graph-title-size: 9px;
+  --mac-activity-monitor-graph-title-line-height: 11px;
+  --mac-activity-monitor-graph-title-tracking: 0.3px;
+  --mac-activity-monitor-graph-plot-inset-bottom: 1px;
+  --mac-activity-monitor-graph-plot-inset-end: 3px;
+  /* [provisional] the least room left beside the box in a window narrower than it: no capture
+     shows one */
+  --mac-activity-monitor-summary-min-margin: 16px;
+}

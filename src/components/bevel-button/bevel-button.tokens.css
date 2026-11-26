@@ -1,0 +1,31 @@
+/*
+ * Bevel button colours that differ between Aqua and Dark Aqua and are not shared tokens.
+ * Read from the Orientation buttons of the Print sheet: Light-Print columns x=1004 (on) and
+ * x=1104 (off), Dark-Print columns x=920 (on) and x=1020 (off). The dark sheet is a vibrant
+ * material with noise of about two levels, so its values are the centre of what was read.
+ */
+:root {
+  /* [measured] 1 pt border. In Dark Aqua the on button has no visible border: its fill runs
+     to the edge. */
+  --mac-bevel-button-border: light-dark(#afafaf, #606061);
+  --mac-bevel-button-border-on: light-dark(#afafaf, #8b8b8b);
+  /* [measured] off: lighter towards the bottom */
+  --mac-bevel-button-fill: linear-gradient(
+    to bottom,
+    light-dark(#e2e2e2, #414042),
+    light-dark(#e8e8e8, #434344) 10%,
+    light-dark(#ebebeb, #454546) 25%,
+    light-dark(#f0f0f0, #464647) 50%,
+    light-dark(#f4f4f4, #484849) 78%,
+    light-dark(#f7f7f7, #4a4a4b)
+  );
+  /* [measured] on: the same ramp, darker, in light; flat in dark */
+  --mac-bevel-button-fill-on: linear-gradient(
+    to bottom,
+    light-dark(#c4c4c4, #8b8b8b),
+    light-dark(#c9c9c9, #8b8b8b) 23%,
+    light-dark(#cfcfcf, #8b8b8b) 50%,
+    light-dark(#d6d6d6, #8b8b8b) 78%,
+    light-dark(#dbdbdb, #8b8b8b)
+  );
+}

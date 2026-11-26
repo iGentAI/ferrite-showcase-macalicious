@@ -1,0 +1,34 @@
+/*
+ * Secure text field (NSSecureTextField): a text field whose input is a password input. The
+ * bezel, sizes, focus ring and disabled look are the text field's; this file adds what the
+ * secure field has of its own. Nothing here is measured: no screenshot shows the control.
+ *
+ * States
+ *   :has([data-echo="none"])   typed text is not echoed at all
+ *
+ * The rules reach the input only through inherited properties (letter-spacing, color), set
+ * on the root.
+ */
+
+/* Bullets about 7 pt apart, as AppKit sets them, once there is text. */
+.mac-secure-text-field:where(:not(:has(:placeholder-shown))) {
+  letter-spacing: 1px;
+}
+
+/* echo="none": invisible text. The insertion point keeps the text colour (the text field sets
+   caret-color itself), and the placeholder its own. */
+.mac-secure-text-field:where(:has([data-echo="none"])) {
+  color: transparent;
+}
+
+/* Caps Lock indicator: 13 pt, 4 pt from the trailing edge. */
+.mac-secure-text-field-caps-lock {
+  flex: none;
+  width: 13px;
+  height: 13px;
+  margin-inline-end: 4px;
+  fill: none;
+  stroke: var(--mac-color-label-secondary);
+  stroke-linejoin: round;
+  pointer-events: none;
+}

@@ -1,0 +1,287 @@
+/* Search field (NSSearchField). Notes: search-field.tsx; this file is at its size budget. */
+.mac-search-field {
+  --_height: var(--mac-search-field-height, 22px);
+  --_radius: var(--mac-radius-control-regular);
+  --_glyph: 12.5px;
+  --_glyph-x: 6px;
+  --_glyph-dy: 0.75px;
+  --_glyph-stroke: 1px;
+  --_text-x: 24px;
+  --_clear: 14px;
+  --_fill: var(--mac-color-text-field-background);
+  --_border-top: var(--mac-search-field-border-top);
+  --_border-side: var(--mac-search-field-border-side);
+  --_border-bottom: var(--mac-search-field-border-bottom);
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  box-sizing: border-box;
+  width: 160px;
+  min-width: 0;
+  max-width: 100%;
+  height: var(--_height);
+  border-radius: var(--_radius);
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  cursor: text;
+}
+
+.mac-search-field::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  box-sizing: border-box;
+  border: var(--_edge, var(--mac-hairline)) solid;
+  border-color: var(--_border-top) var(--_border-side) var(--_border-bottom);
+  border-radius: inherit;
+  background: linear-gradient(var(--_fill), var(--_fill)) padding-box;
+  box-shadow: var(--_shade, var(--mac-search-field-inner-shadow));
+  pointer-events: none;
+}
+
+/* Store field (App Store) */
+.mac-search-field:where([data-variant="store"]) {
+  --_height: var(--mac-search-field-height, 26px);
+  --_radius: 4px;
+  --_glyph: 14px;
+  --_glyph-x: 7px;
+  --_glyph-dy: 0px;
+  --_glyph-stroke: 1.1px;
+  --_text-x: 27px;
+  --_text-dy: 2px;
+  --_fill: var(--mac-search-field-store-fill);
+  --_border-top: var(--mac-search-field-store-border);
+  --_border-side: var(--_border-top);
+  --_border-bottom: var(--_border-top);
+  --_edge: 1px;
+  --_ink: var(--mac-search-field-store-glyph);
+  --_hint: var(--_border-top);
+  --_shade: none;
+  font-size: 12px;
+}
+
+/* Its centred copy of glass and placeholder, clipped inside the field's padding */
+.mac-search-field-rest {
+  position: absolute;
+  inset: var(--_text-dy) 9.5px 0 7px;
+  display: var(--_rest, none);
+  align-items: center;
+  gap: 5.5px;
+  overflow: hidden;
+  color: var(--_hint);
+  white-space: pre;
+  pointer-events: none;
+}
+
+.mac-search-field-rest::before,
+.mac-search-field-rest::after {
+  content: "";
+  flex: 1;
+}
+
+.mac-search-field-rest > svg {
+  position: static;
+  flex: none;
+  margin-block-start: calc(-1 * var(--_text-dy));
+}
+
+.mac-search-field:where(
+  [data-variant="store"]:not([data-search-menu], :focus-within, :has(> [data-force~="focus"])):has(
+    > :placeholder-shown
+  )
+) {
+  --_rest: flex;
+  --_hide: hidden;
+  --_hint-shown: transparent;
+}
+
+/* Sidebar field */
+.mac-search-field:where([data-variant="sidebar"]) {
+  --_height: var(--mac-search-field-height, 23px);
+  --_fill: var(--mac-search-field-sidebar-fill);
+  --_border-top: var(--mac-search-field-sidebar-border-top);
+  --_border-side: var(--mac-search-field-sidebar-border-side);
+  --_border-bottom: var(--mac-search-field-sidebar-border-bottom);
+}
+
+/* Sizes */
+.mac-search-field:where([data-size="small"]) {
+  --_height: var(--mac-search-field-height, 18px);
+  --_radius: 4px;
+  --_glyph: 11px;
+  --_glyph-x: 6px;
+  --_glyph-dy: 0.5px;
+  --_glyph-stroke: 0.75px;
+  --_text-x: 22.5px;
+  --_clear: 12px;
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+.mac-search-field:where([data-size="mini"]) {
+  --_height: var(--mac-search-field-height, 15px);
+  --_radius: var(--mac-radius-control-mini);
+  --_glyph: 9px;
+  --_glyph-x: 5px;
+  --_glyph-dy: 0.5px;
+  --_glyph-stroke: 0.75px;
+  --_text-x: 18px;
+  --_clear: 10px;
+  font: var(--mac-font-control-mini);
+  letter-spacing: var(--mac-tracking-mini);
+}
+
+/* Glass */
+.mac-search-field-glyph {
+  position: absolute;
+  inset-block-start: calc((var(--_height) - var(--_glyph)) / 2 + var(--_glyph-dy));
+  inset-inline-start: var(--_glyph-x);
+  width: var(--_glyph);
+  height: var(--_glyph);
+  overflow: visible;
+  fill: none;
+  stroke: var(--_ink, var(--mac-search-field-glyph));
+  stroke-width: var(--_glyph-stroke);
+  pointer-events: none;
+}
+
+.mac-search-field > .mac-search-field-glyph {
+  visibility: var(--_hide, visible);
+}
+
+.mac-search-field-glyph > * {
+  vector-effect: non-scaling-stroke;
+}
+
+.mac-search-field-glyph > path {
+  stroke-width: calc(var(--_glyph-stroke) * 1.15);
+  stroke-linecap: round;
+}
+
+.mac-search-field-input {
+  flex: 1 1 0;
+  box-sizing: border-box;
+  width: 0;
+  min-width: 0;
+  margin: 0;
+  padding: var(--_text-dy, 0) calc(var(--_clear) + 7px) 0 calc(var(--_text-x) + var(--_menu-x, 0px));
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  color: inherit;
+  caret-color: var(--mac-color-text);
+  font: inherit;
+  letter-spacing: inherit;
+  appearance: none;
+  outline: none;
+}
+
+.mac-search-field-input::placeholder {
+  color: var(--_hint-shown, var(--_hint, var(--mac-color-text-placeholder)));
+  opacity: 1;
+  -webkit-text-fill-color: currentcolor;
+}
+
+.mac-search-field-input::-webkit-search-cancel-button,
+.mac-search-field-input::-webkit-search-decoration {
+  appearance: none;
+}
+
+.mac-search-field-input::selection {
+  background: var(--mac-highlight);
+}
+
+.mac-search-field-input:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+)::selection {
+  background: var(--mac-color-selected-text-background-unemphasized);
+}
+
+/* Buttons */
+.mac-search-field-clear,
+.mac-search-field-menu {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: default;
+  appearance: none;
+  outline: none;
+}
+
+/* Search menu */
+.mac-search-field:where([data-search-menu]) {
+  --_menu-x: 6px;
+}
+
+.mac-search-field-menu {
+  inset: 0 auto 0 0;
+  width: calc(var(--_text-x) + 4px);
+}
+
+/* Cancel button */
+.mac-search-field-clear {
+  inset-block-start: calc((var(--_height) - var(--_clear)) / 2);
+  inset-inline-end: 4px;
+  display: block;
+  width: var(--_clear);
+  height: var(--_clear);
+  border-radius: 50%;
+  color: var(--mac-search-field-clear);
+}
+
+.mac-search-field-clear > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: currentcolor;
+}
+
+.mac-search-field-clear:where(:active) {
+  filter: brightness(0.8);
+}
+
+.mac-search-field-input:where(:placeholder-shown) ~ .mac-search-field-clear {
+  display: none;
+}
+
+/* Disabled */
+.mac-search-field:where([data-disabled]) {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.mac-search-field:where([data-disabled], [data-readonly]) > .mac-search-field-clear {
+  display: none;
+}
+
+.mac-search-field-input:where(:disabled) {
+  opacity: 1;
+  -webkit-text-fill-color: currentcolor;
+}
+
+/* Focus ring */
+.mac-search-field:where(:focus-within, :has(> [data-force~="focus"])):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: calc(var(--mac-focus-ring-width) + var(--mac-hairline)) solid var(--mac-focus-ring-color);
+  outline-offset: calc(var(--mac-focus-ring-offset) - var(--mac-hairline));
+}
+
+@media (forced-colors: active) {
+  .mac-search-field::before {
+    border-color: FieldText;
+  }
+
+  .mac-search-field:where([data-disabled]) {
+    opacity: 1;
+  }
+
+  .mac-search-field:where([data-disabled])::before {
+    border-color: GrayText;
+  }
+}

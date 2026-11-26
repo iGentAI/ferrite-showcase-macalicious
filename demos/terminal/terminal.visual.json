@@ -1,0 +1,54 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "pending": "No reference: the reference set holds no screenshot of Terminal in either appearance. The checks below hold its provisional colours.",
+  "comparisons": [
+    {
+      "name": "window-light",
+      "description": "No reference: the reference set holds no screenshot of Terminal. These checks hold the Basic profile's provisional colours and the window's close button, so a change to them is seen; they compare with no capture.",
+      "example": "visual-window",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 584, "height": 382 },
+        "pixels": [
+          {
+            "x": 300,
+            "y": 300,
+            "color": "#ffffff",
+            "note": "an empty part of the screen: --mac-terminal-basic-background, provisional, not measured"
+          },
+          {
+            "x": 38,
+            "y": 35,
+            "color": "#ff6057",
+            "tolerance": 8,
+            "note": "the close button of a key window: --mac-color-window-close, measured elsewhere (spec: window-controls)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-dark",
+      "description": "As window-light in Dark Aqua, where the Basic profile follows the appearance. No reference: the reference set holds no screenshot of Terminal.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 584, "height": 382 },
+        "pixels": [
+          {
+            "x": 300,
+            "y": 300,
+            "color": "#1e1e1e",
+            "note": "an empty part of the screen: --mac-terminal-basic-background, provisional, not measured"
+          },
+          {
+            "x": 38,
+            "y": 35,
+            "color": "#ff5a53",
+            "tolerance": 8,
+            "note": "the close button of a key window: --mac-color-window-close, measured elsewhere (spec: window-controls)"
+          }
+        ]
+      }
+    }
+  ]
+}

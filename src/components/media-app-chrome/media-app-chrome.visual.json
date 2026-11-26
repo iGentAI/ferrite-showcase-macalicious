@@ -1,0 +1,280 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "music-bar-light",
+      "description": "Music's playback bar, Aqua. Masked: the Apple logo in the display, which the library does not draw, and the top point and the top right corner, where the capture has the window's rim and rounded corner.",
+      "example": "visual-music-bar",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 0, "y": 0, "width": 999, "height": 1 },
+        { "x": 994, "y": 0, "width": 5, "height": 5 },
+        { "x": 488, "y": 12, "width": 23, "height": 26 }
+      ],
+      "budget": { "1x": 0.064, "2x": 0.0112 },
+      "deltaBudget": { "1x": 2.3, "2x": 1.2 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Music.png",
+        "crop": { "x": 554, "y": 76, "width": 1998, "height": 110 }
+      }
+    },
+    {
+      "name": "music-bar-dark",
+      "description": "Music's playback bar, Dark Aqua. Masked: the Apple logo in the display, which the library does not draw, and the top point and the top right corner, where the capture has the window's rim and rounded corner.",
+      "example": "visual-music-bar",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 0, "y": 0, "width": 999, "height": 1 },
+        { "x": 994, "y": 0, "width": 5, "height": 5 },
+        { "x": 488, "y": 12, "width": 23, "height": 26 }
+      ],
+      "budget": { "1x": 0.052, "2x": 0.0118 },
+      "deltaBudget": { "1x": 2.4, "2x": 1.4 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Music.png",
+        "crop": { "x": 554, "y": 76, "width": 1998, "height": 110 }
+      }
+    },
+    {
+      "name": "podcasts-bar-dark",
+      "description": "Podcasts' playback bar with an episode loaded, Dark Aqua. Masked: the show's artwork in the display, the display's two lines of text, and the top point and the top right corner, where the capture has the window's rim and rounded corner.",
+      "example": "visual-podcasts-bar",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 0, "y": 0, "width": 876, "height": 1 },
+        { "x": 871, "y": 0, "width": 5, "height": 5 },
+        { "x": 241, "y": 4, "width": 46, "height": 46 },
+        { "x": 336, "y": 11, "width": 206, "height": 14 },
+        { "x": 308, "y": 26, "width": 262, "height": 15 }
+      ],
+      "budget": { "1x": 0.046, "2x": 0.0245 },
+      "deltaBudget": { "1x": 5, "2x": 3.7 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Podcasts.png",
+        "crop": { "x": 634, "y": 76, "width": 1752, "height": 110 }
+      }
+    },
+    {
+      "name": "podcasts-bar-light",
+      "description": "Podcasts' playback bar with nothing loaded, Aqua: disabled skip buttons and an idle display. Masked: the Apple Podcasts mark and the Apple logo in the display, which the library does not draw, and the top point and the top right corner, where the capture has the window's rim and rounded corner.",
+      "example": "visual-podcasts-idle-bar",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 0, "y": 0, "width": 876, "height": 1 },
+        { "x": 871, "y": 0, "width": 5, "height": 5 },
+        { "x": 249, "y": 10, "width": 30, "height": 34 },
+        { "x": 428, "y": 12, "width": 22, "height": 26 }
+      ],
+      "budget": { "1x": 0.055, "2x": 0.0172 },
+      "deltaBudget": { "1x": 3, "2x": 1.9 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Podcasts.png",
+        "crop": { "x": 634, "y": 76, "width": 1752, "height": 110 }
+      }
+    },
+    {
+      "name": "fits-basic-light",
+      "description": "The basic example at its 860 pt width, Aqua: the trailing Up Next button is inside the window, 20 pt from its edge. A layout check; no capture has a window this narrow.",
+      "example": "basic",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 860, "height": 320 },
+        "pixels": [
+          {
+            "x": 833,
+            "y": 23.5,
+            "color": "#7d7d7d",
+            "tolerance": 4,
+            "note": "first line of the Up Next glyph, in the measured trailing colour (Light-Music row y=130 @ 2485), at the measured 20 pt inset"
+          },
+          {
+            "x": 850,
+            "y": 27.5,
+            "color": "#fafafa",
+            "tolerance": 4,
+            "note": "bar after the last glyph: the measured middle of the gradient (Light-Music @ 700,130)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "fits-podcasts-light",
+      "description": "The Podcasts example at its 900 pt width, Aqua: the trailing Up Next button is inside the window, 19 pt from its edge. A layout check; no capture has a window this narrow.",
+      "example": "podcasts",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 900, "height": 300 },
+        "pixels": [
+          {
+            "x": 874,
+            "y": 23.5,
+            "color": "#4c4c4c",
+            "tolerance": 4,
+            "note": "first line of the Up Next glyph, in the measured Podcasts glyph colour (Light-Podcasts @ 2321,130), at the measured 19 pt inset"
+          },
+          {
+            "x": 890,
+            "y": 27.5,
+            "color": "#ffffff",
+            "note": "flat bar after the last glyph (Light-Podcasts row y=130)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inactive-light",
+      "description": "Music's bar in an inactive window, Aqua: a flat bar and every glyph in the disabled colour. No capture shows an inactive Music window.",
+      "example": "visual-music-bar",
+      "appearance": "light",
+      "windowState": "inactive",
+      "expect": {
+        "size": { "width": 999, "height": 55 },
+        "pixels": [
+          {
+            "x": 200,
+            "y": 10,
+            "color": "#f6f6f6",
+            "note": "flat bar: measured on the toolbar of the inactive Books window (Light-Books col x=700)"
+          },
+          {
+            "x": 138,
+            "y": 27.5,
+            "color": "#b7b7b7",
+            "note": "play glyph in the disabled colour, which is measured (Light-Music @ 750,130); that an inactive window uses it is inferred"
+          },
+          {
+            "x": 753,
+            "y": 27.5,
+            "color": "#b7b7b7",
+            "tolerance": 4,
+            "note": "speaker glyph in the same disabled colour (inferred)"
+          },
+          {
+            "x": 848.6,
+            "y": 33.2,
+            "color": "#b7b7b7",
+            "tolerance": 4,
+            "note": "dot of the audio-output glyph in the same disabled colour (inferred)"
+          },
+          {
+            "x": 600,
+            "y": 54.75,
+            "color": "#cfcfcf",
+            "scale": 2,
+            "note": "the separator stays: measured in the key window (Light-Music @ 900,185), inferred for an inactive one"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inactive-dark",
+      "description": "Music's bar in an inactive window, Dark Aqua: a flat bar and every glyph in the disabled colour. No capture shows an inactive Music window.",
+      "example": "visual-music-bar",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "expect": {
+        "size": { "width": 999, "height": 55 },
+        "pixels": [
+          {
+            "x": 200,
+            "y": 10,
+            "color": "#2b2d2f",
+            "note": "flat bar: measured on the toolbar of the inactive Books window (Dark-Books col x=700)"
+          },
+          {
+            "x": 138,
+            "y": 27.5,
+            "color": "#6c6d6f",
+            "note": "play glyph in the disabled colour, which is measured (Dark-Music @ 750,130); that an inactive window uses it is inferred"
+          },
+          {
+            "x": 753,
+            "y": 27.5,
+            "color": "#6c6d6f",
+            "tolerance": 4,
+            "note": "speaker glyph in the same disabled colour (inferred)"
+          },
+          {
+            "x": 848.6,
+            "y": 33.2,
+            "color": "#6c6d6f",
+            "tolerance": 4,
+            "note": "dot of the audio-output glyph in the same disabled colour (inferred)"
+          },
+          {
+            "x": 600,
+            "y": 54.75,
+            "color": "#000000",
+            "scale": 2,
+            "note": "the separator stays: measured in the key window (Dark-Music @ 900,185), inferred for an inactive one"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sidebar-inset-light",
+      "description": "A Sidebar inside the chrome keeps its 18 pt leading inset, Aqua: the row's icon, a grey block in this example, starts 18 pt from the edge. A regression check: the chrome's private variables once inherited into the Sidebar and removed the inset. Music's own sidebar is not compared with a capture (its icons are Apple's).",
+      "example": "visual-sidebar-inset",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 260, "height": 150 },
+        "pixels": [
+          {
+            "x": 27,
+            "y": 107.5,
+            "color": "#808080",
+            "note": "the icon block of the first row, 18 pt from the edge (sidebar spec: icon 18 pt from the edge, measured)"
+          },
+          {
+            "x": 9,
+            "y": 107.5,
+            "color": "#e7e8e8",
+            "note": "the leading inset before the icon is the sidebar's opaque material, not the block"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inactive-toggle-light",
+      "description": "The states example in an inactive window, Aqua: the Lyrics toggle, which is on, loses its accent colour like every other glyph. No capture shows an inactive Music window.",
+      "example": "states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "expect": {
+        "size": { "width": 420, "height": 256 },
+        "pixels": [
+          {
+            "x": 356.75,
+            "y": 26,
+            "color": "#b7b7b7",
+            "tolerance": 4,
+            "note": "left side of the Lyrics bubble (aria-pressed) in the disabled colour, not the accent (inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inactive-toggle-dark",
+      "description": "The same in Dark Aqua.",
+      "example": "states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "expect": {
+        "size": { "width": 420, "height": 256 },
+        "pixels": [
+          {
+            "x": 356.75,
+            "y": 26,
+            "color": "#6c6d6f",
+            "tolerance": 4,
+            "note": "left side of the Lyrics bubble (aria-pressed) in the disabled colour, not the accent (inferred)"
+          }
+        ]
+      }
+    }
+  ]
+}

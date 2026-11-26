@@ -1,0 +1,178 @@
+---
+title: Editorial Card
+description: A feature of a store page, as in the App Store and TV: an editorial panel with a headline and round artwork, or the hero banner at the top of the page.
+---
+
+<Example name="basic" both />
+
+The App Store's Discover page opens with a hero, a photograph as wide as the page with a
+headline over it, and continues with editorial cards: tinted panels with an eyebrow, a title,
+a sentence or two and a round picture. TV opens its tv+ section with a hero too, raised from
+the page like its other cards. All are drawn by the apps (collection view items; no AppKit
+class and no system card style), and Base UI has no primitive for them: `EditorialCard` is a
+styled element whose `render` prop, through Base UI's `useRender`, makes it a link or a button.
+The smaller cards under a hero belong to [Card Grid](/components/card-grid).
+
+## Usage
+
+```tsx
+import { EditorialCard } from "macalicious/editorial-card";
+import "macalicious/editorial-card.css";
+
+<EditorialCard
+  render={<a href="/story/act-fast" />}
+  eyebrow="Collection"
+  title="Act Fast!"
+  headingLevel={3}
+  artwork={<img src={story.art} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+>
+  These games push your reaction time to the limit.
+</EditorialCard>
+```
+
+Or copy the source into your project: `npx macalicious add editorial-card`. See
+[Installation](/installation).
+
+A card is as wide as its container. The App Store sets two panels side by side with a 20 pt
+gap, which a [Card Grid](/components/card-grid) with `columns={2}` does. The library ships no
+artwork: the examples on this page draw gradients; supply your own images.
+
+## Guidelines
+
+The Human Interface Guidelines have no page for these cards. What the two apps do:
+
+- One hero at the top of a page, and nothing else beside it.
+- Keep the eyebrow to a word or two that says what kind of story this is, and the title to
+  two lines.
+- Put the text of a hero where its picture is calm: it lies over the picture's leading top
+  corner and has no backdrop of its own.
+- A card is one target: make the whole card the link or the button.
+
+## Variants and states
+
+<Example name="hero" both />
+
+| Variant | From | Look |
+| --- | --- | --- |
+| `panel` | App Store, editorial cards | Fill `#f7f7f8`, Dark Aqua `#343538`; corners of 8 pt; no border, no shadow; text 32.5 pt in; a 170 pt disc of artwork 15 pt from the trailing edge |
+| `hero` | App Store, Discover | The artwork fills the card; corners of 6 pt; no border, no shadow; text 27.5 pt in, in colours that do not change with the appearance, because it lies on the picture |
+| `hero` with `raised` | TV, tv+ | Corners of 12px (see Visual comparison), a hairline on every side and the drop shadow of TV's cards; 1214 : 455 |
+
+The states apply when the card is a link or a button. Pressed and keyboard-focused are
+transient, so this gallery pins them.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | As above |
+| Hover | – | No change |
+| Pressed | `:active` on a link or button card | The card dimmed by a tenth |
+| Keyboard focus | `:focus-visible` | Focus ring around the card |
+| Disabled | the card is a disabled button, or has `aria-disabled="true"` | Half opacity. The look only: with `aria-disabled` the card still receives its events, so leave out its handler or its `href` as well |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No focus ring; nothing else changes |
+
+Measured, in both appearances: the panel's size, fill, corners, the positions, sizes and
+colours of its three texts and its disc; the App Store hero's width, bottom corners and the
+positions, sizes and colours of its eyebrow and title; TV's hero with its corner, hairline and
+shadow. Provisional, because no screenshot shows them: the pressed and disabled looks and the
+focus ring; the top corners of the App Store's hero and its full height (its top is scrolled
+out of the capture, which shows the lower 340 pt); the hero's body text, which the photograph
+hides in the capture (13 pt grey); and the fill behind missing artwork. The width of the
+panel's text column, 224 pt, is computed from where the two cards break their lines.
+
+## Sizes
+
+One size, set by the container.
+
+| Variant | Width | Height |
+| --- | --- | --- |
+| `panel` | its container's; 462 pt in the App Store | at least 230 pt |
+| `hero` | its container's; 945 pt in the App Store | from `--mac-editorial-card-aspect`, 945 : 340 by default; or give it a `height` |
+| `hero` with `raised` | its container's; 1214 pt in TV | 1214 : 455 by default |
+
+In a panel the eyebrow is 11 pt Semibold capitals with its cap top 28 pt below the card's
+top, the title 24 pt with its cap top at 45.5 pt, and the body 13 pt on a 19 pt pitch from
+83.5 pt. A hero's text is placed from its bottom edge, the only edge the capture shows: the
+eyebrow's cap top is 289 pt above it, and the title is 24 pt on a 28 pt pitch from 258 pt
+above it, in a column of at most 290 pt. In a hero of 340 pt, the part the capture shows,
+that is 51 and 82 pt below the top; a taller hero has the difference above its text, and a
+shorter one keeps the text 51 pt below its top and cuts it off at the bottom.
+
+## API
+
+<PropsTable name="EditorialCardProps" />
+
+The remaining props are those of a `<div>`, or of the element given to Base UI's `render`
+prop, and go to that element with `ref`.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-variant` | card | `panel`, `hero` | Reflects `variant`. |
+| `data-raised` | card | present or absent | Reflects `raised` on a hero. |
+| `data-force` | card | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+Classes: `.mac-editorial-card`, `.mac-editorial-card-text` (with `-eyebrow`, `-title` and
+`-body` inside) and `.mac-editorial-card-artwork`.
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-editorial-card-aspect` | `945 / 340`; raised `1214 / 455` | Proportions of a hero. |
+| `--mac-editorial-card-radius` | `8px`; hero `6px`; raised `12px` | Corner radius. |
+| `--mac-editorial-card-fill` | `#f7f7f8`, `#343538` in Dark Aqua | Fill of a panel. |
+| `--mac-editorial-card-title`, `--mac-editorial-card-secondary` | `#262626` and `#7c7c7c`; `#e0e0e1` and `#a3a4a5` in Dark Aqua | Title, and eyebrow and body, of a panel. |
+| `--mac-editorial-card-hero-title`, `--mac-editorial-card-hero-secondary` | `#303033` and `#878785` | The same of a hero. Set them light for a dark picture. |
+| `--mac-editorial-card-raised-edge`, `--mac-editorial-card-raised-shadow` | a grey at 20%; `0 4px 7px` black at 25% | Hairline and shadow of a raised hero. |
+| `--mac-editorial-card-placeholder` | `#e9e9eb`, `#48494d` in Dark Aqua | Behind artwork that is missing or transparent. |
+
+## Accessibility
+
+- A card is static unless you render it as a link or a button with `render`. Then it is one
+  tab stop, Return (and Space, for a button) activates it, and it is named by its text:
+  eyebrow, title and body, in that order. A card without text needs an `aria-label`.
+- The title is plain text unless `headingLevel` is given, which makes it a heading of that
+  level (`role="heading"` with `aria-level`), so that a page of stories can be read by its
+  headings. It is a `<span>` and not an `<h3>` so that the card stays valid as a link or a
+  button. Leave `headingLevel` out of a card that is a button: a button's content is read as
+  its name, not as structure.
+- Leave the `alt` of the artwork empty when the text already says what the story is.
+- The text of a hero lies on the picture with no backdrop. Check its contrast against your
+  picture and set the two hero text tokens accordingly; the measured greys suit a light sky.
+- The focus ring is drawn only in a key window. In forced-colours mode the card has a
+  border, one point wide, in the system's text colour.
+
+## Visual comparison
+
+`npm run visual -- editorial-card` compares four examples with the App Store and TV captures
+in both appearances. Apple's artwork is masked or replaced by flat colour. Share of pixels
+that differ, in Chromium on Linux with the fallback font:
+
+| Comparison | Aqua 2x | Aqua 1x | Dark Aqua 2x | Dark Aqua 1x |
+| --- | --- | --- | --- | --- |
+| Panel, "Act Fast!" (App Store `634,796,924,460`), the disc's square masked | 2.48% | 2.96% | 2.53% | 2.90% |
+| The same, text masked too | 0.00% | 0.00% | 0.00% | 0.00% |
+| Hero, bottom-left corner (App Store `622,732,40,36`) | 2.99% | 2.50% | 4.44% | 1.94% |
+| Hero, eyebrow and title (App Store `660,160,480,180`), the cloud behind them replaced by a gradient | 14.58% | 15.93% | 12.33% | 13.92% |
+| The same, text masked | 3.86% | 3.75% | 1.45% | 1.00% |
+| Raised hero, bottom-left corner (TV `180,1596,48,48`), nothing masked | 1.43% | 2.78% | 0.65% | 1.22% |
+
+The first row scores the three texts in the fallback font; with them masked the panel's fill,
+edges and corners match the capture. Its fixture breaks the body's line where the capture
+does, because the fallback font sets the line shorter and would fit another word. The App Store hero's corner is compared over water in the photograph, which the fixture
+replaces by its average colour, so that row scores the photograph's texture as well as the
+corner. The hero's eyebrow and title lie on cloud, which the fixture draws as a gradient
+through the cloud's colours: with the text masked that row scores the stand-in, and without
+it the text, whose lines stand where the capture's do and which the fallback font sets wider
+at 24 pt. TV's corner is a continuous curve, which `border-radius` cannot draw: 12px matches the
+pixels best (11px, the spec's circular fit, scores 2.00% and 1.35% at 2x), and what is left
+lies along the curve. The raised hero has a hairline along its bottom edge, which TV's
+smaller cards do not.
+
+No screenshot shows a pressed or focused card or a window that is not key. Those states are
+checked in a real browser (the `expect` comparisons): a panel that is a button keeps the
+panel's layout, its disc round and its title at the top; pressed, the fill is at 90%
+brightness; Tab puts the focus ring around it in a key window and none in another.
+
+Not built: the round play button TV shows over a card under the pointer. No screenshot shows
+it and the spec infers only that it exists, with no size, position or colours to build from.
+The hero's paging is a component of its own, [Shelf Pager](/components/shelf-pager).

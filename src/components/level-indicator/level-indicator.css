@@ -1,0 +1,272 @@
+/*
+ * Level indicator (NSLevelIndicator).
+ *
+ * Parts
+ *   .mac-level-indicator           the root (role=meter, or a group around a slider when
+ *                                  editable)
+ *   .mac-level-indicator-control   editable only: the area that takes the pointer
+ *   .mac-level-indicator-thumb     editable only: invisible holder of the range input
+ *   .mac-level-indicator-track     continuous, relevancy, storage: the track
+ *   .mac-level-indicator-fill      its filled part; Base UI sets its width from the value
+ *   .mac-level-indicator-ticks     tick marks under a continuous track
+ *   .mac-level-indicator-segments  discrete, rating: the row
+ *   .mac-level-indicator-segment   one discrete segment, [data-filled]
+ *   .mac-level-indicator-star      one rating star, [data-filled]
+ *
+ * States
+ *   [data-variant="continuous" | "discrete" | "rating" | "relevancy" | "storage"]
+ *   [data-level="normal" | "warning" | "critical"]   green, yellow or red fill
+ *   [data-tiered="rising" | "falling"]               the fill keeps each level's colour;
+ *                                                    falling when low values are the problem
+ *   [data-editable]                                  the value can be set
+ *   :has(:focus-visible)                             keyboard focus ring; key window only
+ *   [data-disabled]                                  dimmed
+ *
+ * A read-only level indicator does not react to the window state; an editable one loses its
+ * focus ring in a window that is not key (CONTRIBUTING, Window state).
+ */
+.mac-level-indicator {
+  --_fill: var(--mac-color-system-green);
+
+  display: block;
+  box-sizing: border-box;
+  min-width: 0;
+  border-radius: 2px;
+}
+
+.mac-level-indicator:where([data-disabled]) {
+  opacity: 0.5;
+}
+
+/* Editable. Base UI's Slider maps the pointer's position along the control to a value. */
+.mac-level-indicator-control {
+  position: relative;
+  cursor: default;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* The slider's thumb is not drawn; the range input inside it takes keyboard focus. */
+.mac-level-indicator-thumb {
+  top: 0;
+  width: 1px;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Segments and stars. A slider rounds the pointer's position to the nearest step; AppKit
+   fills the segment under the pointer wherever it is hit. So the control is moved half a
+   segment towards the start and its content moved back: rounding to the nearest step is then
+   rounding up to the segment under the pointer. Half a pixel more, so that a segment's first
+   pixel column, exactly half a step, is its own. The control is not a pointer target. */
+.mac-level-indicator:where([data-variant="discrete"], [data-variant="rating"])
+.mac-level-indicator-control {
+  inset-inline-start: calc(-50% / var(--_count) - 0.5px);
+  pointer-events: none;
+}
+
+.mac-level-indicator-control > .mac-level-indicator-segments {
+  position: relative;
+  inset-inline-start: calc(50% / var(--_count) + 0.5px);
+  pointer-events: auto;
+}
+
+.mac-level-indicator:where([data-disabled]) .mac-level-indicator-segments {
+  pointer-events: none;
+}
+
+.mac-level-indicator:where([data-editable]):where(:has(:focus-visible)):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: 1px;
+}
+
+.mac-level-indicator:where([data-level="warning"]),
+.mac-level-indicator-segment:where([data-level="warning"]) {
+  --_fill: var(--mac-color-system-yellow);
+}
+
+.mac-level-indicator:where([data-level="critical"]),
+.mac-level-indicator-segment:where([data-level="critical"]) {
+  --_fill: var(--mac-color-system-red);
+}
+
+/* Tiers: a segment below the level reached stays green, and a continuous fill is three bands
+   that change where the component says (--_t1, --_t2, lengths along the fill). */
+.mac-level-indicator-segment:where([data-level="normal"]) {
+  --_fill: var(--mac-color-system-green);
+}
+
+.mac-level-indicator:where([data-tiered]) {
+  --_to: to right;
+  --_c1: var(--mac-color-system-green);
+  --_c3: var(--mac-color-system-red);
+}
+
+.mac-level-indicator:where([data-tiered]):where(:dir(rtl)) {
+  --_to: to left;
+}
+
+.mac-level-indicator:where([data-tiered="falling"]) {
+  --_c1: var(--mac-color-system-red);
+  --_c3: var(--mac-color-system-green);
+}
+
+/* Continuous capacity: a 12 pt track with 2 pt corners */
+.mac-level-indicator-track {
+  position: relative;
+  overflow: hidden;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.mac-level-indicator-track::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  border: var(--mac-hairline) solid var(--mac-level-indicator-track-border);
+  border-radius: inherit;
+  background: var(--mac-level-indicator-track) padding-box;
+}
+
+.mac-level-indicator-fill {
+  position: absolute;
+  inset-block: 0;
+  box-sizing: border-box;
+  background: var(--_fill);
+}
+
+.mac-level-indicator:where([data-tiered]) .mac-level-indicator-fill {
+  background: linear-gradient(
+    var(--_to),
+    var(--_c1) var(--_t1),
+    var(--mac-color-system-yellow) 0 var(--_t2),
+    var(--_c3) 0
+  );
+}
+
+/* Tick marks: 1 pt wide and 4 pt high, the first and the last at the ends of the track. */
+.mac-level-indicator-ticks {
+  display: block;
+  height: 4px;
+  margin-top: 2px;
+  background: repeating-linear-gradient(
+    to right,
+    var(--mac-color-label-tertiary) 0 1px,
+    transparent 1px calc((100% - 1px) / (var(--_ticks) - 1))
+  );
+}
+
+/* Discrete capacity: equal segments 2 pt apart */
+.mac-level-indicator-segments {
+  display: flex;
+  gap: 2px;
+}
+
+.mac-level-indicator-segment {
+  flex: 1 1 0;
+  box-sizing: border-box;
+  min-width: 3px;
+  height: 12px;
+  border: var(--mac-hairline) solid var(--mac-level-indicator-track-border);
+  border-radius: 2px;
+  background: var(--mac-level-indicator-track) padding-box;
+}
+
+.mac-level-indicator-segment:where([data-filled]) {
+  border-color: transparent;
+  background: var(--_fill);
+}
+
+/* Rating: 13 pt stars at a 16 pt pitch. The width of the stars is kept, in a grid or a flex
+   column too: stretched, the control would read a click on a star as a place along it. */
+.mac-level-indicator:where([data-variant="rating"]) {
+  display: inline-block;
+  width: fit-content;
+  vertical-align: middle;
+}
+
+.mac-level-indicator:where([data-variant="rating"]) .mac-level-indicator-control {
+  width: fit-content;
+}
+
+.mac-level-indicator:where([data-variant="rating"]) .mac-level-indicator-segments {
+  gap: 3px;
+}
+
+.mac-level-indicator-star {
+  display: block;
+  flex: none;
+  width: 13px;
+  height: 13px;
+  fill: var(--mac-color-label-quaternary);
+}
+
+.mac-level-indicator-star:where([data-filled]) {
+  fill: var(--mac-color-label);
+}
+
+/* Relevancy: thin bars, 2 pt wide and 1 pt apart, cut out of the track with a mask */
+.mac-level-indicator:where([data-variant="relevancy"]) .mac-level-indicator-track {
+  border-radius: 0;
+  /* raw-color-ok: mask alpha, not a colour */
+  mask: repeating-linear-gradient(to right, #000 0 2px, transparent 2px 3px);
+}
+
+.mac-level-indicator:where([data-variant="relevancy"]) .mac-level-indicator-track::before {
+  border: 0;
+  background: var(--mac-color-label-quaternary);
+}
+
+.mac-level-indicator:where([data-variant="relevancy"]) .mac-level-indicator-fill {
+  background: var(--mac-color-label-secondary);
+}
+
+/* Storage: Disk Utility's 24 pt capacity bar. A 1 pt border, 4.5 pt corners, and a used part
+   with its own outline on the top, bottom and leading edge and a square trailing edge. The
+   spec's fit of the radius is 5 pt (4.75 to 5.125); rendered against the same captures,
+   4.5 pt differs least over the four comparisons (see the docs page, Visual comparison). */
+.mac-level-indicator:where([data-variant="storage"]) .mac-level-indicator-track {
+  height: 24px;
+  border-radius: 4.5px;
+}
+
+.mac-level-indicator:where([data-variant="storage"]) .mac-level-indicator-track::before {
+  border: 1px solid var(--mac-level-indicator-storage-border);
+  background: var(--mac-level-indicator-storage-empty);
+}
+
+.mac-level-indicator:where([data-variant="storage"]) .mac-level-indicator-fill {
+  border: 1px solid var(--mac-level-indicator-storage-fill-border);
+  border-inline-end-width: 0;
+  border-start-start-radius: 4.5px;
+  border-end-start-radius: 4.5px;
+  background: var(--mac-level-indicator-storage-fill);
+}
+
+@media (forced-colors: active) {
+  .mac-level-indicator-track::before,
+  .mac-level-indicator-segment {
+    border-color: CanvasText;
+  }
+
+  /* Two classes: a fill that a style or tiers colour (storage, relevancy, [data-tiered]) is
+     set by a rule of that weight, and with forced-color-adjust off nothing else corrects it. */
+  .mac-level-indicator .mac-level-indicator-fill,
+  .mac-level-indicator-segment:where([data-filled]) {
+    border-color: Highlight;
+    background: Highlight;
+    forced-color-adjust: none;
+  }
+
+  .mac-level-indicator-star {
+    fill: GrayText;
+  }
+
+  .mac-level-indicator-star:where([data-filled]) {
+    fill: CanvasText;
+  }
+}

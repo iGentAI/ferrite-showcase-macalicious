@@ -1,0 +1,32 @@
+/* Dock stack: values measured on the Stacks screenshots (spec: dock-stack). */
+:root {
+  /* [measured, computed] label fill, fitted over the sea and over the sky */
+  --mac-dock-stack-label: light-dark(rgb(245 245 245 / 0.6), rgb(54 54 54 / 0.72));
+  /* [measured, computed] inner line, Dark Aqua only: #474d55 on #272e38 */
+  --mac-dock-stack-label-border: light-dark(transparent, rgb(255 255 255 / 0.15));
+  /* [measured] outline, Dark Aqua only */
+  --mac-dock-stack-label-outline: light-dark(transparent, #000000);
+  --mac-dock-stack-label-text: light-dark(#4c4c4c, #e3e3e3);
+  --mac-dock-stack-more-glyph: light-dark(#5f6b72, #9cb8e1);
+  /* [measured, computed] round button: the label's fill in Aqua, nearly clear in Dark Aqua */
+  --mac-dock-stack-more: light-dark(rgb(245 245 245 / 0.6), rgb(0 0 0 / 0.05));
+  /* its soft edge, Aqua only: the sky is 17% darker at the rim */
+  --mac-dock-stack-more-shadow: light-dark(rgb(0 0 0 / 0.36), transparent);
+  /* open tile: black; #8c9eb2 on the dark shelf #0f2236, with a chosen alpha */
+  --mac-dock-stack-placeholder: light-dark(rgb(0 0 0), rgb(217 234 254 / 0.62));
+}
+
+:root,
+[data-appearance] {
+  /* [provisional] round button's backdrop: the blur radius is inferred */
+  --mac-dock-stack-more-filter: blur(calc(15px - 15px * var(--mac-appearance-dark)))
+    saturate(calc(185% - 85% * var(--mac-appearance-dark)));
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    /* [provisional] the fills over a mid grey; no capture shows this */
+    --mac-dock-stack-label: light-dark(#c6c6c6, #3a3a3a);
+    --mac-dock-stack-more: light-dark(#c6c6c6, #3a3a3a);
+  }
+}

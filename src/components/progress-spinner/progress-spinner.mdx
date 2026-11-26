@@ -1,0 +1,130 @@
+---
+title: Progress Spinner
+description: Twelve fading spokes that step round while work of unknown length is under way, for places too small for a progress bar.
+---
+
+<Example name="basic" both />
+
+AppKit's `NSProgressIndicator` with the spinning style. It is built on
+[Base UI's Progress](https://base-ui.com/react/components/progress), which supplies the
+`progressbar` role and the value attributes. When there is room, and when the length of the
+task is known, use a [progress bar](/components/progress-bar).
+
+## Usage
+
+```tsx
+import { ProgressSpinner } from "macalicious/progress-spinner";
+import "macalicious/progress-spinner.css";
+
+<ProgressSpinner size="small" aria-label="Loading" />
+<ProgressSpinner size="small" animating={busy} aria-label="Loading" />
+```
+
+Or copy the source into your project: `npx macalicious add progress-spinner`.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for progress indicators:
+
+- Use a spinner where space is tight: beside a control, in a list row, in a corner of a pane.
+- Show it only while the work is under way and hide it when the work finishes. With
+  `animating={false}` the spinner disappears but keeps its place, so nothing moves when it
+  comes back.
+- Do not switch between a spinner and a bar for the same task.
+- Add a few words when it is not obvious what is in progress.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Spinning | default | Twelve spokes; the strongest is the head and the eleven behind it fade. The pattern steps one spoke clockwise twelve times a second |
+| Stopped | `animating={false}` | Hidden, keeping its place |
+| Stopped, displayed | `animating={false} displayedWhenStopped` | A still frame with the head at 12 o'clock |
+| Determinate | `value` | A ring with a sector that grows clockwise from 12 o'clock, in the secondary label colour |
+
+The spokes are black in Aqua and white in Dark Aqua, at measured opacities; they do not follow
+the accent colour or the window state. In Aqua the spokes are stronger on a plain window
+surface (the head is black at 98%) than in a sidebar (68%), as the Bluetooth pane and Notes'
+sidebar show; a spinner inside a [sidebar](/components/sidebar), or under any other element
+that has `data-material`, takes the fainter values by itself.
+
+Measured: the geometry of the small size (diameter, spoke length and width) and the opacity of
+each of the twelve spokes, in both appearances. Provisional, because no screenshot shows them:
+the rate of one turn per second (a still image cannot show it; the direction follows from the
+fade), the regular and mini sizes, which are the small artwork scaled, and the determinate
+form.
+
+### Animation cost
+
+- One `transform` animation per spinner, in twelve steps a second, on the compositor. The
+  spokes are a mask over a conic gradient, so the gradient is rasterised once and only
+  turned. Measured in Chromium: twelve frames a second while it is on screen.
+- While the spinner is outside the viewport its animation is paused. One
+  `IntersectionObserver`, shared by every indicator on the page
+  (`macalicious/lib/offscreen`), sets `data-offscreen` on the spinner; nothing re-renders.
+  Measured in Chromium over two seconds: an off-screen spinner produces no frames at all, on
+  the compositor or on the main thread.
+- A stopped spinner has no animation and no observer entry.
+- With `prefers-reduced-motion: reduce` the spokes stand still and the spinner fades in and
+  out instead.
+
+## Sizes
+
+| Size | Diameter | Notes |
+| --- | --- | --- |
+| `regular` | 32 pt | Provisional: the small artwork at twice the size |
+| `small` | 16 pt | Measured |
+| `mini` | 10 pt | Provisional |
+
+## API
+
+<PropsTable name="ProgressSpinnerProps" />
+
+It also takes the props of Base UI's `Progress.Root`: `min`, `max`, `format`, `locale`,
+`getAriaValueText` and `aria-valuetext`.
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-indeterminate`, `data-progressing`, `data-complete` | present or absent | The status, set by Base UI. |
+| `data-size` | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-animating` | present or absent | Reflects `animating`. |
+| `data-displayed-when-stopped` | present or absent | Reflects `displayedWhenStopped`. |
+| `data-offscreen` | present or absent | Set while a spinning spinner is outside the viewport; pauses it. |
+
+## Accessibility
+
+- The spinner has `role="progressbar"` without a value while it spins, and with
+  `aria-valuenow` in its determinate form. It is not focusable.
+- It needs a name that says what is in progress: `aria-label` or `aria-labelledby`.
+- A stopped, hidden spinner is removed from the accessibility tree.
+- For a region that is loading, also set `aria-busy="true"` on the region.
+- In forced-colours mode the spokes are drawn in the system text colour.
+
+## Visual comparison
+
+A screenshot shows one frame. `visual-notes` reproduces the frame in Notes' sidebar (Aqua,
+head at 9 o'clock) and `visual-startup-disk` the one in the Startup Disk pane (Dark Aqua, head
+at 3 o'clock), each with a stopped spinner turned to the same position. Neither place is shown
+with a spinner in the other appearance. `visual-bluetooth-light` and `visual-bluetooth-dark`
+reproduce the spinner in the header of the Bluetooth pane's device list, the one place shown
+in both appearances (head at 12 and at 3 o'clock). Results in Chromium on Linux:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Notes, Aqua | 0.00% of pixels differ | 0.00% |
+| Startup Disk, Dark Aqua | 0.00% | 0.00% |
+| Bluetooth, Aqua | 1.19% | 17.25% |
+| Bluetooth, Dark Aqua | 0.00% | 8.25% |
+
+The Bluetooth pane draws the spinner at 15 pt, on a half point, so the examples give it that
+size; at 1x a browser draws on whole pixels and the figures are high for that reason alone.
+The Aqua comparison there is what showed that the spoke opacities measured in Notes' sidebar
+are too faint for a plain surface: with them 3.69% of the 2x pixels differed (mean Δ 3.82
+against 2.31 now) and the head was `#4d4d4d` where the capture has `#040404`. The plain-surface
+values are now the default and the sidebar keeps the ones measured in Notes. No dark capture
+shows a spinner in a sidebar; Dark Aqua uses one set of values, which the Startup Disk and
+Bluetooth captures both match.
+
+The comparisons cover still frames of the small size. They say nothing about the animation.

@@ -1,0 +1,733 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "page-light",
+      "description": "The field of the key Safari window with a page loaded, Aqua: Reader button, padlock and host, Reload. Whole crop, with the host in the fallback font.",
+      "example": "visual-page-light",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0648,
+        "2x": 0.0179
+      },
+      "deltaBudget": {
+        "1x": 5.84,
+        "2x": 2.39
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13.png",
+        "crop": {
+          "x": 896,
+          "y": 88,
+          "width": 1080,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "page-light-bezel",
+      "description": "As page-light with the host masked (it is set in the fallback font off Apple platforms), to score the bezel, the padlock and the two glyphs.",
+      "example": "visual-page-light",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 238,
+          "y": 7,
+          "width": 82,
+          "height": 15
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.099,
+        "2x": 0.0011
+      },
+      "deltaBudget": {
+        "1x": 4.65,
+        "2x": 0.71
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13.png",
+        "crop": {
+          "x": 896,
+          "y": 88,
+          "width": 1080,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "page-dark",
+      "description": "The field of the key Safari window with a page loaded, Dark Aqua. Whole crop.",
+      "example": "visual-page-dark",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.0667,
+        "2x": 0.0178
+      },
+      "deltaBudget": {
+        "1x": 5.2,
+        "2x": 2.1
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13.png",
+        "crop": {
+          "x": 856,
+          "y": 88,
+          "width": 1020,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "page-dark-bezel",
+      "description": "As page-dark with the host masked.",
+      "example": "visual-page-dark",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 223,
+          "y": 7,
+          "width": 82,
+          "height": 15
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0554,
+        "2x": 0.0014
+      },
+      "deltaBudget": {
+        "1x": 4.12,
+        "2x": 0.67
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13.png",
+        "crop": {
+          "x": 856,
+          "y": 88,
+          "width": 1020,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "placeholder-light",
+      "description": "The empty field of the Favorites window, Aqua: magnifier and placeholder, centred. Whole crop.",
+      "example": "visual-placeholder",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0651,
+        "2x": 0.0258
+      },
+      "deltaBudget": {
+        "1x": 5.7,
+        "2x": 2.31
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Favorites.png",
+        "crop": {
+          "x": 896,
+          "y": 88,
+          "width": 1080,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "placeholder-light-bezel",
+      "description": "As placeholder-light with the placeholder text masked, to score the bezel and the magnifier.",
+      "example": "visual-placeholder",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 196,
+          "y": 7,
+          "width": 176,
+          "height": 15
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.1106,
+        "2x": 0.0009
+      },
+      "deltaBudget": {
+        "1x": 5.22,
+        "2x": 0.78
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Favorites.png",
+        "crop": {
+          "x": 896,
+          "y": 88,
+          "width": 1080,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "focused-dark",
+      "description": "The empty field of the dark Favorites window while it is edited, focused with a real click: focus ring, magnifier and placeholder at the leading edge. Whole crop.",
+      "example": "visual-focused-dark",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "input"
+        }
+      ],
+      "budget": {
+        "1x": 0.0617,
+        "2x": 0.0332
+      },
+      "deltaBudget": {
+        "1x": 5.44,
+        "2x": 2.12
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Favorites.png",
+        "crop": {
+          "x": 846,
+          "y": 82,
+          "width": 1040,
+          "height": 64
+        }
+      }
+    },
+    {
+      "name": "focused-dark-bezel",
+      "description": "As focused-dark with the placeholder text masked, to score the focus ring, the bezel and the magnifier.",
+      "example": "visual-focused-dark",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "input"
+        }
+      ],
+      "masks": [
+        {
+          "x": 29,
+          "y": 10,
+          "width": 190,
+          "height": 15
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0937,
+        "2x": 0.0011
+      },
+      "deltaBudget": {
+        "1x": 4.74,
+        "2x": 0.63
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Favorites.png",
+        "crop": {
+          "x": 846,
+          "y": 82,
+          "width": 1040,
+          "height": 64
+        }
+      }
+    },
+    {
+      "name": "reader-light",
+      "description": "The field of the Safari window in Reader mode, Aqua: the Reader button on, padlock and host, the text options. Whole crop.",
+      "example": "visual-reader",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0666,
+        "2x": 0.0152
+      },
+      "deltaBudget": {
+        "1x": 5.73,
+        "2x": 1.99
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Reader-Mode.png",
+        "crop": {
+          "x": 896,
+          "y": 88,
+          "width": 1080,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "reader-light-bezel",
+      "description": "As reader-light with the host masked, to score the bezel, the filled Reader button, the padlock and the text-options glyph.",
+      "example": "visual-reader",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 253,
+          "y": 7,
+          "width": 52,
+          "height": 15
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.101,
+        "2x": 0.0041
+      },
+      "deltaBudget": {
+        "1x": 4.82,
+        "2x": 0.85
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Reader-Mode.png",
+        "crop": {
+          "x": 896,
+          "y": 88,
+          "width": 1080,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "inactive-light",
+      "description": "The field of the inactive Safari window behind the Picture in Picture video, Aqua: flat outlined bezel, padlock and host, the audio button and Reload. Whole crop.",
+      "example": "visual-inactive",
+      "appearance": "light",
+      "windowState": "inactive",
+      "budget": {
+        "1x": 0.0326,
+        "2x": 0.0279
+      },
+      "deltaBudget": {
+        "1x": 5.2,
+        "2x": 3.32
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Picture-in-Picture.png",
+        "crop": {
+          "x": 1056,
+          "y": 116,
+          "width": 1028,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "inactive-light-bezel",
+      "description": "As inactive-light with the host masked.",
+      "example": "visual-inactive",
+      "appearance": "light",
+      "windowState": "inactive",
+      "masks": [
+        {
+          "x": 224,
+          "y": 7,
+          "width": 82,
+          "height": 15
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.1185,
+        "2x": 0.0025
+      },
+      "deltaBudget": {
+        "1x": 2.81,
+        "2x": 0.43
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Picture-in-Picture.png",
+        "crop": {
+          "x": 1056,
+          "y": 116,
+          "width": 1028,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "inactive-dark",
+      "description": "The field of the inactive Safari window behind the Picture in Picture video, Dark Aqua. Whole crop.",
+      "example": "visual-inactive",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "budget": {
+        "1x": 0.0764,
+        "2x": 0.0281
+      },
+      "deltaBudget": {
+        "1x": 5.72,
+        "2x": 4.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Picture-in-Picture.png",
+        "crop": {
+          "x": 1084,
+          "y": 90,
+          "width": 1028,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "inactive-dark-bezel",
+      "description": "As inactive-dark with the host masked.",
+      "example": "visual-inactive",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "masks": [
+        {
+          "x": 224,
+          "y": 7,
+          "width": 82,
+          "height": 15
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0523,
+        "2x": 0.0029
+      },
+      "deltaBudget": {
+        "1x": 2.78,
+        "2x": 1.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Picture-in-Picture.png",
+        "crop": {
+          "x": 1084,
+          "y": 90,
+          "width": 1028,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "The field while it is edited in the key window, focused with a real click, Aqua: the 3 pt focus ring outside the fill. No capture shows the ring in Aqua.",
+      "example": "visual-state-field",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#field"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 68
+        },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 19,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the page background, measured on the Go to Folder field (spec: focus-ring, sRGB); that this field takes it in Aqua is inferred from the dark capture"
+          },
+          {
+            "x": 4.25,
+            "y": 19,
+            "color": "#ececec",
+            "note": "page just outside the ring: it ends 3 pt beyond the fill, as measured in the dark Favorites capture"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "The field while it is edited in the key window, Dark Aqua, on the page background.",
+      "example": "visual-state-field",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#field"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 68
+        },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 19,
+            "color": "#2d6c99",
+            "tolerance": 6,
+            "note": "ring over a dark window (spec: focus-ring, sRGB); the same ring is compared with the dark Favorites capture in focused-dark"
+          },
+          {
+            "x": 4.25,
+            "y": 19,
+            "color": "#323232",
+            "note": "page just outside the ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-inactive-light",
+      "description": "The field focused with a real click in an inactive window, Aqua: it is edited, but draws no focus ring.",
+      "example": "visual-state-field",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "click": "#field"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 68
+        },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 19,
+            "color": "#ececec",
+            "note": "page where the ring would be: a control shows its focus ring only in the key window (CONTRIBUTING, Window state)"
+          },
+          {
+            "x": 11,
+            "y": 19,
+            "color": "#656565",
+            "tolerance": 2,
+            "note": "the Reader button stays filled: middle of the measured #676767 to #636363"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-main-dark",
+      "description": "The field focused with a real click in a main window, Dark Aqua: no focus ring.",
+      "example": "visual-state-field",
+      "appearance": "dark",
+      "windowState": "main",
+      "actions": [
+        {
+          "click": "#field"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 68
+        },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 19,
+            "color": "#323232",
+            "note": "page where the ring would be: no focus ring in a window that is not key"
+          }
+        ]
+      }
+    },
+    {
+      "name": "reader-on-light",
+      "description": "The Reader button's on fill and an accessory glyph at rest, Aqua.",
+      "example": "visual-state-field",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 68
+        },
+        "pixels": [
+          {
+            "x": 11,
+            "y": 19,
+            "color": "#656565",
+            "tolerance": 2,
+            "note": "on fill at mid height, measured in Light-Safari-v13-Reader-Mode @ 930,114"
+          },
+          {
+            "x": 296.8,
+            "y": 14.75,
+            "color": "#7b7b7b",
+            "tolerance": 4,
+            "note": "Reload arrowhead: black at 50.6% over the fill, measured as #7a7a79 in Light-Safari-v13"
+          },
+          {
+            "x": 296.8,
+            "y": 44.75,
+            "color": "#bbbbbb",
+            "tolerance": 4,
+            "note": "the disabled field's Reload arrowhead: the disabled control text colour, black at 25%, over the fill; inferred, no capture shows a disabled field"
+          }
+        ]
+      }
+    },
+    {
+      "name": "reader-on-dark",
+      "description": "The Reader button's on fill, which the dark Reader-Mode capture shows, and an accessory glyph at rest and disabled, Dark Aqua.",
+      "example": "visual-state-field",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 68
+        },
+        "pixels": [
+          {
+            "x": 11,
+            "y": 19,
+            "color": "#e3e3e4",
+            "tolerance": 2,
+            "note": "on fill, measured in Dark-Safari-v13-Reader-Mode @ 880,114"
+          },
+          {
+            "x": 296.8,
+            "y": 14.75,
+            "color": "#e8e8e8",
+            "tolerance": 4,
+            "note": "Reload arrowhead: white at 85% over the fill on the #323232 page; measured as #e9e9ea on the Safari toolbar"
+          },
+          {
+            "x": 296.8,
+            "y": 44.75,
+            "color": "#8c8c8c",
+            "tolerance": 4,
+            "note": "the disabled field's Reload arrowhead: white at 25% over the fill (white at 25.3% over #323232); inferred"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-accessory-light",
+      "description": "The Reload button while the mouse is held down on it, Aqua: its glyph takes the text colour.",
+      "example": "visual-state-field",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "#reload"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 68
+        },
+        "pixels": [
+          {
+            "x": 296.8,
+            "y": 14.75,
+            "color": "#4d4d4d",
+            "tolerance": 4,
+            "note": "black at 69% over the fill, the measured text colour #4c4c4c; that a pressed glyph takes it is inferred"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-accessory-dark",
+      "description": "The Reload button while the mouse is held down on it, Dark Aqua.",
+      "example": "visual-state-field",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": "#reload"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 68
+        },
+        "pixels": [
+          {
+            "x": 296.8,
+            "y": 14.75,
+            "color": "#ffffff",
+            "tolerance": 2,
+            "note": "the measured text colour; that a pressed glyph takes it is inferred"
+          }
+        ]
+      }
+    },
+    {
+      "name": "return-in-form",
+      "description": "Return in a field inside a form, pressed in a real browser: the field's onSubmit runs and the form around it is not submitted. The capture is the modal dialog the fixture opens.",
+      "example": "visual-keys",
+      "appearance": "light",
+      "selector": "dialog",
+      "actions": [
+        {
+          "click": "input"
+        },
+        {
+          "key": "Enter"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 260,
+          "height": 62
+        },
+        "pixels": [
+          {
+            "x": 200,
+            "y": 31,
+            "color": "#28cd41",
+            "tolerance": 2,
+            "note": "first square: system green, the field's onSubmit ran (red, #ff3b30, when it did not)"
+          },
+          {
+            "x": 230,
+            "y": 31,
+            "color": "#28cd41",
+            "tolerance": 2,
+            "note": "second square: system green, the form was not submitted (red when it was)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "escape-in-dialog",
+      "description": "Escape in a field inside a native modal dialog, pressed in a real browser after typing: the dialog stays open (the capture is the dialog, so a dismissed one fails) and nothing is submitted.",
+      "example": "visual-keys",
+      "appearance": "dark",
+      "selector": "dialog",
+      "actions": [
+        {
+          "click": "input"
+        },
+        {
+          "key": "x"
+        },
+        {
+          "key": "Escape"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 260,
+          "height": 62
+        },
+        "pixels": [
+          {
+            "x": 200,
+            "y": 31,
+            "color": "#ff453a",
+            "tolerance": 2,
+            "note": "first square: system red, the field's onSubmit did not run"
+          },
+          {
+            "x": 230,
+            "y": 31,
+            "color": "#32d74b",
+            "tolerance": 2,
+            "note": "second square: system green, the form was not submitted"
+          },
+          {
+            "x": 10,
+            "y": 10,
+            "color": "#323232",
+            "tolerance": 2,
+            "note": "the dialog's own fill, the window background token: it is still open"
+          }
+        ]
+      }
+    }
+  ]
+}

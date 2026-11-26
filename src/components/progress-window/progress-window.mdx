@@ -1,0 +1,148 @@
+---
+title: Progress Window
+description: The small window of a long file operation, as Finder shows while it copies, with a title, a progress bar, a status line and a stop button for each operation.
+---
+
+<Example name="basic" both />
+
+Finder opens this window when a copy, a move or an emptying of the Trash takes long enough to
+be noticed. It is a [Window](/components/window) without a title whose title bar is transparent,
+holding one `ProgressWindowItem` per operation; each item is built on the library's
+[Progress Bar](/components/progress-bar).
+
+## Usage
+
+```tsx
+import { ProgressWindow, ProgressWindowItem, ProgressWindowName } from "macalicious/progress-window";
+import { WindowControls } from "macalicious/window-controls";
+import "macalicious/styles.css";
+
+<ProgressWindow controls={<WindowControls closeDisabled zoomDisabled />}>
+  <ProgressWindowItem
+    icon={<DocumentIcon />}
+    title={
+      <>
+        Copying “<ProgressWindowName>Holiday in the mountains, final cut.mov</ProgressWindowName>”
+        to “Desktop”
+      </>
+    }
+    status="192.9 MB of 6 GB - About 3 minutes"
+    value={3}
+    onStop={cancelCopy}
+  />
+</ProgressWindow>
+```
+
+Or copy the source into your project: `npx macalicious add progress-window`.
+
+- `value` runs from 0 to 100. Leave it out, or pass `null`, while the length of the work is
+  not known yet: the bar is then indeterminate.
+- `title` is one line. A plain string truncates at its end; wrap a file name in
+  `ProgressWindowName` and that name truncates in the middle instead, keeping its last
+  characters (`tail`, 12 by default) so that the extension stays readable.
+- `status` is the smaller line under the bar: how much is done and how long it will take.
+- The stop button appears when `onStop` is given.
+- The window is presentational, like `Window`: it does not open, move or close itself. Show it
+  when the work starts taking time and remove it when the work ends; a window manager gives it
+  `state` and a position, and can move it from `onDragRegionPointerDown`.
+
+## Guidelines
+
+From the Human Interface Guidelines for macOS,
+[Progress Indicators](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/indicators/progress-indicators/):
+
+- Use a determinate bar whenever the duration can be estimated, and switch from indeterminate
+  to determinate as soon as it can.
+- Say what is happening, and report progress accurately and at an even pace; a bar that jumps
+  to 90% and waits there misleads.
+- Give people a way to stop the work, and stop it at once when they ask.
+- Do not show a progress window for work that ends within a second or two.
+
+## Variants and states
+
+<Example name="states" />
+
+| State | Look | Source |
+| --- | --- | --- |
+| One operation, key window | Title, accent-filled bar, stop button, status; close and zoom disabled | Measured on Finder's Copy window in both appearances |
+| Indeterminate | The progress bar's indeterminate animation | The bar's own look; no capture of a progress window shows it |
+| Several operations | Items stack, a 1 pt separator between them | Provisional: the captures show one operation |
+| Window not key | The bar and the window controls turn grey | Provisional, as for every window |
+| Stop button pressed | The disc darkens in Aqua, lightens in Dark Aqua | Provisional |
+| Stop button focused from the keyboard | Focus ring, in the key window only | Provisional |
+
+## Sizes
+
+The window is 399 pt wide unless `width` says otherwise, and 69 pt tall with one item. In
+points from the window's top-left corner, as measured: the icon's 32 pt canvas at 12, 27.5;
+title and bar from 57 to 364; the title's baseline at 33 (11 pt text); the bar from 40.5 to
+46.5; the 14 pt stop button 9 pt after the bar; the status line's baseline at 62 (9 pt text).
+
+## API
+
+`ProgressWindow` takes the props of [Window](/components/window), `ProgressWindowItem` those of
+a `<div>` and `ProgressWindowName` those of a `<span>`, plus these:
+
+### ProgressWindow
+
+<PropsTable name="ProgressWindowProps" />
+
+### ProgressWindowItem
+
+<PropsTable name="ProgressWindowItemProps" />
+
+### ProgressWindowName
+
+<PropsTable name="ProgressWindowNameProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-window-state` | window | `key`, `main`, `inactive` | Reflects `state`; read by the bar and the controls inside. |
+| `data-force` | stop button | `pressed`, `focus` | Pins a transient state in documentation and visual tests. |
+
+Classes: `.mac-progress-window`, `.mac-progress-window-header`, `.mac-progress-window-item`,
+`.mac-progress-window-icon`, `.mac-progress-window-title`, `.mac-progress-window-bar`,
+`.mac-progress-window-stop`, `.mac-progress-window-status`, `.mac-progress-window-name`,
+`.mac-progress-window-name-start` and `.mac-progress-window-name-end`.
+
+## Accessibility
+
+- The window is a `region`. It shows no title, so it is named by `aria-label`, “Progress”
+  unless you give another name or an `aria-labelledby`.
+- Each item is a `group` named by its title. Its bar is a `progressbar` with the same name; a
+  status that is plain text is the bar's value text, so a screen reader says “192.9 MB of 6 GB”
+  instead of a bare percentage, and any other status describes the bar.
+- The stop button is a `button` named “Stop” (`stopLabel`) and described by the item's title,
+  so that several stop buttons in one window can be told apart. Space and Return activate it.
+- A name in `ProgressWindowName` stays in the document in full: only its drawing is truncated,
+  so it is read and copied whole.
+- Progress is not announced as it changes; announce the end of the work yourself if people
+  need to know.
+
+## Visual comparison
+
+`progress-window.visual.json` compares Finder's Copy window, with 8 pt of its shadow on every
+side, in both appearances. The `-drawing` twins mask the title, the status line and the
+document icon, which is Apple's artwork (the examples draw a plain page in its place), and
+score the frame, the window controls, the bar and the stop button at the tighter threshold
+(0.05).
+
+Scores from `npm run visual -- progress-window` in Chromium on Linux with the fallback font:
+the share of pixels that differ by more than the comparison's threshold, and the mean colour
+difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `finder-copy-light` | Light-Finder-Copy (96, 60, 830, 170) | 8.00% | 7.78 | 5.56% | 6.73 |
+| `finder-copy-light-drawing` (masked) | Light-Finder-Copy (96, 60, 830, 170) | 3.42% | 1.15 | 0.13% | 0.56 |
+| `finder-copy-dark` | Dark-Finder-Copy (96, 60, 830, 170) | 7.39% | 7.71 | 5.84% | 7.00 |
+| `finder-copy-dark-drawing` (masked) | Dark-Finder-Copy (96, 60, 830, 170) | 2.44% | 0.72 | 0.16% | 0.56 |
+
+The unmasked scores are mostly the text, set in the fallback font, and the stand-in icon.
+`stop-pressed-light` and `stop-pressed-dark` hold the mouse button on the stop button and check
+the disc's colour against the inferred pressed values; they pass at 1x and 2x.
+
+Measured: the frame and its size, the transparent title bar's two highlight rows, the
+positions and sizes of the icon, title, bar, stop button and status line, the stop button's
+colour. Provisional: several items in one window, the pressed and focused stop button, the
+window when it is not key, and the forced-colours look.

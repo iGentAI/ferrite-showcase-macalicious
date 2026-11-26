@@ -1,0 +1,223 @@
+/*
+ * Now Playing display: the panel in the middle of a media player's playback bar.
+ *
+ * Parts
+ *   .mac-now-playing-lcd            the panel: 45 pt, hairline border, clipped corners
+ *   .mac-now-playing-lcd-artwork    44 pt well at the leading end ([data-empty]: placeholder)
+ *   .mac-now-playing-lcd-body       the rest: idle mark, or title and subtitle, centred
+ *   .mac-now-playing-lcd-idle       children of an idle display
+ *   .mac-now-playing-lcd-title, -subtitle
+ *   .mac-now-playing-lcd-time       elapsed and remaining ([data-remaining]) time, shown under
+ *                                   the pointer and while the knob has keyboard focus
+ *   .mac-now-playing-lcd-progress   3 pt line along the body's bottom edge: -control (slider
+ *                                   only, a 9 pt hit area), -track, -elapsed, -knob
+ *
+ * States
+ *   [data-variant="podcasts"]   flat border and body, divider after the well
+ *   [data-state]                idle or playing
+ *   :hover, :focus-within, [data-force~="hover"]   time labels and knob
+ *   knob focused, [data-force~="focus"]          focus ring around the panel, key window only
+ *   inactive window             text and glyphs at half strength [provisional]
+ */
+.mac-now-playing-lcd {
+  --_bt: var(--mac-now-playing-lcd-border-top);
+  --_bs: var(--mac-now-playing-lcd-border-side);
+  --_bb: var(--mac-now-playing-lcd-border-bottom);
+  --_g: var(--mac-now-playing-lcd-placeholder);
+
+  display: flex;
+  box-sizing: border-box;
+  min-width: 0;
+  height: 45px;
+  overflow: hidden;
+  border: var(--mac-hairline) solid var(--_bs);
+  border-block-color: var(--_bt) var(--_bb);
+  /* [measured, computed] fitted 2.625 (2.5 to 2.625 in Dark Aqua), built as 2.5px */
+  border-radius: 2.5px;
+  background: linear-gradient(
+      to bottom,
+      var(--mac-now-playing-lcd-body-top),
+      var(--mac-now-playing-lcd-body-bottom)
+    )
+    padding-box;
+  color: var(--mac-color-label);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  line-height: 15px;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-now-playing-lcd:where([data-variant="podcasts"]) {
+  --_bt: var(--mac-now-playing-lcd-podcasts-border);
+  --_bs: var(--mac-now-playing-lcd-podcasts-border);
+  --_bb: var(--mac-now-playing-lcd-podcasts-border);
+  --_g: var(--mac-now-playing-lcd-podcasts-placeholder);
+
+  border-radius: var(--mac-now-playing-lcd-podcasts-radius);
+  background: var(--mac-now-playing-lcd-podcasts-body) padding-box;
+}
+
+.mac-now-playing-lcd-artwork {
+  display: grid;
+  flex: none;
+  box-sizing: border-box;
+  width: 44.5px;
+  overflow: hidden;
+  place-items: center;
+  color: var(--_g);
+}
+
+.mac-now-playing-lcd-artwork:where([data-empty]) {
+  background: var(--mac-now-playing-lcd-well);
+}
+
+.mac-now-playing-lcd-artwork > :where(img, video, picture) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mac-now-playing-lcd:where([data-variant="podcasts"]) > .mac-now-playing-lcd-artwork {
+  width: 44px;
+}
+
+.mac-now-playing-lcd:where([data-variant="podcasts"])
+  > .mac-now-playing-lcd-artwork:where([data-empty]) {
+  border-inline-end: var(--mac-hairline) solid var(--mac-now-playing-lcd-podcasts-divider);
+}
+
+.mac-now-playing-lcd-body {
+  position: relative;
+  flex: 1 1 0;
+  box-sizing: border-box;
+  min-width: 0;
+  /* Title baseline 17.5 pt below the panel's top, subtitle 15 pt further. */
+  padding: 5px 6px 0;
+  text-align: center;
+}
+
+.mac-now-playing-lcd-title,
+.mac-now-playing-lcd-subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-now-playing-lcd-title {
+  font-weight: var(--mac-font-weight-medium);
+}
+
+.mac-now-playing-lcd-subtitle {
+  color: var(--mac-color-label-secondary);
+}
+
+/* Room for the time labels while they show, on both sides so the line stays centred. */
+.mac-now-playing-lcd:where(:hover, :focus-within, [data-force~="hover"])
+.mac-now-playing-lcd-subtitle:where(:has(~ .mac-now-playing-lcd-time)) {
+  padding-inline: 40px;
+}
+
+/* The idle mark's box is centred 2 pt above the panel's centre line. */
+.mac-now-playing-lcd-idle {
+  display: grid;
+  height: 30px;
+  place-items: center;
+  color: var(--mac-now-playing-lcd-idle);
+}
+
+.mac-now-playing-lcd-time {
+  position: absolute;
+  inset-block-start: 22px;
+  inset-inline-start: 6px;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-label);
+  font-variant-numeric: tabular-nums;
+  opacity: 0;
+}
+
+.mac-now-playing-lcd-time:where([data-remaining]) {
+  inset-inline: auto 6px;
+}
+
+.mac-now-playing-lcd-progress {
+  position: absolute;
+  inset: auto 0 0;
+}
+
+.mac-now-playing-lcd-control {
+  display: flex;
+  align-items: flex-end;
+  height: 9px;
+  touch-action: none;
+}
+
+.mac-now-playing-lcd-track {
+  position: relative;
+  flex: 1 1 auto;
+  height: 3px;
+  background: var(--mac-now-playing-lcd-remaining);
+}
+
+.mac-now-playing-lcd-elapsed {
+  background: var(--mac-now-playing-lcd-elapsed);
+}
+
+/* Scrubber knob [provisional]: 3 x 9 pt, standing on the body's bottom edge. */
+.mac-now-playing-lcd-knob {
+  width: 3px;
+  height: 9px;
+  margin-block-start: -3px;
+  border-radius: 1.5px;
+  background: var(--mac-color-label);
+  opacity: 0;
+}
+
+.mac-now-playing-lcd:where(:hover, :focus-within, [data-force~="hover"])
+  :where(.mac-now-playing-lcd-time, .mac-now-playing-lcd-knob) {
+  opacity: 1;
+}
+
+/* The ring is the panel's: one around the knob would be clipped at the panel's edge. */
+.mac-now-playing-lcd:where(
+  :has(.mac-now-playing-lcd-knob :focus-visible),
+  [data-force~="focus"]
+):where(:not(:where([data-window-state="main"], [data-window-state="inactive"]) *)) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: 1px;
+}
+
+/* Inactive window [provisional]: the panel stays, text and glyphs fade. */
+.mac-now-playing-lcd:where([data-window-state="inactive"] *)
+:where(
+  .mac-now-playing-lcd-artwork[data-empty] > *,
+  .mac-now-playing-lcd-idle,
+  .mac-now-playing-lcd-title,
+  .mac-now-playing-lcd-subtitle
+) {
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mac-now-playing-lcd-time,
+  .mac-now-playing-lcd-knob {
+    transition: opacity 0.15s;
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-now-playing-lcd {
+    border-color: CanvasText;
+    background: Canvas;
+  }
+
+  .mac-now-playing-lcd-track {
+    background: GrayText;
+  }
+
+  .mac-now-playing-lcd-elapsed,
+  .mac-now-playing-lcd-knob {
+    background: Highlight;
+  }
+}

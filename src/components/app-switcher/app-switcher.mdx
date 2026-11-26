@@ -1,0 +1,184 @@
+---
+title: App Switcher
+description: The Command-Tab panel. A translucent rounded panel in the middle of the screen with one large icon per running application, the selected one on a tile with its name underneath.
+---
+
+<Example name="basic" both />
+
+Holding Command and pressing Tab shows the running applications, most recently used first;
+Tab moves along the row and letting go switches to the selected one. `AppSwitcher` is that
+panel: it shows the items you give it, keeps the selection, and tells you which application
+was chosen. Base UI has no primitive for it, so it follows the listbox pattern of the WAI-ARIA
+Authoring Practices.
+
+## Usage
+
+```tsx
+import { AppSwitcher, AppSwitcherItem } from "macalicious/app-switcher";
+import "macalicious/app-switcher.css";
+
+<div style={{ position: "relative", height: "100vh" }}>
+  <AppSwitcher open={open} onOpenChange={setOpen} onChoose={(app) => activate(app)}>
+    <AppSwitcherItem value="terminal" icon={<TerminalIcon />}>Terminal</AppSwitcherItem>
+    <AppSwitcherItem value="mail" icon={<MailIcon />}>Mail</AppSwitcherItem>
+    <AppSwitcherItem value="notes" icon={<NotesIcon />}>Notes</AppSwitcherItem>
+  </AppSwitcher>
+</div>
+```
+
+Or copy the source into your project: `npx macalicious add app-switcher`.
+
+- The panel is centred in the nearest positioned ancestor: that element is the screen. Its
+  material blurs what is behind it in the same page, and nothing else
+  ([Fidelity limits](/fidelity)).
+- An item's `value` identifies the application, its `icon` is any image or drawing of your
+  own, and its children are the name. The library ships no icons.
+- **A page cannot have Command-Tab**: the operating system keeps it. Open the switcher from
+  a button or from a key of your own (`open`, `onOpenChange`), as the examples do.
+- It opens with the second item selected, the application used before the present one, so
+  list the applications most recently used first. `defaultValue` names another item to open
+  on; `value` and `onValueChange` hand the selection to you.
+- Return, Space or a click chooses: `onChoose` is called with the item's `value` and the
+  switcher closes. Escape, and keyboard focus going elsewhere, close it without choosing.
+  Catalina chooses when Command is let go. A page has no held key to wait for; if you open
+  the switcher from a key chord of your own, hold `value` yourself and choose from
+  `onKeyUp`.
+- A closed switcher is not rendered.
+
+<Example name="controlled" />
+
+### With the window manager
+
+Inside a [Window Manager](/components/window-manager) the switcher is a component of its
+own that reads the windows with `useWindowManager()`. The manager lists windows in the order
+they were last key, the key window last, so the distinct `app` values in reverse are the
+switcher's order, and choosing one calls `focus(id)` for that application's front window.
+The manager stores no icons: map the `app` id to yours.
+
+<Example name="window-manager" />
+
+## Guidelines
+
+From the macOS Human Interface Guidelines,
+[Keyboard](https://web.archive.org/web/20200503161456/https://developer.apple.com/design/human-interface-guidelines/macos/user-interaction/keyboard/):
+
+- Respect the standard keyboard shortcuts and, in general, do not override them: people are
+  confused when a shortcut they know works differently.
+- Make the core of an application usable with the keyboard alone.
+
+## Variants and states
+
+| State | How it is set | Look | Source |
+| --- | --- | --- | --- |
+| Open | `open`, `defaultOpen` | The panel, with keyboard focus | Measured in the Command-Tab captures |
+| Selected item | `value`, `defaultValue`; Tab, the arrow keys, the pointer | A tile 4 points larger than the icon on every side, black at 15% in Aqua and 34% in Dark Aqua, and the name under the icon | Measured on the first item; any other item follows from it |
+| Other items | | The icon alone; the name is not shown | Measured |
+| More items than fit | | The icons shrink together so that the panel stays 20 points inside the screen | That they shrink is catalog; by how much, and the 20 points, are provisional |
+| No backdrop blur, or reduced transparency | browser support, `prefers-reduced-transparency` | The opaque panel, `#e5e5e3` or `#44484b` | Measured as the panel's typical fill |
+
+The switcher has no disabled, pressed or inactive look, and no sizes of its own. Catalina's
+badges on icons, and its Q and H keys that quit and hide the selected application, are not
+implemented; handle a key in `onKeyDown` to add them.
+
+## Sizes
+
+Icons are 128 points, 5 points apart, with 23 points beside the row and 29 above and under
+it: three applications make a panel of 440 by 186 points, as in the captures.
+`--mac-app-switcher-icon-size` sets another icon size; padding, tile and name keep theirs.
+There is no `size` prop.
+
+## API
+
+### AppSwitcher
+
+<PropsTable name="AppSwitcherProps" />
+
+### AppSwitcherItem
+
+<PropsTable name="AppSwitcherItemProps" />
+
+| Attribute, class or variable | On | Description |
+| --- | --- | --- |
+| `.mac-app-switcher` | the root | The panel and listbox; `position: absolute`, centred. |
+| `.mac-app-switcher-item` | an item | The option; its `::before` is the selection tile. |
+| `data-selected` | an item | The selected application. |
+| `data-value` | an item | Its `value`. |
+| `.mac-app-switcher-icon` | the icon's wrapper | The icon is stretched to it. |
+| `.mac-app-switcher-name` | the name | Shown under the selected item. |
+| `--mac-app-switcher-icon-size` | set on the root or above | Width and height of an icon; default `128px`. |
+| `--mac-app-switcher-margin` | set on the root or above | What the panel keeps clear at the sides of the screen; default `20px`. |
+| `--mac-app-switcher-layer` | set on the root or above | The panel's `z-index`; default `2000`, above a window manager's windows, menu bar, Dock and full-screen window. |
+| `--mac-app-switcher-material`, `-material-opaque`, `-selection`, `-name-color` | tokens | The panel's tint and its opaque form, the selection tile, the name. |
+
+`ref`, `className`, `style` and other props go to the element of the part they are given
+to. An item's `id` is set by the switcher, which names it in `aria-activedescendant`.
+
+## Accessibility
+
+- The panel is a `listbox` with `aria-orientation="horizontal"`, named "Applications"; pass
+  `aria-label` to change the name. Each item is an `option` named by its children, so give
+  every item its application's name, also where an icon would say it to the eye. The icon is
+  hidden from assistive technology.
+- The panel takes keyboard focus when it opens and keeps it: the selected option is
+  announced through `aria-activedescendant`, and the selection tile is what shows where the
+  keyboard is. When it closes, focus goes back to the element that had it, unless it has
+  moved on by then, for example into the window `onChoose` brought to the front.
+- Keys: Tab or Right Arrow selects the next application and Shift-Tab or Left Arrow the
+  previous one, round the ends; Home and End select the first and the last; Return or Space
+  chooses; Escape closes. In a right-to-left page the arrows are mirrored.
+- Tab moves the selection, as it does in Catalina, so it does not leave the panel. The panel
+  is nevertheless no trap: Escape closes it, and it closes by itself as soon as focus is
+  anywhere else, so it is never open without the keyboard being in it. It makes nothing else
+  on the page inert.
+- Moving the pointer over an item selects it and a click chooses it. Resting over an item
+  is not enough: the pointer has to move.
+- The panel does not move or fade, so there is nothing for `prefers-reduced-motion` to switch
+  off. With `prefers-reduced-transparency` it is opaque.
+- In forced-colours mode the panel has an edge and the selection tile an outline in the
+  system's highlight colour.
+- All key handling is on the panel's own element; nothing listens on `window` or `document`.
+
+## Visual comparison
+
+`app-switcher.visual.json` compares the whole panel with the Command-Tab screenshots in both
+appearances: three applications, the first selected. The crop is the panel exactly, since it
+has neither border nor shadow.
+
+The three application icons are Apple's artwork. The example has neutral tiles in their
+place and the comparison masks them (60% of the crop). The `-drawing` comparisons also mask
+the name, which is set in the fallback font off Apple platforms, and use the stricter
+threshold of 0.05.
+
+The panel's colour is its material over what is behind it, which in the screenshots is the
+System Preferences window. The System Preferences screenshots show the same window
+uncovered, so the backdrop in the example is measured: the band the panes are on and, for
+each pane under the panel, a flat tile of its icon's mean colour and a bar for its label.
+They are stand-ins, not drawings of the icons, and are seen only through the blur.
+
+Scores from `npm run visual -- app-switcher/` in Chromium on Linux: the share of pixels that
+differ visibly, and the mean colour difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `panel-light` | Light-Command-Tab (1240, 864, 880, 372) | 0.84% | 2.05 | 0.59% | 1.90 |
+| `panel-light-drawing` (name masked) | Light-Command-Tab (1240, 864, 880, 372) | 0.33% | 1.50 | 0.35% | 1.48 |
+| `panel-dark` | Dark-Command-Tab (1240, 864, 880, 372) | 1.12% | 2.70 | 0.86% | 2.60 |
+| `panel-dark-drawing` (name masked) | Dark-Command-Tab (1240, 864, 880, 372) | 0.26% | 2.12 | 0.27% | 2.17 |
+
+What is left in the `-drawing` rows is outside the panel's corners, where the screenshots
+show the window behind it: a pane's icon and label, and the edge of the Terminal window.
+
+State checks cover what no screenshot shows, in a real browser over a flat backdrop, where
+the panel's and the tile's colours follow from the tokens: the second item selected when the
+switcher opens, the selection after Right Arrow, after two Tabs (round the end), after
+Shift-Tab and under the pointer, the switcher gone after Escape and after a click, and five
+applications on a screen too narrow for them, shrunk to fit with 20 points clear at each side.
+
+Measured: the panel's size and padding, the icon size and pitch, the selection tile and its
+colour, the name's colour and place, the absence of border and shadow, and the tint of the
+material, which is a least-squares fit to the screenshots over the System Preferences window
+(within 1.5 of 255 in Aqua and 2.0 in Dark Aqua). Two values depart from the measured spec
+because the pixels do: the panel's corners are drawn with a radius of 24 points, not 20, and
+the tile's with 9, not 8. Provisional: the blur radius and saturation, which are the shared
+material filter's; the icons shrinking when the row does not fit; and everything about the
+selection away from the first item.

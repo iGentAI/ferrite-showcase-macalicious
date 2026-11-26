@@ -1,0 +1,363 @@
+/*
+ * Dock stack: a folder's tile in the Dock and the popup its contents open in. The fan is
+ * measured on the Stacks screenshots; the grid and the list are provisional. The docs page
+ * lists the measures and the styling hooks. A popup is a key window of its own, so nothing
+ * here reads data-window-state.
+ */
+.mac-dock-stack-icon,
+.mac-dock-stack-placeholder {
+  grid-area: 1 / 1;
+}
+
+.mac-dock-stack-icon {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* The open tile: a 52 pt rounded square around a down triangle, an original drawing. Its
+   1.65 pt line is a shadow (border widths round to pixels); forced colours draw the outline. */
+.mac-dock-stack-placeholder {
+  position: relative;
+  width: 81.25%;
+  height: 81.25%;
+  border-radius: 14.2%;
+  box-shadow: inset 0 0 0 1.65px var(--mac-dock-stack-placeholder);
+  outline: 1.5px solid transparent;
+  outline-offset: -1.5px;
+}
+
+.mac-dock-stack-placeholder::after {
+  content: "";
+  position: absolute;
+  inset: 40.4% 24.9% 33.1%;
+  background: var(--mac-dock-stack-placeholder);
+  clip-path: polygon(0 0, 100% 0, 53.75% 100%, 46.25% 100%);
+}
+
+.mac-dock-stack:where(:not([data-popup-open])) .mac-dock-stack-placeholder,
+.mac-dock-stack:where([data-popup-open]) .mac-dock-stack-icon {
+  display: none;
+}
+
+.mac-dock-stack-positioner {
+  z-index: 1000;
+}
+
+/* The fan is a column as wide as a thumbnail's box; the labels hang off its left. */
+.mac-dock-stack-popup {
+  width: 60px;
+  outline: none;
+  color: var(--mac-color-label);
+  font: var(--mac-font-control-regular);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  transform-origin: 50% calc(100% + 50px);
+  transition:
+    scale 0.25s cubic-bezier(0.2, 1.25, 0.4, 1),
+    opacity 0.15s;
+}
+
+.mac-dock-stack-popup:where([data-ending-style]) {
+  transition-duration: 0.15s;
+  transition-timing-function: ease-in;
+}
+
+.mac-dock-stack-popup:where([data-view="fan"]):where([data-starting-style], [data-ending-style]) {
+  scale: 0.1;
+}
+
+.mac-dock-stack-item {
+  position: relative;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  outline: none;
+}
+
+.mac-dock-stack-item:where([data-disabled]) {
+  opacity: var(--mac-control-opacity-disabled);
+}
+
+/* The fan's curve, from the Dock up: how far right of the tile, and how far round. */
+.mac-dock-stack-item:where(:nth-last-child(1)) {
+  --_x: 1.75px;
+  --_r: 1.6deg;
+}
+
+.mac-dock-stack-item:where(:nth-last-child(2)) {
+  --_x: 3.75px;
+  --_r: 2.85deg;
+}
+
+.mac-dock-stack-item:where(:nth-last-child(3)) {
+  --_x: 7.75px;
+  --_r: 4.1deg;
+}
+
+.mac-dock-stack-item:where(:nth-last-child(4)) {
+  --_x: 13px;
+  --_r: 5.35deg;
+}
+
+.mac-dock-stack-item:where(:nth-last-child(5)) {
+  --_x: 19.75px;
+  --_r: 6.6deg;
+}
+
+.mac-dock-stack-item:where(:nth-last-child(6)) {
+  --_x: 27.75px;
+  --_r: 7.85deg;
+}
+
+.mac-dock-stack-item:where(:nth-last-child(7)) {
+  --_x: 36.75px;
+  --_r: 9.1deg;
+}
+
+.mac-dock-stack-item:where(:nth-last-child(8)) {
+  --_x: 47.75px;
+  --_r: 10.35deg;
+}
+
+.mac-dock-stack-item:where(:nth-last-child(9)) {
+  --_x: 60.75px;
+  --_r: 11.6deg;
+}
+
+.mac-dock-stack-item:where(:nth-last-child(10)) {
+  --_x: 73.75px;
+  --_r: 12.85deg;
+}
+
+/* The last place measured, half a point low; a longer fan goes straight up from it. */
+.mac-dock-stack-item:where(:nth-last-child(n + 11)) {
+  --_x: 89px 0.5px;
+  --_r: 14.1deg;
+}
+
+:where([data-view="fan"]) > .mac-dock-stack-item {
+  height: 64px;
+  translate: var(--_x);
+  rotate: var(--_r);
+}
+
+.mac-dock-stack-item-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+}
+
+/* The fan's label. Its 1 pt inner line and outline (Dark Aqua) are shadows, which add
+   nothing to its box; forced colours draw the transparent outline. */
+.mac-dock-stack-item-label,
+.mac-dock-stack-more {
+  background: var(--mac-dock-stack-label);
+  box-shadow:
+    inset 0 0 0 1px var(--mac-dock-stack-label-border),
+    0 0 0 1px var(--mac-dock-stack-label-outline);
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+}
+
+/* 6.75 pt from the thumbnail's box and half a point below its axis, as measured. */
+.mac-dock-stack-item-label {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 6.75px);
+  translate: 0 calc(0.5px - 50%);
+  padding: 5px 14px;
+  border-radius: 4px;
+  -webkit-backdrop-filter: blur(15px) saturate(185%);
+  backdrop-filter: blur(15px) saturate(185%);
+  color: var(--mac-dock-stack-label-text);
+  white-space: nowrap;
+}
+
+:where([data-view="fan"]) > .mac-dock-stack-item:where([data-more]) > .mac-dock-stack-item-label {
+  right: calc(100% + 7px);
+  translate: 0 calc(0.25px - 50%);
+}
+
+/* The round button keeps its arrow upright while its item turns. */
+.mac-dock-stack-more {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--mac-dock-stack-more);
+  -webkit-backdrop-filter: var(--mac-dock-stack-more-filter);
+  backdrop-filter: var(--mac-dock-stack-more-filter);
+  box-shadow:
+    inset 0 0 0 1px var(--mac-dock-stack-label-border),
+    0 0 0 1px var(--mac-dock-stack-label-outline),
+    0 0 2.5px var(--mac-dock-stack-more-shadow);
+  color: var(--mac-dock-stack-more-glyph);
+  rotate: calc(-1 * var(--_r));
+}
+
+/* The fan's parts fade, not the popup: an ancestor that is not opaque cuts their backdrop. */
+.mac-dock-stack-item-label,
+.mac-dock-stack-item-icon {
+  transition: opacity 0.15s;
+}
+
+:where([data-view="fan"]):where([data-starting-style], [data-ending-style])
+  :is(.mac-dock-stack-item-label, .mac-dock-stack-item-icon) {
+  opacity: 0;
+}
+
+/* Grid and list: a panel of icons over their names, and a menu. */
+.mac-dock-stack-popup:where([data-view="grid"], [data-view="list"]) {
+  width: auto;
+  outline: 1px solid transparent;
+}
+
+.mac-dock-stack-popup:where([data-view="grid"], [data-view="list"]):where(
+  [data-starting-style],
+  [data-ending-style]
+) {
+  opacity: 0;
+}
+
+.mac-dock-stack-popup:where([data-view="grid"]) {
+  display: grid;
+  grid-template-columns: repeat(4, 96px);
+  row-gap: 8px;
+  padding: 12px;
+  border-radius: var(--mac-radius-popover);
+  background: var(--mac-material-popover);
+  -webkit-backdrop-filter: var(--mac-material-filter);
+  backdrop-filter: var(--mac-material-filter);
+  box-shadow: var(--mac-shadow-popover);
+}
+
+.mac-dock-stack-popup:where([data-view="list"]) {
+  min-width: 180px;
+  padding: 4px 0;
+  border-radius: var(--mac-radius-menu);
+  background: var(--mac-material-menu);
+  -webkit-backdrop-filter: var(--mac-material-filter-menu);
+  backdrop-filter: var(--mac-material-filter-menu);
+  box-shadow: var(--mac-shadow-menu);
+  font: var(--mac-font-menu);
+}
+
+:where([data-view="grid"], [data-view="list"]) .mac-dock-stack-item-label {
+  position: static;
+  translate: none;
+  overflow: hidden;
+  max-width: 100%;
+  padding: 0 5px;
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+  outline: none;
+  color: inherit;
+  text-overflow: ellipsis;
+}
+
+:where([data-view="grid"], [data-view="list"]) .mac-dock-stack-more,
+:where([data-view="grid"]) > :where([data-more]) > .mac-dock-stack-item-icon {
+  display: none;
+}
+
+:where([data-view="grid"]) > .mac-dock-stack-item {
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 4px;
+  min-width: 0;
+}
+
+:where([data-view="grid"]) .mac-dock-stack-item-icon {
+  width: 64px;
+  height: 64px;
+}
+
+/* The item that opens the folder closes a grid or a list, under a line. */
+:where([data-view="grid"]) > .mac-dock-stack-item:where([data-more]) {
+  grid-column: 1 / -1;
+  padding-top: 8px;
+  border-top: 1px solid var(--mac-color-separator);
+}
+
+:where([data-view="list"]) > .mac-dock-stack-item {
+  justify-content: flex-end;
+  padding: 0 16px 0 8px;
+}
+
+:where([data-view="list"]) .mac-dock-stack-item-icon {
+  width: 16px;
+  height: 16px;
+}
+
+:where([data-view="list"]) > .mac-dock-stack-item:where([data-more]) {
+  margin-top: 11px;
+}
+
+:where([data-view="list"]) > .mac-dock-stack-item:where([data-more])::before {
+  content: "";
+  position: absolute;
+  inset: -6px 0 auto;
+  border-top: 1px solid var(--mac-color-separator);
+}
+
+/* Highlighted: the name takes the selection colour, and in a list the whole row. */
+.mac-dock-stack-item:where([data-highlighted], [data-force~="hover"]) > .mac-dock-stack-item-label,
+:where([data-view="list"]) > .mac-dock-stack-item:where([data-highlighted], [data-force~="hover"]) {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-menu-item-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-dock-stack-popup {
+    transition-property: opacity;
+  }
+
+  .mac-dock-stack-popup:where([data-view="fan"]):where([data-starting-style], [data-ending-style]) {
+    scale: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .mac-dock-stack-item-label,
+  .mac-dock-stack-more {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-dock-stack-placeholder,
+  .mac-dock-stack-item-label,
+  .mac-dock-stack-more,
+  .mac-dock-stack-popup:where([data-view="grid"], [data-view="list"]) {
+    outline-color: CanvasText;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .mac-dock-stack-item-label,
+  .mac-dock-stack-more,
+  .mac-dock-stack-popup:where([data-view="grid"], [data-view="list"]) {
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .mac-dock-stack-placeholder::after {
+    background: CanvasText;
+  }
+
+  .mac-dock-stack-item:where([data-highlighted]) > .mac-dock-stack-item-label,
+  :where([data-view="list"]) > .mac-dock-stack-item:where([data-highlighted]) {
+    outline-color: Highlight;
+    background: Highlight;
+    color: HighlightText;
+  }
+}

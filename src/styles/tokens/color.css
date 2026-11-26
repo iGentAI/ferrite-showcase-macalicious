@@ -1,0 +1,142 @@
+/*
+ * Colour tokens, named after AppKit's semantic NSColor catalog.
+ *
+ * Values follow the measured token sheet, reference/spec/tokens.md. Status legend used throughout
+ * the token files, with the sheet's grade in brackets:
+ *
+ *   [measured]            read from reference/screenshots after ICC conversion to sRGB  (sheet [M])
+ *   [measured, computed]  computed from measured pixels: an alpha recovered from a composite over
+ *                         a known background, a fitted shadow, a font size from a cap height
+ *                         (sheet [C])
+ *   [catalog]             documented by Apple (AppKit catalog, Human Interface Guidelines) but
+ *                         not observed in a screenshot  (sheet [D])
+ *   [provisional]         inferred; no screenshot shows it  (sheet [I])
+ *
+ * Format: light-dark(<Aqua>, <Dark Aqua>). See appearance.css.
+ *
+ * Dark greys: Catalina tints dark window backgrounds with the desktop picture, so dark greys
+ * vary by a few levels between screenshots. Tokens hold the untinted value (as shown with the
+ * graphite accent, which switches tinting off) unless the name says otherwise.
+ *
+ * Accent-dependent colours (selection, focus ring, text on an accent fill) are in accent.css.
+ */
+:root {
+  /* Label colours (NSColor.labelColor …) [measured, computed] from text composites */
+  --mac-color-label: light-dark(rgb(0 0 0 / 0.85), rgb(255 255 255 / 0.85));
+  --mac-color-label-secondary: light-dark(rgb(0 0 0 / 0.5), rgb(255 255 255 / 0.55));
+  --mac-color-label-tertiary: light-dark(rgb(0 0 0 / 0.25), rgb(255 255 255 / 0.25));
+  --mac-color-label-quaternary: light-dark(
+    rgb(0 0 0 / 0.1),
+    rgb(255 255 255 / 0.1)
+  ); /* [catalog] not observed as text */
+
+  /* Text (textColor, textBackgroundColor, placeholderTextColor, linkColor) [measured] */
+  --mac-color-text: light-dark(#000000, #ffffff);
+  --mac-color-text-background: light-dark(#ffffff, #1e1e1e);
+  --mac-color-link: light-dark(#0168da, #429bff);
+  --mac-color-text-placeholder: light-dark(
+    rgb(0 0 0 / 0.25),
+    rgb(255 255 255 / 0.25)
+  ); /* [catalog] */
+
+  /* Window and content backgrounds [measured] */
+  /* windowBackgroundColor. Dark is the untinted value (Theme-Dark-Graphite). */
+  --mac-color-window-background: light-dark(#ececec, #323232);
+  /* The same surface as captured over the default wallpaper with a colour accent
+     (Theme-Dark-Blue); observed #2f3031 to #323437 depending on what is behind the window.
+     For comparisons against a tinted reference. */
+  --mac-color-window-background-tinted: light-dark(#ececec, #303032);
+  /* underPageBackgroundColor as seen behind the Preview page */
+  --mac-color-under-page-background: light-dark(#ececec, #303132);
+  /* controlBackgroundColor: tables, lists, browsers */
+  --mac-color-control-background: light-dark(#ffffff, #1e1e1e);
+  /* The same surface as captured over the default wallpaper with a colour accent (Activity
+     Monitor, Dark-Reminders) [measured]. For comparisons against a tinted reference, as
+     --mac-color-window-background-tinted is for the window. */
+  --mac-color-control-background-tinted: light-dark(#ffffff, #1e1f21);
+  /* alternatingContentBackgroundColors[1]. Dark measures #292a2b over a tinted #1e1f21, which
+     is white at 5% [measured, computed]; kept translucent so it also sits on the untinted base. */
+  --mac-color-content-background-alternate: light-dark(#f4f5f5, rgb(255 255 255 / 0.05));
+  /* NSBox fill: #e3e3e3 on #ececec, #363637 on #2f3031 [measured, computed] */
+  --mac-color-group-background: light-dark(rgb(0 0 0 / 0.04), rgb(255 255 255 / 0.035));
+  /* Text field fill inside a window; dark composite #393a3b [measured, computed] */
+  --mac-color-text-field-background: light-dark(#ffffff, rgb(255 255 255 / 0.05));
+
+  /* Lines */
+  /* separatorColor: #d5d5d5 on #ececec, #434445 on #2f3031 [measured, computed] */
+  --mac-color-separator: light-dark(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.1));
+  --mac-color-grid: light-dark(#e6e6e6, #343537); /* gridColor, list row separators [measured] */
+  /* Thin split view divider between opaque panes; beside a vibrant sidebar the light divider
+     is #cfd0d0 [measured] */
+  --mac-color-split-divider: light-dark(#d5d5d5, #000000);
+  /* NSBox border; its top edge is stronger, black at 10% in light [measured, computed] */
+  --mac-color-box-border: light-dark(rgb(0 0 0 / 0.06), rgb(255 255 255 / 0.15));
+  /* Text field hairline; in dark the bottom edge is white at 25% [measured, computed] */
+  --mac-color-field-border: light-dark(rgb(0 0 0 / 0.25), rgb(255 255 255 / 0.12));
+  --mac-color-list-border: light-dark(#c5c5c5, #565656); /* bordered scrolling lists [measured] */
+
+  /* Controls */
+  /* controlColor: the bezel fill. Dark composites #646465 on the window [measured] */
+  --mac-color-control: light-dark(#ffffff, rgb(255 255 255 / 0.25));
+  /* Disabled bezel fill: #f6f6f6 on #ececec, #4a4a4b on #2f3031 [measured, computed] */
+  --mac-color-control-disabled: light-dark(rgb(255 255 255 / 0.5), rgb(255 255 255 / 0.125));
+  /* controlTextColor: #262626 on #ffffff, #e8e8e8 on the dark bezel [measured, computed] */
+  --mac-color-control-text: light-dark(rgb(0 0 0 / 0.85), rgb(255 255 255 / 0.85));
+  /* disabledControlTextColor: #b8b8b8 on #f6f6f6, #777778 on #4a4a4b [measured, computed] */
+  --mac-color-control-text-disabled: light-dark(rgb(0 0 0 / 0.25), rgb(255 255 255 / 0.25));
+
+  /* Selection. The emphasised colours follow the accent; see accent.css. */
+  /* unemphasizedSelectedContentBackgroundColor (Keychain Access) [measured] */
+  --mac-color-selected-content-background-unemphasized: light-dark(#dcdcdc, #464646);
+  --mac-color-selected-content-text: #ffffff; /* text on an emphasised selection [measured] */
+  /* Grey source-list selection, sidebar not first responder: #c7c8c8 on #e7e8e8, #505153 on
+     #2c2d2f [measured, computed] */
+  --mac-color-sidebar-selection: light-dark(rgb(0 0 0 / 0.14), rgb(255 255 255 / 0.17));
+  /* unemphasizedSelectedTextBackgroundColor: inactive text selection [catalog] */
+  --mac-color-selected-text-background-unemphasized: light-dark(#dcdcdc, #464646);
+  /* findHighlightColor: the tint behind text a search has found [provisional]. Aqua is the
+     catalogue's yellow: no capture shows a match in Aqua. Dark Aqua was read once, from the
+     match on a PDF page in Preview (Dark-Preview-Search @ 2034,586, #b9d553 in the capture's
+     Display P3); no second capture confirms it, so the value is not counted as measured. */
+  --mac-color-find-highlight: light-dark(#ffff00, #b1d832);
+  --mac-color-selected-menu-item-text: #ffffff; /* selectedMenuItemTextColor [measured] */
+
+  /* Window chrome text */
+  /* windowFrameTextColor, the window title: #555555 on #e1e1e1, #b9babb on #3d3e3f
+     [measured, computed] */
+  --mac-color-window-frame-text: light-dark(rgb(0 0 0 / 0.62), rgb(255 255 255 / 0.64));
+  /* Title of an inactive window [provisional]: no clean inactive title was sampled */
+  --mac-color-window-frame-text-inactive: light-dark(#b9b9b9, #606163);
+  --mac-color-header-text: light-dark(#161616, #ffffff); /* headerTextColor [measured] */
+
+  /* Fixed system palette (NSColor.systemBlue …) [catalog] Human Interface Guidelines table */
+  --mac-color-system-blue: light-dark(#007aff, #0a84ff);
+  --mac-color-system-brown: light-dark(#a2845e, #ac8e68);
+  --mac-color-system-gray: light-dark(#8e8e93, #98989d);
+  --mac-color-system-green: light-dark(#28cd41, #32d74b);
+  --mac-color-system-indigo: light-dark(#5856d6, #5e5ce6);
+  --mac-color-system-orange: light-dark(#ff9500, #ff9f0a);
+  --mac-color-system-pink: light-dark(#ff2d55, #ff375f);
+  --mac-color-system-purple: light-dark(#af52de, #bf5af2);
+  --mac-color-system-red: light-dark(#ff3b30, #ff453a);
+  --mac-color-system-teal: light-dark(#5ac8fa, #64d2ff);
+  --mac-color-system-yellow: light-dark(#ffcc00, #ffd60a);
+
+  /*
+   * Window controls ("traffic lights") [measured] Light-Finder-Network, Dark-Finder-Network.
+   * Light buttons also have a 0.5 pt darker ring (close #d25448, minimize #d8a344, zoom
+   * #56a943 as stored); dark buttons have none. Which fill applies follows the window state,
+   * see CONTRIBUTING, "Window state".
+   */
+  --mac-color-window-close: light-dark(#ff6057, #ff5a53);
+  --mac-color-window-minimize: light-dark(#ffbd2d, #e7c029);
+  --mac-color-window-zoom: light-dark(#29c941, #53c22c);
+  /* One disabled button in a key window (System-Preferences-General); light ring #b0b1b1 */
+  --mac-color-window-control-disabled: light-dark(#d1d1d1, #5f6061);
+  /* All three in a main window that is not key (Finder behind Quick Look); light ring #b1b0b2 */
+  --mac-color-window-control-main: light-dark(#d0d0d0, #525354);
+  /* All three in an inactive window (Safari Picture in Picture); light ring #d5d4d4 */
+  --mac-color-window-control-inactive: light-dark(#dedede, #4b4b4e);
+  /* Close and minimize with the graphite accent (Theme-*-Graphite); light ring #727276 */
+  --mac-color-window-control-graphite: light-dark(#8f8f94, #a3a3a3);
+}

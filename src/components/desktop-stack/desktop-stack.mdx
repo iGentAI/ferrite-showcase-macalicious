@@ -1,0 +1,110 @@
+---
+title: Desktop Stack
+description: A pile of the desktop's files of one kind, which a click expands in place into the cells that follow.
+order: 84
+---
+
+<Example name="basic" both />
+
+With Stacks on (View > Use Stacks, since macOS 10.14) Finder groups the files on the desktop
+into piles by kind, date or tag. A stack takes one cell of the grid and carries the group's
+name. A click expands it in place: its files take the cells that follow, and the pile becomes a
+placeholder with a down triangle that collapses it again. `DesktopStack` is a
+[`DesktopIcon`](/components/desktop-icon) with the pile as its artwork; its children are the
+files. Base UI has no primitive for it.
+
+## Usage
+
+```tsx
+import { Desktop } from "macalicious/desktop";
+import { DesktopIcon } from "macalicious/desktop-icon";
+import { DesktopStack } from "macalicious/desktop-stack";
+import "macalicious/desktop-icon.css";
+import "macalicious/desktop.css";
+import "macalicious/desktop-stack.css";
+
+<Desktop style={{ height: 600 }}>
+  <DesktopStack label="Images" thumbnail={<img src="/coast-small.jpg" alt="" />}>
+    <DesktopIcon icon={<img src="/coast-small.jpg" alt="" />}>Coast.jpg</DesktopIcon>
+    <DesktopIcon icon={<img src="/dunes-small.jpg" alt="" />}>Dunes.jpg</DesktopIcon>
+  </DesktopStack>
+</Desktop>
+```
+
+Or copy the source into your project: `npx macalicious add desktop-stack`.
+
+`thumbnail` is the preview on the front sheet of the pile, normally the newest file's; it is
+cropped to the sheet. The two sheets behind it are plain: the library does not know the other
+files' previews. The children are in the page only while the stack is expanded.
+
+Control the state with `open` and `onOpenChange`, or start expanded with `defaultOpen`. The
+stack takes the other props of a desktop icon (`value`, `dimmed`, `disabled`), except the ones
+for its own selection and for opening: activating a stack expands it.
+
+## Guidelines
+
+- Name a stack after what groups its files: “Images”, “PDF Documents”, “Screenshots”.
+- Show the newest file on top, so the pile says what arrived last.
+- Expanding moves the items after the stack along the grid; do not expand a stack on your own
+  initiative while someone is working with the icons below it.
+
+## Variants and states
+
+| State | Look | Status |
+| --- | --- | --- |
+| closed | front sheet 50 pt square with a 2.5 pt white border, half a point right of and 1 pt below the tile's centre; a square sheet behind it turned 7.9 degrees anticlockwise and a landscape one turned 8.3 degrees clockwise | front sheet and first angle measured; second angle and both sheets' sizes fitted to the captures |
+| open (`data-open`) | placeholder: a 55 by 40 pt rounded box with a 2 pt outline and a down triangle, over the corners of a turned sheet. Aqua: dark translucent outline and a lighter body; Dark Aqua: white outline, clear body | box and colours measured; the drawing is original |
+| selected, focused, dimmed, disabled | as [`DesktopIcon`](/components/desktop-icon) | provisional |
+| scrubbing through the files of a closed stack | not implemented | no capture shows it |
+
+## Sizes
+
+One size: the pile is drawn for the 64 pt tile.
+
+## API
+
+<PropsTable name="DesktopStackProps" />
+
+Other props go to the stack's `button`, as for a desktop icon.
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-open` | present or absent | The stack is expanded. |
+| `data-selected`, `data-dimmed`, `data-value` | | As on a desktop icon. |
+
+Classes: `.mac-desktop-stack` (on the desktop icon), `.mac-desktop-stack-pile` (the tile),
+`.mac-desktop-stack-sheet` (the front sheet) and `.mac-desktop-stack-collapse` (the
+placeholder).
+
+## Accessibility
+
+- The stack is a `button` named by `label`, with `aria-expanded`. It has no `aria-pressed`: a
+  stack expands; it is not a toggle that stays pressed.
+- Return and Space expand and collapse it. Its files follow it directly in the page and in the
+  keyboard order, so on a desktop the Down arrow goes from the stack to its first file.
+- The thumbnail and the placeholder are decorative.
+- In forced-colours mode the sheets and the placeholder are drawn with `CanvasText` outlines.
+
+## Visual comparison
+
+`npm run visual -- desktop-stack/` compares the closed “Images” stack and the open “PDF
+Documents” stack of the Desktop-Stacks captures. Scores from the run that accompanied this
+component (Chromium on Linux; 2x):
+
+| Comparison (reference crop, 2x pixels) | Aqua | Dark Aqua |
+| --- | --- | --- |
+| `closed-…-front` (Desktop-Stacks `3160,508,140,128`), the front sheet alone | 1.26% | 3.11% |
+| `closed-light`, the same crop with the sheets behind | 4.36% | see below |
+| `open` (Desktop-Stacks `3160,732,140,128`) | 3.35% | 1.64% |
+
+The photograph on the front sheet is masked in every closed comparison: it is user content in
+the capture and a flat stand-in in the example. `closed-…-front` also masks the band where the
+sheets behind show, and gates the front sheet's frame and its place in the tile. The sheets
+behind are other files' photographs in the captures and plain bordered sheets here. Over the
+Day picture a whole-crop score of them stays within the budgets (`closed-light`); over the
+Night picture the same difference exceeds the colour budget (mean difference 8.8 of 255 against
+a limit of 8), so `fan-dark` checks pixels instead: white where the capture shows each sheet's
+border, and the front sheet's shadow on the sheet behind it.
+
+Provisional: the shadow under the sheets, the angle of the landscape sheet, and everything the
+stack takes from the desktop icon's selected, focused and dimmed looks.

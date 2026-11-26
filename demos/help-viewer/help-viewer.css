@@ -1,0 +1,398 @@
+/*
+ * Help Viewer demo: the layout of the app around the library's components, and the pages of
+ * the guide. All measurements are points of the reference screenshots
+ * (reference/spec/apps/help-viewer.md); y is counted from the top of the page, which is the
+ * bottom of the 49 pt bar.
+ *
+ * Parts
+ *   .mac-help-viewer                  the window
+ *   .mac-help-viewer-body             the window's body: the split view fills it
+ *   .mac-help-viewer-split            the split view
+ *   .mac-help-viewer-contents         the table of contents
+ *   .mac-help-viewer-pane             the pane of the page
+ *   .mac-help-viewer-scroll           its scroll view
+ *   .mac-help-viewer-welcome          the welcome page
+ *   .mac-help-viewer-hero             its title block: picture, title and subtitle on a gradient
+ *   .mac-help-viewer-hero-art         the round picture of this desktop
+ *   .mac-help-viewer-hero-title       "macOS User Guide"
+ *   .mac-help-viewer-hero-subtitle    "for macOS 10.15"
+ *   .mac-help-viewer-welcome-body     what follows the title block, between the page's margins
+ *   .mac-help-viewer-contents-link    "Table of Contents" and its glyph
+ *   .mac-help-viewer-contents-glyph   the glyph
+ *   .mac-help-viewer-welcome-rule     the rule under it
+ *   .mac-help-viewer-device-art       the welcome page's picture of this desktop
+ *   .mac-help-viewer-page-picture     a page's picture of an application
+ *   .mac-help-viewer-welcome-heading  "Do more on the desktop"
+ *   .mac-help-viewer-welcome-text     the sentence under it
+ *   .mac-help-viewer-results          the page of search results
+ *   .mac-help-viewer-results-header   "All Help" and the count
+ *   .mac-help-viewer-results-heading  "All Help"
+ *   .mac-help-viewer-results-count    "(558 results)"
+ *   .mac-help-viewer-results-book     the pop-up that limits the results to a book, when served
+ *   .mac-help-viewer-result-list      the list of results
+ *   .mac-help-viewer-result           one result: a link with icon, title and summary
+ *   .mac-help-viewer-result-icon      the Finder's icon before a result
+ *   .mac-help-viewer-result-title     its title
+ *   .mac-help-viewer-result-summary   its description
+ *   .mac-help-viewer-show-all         "Show all" and its chevron
+ *   .mac-help-viewer-results-rule     the rule under the list
+ *   .mac-help-viewer-web              "See more results on the web" and its arrow
+ *   .mac-help-viewer-web-arrow        the arrow
+ *   .mac-help-viewer-no-results       the text of a search that finds nothing
+ *   .mac-help-viewer-topic            the page of a topic or of an entry of the contents
+ *   .mac-help-viewer-topic-source     the section or guide the topic is from
+ *   .mac-help-viewer-topic-title      its title
+ *   .mac-help-viewer-topic-text       a paragraph
+ *   .mac-help-viewer-topic-list       the topics of an entry
+ *   .mac-help-viewer-service-icon     the icon before a service of the Share menu
+ *
+ * States
+ *   [data-page="welcome" | "results" | "topic"]   on the pane: which page it shows
+ */
+.mac-help-viewer-body {
+  display: flex;
+  overflow: hidden;
+}
+
+.mac-help-viewer-split {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mac-help-viewer-contents {
+  height: 100%;
+}
+
+.mac-help-viewer-pane {
+  background: var(--mac-help-viewer-page-background);
+}
+
+.mac-help-viewer-pane:where([data-page="welcome"]) {
+  background: var(--mac-help-viewer-welcome-background);
+}
+
+.mac-help-viewer-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.mac-help-viewer-menu-area {
+  display: contents;
+}
+
+.mac-help-viewer-scroll {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+/* Welcome. The title block is 286 pt high; the picture's centre is 99 pt under the bar, the
+   title's capitals stand from 189 pt and the subtitle's from 234 pt. */
+.mac-help-viewer-welcome {
+  color: var(--mac-help-viewer-welcome-text);
+  font: var(--mac-font-body);
+  cursor: default;
+}
+
+.mac-help-viewer-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  height: var(--mac-help-viewer-hero-height);
+  padding-block-start: var(--mac-help-viewer-hero-padding-block-start);
+  background: linear-gradient(
+    to bottom,
+    var(--mac-help-viewer-hero-top),
+    var(--mac-help-viewer-hero-bottom)
+  );
+}
+
+.mac-help-viewer-hero-art {
+  display: block;
+  flex: none;
+  width: var(--mac-help-viewer-hero-art-size);
+  height: var(--mac-help-viewer-hero-art-size);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.mac-help-viewer-hero-title {
+  margin: var(--mac-help-viewer-hero-title-margin-top) 0 0;
+  font: var(--mac-font-large-title);
+  font-weight: var(--mac-font-weight-semibold);
+  font-size: var(--mac-help-viewer-hero-title-font-size);
+  line-height: var(--mac-help-viewer-hero-title-line-height);
+}
+
+.mac-help-viewer-hero-subtitle {
+  margin: var(--mac-help-viewer-hero-subtitle-margin-top) 0 0;
+  font: var(--mac-font-title-2);
+  font-size: var(--mac-help-viewer-hero-subtitle-font-size);
+  line-height: var(--mac-help-viewer-hero-subtitle-line-height);
+}
+
+/* The rule is 20 pt from the pane's edges beside the table of contents (a 673 pt pane) and
+   34 pt from them without it (876 pt); between the two widths the margin is interpolated. */
+.mac-help-viewer-welcome-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-block: var(--mac-help-viewer-welcome-body-padding-block);
+  padding-inline: clamp(
+    var(--mac-help-viewer-welcome-body-margin-min),
+    var(--mac-help-viewer-welcome-body-margin-slope) -
+    var(--mac-help-viewer-welcome-body-margin-offset),
+    var(--mac-help-viewer-welcome-body-margin-max)
+  );
+}
+
+.mac-help-viewer-welcome-rule {
+  align-self: stretch;
+}
+
+/* 15 pt, centred, with the rule 43 pt under the title block. The glyph is 17 pt wide, 10 pt
+   before the text and 1.5 pt above the middle of its line. */
+.mac-help-viewer-contents-link {
+  display: inline-flex;
+  gap: var(--mac-help-viewer-contents-link-gap);
+  align-items: center;
+  align-self: center;
+  margin: 0 0 var(--mac-help-viewer-contents-link-margin-bottom);
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.mac-help-viewer-contents-glyph {
+  margin-block-start: var(--mac-help-viewer-contents-glyph-margin-top);
+}
+
+/* The illustration is 386.5 by 222.5 pt and starts 35.5 pt under the rule; a page narrower
+   than that keeps it inside its margins. */
+.mac-help-viewer-device-art {
+  display: block;
+  flex: none;
+  width: min(var(--mac-help-viewer-device-art-width), 100%);
+  height: var(--mac-help-viewer-device-art-height);
+  margin-block-start: var(--mac-help-viewer-device-art-margin-top);
+  border-radius: var(--mac-help-viewer-device-art-radius);
+  object-fit: cover;
+}
+
+.mac-help-viewer-page-picture {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  margin-block: 12px;
+  border-radius: var(--mac-help-viewer-device-art-radius);
+}
+
+/* 18 pt medium; its capitals stand from 623 pt. */
+.mac-help-viewer-welcome-heading {
+  margin: var(--mac-help-viewer-welcome-heading-margin-top) 0 0;
+  font: var(--mac-font-title-2);
+  font-weight: var(--mac-font-weight-medium);
+  font-size: var(--mac-help-viewer-welcome-heading-font-size);
+  line-height: var(--mac-help-viewer-welcome-heading-line-height);
+}
+
+.mac-help-viewer-welcome-text {
+  margin: var(--mac-help-viewer-welcome-text-margin-top) 0 0;
+  font: var(--mac-font-body);
+  line-height: var(--mac-help-viewer-welcome-text-line-height);
+}
+
+/* Search results. "All Help" starts 21 pt from the window's edge with its capitals from 22 pt;
+   the first row is 55 pt under the bar. */
+.mac-help-viewer-results {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-block: var(--mac-help-viewer-results-padding-block);
+  cursor: default;
+}
+
+/* The count's baseline is 2.5 pt above the heading's. */
+.mac-help-viewer-results-header {
+  display: flex;
+  gap: var(--mac-help-viewer-results-header-gap);
+  align-items: baseline;
+  padding-inline: var(--mac-help-viewer-results-inset);
+}
+
+.mac-help-viewer-results-heading {
+  margin: 0;
+  color: var(--mac-color-label);
+  font: var(--mac-font-title-1);
+  font-weight: var(--mac-font-weight-bold);
+}
+
+.mac-help-viewer-results-count {
+  position: relative;
+  inset-block-start: var(--mac-help-viewer-results-count-offset);
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-help-viewer-results-book {
+  margin-inline-start: auto;
+}
+
+.mac-help-viewer-result-list {
+  align-self: stretch;
+  margin: var(--mac-help-viewer-result-list-margin-top) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A row is 56 pt high and 2 pt from the window's edges, with 4 pt to the next: the icon 21 pt
+   from the window's edge and 7 pt under the row's top, the title 46 pt from the edge, the
+   description 22.5 pt under the title on 16 pt lines. */
+.mac-help-viewer-result {
+  display: grid;
+  grid-template-columns: var(--mac-help-viewer-result-icon-size) minmax(0, 1fr);
+  column-gap: var(--mac-help-viewer-result-column-gap);
+  margin: var(--mac-help-viewer-result-margin);
+  padding: var(--mac-help-viewer-result-padding);
+  color: inherit;
+  text-decoration: none;
+  cursor: default;
+  outline: none;
+}
+
+.mac-help-viewer-result:where(:hover, :focus-visible) {
+  background: var(--mac-help-viewer-result-highlight);
+}
+
+.mac-help-viewer-result:where(:focus-visible):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+.mac-help-viewer-result-icon {
+  display: grid;
+  grid-row: 1 / span 2;
+  place-items: center;
+  width: var(--mac-help-viewer-result-icon-size);
+  height: var(--mac-help-viewer-result-icon-size);
+  margin-block-start: var(--mac-help-viewer-result-icon-margin-top);
+  border-radius: var(--mac-help-viewer-result-icon-radius);
+  background: var(--mac-help-viewer-icon-fill);
+  color: var(--mac-help-viewer-icon-mark);
+}
+
+.mac-help-viewer-result-title {
+  grid-column: 2;
+}
+
+.mac-help-viewer-result-summary {
+  grid-column: 2;
+  margin-block-start: var(--mac-help-viewer-result-summary-margin-top);
+}
+
+.mac-help-viewer-show-all {
+  display: inline-flex;
+  gap: var(--mac-help-viewer-show-all-gap);
+  align-items: center;
+  margin: var(--mac-help-viewer-show-all-margin-top) var(--mac-help-viewer-results-inset) 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+/* The rule is 20 pt from the window's edges. */
+.mac-help-viewer-results-rule {
+  align-self: stretch;
+  margin: var(--mac-help-viewer-results-rule-margin);
+}
+
+.mac-help-viewer-web {
+  margin: var(--mac-help-viewer-web-margin-top) var(--mac-help-viewer-results-inset) 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.mac-help-viewer-web-arrow {
+  margin-inline-start: var(--mac-help-viewer-web-arrow-margin-inline-start);
+}
+
+.mac-help-viewer-no-results {
+  align-self: stretch;
+  min-height: 200px;
+}
+
+/* A topic: no capture shows one, so its layout is the results page's margins [provisional]. */
+.mac-help-viewer-topic {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: var(--mac-help-viewer-topic-max-width);
+  padding: var(--mac-help-viewer-topic-padding);
+}
+
+.mac-help-viewer-topic-title {
+  margin: var(--mac-help-viewer-topic-title-margin);
+  color: var(--mac-color-label);
+  font: var(--mac-font-title-1);
+  font-weight: var(--mac-font-weight-bold);
+}
+
+.mac-help-viewer-topic-text {
+  margin-block-end: var(--mac-help-viewer-topic-text-margin-bottom);
+}
+
+.mac-help-viewer-topic-list {
+  display: grid;
+  gap: var(--mac-help-viewer-topic-list-gap);
+  margin: var(--mac-help-viewer-topic-list-margin-top) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-help-viewer-action {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.mac-help-viewer-feedback {
+  max-width: var(--mac-help-viewer-topic-max-width);
+  padding: var(--mac-help-viewer-topic-padding);
+}
+
+.mac-help-viewer-feedback-row {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+  align-items: center;
+  margin-block-start: var(--mac-help-viewer-feedback-margin-top);
+}
+
+.mac-help-viewer-toolbar-choice {
+  display: flex;
+}
+
+.mac-help-viewer-service-icon {
+  display: block;
+  width: var(--mac-help-viewer-service-icon-size);
+  height: var(--mac-help-viewer-service-icon-size);
+  border-radius: var(--mac-help-viewer-service-icon-radius);
+  background: var(--mac-help-viewer-icon-fill);
+}
+
+@media (forced-colors: active) {
+  .mac-help-viewer-result:where(:hover, :focus-visible) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+
+  .mac-help-viewer-hero-art,
+  .mac-help-viewer-device-art,
+  .mac-help-viewer-result-icon,
+  .mac-help-viewer-service-icon {
+    border: 1px solid CanvasText;
+  }
+}

@@ -1,0 +1,168 @@
+/*
+ * Form (the layout AppKit builds with NSGridView): a column of right-aligned labels and a
+ * column of controls on the same baselines.
+ *
+ * Measured on Calendar Preferences (frame 537 x 542 pt): the labels' boxes end 8 pt before the
+ * controls' (--mac-space-label-gap), the rows of 21 pt pop-up buttons are 30 pt apart, and a
+ * separator between two groups has 20 pt above and below it (--mac-space-section).
+ *
+ * Parts
+ *   .mac-form               the grid: label column, control column
+ *   .mac-form-row           one row; its label, controls and description share the columns
+ *   .mac-form-label         the label, in the label column
+ *   .mac-form-controls      the control or controls, in the control column
+ *   .mac-form-description   explanatory text under the controls
+ *   .mac-form-separator     the line between two groups of rows
+ *
+ * States
+ *   [data-size="small" | "mini"]              control size: label font and row spacing
+ *   [data-label-align="start"]                labels set against the leading edge
+ *   .mac-form-row[data-orientation="vertical"] controls one under the other
+ *   .mac-form-row[data-align="center" | "start"]
+ *   .mac-form-row[data-disabled]              label and description in the disabled colour
+ *
+ * Custom properties
+ *   --mac-form-label-width     width of the label column (default max-content)
+ *   --mac-form-row-gap         space between two rows (default 9px: a 30 pt pitch)
+ *   --mac-form-label-gap       space between a label and its control (default
+ *                              var(--mac-space-label-gap))
+ *   --mac-form-control-gap     space between two controls of a row (default
+ *                              var(--mac-space-label-gap))
+ *   --mac-form-description-indent  inset of the description from the controls' leading edge
+ *                              (default 0; 20px puts it under a checkbox's title)
+ *
+ * A form does not react to the window state: label colours are the same in a window that is
+ * not key.
+ */
+.mac-form {
+  --_font: var(--mac-font-body);
+  --_tracking: var(--mac-tracking-regular);
+  --_small-font: var(--mac-font-control-small);
+  --_small-tracking: var(--mac-tracking-small);
+  --_row-gap: var(--mac-form-row-gap, 9px);
+  /* [measured] Calendar Preferences: two stacked 14 pt checkboxes are 20 pt apart. */
+  --_stack-gap: 6px;
+
+  display: grid;
+  box-sizing: border-box;
+  grid-template-columns: var(--mac-form-label-width, max-content) minmax(0, 1fr);
+  gap: var(--_row-gap) var(--mac-form-label-gap, var(--mac-space-label-gap));
+  align-items: baseline;
+  margin: 0;
+}
+
+/* [provisional] No capture shows a form of small or mini controls with measurable rows. */
+.mac-form:where([data-size="small"]) {
+  --_font: var(--mac-font-control-small);
+  --_tracking: var(--mac-tracking-small);
+  --_small-font: var(--mac-font-control-mini);
+  --_small-tracking: var(--mac-tracking-mini);
+  --_row-gap: var(--mac-form-row-gap, 7px);
+  --_stack-gap: 5px;
+}
+
+.mac-form:where([data-size="mini"]) {
+  --_font: var(--mac-font-control-mini);
+  --_tracking: var(--mac-tracking-mini);
+  --_small-font: var(--mac-font-control-mini);
+  --_small-tracking: var(--mac-tracking-mini);
+  --_row-gap: var(--mac-form-row-gap, 5px);
+  --_stack-gap: 4px;
+}
+
+/* Anything that is not a row spans both columns: a separator, a box, a paragraph. */
+.mac-form > :where(:not(.mac-form-row)) {
+  grid-column: 1 / -1;
+}
+
+.mac-form-row {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  align-items: baseline;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.mac-form-row:where([data-align="center"]) {
+  align-items: center;
+}
+
+.mac-form-row:where([data-align="start"]) {
+  align-items: start;
+}
+
+.mac-form-label {
+  grid-column: 1;
+  color: var(--mac-color-label);
+  font: var(--_font);
+  letter-spacing: var(--_tracking);
+  text-align: end;
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.mac-form:where([data-label-align="start"]) .mac-form-label {
+  text-align: start;
+}
+
+.mac-form-controls {
+  display: flex;
+  grid-column: 2;
+  flex-wrap: wrap;
+  gap: var(--_stack-gap) var(--mac-form-control-gap, var(--mac-space-label-gap));
+  align-items: baseline;
+  min-width: 0;
+  color: var(--mac-color-label);
+  font: var(--_font);
+  letter-spacing: var(--_tracking);
+}
+
+.mac-form-row:where([data-align="center"]) > .mac-form-controls {
+  align-items: center;
+}
+
+.mac-form-row:where([data-align="start"]) > .mac-form-controls {
+  align-items: start;
+}
+
+.mac-form-row:where([data-orientation="vertical"]) > .mac-form-controls {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+}
+
+/* The first line box starts 4.5 pt under a text field's box in the Sharing pane's Computer Name
+   row (the capitals start 9 pt under the field's edge). */
+.mac-form-description {
+  grid-column: 2;
+  margin-block-start: 4.5px;
+  padding-inline-start: var(--mac-form-description-indent, 0);
+  color: var(--mac-color-label);
+  font: var(--_small-font);
+  letter-spacing: var(--_small-tracking);
+  cursor: default;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.mac-form-row:where([data-disabled]) > :where(.mac-form-label, .mac-form-description) {
+  color: var(--mac-color-label-tertiary);
+}
+
+/* 20 pt on each side of the line, of which the row gap is a part. */
+.mac-form-separator {
+  margin-block: calc(var(--mac-space-section) - var(--_row-gap));
+}
+
+@media (forced-colors: active) {
+  .mac-form-row:where([data-disabled]) > :where(.mac-form-label, .mac-form-description) {
+    color: GrayText;
+  }
+}

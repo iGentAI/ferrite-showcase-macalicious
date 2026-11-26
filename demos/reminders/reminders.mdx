@@ -1,0 +1,332 @@
+---
+title: Reminders
+description: The Reminders window of macOS 10.15, with a sidebar of smart-list tiles and coloured lists, reminders with round checkmarks that can be completed, added, edited and searched, due dates and times that repeat, priorities, and the info popover, built from the library alone.
+layout: full
+---
+
+<Example name="basic" />
+
+Choose a list or a tile, click a circle to complete a reminder, press the plus to add one,
+double-click a reminder to change its text, type in the search field, and click the mark at
+the end of a row to see the reminder's details: give it a day, a time and a repeat there. Type
+"Call Martin tomorrow 3pm" as a new reminder and it is due tomorrow at 3:00 PM. Nothing is
+stored: the reminders last as long as the page. The reminders of the Work list are invented,
+and every glyph is an original stand-in drawing.
+
+## What it shows
+
+- A [Window](/components/window) without a title bar: the
+  [Window Controls](/components/window-controls) float over the sidebar, and the strip they
+  sit in and the one over the list's title are the window's drag regions, through the
+  library's `windowDragRegion` (`macalicious/lib/window-drag-region`).
+- A [Split View](/components/split-view) of two panes with the measured divider colour. The
+  sidebar pane is 280 pt wide and can be dragged between 220 and 400 pt.
+- In the sidebar, a [Sidebar](/components/sidebar) whose `header` holds what stays over the
+  lists while they scroll, a sidebar-style [Search Field](/components/search-field) and the
+  four [Smart List Tiles](/components/smart-list-tile), and whose tree is
+  the "My Lists" section, whose
+  rows carry a coloured disc and a plain [Sidebar Badge](/components/sidebar-badge) with the
+  number of reminders still to do. Its footer button adds a list.
+- The chosen list: its title in the list's colour with its count, a
+  [Push Button](/components/push-button) that adds a reminder, with the library's `add`
+  [System Image](/components/system-image) as its plus, and a
+  [List View](/components/list-view) with 34 pt rows, separators inset 50 pt and the round
+  checkmark in the gutter. An empty list shows an [Empty State](/components/empty-state).
+- A reminder with a priority shows one, two or three marks before its title in its list's
+  colour (`!`, `!!`, `!!!`). One with a due day says when under its title, in the list view's
+  detail line, as Reminders does: "Today", "Tomorrow, 3:00 PM", "10/19/26", in red once the
+  day, or the minute of a reminder due today, has passed. Such a row is 18 pt taller.
+- A reminder's text is edited in place in a [Text Field](/components/text-field) without a
+  bezel: Return, leaving the field or choosing another list keeps the text, Escape gives it
+  up, and a reminder left without text is removed. The list view renders only the rows in
+  view, so the text being typed is kept outside the field: a row scrolled away and back
+  still shows it.
+- The info [Popover](/components/popover), opened from the mark at the end of a row: the
+  title with a flag button, notes, three [Checkboxes](/components/checkbox) under "remind me",
+  the priority in a [Pop Up Button](/components/pop-up-button) without a bezel, a URL, and the
+  attached pictures in a pop-up button beside a button that adds one.
+  [Labels](/components/label) and the popover's own separators, lighter than a window's in
+  Dark Aqua, lay the form out. For a reminder with a day, "On a Day" is followed by a
+  [Date Picker](/components/date-picker) field for the day and an "At a Time" checkbox with a
+  field for the minute, and a "repeat" row and, for a reminder that repeats, an "end repeat"
+  row hold pop-up buttons like the priority's. The captured reminder has no day, so the
+  popover the screenshots show is unchanged.
+
+## How it behaves
+
+| Action | Effect |
+| --- | --- |
+| Press a list, or a tile | Shows that list or smart list. All holds every reminder; Flagged the flagged ones; Scheduled the ones with a day; Today the ones due today or earlier. In a smart list and in search results each row names its list. |
+| Click a circle, or press Space on the selected reminder | Completes the reminder, or takes that back. It leaves the counts at once and stays in view, dimmed, until another list is shown. A reminder that repeats moves to its next day instead and stays to do; past its end repeat, it is completed. |
+| Press the plus | Adds a reminder to the list that is shown and opens its text. From a smart list it goes to the first list, flagged in Flagged and due today in Today and Scheduled. During a search the search is cleared first. |
+| Type a new reminder's text with a day or a time in it | "today", "tonight" (8:00 PM unless a time is named), "tomorrow", a weekday's name (the next one), "next week", "3pm", "3:30 PM", "15:00", "at 9", "noon": the reminder is due then and the words leave its title. A time without a day is today, or tomorrow once it has passed; "at 1" to "at 6" are taken for the afternoon. Only a new reminder's text is read this way. |
+| Double-click a reminder, or press Return on the selected one | Edits its text. |
+| Press Delete or Backspace on the selected reminder | Removes it and selects the next. |
+| Type in the search field | Shows the reminders of every list whose title or notes contain the text. Clearing the field returns to the list. |
+| Click the mark at the end of a row, or press Command-I (Control-I) on the selected reminder | Opens the info popover. Every change in it applies at once. Escape, a press outside it or a second click on the mark closes it. |
+| Press Add List | Adds "New List" in the next colour and shows it. |
+
+In the popover the flag puts the reminder in Flagged, and "On a Day" makes it due today, which
+puts it in Today and Scheduled, and shows the day's field, "At a Time" and "repeat". "At a
+Time" starts at 9:00 AM; the arrow keys or typed digits change the day and the minute in
+their fields. "repeat" offers Every Day, Every Weekday, Every Week, Every 2 Weeks, Every Month
+(the same day of the month, in the next month that has it), Every Year and Custom: every so many
+days, weeks, months or years, and for weeks on chosen days; "end repeat" On
+Date sets the last day it may repeat to, a month after the due day at first. "At a Location"
+asks for a place, which Show in Maps looks up on a desktop, and arriving or leaving; on a desktop
+the browser's position is held against the place while the window is open, and crossing it raises
+the alert. "When Messaging a Person" chooses someone from Contacts who has
+an account on the desktop. Add Image… and a picture dropped on a row attach a real picture, made
+small; a sample's picture stays a stand-in drawing. The place, the person and the pictures are
+kept with the person's desktop values, by the reminder's id: other members of a shared list do not
+see them. The priority (besides its marks) and the URL are kept with the reminder and change
+nothing else.
+
+A reminder can hold sub-reminders, one level deep: Edit > Indent (⌘]) puts it under the row above
+and Outdent (⌘[) takes it out again; dropped on the middle of another row it goes under that row,
+and at a row's top or bottom edge it goes beside it, in a list shown in Manual order. A parent's
+triangle, or Left and Right Arrow, hides and shows what is under it. Completing a parent completes
+its sub-reminders, deleting it deletes them, and moving it takes them along.
+
+File > New Group makes a group of lists, with a name to type. A list dragged onto a group goes into
+it, a list or group dragged to a row's edge goes there, and choosing a group shows the reminders of
+its lists. A group's contextual menu has Rename, Ungroup and Delete; the blank of the sidebar has
+New List and New Group. The Scheduled list heads its reminders by day. Edit has Undo, Redo, Cut, Copy
+and Paste of reminders: Copy puts the titles on the system clipboard, and Paste makes a line of
+text from elsewhere a new reminder.
+
+## Hosting the window
+
+`Reminders` renders the library's `Window` as its root and passes every `Window` prop to it,
+so it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component takes out before the rest goes to
+the `Window`. These are the props a [Managed Window](/components/managed-window)'s `render`
+form supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { remindersApp } from "./app";
+
+<ManagedWindow
+  id={remindersApp.id}
+  defaultFrame={{ x: 80, y: 60, ...remindersApp.defaultSize }}
+  render={(props) => <remindersApp.component {...props} />}
+/>;
+```
+
+Reminders has no title bar, so its drag regions are the strip over the search field and the
+strip around the list's title: a press there that is not on a control calls
+`onDragRegionPointerDown`, and a double click calls `onDragRegionDoubleClick`.
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `defaultLists` | `ReminderList[]` | The lists at first; the three of the screenshots by default. |
+| `defaultReminders` | `Reminder[]` | The reminders at first; the eighteen of the screenshots by default. |
+| `defaultSource` | `string` | The list or smart list shown at first; `"imac-colors"` by default. |
+| `onSourceChange` | `(source: string) => void` | Called with the list or smart list the user chooses. |
+| `today` | `string` | The day that counts as today, `YYYY-MM-DD`; the current day by default. |
+| `material` | `"translucent" \| "opaque"` | The surface of the sidebar and of the info popover: vibrant over a desktop (the default), or opaque on a plain page, as captured. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `controlsProps` | `WindowControlsProps` | Further props for the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Called for the drag regions. |
+| `width`, `height` | `number \| string` | The frame; 768 by 624 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `remindersApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (768 by 624), `minSize` (520 by 360), `resizable` and
+`menus`, the menu titles after the Apple menu.
+
+Served by the macalicious-desktop Ferrite application (`ferrite-apps/desktop`), the lists and
+reminders are saved through `/api/reminders/data`, so a new reminder survives a reload. A
+reminder with a due day also gets an alert at its due minute, or at 9:00 on its day without
+one, in the browser's time zone: the application keeps a timer for it, and when it falls due
+the window shows a Reminders `NotificationAlert` under the menu bar, with Close and Complete.
+With no Reminders window open the alert comes through Notification Center instead, and a window
+tells the application what it shows, so that the two never hold the same alert for long.
+Closing it dismisses it for good; Complete also marks the reminder completed, or moves one
+that repeats to its next day. In Notification Center one that repeats has Show in place of
+Complete, which opens Reminders, since only the page works out the next day. When the application refuses the reminders as they are (a
+title or note past its limits), the close button shows the dot of unsaved changes until a
+later change is saved. The application keeps a revision of the session's reminders, and a
+save names the revision it was made on; one save is under way at a time, and one that met a
+network error, or had no answer within 15 seconds, is sent once more, unchanged. When another window saved
+first, or a save's outcome is not known, the change is dropped: every Reminders window reads
+the stored reminders and shows them. When two windows edit at the same time, the later
+conflicting edit is discarded. When the stored reminders are the page's own save, stored
+though its answer never came, nothing is dropped and the changes made meanwhile are saved. Only the desktop build made for that application turns this
+on (`VITE_MACALICIOUS_API=1`); on this site and anywhere else the reminders live in state,
+nothing is fetched and no alert is shown.
+
+There a signed-in account (not a Guest User) shares a list with other accounts. Share List… in
+a list's contextual menu opens a popover that adds a person by their exact account name; the
+list then leaves My Lists for a Shared section, where each list says who owns it ("Shared by
+Me" for the person's own), and everyone on it adds, edits and completes its reminders, which
+also count in the smart lists. The same popover (Show People… for a list someone else owns)
+lists everyone on it: the owner adds and removes people and can Stop Sharing, which brings the
+list back into the owner's own lists and takes it from everyone else's; anyone can Leave, the
+owner too while someone else is on it, who then owns it. People added or taken off are told in
+Notification Center. Each shared list is saved on a revision of its own, as the person's own
+reminders are. When someone else saved the list first, the page reads it again, makes the
+person's change again on it reminder by reminder, and sends that once; a change that still
+cannot be saved is dropped, and the window shows the list as stored. A change the application
+refuses for what it holds stays in the window, unsaved, until a later change is saved. The server
+arms no alert for a shared list's reminder, so the window raises one itself while it is open, for a
+day after it fell due, and remembers those closed with the person's desktop values. Those of a list
+taken back alert again from the owner's next change to their own reminders. A list is shared
+with at most 20 people, a person is on at most 20 shared lists, and a shared list holds at most
+500 reminders. The popover has no reference screenshot and is provisional.
+
+## Styling hooks
+
+The demo's measured lengths are custom properties in `reminders.tokens.css`, each tagged
+measured or provisional with the place it was read; `reminders.css` reads them with `var()`.
+Set one on the window or an ancestor to change that measure. The class names are listed at
+the head of `reminders.css`.
+
+| Property | Default | Controls |
+| --- | --- | --- |
+| `--mac-reminders-top-height` | `223px` | Sidebar header: height |
+| `--mac-reminders-top-gap` | `16.5px` | Sidebar header: gap between the search field and the tiles |
+| `--mac-reminders-top-padding` | `52.5px 16px 0` | Sidebar header: padding |
+| `--mac-reminders-controls-inset` | `13px` | Window controls: inset from the top and the start |
+| `--mac-reminders-search-margin-inline` | `0.5px` | Search field: margin inline |
+| `--mac-reminders-disc-size` | `22px` | List disc: size |
+| `--mac-reminders-header-height` | `94px` | List header: height |
+| `--mac-reminders-header-gap` | `16px` | List header: gap |
+| `--mac-reminders-header-padding` | `40px 16.5px 0` | List header: padding |
+| `--mac-reminders-add-inset` | `7px` | New Reminder button: inset from the top and the end |
+| `--mac-reminders-add-width` | `40px` | New Reminder button: width |
+| `--mac-reminders-plus-offset` | `1.5px` | Plus glyph: offset down |
+| `--mac-reminders-title-font-size` | `33px` | List title: font size |
+| `--mac-reminders-title-line-height` | `44px` | List title: line height |
+| `--mac-reminders-title-letter-spacing` | `-0.8px` | List title: letter spacing |
+| `--mac-reminders-count-font-size` | `34px` | Count: font size |
+| `--mac-reminders-count-line-height` | `44px` | Count: line height |
+| `--mac-reminders-circle-size` | `18px` | Reminder circle: size |
+| `--mac-reminders-circle-margin` | `-1px 0 0 2px` | Reminder circle: margin |
+| `--mac-reminders-circle-dot-radius` | `6px` | Completed circle's disc: radius |
+| `--mac-reminders-circle-dot-edge` | `6.5px` | Completed circle's disc: where its edge ends |
+| `--mac-reminders-trailing-gap` | `8px` | Trailing accessories: gap |
+| `--mac-reminders-thumbnail-width` | `43px` | Thumbnail: width |
+| `--mac-reminders-thumbnail-height` | `28px` | Thumbnail: height |
+| `--mac-reminders-thumbnail-margin-block` | `5.5px 2.5px` | Thumbnail: margin block |
+| `--mac-reminders-thumbnail-radius` | `2px` | Thumbnail: radius |
+| `--mac-reminders-info-mark-margin-inline-end` | `11px` | Info mark: margin inline end |
+| `--mac-reminders-info-width` | `290px` | Info popover: width |
+| `--mac-reminders-info-padding-block-end` | `10px` | Info popover: padding block end |
+| `--mac-reminders-info-head-gap` | `8px` | Info popover head: gap |
+| `--mac-reminders-info-head-padding` | `16.5px 14px 0 14.5px` | Info popover head: padding |
+| `--mac-reminders-info-title-margin-block-start` | `1px` | Info title: margin block start |
+| `--mac-reminders-info-title-font-size` | `17px` | Info title: font size |
+| `--mac-reminders-info-title-line-height` | `20px` | Info title: line height |
+| `--mac-reminders-info-flag-width` | `32px` | Flag button: width |
+| `--mac-reminders-info-notes-inset` | `26px` | Notes field: width taken off the popover's |
+| `--mac-reminders-info-notes-margin` | `7px 12px 7.5px 12.5px` | Notes field: margin |
+| `--mac-reminders-info-line-margin-inline` | `14px` | Info separators: margin inline |
+| `--mac-reminders-info-label-width` | `72.5px` | Info label column: width |
+| `--mac-reminders-info-row-column-gap` | `11.5px` | Info row: column gap |
+| `--mac-reminders-info-row-padding` | `9px 14px 9px 0` | Info row: padding |
+| `--mac-reminders-info-remind-padding-block` | `12px 6.5px` | "remind me" row: padding block |
+| `--mac-reminders-info-priority-padding-block` | `7px 6px` | "priority" row: padding block |
+| `--mac-reminders-info-url-padding-block-start` | `10px` | "URL" row: padding block start |
+| `--mac-reminders-info-images-padding-block-start` | `5.5px` | "images" row: padding block start |
+| `--mac-reminders-info-choices-row-gap` | `14px` | Checkboxes: row gap |
+| `--mac-reminders-info-lead-offset` | `-1px` | Checkbox row label: offset down |
+| `--mac-reminders-info-hint-margin` | `-8.5px 0 0 18px` | Hint under a checkbox: margin |
+| `--mac-reminders-info-url-margin-inline-start` | `-3.5px` | URL field: margin inline start |
+| `--mac-reminders-info-images-row-gap` | `2.5px` | Images: row gap |
+| `--mac-reminders-info-image-width` | `175px` | Image: width |
+| `--mac-reminders-info-image-margin-inline-start` | `-3px` | Image: margin inline start |
+| `--mac-reminders-info-add-margin-inline-start` | `-2px` | Add Image button: margin inline start |
+| `--mac-reminders-alerts-top` | `32px` | Due-date alerts: inset from the top of the page |
+| `--mac-reminders-alerts-end` | `10px` | Due-date alerts: inset from the end of the page |
+| `--mac-reminders-alerts-gap` | `10px` | Due-date alerts: gap between alerts |
+| `--mac-reminders-tool-panels-top` | `44px` | Spelling and Substitutions panels: inset from the top of the page |
+| `--mac-reminders-tool-panels-end` | `20px` | Spelling and Substitutions panels: inset from the end of the page |
+| `--mac-reminders-priority-gap` | `4px` | Priority marks: gap before the title |
+| `--mac-reminders-info-date-margin` | `-6px 0 0 18px` | Date and time fields under their checkboxes: margin |
+| `--mac-reminders-info-repeat-padding-block` | `7px 6px` | "repeat" and "end repeat" rows: padding block |
+| `--mac-reminders-info-every-number-width` | `44px` | Custom repeat: width of its "every" number field (provisional) |
+| `--mac-reminders-info-end-gap` | `6px` | "end repeat": gap between its pop-up button and its date |
+
+The rows' extra 18 pt for a due line is set in `reminders.tsx` (`DUE_LINE`), beside the 34 pt
+row and the 70 pt row with a picture, because the list view takes row heights as numbers. The
+values added for due dates, priorities and repeats are provisional: no reference screenshot
+shows them.
+
+## Accessibility
+
+- The window is a `region` named "Reminders". The tiles are toggle buttons (`aria-pressed`)
+  in a group named "Smart Lists", each named by its title and its count.
+- The lists are a `tree` named "Lists"; the arrow keys move the selection and typing selects
+  by name. The reminders are a `listbox` named by the list's title; the arrow keys, Home, End
+  and typing move the selection.
+- A list view's rows are options, which cannot hold controls, so the circle and the info mark
+  are not buttons and take no tab stop. Everything they do has a key on the selected row:
+  Space completes, Command-I or Control-I shows the info, Return edits, Delete removes. A
+  completed reminder says so in its name ("Bondi, completed"), and so does a prioritised one
+  ("Sweep, high priority": the marks themselves are hidden from assistive technology). The
+  due line is part of the option's name ("Today, 3:00 PM").
+- The day and the minute in the info popover are date pickers named "Date" and "Time", each
+  element a `spinbutton` the arrow keys and digits change; "repeat" and "end repeat" are named
+  by their labels.
+- While a reminder's text is edited the field is inside its option, which assistive
+  technology may not expect of a list box; the field is named "Title" and takes the focus,
+  and the focus returns to the list when the edit ends by a key.
+- The popover is a `dialog` named by the reminder's title. It takes the focus when it opens
+  and gives it back to the list when it closes. Its checkboxes are a group named "remind me",
+  and the priority, the URL and the pictures are named by the labels beside them.
+- The count beside the title reads "13 to do"; an empty search is announced through a
+  `status` element.
+
+## Fidelity
+
+`reminders.visual.json` compares the window and the info popover beside it with the Reminders
+screenshots in both appearances, each as captured and again with the text and the stand-in
+drawings masked. The capture is made after a real click on the info mark of Graphite. Scores
+from `npm run visual -- reminders/` in Chromium on Linux with the fallback font: the share of
+pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 2.46% | 3.41 | 2.03% | 3.47 |
+| `window-light-layout` (masked) | 0.73% | 0.86 | 0.31% | 0.80 |
+| `window-dark` | 2.63% | 4.09 | 2.22% | 4.07 |
+| `window-dark-layout` (masked) | 1.11% | 1.51 | 0.79% | 1.39 |
+
+The masked rows count a pixel as differing at a colour distance of 0.05, half the default.
+What remains in them is the library's own drawing where it departs from this window: the
+flag button is the white push button where Reminders draws a grey one, the pictures' pop-up
+button has the double arrows of a pop-up where Reminders draws the single chevron of a menu
+that opens below, and in Dark Aqua the unchecked boxes are a few levels darker than captured.
+The sidebar's search field is given Reminders' 21 pt through the field's height hook, and with
+the `opaque` material the popover has the fill the captures record.
+
+- The glyphs in the discs, the flag and the picture in the pop-up button are original
+  stand-in drawings; the plus and the info mark are the library's own drawings (the
+  `add-circle` and `info-outline` system images). Apple's glyphs and the photograph of the
+  capture are not reproduced.
+- A reminder with a picture has a 70 pt row with the picture under its title. The sample's picture
+  is a stand-in drawing where the capture has a photograph, and the comparisons mask that part of
+  the list.
+- The lists depart from the standard sidebar: rows of 36 pt with a 22 pt disc 20 pt from the
+  edge, and the header's text and the footer's glyph 16 pt from the edge. The demo sets those
+  through the sidebar parts' `style`, the title it passes and the documented header hook. The
+  Add List glyph is the sidebar footer's `filled` form, the plus cut out of a disc.
+- The plus is a push button given its width with a class, the flag is the push button's
+  `compact` form, the pop-up button
+  is given its captured width, and the selected reminder's tint and the divider's colour go
+  through the list view's and the split view's documented hooks.
+- A selected reminder turns to the accent colour while the list has the keyboard focus, as
+  every list view does; Reminders keeps the grey tint. The priority's arrows show only under
+  the pointer, as in Reminders, and also with the keyboard focus and while its menu is open
+  (inferred), through the button's arrow colour hook. "Add Image…" is as wide as its title in the font in use.
+- Completed reminders, a pressed tile, the selected tile, search results, the empty states,
+  the text being edited and the colours of lists other than blue and green have no reference
+  screenshot; they are composed to Catalina's conventions and are provisional. So are the due
+  line, the priority marks and the date, time and repeat rows of the popover.
+- Maps is asked only for a search, and no alert comes of a place. Messages does not yet raise an
+  alert for When Messaging a Person: the person is only kept. Only on the desktop served by its
+  Ferrite application are lists shared between
+  accounts.

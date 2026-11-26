@@ -1,0 +1,94 @@
+/*
+ * Fonts panel (NSFontPanel): a panel window whose body stacks the row of text effects, the four
+ * columns (Collection, Family, Typeface, Size, each with its heading) and the search field.
+ *
+ * States
+ *   the lists' and controls' own states (selection, focus, disabled) are theirs
+ *   :where([data-window-state="main"], [data-window-state="inactive"]) *
+ *                                      not the key window: grey selection, no focus ring
+ *
+ * Hooks
+ *   --mac-font-panel-list-height       height of the four lists (default 150 pt)
+ */
+.mac-font-panel {
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+/* Body: 10 pt margins, 8 pt between its rows (provisional). */
+.mac-font-panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+}
+
+/* The effects: two small pop-up buttons and the text colour, 6 pt apart (provisional). A
+   fieldset that draws nothing of its own. */
+.mac-font-panel-effects {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.mac-font-panel-effect {
+  inline-size: 84px;
+}
+
+/* Four columns under their headings: the family takes the rest of the width. */
+.mac-font-panel-columns {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr) 96px 56px;
+  grid-template-rows: auto var(--mac-font-panel-list-height, 150px);
+  gap: 3px 6px;
+}
+
+.mac-font-panel-heading {
+  overflow: hidden;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-control-mini);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mac-font-panel-list {
+  min-block-size: 0;
+  background: var(--mac-color-text-background);
+}
+
+.mac-font-panel-rows {
+  font: var(--mac-font-control-small);
+}
+
+.mac-font-panel-row {
+  padding-inline: 4px;
+}
+
+/* The size column: the field over its list. */
+.mac-font-panel-size {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-block-size: 0;
+}
+
+.mac-font-panel-size > .mac-font-panel-list {
+  flex: 1 1 auto;
+}
+
+.mac-font-panel-search {
+  align-self: flex-end;
+  inline-size: 160px;
+}
+
+/* The note under the lists when the panel dims the families this computer has no font for. */
+.mac-font-panel-note {
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-control-mini);
+}

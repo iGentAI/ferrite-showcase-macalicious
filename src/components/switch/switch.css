@@ -1,0 +1,156 @@
+/*
+ * Switch (NSSwitch). The root has role="switch" and is the track, a capsule; its box is the
+ * control's alignment rectangle.
+ *
+ *   .mac-switch            the track, off look
+ *   .mac-switch::before    the accent fill of the on state, faded in
+ *   .mac-switch-thumb      the knob: 19 pt fill inside a hairline, half a point from the
+ *                          track's edge
+ *
+ * States: [data-checked], [data-disabled] from Base UI; [data-size]; :active; :focus-visible;
+ * a window that is not key (no accent, no focus ring); [data-force~="pressed" | "focus"] pin
+ * the transient states for docs and visual tests.
+ */
+.mac-switch {
+  --_w: 38px;
+  --_h: 21px;
+  --_dir: 1;
+  --_fill: var(--mac-switch-thumb-fill);
+
+  position: relative;
+  display: inline-block;
+  flex: none;
+  box-sizing: border-box;
+  inline-size: var(--_w);
+  block-size: var(--_h);
+  /* The root can be rendered as a native button: no bezel of its own */
+  margin: 0;
+  padding: 0;
+  border: 0;
+  appearance: none;
+  border-radius: calc(var(--_h) / 2);
+  background: linear-gradient(
+    to bottom,
+    var(--mac-switch-track-top),
+    var(--mac-switch-track-bottom)
+  );
+  box-shadow: var(--mac-switch-track-rim);
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.mac-switch:where(:dir(rtl)) {
+  --_dir: -1;
+}
+
+.mac-switch::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    to bottom,
+    var(--mac-accent-control-fill-top),
+    var(--mac-accent-control-fill-bottom)
+  );
+  box-shadow: var(--mac-switch-on-rim);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.mac-switch-thumb {
+  position: absolute;
+  inset-block: var(--mac-hairline);
+  inset-inline-start: var(--mac-hairline);
+  box-sizing: border-box;
+  aspect-ratio: 1;
+  border: var(--mac-hairline) solid transparent;
+  border-radius: 50%;
+  background:
+    linear-gradient(var(--_fill), var(--_fill)) padding-box,
+    linear-gradient(
+      to bottom,
+      var(--mac-switch-thumb-outline-top),
+      var(--mac-switch-thumb-outline-side),
+      var(--mac-switch-thumb-outline-bottom)
+    )
+    border-box;
+  box-shadow: var(--mac-switch-thumb-highlight), var(--mac-switch-thumb-shadow);
+  transition: transform 0.2s;
+}
+
+/* Sizes [provisional]: Catalina has the regular switch only. */
+.mac-switch:where([data-size="small"]) {
+  --_w: 32px;
+  --_h: 18px;
+}
+
+.mac-switch:where([data-size="mini"]) {
+  --_w: 26px;
+  --_h: 15px;
+}
+
+/* On: the knob at the trailing end, the accent fill shown */
+.mac-switch:where([data-checked]) .mac-switch-thumb {
+  transform: translateX(calc((var(--_w) - var(--_h)) * var(--_dir)));
+}
+
+.mac-switch:where([data-checked])::before {
+  opacity: 1;
+}
+
+/* On in a window that is not key: no accent */
+.mac-switch:where(:where([data-window-state="main"], [data-window-state="inactive"]) *)::before {
+  background: var(--mac-switch-track-on-not-key);
+  box-shadow: none;
+}
+
+/* Pressed */
+.mac-switch:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  --_fill: var(--mac-switch-thumb-fill-pressed);
+}
+
+/* Disabled: the whole control at half opacity */
+.mac-switch:where([data-disabled]) {
+  opacity: var(--mac-bezel-opacity-disabled);
+}
+
+/* Focus ring around the track, from half a point inside its edge to 2.5 pt beyond; only in
+   the key window. */
+.mac-switch:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(var(--mac-focus-ring-offset) - var(--mac-hairline));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-switch::before,
+  .mac-switch-thumb {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-switch {
+    border: 1px solid ButtonText;
+  }
+
+  .mac-switch::before {
+    background: Highlight;
+  }
+
+  .mac-switch-thumb {
+    border-color: ButtonText;
+    background: ButtonFace;
+  }
+
+  .mac-switch:where([data-disabled]) {
+    border-color: GrayText;
+    opacity: 1;
+  }
+}

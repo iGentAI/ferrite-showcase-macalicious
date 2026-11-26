@@ -1,0 +1,532 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "panel-light",
+      "description": "The panel over the System Preferences window, first application selected, Aqua: its size and 20 pt corners, the material over the panes behind it, the selection tile and the name. The three application icons are Apple artwork and are masked; the example has neutral tiles there. The name is set in the fallback font.",
+      "example": "visual-panel",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 23,
+          "y": 29,
+          "width": 128,
+          "height": 128
+        },
+        {
+          "x": 156,
+          "y": 29,
+          "width": 128,
+          "height": 128
+        },
+        {
+          "x": 289,
+          "y": 29,
+          "width": 128,
+          "height": 128
+        }
+      ],
+      "budget": {
+        "1x": 0.0095,
+        "2x": 0.007
+      },
+      "deltaBudget": {
+        "1x": 2.3,
+        "2x": 2.15
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Command-Tab.png",
+        "crop": {
+          "x": 1240,
+          "y": 864,
+          "width": 880,
+          "height": 372
+        }
+      }
+    },
+    {
+      "name": "panel-light-drawing",
+      "description": "The same with the name masked as well, at the stricter threshold: the drawing alone, Aqua.",
+      "example": "visual-panel",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 23,
+          "y": 29,
+          "width": 128,
+          "height": 128
+        },
+        {
+          "x": 156,
+          "y": 29,
+          "width": 128,
+          "height": 128
+        },
+        {
+          "x": 289,
+          "y": 29,
+          "width": 128,
+          "height": 128
+        },
+        {
+          "x": 52,
+          "y": 165,
+          "width": 70,
+          "height": 18
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.004,
+        "2x": 0.004
+      },
+      "deltaBudget": {
+        "1x": 1.8,
+        "2x": 1.75
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Command-Tab.png",
+        "crop": {
+          "x": 1240,
+          "y": 864,
+          "width": 880,
+          "height": 372
+        }
+      }
+    },
+    {
+      "name": "panel-dark",
+      "description": "The panel over the System Preferences window, first application selected, Dark Aqua. The application icons are masked, as in panel-light; the name is set in the fallback font.",
+      "example": "visual-panel",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 23,
+          "y": 29,
+          "width": 128,
+          "height": 128
+        },
+        {
+          "x": 156,
+          "y": 29,
+          "width": 128,
+          "height": 128
+        },
+        {
+          "x": 289,
+          "y": 29,
+          "width": 128,
+          "height": 128
+        }
+      ],
+      "budget": {
+        "1x": 0.012,
+        "2x": 0.0095
+      },
+      "deltaBudget": {
+        "1x": 3,
+        "2x": 2.9
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Command-Tab.png",
+        "crop": {
+          "x": 1240,
+          "y": 864,
+          "width": 880,
+          "height": 372
+        }
+      }
+    },
+    {
+      "name": "panel-dark-drawing",
+      "description": "The same with the name masked as well, at the stricter threshold: the drawing alone, Dark Aqua.",
+      "example": "visual-panel",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 23,
+          "y": 29,
+          "width": 128,
+          "height": 128
+        },
+        {
+          "x": 156,
+          "y": 29,
+          "width": 128,
+          "height": 128
+        },
+        {
+          "x": 289,
+          "y": 29,
+          "width": 128,
+          "height": 128
+        },
+        {
+          "x": 52,
+          "y": 165,
+          "width": 70,
+          "height": 18
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0035,
+        "2x": 0.0035
+      },
+      "deltaBudget": {
+        "1x": 2.4,
+        "2x": 2.45
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Command-Tab.png",
+        "crop": {
+          "x": 1240,
+          "y": 864,
+          "width": 880,
+          "height": 372
+        }
+      }
+    },
+    {
+      "name": "opens-light",
+      "description": "The switcher as it opens over a flat grey, Aqua: the second application is selected. The backdrop is flat, so the panel is the tint over it and the tile black over that.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 480,
+          "height": 226
+        },
+        "pixels": [
+          {
+            "x": 30,
+            "y": 113,
+            "color": "#ababad",
+            "tolerance": 3,
+            "note": "panel: --mac-app-switcher-material (233 233 237 at 41%, fitted to Command-Tab) over #808080"
+          },
+          {
+            "x": 240,
+            "y": 47,
+            "color": "#919193",
+            "tolerance": 3,
+            "note": "selection tile, in the 4 pt above the second icon: --mac-app-switcher-selection (black at 15%, measured composite) over the panel"
+          },
+          {
+            "x": 107,
+            "y": 47,
+            "color": "#ababad",
+            "tolerance": 3,
+            "note": "the same 4 pt above the first icon: no tile, the panel"
+          },
+          {
+            "x": 10,
+            "y": 113,
+            "color": "#808080",
+            "note": "the example's backdrop, outside the 440 pt panel: no shadow, no border (measured: none)"
+          },
+          {
+            "x": 240,
+            "y": 113,
+            "color": "#404040",
+            "note": "the example's stand-in icon, opaque on the tile"
+          }
+        ]
+      }
+    },
+    {
+      "name": "opens-dark",
+      "description": "The switcher as it opens over a flat grey, Dark Aqua: the second application is selected.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 480,
+          "height": 226
+        },
+        "pixels": [
+          {
+            "x": 30,
+            "y": 113,
+            "color": "#5f5f5f",
+            "tolerance": 3,
+            "note": "panel: --mac-app-switcher-material (62 61 61 at 50%, fitted to Command-Tab) over #808080"
+          },
+          {
+            "x": 240,
+            "y": 47,
+            "color": "#3f3e3e",
+            "tolerance": 3,
+            "note": "selection tile above the second icon: --mac-app-switcher-selection (black at 34%, measured composite) over the panel"
+          },
+          {
+            "x": 107,
+            "y": 47,
+            "color": "#5f5f5f",
+            "tolerance": 3,
+            "note": "above the first icon: no tile, the panel"
+          },
+          {
+            "x": 10,
+            "y": 113,
+            "color": "#808080",
+            "note": "the example's backdrop, outside the panel"
+          }
+        ]
+      }
+    },
+    {
+      "name": "arrow-right-light",
+      "description": "After Right Arrow the selection is on the third application, Aqua. No screenshot shows the selection anywhere but on the first.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "key": "ArrowRight"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 480,
+          "height": 226
+        },
+        "pixels": [
+          {
+            "x": 373,
+            "y": 47,
+            "color": "#919193",
+            "tolerance": 3,
+            "note": "selection tile above the third icon, computed from the tokens as in opens-light"
+          },
+          {
+            "x": 240,
+            "y": 47,
+            "color": "#ababad",
+            "tolerance": 3,
+            "note": "above the second icon: the panel again"
+          }
+        ]
+      }
+    },
+    {
+      "name": "tab-wraps-light",
+      "description": "After two Tabs the selection has gone past the last application to the first, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 2
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 480,
+          "height": 226
+        },
+        "pixels": [
+          {
+            "x": 107,
+            "y": 47,
+            "color": "#919193",
+            "tolerance": 3,
+            "note": "selection tile above the first icon, computed from the tokens"
+          },
+          {
+            "x": 373,
+            "y": 47,
+            "color": "#ababad",
+            "tolerance": 3,
+            "note": "above the third icon: the panel"
+          },
+          {
+            "x": 240,
+            "y": 47,
+            "color": "#ababad",
+            "tolerance": 3,
+            "note": "above the second icon: the panel"
+          }
+        ]
+      }
+    },
+    {
+      "name": "shift-tab-dark",
+      "description": "After Shift-Tab the selection is on the first application, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "key": "Shift+Tab"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 480,
+          "height": 226
+        },
+        "pixels": [
+          {
+            "x": 107,
+            "y": 47,
+            "color": "#3f3e3e",
+            "tolerance": 3,
+            "note": "selection tile above the first icon, computed from the tokens as in opens-dark"
+          },
+          {
+            "x": 240,
+            "y": 47,
+            "color": "#5f5f5f",
+            "tolerance": 3,
+            "note": "above the second icon: the panel again"
+          }
+        ]
+      }
+    },
+    {
+      "name": "hover-dark",
+      "description": "The pointer moved over the third application selects it, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "hover": ".mac-app-switcher-item:last-child"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 480,
+          "height": 226
+        },
+        "pixels": [
+          {
+            "x": 373,
+            "y": 47,
+            "color": "#3f3e3e",
+            "tolerance": 3,
+            "note": "selection tile above the third icon, computed from the tokens"
+          },
+          {
+            "x": 240,
+            "y": 47,
+            "color": "#5f5f5f",
+            "tolerance": 3,
+            "note": "above the second icon: the panel"
+          }
+        ]
+      }
+    },
+    {
+      "name": "crowded-light",
+      "description": "Five applications on a screen too narrow for them: the panel keeps 20 pt clear at each side and the icons shrink together, Aqua. No screenshot shows it; that the icons shrink is documented by Apple, how is this library's.",
+      "example": "visual-crowded",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 300, "height": 120 },
+        "pixels": [
+          {
+            "x": 10,
+            "y": 60,
+            "color": "#808080",
+            "note": "the example's backdrop in the 20 pt kept clear on the left (--mac-app-switcher-margin)"
+          },
+          { "x": 290, "y": 60, "color": "#808080", "note": "the same on the right" },
+          {
+            "x": 30,
+            "y": 60,
+            "color": "#ababad",
+            "tolerance": 3,
+            "note": "the panel's 23 pt padding, from x=20: the material over #808080, as in opens-light"
+          },
+          {
+            "x": 270,
+            "y": 60,
+            "color": "#ababad",
+            "tolerance": 3,
+            "note": "the panel's padding on the right, to x=280"
+          },
+          {
+            "x": 62,
+            "y": 60,
+            "color": "#404040",
+            "note": "the first icon, 38.8 pt wide from x=43: (260 - 46 - 20) / 5"
+          },
+          {
+            "x": 238,
+            "y": 60,
+            "color": "#404040",
+            "note": "the fifth icon, from x=218.2 to 257: all five are inside the panel"
+          },
+          {
+            "x": 150,
+            "y": 30,
+            "color": "#ababad",
+            "tolerance": 3,
+            "note": "above the icons, which are as high as they are wide: the panel, 96.8 pt high from y=11.6"
+          },
+          { "x": 150, "y": 6, "color": "#808080", "note": "the backdrop above the panel" }
+        ]
+      }
+    },
+    {
+      "name": "escape-light",
+      "description": "Escape closes the switcher: nothing of it is left on the screen, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "key": "Escape"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 480,
+          "height": 226
+        },
+        "pixels": [
+          {
+            "x": 30,
+            "y": 113,
+            "color": "#808080",
+            "note": "the example's backdrop where the panel was"
+          },
+          {
+            "x": 240,
+            "y": 113,
+            "color": "#808080",
+            "note": "the example's backdrop where the second icon was"
+          }
+        ]
+      }
+    },
+    {
+      "name": "click-dark",
+      "description": "A click on an application chooses it and closes the switcher, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": ".mac-app-switcher-item:first-child"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 480,
+          "height": 226
+        },
+        "pixels": [
+          {
+            "x": 30,
+            "y": 113,
+            "color": "#808080",
+            "note": "the example's backdrop where the panel was"
+          },
+          {
+            "x": 107,
+            "y": 113,
+            "color": "#808080",
+            "note": "the example's backdrop where the clicked icon was"
+          }
+        ]
+      }
+    }
+  ]
+}

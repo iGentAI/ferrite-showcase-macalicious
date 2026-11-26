@@ -1,0 +1,295 @@
+/*
+ * Slider (NSSlider), with Base UI's parts: control (padded by half a thumb, so the thumb
+ * stops flush with the track's ends), track (::before draws the capsule), fill, thumb
+ * (::before hairline and shadow, ::after fill), ticks. slider.mdx lists the states and
+ * explains the private variables.
+ */
+.mac-slider {
+  --_t: 15px;
+  --_tc: 15px;
+  --_c: 15px;
+  --_at: 6px;
+  --_i: calc(var(--mac-hairline) * -1);
+  --_ri: calc(var(--mac-focus-ring-width) * -1);
+  --_pb: none;
+  --_po: none;
+  --_pr: none;
+  --_fill: var(--mac-slider-thumb-fill);
+  --_hl: var(--mac-slider-thumb-highlight);
+  --_o: var(--mac-slider-thumb-outline);
+  --_s: var(--mac-slider-thumb-shadow);
+  --_f: none;
+
+  min-inline-size: calc(var(--_t) * 2);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+}
+
+.mac-slider-control {
+  display: flow-root;
+  box-sizing: border-box;
+  block-size: var(--_c);
+  padding-inline: calc(var(--_t) / 2);
+}
+
+.mac-slider-track {
+  block-size: 3px;
+  margin-block-start: var(--_at);
+  border-radius: 1.5px;
+}
+
+.mac-slider-track::before {
+  content: "";
+  position: absolute;
+  inset: 0 calc(var(--_t) / -2);
+  border-radius: inherit;
+  background: var(--mac-slider-track);
+}
+
+.mac-slider-fill {
+  box-sizing: content-box;
+  block-size: 100%;
+  margin-inline-start: calc(var(--_t) / -2);
+  padding-inline-start: calc(var(--_t) / 2);
+  border-radius: inherit;
+  background: var(--mac-accent-control-fill-top);
+}
+
+.mac-slider-thumb {
+  box-sizing: border-box;
+  inline-size: var(--_t);
+  block-size: var(--_tc);
+  margin-block-start: calc(-1.5px - var(--_at));
+  margin-inline-start: calc(var(--_t) / -2);
+  border-radius: 50%;
+  filter: var(--_f);
+}
+
+.mac-slider-thumb::before,
+.mac-slider-thumb::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+}
+
+.mac-slider-thumb::before {
+  inset: var(--_i);
+  background: var(--_o);
+  box-shadow: var(--_s);
+  mask: var(--_po) 0 0 / 100% 100% no-repeat;
+}
+
+.mac-slider-thumb::after {
+  inset: 0;
+  background: var(--_fill);
+  box-shadow: var(--_hl);
+  mask: var(--_pb) 0 0 / 100% 100% no-repeat;
+}
+
+.mac-slider-ticks {
+  position: absolute;
+  inset: calc(3px + var(--_kt)) 0 auto;
+  block-size: var(--_k);
+}
+
+.mac-slider-tick {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--_p) * 100%);
+  inline-size: 1px;
+  margin-inline-start: -0.5px;
+  background: var(--mac-slider-tick);
+}
+
+/* Tick marks: the pointed thumb. Masks, not clip-paths: they snap to device pixels. */
+.mac-slider:where([data-tick-marks]) {
+  --_tc: 17px;
+  --_c: 20px;
+  --_at: 4px;
+  --_k: 4px;
+  --_kt: 8.5px;
+  --_pb: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 17'%3E%3Cpath d='M2 0H13A2 2 0 0 1 15 2V7.09A4.5 4.5 0 0 1 13.81 10.14L7.5 17L1.19 10.14A4.5 4.5 0 0 1 0 7.09V2A2 2 0 0 1 2 0Z'/%3E%3C/svg%3E");
+  --_po: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 18'%3E%3Cpath d='M2.5 0H13.5A2.5 2.5 0 0 1 16 2.5V7.59A5 5 0 0 1 14.68 10.98L8.37 17.84A.5 .5 0 0 1 7.63 17.84L1.32 10.98A5 5 0 0 1 0 7.59V2.5A2.5 2.5 0 0 1 2.5 0Z'/%3E%3C/svg%3E");
+  --_pr: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 21 23'%3E%3Cpath d='M5 0H16A5 5 0 0 1 21 5V10.09A7.5 7.5 0 0 1 19.02 15.17L12.71 22.03A3 3 0 0 1 8.29 22.03L1.98 15.17A7.5 7.5 0 0 1 0 10.09V5A5 5 0 0 1 5 0Z'/%3E%3C/svg%3E");
+  --_hl: var(--mac-slider-thumb-highlight-ticks);
+  --_o: var(--mac-slider-thumb-outline-ticks);
+  --_s: none;
+  --_f: var(--mac-slider-thumb-drop-shadow);
+}
+
+.mac-slider:where([data-tick-marks]) .mac-slider-thumb {
+  border-radius: 0;
+}
+
+/* Sizes */
+.mac-slider:where([data-size="small"]) {
+  --_t: 11px;
+  --_tc: 11px;
+  --_c: 11px;
+  --_at: 4px;
+}
+
+.mac-slider:where([data-size="mini"]) {
+  --_t: 9px;
+  --_tc: 9px;
+  --_c: 9px;
+  --_at: 3px;
+}
+
+.mac-slider:where([data-size="small"][data-tick-marks]) {
+  --_tc: 12.5px;
+  --_c: 14px;
+  --_at: 3px;
+  --_k: 3px;
+  --_kt: 4.5px;
+  --_pb: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 12.5'%3E%3Cpath d='M1.5 0H9.5A1.5 1.5 0 0 1 11 1.5V4.75A3 3 0 0 1 10.24 6.75L5.5 12.05L.76 6.75A3 3 0 0 1 0 4.75V1.5A1.5 1.5 0 0 1 1.5 0Z'/%3E%3C/svg%3E");
+  --_po: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 13.5'%3E%3Cpath d='M2 0H10A2 2 0 0 1 12 2V5.25A3.5 3.5 0 0 1 11.11 7.59L6.37 12.88A.5 .5 0 0 1 5.63 12.88L.89 7.59A3.5 3.5 0 0 1 0 5.25V2A2 2 0 0 1 2 0Z'/%3E%3C/svg%3E");
+  --_pr: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17 18.5'%3E%3Cpath d='M4.5 0H12.5A4.5 4.5 0 0 1 17 4.5V7.75A6 6 0 0 1 15.47 11.75L10.74 17.05A3 3 0 0 1 6.26 17.05L1.53 11.75A6 6 0 0 1 0 7.75V4.5A4.5 4.5 0 0 1 4.5 0Z'/%3E%3C/svg%3E");
+}
+
+.mac-slider:where([data-size="mini"][data-tick-marks]) {
+  --_tc: 10px;
+  --_c: 12px;
+  --_at: 2px;
+  --_k: 3px;
+  --_kt: 3.5px;
+  --_pb: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 10'%3E%3Cpath d='M1.5 0H7.5A1.5 1.5 0 0 1 9 1.5V3.85A2.5 2.5 0 0 1 8.37 5.51L4.5 9.85L.63 5.51A2.5 2.5 0 0 1 0 3.85V1.5A1.5 1.5 0 0 1 1.5 0Z'/%3E%3C/svg%3E");
+  --_po: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 11'%3E%3Cpath d='M2 0H8A2 2 0 0 1 10 2V4.35A3 3 0 0 1 9.24 6.34L5.37 10.68A.5 .5 0 0 1 4.63 10.68L.76 6.34A3 3 0 0 1 0 4.35V2A2 2 0 0 1 2 0Z'/%3E%3C/svg%3E");
+  --_pr: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 16'%3E%3Cpath d='M4.5 0H10.5A4.5 4.5 0 0 1 15 4.5V6.85A5.5 5.5 0 0 1 13.61 10.51L9.74 14.85A3 3 0 0 1 5.26 14.85L1.39 10.51A5.5 5.5 0 0 1 0 6.85V4.5A4.5 4.5 0 0 1 4.5 0Z'/%3E%3C/svg%3E");
+}
+
+/* Vertical */
+.mac-slider:where([data-orientation="vertical"]) {
+  display: inline-flex;
+  flex-direction: column;
+  inline-size: var(--_c);
+  block-size: 100%;
+  min-block-size: calc(var(--_t) * 4);
+  min-inline-size: 0;
+  vertical-align: middle;
+}
+
+.mac-slider:where([data-orientation="vertical"]) .mac-slider-control {
+  flex: 1;
+  padding: calc(var(--_t) / 2) 0;
+}
+
+.mac-slider:where([data-orientation="vertical"]) .mac-slider-track {
+  inline-size: 3px;
+  block-size: 100%;
+  margin: 0 0 0 var(--_at);
+}
+
+.mac-slider:where([data-orientation="vertical"]) .mac-slider-track::before {
+  inset: calc(var(--_t) / -2) 0;
+}
+
+.mac-slider:where([data-orientation="vertical"]) .mac-slider-fill {
+  inline-size: 100%;
+  margin: 0 0 calc(var(--_t) / -2);
+  padding: 0 0 calc(var(--_t) / 2);
+}
+
+.mac-slider:where([data-orientation="vertical"]) .mac-slider-thumb {
+  margin: 0 0 calc(var(--_tc) / -2) calc((var(--_tc) - var(--_t)) / 2 - var(--_at) - 1.5px);
+}
+
+.mac-slider:where([data-orientation="vertical"][data-tick-marks]) .mac-slider-thumb {
+  rotate: -90deg;
+}
+
+.mac-slider:where([data-orientation="vertical"]) .mac-slider-ticks {
+  inset: 0 auto 0 calc(3px + var(--_kt));
+  inline-size: var(--_k);
+  block-size: auto;
+}
+
+.mac-slider:where([data-orientation="vertical"]) .mac-slider-tick {
+  inset: calc(var(--_p) * 100%) 0 auto;
+  inline-size: auto;
+  block-size: 1px;
+  margin: -0.5px 0 0;
+}
+
+/* Tick marks on the other side: mirrored */
+.mac-slider:where([data-orientation="horizontal"]):where(
+  [data-tick-marks="above"],
+  [data-tick-marks="leading"]
+) .mac-slider-control {
+  transform: scaleY(-1);
+}
+
+.mac-slider:where([data-orientation="vertical"]):where(
+    [data-tick-marks="above"],
+    [data-tick-marks="leading"]
+  )
+  .mac-slider-control {
+  transform: scaleX(-1);
+}
+
+/* Pressed */
+.mac-slider-thumb:where(:active, [data-dragging]):where(:not([data-disabled])),
+.mac-slider:where([data-force~="pressed"]) .mac-slider-thumb {
+  --_fill: var(--mac-slider-thumb-fill-pressed);
+}
+
+/* Disabled or window not key: no accent */
+.mac-slider-fill:where(
+  [data-disabled],
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  background: none;
+}
+
+.mac-slider:where([data-disabled]) {
+  opacity: var(--mac-bezel-opacity-disabled);
+}
+
+/* Focus ring in place of the hairline; key window only */
+.mac-slider-thumb:where(:has(:focus-visible)):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+),
+.mac-slider:where([data-force~="focus"]):where(
+    :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+  )
+  .mac-slider-thumb {
+  --_i: var(--_ri);
+  --_po: var(--_pr);
+  --_o: var(--mac-focus-ring-color);
+  --_s: none;
+  --_f: none;
+}
+
+@media (forced-colors: active) {
+  .mac-slider-track::before {
+    background: GrayText;
+  }
+
+  .mac-slider-fill {
+    background: Highlight;
+  }
+
+  .mac-slider-tick,
+  .mac-slider-thumb::before {
+    background: ButtonText;
+  }
+
+  .mac-slider-thumb::after {
+    background: ButtonFace;
+  }
+
+  .mac-slider-thumb:where(:has(:focus-visible))::before {
+    background: Highlight;
+  }
+
+  .mac-slider:where([data-disabled]) {
+    opacity: 1;
+  }
+
+  .mac-slider-thumb:where([data-disabled])::before {
+    background: GrayText;
+  }
+}

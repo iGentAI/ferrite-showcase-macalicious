@@ -1,0 +1,94 @@
+/*
+ * Books: the colours of the app that no shared token and no component holds, from
+ * reference/spec/apps/books.md and the two captures (L: 10-15-Catalina-Light-Books.png,
+ * D: 10-15-Catalina-Dark-Books.png; the library window is at 130,98 in both and is inactive,
+ * the book window at 1580,290 in L and 1056,296 in D and is key). The toolbar, the sidebar's
+ * rows and the title bar take their colours from their components.
+ */
+:root {
+  /* [measured] the content pane behind the covers: L and D row y=300 from x=572 */
+  --mac-books-content: light-dark(#ffffff, #1e2022);
+  /* [measured] the line beside the sidebar in the inactive window: L and D @ 570,300.
+     [provisional] in a key window, which no capture shows: the same line. */
+  --mac-books-sidebar-divider: light-dark(#d5d5d5, #444648);
+  /* The pane under the sidebar's list, where the add button is. It continues the list's own
+     surface, so the value is the sidebar's inactive material ([measured] L col x=300 #f6f6f6;
+     D reads #2c2e30, one step from the sidebar's #2c2d2f, which is kept so that no seam shows). */
+  --mac-books-sidebar-inactive: light-dark(#f6f6f6, #2c2d2f);
+  /* [measured] the plate of a sidebar icon: L @ 170,290; the glyph on it is white */
+  --mac-books-icon-fill: #fc7b00;
+  --mac-books-icon-glyph: #ffffff;
+
+  /* [measured] a page number's badge. Rim: L row y=1826 @ 1890 and 2266 reads #e6e6e6 over
+     white paper and #cecece over a grey picture, which is black at 10%; D has none. Fill of
+     the others: L @ 2230,1826 and D @ 1698,1832. Numerals: L @ 2570,1826 and D @ 1719,1832.
+     The current page's badge is the selection colour of the accent, #0262e1 and #0058d0. */
+  --mac-books-badge-rim: light-dark(rgb(0 0 0 / 0.1), transparent);
+  --mac-books-badge-fill: light-dark(#ffffff, #1e1e1e);
+  --mac-books-badge-text: light-dark(#272727, #dcdcdc);
+  /* [provisional] the numerals are a serif face, 8 pt high; the system's serif stands in */
+  --mac-books-badge-font: 400 12px / 1 "Times New Roman", Times, serif;
+
+  /* [measured] the bookmark of a page without one: L @ 3096,326; D @ 3048,332 */
+  --mac-books-bookmark: light-dark(#a3a3a3, #666767);
+
+  /*
+   * [provisional] The placeholders that stand where the captures have the book's artwork: the
+   * cover, the page and the thumbnails. No capture is their source. A page is white paper in
+   * both appearances, as a book's is; the cover is a flat grey panel; the surround of a page
+   * that does not fill the window is the window background.
+   */
+  --mac-books-cover-fill: light-dark(#e4e4e6, #3a3a3c);
+  --mac-books-page-fill: #ffffff;
+  --mac-books-artwork-mark: light-dark(#b4b4b8, #6e6e73);
+  --mac-books-page-mark: #c4c4c8;
+  --mac-books-artwork-text: light-dark(#3a3a3c, #e4e4e6);
+  --mac-books-page-text: #3a3a3c;
+  --mac-books-artwork-note: light-dark(#6e6e73, #aeaeb2);
+  --mac-books-page-note: #6e6e73;
+  /* [measured] a thumbnail's edge and shadow, beside the raised one: L row y=1640 @ 1948 reads
+     #aeaeae over white paper, then #dadada, #e2e2e2, #ebebeb, #f5f5f5, #fbfbfb, #fefefe */
+  --mac-books-thumbnail-shadow:
+    0 0 0 var(--mac-hairline) rgb(0 0 0 / 0.32), 0 0 4px rgb(0 0 0 / 0.3);
+
+  /*
+   * [provisional] The reader of a real book (books-reader.tsx, the desktop app only), which no
+   * capture shows: the text in a book face on the page, white in Aqua and dark in Dark Aqua, as
+   * Books sets it with its default theme. The system's serif faces stand in for Apple's book
+   * faces. The five highlight colours are Books' menu of colours, translucent over the text;
+   * the swatches are the same colours, solid.
+   */
+  --mac-books-text-size: 17px;
+  /* [provisional] the space above and below a picture on a page of a book */
+  --mac-books-picture-margin: 8px;
+  --mac-books-text-face: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --mac-books-paper: light-dark(#ffffff, #1c1c1e);
+  --mac-books-ink: light-dark(#1d1d1f, #dedede);
+  --mac-books-highlight-yellow: light-dark(rgb(255 214 10 / 0.45), rgb(255 214 10 / 0.35));
+  --mac-books-highlight-green: light-dark(rgb(52 199 89 / 0.35), rgb(48 209 88 / 0.32));
+  --mac-books-highlight-blue: light-dark(rgb(0 122 255 / 0.25), rgb(10 132 255 / 0.35));
+  --mac-books-highlight-pink: light-dark(rgb(255 45 85 / 0.25), rgb(255 55 95 / 0.35));
+  --mac-books-highlight-purple: light-dark(rgb(175 82 222 / 0.25), rgb(191 90 242 / 0.35));
+  --mac-books-swatch-yellow: #ffd60a;
+  --mac-books-swatch-green: #34c759;
+  --mac-books-swatch-blue: #0a84ff;
+  --mac-books-swatch-pink: #ff375f;
+  --mac-books-swatch-purple: #bf5af2;
+  --mac-books-swatch-rim: light-dark(rgb(0 0 0 / 0.15), rgb(255 255 255 / 0.2));
+
+  /* [provisional] The page's four themes, which no capture shows (books.css applies them). */
+  --mac-books-white-paper: #ffffff;
+  --mac-books-white-ink: #1d1d1f;
+  --mac-books-sepia-paper: #f8f1e3;
+  --mac-books-sepia-ink: #5b4636;
+  --mac-books-gray-paper: #4a4a4c;
+  --mac-books-gray-ink: #e3e3e3;
+  --mac-books-night-paper: #000000;
+  --mac-books-night-ink: #b4b4b4;
+
+  /* The faces of the page, where the system has them; each ends in its generic family. */
+  --mac-books-face-georgia: Georgia, "DejaVu Serif", serif;
+  --mac-books-face-palatino: Palatino, "Palatino Linotype", "URW Palladio L", serif;
+  --mac-books-face-times: "Times New Roman", Times, "Liberation Serif", serif;
+  --mac-books-face-san-francisco: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}

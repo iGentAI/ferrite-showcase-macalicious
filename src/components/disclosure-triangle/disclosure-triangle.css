@@ -1,0 +1,88 @@
+/*
+ * Disclosure triangle (NSButton, disclosure bezel): a solid triangle with no bezel.
+ *
+ * The box is AppKit's 13 x 13 pt disclosure frame. Collapsed, the triangle is 7.5 x 9 pt with
+ * its apex to the right; expanded it is the same shape a quarter turn clockwise, 9 x 7.5 pt
+ * (System-Preferences-Desktop-and-Screen-Saver).
+ *
+ * States
+ *   [data-expanded]                    set while expanded: the triangle points down
+ *   :active                            pressed: darkens to the label colour
+ *   :focus-visible                     keyboard focus ring, only in the key window
+ *   [data-disabled]                    set by Base UI for `disabled`: half opacity
+ *   [data-force~="pressed" | "focus"]  static previews of transient states (docs, visual tests)
+ *
+ * Hook
+ *   --mac-disclosure-triangle-color    the triangle's colour, for an application: its CSS or an
+ *                                      inline style sets it on a selected, emphasised row. A
+ *                                      component of this library passes `className` and sets
+ *                                      `color` through a selector of its own instead (lint lets
+ *                                      a component declare only its own variables).
+ */
+.mac-disclosure-triangle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--mac-radius-control-mini);
+  background: none;
+  color: var(--mac-disclosure-triangle-color, var(--mac-color-label-secondary));
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-disclosure-triangle-glyph {
+  display: block;
+  flex: none;
+  transition: transform 0.1s ease-out;
+}
+
+.mac-disclosure-triangle:where([data-expanded]) .mac-disclosure-triangle-glyph {
+  transform: rotate(90deg);
+}
+
+/* Pressed */
+.mac-disclosure-triangle:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  color: var(--mac-disclosure-triangle-color, var(--mac-color-label));
+}
+
+/* Disabled */
+.mac-disclosure-triangle:where([data-disabled]) {
+  opacity: var(--mac-control-opacity-disabled);
+}
+
+/* Keyboard focus ring; only in the key window, as in AppKit. */
+.mac-disclosure-triangle:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-disclosure-triangle-glyph {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-disclosure-triangle {
+    color: ButtonText;
+  }
+
+  .mac-disclosure-triangle:where([data-disabled]) {
+    color: GrayText;
+    opacity: 1;
+  }
+}

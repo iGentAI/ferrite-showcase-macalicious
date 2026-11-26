@@ -1,0 +1,78 @@
+/*
+ * Toolbar segmented control tokens. The bezel is the textured rounded bezel of the toolbar
+ * button, measured on the same captures (Light-/Dark-Finder-Network: Back button column
+ * x=135; selected view segment column x=590 light, x=524 dark; divider column x=508 light,
+ * x=442 dark) and, for the inactive window, on Light-/Dark-Safari-v13-Picture-in-Picture.
+ * The values repeat the toolbar button's because a component reads only its own tokens.
+ */
+:root {
+  /* Aqua #f8f8f8, #fcfcfc, #fafafa to #f2f2f2, #ececec [measured]; Dark Aqua white at 33%,
+     25%, 22.2% to 21.7% and 20% [measured, computed] */
+  --mac-toolbar-segmented-control-fill: linear-gradient(
+    light-dark(#f8f8f8, rgb(255 255 255 / 0.33)) 0 0.5px,
+    light-dark(#fcfcfc, rgb(255 255 255 / 0.251)) 0.5px 1px,
+    light-dark(#fafafa, rgb(255 255 255 / 0.222)) 1px,
+    light-dark(#f2f2f2, rgb(255 255 255 / 0.217)) calc(100% - 0.5px),
+    light-dark(#ececec, rgb(255 255 255 / 0.2)) calc(100% - 0.5px)
+  );
+  /* Hairline border, Aqua only [measured, computed] */
+  --mac-toolbar-segmented-control-border-top: light-dark(rgb(0 0 0 / 0.092), transparent);
+  --mac-toolbar-segmented-control-border-side: light-dark(rgb(0 0 0 / 0.104), transparent);
+  --mac-toolbar-segmented-control-border-bottom: light-dark(rgb(0 0 0 / 0.226), transparent);
+  --mac-toolbar-segmented-control-shadow: light-dark(rgb(0 0 0 / 0.034), transparent);
+
+  /* Divider between segments: #e2e2e2 on #fafafa, #555658 on #636466 [measured, computed] */
+  --mac-toolbar-segmented-control-divider: light-dark(rgb(0 0 0 / 0.098), rgb(0 0 0 / 0.137));
+
+  /* Selected segment [measured]; the side border is [provisional] */
+  --mac-toolbar-segmented-control-fill-on: linear-gradient(
+    light-dark(#6d6d6d, #d8d9da) 0 0.5px,
+    light-dark(#6d6d6d, #c9cacb) 0.5px 1px,
+    light-dark(#6d6d6d, #c5c6c7) 1px,
+    light-dark(#646464, #c0c1c2)
+  );
+  --mac-toolbar-segmented-control-border-top-on: light-dark(#676767, transparent);
+  --mac-toolbar-segmented-control-border-side-on: light-dark(#616161, transparent);
+  --mac-toolbar-segmented-control-border-bottom-on: light-dark(#5b5b5b, transparent);
+
+  /* Pressed [provisional]: never captured */
+  --mac-toolbar-segmented-control-fill-pressed: linear-gradient(
+    light-dark(#dcdcdc, rgb(255 255 255 / 0.32)),
+    light-dark(#d5d5d5, rgb(255 255 255 / 0.32))
+  );
+
+  /* Inactive window [measured, computed] on the Back and Forward pair */
+  --mac-toolbar-segmented-control-fill-inactive: linear-gradient(
+    light-dark(transparent, rgb(255 255 255 / 0.16)) 0 0.5px,
+    light-dark(transparent, rgb(255 255 255 / 0.09)) 0.5px 1px,
+    light-dark(transparent, rgb(255 255 255 / 0.071)) 1px
+  );
+  --mac-toolbar-segmented-control-border-inactive: light-dark(rgb(0 0 0 / 0.11), transparent);
+  --mac-toolbar-segmented-control-ring-inactive: light-dark(rgb(0 0 0 / 0.04), transparent);
+  /* Selected segment, inactive window [measured, computed] on Books: a layer over the bezel */
+  --mac-toolbar-segmented-control-fill-on-inactive: light-dark(
+    rgb(0 0 0 / 0.077),
+    rgb(255 255 255 / 0.127)
+  );
+
+  /* Glyph and title: enabled, disabled, selected [measured, computed]; inactive window
+     [measured, computed] */
+  --mac-toolbar-segmented-control-text: light-dark(rgb(0 0 0 / 0.65), rgb(255 255 255 / 0.92));
+  --mac-toolbar-segmented-control-text-disabled: light-dark(
+    rgb(0 0 0 / 0.31),
+    rgb(255 255 255 / 0.3)
+  );
+  --mac-toolbar-segmented-control-text-on: light-dark(#ffffff, #363638);
+  --mac-toolbar-segmented-control-text-on-inactive: light-dark(
+    rgb(0 0 0 / 0.28),
+    rgb(0 0 0 / 0.48)
+  );
+  --mac-toolbar-segmented-control-text-inactive: light-dark(
+    rgb(0 0 0 / 0.28),
+    rgb(255 255 255 / 0.33)
+  );
+  --mac-toolbar-segmented-control-text-inactive-disabled: light-dark(
+    rgb(0 0 0 / 0.142),
+    rgb(255 255 255 / 0.127)
+  );
+}

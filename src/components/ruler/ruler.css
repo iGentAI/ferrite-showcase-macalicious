@@ -1,0 +1,152 @@
+/*
+ * Ruler (NSRulerView, horizontal): 31 pt of fill and a 1 pt bottom border. The rule is 15 pt
+ * under the top; ticks hang from it and markers sit on it.
+ *
+ * Parts
+ *   .mac-ruler          the strip; rule and ticks are its background, drawn from --_origin
+ *   .mac-ruler-numbers  layer of the numbers (and the element whose width is observed)
+ *   .mac-ruler-number   a number: 9 pt, 3.5 pt after its tick, baseline 13 pt under the rule
+ *   .mac-ruler-marker   a tab stop or indent; its shape is the ::before, clipped
+ *
+ * States
+ *   [data-units]        "centimeters" has two tick lengths, the others four
+ *   [data-type]         on a marker: left (the default shape), center, right, decimal,
+ *                       first-line-indent, head-indent, tail-indent
+ *   :focus-visible      on a draggable marker: focus ring, only in the key window
+ *   [data-force~="focus"]  the same, pinned (docs, visual tests)
+ *
+ * A ruler looks the same in a key, main and inactive window. Its geometry is physical:
+ * 0 is on the left in every writing direction.
+ */
+.mac-ruler {
+  --_ink: var(--mac-ruler-rule);
+  --_tick: linear-gradient(90deg, var(--_ink) 1px, transparent 0);
+  --_quarter: 3.5px;
+  --_eighth: 2.5px;
+
+  position: relative;
+  box-sizing: border-box;
+  height: 32px;
+  min-width: 0;
+  overflow: hidden;
+  border-block-end: 1px solid var(--mac-ruler-border);
+  /* The rule, then ticks every unit (11 pt long), half (4.5), quarter (3.5) and eighth (2.5). */
+  background:
+    linear-gradient(var(--_ink), var(--_ink)) 0 15px / 100% 1px no-repeat,
+    var(--_tick) var(--_origin) 15px / var(--_major) 11px repeat-x,
+    var(--_tick) var(--_origin) 15px / calc(var(--_major) / 2) 4.5px repeat-x,
+    var(--_tick) var(--_origin) 15px / calc(var(--_major) / 4) var(--_quarter) repeat-x,
+    var(--_tick) var(--_origin) 15px / calc(var(--_major) / 8) var(--_eighth) repeat-x,
+    var(--mac-ruler-fill);
+  color: var(--mac-color-label);
+  font: var(--mac-font-control-mini);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-ruler:where([data-units="centimeters"]) {
+  --_quarter: 0px;
+  --_eighth: 0px;
+}
+
+.mac-ruler-numbers {
+  position: absolute;
+  inset: 0;
+}
+
+/* The box starts 3 pt after the tick, so that the digit's ink starts 3.5 pt after it. */
+.mac-ruler-number {
+  position: absolute;
+  top: 18.5px;
+  white-space: nowrap;
+}
+
+/* Left tab stop: 6 x 9 pt, its left edge on the position, pointing right. */
+.mac-ruler-marker {
+  position: absolute;
+  top: 6px;
+  width: 6px;
+  height: 9px;
+  outline: none;
+  touch-action: none;
+}
+
+.mac-ruler-marker::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--mac-ruler-marker);
+  clip-path: var(--_shape, polygon(0 0, 100% 50%, 0 100%));
+}
+
+/* Right tab stop: the mirror image, its right edge on the tick's right edge. */
+.mac-ruler-marker:where([data-type="right"]) {
+  --_shape: polygon(100% 0, 0 50%, 100% 100%);
+
+  margin-left: -5px;
+}
+
+/* Centre tab stop: a diamond centred on the tick. */
+.mac-ruler-marker:where([data-type="center"]) {
+  --_shape: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+
+  width: 8px;
+  margin-left: -3.5px;
+}
+
+/* Decimal tab stop: a disc centred on the tick. */
+.mac-ruler-marker:where([data-type="decimal"]) {
+  --_shape: circle();
+
+  top: 8px;
+  width: 7px;
+  height: 7px;
+  margin-left: -3px;
+}
+
+/* Head and tail indent: 9 x 6 pt pointing down at the rule, from 4 pt before the position. */
+.mac-ruler-marker:where([data-type$="indent"]) {
+  --_shape: polygon(0 0, 100% 0, 50% 100%);
+
+  top: 9px;
+  width: 9px;
+  height: 6px;
+  margin-left: -4px;
+}
+
+/* First-line indent: a 9 x 2 pt bar on a 1 pt stem that reaches the rule. */
+.mac-ruler-marker:where([data-type="first-line-indent"]) {
+  --_shape: polygon(0 0, 100% 0, 100% 2px, 5px 2px, 5px 100%, 4px 100%, 4px 2px, 0 2px);
+
+  top: 5px;
+  height: 10px;
+}
+
+.mac-ruler-marker:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: 1px;
+}
+
+/* The rule and ticks are gradients, which the mode drops from an adjusted element: the ruler
+   is not adjusted, and takes every colour from the system. */
+@media (forced-colors: active) {
+  .mac-ruler {
+    --_ink: CanvasText;
+
+    forced-color-adjust: none;
+    border-block-end-color: CanvasText;
+    background-color: Canvas;
+    color: CanvasText;
+  }
+
+  .mac-ruler-marker::before {
+    background: CanvasText;
+  }
+
+  .mac-ruler-marker:where(:focus-visible, [data-force~="focus"]) {
+    outline-color: Highlight;
+  }
+}

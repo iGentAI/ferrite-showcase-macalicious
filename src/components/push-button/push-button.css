@@ -1,0 +1,184 @@
+/*
+ * Push button (NSButton, rounded bezel).
+ *
+ * The element's box is the AppKit alignment rectangle; the visible bezel is the ::before
+ * pseudo-element, inset by one hairline (see tokens/controls.css for the measurements). The
+ * one value of its own that differs between the appearances is in push-button.tokens.css.
+ *
+ * States
+ *   [data-variant="primary"]           default button: accent bezel, white title
+ *   [data-variant="emphasized"]        standard bezel, blue semibold title (Contacts' Done);
+ *                                      the same in every window state
+ *   [data-compact]                     the bezel close around one image (Messages' compose)
+ *   [data-size="small" | "mini"]       control size
+ *   :active                            pressed: highlights with the accent
+ *   :focus-visible                     keyboard focus ring
+ *   [data-disabled]                    set by Base UI for `disabled`
+ *   [data-window-state="main" | "inactive"] *
+ *                                      window that is not key: no accent bezel (primary and
+ *                                      pressed fall back to the standard bezel) and no focus
+ *                                      ring (CONTRIBUTING, Window state)
+ *   [data-force~="pressed" | "focus"]  static previews of transient states (docs, visual tests)
+ */
+.mac-push-button {
+  --_height: var(--mac-control-height-regular);
+  --_padding: var(--mac-control-padding-regular);
+  --_radius: var(--mac-radius-control-regular);
+  --_fill: var(--mac-bezel-fill);
+  --_under: var(--mac-bezel-under);
+  --_border-top: var(--mac-bezel-border-top);
+  --_border-side: var(--mac-bezel-border-side);
+  --_border-bottom: var(--mac-bezel-border-bottom);
+  --_highlight: var(--mac-bezel-highlight);
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: var(--_height);
+  margin: 0;
+  padding: 0 var(--_padding);
+  border: 0;
+  border-radius: calc(var(--_radius) + var(--mac-bezel-inset));
+  background: none;
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-push-button::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: var(--mac-bezel-inset);
+  box-sizing: border-box;
+  border: var(--mac-bezel-border-width) solid;
+  border-color: var(--_border-top) var(--_border-side) var(--_border-bottom);
+  border-radius: var(--_radius);
+  background:
+    var(--_fill) padding-box,
+    var(--_under) border-box;
+  box-shadow: var(--_highlight), var(--mac-bezel-shadow);
+  pointer-events: none;
+}
+
+/* The title. A button made narrower than its title truncates it with an ellipsis, as an
+   NSButton does, instead of letting it run over the bezel. (AppKit truncates in the middle,
+   which CSS cannot do; the tail is cut here.) */
+.mac-push-button-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sizes */
+.mac-push-button:where([data-size="small"]) {
+  --_height: var(--mac-control-height-small);
+  --_padding: var(--mac-control-padding-small);
+  --_radius: var(--mac-radius-control-small);
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+.mac-push-button:where([data-size="mini"]) {
+  --_height: var(--mac-control-height-mini);
+  --_padding: var(--mac-control-padding-mini);
+  --_radius: var(--mac-radius-control-mini);
+  font: var(--mac-font-control-mini);
+  letter-spacing: var(--mac-tracking-mini);
+}
+
+/* Compact: 8 pt beside the content, measured on Messages' compose button (a 33 pt bezel, a
+   34 pt box, around an 18 pt image). Small and mini are provisional. */
+.mac-push-button:where([data-compact]) {
+  --_padding: 8px;
+}
+
+.mac-push-button:where([data-compact][data-size="small"]) {
+  --_padding: 6px;
+}
+
+.mac-push-button:where([data-compact][data-size="mini"]) {
+  --_padding: 5px;
+}
+
+/* Emphasised: the title in blue, semibold, on the standard bezel. Pressed and disabled, below,
+   set the title's colour as they do for every push button. The blue is the app's own title
+   colour, not the accent (it ignores data-accent), so it stays when the window is not key:
+   only the accent bezel and the focus ring go (spec: push-button, States, inferred). */
+.mac-push-button:where([data-variant="emphasized"]) {
+  color: var(--mac-push-button-emphasized-title);
+  font-weight: var(--mac-font-weight-semibold);
+}
+
+/* Primary (default button), and any enabled button while pressed: accent bezel. Only in the
+   key window. */
+.mac-push-button:where([data-variant="primary"], :active, [data-force~="pressed"]):where(
+  :not([data-disabled])
+):where(:not(:where([data-window-state="main"], [data-window-state="inactive"]) *)) {
+  --_fill: var(--mac-bezel-accent-fill);
+  --_under: var(--mac-bezel-accent-under);
+  --_border-top: var(--mac-bezel-accent-border-top);
+  --_border-side: var(--mac-bezel-accent-border-side);
+  --_border-bottom: var(--mac-bezel-accent-border-bottom);
+  --_highlight: var(--mac-bezel-accent-highlight);
+  color: var(--mac-color-control-text-on-accent);
+}
+
+/* Primary while pressed: deeper accent */
+.mac-push-button:where([data-variant="primary"]):where(:active, [data-force~="pressed"]):where(
+  :not([data-disabled])
+):where(:not(:where([data-window-state="main"], [data-window-state="inactive"]) *)) {
+  --_fill: var(--mac-bezel-accent-fill-pressed);
+}
+
+/* Pressed in a window that is not key: no accent, the standard bezel darkens instead */
+.mac-push-button:where(:active, [data-force~="pressed"]):where(:not([data-disabled])):where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  --_fill: var(--mac-push-button-fill-pressed-not-key);
+}
+
+/* Disabled */
+.mac-push-button:where([data-disabled]) {
+  color: var(--mac-color-control-text-disabled);
+}
+
+.mac-push-button:where([data-disabled])::before {
+  opacity: var(--mac-bezel-opacity-disabled);
+}
+
+/* Keyboard focus ring; only in the key window, as in AppKit. The ring starts on the bezel's
+   border and reaches 2.5 pt beyond its edge. */
+.mac-push-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(
+    var(--mac-focus-ring-offset) -
+    var(--mac-bezel-inset) -
+    var(--mac-bezel-border-width)
+  );
+}
+
+@media (forced-colors: active) {
+  .mac-push-button::before {
+    border-color: ButtonText;
+  }
+
+  .mac-push-button:where([data-disabled])::before {
+    border-color: GrayText;
+    opacity: 1;
+  }
+}

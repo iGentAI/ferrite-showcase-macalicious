@@ -1,0 +1,13 @@
+/*
+ * Help button (NSButton, help-button bezel): a regular round button with a question mark.
+ *
+ * The bezel and every state come from the round button (round-button.css); only the glyph is
+ * placed here. AppKit ignores the control size for this bezel, so there is one size.
+ */
+.mac-help-button-glyph {
+  display: block;
+  flex: none;
+  /* The glyph's ink box is 0.5 pt left of centre in the circle: ink x 7.0 to 13.5 of 20
+     (System-Preferences-Bluetooth). The SVG's view box carries that offset. */
+  overflow: visible;
+}

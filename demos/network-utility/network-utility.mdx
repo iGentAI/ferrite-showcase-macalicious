@@ -1,0 +1,204 @@
+---
+title: Network Utility
+description: The Network Utility window of macOS 10.15, a tab view of eight panes across the whole window, with the Info pane's interface pop-up button and two titled boxes of keys and values, and seven tool panes that print made-up output for what is entered.
+order: 113
+---
+
+<Example name="basic" />
+
+Choose an interface in the pop-up button to see its addresses and its transfer statistics.
+Pick another tab, enter an address and press Return or the pane's button. Nothing is sent to
+a network and nothing is read from the machine the page runs on: the three interfaces are
+data, of which Wi-Fi is the one of the reference screenshots, and what a tool prints is made
+up from what was entered, so the same input always prints the same text.
+
+On the served desktop the window does what a web service can. Lookup and Whois ask a real DNS
+resolver, of the two the Server pop-up offers, and real registries through the application's declared egress; Ping times labelled HTTPS
+requests to hosts the application declares and says it is not ping; Netstat and Info list what the
+application and the browser can truly say; Traceroute, Finger and Port Scan say why they cannot
+run and send nothing.
+
+## What it shows
+
+- A [Window](/components/window) with the plain 22 pt [Title Bar](/components/title-bar) and
+  its [Window Controls](/components/window-controls). The layout is fixed, as in the
+  application, so the window is not resizable.
+- A [Tab View](/components/tab-view) used the way Network Utility uses it: its box runs from
+  one window edge to the other and to the bottom edge, so only the top line of the box shows,
+  with the strip of eight tabs centred on it. The demo makes the tab view larger than the
+  window's body and lets the body clip it. The segments have the widths measured in the
+  capture.
+- The Info pane: a [Label](/components/label) for the prompt, a regular
+  [Pop-Up Button](/components/pop-up-button) of the interfaces, and two titled
+  [Boxes](/components/box). In each box a [Form](/components/form) of `value` rows sets the
+  keys against the values: right-aligned keys that end in a colon, 24 pt from one row to the
+  next, and a long value that wraps under itself.
+- The seven tool panes, one component for all: a prompt, a
+  [Text Field](/components/text-field) with an example beside it (Netstat has four
+  [Radio Buttons](/components/radio-button) instead), a [Push Button](/components/push-button)
+  that submits the pane's form, and the output in a read-only fixed-pitch
+  [Text View](/components/text-view) inside a box in its `content` variant. The button is
+  unavailable while the field is empty.
+
+| Tab | Takes | Prints |
+| --- | --- | --- |
+| Info | an interface | hardware and IP address, link speed and status, vendor and model; packets and errors |
+| Netstat | one of four choices | a routing table, protocol statistics, multicast groups or socket connections |
+| Ping | an address | ten replies and the round-trip statistics |
+| Lookup | an address | the answer section of a name lookup |
+| Traceroute | an address | five to nine hops |
+| Whois | a domain | a registration record marked as made up |
+| Finger | `user@host` | the user's entry |
+| Port Scan | an address | the open ports among eight well-known ones |
+
+A name stands for an address in 203.0.113.0/24, a range reserved for documentation, picked
+by the name; an address stands for itself.
+
+<Example name="tools" />
+
+## Source walkthrough
+
+The demo is four files in `demos/network-utility/`, and its examples.
+
+**`network-utility-data.ts`** holds everything that is not interface: the eight tabs with
+their measured widths (`TABS`), the interfaces (`defaultInterfaces`), the tools' prompts,
+fields and button titles (`TOOLS`), and `runTool(tool, input, option)`, a pure function that
+builds a tool's output from its input.
+
+**`network-utility.tsx`** is the window. The body holds one tab view; every pane stays
+mounted (`keepMounted`), so a tool keeps what was entered and printed while another tab is
+shown:
+
+```tsx
+<Window width={644} height={385} {...windowProps}>
+  <TitleBar title="Network Utility" controls={<WindowControls onClose={onClose} />} />
+  <WindowBody className="mac-network-utility-body">
+    <TabView className="mac-network-utility-tabs" value={tab} onValueChange={choose}>
+      <TabViewList aria-label="Network Utility">
+        {TABS.map((item) => (
+          <TabViewTab key={item.id} value={item.id} style={{ width: item.width, padding: 0 }}>
+            {item.title}
+          </TabViewTab>
+        ))}
+      </TabViewList>
+      <TabViewPanel value="info" keepMounted>
+        <InfoPane interfaces={interfaces} />
+      </TabViewPanel>
+      {/* one ToolPane per remaining tab */}
+    </TabView>
+  </WindowBody>
+</Window>
+```
+
+A box of the Info pane is a form of `value` rows. `labelWidth` puts the keys' right edge
+where the capture has it:
+
+```tsx
+<Box title="Interface Information">
+  <Form render={<div />} labelWidth={130.5}>
+    <FormRow kind="value" label="Hardware Address:">{shown.hardwareAddress}</FormRow>
+    <FormRow kind="value" label="IP Address:">{shown.ipAddress}</FormRow>
+  </Form>
+</Box>
+```
+
+A tool pane is a `Form` whose submission runs the tool, so Return in the field and a click
+on the button do the same:
+
+```tsx
+<Form onSubmit={(event) => { event.preventDefault(); setOutput(runTool(tool, input, option)); }}>
+  <Label>{definition.prompt}</Label>
+  <TextField aria-label={definition.field} value={input} onChange={...} />
+  <PushButton type="submit" disabled={!ready}>{definition.action}</PushButton>
+  <Box variant="content">
+    <TextView aria-label="Ping output" readOnly monospace value={output} />
+  </Box>
+</Form>
+```
+
+**`network-utility.css`** is layout only: the tab view overhangs the body by 28 pt on the
+left, 29 pt on the right and 20 pt at the bottom, a pane is the part of the box inside the
+window, and the Info pane is a grid of the two measured box widths. It sets no colour: the
+tab view's box tints the window background and each group box tints that again, which gives
+the fills of both captures.
+
+**`app.ts`** is the descriptor the [Desktop](/demos/desktop) reads, and `examples/` holds
+the examples of this page and the two the visual comparison renders.
+
+## Hosting the window
+
+`NetworkUtility` renders the library's `Window` as its root and passes every `Window` prop to
+it, so it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state` and eight more props that the component hands to the window controls and the title
+bar. These are the props a [Managed Window](/components/managed-window)'s `render` form
+supplies, so the component can be spread with them as they come.
+
+<Example name="hosted" />
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `interfaces` | `NetworkUtilityInterface[]` | The interfaces of the pop-up button; Wi-Fi as captured and two invented ones by default. |
+| `defaultInterface` | `string` | The `id` of the interface shown at first; the first one by default. |
+| `tab`, `defaultTab`, `onTabChange` | `"info" \| "netstat" \| "ping" \| "lookup" \| "traceroute" \| "whois" \| "finger" \| "port-scan"` and a function | The pane, controlled or not. |
+| `onRun` | `(tool, input, output) => void` | Called when a tool is run, with what was entered (the chosen option for Netstat) and what it printed. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 644 by 385 by default, as captured. The layout is made for that size. |
+| the rest | `WindowProps` | `state`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `networkUtilityApp` and as `app`:
+`id`, `name`, `component`, `defaultSize` (644 by 385), `resizable` (`false`) and `menus`, the
+menu titles after the Apple menu.
+
+## Accessibility
+
+- The window is a `region` named by its title.
+- The strip is a `tablist` named "Network Utility" and one tab stop. Left and Right Arrow
+  move to the neighbouring tab and select it, wrapping round, as in AppKit; each pane is a
+  `tabpanel` named by its tab.
+- The pop-up button shows no label of its own and is named "Network interface". Each box is a
+  `group` named by its title; a key is a `term` and its value the `definition` that follows.
+- A tool's field is named for what it takes ("Network address"), the example beside it is
+  plain text, and the output view is a read-only text box named after the tool ("Ping
+  output"), so its text can be selected, copied and read line by line.
+- The button of a pane is disabled while its field is empty, and says Stop while a slow run is
+  under way. Return in the field runs the
+  tool.
+
+## Fidelity
+
+`network-utility.visual.json` compares the whole window on its Info pane with the Network
+Utility screenshots in both appearances, each as captured and again with the text masked.
+The dark screenshot shows other transfer statistics than the light one, so it has an example
+of its own. Scores from `npm run visual -- network-utility/` in Chromium on Linux with the
+fallback font: the share of pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 5.16% | 5.50 | 4.38% | 6.18 |
+| `window-light-layout` (masked) | 1.73% | 1.46 | 0.03% | 0.91 |
+| `window-dark` | 4.99% | 6.25 | 4.33% | 6.67 |
+| `window-dark-layout` (masked) | 1.34% | 2.87 | 0.22% | 2.25 |
+
+Measured in the screenshots and reproduced: the 644 by 385 pt frame, the strip of 523 pt
+with its eight segment widths 12.5 pt under the title bar, the pane's line 44 pt from the
+top, the 313 pt pop-up button 104 pt from the top, the two boxes of 313 and 262 pt with their
+titles, the 24 pt pitch of the rows, and the columns of keys and values.
+
+Two more comparisons, `ping-light` and `ping-dark`, drive the real window: a click on the
+Ping tab, an address typed in the field, and Return. They check three pixels each (the Info
+tab is no longer selected, the pane's fill, the output well's fill) against values of the
+spec and the tokens, since no screenshot shows that pane; what the tool prints is checked by
+the behaviour tests.
+
+What differs, and why:
+
+- **Text.** Set in the fallback font off Apple devices, which is nearly all of the unmasked
+  scores.
+- **Dark Aqua greys.** The dark capture's surfaces are slightly blue (`#363638` for the
+  pane); the library's window and group fills are neutral there, three levels away, which is
+  the masked dark comparison's mean difference.
+- **Not in a screenshot (provisional):** the seven tool panes with their wording, layout and
+  output; the interfaces other than Wi-Fi; the open pop-up menu; the window when it is not
+  key.

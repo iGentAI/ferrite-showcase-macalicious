@@ -1,0 +1,136 @@
+---
+title: Gesture Option Row
+description: One gesture of the Mouse and Trackpad panes, a checkbox against a title and a second line, with a pointed callout behind the row whose gesture the preview shows.
+---
+
+<Example name="basic" both />
+
+The Mouse and Trackpad panes list their gestures beside a preview. Each gesture is a checkbox
+with two lines of text: its name, and under it a description or a choice of how the gesture is
+made. One row at a time has a callout behind it whose point aims at the preview: it marks the
+gesture the preview is showing, which is not the same thing as the gesture being on. AppKit
+has no public class for the row. `GestureOptionRow` composes the library's
+[checkbox](/components/checkbox) (Base UI's Checkbox) with the two lines and draws the callout
+in CSS.
+
+## Usage
+
+```tsx
+import { GestureOptionRow } from "macalicious/gesture-option-row";
+import "macalicious/checkbox.css";
+import "macalicious/gesture-option-row.css";
+
+const [shown, setShown] = useState("scroll");
+
+<GestureOptionRow
+  title="Scroll direction: Natural"
+  detail="Content tracks finger movement"
+  defaultChecked
+  highlighted={shown === "scroll"}
+  onPointerEnter={() => setShown("scroll")}
+  onFocus={() => setShown("scroll")}
+/>
+```
+
+Or copy the source into your project: `npx macalicious add gesture-option-row`.
+
+Stack the rows without a gap: each is 50 pt tall, the pitch of the panes. Give the list the
+width the callout should span (311 pt in the Mouse pane) and leave about 35 pt between it and
+the preview. The row does not decide which gesture is highlighted; its owner does, usually
+from the pointer entering a row or focus reaching it:
+
+<Example name="preview" both />
+
+`detail` takes text or a control. In the Trackpad pane the second line of some gestures is a
+borderless pull-down button that chooses the fingers; pass that control as `detail` and it
+stays a separate stop in the Tab order.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines on
+[checkboxes](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/buttons/checkboxes/)
+and
+[preferences](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/app-architecture/preferences/):
+
+- Gestures are independent settings, so each is a checkbox. Do not make the list a radio
+  group, and do not turn a gesture on because its row became highlighted.
+- Name the gesture in the title and say how it is made in the second line.
+- A preference applies as soon as it changes; there is no Apply button.
+- Disable a choice that depends on a gesture while that gesture is off.
+
+## Variants and states
+
+<Example name="states" both />
+
+| State | Look | Status |
+| --- | --- | --- |
+| Highlighted, on | Callout `#f0f0f0` with a half-point edge `#b9b9b8` and one point of white under the top edge; Dark Aqua `#676768` with no edge | measured |
+| Not highlighted, off | No callout; title in the label colour, second line in the secondary label colour | measured |
+| Highlighted and off, on and not highlighted | The same parts in the other combinations | provisional (inferred) |
+| Disabled | Checkbox disabled, both lines in the tertiary label colour | provisional |
+| Keyboard focus | The checkbox's focus ring; the row has none of its own | provisional (checkbox) |
+| Window not key | No change to the callout; the checkbox loses its accent colour | provisional |
+
+## Sizes
+
+One size. The row is 50 pt tall and as wide as its container. The checkbox is the regular
+14 pt box, 10 pt from the leading edge; the text starts 35 pt from it. The title is 13 pt
+regular and the second line 11 pt regular, 16 pt from baseline to baseline. The callout is as
+wide as the row and 53 pt tall, so it reaches 1.5 pt beyond the row above and below; its last
+24 pt are the point. Text that does not fit before the point is cut with an ellipsis.
+
+## API
+
+<PropsTable name="GestureOptionRowProps" />
+
+The remaining props are those of a `<div>` and go to the row, not to the checkbox.
+
+| Attribute or variable | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-highlighted` | row | present or absent | Reflects `highlighted`; draws the callout. |
+| `data-disabled` | row | present or absent | Reflects `disabled`. |
+| `--mac-gesture-option-row-callout-fill` | any ancestor | a colour | Fill of the callout. |
+| `--mac-gesture-option-row-callout-edge` | any ancestor | a colour | Half-point edge of the callout. |
+| `--mac-gesture-option-row-callout-highlight` | any ancestor | a colour | The line under the callout's top edge. |
+
+Classes: `.mac-gesture-option-row`, `.mac-gesture-option-row-checkbox` (the checkbox, which
+also has `.mac-checkbox` and its own attributes), `.mac-gesture-option-row-text`,
+`.mac-gesture-option-row-title` and `.mac-gesture-option-row-detail`.
+
+## Accessibility
+
+- Each row exposes one `checkbox`, named by the title and described by the second line. Tab
+  reaches it and Space toggles it; clicking the title toggles it too and leaves focus on the
+  checkbox, as clicking the checkbox does.
+- The highlight is not a selection and sets no ARIA state: `aria-checked` belongs to the
+  checkbox alone. When the highlight changes what a preview shows, describe the preview in
+  text or give it a live region, as the example above does.
+- Move the highlight on focus as well as on pointer entry, so that keyboard users see the same
+  preview.
+- A control passed as `detail` is a separate stop after the checkbox and keeps its own name.
+  It also becomes the checkbox's description, so keep its label short.
+- In forced-colours mode the callout is an outline one point wide in the system's text colour.
+
+## Visual comparison
+
+`npm run visual -- gesture-option-row` compares the three gestures of the Mouse pane, the
+first highlighted, with the screenshots in both appearances. The second line of Secondary
+click is masked in every comparison: it is a borderless pull-down button there, which is
+another component. Share of pixels that differ at 2x, in Chromium on Linux with the fallback
+font:
+
+| Crop, 326 x 160 pt (`162,240,652,320`) | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Rows with their text | 4.31% | 4.30% |
+| Callout and checkboxes, text masked | 0.14% | 0.11% |
+
+Measured: the callout's size, corners, edge, highlight line, fill and the outline of its
+point (fitted row by row to the Dark Aqua screenshot), the checkbox's position, both lines'
+size, colour and baselines, and the 50 pt pitch. The first row of the table scores five lines
+of text set in the fallback font instead of San Francisco.
+
+Provisional, because no screenshot shows them: a highlighted row that is off and a row that
+is on without the highlight, checked in a real browser against the measured colours (`expect`
+comparisons); the disabled look; and the rule that moves the highlight, which the screenshots
+cannot show and the component leaves to its owner. The Trackpad pane's rows with a pull-down
+button are not compared here.

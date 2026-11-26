@@ -1,0 +1,136 @@
+/*
+ * Menu (NSMenu): the popup surface. Rows are menu items (menu-item.css) and inherit the font
+ * set here, whose line height is the row height.
+ *
+ * The classes select on attributes only, so the surface can be put on any popup element
+ * (a Base UI Select or Combobox popup takes class="mac-menu" as well, inside a positioner with
+ * class="mac-menu-positioner").
+ *
+ * States
+ *   [data-attached]                    hangs off a bar: square top corners, no rim on top
+ *   [data-size="regular|small|mini"]   font of a pop-up button's menu: 13, 12 and 11 pt
+ *   [data-ending-style]                fading out after a choice (0.25 s); set by Base UI
+ *   [data-instant]                     shown or hidden without a fade
+ *
+ * Hooks
+ *   --mac-menu-min-width               NSMenu.minimumWidth, set on the popup
+ *   --mac-menu-fade                    the closing transition (opacity 0.25s); none with
+ *                                      prefers-reduced-motion, also for a Dock menu's pointer
+ *
+ * A menu is a window of its own and is key while it is open, so nothing here follows
+ * data-window-state (CONTRIBUTING, "Window state", Popups).
+ */
+.mac-menu-positioner {
+  z-index: 1000;
+}
+
+.mac-menu {
+  --_rim: inset 0 0 0 var(--mac-menu-rim-width) var(--mac-menu-rim);
+  --_edge: 0 0 transparent;
+
+  box-sizing: border-box;
+  min-width: var(--mac-menu-min-width, 0);
+  max-width: var(--available-width, none);
+  max-height: var(--available-height, none);
+  padding: 4px 0;
+  overflow: hidden auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  border-radius: var(--mac-radius-menu);
+  background: var(--mac-material-menu);
+  -webkit-backdrop-filter: var(--mac-material-filter-menu);
+  backdrop-filter: var(--mac-material-filter-menu);
+  box-shadow: var(--_edge), var(--_rim), var(--mac-shadow-menu);
+  font: var(--mac-font-menu);
+  text-align: start;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+}
+
+/* Attached: the bar's shadow line runs over the first row of pixels, and the rim skips the
+   top edge. */
+.mac-menu:where([data-attached]) {
+  --_rim:
+    inset var(--mac-menu-rim-width) 0 0 0 var(--mac-menu-rim),
+    inset calc(-1 * var(--mac-menu-rim-width)) 0 0 0 var(--mac-menu-rim),
+    inset 0 calc(-1 * var(--mac-menu-rim-width)) 0 0 var(--mac-menu-rim);
+  --_edge: inset 0 var(--mac-hairline) 0 0 var(--mac-menu-attached-edge);
+
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+  /* The bar is above the menu: the menu's shadow and hairline do not rise over it. */
+  clip-path: inset(0 -100px -100px);
+}
+
+/*
+ * In Catalina the rim lies over the rows: a highlighted row runs from edge to edge under it.
+ * An inset shadow of the popup is under its rows, so inside a positioner the rim is drawn by
+ * the positioner, which has the popup's box, on top of it. A menu surface used on its own
+ * keeps the inset rim.
+ */
+:where(.mac-menu-positioner) > .mac-menu {
+  box-shadow: var(--_edge), var(--mac-shadow-menu);
+}
+
+.mac-menu-positioner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--mac-radius-menu);
+  box-shadow: inset 0 0 0 var(--mac-menu-rim-width) var(--mac-menu-rim);
+  pointer-events: none;
+}
+
+.mac-menu-positioner:where(:has(> .mac-menu[data-attached]))::after {
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+  box-shadow:
+    inset var(--mac-menu-rim-width) 0 0 0 var(--mac-menu-rim),
+    inset calc(-1 * var(--mac-menu-rim-width)) 0 0 0 var(--mac-menu-rim),
+    inset 0 calc(-1 * var(--mac-menu-rim-width)) 0 0 var(--mac-menu-rim);
+}
+
+/* Pop-up button menus take the font of their control; the row height stays font size + 5. */
+.mac-menu:where([data-size="regular"]) {
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.mac-menu:where([data-size="small"]) {
+  font-size: 12px;
+  line-height: 17px;
+}
+
+.mac-menu:where([data-size="mini"]) {
+  font-size: 11px;
+  line-height: 16px;
+}
+
+/* A menu appears at once and fades out after a choice, its rim with it. */
+.mac-menu:where([data-ending-style]),
+.mac-menu-positioner:where(:has(> .mac-menu[data-ending-style]))::after {
+  opacity: 0;
+  transition: var(--mac-menu-fade, opacity 0.25s);
+}
+
+.mac-menu:where([data-instant]),
+.mac-menu-positioner:where(:has(> .mac-menu[data-instant]))::after {
+  transition: none;
+}
+
+/* Reduced motion: a menu closes at once. The positioner's value reaches the popup, the rim
+   and what else fades with the menu (the pointer of a Dock menu). */
+@media (prefers-reduced-motion: reduce) {
+  .mac-menu-positioner,
+  .mac-menu {
+    --mac-menu-fade: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-menu {
+    border: 1px solid CanvasText;
+  }
+}

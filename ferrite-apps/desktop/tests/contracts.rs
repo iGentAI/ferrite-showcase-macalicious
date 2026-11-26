@@ -1,0 +1,55 @@
+// Link the desktop bundle and hosted SDK once for all integration contracts.
+// scripts/check-test-modules.mjs rejects a missing test module.
+
+mod accounts;
+mod accounts_isolation;
+mod app_data;
+mod appearance;
+mod automation;
+mod books_cache;
+mod calendar;
+mod calendar_settings;
+mod concurrent;
+mod console_log_ttl;
+mod contacts;
+mod desktop;
+mod dictionary;
+mod document_writes;
+mod egress_manifest;
+mod egress_split;
+mod facetime_blocked;
+mod facetime_chess;
+mod facetime_group;
+mod facetime_notes;
+mod facetime_one_seat;
+mod favicon;
+mod files;
+mod find_my;
+mod find_my_people;
+mod launchpad_app_store;
+mod live;
+mod mail;
+mod maps;
+mod messages;
+mod music;
+mod music_sharing;
+mod news;
+mod notes;
+mod notes_reminders_stickies;
+mod notifications;
+mod photo_booth_books_podcasts;
+mod photos;
+mod preview;
+mod safari;
+mod site_serve;
+mod spotlight_mail_scan;
+mod spotlight_network_utility;
+mod stocks;
+mod storage_management;
+mod system_apps;
+mod system_apps_b16;
+mod textedit_font_book_help_viewer;
+mod weather_rates;
+
+mod egress_profile;
+mod support;

@@ -1,0 +1,194 @@
+---
+title: Tab View
+description: Several panes that share one area, switched with a strip of tabs centred on the border of a box.
+---
+
+<Example name="basic" both />
+
+AppKit's `NSTabView` with top tabs and a bezel border, as in most System Preferences panes. The
+tab strip is drawn like a segmented control; the content area is a [box](/components/box). It
+is built on [Base UI's Tabs](https://base-ui.com/react/components/tabs), which supplies the
+tab semantics, the keyboard handling and the controlled and uncontrolled value.
+
+## Usage
+
+```tsx
+import { TabView, TabViewList, TabViewPanel, TabViewTab } from "macalicious/tab-view";
+import "macalicious/tab-view.css";
+
+<TabView defaultValue="output">
+  <TabViewList aria-label="Sound">
+    <TabViewTab value="effects">Sound Effects</TabViewTab>
+    <TabViewTab value="output">Output</TabViewTab>
+  </TabViewList>
+  <TabViewPanel value="effects">…</TabViewPanel>
+  <TabViewPanel value="output">…</TabViewPanel>
+</TabView>
+```
+
+Or copy the source into your project: `npx macalicious add tab-view`.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for tab views:
+
+- Use a tab view for two to six closely related panes of the same level. For more, use a
+  pop-up button or a sidebar.
+- Title tabs with nouns or short noun phrases in title case (“Sound Effects”).
+- Controls in a pane affect only that pane. Controls that apply to the whole window (help,
+  lock) go outside the tab view, below it.
+- Switching tabs must not change the size of the tab view or of the window: give the tab view
+  a height that fits its tallest pane.
+- Inset the tab view 20 pt from the window's edges.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Selected tab | `value` / `defaultValue` | Accent gradient bezel, white title (white at 85% in Dark Aqua) |
+| Unselected tab | – | Standard bezel; a 1 pt divider between two unselected neighbours |
+| Pressed | `:active` | An unselected tab darkens; the selected one deepens. A press selects the tab when the button is released over it |
+| Keyboard focus | `:focus-visible` on a tab | Focus ring around the whole strip |
+| Disabled tab | `disabled` on a `TabViewTab` | Title at 25%; a disabled selected tab is grey |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | The selected tab is grey with a label-colour title; no focus ring |
+
+The selected tab follows the accent colour (`data-accent`), with the same bezel as a
+[push button](/components/push-button)'s primary variant.
+
+Measured: the selected and unselected tabs, the divider, the end caps, the shadow under the
+strip and the box, in both appearances with the blue accent. Provisional, because no
+screenshot shows them: pressed, disabled, the focus ring, the look in a window that is not key,
+and everything in the next section except the regular size with top tabs.
+
+## Sizes
+
+<Example name="sizes" both hideCode />
+
+| Prop | Values | Notes |
+| --- | --- | --- |
+| `size` | `regular` (20 pt strip, 13 pt titles), `small`, `mini` | Regular is measured; small and mini follow the control-size tokens |
+| `tabPosition` | `top`, `bottom`, `left`, `right`, `none` | Side tabs turn the strip on its side, as AppKit does: titles read top to bottom on the right and bottom to top on the left, and the bezel turns with them, so the accent gradient, the highlight and the shadow run from the strip's outer edge to the edge that faces the content. Bottom tabs are the upright strip on the bottom border: its bezel is not turned, light still falls from above (inferred from AppKit drawing the same strip there; no screenshot shows bottom tabs) |
+| `border` | `bezel`, `line`, `none` | `line` is a 1 pt line in the separator colour |
+
+The strip is centred on the border of the box: half of it is above the box. The tab view's own
+box includes the strip, so its top edge is 10 pt above the border.
+
+## Controlled use
+
+<Example name="controlled" />
+
+## API
+
+<PropsTable name="TabViewProps" />
+
+`TabView` also takes the props of Base UI's `Tabs.Root`: `value`, `defaultValue` and
+`onValueChange`.
+
+<PropsTable name="TabViewListProps" />
+
+<PropsTable name="TabViewTabProps" />
+
+`TabViewTab` takes the props of Base UI's `Tabs.Tab`: `value` (required) and `disabled`.
+
+<PropsTable name="TabViewPanelProps" />
+
+`TabViewPanel` takes the props of Base UI's `Tabs.Panel`: `value` (required) and
+`keepMounted`.
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-tab-position` | `top`, `bottom`, `left`, `right`, `none` | On the root. Reflects `tabPosition`. |
+| `data-border` | `bezel`, `line`, `none` | On the root. Reflects `border`. |
+| `data-size` | `regular`, `small`, `mini` | On the root. Reflects `size`. |
+| `data-active` | present or absent | On the selected tab; set by Base UI. |
+| `data-disabled` | present or absent | On a disabled tab; set by Base UI. |
+| `data-force` | `pressed` (tab), `focus` (list) | Documentation and visual tests only: pins a transient state. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-tab-view-panel-padding` | `18px 20px 20px` | Padding of a pane. The default puts the first row of controls 29 pt below the box's top border, as in the Sound pane. |
+
+`TabViewList` and `TabViewPanel` are items of the tab view's grid: put them directly inside
+their `TabView`. A tab view in a pane of another keeps its own `tabPosition`, `border` and
+`size`, whatever the outer one's are. The tabs of a strip are siblings: put them directly in
+the `TabViewList`, or all together in one wrapper that has no box of its own
+(`display: contents`).
+
+`onValueChange` is called once for each change of tab. Control-Tab moves keyboard focus to the
+new tab and selects it, and reports that as one change. The keys belong to the innermost tab
+view around the element they come from: a tab view in a pane keeps them even when it has no
+enabled tab to go to, and so does a menu or popover rendered outside the tab view.
+
+## Accessibility
+
+- The strip is a `tablist` of `tab` buttons and each pane a `tabpanel` named by its tab. Give
+  the list an `aria-label`.
+- The strip is one tab stop. Left and Right Arrow (Up and Down for side tabs) move to the
+  neighbouring tab and select it, as in AppKit with full keyboard access; Home and End go to
+  the first and last tab. Set `activateOnFocus={false}` on the list when showing a pane is
+  slow: the arrow keys then only move focus, and Space or Return selects.
+- Control-Tab and Control-Shift-Tab select the next and the previous tab from anywhere in the
+  tab view, wrapping round and skipping disabled tabs, as in AppKit. Keyboard focus that is in
+  the strip, or in the pane being hidden, moves to the newly selected tab. A browser keeps
+  these two keys for its own tabs, so in an ordinary browser window the page never receives
+  them: they work where the page has the window to itself (an installed web app, an embedded
+  web view). Do not rely on them alone; the arrow keys always work.
+- Tab moves from the strip to the pane, which is focusable so that a pane without controls can
+  still be reached and read.
+- A disabled tab cannot be selected.
+- In forced-colours mode the selected tab is filled with the system highlight colour.
+
+## Visual comparison
+
+`visual-sound-tabs` reproduces the tab strip of the Sound pane on the top border of its box
+(first tab selected) and `visual-energy-saver-tabs` the strip of the Energy Saver pane (last
+tab selected). The segments are given their measured widths, because the titles are set in the
+fallback font. Results in Chromium on Linux with the fallback font:
+
+| Comparison | 2x, whole crop | 2x, titles masked, strict | 1x, whole crop |
+| --- | --- | --- | --- |
+| Sound, Aqua | 9.08% of pixels differ | 0.01% | 15.30% |
+| Sound, Dark Aqua | 8.61% | 0.06% | 14.87% |
+| Energy Saver, Aqua | 10.96% | 0.02% | 17.26% |
+| Security & Privacy (four tabs), Aqua | 7.52% | 0.02% | 12.78% |
+| Security & Privacy (four tabs), Dark Aqua | 7.06% | 0.05% | 11.78% |
+| Network Utility (eight tabs), Aqua | 6.66% | 0.02% | 11.26% |
+
+`visual-security-tabs` and `visual-network-utility-tabs` reproduce two further strips, the
+second across a whole window on a content box that runs from edge to edge. `visual-pane-corner`
+reproduces the top-left corner of the content box in the Sound pane, counted at a colour
+distance of 0.02 because the box's border is faint: 0.06% of the 2x pixels differ in Aqua and
+0.00% in Dark Aqua, with the shared token `--mac-radius-group` at 4 pt (see the Box page). The
+small and mini strips are in no screenshot and have no comparison.
+
+The masked comparisons count a pixel as different at half the usual colour distance
+(`threshold` 0.05). At 2x the bezel, the divider, the end caps, the shadow and the box match
+the screenshots; what remains is the titles, set in the fallback font instead of San
+Francisco. The strict comparison is what showed that the content box must not be painted
+behind the strip: in Dark Aqua the strip's bezel is translucent, and with the box behind it
+the box's top border showed through the unselected tabs (0.42% of the pixels); the capture
+shows the window there. At 1x with the titles masked 9 to 19% of the pixels differ at the
+strict distance: there is no 1x screenshot, the 1x reference is the 2x one averaged in 2 by 2
+blocks, and the strip's half-point hairlines cannot match their averaged counterparts
+([Fidelity limits](/fidelity)). The Energy Saver pane is not captured with this tab selected in
+Dark Aqua.
+
+Tabs on the left and right are in no screenshot. `visual-side-tabs` checks that their bezel is
+turned: it reads the selected tab's fill a quarter and three quarters of the way across each
+strip and expects the second and fourth colour stops of the accent gradient there, in both
+appearances.
+
+Pressed, keyboard focus, a window that is not key and another accent are in no screenshot
+either. `visual-states` puts three top tabs into each of them with real input and checks
+pixels, in both appearances: an unselected tab held down takes the pressed bezel fill
+(`#f0f0f0`, and white at 36% in Dark Aqua) while the first tab stays selected, the selected
+tab held down deepens, the focus ring surrounds the whole strip, the selected tab is grey
+(`#d5d5d5` and `#6a6a6a`) with no ring in a main and in an inactive window, and with the
+purple accent it takes the purple bezel. All of these values are inferred. Three more checks
+follow real input to its result: a click on the third tab selects it and deselects the first,
+in both appearances, and Tab followed by Right Arrow selects the second tab with the ring
+still round the strip. The pressed check
+is what showed that a mouse press used to select the tab at once, so that the pressed look of
+an unselected tab could never be seen; a tab is now selected when the button is released.

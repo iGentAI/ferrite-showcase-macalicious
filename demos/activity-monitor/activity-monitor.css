@@ -1,0 +1,270 @@
+/*
+ * Activity Monitor demo: the layout of the toolbar, the body and the footer, and the Process
+ * Name cell. The window, the toolbar controls, the table, the menu, the sheet, the box and the
+ * footer's text style are the library's own; nothing here restyles them.
+ *
+ * Parts
+ *   .mac-activity-monitor-toolbar-group   the toolbar's two sides, equally wide, so that the
+ *                                         view switcher between them is centred on the window
+ *   .mac-activity-monitor-body            the window's body: the table over the footer
+ *   .mac-activity-monitor-table           the table takes the height the footer leaves
+ *   .mac-activity-monitor-name            Process Name cell: 16 pt icon column, then the name
+ *   .mac-activity-monitor-footer          the 116 pt panel under the table, and its top line
+ *   .mac-activity-monitor-statement       on the served desktop, what a page cannot see, over it
+ *   .mac-activity-monitor-panel           on the served desktop, an inspector's or a CPU window's body
+ *   .mac-activity-monitor-summary         the 580 x 90 pt box, sized here
+ *   .mac-activity-monitor-cells           its three cells
+ *   .mac-activity-monitor-statistics      a cell of up to three label and value lines
+ *   .mac-activity-monitor-graph           the middle cell: a title over the history graph
+ *
+ * States
+ *   [data-side="trailing"]       on a toolbar group: its items sit at the trailing edge
+ *   [data-tone="lower" | "upper"]   on a value: the colour of that series of the graph
+ *
+ * Every measured length and font size is a token in activity-monitor.tokens.css
+ * (--mac-activity-monitor-*). Literal here, as structure: zeros, the 100% sizes, the flex
+ * factors and the graph cell's fr tracks, the 1 pt lines (the footer's top line, the rules and
+ * the cell dividers), and the upper series' fill opacity.
+ */
+/* Measured between the bezels' outer edges: the first starts 8 pt from the window's edge and
+   the next 8 pt after it. A toolbar control's box is its fill, half a point inside that edge,
+   so the fills start at 8.5 pt and are 9 pt apart. */
+.mac-activity-monitor-toolbar-group {
+  display: flex;
+  flex: 1 1 0;
+  gap: var(--mac-activity-monitor-toolbar-gap);
+  box-sizing: border-box;
+  min-width: 0;
+  padding-inline-start: var(--mac-activity-monitor-toolbar-inset);
+}
+
+.mac-activity-monitor-toolbar-group:where([data-side="trailing"]) {
+  justify-content: flex-end;
+  padding-inline: 0 var(--mac-activity-monitor-toolbar-inset);
+}
+
+.mac-activity-monitor-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.mac-activity-monitor-table {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+/* The icon's box starts 20 pt from the window's edge and the name 46 pt from it (measured);
+   the cell's own padding is the first 3 pt. */
+.mac-activity-monitor-name {
+  display: flex;
+  gap: var(--mac-activity-monitor-name-gap);
+  align-items: center;
+  padding-inline-start: var(--mac-activity-monitor-name-padding-start);
+}
+
+.mac-activity-monitor-name-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mac-activity-monitor-icon {
+  flex: none;
+  width: var(--mac-activity-monitor-icon-size);
+  height: var(--mac-activity-monitor-icon-size);
+}
+
+.mac-activity-monitor-icon-drawing {
+  display: block;
+}
+
+.mac-activity-monitor-icon-paper {
+  fill: var(--mac-activity-monitor-icon-paper);
+  stroke: var(--mac-activity-monitor-icon-edge);
+}
+
+.mac-activity-monitor-icon-fold {
+  fill: none;
+  stroke: var(--mac-activity-monitor-icon-edge);
+}
+
+.mac-activity-monitor-icon-ink {
+  fill: var(--mac-activity-monitor-icon-ink);
+}
+
+.mac-activity-monitor-icon-trace {
+  fill: none;
+  stroke: var(--mac-activity-monitor-icon-trace);
+}
+
+.mac-activity-monitor-icon-files {
+  fill: var(--mac-activity-monitor-icon-files);
+}
+
+.mac-activity-monitor-icon-disc {
+  fill: var(--mac-activity-monitor-icon-disc);
+}
+
+.mac-activity-monitor-icon-mark {
+  fill: none;
+  stroke: var(--mac-activity-monitor-icon-paper);
+}
+
+/* The line is the first of the panel's 117 pt; the box starts 12 pt under it. */
+.mac-activity-monitor-panel {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: var(--mac-activity-monitor-panel-gap);
+  padding: var(--mac-activity-monitor-panel-padding);
+}
+
+.mac-activity-monitor-panel .mac-activity-monitor-graph-plot {
+  position: static;
+}
+
+.mac-activity-monitor-statement {
+  flex: none;
+  padding: var(--mac-activity-monitor-statement-padding);
+  border-block-start: 1px solid var(--mac-activity-monitor-rule);
+  color: var(--mac-color-secondary-label);
+}
+
+.mac-activity-monitor-footer {
+  display: flex;
+  flex: none;
+  justify-content: center;
+  box-sizing: border-box;
+  height: var(--mac-activity-monitor-footer-height);
+  padding-block-start: var(--mac-activity-monitor-footer-padding-top);
+  border-block-start: 1px solid var(--mac-activity-monitor-rule);
+  background: var(--mac-color-window-background-tinted);
+}
+
+.mac-activity-monitor-summary {
+  flex: none;
+  width: var(--mac-activity-monitor-summary-width);
+  max-width: calc(100% - var(--mac-activity-monitor-summary-min-margin));
+  height: var(--mac-activity-monitor-summary-height);
+}
+
+/* Inside the box's 1 pt border: 196.5 pt, the 185 pt graph cell with its two dividers, and
+   196.5 pt again (measured). */
+.mac-activity-monitor-cells {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--mac-activity-monitor-graph-width) minmax(0, 1fr);
+  height: 100%;
+}
+
+/* The rules start 8 pt from the box's edge and end 8.5 pt before the divider. */
+.mac-activity-monitor-statistics {
+  padding: var(--mac-activity-monitor-statistics-padding-top)
+    var(--mac-activity-monitor-statistics-padding-divider) 0
+    var(--mac-activity-monitor-statistics-padding-edge);
+}
+
+.mac-activity-monitor-statistics:where(:last-child) {
+  padding-inline: var(--mac-activity-monitor-statistics-padding-divider)
+    var(--mac-activity-monitor-statistics-padding-edge);
+}
+
+/* A 20 pt pitch; the first two lines end in a rule, which is the pitch's last point. */
+.mac-activity-monitor-statistic {
+  display: flex;
+  gap: var(--mac-activity-monitor-statistic-gap);
+  justify-content: space-between;
+  box-sizing: border-box;
+  height: var(--mac-activity-monitor-statistic-height);
+  padding-inline: var(--mac-activity-monitor-statistic-padding-start)
+    var(--mac-activity-monitor-statistic-padding-end);
+  line-height: var(--mac-activity-monitor-statistic-line-height);
+  white-space: nowrap;
+}
+
+.mac-activity-monitor-statistic:where(:nth-child(-n + 2)) {
+  border-block-end: 1px solid var(--mac-activity-monitor-rule);
+}
+
+.mac-activity-monitor-statistic-label {
+  flex: none;
+}
+
+/* A value longer than its cell, as the full name of a Ferrite instance is, is cut: its title holds it whole. */
+.mac-activity-monitor-statistic-value {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+
+.mac-activity-monitor-statistic-value:where([data-tone="lower"]) {
+  color: var(--mac-activity-monitor-lower);
+}
+
+.mac-activity-monitor-statistic-value:where([data-tone="upper"]) {
+  color: var(--mac-activity-monitor-upper);
+}
+
+.mac-activity-monitor-graph {
+  position: relative;
+  box-sizing: border-box;
+  border-inline: 1px solid var(--mac-activity-monitor-rule);
+}
+
+/* 9 pt semibold capitals over a rule that ends 22 pt under the box's edge and is inset
+   11.5 pt from both dividers (measured). */
+.mac-activity-monitor-graph-title {
+  box-sizing: border-box;
+  height: var(--mac-activity-monitor-graph-title-height);
+  margin-inline: var(--mac-activity-monitor-graph-title-margin-inline);
+  padding-block-start: var(--mac-activity-monitor-graph-title-padding-top);
+  border-block-end: 1px solid var(--mac-activity-monitor-rule);
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-label);
+  font-weight: var(--mac-font-weight-semibold);
+  font-size: var(--mac-activity-monitor-graph-title-size);
+  line-height: var(--mac-activity-monitor-graph-title-line-height);
+  letter-spacing: var(--mac-activity-monitor-graph-title-tracking);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* The newest point is 3 pt before the trailing divider and the baseline 1 pt above the box's
+   bottom edge (measured). */
+.mac-activity-monitor-graph-plot {
+  position: absolute;
+  inset-block-end: var(--mac-activity-monitor-graph-plot-inset-bottom);
+  inset-inline-end: var(--mac-activity-monitor-graph-plot-inset-end);
+  display: block;
+}
+
+.mac-activity-monitor-graph-lower {
+  fill: var(--mac-activity-monitor-lower);
+}
+
+.mac-activity-monitor-graph-upper {
+  fill: var(--mac-activity-monitor-upper);
+  fill-opacity: 0.27;
+}
+
+.mac-activity-monitor-graph-line {
+  fill: none;
+  stroke: var(--mac-activity-monitor-upper);
+  stroke-linejoin: round;
+}
+
+@media (forced-colors: active) {
+  .mac-activity-monitor-footer,
+  .mac-activity-monitor-statistic,
+  .mac-activity-monitor-graph,
+  .mac-activity-monitor-graph-title {
+    border-color: CanvasText;
+  }
+}
+
+.mac-activity-monitor-table-frame {
+  display: flex;
+  flex: 1 1 0;
+  min-height: 0;
+}

@@ -1,0 +1,233 @@
+---
+title: Toolbar Search Field
+description: The search field of a toolbar, with a magnifier, placeholder text, a clear button once there is text, and Catalina's focus ring.
+order: 17
+---
+
+<Example name="basic" both />
+
+AppKit's `NSSearchField` as it appears in a toolbar: the same bezel as a
+[Toolbar Button](/components/toolbar-button) around a native `<input type="search">`. Base UI
+has no search field; inside a [Toolbar](/components/toolbar) the input is Base UI's Toolbar
+Input, so it joins the toolbar's keyboard navigation.
+
+## Usage
+
+```tsx
+import { ToolbarSearchField } from "macalicious/toolbar-search-field";
+import "macalicious/toolbar-search-field.css";
+
+<ToolbarSearchField style={{ width: 240 }} onValueChange={setQuery} />
+```
+
+Native input props go to the input, so `value`, `defaultValue`, `onChange`, `name`, `disabled`
+and `aria-*` work as on an input. The exceptions: `className`, `style` and `ref` belong to the
+root element; `inputRef` reaches the input, to focus it from a Command-F handler;
+`onValueChange` and `clearLabel` are the component's own; and the preview attribute
+`data-force` lands on the root, which draws the focus ring.
+
+<Example name="controlled" />
+
+### Tokens
+
+`tokens` puts search tokens before the text, as Finder does when a search is narrowed to a
+criterion: pass `ToolbarSearchFieldToken`s, whose children are the value and whose `criterion`
+is the part before it, in small capitals with a chevron. The field shows them and does not
+keep them: add one from your `onKeyDown` (Return, in the example), remove the last on Delete
+in an empty field, and remove them all in `onClear`, which the clear button and Escape call.
+While there are tokens the placeholder is not shown and the clear button is.
+
+<Example name="tokens" both />
+
+### Search menu
+
+Font Book's field has a small chevron beside the magnifier: the two are a button that opens
+the field's search menu, a choice of what is searched. Pass a `ToolbarSearchFieldMenuButton`
+as `searchMenu` and make it the trigger of a [Menu](/components/menu). The field places the
+button where the magnifier was and starts its text 4 pt later; the menu, and what a choice
+does, are the application's.
+
+<Example name="search-menu" both />
+
+## Guidelines
+
+Not verified: this section paraphrases Apple's Human Interface Guidelines and was not checked
+against Apple's text.
+
+- Put the field at the trailing edge of the toolbar, after flexible space.
+- Start searching as people type when results are cheap, or on Return when they are not.
+- Keep the placeholder short: "Search". It is also the field's accessible name unless you give
+  an `aria-label`.
+- When search can be narrowed, show a [Scope Bar](/components/scope-bar) under the toolbar.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Empty | no text | Magnifier and placeholder; no clear button |
+| With text | text in the input | Clear button, 14 pt, at the trailing edge |
+| With tokens | `tokens` | 15 pt capsules 26 pt from the fill's edge, the insertion point 3 pt after the last; clear button; no placeholder |
+| Read-only | `readOnly` | No clear button, also with text; the text cannot be cleared |
+| Focused | focus in the field | Ring 3 pt outside the fill, over the border, which shows through it, and a hairline inside the fill; the typed text in the label colour; key window only |
+| Disabled | `disabled` | Dimmed glyph and text (provisional) |
+| Inactive window | `data-window-state="inactive"` on an ancestor | Flat outlined bezel (provisional) |
+
+| Variant | Look | Seen in |
+| --- | --- | --- |
+| `standard` (default) | In Dark Aqua a translucent fill, white at 22.5% | Finder, Font Book, Keychain Access, Notes, System Preferences and every other dark toolbar but one |
+| `bright` | In Dark Aqua white at 33.6%, with a lighter placeholder; the same as `standard` in Aqua | Console |
+
+<Example name="bright" both hideCode />
+
+The field has no intrinsic width worth keeping: set `width` in `style`. The screenshots show
+160 pt (System Preferences), 238 pt (Preview) and 323 pt (Finder, Help).
+
+## Sizes
+
+One size: the field is 22 pt high and at least 60 pt wide. It has no width of its own, so set
+one with `style` or let a flexible toolbar space size it.
+
+## API
+
+<PropsTable name="ToolbarSearchFieldProps" />
+
+<PropsTable name="ToolbarSearchFieldTokenProps" />
+
+A token is a `span` and takes its attributes, `ref`, `className` and `style`.
+
+<PropsTable name="ToolbarSearchFieldMenuButtonProps" />
+
+The search menu button is Base UI's Button and takes its props and every native button
+attribute.
+
+| Attribute or variable | Values | Description |
+| --- | --- | --- |
+| `data-variant` | `standard`, `bright` | Reflects `variant`. |
+| `data-disabled` | present or absent | Reflects `disabled`. |
+| `data-tokens` | present or absent | The field holds tokens. |
+| `data-menu` | present or absent | The field has a search menu button. |
+| `data-force` | `focus` | Documentation and visual tests only. |
+| `--mac-toolbar-search-field-text-inset` | a length | From the fill's leading edge to the text. Default 23px, where typed text starts; Finder's placeholder sits at 27px in the Aqua capture and at 23px in the Dark Aqua one. |
+
+Parts: `.mac-toolbar-search-field-glyph` or, with a search menu, `.mac-toolbar-search-field-menu`;
+`.mac-toolbar-search-field-input`,
+`.mac-toolbar-search-field-clear` and, with tokens, `.mac-toolbar-search-field-tokens` around
+each `.mac-toolbar-search-field-token` with its `-criterion` and `-value` parts.
+
+## Accessibility
+
+- A native search input, named by its placeholder unless `aria-label` or `aria-labelledby` is
+  given; a field with `placeholder=""` shows no placeholder text and needs one of the two. Wrap the toolbar or the field in an element with `role="search"` when it searches the
+  whole window.
+- Escape clears the text; a second Escape, in an empty field, gives up focus. A `readOnly`
+  field is not cleared: Escape gives up focus at once. Return is left to your `onKeyDown` or
+  to a surrounding form.
+- The clear button is a real button with the name "Clear" (`clearLabel`). It is out of the tab
+  order, because Escape does the same from the keyboard, and it returns focus to the input.
+- The focus ring shows only in the key window.
+- Inside a `Toolbar`, moving focus to the field with the keyboard selects its text and a click
+  places the caret, as in AppKit.
+- Tokens are text before the input, not controls: the input is described by them
+  (`aria-describedby`), so a screen reader announces “Name report” with the field. They are
+  removed from the keyboard with Escape, or with whatever your `onKeyDown` does on Delete.
+  The pull-down menu that Finder opens from a token's criterion is not part of this
+  component.
+- The search menu button is a real button and needs an `aria-label` that says what its menu
+  chooses ("Search in"). Inside a `Toolbar` it is reached with the arrow keys, before the
+  input; on its own it is a tab stop before the input. A click on it does not move the caret
+  into the field. While it has the keyboard focus the field shows its focus ring. A disabled
+  field disables the button, so its menu cannot be opened; the button can also be disabled on
+  its own.
+
+## Visual comparison
+
+`toolbar-search-field.visual.json` compares the empty field in both appearances (Finder Network),
+the focused field holding text (the Help window during a search), the leading end of Console's
+field (the bright variant) and of Font Book's (the search menu button), each whole and with
+the text masked. The scores are in the table below.
+
+Scores from `npm run visual -- toolbar-search-field` in Chromium on Linux with the fallback font: the share of
+pixels that differ by more than the comparison's threshold, and the mean colour difference out
+of 255. A masked comparison leaves out stand-in artwork and fallback-font text.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `finder-light` | Light-Finder-Network (1296, 120, 660, 56) | 6.18% | 5.40 | 1.60% | 1.81 |
+| `finder-light-bezel` (masked) | Light-Finder-Network (1296, 120, 660, 56) | 8.69% | 4.54 | 0.24% | 0.86 |
+| `finder-dark` | Dark-Finder-Network (1442, 120, 660, 56) | 5.11% | 4.01 | 0.91% | 1.45 |
+| `finder-dark-bezel` (masked) | Dark-Finder-Network (1442, 120, 660, 56) | 4.78% | 3.63 | 0.21% | 0.99 |
+| `focused-light` | Light-Help-Search (1126, 64, 672, 68) | 4.77% | 4.28 | 1.08% | 2.14 |
+| `focused-light-bezel` (masked) | Light-Help-Search (1126, 64, 672, 68) | 7.42% | 3.29 | 0.70% | 0.94 |
+| `focused-dark` | Dark-Help-Search (1126, 64, 672, 68) | 4.48% | 6.38 | 0.91% | 3.62 |
+| `focused-dark-bezel` (masked) | Dark-Help-Search (1126, 64, 672, 68) | 7.29% | 5.81 | 0.44% | 2.81 |
+| `token-dark` | Dark-Finder-Search (1356, 120, 660, 56) | 7.81% | 6.94 | 3.37% | 3.89 |
+| `token-dark-drawing` (masked) | Dark-Finder-Search (1356, 120, 660, 56) | 9.23% | 5.16 | 1.02% | 1.54 |
+| `console-light` | Light-Console (926, 118, 400, 60) | 6.93% | 5.89 | 3.26% | 2.98 |
+| `console-light-bezel` (masked) | Light-Console (926, 118, 400, 60) | 9.02% | 4.91 | 1.20% | 1.52 |
+| `console-dark` | Dark-Console (926, 118, 400, 60) | 6.00% | 5.73 | 2.66% | 2.63 |
+| `console-dark-bezel` (masked) | Dark-Console (926, 118, 400, 60) | 5.19% | 5.21 | 0.94% | 1.64 |
+| `font-book-light` | Light-Font-Book (1276, 118, 400, 60) | 7.42% | 6.05 | 2.65% | 2.46 |
+| `font-book-light-bezel` (masked) | Light-Font-Book (1276, 118, 400, 60) | 8.84% | 4.69 | 0.61% | 1.02 |
+| `font-book-dark` | Dark-Font-Book (1276, 118, 400, 60) | 5.52% | 4.76 | 1.55% | 2.20 |
+| `font-book-dark-bezel` (masked) | Dark-Font-Book (1276, 118, 400, 60) | 5.16% | 4.17 | 0.52% | 1.51 |
+
+The token is measured in Dark Aqua only (its place, 15 pt height, two fills, text colours and
+chevron); its Aqua colours are inferred and provisional, because no Aqua capture shows one.
+The capture's insertion point is not reproduced in the comparison.
+
+Measured: the 22 pt fill and its gradient, the borders and shadow row, the magnifier's size and
+inset, the placeholder and text insets and colours, the clear button, the focus ring's two
+bands in the blue accent. Provisional: the disabled look, the look in an inactive window, and
+the focus ring in accents other than blue, which follows the shared focus ring token. The
+magnifier and the clear button are original drawings to the measured geometry. Placeholder and
+text are San Francisco only on Apple devices.
+
+Where the values are read. The standard field, on Light-/Dark-Finder-Network (column x=1600
+in Aqua, x=1800 in Dark Aqua; row y=148): the fill `#fcfcfc` to `#f3f3f3`, and in Dark Aqua
+`#818283`, `#6c6d6e`, then `#67686a` to `#626364` on a `#3a3b3c` to `#353637` bar, white at
+36%, 25.4% and 22.5%; the border `#c5c5c5` on `#dadada`, `#bfbfbf` on `#d4d4d4` and `#9e9e9e`
+on `#cfcfcf`, and the row under it `#c5c5c5` on `#cfcfcf`; the magnifier `#565656` on
+`#f7f7f7` and `#e8e8e8` on `#656667`; the placeholder `#aaacab` and `#8c8c8d`. On
+Light-/Dark-Finder-Search: typed text `#555454` in a field without the keyboard focus, and
+`#ffffff` inside a token; the clear
+button's disc `#7b7b7b` and `#b9b9ba`; the token's criterion `#9f9fa0` @ 1416,148 and value
+`#848485` @ 1500,148, white at 38% and 20% over the fill, with text `#ffffff` and `#ececec`.
+
+The focused field, on Light-/Dark-Help-Search and Light-Preview-Search. Its typed text is the
+label colour: the darkest pixel of "File" is `#252525` in both Aqua captures, black at 85%
+over the fill, and the lightest in Dark Aqua `#e8e8e9`, white at 85%. The focus ring is half
+transparent and lies over the bezel's border, which stays: in Aqua the row under the fill
+(column x=1426) is `#5a83c9` and the one below it `#6d97dc` where the plain ring is
+`#749de2`, which is the ring at 50% over the bottom border and over the shadow row; the
+side borders show the same way (`#6b95da`). The library draws `#5c85cb` and `#6f98de` there.
+Dark Aqua has no border, so nothing shows through. What remains in `focused-light-bezel` is
+the shape of the ring's corners, the magnifier, which the capture draws heavier, and the
+cross of the clear button, both original drawings; at 1x also the edges that fall on half
+points, which a 1x capture averaged from 2x pixels shows as half tones and a browser at 1x
+draws as whole pixels.
+
+The Dark Aqua fill was measured again on every dark capture with a toolbar: the field, and
+the toolbar buttons beside it, are white at 22% to 25% over the bar in Finder, Font Book,
+Keychain Access, Notes, Calendar, Maps, Safari, Preview and System Preferences, which is the
+standard fill. Console's field alone is brighter: `#a7a8aa`, `#89898b`, then `#818183` to
+`#7e7f81` on a `#424244` to `#3e3f41` bar (column x=1200), white at 54%, 37.6% and 33.6%, one
+and a half times the standard fill, beside toolbar buttons at 23%; its placeholder is
+`#afb1b1`, white at 38%. Its Aqua field is the standard one. Why Console's differs is not
+known, so the look is a variant named for what it is. Its magnifier sits half a point higher
+than Finder's, on which the library's is placed, which shows in the Console comparisons. No
+capture has text in a bright field: the cross of its clear button is provisional.
+
+The search menu button is read on Light-/Dark-Font-Book (the field's fill starts at x=1288,
+y=126): the magnifier's ring is 9.3 pt across, 6 pt inside the fill's corner, a little smaller
+than Finder's; the chevron's ink runs from 17 to 22 pt from the fill's edge and from 9 to
+12.5 pt under its top; the placeholder's ink starts at 27.5 pt, 4 pt later than in a field
+without the button. Both have the magnifier's colour. No capture shows the menu open or the
+button pressed, and it has no look of its own for either.
+
+The bezel's corner is built at 4 pt on the border's outer edge, the shared control radius plus
+the hairline border, where the spec's fit of the light Finder field gives 4.25 pt. Rendered
+against that corner, 4 and 4.25 pt tie in Aqua (rms 1.99 and 1.90 levels) and 4 pt is closer in
+Dark Aqua (3.00 against 3.71), so the radius stays on the shared token; this is the adopted
+value as built, not a new measurement.

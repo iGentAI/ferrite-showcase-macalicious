@@ -1,0 +1,454 @@
+/*
+ * Finder demo: the layout of the window's body and of the content the demo puts into the
+ * library's views. The window, the toolbar, the sidebar, the four views, the bars and every
+ * control are the library's own; nothing here restyles them. A class on a library control
+ * sets only its place and size in this window.
+ *
+ * Parts
+ *   .mac-finder                 the window: it takes the focus when a key switches the view
+ *   .mac-finder-body            the window's body: it does not scroll, its views do
+ *   .mac-finder-split           the split view of sidebar and content, filling the body
+ *   .mac-finder-content         the content pane: banner, scope bar, view, path bar, status bar
+ *   .mac-finder-main            the place of the view, between the bars
+ *   .mac-finder-view            a view, filling that place
+ *   .mac-finder-groups          icon view with Use Groups: its sections, which scroll together
+ *   .mac-finder-group-head      a section's heading and Show All
+ *   .mac-finder-group-row       a section's grid: one row that scrolls sideways until Show All
+ *   .mac-finder-group-title     a section's name, in icon and list views
+ *   .mac-finder-slideshow       the slideshow, over the desktop: -stage, -sheet, -cell, -controls
+ *   .mac-finder-name            list view: icon, name and tag dot of the Name column
+ *   .mac-finder-detail          secondary small text: kind, size, a fact's name
+ *   .mac-finder-server-panel    column view: the height of a network computer's panel
+ *   .mac-finder-server          the demo's content in it: picture, name, state, buttons
+ *   .mac-finder-file            column view: the demo's content in the preview of a file
+ *   .mac-finder-preview         gallery view: the Preview pane
+ */
+.mac-finder:focus {
+  outline: none;
+}
+
+.mac-finder-body {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Show All Tabs: every tab of the window, over its body. */
+.mac-finder-all-tabs {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-auto-rows: 150px;
+  gap: 20px;
+  padding: 20px;
+  overflow: auto;
+  background: var(--mac-color-under-page-background);
+}
+
+.mac-finder-all-tabs-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--mac-color-separator);
+  border-radius: 6px;
+  background: var(--mac-color-control-background);
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+}
+
+.mac-finder-all-tabs-tab:where([data-active]) {
+  border-color: var(--mac-color-selected-content-background);
+}
+
+.mac-finder-split {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mac-finder-sidebar {
+  height: 100%;
+}
+
+/* The Column view glyph is 16 pt wide, 2 pt wider than the others, but its segment keeps the
+   27 pt of the List and Gallery segments in every capture (Light-Applications 225..252 pt,
+   Light-Finder-Network 226..253 pt): the glyph sits 5 pt after the cell's leading edge and 6 pt
+   before its trailing one, divider included. With the joined segment's 6 and 7 pt insets the
+   cell grew to 29 pt and pushed every item after the view control 2 pt to the right.
+   [measured] */
+.mac-finder-views.mac-finder-views > .mac-finder-view-columns {
+  padding-inline: var(--mac-finder-view-columns-padding-inline);
+}
+
+.mac-finder-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mac-finder-main {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+}
+
+.mac-finder-view {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+/* The slideshow: over the whole desktop. */
+.mac-finder-slideshow {
+  position: absolute;
+  inset: 0;
+  z-index: var(--mac-finder-slideshow-layer);
+  display: flex;
+  flex-direction: column;
+  background: var(--mac-finder-slideshow-background);
+  color: var(--mac-color-label);
+  outline: none;
+}
+
+.mac-finder-slideshow-stage {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+.mac-finder-slide-picture {
+  flex: 1 1 0;
+  width: 100%;
+  min-height: 0;
+  object-fit: contain;
+}
+
+.mac-finder-slideshow-name {
+  margin: var(--mac-finder-slideshow-gap);
+  font: var(--mac-font-body);
+}
+
+.mac-finder-slideshow-sheet {
+  display: grid;
+  flex: 1 1 0;
+  grid-template-columns: repeat(auto-fill, var(--mac-finder-slideshow-cell));
+  align-content: start;
+  gap: var(--mac-finder-slideshow-gap);
+  min-height: 0;
+  margin: 0;
+  padding: var(--mac-finder-slideshow-gap);
+  overflow-y: auto;
+  list-style: none;
+}
+
+.mac-finder-slideshow-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--mac-finder-slideshow-cell);
+  padding: var(--mac-finder-slideshow-gap);
+  border: 0;
+  border-radius: var(--mac-radius-group);
+  background: transparent;
+  color: var(--mac-color-label);
+  font: var(--mac-font-control-small);
+  overflow-wrap: anywhere;
+}
+
+.mac-finder-slideshow-cell[data-current] {
+  background: var(--mac-color-selected-content-background-unemphasized);
+}
+
+.mac-finder-slideshow-controls {
+  display: flex;
+  flex: none;
+  gap: var(--mac-finder-slideshow-gap);
+  align-items: center;
+  justify-content: center;
+  padding: var(--mac-finder-slideshow-gap);
+}
+
+.mac-finder-slideshow-count {
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-control-small);
+}
+
+/* The Clipboard window: what is copied. */
+.mac-finder-clipboard {
+  padding: var(--mac-finder-group-head-padding);
+  overflow: auto;
+}
+
+.mac-finder-clipboard-items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: var(--mac-font-body);
+}
+
+.mac-finder-clipboard-text {
+  margin: 0;
+  font: var(--mac-font-body);
+  white-space: pre-wrap;
+}
+
+/* Use Groups in icon view: the sections scroll together, each a heading and its grid. */
+.mac-finder-groups {
+  overflow-y: auto;
+  background: var(--mac-color-control-background-tinted);
+}
+
+.mac-finder-group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--mac-finder-group-head-padding);
+  border-block-end: 1px solid var(--mac-color-separator);
+}
+
+.mac-finder-group-row {
+  overflow-x: auto;
+}
+
+.mac-finder-group-title {
+  margin: 0;
+  font: var(--mac-font-body-emphasized);
+}
+
+/* Toolbar: the measured widths of Finder's items, set as the library's pages describe, by
+   width alone. The menu buttons (the library's toolbar pull-downs) are 46 pt, Share and Tags
+   38 pt, and the search field is 323 pt and gives way in a narrow window. */
+.mac-finder-menu-button {
+  width: var(--mac-finder-menu-button-width);
+}
+
+.mac-finder-item-button {
+  width: var(--mac-finder-item-button-width);
+}
+
+.mac-finder-search {
+  flex: 0 1 var(--mac-finder-search-width);
+  min-width: var(--mac-finder-search-min-width);
+}
+
+.mac-finder-suggestions {
+  position: absolute;
+  top: 0;
+  right: var(--mac-finder-suggestions-inset);
+  z-index: 3;
+  box-sizing: border-box;
+  width: var(--mac-finder-suggestions-width);
+  max-height: var(--mac-finder-suggestions-max-height);
+  overflow-y: auto;
+  border-radius: var(--mac-finder-suggestions-radius);
+  background: var(--mac-color-window-background, var(--mac-finder-drop-notice-background-fallback));
+  box-shadow: var(--mac-finder-suggestions-shadow);
+  font-size: var(--mac-finder-suggestions-font-size);
+}
+
+.mac-finder-suggestion {
+  padding: var(--mac-finder-suggestion-padding);
+  cursor: default;
+}
+
+.mac-finder-suggestion[aria-selected="true"] {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-menu-item-text);
+}
+
+.mac-finder-section-title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mac-finder-section-toggle {
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  background: none;
+  color: inherit;
+  font-size: var(--mac-finder-section-toggle-font-size);
+}
+
+.mac-finder-section-title:hover .mac-finder-section-toggle,
+.mac-finder-section-toggle:focus-visible {
+  opacity: 1;
+}
+
+/* Where a Command-click on the title opens its menu from: it holds no room of its own. */
+.mac-finder-path-anchor {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.mac-finder-criterion-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mac-finder-criterion-date {
+  flex: 0 0 auto;
+}
+
+.mac-finder-criterion-number {
+  flex: 0 0 auto;
+  width: var(--mac-finder-criterion-number-width);
+}
+
+.mac-finder-icon-size {
+  width: var(--mac-finder-icon-size-width);
+}
+
+.mac-finder-name {
+  display: flex;
+  gap: var(--mac-finder-name-gap);
+  align-items: center;
+  min-width: 0;
+}
+
+.mac-finder-name-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-finder-detail {
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-control-small);
+}
+
+/* The panel of a computer that is not connected, as measured in the Network capture: the
+   library's panel is given its 172 pt height, and the demo's own content inside it starts
+   22 pt under its top, with buttons 114 pt wide. */
+.mac-finder-server-panel {
+  height: var(--mac-finder-server-panel-height);
+}
+
+.mac-finder-server,
+.mac-finder-file {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mac-finder-server {
+  padding-block-start: var(--mac-finder-server-padding-block-start);
+}
+
+.mac-finder-server-name {
+  margin-block: var(--mac-finder-server-name-margin-block);
+}
+
+.mac-finder-server-button {
+  width: var(--mac-finder-server-button-width);
+  margin-block-start: var(--mac-finder-server-button-margin-block-start);
+}
+
+.mac-finder-file {
+  gap: var(--mac-finder-file-gap);
+  padding: var(--mac-finder-file-padding);
+}
+
+.mac-finder-file-name {
+  margin-block-start: var(--mac-finder-file-name-margin-block-start);
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+/* The Preview pane, on the measured rules: 20 pt insets, a 94 pt header, a rule over each
+   section, 19 pt rows with a separator between them, the Quick Actions at the bottom. */
+.mac-finder-preview {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  padding: var(--mac-finder-preview-padding);
+  font: var(--mac-font-control-small);
+}
+
+.mac-finder-preview-header {
+  display: flex;
+  gap: var(--mac-finder-preview-header-gap);
+  align-items: center;
+  min-height: var(--mac-finder-preview-header-min-height);
+}
+
+.mac-finder-preview-name {
+  overflow-wrap: anywhere;
+  font: var(--mac-font-title-3);
+}
+
+.mac-finder-preview-heading {
+  margin: 0;
+  padding-block: var(--mac-finder-preview-heading-padding-block);
+  border-block-start: 1px solid var(--mac-color-separator);
+  font: var(--mac-font-body-emphasized);
+}
+
+.mac-finder-preview-facts {
+  margin: var(--mac-finder-preview-facts-margin);
+}
+
+.mac-finder-preview-fact {
+  display: flex;
+  gap: var(--mac-finder-preview-fact-gap);
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--mac-finder-preview-fact-min-height);
+}
+
+.mac-finder-preview-fact + .mac-finder-preview-fact {
+  border-block-start: 1px solid var(--mac-color-separator);
+}
+
+.mac-finder-preview-fact > dd {
+  margin: 0;
+  text-align: end;
+}
+
+.mac-finder-preview-tags {
+  width: 100%;
+}
+
+.mac-finder-preview-actions {
+  display: flex;
+  gap: var(--mac-finder-preview-fact-gap);
+  align-items: center;
+  justify-content: center;
+  margin-block-start: auto;
+  color: var(--mac-color-label-secondary);
+}
+
+/* The rubber band (finder-marquee.ts). No reference screenshot shows one: not measured. */
+.mac-finder-marquee {
+  position: absolute;
+  z-index: 1;
+  box-sizing: border-box;
+  border: 1px solid var(--mac-color-label-tertiary);
+  background: var(--mac-color-label-quaternary);
+  pointer-events: none;
+}
+
+/* Why a drop on the drive was refused. */
+.mac-finder-drop-notice {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  z-index: 1;
+  margin: 0;
+  padding: 3px 10px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: var(--mac-color-window-background, var(--mac-finder-drop-notice-background-fallback));
+  box-shadow: var(--mac-finder-drop-notice-shadow);
+  font-size: 12px;
+  white-space: nowrap;
+}

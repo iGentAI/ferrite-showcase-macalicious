@@ -1,0 +1,63 @@
+/*
+ * Dock menu (applicationDockMenu). The menu is a detached menu (menu.css) with menu items
+ * (menu-item.css), drawn dark in both appearances (data-appearance="dark" on its positioner);
+ * this file adds the pointer towards the Dock item and what differs.
+ *
+ * Classes
+ *   .mac-dock-menu-positioner   the positioner, which is also a .mac-menu-positioner
+ *   .mac-dock-menu              the popup, which is also a .mac-menu
+ *   .mac-dock-menu-pointer      the 12 x 6 pt pointer; [data-side] is the side of the Dock item
+ *                               the menu is on (top, bottom, left, right)
+ *
+ * A Dock menu does not show key equivalents (HIG, Dock Menus): its popup carries
+ * data-key-equivalents="hidden", which menu-item.css acts on.
+ */
+
+/* The pointer: a triangle of the menu's material that touches the menu's edge and points at
+   the Dock item. Base UI places it along the edge, centred on the item. */
+.mac-dock-menu-pointer {
+  width: 12px;
+  height: 6px;
+  background: var(--mac-material-menu);
+  -webkit-backdrop-filter: var(--mac-material-filter-menu);
+  backdrop-filter: var(--mac-material-filter-menu);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.mac-dock-menu-pointer:where([data-side="top"]) {
+  bottom: -6px;
+}
+
+.mac-dock-menu-pointer:where([data-side="bottom"]) {
+  top: -6px;
+  rotate: 180deg;
+}
+
+/* Turned on its side the 12 x 6 box reaches 3 pt less far: 6 + 3. */
+.mac-dock-menu-pointer:where([data-side="left"]) {
+  right: -9px;
+  rotate: -90deg;
+}
+
+.mac-dock-menu-pointer:where([data-side="right"]) {
+  left: -9px;
+  rotate: 90deg;
+}
+
+/* The pointer fades with its menu, and not at all with prefers-reduced-motion (menu.css). */
+.mac-dock-menu-positioner:where(:has(> .mac-dock-menu[data-ending-style]))
+> .mac-dock-menu-pointer {
+  opacity: 0;
+  transition: var(--mac-menu-fade, opacity 0.25s);
+}
+
+.mac-dock-menu-positioner:where(:has(> .mac-dock-menu[data-instant])) > .mac-dock-menu-pointer {
+  transition: none;
+}
+
+@media (forced-colors: active) {
+  .mac-dock-menu-pointer {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
+}

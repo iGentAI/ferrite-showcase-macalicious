@@ -1,0 +1,196 @@
+/*
+ * The Spotlight demo: what the application puts into the library's Spotlight window. The
+ * window, its field, list, bands, rows, selection and dividers are the library's
+ * (.mac-spotlight and its parts); the classes here are named .mac-spotlight-app-* so that
+ * they cannot meet one of those.
+ *
+ * Parts
+ *   .mac-spotlight-app                root: the library's window, as the demo renders it
+ *   .mac-spotlight-app-artwork        placeholder for an icon
+ *     [data-category]                 its shape and tint
+ *     [data-size]                     row (16 pt), top-hit (28.5 pt), preview (96 pt)
+ *
+ * Measures (spotlight.tokens.css)
+ *   --mac-spotlight-app-artwork-row, -top-hit, -preview      a placeholder's edge
+ *   --mac-spotlight-app-definition-padding                    the entry inside the pane
+ *   --mac-spotlight-app-definition-text-margin-top, -indent   its text under the headword
+ *   --mac-spotlight-app-definition-text-size, -line-height    its text's size and pitch
+ *   --mac-spotlight-app-file-padding, -line-height            the text of a file
+ *   .mac-spotlight-app-definition     dictionary entry: -title, -text (labels), -link (link)
+ *   .mac-spotlight-app-text           text of a file: the library's text view
+ *   .mac-spotlight-app-summary        picture or icon, name (-name) and facts
+ *   .mac-spotlight-app-picture        placeholder for a picture
+ *   .mac-spotlight-app-details        the facts: -row, -label, -value
+ *   .mac-spotlight-app-example-*      what the examples put behind the window: -backdrop
+ *                                     (two tones), -neutral (mid grey), -matte (white)
+ */
+
+/* An icon's placeholder: one flat shape. The box it is centred in is the library's. */
+.mac-spotlight-app-artwork {
+  --_size: var(--mac-spotlight-app-artwork-row);
+
+  display: block;
+  flex: none;
+  inline-size: calc(var(--_size) * var(--_width, 1));
+  block-size: calc(var(--_size) * var(--_height, 1));
+  border-radius: var(--_radius, 0);
+  background: var(--_tint, var(--mac-color-system-gray));
+}
+
+.mac-spotlight-app-artwork:where([data-size="top-hit"]) {
+  --_size: var(--mac-spotlight-app-artwork-top-hit);
+}
+
+.mac-spotlight-app-artwork:where([data-size="preview"]) {
+  --_size: var(--mac-spotlight-app-artwork-preview);
+}
+
+/* A disc. */
+.mac-spotlight-app-artwork:where([data-category="applications"]) {
+  --_radius: 50%;
+  --_tint: var(--mac-color-system-orange);
+}
+
+/* A square. */
+.mac-spotlight-app-artwork:where([data-category="definition"]) {
+  --_tint: var(--mac-color-system-red);
+}
+
+/* Upright rectangles: files. */
+.mac-spotlight-app-artwork:where([data-category="developer"]) {
+  --_width: 0.75;
+  --_tint: var(--mac-color-system-purple);
+}
+
+.mac-spotlight-app-artwork:where([data-category="documents"]) {
+  --_width: 0.75;
+  --_tint: var(--mac-color-system-gray);
+}
+
+/* Lying rectangles: a picture, and with round corners a folder. */
+.mac-spotlight-app-artwork:where([data-category="images"]) {
+  --_height: 0.75;
+  --_tint: var(--mac-color-system-green);
+}
+
+.mac-spotlight-app-artwork:where([data-category="folders"]) {
+  --_height: 0.75;
+  --_radius: 20%;
+  --_tint: var(--mac-color-system-teal);
+}
+
+/*
+ * The dictionary entry, measured in the Aqua capture (the values are tokens): the headword in
+ * the 22 pt title style, the text under it. Both are the library's labels and the
+ * cross-reference its link; the demo places them, sets the text's measured size and pitch, and
+ * gives the link colour the capture's value for the entry alone.
+ */
+.mac-spotlight-app-definition {
+  padding: var(--mac-spotlight-app-definition-padding);
+}
+
+/* Two classes, to outweigh the label's own rule whatever order the stylesheets load in. */
+.mac-spotlight-app .mac-spotlight-app-definition-title {
+  display: block;
+}
+
+.mac-spotlight-app .mac-spotlight-app-definition-text {
+  display: block;
+  margin: var(--mac-spotlight-app-definition-text-margin-top) 0 0
+    var(--mac-spotlight-app-definition-text-indent);
+  font-size: var(--mac-spotlight-app-definition-text-size);
+  line-height: var(--mac-spotlight-app-definition-text-line-height);
+}
+
+/* The cross-reference flows with the text and breaks with it, in the entry's measured colour. */
+.mac-spotlight-app .mac-spotlight-app-definition-link {
+  display: inline;
+  color: var(--mac-spotlight-app-link);
+}
+
+/*
+ * The text of a file, measured in the Dark Aqua capture (the values are tokens): the library's
+ * text view on its own background, in the 11 pt fixed-pitch font. The text view's own pitch is
+ * 14 pt and its padding 5 pt; the selector outweighs its rule whatever order the stylesheets
+ * load in.
+ */
+.mac-spotlight-app .mac-spotlight-app-text {
+  padding: var(--mac-spotlight-app-file-padding);
+  line-height: var(--mac-spotlight-app-file-line-height);
+}
+
+/* A picture, a folder, an application, a document without text. Not in a capture. */
+.mac-spotlight-app-summary {
+  display: flex;
+  box-sizing: border-box;
+  min-block-size: 100%;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 30px 20px;
+  gap: 14px;
+}
+
+.mac-spotlight-app-picture {
+  display: block;
+  flex: none;
+  inline-size: min(100%, calc(150px * var(--_ratio, 1)));
+  aspect-ratio: var(--_ratio, 1);
+  background: var(--mac-color-system-green);
+}
+
+.mac-spotlight-app-details {
+  display: grid;
+  align-self: stretch;
+  margin: 0;
+  padding-block-start: 12px;
+  border-block-start: var(--mac-hairline) solid var(--mac-color-separator);
+  gap: 4px;
+}
+
+.mac-spotlight-app-details-row {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 8px;
+}
+
+.mac-spotlight-app-summary-name,
+.mac-spotlight-app-details-label,
+.mac-spotlight-app-details-value {
+  margin: 0;
+}
+
+.mac-spotlight-app-summary-name {
+  max-inline-size: 100%;
+  font: var(--mac-font-title-3);
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+/* Behind the window in the examples; the colours are the demo's tokens. */
+.mac-spotlight-app-example-backdrop {
+  background: linear-gradient(
+    160deg,
+    var(--mac-spotlight-app-example-backdrop-start),
+    var(--mac-spotlight-app-example-backdrop-end)
+  );
+}
+
+.mac-spotlight-app-example-neutral {
+  background: var(--mac-spotlight-app-example-neutral);
+}
+
+.mac-spotlight-app-example-matte {
+  background: var(--mac-spotlight-app-example-matte);
+}
+
+@media (forced-colors: active) {
+  .mac-spotlight-app-artwork,
+  .mac-spotlight-app-picture {
+    border: 1px solid CanvasText;
+    background: none;
+  }
+
+  .mac-spotlight-app .mac-spotlight-app-definition-link {
+    color: LinkText;
+  }
+}

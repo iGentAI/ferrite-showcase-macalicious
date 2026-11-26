@@ -1,0 +1,74 @@
+---
+title: For coding agents
+description: The same documentation as plain Markdown, generated from the source - llms.txt, one file per component and guide, and AGENTS.md.
+group: Overview
+order: 5
+---
+
+Coding agents read text, not rendered pages. Everything on this site is also published as
+plain Markdown, and none of it is written by hand: it is generated from the component folders
+and the guides every time the documentation or the package is built, so it cannot drift from
+the code it ships with.
+
+## The files
+
+| File | Contents |
+| --- | --- |
+| [llms.txt](/llms.txt) | The index, in the [llms.txt](https://llmstxt.org) layout: one line per guide, component and demo, linking its Markdown file. |
+| [llms-full.txt](/llms-full.txt) | Every page in one file. |
+| `<page>.md` | Any page of this site as Markdown: add `.md` to its address (`/components/push-button.md`, `/theming.md`; the home page is `/index.md`). Each page links its Markdown twin in its footer and in a `<link rel="alternate" type="text/markdown">`. |
+
+The same files ship inside the package, so an agent working in a project that uses the
+library needs no network access:
+
+```text
+node_modules/macalicious/AGENTS.md              where to start
+node_modules/macalicious/dist/docs/llms.txt     the index
+node_modules/macalicious/dist/docs/components/  one file per component
+```
+
+```bash
+npx macalicious docs                # the index
+npx macalicious docs push-button    # one component, or a guide: theming, installation, …
+npx macalicious docs full           # everything
+```
+
+## What a component page holds
+
+A component's Markdown page is assembled from its folder, in this order:
+
+| Section | Read from |
+| --- | --- |
+| Purpose | the page's description and the component's JSDoc comment |
+| Import | `index.ts`: every exported component and type, and the stylesheets needed, including those of the components it uses |
+| Minimal example | `examples/basic.tsx`, a complete file |
+| Props | the exported `…Props` types: every prop with its type, its default and whether it is required, plus the type the inherited props come from |
+| Options | props whose type is a fixed set of strings: variants, sizes |
+| Styling hooks | the stylesheet and the source: classes, data attributes and their values, pseudo-classes, whether it reacts to the window state, media features, custom properties |
+| Usage, guidelines, states, sizes, accessibility, visual comparison | the docs page's own prose, with each example's source in place of its preview |
+| More examples | any example the page does not show |
+
+## How it is kept true
+
+- **Complete by construction.** The index and the pages come from the same folder scan as the
+  sidebar. A component added with `npm run new` appears with no further edit.
+- **The build refuses gaps.** `npm run docs:build` fails, naming the file, when a component
+  folder has no docs page or no example, exports a props type that cannot be read, documents a
+  default that contradicts the code, or shows an example that does not exist.
+- **A second reader checks the first.** The test suite re-reads every component's source as
+  text, independently of the generator, and compares: every prop must appear with the same type
+  and default; every example must equal its file, which is itself type-checked, rendered in the
+  browser environment and on the server and checked for accessibility violations; every
+  `import` in every code block must name something the package really exports.
+- **Unverified text is labelled.** A component's Guidelines section paraphrases Apple's Human
+  Interface Guidelines. Unless it links the source it was checked against, the Markdown marks
+  it "not verified".
+
+What is not checked: prose. A sentence in a guide or a description in a JSDoc comment can
+still be wrong; only the structured parts above are verified against the code.
+
+## Instructions for agents
+
+[AGENTS.md](/agents) is the entry point: where the files are, how to install or copy a
+component, the attributes that theme a page, and the commands and conventions for working in
+the repository itself. It is at the repository root and in the package.

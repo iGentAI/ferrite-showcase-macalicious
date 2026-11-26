@@ -1,0 +1,453 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "window-controls-light",
+      "description": "The left end of the title bar in the Aqua capture, 68 by 22 pt: the three window controls at x 8, 28 and 48 pt, y 5 pt, and above and below them the bar's two highlight rows and two bottom rows. The picture in the capture is a third party's movie and the demo shows an abstract placeholder instead, so the whole window is not compared. The bar is translucent and its fill is partly the picture behind it: the fill is masked, everything between the edge rows except the three 12 pt squares that hold the controls (62% of the crop). What stays in the score and still depends on the picture: the corners of those squares, which are bar fill, and the highlight rows, which let about a seventh of the picture through.",
+      "example": "visual-window",
+      "appearance": "light",
+      "selector": "[data-crop='window-controls']",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 0, "y": 1, "width": 68, "height": 4 },
+        { "x": 0, "y": 17, "width": 68, "height": 4 },
+        { "x": 0, "y": 5, "width": 8, "height": 12 },
+        { "x": 20, "y": 5, "width": 8, "height": 12 },
+        { "x": 40, "y": 5, "width": 8, "height": 12 },
+        { "x": 60, "y": 5, "width": 8, "height": 12 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-QuickTime.png",
+        "crop": { "x": 112, "y": 76, "width": 136, "height": 44 }
+      },
+      "budget": { "1x": 0.107, "2x": 0.0285 },
+      "deltaBudget": { "1x": 4.9, "2x": 4.1 }
+    },
+    {
+      "name": "title-bar-bottom-light",
+      "description": "The last point of the title bar in the Aqua capture across the whole window, 1470 by 1 pt: its two bottom rows. Both are opaque in the demo, the library's Dark Aqua shadow row #2a2a2a and separator #000000, so this score does not depend on the placeholder picture. The separator is #000000 in the capture too; the capture's shadow row lets the movie through (#2a2a2b to #404243), and where the movie is light it differs from the library's row, which is the mismatch at 2x.",
+      "example": "visual-window",
+      "appearance": "light",
+      "selector": "[data-crop='title-bar-bottom']",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Light-QuickTime.png",
+        "crop": { "x": 112, "y": 118, "width": 2940, "height": 2 }
+      },
+      "budget": { "1x": 0.001, "2x": 0.0765 },
+      "deltaBudget": { "1x": 3.65, "2x": 3.5 }
+    },
+    {
+      "name": "title-bar-material-light",
+      "description": "The title bar over the placeholder picture, window of the Aqua capture's size. No comparison with the capture can score the bar's fill: it is translucent, so in the capture it is partly the movie, which the demo does not reproduce (against the capture the whole strip mismatches by 17% and the highlight rows by 13%, nearly all of it the picture's difference). Over the placeholder's gradient the bar's colours follow from the tokens, and these pixels hold them, away from the title: --mac-material-filter makes #2d3645 of the gradient behind the bar (#31363e at its mid-height, saturated to 180%), --mac-title-bar-translucent lies over that, then the title bar's highlight rows and the window's rim.",
+      "example": "visual-window",
+      "appearance": "light",
+      "selector": ".mac-quicktime-player-title-bar",
+      "expect": {
+        "size": { "width": 1470, "height": 22 },
+        "pixels": [
+          {
+            "x": 300,
+            "y": 0.25,
+            "color": "#888a8c",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "first highlight row: the fill under white at 10%, at 11% and the window rim's 20%, computed from the tokens; the capture's row is #88898a along most of the bar"
+          },
+          {
+            "x": 300,
+            "y": 0.75,
+            "color": "#797b7e",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "second highlight row: the fill under white at 10% and the rim's 20%, computed; the capture's row is #797a7b along most of the bar"
+          },
+          {
+            "x": 300,
+            "y": 2.5,
+            "color": "#43474b",
+            "note": "fill near the top: #494b4c at 79% over #2d3645, computed from the tokens (measured tint, the placeholder's backdrop)"
+          },
+          {
+            "x": 300,
+            "y": 19.5,
+            "color": "#3a3d41",
+            "note": "fill near the bottom: #3d3e40 at 82% over #2d3645, computed from the tokens"
+          },
+          {
+            "x": 300,
+            "y": 21.25,
+            "color": "#2a2a2a",
+            "scale": 2,
+            "note": "shadow row, --mac-title-bar-shadow-row: the library's opaque Dark Aqua row"
+          },
+          {
+            "x": 300,
+            "y": 21.75,
+            "color": "#000000",
+            "scale": 2,
+            "note": "separator, --mac-title-bar-separator: #000000 in the capture, measured"
+          }
+        ]
+      }
+    },
+    {
+      "name": "controller-geometry-light",
+      "description": "The floating controller in the window of the Aqua capture's size: 440 by 75 pt, half a point right of the centre, its bottom edge 127.5 pt above the window's, as measured in the capture (x 515.5 to 955.5, y 624.5 to 699.5 pt). No comparison with the capture can score it: the panel is a vibrant material and its glyphs add light to it, so in the capture every pixel of it is partly the movie, which the demo does not reproduce (against the capture the crop mismatches by 96%). The placeholder is one flat grey, #707070, where the controller lies, and over a flat grey the panel's colours follow from the tokens: these pixels hold the panel's four edges, seven glyphs, the volume knob and the timeline to those colours at the measured places. The time codes are text in the fallback font and the Share glyph is a thin outline: neither is checked. The controller's own look is held the same way, over a flat grey, by the HUD Window component (hud-window.visual.json), which compares only the opaque volume knob with the captures.",
+      "example": "visual-window",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 1470, "height": 827 },
+        "pixels": [
+          {
+            "x": 514.5,
+            "y": 662,
+            "color": "#707070",
+            "note": "placeholder band 1 pt left of the panel, the artwork's flat grey"
+          },
+          {
+            "x": 515.25,
+            "y": 662,
+            "color": "#707070",
+            "scale": 2,
+            "note": "band up to the panel's left edge at 515.5 pt (measured place)"
+          },
+          {
+            "x": 515.75,
+            "y": 662,
+            "color": "#606060",
+            "scale": 2,
+            "note": "panel from 515.5 pt: --mac-hud-window-controller-material, #1e1e1e at 20%, over the band; computed from the tokens"
+          },
+          {
+            "x": 516.5,
+            "y": 662,
+            "color": "#606060",
+            "note": "panel 1 pt inside its left edge, computed"
+          },
+          {
+            "x": 954.5,
+            "y": 662,
+            "color": "#606060",
+            "note": "panel 1 pt inside its right edge, computed"
+          },
+          {
+            "x": 955.25,
+            "y": 662,
+            "color": "#606060",
+            "scale": 2,
+            "note": "panel up to its right edge at 955.5 pt: 440 pt wide (measured)"
+          },
+          { "x": 955.75, "y": 662, "color": "#707070", "scale": 2, "note": "band from 955.5 pt" },
+          { "x": 956.5, "y": 662, "color": "#707070", "note": "band 1 pt right of the panel" },
+          { "x": 735.5, "y": 623.5, "color": "#707070", "note": "band 1 pt above the panel" },
+          {
+            "x": 735.5,
+            "y": 624.25,
+            "color": "#707070",
+            "scale": 2,
+            "note": "band down to the panel's top edge at 624.5 pt"
+          },
+          {
+            "x": 735.5,
+            "y": 624.75,
+            "color": "#606060",
+            "scale": 2,
+            "note": "panel from 624.5 pt: 75 pt tall (measured)"
+          },
+          {
+            "x": 735.5,
+            "y": 625.5,
+            "color": "#606060",
+            "note": "panel 1 pt inside its top edge, computed"
+          },
+          {
+            "x": 735.5,
+            "y": 698.5,
+            "color": "#606060",
+            "note": "panel 1 pt inside its bottom edge, computed"
+          },
+          {
+            "x": 735.5,
+            "y": 699.25,
+            "color": "#606060",
+            "scale": 2,
+            "note": "panel down to its bottom edge, 127.5 pt above the window's (measured)"
+          },
+          { "x": 735.5, "y": 699.75, "color": "#707070", "scale": 2, "note": "band from 699.5 pt" },
+          { "x": 735.5, "y": 700.5, "color": "#707070", "note": "band 1 pt below the panel" },
+          {
+            "x": 531.5,
+            "y": 649.25,
+            "color": "#dadada",
+            "note": "mute glyph at its measured place: --mac-hud-window-vibrant, white at 48%, added to the panel; computed"
+          },
+          {
+            "x": 592,
+            "y": 649.25,
+            "color": "#dad6ce",
+            "note": "volume knob at the slider's maximum, --mac-hud-window-slider-knob, measured"
+          },
+          {
+            "x": 607.5,
+            "y": 649.25,
+            "color": "#dadada",
+            "note": "full-volume glyph, computed as the mute glyph"
+          },
+          { "x": 676.5, "y": 649.25, "color": "#dadada", "note": "rewind glyph, computed" },
+          {
+            "x": 705.5,
+            "y": 649.25,
+            "color": "#606060",
+            "note": "panel between the rewind and the play glyph, computed"
+          },
+          { "x": 731.5, "y": 649.25, "color": "#dadada", "note": "play glyph, computed" },
+          { "x": 782.5, "y": 649.25, "color": "#dadada", "note": "fast-forward glyph, computed" },
+          {
+            "x": 854.5,
+            "y": 655.25,
+            "color": "#dadada",
+            "note": "AirPlay glyph, its triangle; computed"
+          },
+          {
+            "x": 937.5,
+            "y": 654.5,
+            "color": "#dadada",
+            "note": "Picture in Picture glyph, its filled screen; computed"
+          },
+          {
+            "x": 635.5,
+            "y": 681.2,
+            "color": "#adadad",
+            "note": "timeline where the movie has played: the track's white at 12.5% under 20.6%, 30.5% in all, added to the panel; computed from the tokens"
+          },
+          {
+            "x": 673,
+            "y": 676.2,
+            "color": "#ececec",
+            "note": "the timeline's bar at 00:03:16:12 of 00:12:49:22, 25.5% along its travel: white at 55% added to the panel; computed"
+          },
+          {
+            "x": 765.5,
+            "y": 681.2,
+            "color": "#808080",
+            "note": "timeline still to play: white at 12.5% added to the panel; computed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-controls-dark",
+      "description": "The left end of the title bar in the Dark Aqua capture, 68 by 22 pt, compared and masked as in window-controls-light: the window is the same dark window in both appearances.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "selector": "[data-crop='window-controls']",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 0, "y": 1, "width": 68, "height": 4 },
+        { "x": 0, "y": 17, "width": 68, "height": 4 },
+        { "x": 0, "y": 5, "width": 8, "height": 12 },
+        { "x": 20, "y": 5, "width": 8, "height": 12 },
+        { "x": 40, "y": 5, "width": 8, "height": 12 },
+        { "x": 60, "y": 5, "width": 8, "height": 12 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-QuickTime.png",
+        "crop": { "x": 112, "y": 76, "width": 136, "height": 44 }
+      },
+      "budget": { "1x": 0.057, "2x": 0.016 },
+      "deltaBudget": { "1x": 3.55, "2x": 2.75 }
+    },
+    {
+      "name": "title-bar-bottom-dark",
+      "description": "The last point of the title bar in the Dark Aqua capture across the whole window, 1346 by 1 pt: the two bottom rows, opaque in the demo as in title-bar-bottom-light. The capture's shadow row runs from #262729 to #3c3e40 with the movie behind it.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "selector": "[data-crop='title-bar-bottom']",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Dark-QuickTime.png",
+        "crop": { "x": 112, "y": 118, "width": 2692, "height": 2 }
+      },
+      "budget": { "1x": 0.001, "2x": 0.059 },
+      "deltaBudget": { "1x": 2.45, "2x": 2.4 }
+    },
+    {
+      "name": "title-bar-material-dark",
+      "description": "The title bar over the placeholder picture, window of the Dark Aqua capture's size: the same bar over the same gradient as in title-bar-material-light, held to the same colours for the same reason.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "selector": ".mac-quicktime-player-title-bar",
+      "expect": {
+        "size": { "width": 1346, "height": 22 },
+        "pixels": [
+          {
+            "x": 300,
+            "y": 0.25,
+            "color": "#888a8c",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "first highlight row, computed from the tokens as in title-bar-material-light; the capture's row is #848587 along most of the bar"
+          },
+          {
+            "x": 300,
+            "y": 0.75,
+            "color": "#797b7e",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "second highlight row, computed; the capture's row is #757678 along most of the bar"
+          },
+          {
+            "x": 300,
+            "y": 2.5,
+            "color": "#43474b",
+            "note": "fill near the top: #494b4c at 79% over #2d3645, computed from the tokens"
+          },
+          {
+            "x": 300,
+            "y": 19.5,
+            "color": "#3a3d41",
+            "note": "fill near the bottom: #3d3e40 at 82% over #2d3645, computed from the tokens"
+          },
+          {
+            "x": 300,
+            "y": 21.25,
+            "color": "#2a2a2a",
+            "scale": 2,
+            "note": "shadow row, --mac-title-bar-shadow-row: the library's opaque Dark Aqua row"
+          },
+          {
+            "x": 300,
+            "y": 21.75,
+            "color": "#000000",
+            "scale": 2,
+            "note": "separator, --mac-title-bar-separator: #000000 in the capture, measured"
+          }
+        ]
+      }
+    },
+    {
+      "name": "controller-geometry-dark",
+      "description": "The floating controller in the window of the Dark Aqua capture's size: 440 by 75 pt, centred, its bottom edge 115.5 pt above the window's, as measured in the capture (x 453 to 893, y 566.5 to 641.5 pt). Held with expected pixels for the reason given in controller-geometry-light, to the same colours: the panel's four edges, seven glyphs, the volume knob and the timeline, whose bar is at 00:04:40:02, 36.4% along its travel.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 1346, "height": 757 },
+        "pixels": [
+          {
+            "x": 452.75,
+            "y": 604,
+            "color": "#707070",
+            "note": "placeholder band up to the panel's left edge at 453 pt (measured place)"
+          },
+          {
+            "x": 453.25,
+            "y": 604,
+            "color": "#606060",
+            "note": "panel from 453 pt: --mac-hud-window-controller-material, #1e1e1e at 20%, over the band; computed from the tokens"
+          },
+          {
+            "x": 892.75,
+            "y": 604,
+            "color": "#606060",
+            "note": "panel up to its right edge at 893 pt: 440 pt wide (measured)"
+          },
+          { "x": 893.25, "y": 604, "color": "#707070", "note": "band from 893 pt" },
+          { "x": 673.5, "y": 565.5, "color": "#707070", "note": "band 1 pt above the panel" },
+          {
+            "x": 673.5,
+            "y": 566.25,
+            "color": "#707070",
+            "scale": 2,
+            "note": "band down to the panel's top edge at 566.5 pt"
+          },
+          {
+            "x": 673.5,
+            "y": 566.75,
+            "color": "#606060",
+            "scale": 2,
+            "note": "panel from 566.5 pt: 75 pt tall (measured)"
+          },
+          {
+            "x": 673.5,
+            "y": 567.5,
+            "color": "#606060",
+            "note": "panel 1 pt inside its top edge, computed"
+          },
+          {
+            "x": 673.5,
+            "y": 640.5,
+            "color": "#606060",
+            "note": "panel 1 pt inside its bottom edge, computed"
+          },
+          {
+            "x": 673.5,
+            "y": 641.25,
+            "color": "#606060",
+            "scale": 2,
+            "note": "panel down to its bottom edge, 115.5 pt above the window's (measured)"
+          },
+          { "x": 673.5, "y": 641.75, "color": "#707070", "scale": 2, "note": "band from 641.5 pt" },
+          { "x": 673.5, "y": 642.5, "color": "#707070", "note": "band 1 pt below the panel" },
+          {
+            "x": 469.5,
+            "y": 591.25,
+            "color": "#dadada",
+            "note": "mute glyph at its measured place: --mac-hud-window-vibrant, white at 48%, added to the panel; computed"
+          },
+          {
+            "x": 529.5,
+            "y": 591.25,
+            "color": "#dad6ce",
+            "note": "volume knob at the slider's maximum, --mac-hud-window-slider-knob, measured"
+          },
+          {
+            "x": 545.5,
+            "y": 591.25,
+            "color": "#dadada",
+            "note": "full-volume glyph, computed as the mute glyph"
+          },
+          { "x": 614.5, "y": 591.25, "color": "#dadada", "note": "rewind glyph, computed" },
+          {
+            "x": 643.5,
+            "y": 591.25,
+            "color": "#606060",
+            "note": "panel between the rewind and the play glyph, computed"
+          },
+          { "x": 669.5, "y": 591.25, "color": "#dadada", "note": "play glyph, computed" },
+          { "x": 720.5, "y": 591.25, "color": "#dadada", "note": "fast-forward glyph, computed" },
+          {
+            "x": 792.5,
+            "y": 597.25,
+            "color": "#dadada",
+            "note": "AirPlay glyph, its triangle; computed"
+          },
+          {
+            "x": 875.5,
+            "y": 596.5,
+            "color": "#dadada",
+            "note": "Picture in Picture glyph, its filled screen; computed"
+          },
+          {
+            "x": 573.5,
+            "y": 623.2,
+            "color": "#adadad",
+            "note": "timeline where the movie has played: white at 30.5% in all, added to the panel; computed from the tokens"
+          },
+          {
+            "x": 638.2,
+            "y": 618.2,
+            "color": "#ececec",
+            "note": "the timeline's bar at 00:04:40:02 of 00:12:49:22, 36.4% along its travel: white at 55% added to the panel; computed"
+          },
+          {
+            "x": 703.5,
+            "y": 623.2,
+            "color": "#808080",
+            "note": "timeline still to play: white at 12.5% added to the panel; computed"
+          }
+        ]
+      }
+    }
+  ]
+}

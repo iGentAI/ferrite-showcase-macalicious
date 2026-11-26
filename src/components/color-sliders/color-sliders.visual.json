@@ -1,0 +1,115 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "pending": "No reference: no screenshot shows the Colors panel or its pickers (spec: color-panel, not seen). The checks below hold the sliders, in a real browser, to the colour they are given, with the track and field colours measured on the library's slider and text field.",
+  "comparisons": [
+    {
+      "name": "rgb-light",
+      "description": "The RGB sliders of Tangerine (#ff9300), Aqua: red full, green at 147 of 255, blue empty. The three tracks are 3 pt high, centred on y 68.5, 107.5 and 146.5; each number field is at the trailing edge of its row.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 240, "height": 200 },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 68.5,
+            "color": "#3d88fd",
+            "note": "red is at its maximum: filled track, --mac-accent-control-fill-top (measured on the Displays pane's slider)"
+          },
+          { "x": 60, "y": 107.5, "color": "#3d88fd", "note": "green, below 147 of 255: filled" },
+          {
+            "x": 150,
+            "y": 107.5,
+            "color": "#b8b8b8",
+            "note": "green, above 147 of 255: unfilled track, black at 22% over #ececec (measured on the Sound pane)"
+          },
+          {
+            "x": 100,
+            "y": 146.5,
+            "color": "#b8b8b8",
+            "note": "blue is 0: the whole track is unfilled"
+          },
+          {
+            "x": 214,
+            "y": 107.5,
+            "color": "#ffffff",
+            "note": "inside the green number field, beyond its text: --mac-color-text-field-background (measured on the Go to Folder field)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rgb-dark",
+      "description": "The same in Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 240, "height": 200 },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 68.5,
+            "color": "#1869e6",
+            "note": "filled track in Dark Aqua, --mac-accent-control-fill-top (measured on the Displays pane)"
+          },
+          {
+            "x": 150,
+            "y": 107.5,
+            "color": "#4f4f4f",
+            "note": "unfilled track, white at 14% over the window background #323232 (measured as #525253 on #363637)"
+          },
+          {
+            "x": 214,
+            "y": 107.5,
+            "color": "#3c3c3c",
+            "note": "inside the number field: --mac-color-text-field-background, white at 5% over #323232"
+          }
+        ]
+      }
+    },
+    {
+      "name": "blue-to-maximum-light",
+      "description": "Blue taken to its maximum from the keyboard (six Tabs reach its slider, then End): its track fills, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 6 }, { "key": "End" }],
+      "expect": {
+        "size": { "width": 240, "height": 200 },
+        "pixels": [
+          {
+            "x": 100,
+            "y": 146.5,
+            "color": "#3d88fd",
+            "note": "blue is 255: filled track (measured colour, as above)"
+          },
+          { "x": 150, "y": 107.5, "color": "#b8b8b8", "note": "green did not move" }
+        ]
+      }
+    },
+    {
+      "name": "green-typed-dark",
+      "description": "Green set to 0 by emptying its number field (a click in it, then Backspace three times): its track empties, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        { "click": "[aria-label='Green value']" },
+        { "key": "End" },
+        { "key": "Backspace" },
+        { "key": "Backspace" },
+        { "key": "Backspace" }
+      ],
+      "expect": {
+        "size": { "width": 240, "height": 200 },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 107.5,
+            "color": "#4f4f4f",
+            "note": "green is 0: unfilled where it was filled (measured colour, as above)"
+          },
+          { "x": 60, "y": 68.5, "color": "#1869e6", "note": "red did not move" }
+        ]
+      }
+    }
+  ]
+}

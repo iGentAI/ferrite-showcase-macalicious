@@ -1,0 +1,237 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "closed-light",
+      "description": "The closed Images stack, Aqua: the front sheet and what shows of the two sheets behind it. The photograph on the front sheet is masked. The sheets behind are other files' previews in the capture and plain bordered sheets here, which is why this comparison is loose.",
+      "example": "visual-closed",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 12,
+          "y": 9.5,
+          "width": 46,
+          "height": 46.5
+        }
+      ],
+      "budget": {
+        "1x": 0.085,
+        "2x": 0.048
+      },
+      "deltaBudget": {
+        "1x": 7.8,
+        "2x": 6.1
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Desktop-Stacks.png",
+        "crop": {
+          "x": 3160,
+          "y": 508,
+          "width": 140,
+          "height": 128
+        }
+      }
+    },
+    {
+      "name": "closed-light-front",
+      "description": "The same crop with the band where the sheets behind show masked as well, Aqua: the front sheet's white border, 50 pt square, and its place in the tile.",
+      "example": "visual-closed",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 12,
+          "y": 9.5,
+          "width": 46,
+          "height": 46.5
+        },
+        {
+          "x": 6.5,
+          "y": 4.5,
+          "width": 56.5,
+          "height": 3
+        },
+        {
+          "x": 6.5,
+          "y": 57.5,
+          "width": 56.5,
+          "height": 2.5
+        },
+        {
+          "x": 6.5,
+          "y": 7.5,
+          "width": 3.5,
+          "height": 50
+        },
+        {
+          "x": 60,
+          "y": 7.5,
+          "width": 3,
+          "height": 50
+        }
+      ],
+      "budget": {
+        "1x": 0.051,
+        "2x": 0.0135
+      },
+      "deltaBudget": {
+        "1x": 4.7,
+        "2x": 3.65
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Desktop-Stacks.png",
+        "crop": {
+          "x": 3160,
+          "y": 508,
+          "width": 140,
+          "height": 128
+        }
+      }
+    },
+    {
+      "name": "open-light",
+      "description": "The open PDF Documents stack, Aqua: the 55 by 40 pt placeholder with its 2 pt outline and down triangle.",
+      "example": "visual-open",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0365,
+        "2x": 0.0375
+      },
+      "deltaBudget": {
+        "1x": 5.85,
+        "2x": 7.05
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Desktop-Stacks.png",
+        "crop": {
+          "x": 3160,
+          "y": 732,
+          "width": 140,
+          "height": 128
+        }
+      }
+    },
+    {
+      "name": "fan-dark",
+      "description": "The two sheets behind the front one, Dark Aqua, where the capture shows their white borders. A whole-crop score of the fan is kept for Aqua only (closed-light): the sheets are other files' photographs in the captures and plain bordered sheets here, and over the dark picture that difference alone exceeds the colour budget, so the fan's geometry is gated by these pixels instead.",
+      "example": "visual-closed",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 70,
+          "height": 64
+        },
+        "pixels": [
+          {
+            "x": 55.75,
+            "y": 6.25,
+            "color": "#ffffff",
+            "scale": 2,
+            "tolerance": 8,
+            "note": "the sheet turned anticlockwise, above the front sheet near its trailing corner (Dark-Desktop-Stacks @ 3271,520: white)"
+          },
+          {
+            "x": 61.75,
+            "y": 30.25,
+            "color": "#ffffff",
+            "scale": 2,
+            "tolerance": 8,
+            "note": "the border of the landscape sheet, past the front sheet's trailing edge (Dark-Desktop-Stacks @ 3283,568: white)"
+          },
+          {
+            "x": 9.75,
+            "y": 30.25,
+            "color": "#dddddd",
+            "scale": 2,
+            "tolerance": 8,
+            "note": "the sheet behind, just before the front sheet's leading edge, under the front sheet's shadow (Dark-Desktop-Stacks @ 3177..3179,558: 220 to 223 of 255)"
+          },
+          {
+            "x": 11.5,
+            "y": 30.5,
+            "color": "#ffffff",
+            "tolerance": 2,
+            "note": "the front sheet's white border (Dark-Desktop-Stacks @ 3183,568: white)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "closed-dark-front",
+      "description": "The same crop with the band where the sheets behind show masked as well, Dark Aqua: the front sheet's white border, 50 pt square, and its place in the tile.",
+      "example": "visual-closed",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 12,
+          "y": 9.5,
+          "width": 46,
+          "height": 46.5
+        },
+        {
+          "x": 6.5,
+          "y": 4.5,
+          "width": 56.5,
+          "height": 3
+        },
+        {
+          "x": 6.5,
+          "y": 57.5,
+          "width": 56.5,
+          "height": 2.5
+        },
+        {
+          "x": 6.5,
+          "y": 7.5,
+          "width": 3.5,
+          "height": 50
+        },
+        {
+          "x": 60,
+          "y": 7.5,
+          "width": 3,
+          "height": 50
+        }
+      ],
+      "budget": {
+        "1x": 0.0405,
+        "2x": 0.0355
+      },
+      "deltaBudget": {
+        "1x": 6.45,
+        "2x": 4.95
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Desktop-Stacks.png",
+        "crop": {
+          "x": 3160,
+          "y": 508,
+          "width": 140,
+          "height": 128
+        }
+      }
+    },
+    {
+      "name": "open-dark",
+      "description": "The open PDF Documents stack, Dark Aqua: the 55 by 40 pt placeholder with its 2 pt outline and down triangle.",
+      "example": "visual-open",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.0285,
+        "2x": 0.017
+      },
+      "deltaBudget": {
+        "1x": 4.35,
+        "2x": 4.9
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Desktop-Stacks.png",
+        "crop": {
+          "x": 3160,
+          "y": 732,
+          "width": 140,
+          "height": 128
+        }
+      }
+    }
+  ]
+}

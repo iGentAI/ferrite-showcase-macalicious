@@ -1,0 +1,24 @@
+/*
+ * Progress window colours of its own. Measured on Light-/Dark-Finder-Copy (window frame at
+ * x 112..909, y 76..213 px).
+ */
+:root {
+  /*
+   * The two device-pixel rows at the top of the window, which Finder keeps although the title
+   * bar is transparent: #f9f9f9 and #f1f1f1 on #ececec in Aqua, #7a7c7d and #686c6e on #2e3235
+   * in Dark Aqua (column x=500, rows 76 and 77). Stored as the white that composites to those
+   * rows under the window's inner rim; the layers stack, the first covers one row and the
+   * second both. [measured, computed]
+   */
+  --mac-progress-window-highlight: light-dark(rgb(255 255 255 / 0.44), rgb(255 255 255 / 0.11));
+  --mac-progress-window-highlight-second: light-dark(
+    rgb(255 255 255 / 0.27),
+    rgb(255 255 255 / 0.1)
+  );
+
+  /* Disc of the stop button @ 874,155 and along row 164 [measured] */
+  --mac-progress-window-stop: light-dark(#757575, #a1a2a4);
+  /* [provisional] The disc while the button is pressed: AppKit darkens a borderless image
+     button in Aqua and lightens it in Dark Aqua. No screenshot shows it. */
+  --mac-progress-window-stop-pressed: light-dark(#505050, #cfd0d1);
+}

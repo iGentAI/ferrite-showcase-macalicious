@@ -1,0 +1,218 @@
+/*
+ * Maps as the desktop's Ferrite application serves it (maps-desktop.tsx): the places sidebar
+ * and the directions panel beside the real map (maps-tiles.css), and what the served card adds to
+ * the demo's. The toolbar, the pin, the card, the notes and the map controls keep the demo's rules
+ * (maps.css).
+ *
+ * Parts
+ *   .mac-maps-sidebar                  Favorites, Recents and Guides (the library's Sidebar)
+ *   .mac-maps-sidebar-actions          New Guide, Remove and Clear Recents under the list
+ *   .mac-maps-journey                  the two ends, the way of travelling, the route's steps
+ *   .mac-maps-journey-step          a step; [data-chosen] is the one the map shows
+ *   .mac-maps-route                    the route's line over the map, with a dot at each end
+ *   .mac-maps-pin[data-selected]       the pin of the place whose card is open, over the others
+ *   .mac-maps-search-list              the results and suggestions under the search field
+ *   .mac-maps-search-row               a row of it: the place's name and the line under it
+ *
+ * Every length is a token of maps.tokens.css; literal here, as structure: zeros, the flex
+ * factors, the 100% basis of the guide's name field, the list's 100% height, the credit's 50%
+ * centring and the z-indexes.
+ */
+
+.mac-maps-body > .mac-maps-sidebar {
+  flex: none;
+  box-sizing: border-box;
+  width: var(--mac-maps-panel-width);
+  min-height: 0;
+  border-inline-end: var(--mac-hairline) solid var(--mac-color-separator);
+}
+
+.mac-maps-map-menu {
+  position: absolute;
+  inset: 0;
+}
+
+.mac-maps-journey {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--mac-maps-panel-gap);
+  box-sizing: border-box;
+  width: var(--mac-maps-panel-width);
+  min-height: 0;
+  padding: var(--mac-maps-panel-padding);
+  border-inline-end: var(--mac-hairline) solid var(--mac-color-separator);
+  background: var(--mac-color-window-background);
+}
+
+.mac-maps-journey-ends {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-maps-panel-gap);
+}
+
+.mac-maps-journey-fields {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--mac-maps-panel-gap);
+  min-width: 0;
+}
+
+.mac-maps-journey-modes {
+  align-self: stretch;
+}
+
+.mac-maps-journey-summary {
+  font-weight: var(--mac-font-weight-semibold);
+}
+
+.mac-maps-journey-steps {
+  flex: 1;
+  min-height: 0;
+}
+
+.mac-maps-journey-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-maps-journey-step {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--mac-maps-journey-step-padding);
+  border: 0;
+  border-radius: var(--mac-maps-journey-step-radius);
+  background: transparent;
+  color: var(--mac-color-label);
+  font: inherit;
+  text-align: start;
+}
+
+.mac-maps-journey-step[data-chosen] {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-content-text);
+}
+
+.mac-maps-journey-step-distance {
+  color: var(--mac-color-label-secondary);
+  font-size: var(--mac-maps-journey-step-distance-size);
+}
+
+.mac-maps-journey-step[data-chosen] .mac-maps-journey-step-distance {
+  color: inherit;
+}
+
+.mac-maps-route {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.mac-maps-route polyline {
+  fill: none;
+  stroke: var(--mac-maps-route);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: var(--mac-maps-route-width);
+}
+
+.mac-maps-route circle {
+  fill: var(--mac-color-window-background);
+  stroke: var(--mac-maps-route);
+  stroke-width: var(--mac-maps-route-end-width);
+}
+
+/** The rows chosen together, marked as chosen rows are while the sidebar has not the keyboard. */
+.mac-maps-sidebar [data-marked]:not([aria-selected="true"]) {
+  background: var(--mac-sidebar-selection-inactive);
+}
+
+/* Where a row dragged in the sidebar would land. */
+.mac-maps-sidebar [data-drop="before"] {
+  box-shadow: 0 calc(-1 * var(--mac-maps-drop-line)) 0 var(--mac-color-selected-content-background);
+}
+
+.mac-maps-sidebar [data-drop="after"] {
+  box-shadow: 0 var(--mac-maps-drop-line) 0 var(--mac-color-selected-content-background);
+}
+
+.mac-maps-sidebar [data-drop="into"] {
+  outline: var(--mac-maps-drop-line) solid var(--mac-color-selected-content-background);
+  outline-offset: calc(-1 * var(--mac-maps-drop-line));
+}
+
+.mac-maps-sidebar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-maps-panel-gap);
+  padding: var(--mac-maps-panel-padding);
+}
+
+.mac-maps-sidebar-actions > .mac-maps-guide-name {
+  flex: 1 0 100%;
+}
+
+.mac-maps-pin:where([data-selected]) {
+  z-index: 2;
+}
+
+.mac-maps-card-content > .mac-maps-card-button:where([data-button="guide"]) {
+  margin-block-start: var(--mac-maps-card-guide-margin-top);
+}
+
+/* Under the search field, its trailing edge on the field's (its width and inset: maps-search-list.tsx),
+   above the map's controls and the credit. */
+.mac-maps-search-list {
+  position: absolute;
+  z-index: 3;
+  inset-block-start: 0;
+  box-sizing: border-box;
+  max-height: calc(100% - var(--mac-maps-search-list-room-below));
+  overflow-y: auto;
+  padding-block: var(--mac-maps-search-list-padding);
+  border-end-start-radius: var(--mac-maps-search-list-radius);
+  border-end-end-radius: var(--mac-maps-search-list-radius);
+  background: var(--mac-color-window-background);
+  box-shadow: var(--mac-shadow-menu);
+}
+
+/* The tiles' licence wants their credit seen: it stands under the list while the list is up, above
+   the map's controls, however narrow the map. */
+.mac-maps-tiles-attribution.mac-maps-attribution-below-list {
+  top: auto;
+  right: auto;
+  bottom: var(--mac-maps-attribution-above-controls);
+  left: 50%;
+  translate: -50% 0;
+  white-space: nowrap;
+}
+
+.mac-maps-search-row {
+  display: flex;
+  flex-direction: column;
+  padding: var(--mac-maps-search-row-padding);
+  cursor: default;
+}
+
+.mac-maps-search-row:where([aria-selected="true"], :hover) {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-content-text);
+}
+
+.mac-maps-search-row-name,
+.mac-maps-search-row-detail {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-maps-search-row-detail {
+  opacity: var(--mac-maps-search-row-detail-opacity);
+  font-size: var(--mac-maps-search-row-detail-font-size);
+}

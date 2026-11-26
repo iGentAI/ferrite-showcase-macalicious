@@ -1,0 +1,46 @@
+/*
+ * Progress spinner colours (reference/spec/components/progress-spinner.md): the twelve spokes
+ * of one frame, counted from the head (1, the strongest) backwards against the direction of
+ * rotation to the spoke just ahead of the head (12, the faintest).
+ *
+ * [measured, computed] Each is the alpha of black (Aqua) or white (Dark Aqua) that gives the
+ * measured grey over the measured background. On a plain window surface: Light-System-
+ * Preferences-Bluetooth @ 1335,200,32,32 on #f0f0f0 (head #040404, then #1f1f1f, #3c3c3c,
+ * #595959, #717171, #858585, #999999, #a8a8a8, #b5b5b5, #bcbcbc, #c4c4c4, #cfcfcf) and
+ * Dark-Startup-Disk @ 1370,184,36,36 on #303031; the dark Bluetooth capture gives the same
+ * dark values on #2b2b2c.
+ */
+:root {
+  --mac-progress-spinner-spoke-1: light-dark(rgb(0 0 0 / 0.98), rgb(255 255 255 / 0.55));
+  --mac-progress-spinner-spoke-2: light-dark(rgb(0 0 0 / 0.87), rgb(255 255 255 / 0.48));
+  --mac-progress-spinner-spoke-3: light-dark(rgb(0 0 0 / 0.75), rgb(255 255 255 / 0.41));
+  --mac-progress-spinner-spoke-4: light-dark(rgb(0 0 0 / 0.63), rgb(255 255 255 / 0.35));
+  --mac-progress-spinner-spoke-5: light-dark(rgb(0 0 0 / 0.53), rgb(255 255 255 / 0.29));
+  --mac-progress-spinner-spoke-6: light-dark(rgb(0 0 0 / 0.45), rgb(255 255 255 / 0.25));
+  --mac-progress-spinner-spoke-7: light-dark(rgb(0 0 0 / 0.36), rgb(255 255 255 / 0.2));
+  --mac-progress-spinner-spoke-8: light-dark(rgb(0 0 0 / 0.3), rgb(255 255 255 / 0.17));
+  --mac-progress-spinner-spoke-9: light-dark(rgb(0 0 0 / 0.25), rgb(255 255 255 / 0.14));
+  --mac-progress-spinner-spoke-10: light-dark(rgb(0 0 0 / 0.22), rgb(255 255 255 / 0.12));
+  --mac-progress-spinner-spoke-11: light-dark(rgb(0 0 0 / 0.18), rgb(255 255 255 / 0.1));
+  --mac-progress-spinner-spoke-12: light-dark(rgb(0 0 0 / 0.14), rgb(255 255 255 / 0.09));
+}
+
+/*
+ * On a vibrant material (progress-spinner.css applies them under [data-material], which a
+ * sidebar sets). [provisional] The Aqua values are measured: the sidebar material draws the
+ * same spinner fainter towards its head, Light-Notes @ 212,166,36,36 on #e7e7e7 (head
+ * #494949); spokes 7 and 8 are the same in both places. No dark capture shows a spinner in a
+ * sidebar, so Dark Aqua repeats the values above.
+ */
+:root {
+  --mac-progress-spinner-vibrant-spoke-1: light-dark(rgb(0 0 0 / 0.68), rgb(255 255 255 / 0.55));
+  --mac-progress-spinner-vibrant-spoke-2: light-dark(rgb(0 0 0 / 0.65), rgb(255 255 255 / 0.48));
+  --mac-progress-spinner-vibrant-spoke-3: light-dark(rgb(0 0 0 / 0.6), rgb(255 255 255 / 0.41));
+  --mac-progress-spinner-vibrant-spoke-4: light-dark(rgb(0 0 0 / 0.55), rgb(255 255 255 / 0.35));
+  --mac-progress-spinner-vibrant-spoke-5: light-dark(rgb(0 0 0 / 0.48), rgb(255 255 255 / 0.29));
+  --mac-progress-spinner-vibrant-spoke-6: light-dark(rgb(0 0 0 / 0.42), rgb(255 255 255 / 0.25));
+  --mac-progress-spinner-vibrant-spoke-9: light-dark(rgb(0 0 0 / 0.24), rgb(255 255 255 / 0.14));
+  --mac-progress-spinner-vibrant-spoke-10: light-dark(rgb(0 0 0 / 0.18), rgb(255 255 255 / 0.12));
+  --mac-progress-spinner-vibrant-spoke-11: light-dark(rgb(0 0 0 / 0.13), rgb(255 255 255 / 0.1));
+  --mac-progress-spinner-vibrant-spoke-12: light-dark(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.09));
+}

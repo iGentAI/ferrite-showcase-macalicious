@@ -1,0 +1,56 @@
+/*
+ * Empty state: placeholder text centred in a content area with nothing to show.
+ *
+ * The root fills the pane and centres the text; the text keeps 20 pt from the pane's edges.
+ *
+ * Variants
+ *   [data-variant="plain"]     large tertiary text, no background (provisional: no screenshot)
+ *   [data-variant="capsule"]   13 pt text in a 26 pt grey capsule (Automator, measured)
+ *
+ * A window that is not key changes nothing.
+ */
+.mac-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 20px;
+  color: var(--mac-color-label-tertiary);
+  font: var(--mac-font-weight-regular) 20px / 24px var(--mac-font-family-system);
+  text-align: center;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-empty-state-text {
+  display: block;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+/* Capsule: 26 pt high around one 16 pt line, 13.5 pt of padding at the ends, fully rounded. */
+.mac-empty-state:where([data-variant="capsule"]) {
+  color: var(--mac-empty-state-capsule-text);
+  font: var(--mac-font-body);
+  letter-spacing: var(--mac-tracking-regular);
+}
+
+.mac-empty-state:where([data-variant="capsule"]) > .mac-empty-state-text {
+  padding: 5px 13.5px;
+  border-radius: 13px;
+  background: var(--mac-empty-state-capsule-fill);
+}
+
+@media (forced-colors: active) {
+  .mac-empty-state {
+    color: CanvasText;
+  }
+
+  .mac-empty-state:where([data-variant="capsule"]) > .mac-empty-state-text {
+    border: 1px solid CanvasText;
+  }
+}

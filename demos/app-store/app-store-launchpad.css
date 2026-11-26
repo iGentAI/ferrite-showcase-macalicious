@@ -1,0 +1,64 @@
+/*
+ * Launchpad's delete badge for an app got from the App Store (app-store-launchpad.tsx): while
+ * Option is held, such an app jiggles and shows a dark circle with a cross at the top-left corner
+ * of its icon, as Launchpad does on macOS 10.15. No screenshot shows the badge, so its size,
+ * offset and the jiggle are provisional; its colours are tokens (app-store.tokens.css).
+ */
+.mac-app-store-removable {
+  position: relative;
+  animation: mac-app-store-jiggle 0.14s ease-in-out infinite alternate;
+}
+
+/* The circle, 22 pt across and 2 pt inside the corner of the icon (112 pt, centred in the item,
+   or as wide as the item when that is less), and the cross drawn on it. */
+.mac-app-store-removable::before,
+.mac-app-store-removable::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 2px;
+  inset-inline-start: max(2px, calc(50% - 54px));
+  z-index: 1;
+  inline-size: 22px;
+  block-size: 22px;
+  border-radius: 50%;
+  /* The badge keeps its own colours in forced colours: it is the only sign of the mode. */
+  forced-color-adjust: none;
+}
+
+.mac-app-store-removable::before {
+  background: var(--mac-app-store-delete-badge-fill);
+  box-shadow: var(--mac-app-store-delete-badge-shadow);
+}
+
+.mac-app-store-removable::after {
+  background:
+    linear-gradient(
+      45deg,
+      transparent calc(50% - 1px),
+      var(--mac-app-store-delete-badge-glyph) calc(50% - 1px) calc(50% + 1px),
+      transparent calc(50% + 1px)
+    )
+    center / 10px 10px no-repeat,
+    linear-gradient(
+      -45deg,
+      transparent calc(50% - 1px),
+      var(--mac-app-store-delete-badge-glyph) calc(50% - 1px) calc(50% + 1px),
+      transparent calc(50% + 1px)
+    )
+    center / 10px 10px no-repeat;
+}
+
+@keyframes mac-app-store-jiggle {
+  from {
+    transform: rotate(-1.5deg);
+  }
+  to {
+    transform: rotate(1.5deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-app-store-removable {
+    animation: none;
+  }
+}

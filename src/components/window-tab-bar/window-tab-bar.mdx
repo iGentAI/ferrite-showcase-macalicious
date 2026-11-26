@@ -1,0 +1,134 @@
+---
+title: Window Tab Bar
+description: The bar of equal-width tabs under a window's toolbar, with one tab selected, optional close buttons and a new-tab button.
+order: 20
+---
+
+<Example name="basic" both />
+
+AppKit windows can be merged into tabs; the bar appears when a window has two or more. It is
+built on [Base UI's Tabs](https://base-ui.com/react/components/tabs): the bar is the Tabs root
+and its list in one element, so it takes `value`, `defaultValue` and `onValueChange` and
+supplies the tab semantics and arrow keys. It renders no panels: the window's body shows the
+selected tab's content.
+
+## Usage
+
+```tsx
+import { WindowTab, WindowTabBar } from "macalicious/window-tab-bar";
+import "macalicious/window-tab-bar.css";
+
+<WindowTabBar aria-label="Tabs" value={tab} onValueChange={setTab} onNewTab={addTab}>
+  <WindowTab value="recents">Recents</WindowTab>
+  <WindowTab value="home">Home</WindowTab>
+</WindowTabBar>
+```
+
+Place it directly under the [Title Bar](/components/title-bar), and give that bar
+`divider="bar"`.
+
+<Example name="closable" />
+
+## Guidelines
+
+Not verified: this section paraphrases Apple's Human Interface Guidelines and was not checked
+against Apple's text.
+
+- Show the bar only when there are two or more tabs.
+- Title a tab as its window would be titled.
+- Tabs share the width equally; a long title is cut at the end.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Selected tab | its value is the bar's value | Lighter fill, the toolbar's colour, with a darker title |
+| Other tabs | – | Darker fill, dimmer title |
+| Under the pointer | `:hover`, also over the tab's close button | Fill between the two; the close button, if the tab has `onClose` (provisional) |
+| Keyboard focus | `:focus-visible` | Focus ring, in the key window only (provisional) |
+| Disabled | `disabled` on a tab | provisional |
+| Inactive window | `data-window-state="inactive"` on an ancestor | The bar flattens and its titles dim |
+| New-tab button | `onNewTab` | A 24 pt cell with a + at the trailing end |
+
+## Sizes
+
+One size: the bar is 25 pt high and as wide as the window. The tabs share the width equally.
+
+A tab is a flex item with `flex: 1 1 0`, and `style` on a `WindowTab` goes to it, so a tab
+can be given a share or a width of its own: `style={{ flexGrow: 2 }}` for twice a share,
+`style={{ flex: "none", width: 361 }}` for a fixed width. The Finder Home captures need this:
+their three tabs are 371, 360 and 348 pt wide in Aqua and 361, 349 and 338 pt in Dark Aqua,
+falling by about 11.5 pt from the first tab to the last in both. No other capture shows window
+tabs and the cause is not established, so equal widths stay the layout and the captured widths
+are set per tab, as the comparison examples do.
+
+## API
+
+<PropsTable name="WindowTabBarProps" />
+
+<PropsTable name="WindowTabProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-active` | tab | present or absent | Set by Base UI on the selected tab. |
+| `data-disabled` | tab | present or absent | Set by Base UI. |
+| `data-hover` | tab, close slot | present or absent | The pointer is over the tab or its close button. Only on a tab that has a close button. |
+| `data-force` | tab | `hover`, `pressed`, `focus` | Documentation and visual tests only. |
+
+Parts: `.mac-window-tab-bar-list`, `.mac-window-tab-bar-tab`, `.mac-window-tab-bar-title`,
+`.mac-window-tab-bar-new`, and for the close buttons `.mac-window-tab-bar-closers` (the layer
+beside the tab list), `.mac-window-tab-bar-close-slot` (one per closable tab, kept over its
+tab) and `.mac-window-tab-bar-close` (the button).
+
+## Accessibility
+
+- A `tablist` of `tab`s; name it with `aria-label` or `aria-labelledby`. The bar renders no
+  `tabpanel`: if the body should be announced as the tab's panel, give it `role="tabpanel"` and
+  `aria-labelledby` yourself.
+- One tab stop. The arrow keys move focus between tabs without selecting, so passing over a tab
+  does not swap the window's content; Space or Return selects. `activateOnFocus` makes the
+  arrow keys select as they move.
+- A tab with `onClose` closes with Delete or Backspace while it has focus, and announces that
+  shortcut (`aria-keyshortcuts`). It also has a close button: a native button named "Close"
+  and the tab's title (`closeLabel` replaces "Close"). A button cannot sit inside a tab, and a
+  tab list holds only tabs, so the buttons are rendered beside the tab list, after it, and
+  laid over their tabs. They are out of the tab order, because Delete does the same from the
+  keyboard, and visible only under the pointer or with focus.
+- A tab that is closed while it has focus leaves the focus on the page: move it to the tab you
+  select in its place.
+- The new-tab button is a separate native button after the tab list, named "New Tab"
+  (`newTabLabel`).
+- Control-Tab, Command-T and Command-W are the application's to handle.
+
+## Visual comparison
+
+`window-tab-bar.visual.json` compares Finder's three tabs with the middle one selected and the
+new-tab cell (Finder Home), whole and with the titles masked, in both appearances. The scores are in the table below.
+
+Scores from `npm run visual -- window-tab-bar` in Chromium on Linux with the fallback font: the share of
+pixels that differ by more than the comparison's threshold, and the mean colour difference out
+of 255. A masked comparison leaves out stand-in artwork and fallback-font text.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `finder-home-light` | Light-Finder-Home (114, 186, 2206, 50) | 2.42% | 2.53 | 1.14% | 1.51 |
+| `finder-home-light-drawing` (masked) | Light-Finder-Home (114, 186, 2206, 50) | 0.00% | 0.52 | 0.00% | 0.56 |
+| `finder-home-dark` | Dark-Finder-Home (114, 186, 2144, 50) | 2.51% | 3.33 | 1.23% | 2.23 |
+| `finder-home-dark-drawing` (masked) | Dark-Finder-Home (114, 186, 2144, 50) | 0.00% | 1.17 | 0.00% | 1.18 |
+
+Measured: the 25 pt height, both fills, the dividers, the bottom rows under selected and
+unselected tabs, the new-tab cell and its glyph, both title colours. The capture's tabs are
+370.5, 360 and 348 pt wide; the component divides the width equally, as the spec concludes, so
+the comparison example sets the captured widths. Provisional: hover, the close button, focus
+and disabled, which no screenshot shows. Dragging a tab out into its own window is not
+implemented.
+
+A close button is kept over its tab by script, because it cannot be inside the tab. The bar
+lays the buttons out again when a tab is added, removed or moved, when any tab or the bar
+changes size, and before every frame while the pointer is in the bar. One case is left: a
+style that moves the tabs without changing the size of any (a wider `gap` between tabs of
+fixed widths) while the pointer is outside the bar. The close buttons then stay where they
+were until the pointer enters the bar, which lays them out before one can be shown or pressed;
+they are not visible in between.

@@ -1,0 +1,157 @@
+---
+title: Spotlight
+description: The Spotlight search window, a large field on a blurred panel that grows into results grouped by category beside a preview.
+---
+
+<Example name="basic" both />
+
+The window Command-Space opens in the upper middle of the screen. The component is the window
+and its keyboard handling; what is found, and what the preview shows, is the application's.
+
+## Usage
+
+```tsx
+import { Spotlight, SpotlightGroup, SpotlightResult } from "macalicious/spotlight";
+import "macalicious/spotlight.css";
+
+<Spotlight
+  value={query}
+  onValueChange={setQuery}
+  selectedValue={selected}
+  onSelectedValueChange={setSelected}
+  onOpenResult={(value, { reveal }) => open(value, reveal)}
+  onClose={close}
+  completion="macOS"
+  preview={<Definition of={selected} />}
+>
+  <SpotlightGroup label="Folders">
+    <SpotlightResult value="os-x" icon={<FolderIcon />}>OS X</SpotlightResult>
+  </SpotlightGroup>
+</Spotlight>
+```
+
+Or copy the source into your project: `npx macalicious add spotlight`.
+
+The children are the results. Without children, or with an empty list of them, the window is
+the field alone; render the groups once there is something to show. Listen to `onValueChange`, search, and render what was
+found; select the top hit by setting `selectedValue` (or `defaultSelectedValue`) to its
+`value`. The window does not place itself: put it in a fixed layer, 210 pt from the top of the
+screen and centred, in the same page as what it should blur.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[Search and Spotlight](https://web.archive.org/web/20200503193417/https://developer.apple.com/design/human-interface-guidelines/macos/system-capabilities/search-and-spotlight/):
+
+- Order results by relevance and put the most likely one first, selected, so that Return opens
+  it without further typing.
+- Group results by kind and name each group, so that people can skip to the kind they want.
+- Show a useful preview of the selected result, so that many searches end without opening
+  anything.
+- Open the window on a shortcut and close it on Escape; never make people reach for the
+  pointer to search.
+
+## Variants and states
+
+<Example name="collapsed" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Collapsed | no children, or an empty list | The 56 pt field alone, with the placeholder in the secondary colour |
+| Expanded | children | A divider, then the list (289 pt), a divider and the preview (390 pt), 374 pt high |
+| Note | `note`, while expanded | A divider, then one 24 pt line of 11 pt secondary text under the list and preview: what the search left out |
+| Completion | `completion`, once text is typed | An em dash and the completion in 13 pt secondary text after the typed text |
+| Top hit | `topHit` | The top hit's icon in a 28.5 pt box at the trailing end of the field |
+| Selected result | `selectedValue`, a click, the arrow keys | Full-width accent fill with white text |
+| Selected result, window not key | `data-window-state` of `main` or `inactive` on an ancestor | Grey fill, text unchanged |
+
+The window is the vibrant panel material: it blurs and tints whatever is behind it in the same
+page, and falls back to an opaque colour with `prefers-reduced-transparency` or where
+`backdrop-filter` is not available.
+
+Measured: the expanded window, bands, rows, dividers, selection and text colours in both
+appearances; the rim, outer hairline and shadow in Dark Aqua. Provisional: the collapsed
+window, the outer hairline in Aqua (the Aqua capture is over the desktop picture, where no
+line can be told from the shadow) and the selection of a window that is not key; no capture
+shows them.
+
+## Sizes
+
+One size: 680 pt wide, 56 pt high collapsed and 430 pt expanded (454 pt with a note). `--mac-spotlight-width` and
+`--mac-spotlight-body-height` change the width and the height of the results for a smaller
+screen; the field, bands and rows keep their heights.
+
+## API
+
+<PropsTable name="SpotlightProps" />
+
+`className`, `style`, `ref` and other attributes go to the root element.
+
+<PropsTable name="SpotlightGroupProps" />
+
+<PropsTable name="SpotlightResultProps" />
+
+| Attribute | On | Description |
+| --- | --- | --- |
+| `data-expanded` | root | Present while the window has results. |
+| `aria-selected` | result | `true` on the selected result; the stylesheet selects on it. |
+| `data-value` | result | The result's `value`. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-spotlight-width` | `680px` | Width of the window. |
+| `--mac-spotlight-body-height` | `374px` | Height of the list and the preview, divider included. |
+
+## Accessibility
+
+- The field is a `combobox` built on Base UI's Input, named by `placeholder`; it controls a
+  `listbox` of `option`s in `group`s named by their category. The keyboard focus stays in the
+  field and `aria-activedescendant` names the selected result, and only while that result is
+  among the children: a selection whose result is gone is dropped (`onSelectedValueChange`
+  with `null`) and Return opens nothing.
+- The list is not Base UI's Combobox or Autocomplete: in Base UI 1.8 their highlighted item
+  cannot be set by the application or by a click, which the top hit, the preview and the
+  Command-arrow jumps need, and pressing an item writes it into the field. The roles, states
+  and keys are those of the WAI-ARIA combobox pattern with a listbox.
+- Down and Up Arrow move the selection and stop at the ends; Command-Down and Command-Up jump
+  to the first result of the next and previous category; Return opens the selection and
+  Command-Return reveals it (`onOpenResult` with `reveal`); Escape clears the text, then calls
+  `onClose`. Keys pressed while an input method composes are left to it.
+- A click selects a result and takes the keyboard focus to the field, wherever it was; a
+  double click opens the result. A result's `id` is the window's: the field refers to it.
+- The completion and the icons are decorative and hidden from assistive technology: the top
+  hit is announced as the selected result.
+- The preview is a `group` named by `previewLabel`. Moving the focus into it is the
+  application's: give what it holds a tab stop.
+- A `note` is a `note` after the list and the preview, outside both: the arrow keys and the
+  field never reach it, and a screen reader finds it after the results. Use it for a limit the
+  person should know of, such as part of their data that was not searched.
+- While the field has the keyboard focus in the key window, a line in the focus colour runs
+  under its text, besides the insertion point. Catalina shows the insertion point alone; the
+  line is the library's own.
+- In forced-colours mode the window has a border, the focused field an outline, and the
+  selection uses the system highlight.
+
+## Visual comparison
+
+`visual-list-dark` reproduces the top-left 300 x 250 pt of the Dark Aqua window, which was
+captured as a window with nothing behind it; `visual-top-light` the top-left 200 x 98 pt of
+the Aqua window, which was captured over the desktop picture, on gradients that stand in for
+the blurred picture. Text and the result icons are masked: text is set in the fallback font
+off Apple platforms and the icons are Apple artwork. Results in Chromium on Linux, at a colour
+distance of 0.05:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Field, bands, selection and dividers, Dark Aqua | 0.40% of pixels differ | 0.46% |
+| Field, band and selection, Aqua | 1.45% | 1.24% |
+
+What differs in Dark Aqua is the magnifying glass, an original drawing, and the corner. In
+Aqua it is also the backdrop: the stand-in gradients follow the picture only roughly. Two
+state checks run real input: Down Arrow in the field moves the selection to the second result
+and the focused field shows its focus line, and a window that is not key shows the grey
+selection (inferred).
+
+Not compared: the query text (San Francisco Display Light at about 27 pt; the fallback font
+at weight 300 is the nearest), the completion, the preview's content, which is the
+application's, and the window's shadow.

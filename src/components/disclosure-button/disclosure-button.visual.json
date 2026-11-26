@@ -1,0 +1,428 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "pending": "No Catalina screenshot shows a disclosure button (spec: disclosure-button, not seen), so there is no reference crop to compare with. The comparisons below are pixel checks against the values the spec infers.",
+  "comparisons": [
+    {
+      "name": "collapsed-light",
+      "description": "Regular, disabled, small and mini disclosure buttons, collapsed, Aqua. Every value is inferred: no screenshot shows a disclosure button.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "fill of the bezel (spec: push-button, Fill, measured; that this button shares it is inferred)"
+          },
+          {
+            "x": 8.75,
+            "y": 18.5,
+            "color": "#c1c1c1",
+            "scale": 2,
+            "note": "side edge of the bezel over the page (spec: push-button, Side edge)"
+          },
+          {
+            "x": 18.5,
+            "y": 8.75,
+            "color": "#c8c8c8",
+            "scale": 2,
+            "note": "top edge (spec: push-button, Top edge)"
+          },
+          {
+            "x": 18.5,
+            "y": 28.25,
+            "color": "#aeaeae",
+            "scale": 2,
+            "note": "bottom edge: a 20 pt bezel in the 21 pt box (spec: disclosure-button, Size, regular, inferred)"
+          },
+          {
+            "x": 44.5,
+            "y": 18.5,
+            "color": "#f6f6f6",
+            "note": "disabled fill: the bezel at half opacity over the page (spec: push-button, Fill, disabled)"
+          },
+          {
+            "x": 18.6,
+            "y": 19.7,
+            "color": "#262626",
+            "tolerance": 6,
+            "scale": 2,
+            "note": "apex of the chevron pointing down, label colour at 85% over the fill (spec: disclosure-button, Chevron, collapsed path, inferred)"
+          },
+          {
+            "x": 18.6,
+            "y": 17.2,
+            "color": "#ffffff",
+            "scale": 2,
+            "note": "no chevron where the expanded apex would be"
+          },
+          {
+            "x": 83,
+            "y": 25.25,
+            "color": "#aeaeae",
+            "scale": 2,
+            "note": "bottom edge of the small bezel: 17 pt in an 18 pt box (inferred)"
+          },
+          {
+            "x": 111.5,
+            "y": 22.25,
+            "color": "#aeaeae",
+            "scale": 2,
+            "note": "bottom edge of the mini bezel: 14 pt in a 15 pt box (inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "expanded-light",
+      "description": "The regular button after a real click, Aqua: the chevron points up.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#disclosure"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 18.6,
+            "y": 17.2,
+            "color": "#262626",
+            "tolerance": 6,
+            "scale": 2,
+            "note": "apex of the chevron pointing up (spec: disclosure-button, Chevron, expanded path, inferred)"
+          },
+          {
+            "x": 18.6,
+            "y": 19.7,
+            "color": "#ffffff",
+            "scale": 2,
+            "note": "no chevron where the collapsed apex was"
+          },
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "the bezel is not accent-coloured while expanded (spec: Edge, fill, halo, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The regular button held down with the mouse, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "#disclosure"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#f0f0f0",
+            "note": "pressed fill: the shared pressed bezel, --mac-bezel-fill-pressed, #f0f0f0 (spec: tokens.md, inferred). The disclosure-button page of the spec infers a fill darkened by about 10%, which is darker; the two pages disagree and no screenshot settles it, so this pixel holds the component to the token sheet, not to that page"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the regular button, reached with Tab, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the page, measured on a text field (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 5.25,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the edge of the bezel (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-light",
+      "description": "The same after Tab in an inactive window, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          },
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "the bezel does not change in an inactive window"
+          }
+        ]
+      }
+    },
+    {
+      "name": "collapsed-dark",
+      "description": "Regular, disabled, small and mini disclosure buttons, collapsed, Dark Aqua. Every value is inferred: no screenshot shows a disclosure button.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#656565",
+            "note": "fill of the bezel (spec: push-button, Fill, measured; that this button shares it is inferred)"
+          },
+          {
+            "x": 8.75,
+            "y": 18.5,
+            "color": "#2c2c2c",
+            "scale": 2,
+            "note": "side edge of the bezel over the page (spec: push-button, Side edge)"
+          },
+          {
+            "x": 18.5,
+            "y": 8.75,
+            "color": "#2e2e2e",
+            "scale": 2,
+            "note": "top edge (spec: push-button, Top edge)"
+          },
+          {
+            "x": 18.5,
+            "y": 28.25,
+            "color": "#282828",
+            "scale": 2,
+            "note": "bottom edge: a 20 pt bezel in the 21 pt box (spec: disclosure-button, Size, regular, inferred)"
+          },
+          {
+            "x": 44.5,
+            "y": 18.5,
+            "color": "#4c4c4c",
+            "note": "disabled fill: the bezel at half opacity over the page (spec: push-button, Fill, disabled)"
+          },
+          {
+            "x": 18.6,
+            "y": 19.7,
+            "color": "#e8e8e8",
+            "tolerance": 6,
+            "scale": 2,
+            "note": "apex of the chevron pointing down, label colour at 85% over the fill (spec: disclosure-button, Chevron, collapsed path, inferred)"
+          },
+          {
+            "x": 18.6,
+            "y": 17.2,
+            "color": "#656565",
+            "scale": 2,
+            "note": "no chevron where the expanded apex would be"
+          },
+          {
+            "x": 83,
+            "y": 25.25,
+            "color": "#282828",
+            "scale": 2,
+            "note": "bottom edge of the small bezel: 17 pt in an 18 pt box (inferred)"
+          },
+          {
+            "x": 111.5,
+            "y": 22.25,
+            "color": "#282828",
+            "scale": 2,
+            "note": "bottom edge of the mini bezel: 14 pt in a 15 pt box (inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "expanded-dark",
+      "description": "The regular button after a real click, Dark Aqua: the chevron points up.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#disclosure"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 18.6,
+            "y": 17.2,
+            "color": "#e8e8e8",
+            "tolerance": 6,
+            "scale": 2,
+            "note": "apex of the chevron pointing up (spec: disclosure-button, Chevron, expanded path, inferred)"
+          },
+          {
+            "x": 18.6,
+            "y": 19.7,
+            "color": "#656565",
+            "scale": 2,
+            "note": "no chevron where the collapsed apex was"
+          },
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#656565",
+            "note": "the bezel is not accent-coloured while expanded (spec: Edge, fill, halo, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "The regular button held down with the mouse, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": "#disclosure"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#7c7c7c",
+            "note": "pressed fill: the shared pressed bezel, white at 36% over #323232 (--mac-bezel-fill-pressed; spec: tokens.md, inferred; no screenshot shows it)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the regular button, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#2d6c99",
+            "tolerance": 6,
+            "note": "ring over the page, measured on a text field (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 5.25,
+            "y": 18.5,
+            "color": "#323232",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the edge of the bezel (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#656565",
+            "note": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-dark",
+      "description": "The same after Tab in an inactive window, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#323232",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          },
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#656565",
+            "note": "the bezel does not change in an inactive window"
+          }
+        ]
+      }
+    }
+  ]
+}

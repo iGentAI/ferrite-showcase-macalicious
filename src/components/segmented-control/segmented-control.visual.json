@@ -1,0 +1,954 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "add-remove-light",
+      "description": "Rounded add / remove pair, remove disabled, under the folder list of System Preferences Desktop & Screen Saver, Aqua. No text: the drawing alone.",
+      "example": "visual-add-remove",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.18,
+        "2x": 0.0012
+      },
+      "deltaBudget": {
+        "1x": 5.6,
+        "2x": 0.31
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Desktop-and-Screen-Saver.png",
+        "crop": {
+          "x": 172,
+          "y": 1034,
+          "width": 110,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "add-remove-dark",
+      "description": "Rounded add / remove pair, remove disabled, System Preferences Desktop & Screen Saver, Dark Aqua. No text: the drawing alone.",
+      "example": "visual-add-remove",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.086,
+        "2x": 0.0009
+      },
+      "deltaBudget": {
+        "1x": 4.7,
+        "2x": 0.44
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Desktop-and-Screen-Saver.png",
+        "crop": {
+          "x": 172,
+          "y": 1034,
+          "width": 110,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "connect-to-server-light",
+      "description": "Add, remove (disabled) and Action in Finder's Connect to Server, Aqua. The gear is masked: it is Apple's artwork and the example draws a stand-in of the same size.",
+      "example": "visual-connect-to-server",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 66,
+          "y": 4,
+          "width": 16,
+          "height": 16
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.193,
+        "2x": 0.0009
+      },
+      "deltaBudget": {
+        "1x": 5.5,
+        "2x": 0.26
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Connect-to-Server.png",
+        "crop": {
+          "x": 148,
+          "y": 452,
+          "width": 206,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "screen-time-light",
+      "description": "Separated style on white, third segment disabled, System Preferences Screen Time, Aqua. Whole crop, with the title Today in the fallback font.",
+      "example": "visual-screen-time",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.093,
+        "2x": 0.0307
+      },
+      "deltaBudget": {
+        "1x": 7.6,
+        "2x": 3.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Screen-Time.png",
+        "crop": {
+          "x": 1146,
+          "y": 206,
+          "width": 248,
+          "height": 58
+        }
+      }
+    },
+    {
+      "name": "screen-time-light-bezel",
+      "description": "As screen-time-light with the title Today masked, to score the three bezels and the chevrons alone: the title is set in the fallback font off Apple platforms.",
+      "example": "visual-screen-time",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 42,
+          "y": 8,
+          "width": 40,
+          "height": 15
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.185,
+        "2x": 0.0041
+      },
+      "deltaBudget": {
+        "1x": 5.6,
+        "2x": 0.57
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Screen-Time.png",
+        "crop": {
+          "x": 1146,
+          "y": 206,
+          "width": 248,
+          "height": 58
+        }
+      }
+    },
+    {
+      "name": "screen-time-dark",
+      "description": "Separated style, third segment disabled, System Preferences Screen Time, Dark Aqua. Whole crop, with the title Today in the fallback font.",
+      "example": "visual-screen-time",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.09,
+        "2x": 0.0272
+      },
+      "deltaBudget": {
+        "1x": 6.9,
+        "2x": 2.84
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Screen-Time.png",
+        "crop": {
+          "x": 1146,
+          "y": 206,
+          "width": 248,
+          "height": 58
+        }
+      }
+    },
+    {
+      "name": "screen-time-dark-bezel",
+      "description": "As screen-time-dark with the title Today masked, to score the three bezels and the chevrons alone.",
+      "example": "visual-screen-time",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 42,
+          "y": 8,
+          "width": 40,
+          "height": 15
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.108,
+        "2x": 0.0023
+      },
+      "deltaBudget": {
+        "1x": 5.7,
+        "2x": 0.97
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Screen-Time.png",
+        "crop": {
+          "x": 1146,
+          "y": 206,
+          "width": 248,
+          "height": 58
+        }
+      }
+    },
+    {
+      "name": "print-mini-light",
+      "description": "Mini rounded page navigator on the Print sheet, both segments disabled, Aqua. No text. The sheet is vibrant: what is behind the control is the blurred desktop picture, which the example approximates with a gradient, so the mean delta is that of the background.",
+      "example": "visual-print",
+      "appearance": "light",
+      "selector": "[data-visual=\"light\"]",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.103,
+        "2x": 0.003
+      },
+      "deltaBudget": {
+        "1x": 7.1,
+        "2x": 2.01
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Print.png",
+        "crop": {
+          "x": 272,
+          "y": 860,
+          "width": 148,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "print-mini-dark",
+      "description": "Mini rounded page navigator on the Print sheet, both segments disabled, Dark Aqua. No text. The sheet's vibrant background is approximated with a gradient, as in print-mini-light.",
+      "example": "visual-print",
+      "appearance": "dark",
+      "selector": "[data-visual=\"dark\"]",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.089,
+        "2x": 0.0008
+      },
+      "deltaBudget": {
+        "1x": 5.8,
+        "2x": 2.36
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Print.png",
+        "crop": {
+          "x": 184,
+          "y": 830,
+          "width": 152,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "tabs-light",
+      "description": "Selected first segment: the tab strip of System Preferences Sound, which AppKit draws as a select-one rounded segmented control, Aqua, blue accent. Whole crop, with the three titles in the fallback font.",
+      "example": "visual-tabs",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.176,
+        "2x": 0.109
+      },
+      "deltaBudget": {
+        "1x": 14.5,
+        "2x": 11.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Sound.png",
+        "crop": {
+          "x": 544,
+          "y": 184,
+          "width": 472,
+          "height": 58
+        }
+      }
+    },
+    {
+      "name": "tabs-light-bezel",
+      "description": "As tabs-light with the three titles masked, to score the accent-filled segment, the bezel and the divider alone: titles are set in the fallback font off Apple platforms.",
+      "example": "visual-tabs",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 14,
+          "y": 8,
+          "width": 90,
+          "height": 14
+        },
+        {
+          "x": 123,
+          "y": 8,
+          "width": 44,
+          "height": 14
+        },
+        {
+          "x": 188,
+          "y": 8,
+          "width": 34,
+          "height": 14
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.216,
+        "2x": 0.0007
+      },
+      "deltaBudget": {
+        "1x": 6.8,
+        "2x": 0.51
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Sound.png",
+        "crop": {
+          "x": 544,
+          "y": 184,
+          "width": 472,
+          "height": 58
+        }
+      }
+    },
+    {
+      "name": "tabs-dark",
+      "description": "Selected first segment: the tab strip of System Preferences Sound, Dark Aqua, blue accent. Whole crop, with the three titles in the fallback font.",
+      "example": "visual-tabs",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.172,
+        "2x": 0.104
+      },
+      "deltaBudget": {
+        "1x": 12.5,
+        "2x": 9.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Sound.png",
+        "crop": {
+          "x": 544,
+          "y": 184,
+          "width": 472,
+          "height": 58
+        }
+      }
+    },
+    {
+      "name": "tabs-dark-bezel",
+      "description": "As tabs-dark with the three titles masked, to score the accent-filled segment, the bezel and the divider alone.",
+      "example": "visual-tabs",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 14,
+          "y": 8,
+          "width": 90,
+          "height": 14
+        },
+        {
+          "x": 123,
+          "y": 8,
+          "width": 44,
+          "height": 14
+        },
+        {
+          "x": 188,
+          "y": 8,
+          "width": 34,
+          "height": 14
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.111,
+        "2x": 0.0011
+      },
+      "deltaBudget": {
+        "1x": 6.9,
+        "2x": 0.57
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Sound.png",
+        "crop": {
+          "x": 544,
+          "y": 184,
+          "width": 472,
+          "height": 58
+        }
+      }
+    },
+    {
+      "name": "states-light",
+      "description": "The state fixture at rest: a select-one control with its first segment selected beside a disabled control, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 13,
+            "y": 18.5,
+            "color": "#3d88fd",
+            "tolerance": 3,
+            "note": "selected segment: middle stop of the blue accent bezel gradient (measured on the selected tab, spec: tab-view; tokens: accent.css)"
+          },
+          {
+            "x": 49.5,
+            "y": 18.5,
+            "color": "#3d88fd",
+            "tolerance": 3,
+            "note": "the selected segment's accent covers the divider beside it (measured: accent to x=769 on the Sound tab strip)"
+          },
+          {
+            "x": 54,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "fill of an unselected segment (spec: Fill, measured)"
+          },
+          {
+            "x": 90.5,
+            "y": 18.5,
+            "color": "#e5e5e5",
+            "note": "divider between two unselected segments, black at 10% over white (spec: Divider, measured)"
+          },
+          {
+            "x": 148,
+            "y": 18.5,
+            "color": "#f6f6f6",
+            "note": "disabled control: the bezel at half opacity over #ececec (tokens: controls.css, measured on a disabled push button)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-dark",
+      "description": "The state fixture at rest, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 13,
+            "y": 18.5,
+            "color": "#1764db",
+            "tolerance": 3,
+            "note": "selected segment: middle stop of the blue accent bezel gradient, dark (measured on the selected tab)"
+          },
+          {
+            "x": 49.5,
+            "y": 18.5,
+            "color": "#1764db",
+            "tolerance": 3,
+            "note": "the selected segment's accent covers the divider beside it"
+          },
+          {
+            "x": 54,
+            "y": 18.5,
+            "color": "#656565",
+            "note": "fill of an unselected segment: white at 25% over the window background #323232 (spec measures #686869 over a #363637 box)"
+          },
+          {
+            "x": 90.5,
+            "y": 18.5,
+            "color": "#565656",
+            "note": "divider: black at 15% over that fill (spec measures #585859 over #686869)"
+          },
+          {
+            "x": 148,
+            "y": 18.5,
+            "color": "#4c4c4c",
+            "note": "disabled control: the bezel at half opacity, white at 12.5% over #323232 (spec: push-button measures #4a4a4b over #2f3031)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "An unselected segment while the mouse is held down on it in the key window: it takes the accent bezel, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "#three"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 95,
+            "y": 18.5,
+            "color": "#3d88fd",
+            "tolerance": 3,
+            "note": "middle stop of the measured blue gradient; that a pressed segment takes it is inferred (spec: segmented-control, States)"
+          },
+          {
+            "x": 54,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "the segment between the selected and the pressed one is unchanged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "An unselected segment while pressed in the key window, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": "#three"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 95,
+            "y": 18.5,
+            "color": "#1764db",
+            "tolerance": 3,
+            "note": "middle stop of the measured blue gradient, dark; inferred as in pressed-light"
+          },
+          {
+            "x": 54,
+            "y": 18.5,
+            "color": "#656565",
+            "note": "the segment between the selected and the pressed one is unchanged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-selected-light",
+      "description": "The selected segment while pressed: the accent gradient darkened, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "#one"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 13,
+            "y": 18.5,
+            "color": "#3678df",
+            "tolerance": 3,
+            "note": "88% of the measured middle stop #3d88fd; the darkening is inferred (tokens: accent.css, pressed accent bezel)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-selected-dark",
+      "description": "The selected segment while pressed, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": "#one"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 13,
+            "y": 18.5,
+            "color": "#1458c1",
+            "tolerance": 3,
+            "note": "88% of the measured middle stop #1764db; inferred as above"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the first segment, reached with Tab: the ring is around the segment, not the control, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the window background, measured on the Go to Folder field (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 6.25,
+            "y": 18.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "outermost quarter point of the ring: the band is flat and reaches 2.5 pt beyond the bezel's edge"
+          },
+          {
+            "x": 5.25,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "page just outside the ring (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 51.25,
+            "y": 18.5,
+            "color": "#8cb4fa",
+            "tolerance": 4,
+            "note": "the ring's inner side lies over the neighbouring segment: the ring colour, rgb(24 106 246) at 50%, over its white fill; computed from the token, placement inferred"
+          },
+          {
+            "x": 13,
+            "y": 18.5,
+            "color": "#3d88fd",
+            "tolerance": 3,
+            "note": "the focused segment keeps its accent"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the first segment, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#2d6c99",
+            "tolerance": 6,
+            "note": "ring over a dark window, measured in Automator (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 6.25,
+            "y": 18.5,
+            "color": "#2d6c99",
+            "tolerance": 6,
+            "note": "outermost quarter point of the ring"
+          },
+          {
+            "x": 5.25,
+            "y": 18.5,
+            "color": "#323232",
+            "note": "page just outside the ring"
+          },
+          {
+            "x": 51.25,
+            "y": 18.5,
+            "color": "#4887b2",
+            "tolerance": 6,
+            "note": "the ring over the neighbouring segment: rgb(43 168 255) at 50% over its fill #656565; computed from the token, placement inferred"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-main-light",
+      "description": "In a window that is main but not key, with keyboard focus on the first segment: the selected segment is grey and there is no focus ring, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "main",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 13,
+            "y": 18.5,
+            "color": "#d5d5d5",
+            "note": "selected segment without the accent: the grey the spec infers for a tab in a window that is not key (spec: tab-view, States; inferred)"
+          },
+          {
+            "x": 54,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "unselected fill, unchanged"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-main-dark",
+      "description": "In a window that is main but not key, with keyboard focus on the first segment, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "main",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 13,
+            "y": 18.5,
+            "color": "#6a6a6a",
+            "note": "selected segment without the accent (spec: tab-view, States; inferred)"
+          },
+          {
+            "x": 54,
+            "y": 18.5,
+            "color": "#656565",
+            "note": "unselected fill, unchanged"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#323232",
+            "note": "no focus ring outside the key window"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-light",
+      "description": "In an inactive window, with keyboard focus on the first segment: the selected segment is grey and there is no focus ring, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 13,
+            "y": 18.5,
+            "color": "#d5d5d5",
+            "note": "selected segment without the accent (spec: tab-view, States; inferred)"
+          },
+          {
+            "x": 54,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "unselected fill, unchanged"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-dark",
+      "description": "In an inactive window, with keyboard focus on the first segment, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 13,
+            "y": 18.5,
+            "color": "#6a6a6a",
+            "note": "selected segment without the accent (spec: tab-view, States; inferred)"
+          },
+          {
+            "x": 54,
+            "y": 18.5,
+            "color": "#656565",
+            "note": "unselected fill, unchanged"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#323232",
+            "note": "no focus ring outside the key window"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-inactive-light",
+      "description": "An unselected segment pressed in a window that is not key: no accent, the standard bezel darkens, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "press": "#three"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 95,
+            "y": 18.5,
+            "color": "#f0f0f0",
+            "note": "the shared pressed bezel fill (tokens: controls.css, --mac-bezel-fill-pressed; inferred, no screenshot)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-inactive-dark",
+      "description": "An unselected segment pressed in a window that is not key, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "press": "#three"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 276,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 95,
+            "y": 18.5,
+            "color": "#7c7c7c",
+            "note": "the shared pressed bezel fill, white at 36% over #323232 (tokens: controls.css; inferred, no screenshot)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "connect-to-server-dark",
+      "description": "Add, remove (disabled) and Action in Finder's Connect to Server, Dark Aqua. The gear is masked, as in connect-to-server-light.",
+      "example": "visual-connect-to-server",
+      "appearance": "dark",
+      "masks": [{ "x": 66, "y": 4, "width": 16, "height": 16 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0911, "2x": 0.0007 },
+      "deltaBudget": { "1x": 5.55, "2x": 1.05 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Conect-to-Server.png",
+        "crop": { "x": 148, "y": 452, "width": 206, "height": 50 }
+      }
+    },
+    {
+      "name": "accent-purple-light",
+      "description": "The selected segment with the purple accent, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "accent": "purple",
+      "expect": {
+        "size": { "width": 276, "height": 37 },
+        "pixels": [
+          {
+            "x": 13,
+            "y": 18.5,
+            "color": "#be63b3",
+            "tolerance": 3,
+            "note": "middle stop of the purple bezel, measured on the purple checkbox of General (token sheet, accent tables); that the selected segment takes it is inferred"
+          },
+          {
+            "x": 54,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "an unselected segment does not take the accent"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-purple-dark",
+      "description": "The selected segment with the purple accent, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "accent": "purple",
+      "expect": {
+        "size": { "width": 276, "height": 37 },
+        "pixels": [
+          {
+            "x": 13,
+            "y": 18.5,
+            "color": "#9d3e9b",
+            "tolerance": 3,
+            "note": "middle stop of the purple bezel in Dark Aqua (token sheet, accent tables); inferred for the selected segment"
+          },
+          {
+            "x": 54,
+            "y": 18.5,
+            "color": "#656565",
+            "note": "an unselected segment does not take the accent: white at 25% over #323232"
+          }
+        ]
+      }
+    }
+  ]
+}

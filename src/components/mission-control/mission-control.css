@@ -1,0 +1,315 @@
+/*
+ * Mission Control: an overview that covers the desktop it is rendered into. The Spaces bar
+ * is across the top, a thumbnail of every window under it.
+ *
+ * Parts (.mac-mission-control…)
+ *   itself, -dismiss   the overlay (Dialog.Popup); the desktop as a button that closes it
+ *   -bar, -space, -add   the Spaces bar, a space's button, the add button
+ *   -space-thumbnail, -space-picture, -space-label, -add-glyph
+ *   -area, -windows, -slot   room for the windows, the scaled layout, one window's place
+ *   -window-content, -window   what a thumbnail shows, the button over it
+ *   -window-caption, -window-icon, -window-title
+ *
+ * States: [data-starting-style], [data-ending-style], [data-current] on a space, :hover,
+ * :focus-visible, :active and [data-force~="hover" | "focus" | "pressed"].
+ *
+ * Hooks: --mac-mission-control-layer (890), -inset-bottom (80px), -desktop, -window-shadow and
+ * -opening-scale (1.08); the docs page describes them.
+ */
+.mac-mission-control {
+  position: absolute;
+  z-index: var(--mac-mission-control-layer, 890);
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  outline: none;
+  background: var(--mac-mission-control-desktop);
+  color: var(--mac-mission-control-label);
+  font: var(--mac-font-body);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: opacity 0.25s;
+}
+
+.mac-mission-control:where([data-starting-style], [data-ending-style]) {
+  opacity: 0;
+}
+
+/* The buttons, without a button's own look. */
+.mac-mission-control-dismiss,
+.mac-mission-control-space,
+.mac-mission-control-add,
+.mac-mission-control-window {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: default;
+}
+
+.mac-mission-control-dismiss,
+.mac-mission-control-window {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Thumbnails 28 pt from the top and 32 pt apart, centred; the side padding keeps them
+   clear of the add button. */
+.mac-mission-control-bar {
+  position: relative;
+  display: flex;
+  flex: none;
+  gap: 32px;
+  align-items: start;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 146px;
+  padding: 28px 68px 0;
+  background: var(--mac-mission-control-bar-fill);
+  box-shadow: var(--mac-mission-control-bar-shadow);
+  backdrop-filter: var(--mac-mission-control-bar-filter);
+  transition: transform 0.25s;
+}
+
+.mac-mission-control-space {
+  display: flex;
+  flex: 0 1 144px;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+.mac-mission-control-space-thumbnail {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 144 / 90;
+  box-shadow: var(--mac-mission-control-space-shadow);
+}
+
+.mac-mission-control-space-picture {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  overflow: hidden;
+}
+
+/* The ring: 3 pt, 1 pt away from the thumbnail. */
+.mac-mission-control-space:where([data-current]) > .mac-mission-control-space-thumbnail::after {
+  position: absolute;
+  inset: -4px;
+  border: 3px solid var(--mac-mission-control-ring);
+  border-radius: 4px;
+  content: "";
+}
+
+.mac-mission-control-space:where(:focus-visible, [data-force~="focus"])
+  > .mac-mission-control-space-thumbnail {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: 4px;
+}
+
+/* Capital letters start 9 pt under the thumbnail. */
+.mac-mission-control-space-label {
+  max-width: 100%;
+  margin-top: 5.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A 20 pt plus, its middle 34 pt from the right edge, in a button 4 pt larger all round. */
+.mac-mission-control-add {
+  position: absolute;
+  top: 59px;
+  right: 20px;
+  box-sizing: border-box;
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  border-radius: 4px;
+  color: var(--mac-mission-control-glyph);
+}
+
+.mac-mission-control-add:where(:focus-visible, [data-force~="focus"]) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+}
+
+.mac-mission-control-add:where(:active, [data-force~="pressed"]) {
+  opacity: 0.6;
+}
+
+.mac-mission-control-add-glyph {
+  display: block;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+/* 18 pt from the bar and the sides. A size container: the thumbnails are scaled to it
+   without script. */
+.mac-mission-control-area {
+  position: relative;
+  display: grid;
+  flex: 1 1 0;
+  place-items: center;
+  min-height: 0;
+  margin: 18px 18px calc(18px + var(--mac-mission-control-inset-bottom, 80px));
+  container-type: size;
+  pointer-events: none;
+}
+
+/* The layout is --_w by --_h window points, shown as large as fits and never larger than
+   life. --_scale is that over life size: a number, the tangent of two lengths' angle. */
+.mac-mission-control-windows {
+  --_width: min(100cqw, calc(100cqh * var(--_w) / var(--_h)), calc(var(--_w) * 1px));
+  --_scale: tan(atan2(var(--_width), calc(var(--_w) * 1px)));
+
+  position: relative;
+  width: var(--_width);
+  aspect-ratio: var(--_w) / var(--_h);
+  transition: transform 0.25s;
+}
+
+.mac-mission-control-slot {
+  position: absolute;
+}
+
+.mac-mission-control-window-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  border-radius: var(--mac-radius-window);
+  box-shadow: var(--mac-mission-control-window-shadow, var(--mac-shadow-window-inactive));
+  transform: scale(var(--_scale, 1));
+  transform-origin: 0 0;
+}
+
+.mac-mission-control-window {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0 8px 10px;
+  border-radius: var(--mac-radius-window);
+  color: var(--mac-mission-control-caption-text);
+  font-weight: var(--mac-font-weight-medium);
+  pointer-events: auto;
+}
+
+.mac-mission-control-window:where(
+  :hover,
+  :focus-visible,
+  [data-force~="hover"],
+  [data-force~="focus"]
+) {
+  outline: 3px solid var(--mac-mission-control-ring);
+  outline-offset: 1px;
+}
+
+.mac-mission-control-window-caption {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: var(--mac-mission-control-caption-fill);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.mac-mission-control-window:where(
+    :hover,
+    :focus-visible,
+    [data-force~="hover"],
+    [data-force~="focus"]
+  )
+  > .mac-mission-control-window-caption {
+  opacity: 1;
+}
+
+.mac-mission-control-window-icon {
+  display: grid;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin-left: -4px;
+}
+
+.mac-mission-control-window-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mac-mission-control:where([data-starting-style], [data-ending-style])
+    > .mac-mission-control-bar {
+    transform: translateY(-100%);
+  }
+
+  .mac-mission-control:where([data-starting-style], [data-ending-style])
+    .mac-mission-control-windows {
+    transform: scale(var(--mac-mission-control-opening-scale, 1.08));
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .mac-mission-control-bar {
+    background: var(--mac-mission-control-bar-opaque);
+    backdrop-filter: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-mission-control {
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .mac-mission-control-bar {
+    border-bottom: 1px solid CanvasText;
+    background: Canvas;
+    backdrop-filter: none;
+  }
+
+  .mac-mission-control-space-thumbnail,
+  .mac-mission-control-window {
+    border: 1px solid CanvasText;
+  }
+
+  .mac-mission-control-space:where([data-current]) > .mac-mission-control-space-thumbnail::after,
+  .mac-mission-control-window:where(
+    :hover,
+    :focus-visible,
+    [data-force~="hover"],
+    [data-force~="focus"]
+  ) {
+    border-color: Highlight;
+    outline-color: Highlight;
+  }
+
+  .mac-mission-control-add {
+    color: ButtonText;
+  }
+
+  .mac-mission-control-window-caption {
+    background: Canvas;
+    color: CanvasText;
+  }
+}

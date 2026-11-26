@@ -1,0 +1,480 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "corner-top-light",
+      "description": "Top-right corner of the window over the desktop, Aqua: the 4 pt radius, the borderless edge and the shadow. The video frame is masked except for the 4 pt square at the corner, where the frame is close to one dark colour, so the edges are scored from outside and the corner from both sides; the sky behind is a colour ramp fitted to the Desktop capture.",
+      "example": "visual-corner-top",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 0,
+          "y": 18,
+          "width": 16,
+          "height": 30
+        },
+        {
+          "x": 16,
+          "y": 22,
+          "width": 4,
+          "height": 26
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0025,
+        "2x": 0.002
+      },
+      "deltaBudget": {
+        "1x": 1.85,
+        "2x": 2.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Picture-in-Picture.png",
+        "crop": {
+          "x": 3280,
+          "y": 48,
+          "width": 80,
+          "height": 96
+        }
+      }
+    },
+    {
+      "name": "corner-top-dark",
+      "description": "Top-right corner of the window over the desktop, Dark Aqua. Masked as corner-top-light.",
+      "example": "visual-corner-top",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 0,
+          "y": 18,
+          "width": 16,
+          "height": 30
+        },
+        {
+          "x": 16,
+          "y": 22,
+          "width": 4,
+          "height": 26
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 1.35,
+        "2x": 1.4
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Picture-in-Picture.png",
+        "crop": {
+          "x": 3280,
+          "y": 48,
+          "width": 80,
+          "height": 96
+        }
+      }
+    },
+    {
+      "name": "corner-bottom-light",
+      "description": "Bottom-right corner of the window and its shadow over the desktop, Aqua. The video frame is masked; the sea behind is a colour ramp fitted to the Desktop capture, so the picture's grain remains in the score.",
+      "example": "visual-corner-bottom",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 30,
+          "height": 13
+        }
+      ],
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 3.3,
+        "2x": 4.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Picture-in-Picture.png",
+        "crop": {
+          "x": 3260,
+          "y": 652,
+          "width": 100,
+          "height": 100
+        }
+      }
+    },
+    {
+      "name": "corner-bottom-dark",
+      "description": "Bottom-right corner of the window and its shadow over the desktop, Dark Aqua. Masked as corner-bottom-light.",
+      "example": "visual-corner-bottom",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 30,
+          "height": 13
+        }
+      ],
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 2,
+        "2x": 2.35
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Picture-in-Picture.png",
+        "crop": {
+          "x": 3260,
+          "y": 652,
+          "width": 100,
+          "height": 100
+        }
+      }
+    },
+    {
+      "name": "idle-light",
+      "description": "The window with the pointer away: no scrim and no controls over the video, Aqua.",
+      "example": "visual-controls",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 260
+        },
+        "pixels": [
+          {
+            "x": 220,
+            "y": 110,
+            "color": "#808080",
+            "note": "the example's grey stand-in for the video, at the middle of the window: no control is shown (measured: the capture shows none)"
+          },
+          {
+            "x": 84,
+            "y": 44,
+            "color": "#808080",
+            "note": "where the close button would be"
+          },
+          {
+            "x": 30,
+            "y": 110,
+            "color": "#ececec",
+            "note": "the screen beside the window, which is 320 pt wide and 20 pt from the right edge"
+          }
+        ]
+      }
+    },
+    {
+      "name": "hover-light",
+      "description": "The window under the pointer, which rests on the middle button: scrim and the three controls, Aqua. No screenshot shows it; the values are the spec's inference from AVKit.",
+      "example": "visual-controls",
+      "appearance": "light",
+      "actions": [
+        {
+          "hover": ".mac-picture-in-picture"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 260
+        },
+        "pixels": [
+          {
+            "x": 120,
+            "y": 150,
+            "color": "#404040",
+            "note": "scrim, black at 50%, over the grey stand-in; inferred"
+          },
+          {
+            "x": 84,
+            "y": 44,
+            "color": "#ffffff",
+            "tolerance": 8,
+            "scale": 2,
+            "note": "middle of the close glyph, 10 + 14 pt from the window's top-left corner: white; inferred"
+          },
+          {
+            "x": 84,
+            "y": 33,
+            "color": "#404040",
+            "note": "inside the close button beside its glyph: no fill while the pointer is elsewhere"
+          },
+          {
+            "x": 216.5,
+            "y": 110,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "a bar of the pause glyph in the 44 pt middle button: white; inferred"
+          },
+          {
+            "x": 220,
+            "y": 92,
+            "color": "#666666",
+            "tolerance": 3,
+            "note": "the middle button under the pointer: white at 20% over the scrim; inferred"
+          }
+        ]
+      }
+    },
+    {
+      "name": "hover-dark",
+      "description": "The window under the pointer, Dark Aqua: the same scrim and controls as in Aqua.",
+      "example": "visual-controls",
+      "appearance": "dark",
+      "actions": [
+        {
+          "hover": ".mac-picture-in-picture"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 260
+        },
+        "pixels": [
+          {
+            "x": 120,
+            "y": 150,
+            "color": "#404040",
+            "note": "scrim, black at 50%, over the grey stand-in; inferred"
+          },
+          {
+            "x": 216.5,
+            "y": 110,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "a bar of the pause glyph: white; inferred"
+          },
+          {
+            "x": 30,
+            "y": 110,
+            "color": "#323232",
+            "note": "the screen beside the window"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-light",
+      "description": "Keyboard focus on the close button, reached with Tab: the controls are shown and the button has the focus ring, Aqua.",
+      "example": "visual-controls",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 260
+        },
+        "pixels": [
+          {
+            "x": 120,
+            "y": 150,
+            "color": "#404040",
+            "note": "scrim over the grey stand-in: focus inside shows the controls; inferred"
+          },
+          {
+            "x": 68.5,
+            "y": 44,
+            "color": "#2c559b",
+            "tolerance": 6,
+            "note": "focus ring, 3 pt outside the 28 pt close button: --mac-focus-ring-color (24 106 246 at 50%) over the scrim; inferred"
+          },
+          {
+            "x": 84,
+            "y": 44,
+            "color": "#ffffff",
+            "tolerance": 8,
+            "scale": 2,
+            "note": "middle of the close glyph"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-dark",
+      "description": "Keyboard focus on the close button, Dark Aqua.",
+      "example": "visual-controls",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 260
+        },
+        "pixels": [
+          {
+            "x": 68.5,
+            "y": 44,
+            "color": "#3674a0",
+            "tolerance": 6,
+            "note": "focus ring: --mac-focus-ring-color (43 168 255 at 50%) over the scrim; inferred"
+          },
+          {
+            "x": 120,
+            "y": 150,
+            "color": "#404040",
+            "note": "scrim over the grey stand-in"
+          }
+        ]
+      }
+    },
+    {
+      "name": "arrow-left-dark",
+      "description": "After Tab and Left Arrow the window sits in the top-left corner, Dark Aqua.",
+      "example": "visual-controls",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowLeft"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 260
+        },
+        "pixels": [
+          {
+            "x": 22,
+            "y": 150,
+            "color": "#404040",
+            "note": "the window, now 20 pt from the left edge (measured inset, Safari-v13-Picture-in-Picture @ 3312,400,19,1): scrim over the grey stand-in, as focus is still inside"
+          },
+          {
+            "x": 380,
+            "y": 110,
+            "color": "#323232",
+            "note": "the screen where the window was"
+          }
+        ]
+      }
+    },
+    {
+      "name": "arrow-down-light",
+      "description": "After Tab and Down Arrow the window sits in the bottom-right corner, Aqua.",
+      "example": "visual-controls",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowDown"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 260
+        },
+        "pixels": [
+          {
+            "x": 120,
+            "y": 238,
+            "color": "#404040",
+            "note": "the window, now 20 pt from the bottom edge: scrim over the grey stand-in, 2 pt above its bottom edge"
+          },
+          {
+            "x": 220,
+            "y": 20,
+            "color": "#ececec",
+            "note": "the screen where the window's top was"
+          }
+        ]
+      }
+    },
+    {
+      "name": "minus-key-light",
+      "description": "After Tab and the minus key the window is 32 pt narrower, 288 x 162 pt, and still in its corner, Aqua.",
+      "example": "visual-controls",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "-"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 260
+        },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 110,
+            "color": "#ececec",
+            "note": "the screen where the window's left edge was: it now starts 92 pt from the left"
+          },
+          {
+            "x": 94,
+            "y": 150,
+            "color": "#404040",
+            "note": "the window, 2 pt inside its new left edge: scrim over the grey stand-in"
+          },
+          {
+            "x": 220,
+            "y": 180,
+            "color": "#404040",
+            "note": "the window, 2 pt above its new bottom edge: it keeps 16:9 and is 162 pt high"
+          },
+          {
+            "x": 220,
+            "y": 230,
+            "color": "#ececec",
+            "note": "the screen under the window"
+          }
+        ]
+      }
+    },
+    {
+      "name": "escape-dark",
+      "description": "After Tab and Escape the window is closed, Dark Aqua.",
+      "example": "visual-controls",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "Escape"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 260
+        },
+        "pixels": [
+          {
+            "x": 220,
+            "y": 110,
+            "color": "#323232",
+            "note": "the screen where the window was"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "noReference": {
+    "light": "No screenshot shows a contextual menu. The dark comparison uses the detached action menu of Contacts; the only detached Aqua menu in the screenshots is the 13 pt menu of a pop-up button, which menu-item compares."
+  },
+  "comparisons": [
+    {
+      "name": "action-menu-dark",
+      "description": "A contextual menu opened by a secondary click, its second item highlighted, against the detached action menu of Contacts, the closest sighting in the screenshots, Dark Aqua: corners, rim, hairline, rows and the menu's place 1 pt right of and below the pointer.",
+      "example": "visual-action-menu",
+      "appearance": "dark",
+      "actions": [
+        {
+          "hover": "[data-testid=message]"
+        }
+      ],
+      "budget": {
+        "1x": 0.144,
+        "2x": 0.137
+      },
+      "deltaBudget": {
+        "1x": 18.1,
+        "2x": 20.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Contacts.png",
+        "crop": {
+          "x": 1136,
+          "y": 420,
+          "width": 384,
+          "height": 154
+        }
+      }
+    },
+    {
+      "name": "action-menu-dark-drawing",
+      "description": "As action-menu-dark with the titles masked, to score the drawing alone: text is set in the fallback font off Apple platforms and the images are stand-ins.",
+      "example": "visual-action-menu",
+      "appearance": "dark",
+      "actions": [
+        {
+          "hover": "[data-testid=message]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 27,
+          "y": 11,
+          "width": 142,
+          "height": 17
+        },
+        {
+          "x": 27,
+          "y": 30,
+          "width": 142,
+          "height": 17
+        },
+        {
+          "x": 27,
+          "y": 49,
+          "width": 142,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.04,
+        "2x": 0.039
+      },
+      "deltaBudget": {
+        "1x": 3.9,
+        "2x": 4.0
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Contacts.png",
+        "crop": {
+          "x": 1136,
+          "y": 420,
+          "width": 384,
+          "height": 154
+        }
+      }
+    },
+    {
+      "name": "action-menu-light",
+      "description": "The same menu in Aqua, which no screenshot shows: where it opens and its fill.",
+      "example": "visual-action-menu",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 192,
+          "height": 77
+        },
+        "pixels": [
+          {
+            "x": 4.5,
+            "y": 4.5,
+            "color": "#f8f8f8",
+            "tolerance": 3,
+            "note": "the pointer is at 5,5: the page under the menu's soft shadow, not the menu (inferred position, contextual-menu.md)"
+          },
+          {
+            "x": 12,
+            "y": 8,
+            "color": "#f0f0f0",
+            "tolerance": 3,
+            "note": "menu fill 1 pt right of and below the pointer: the Aqua menu material over white (menu.md, fallback #f0f0f0)"
+          },
+          {
+            "x": 180,
+            "y": 68,
+            "color": "#f0f0f0",
+            "tolerance": 3,
+            "note": "menu fill near its far corner: the menu is 179 x 65 pt"
+          },
+          {
+            "x": 188.5,
+            "y": 40,
+            "color": "#e8e8e8",
+            "tolerance": 3,
+            "note": "beyond the menu's trailing edge and its hairline: the page under the menu's shadow"
+          }
+        ]
+      }
+    }
+  ]
+}

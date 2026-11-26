@@ -1,0 +1,221 @@
+---
+title: News
+description: The News app of macOS 10.15, an iPad app in a Mac window with the channels in its sidebar and the day's top stories beside it, built from the library alone.
+layout: full
+order: 120
+---
+
+<Example name="basic" />
+
+Click a channel for its stories and a story to read it. Back returns from a story; the Share
+button, which works while a story is open, copies its headline or saves it to Saved Stories;
+History lists what was opened. Nothing is fetched and nothing is real: where News shows the
+stories of the day, with their photographs and their publishers' logos, the demo shows
+invented headlines from invented publishers, of the same lengths, and an abstract placeholder
+for every picture.
+
+## What it shows
+
+The source is `demos/news/`: `news.tsx` is the app, `news-stories.tsx` a story and a list of
+them, `news-data.ts` the channels, the two
+editions and the stories, `news-artwork.tsx` the four drawings, `news.css` the feed's layout
+and `news.tokens.css` the app's own colours.
+
+- A [Window](/components/window) that holds a [Catalyst Chrome](/components/catalyst-chrome):
+  the 38 pt toolbar row with the [Window Controls](/components/window-controls), the centred
+  title, which names the window, and a [Toolbar](/components/toolbar). The row is the window's
+  drag region.
+- The toolbar has three [Toolbar Buttons](/components/toolbar-button), 39 pt wide, whose
+  glyphs are the library's [System Images](/components/system-image) `go-back`, `sidebar` and
+  `share`, and a [Toolbar Search Field](/components/toolbar-search-field), 161 pt wide.
+- The sidebar is the chrome's `CatalystSidebar` with three `CatalystSidebarGroup`s of
+  `CatalystSidebarItem`s; `selected` marks the row that is shown. It is 227 pt wide in Aqua and
+  234 pt in Dark Aqua, as measured, which `news.tsx` sets through the chrome's width variable.
+- The stories are in [Card Grids](/components/card-grid): two columns for the leads, three for
+  the smaller stories, two for a channel's list. The story itself is the app's own element
+  (`Story` in `news-stories.tsx`): an `article` with a picture, the publisher, the headline and the
+  story's age, in two layouts that one attribute chooses. The headline is a button, and its
+  area is the whole story.
+- The grids stand in the feed's column, so their own side margin is set to zero through the
+  grid's `--mac-card-grid-margin`, and a list's row gap through `--mac-card-grid-row-gap`. A
+  card grid keeps 32 pt of room under its cards, more than the 24 pt between Today's rows, so
+  the block after each grid begins 8 pt inside that room (`news.css`).
+- The feed's two lines are half a point thick, where the library's separator is a full point:
+  each is the edge of one of the app's own elements, the masthead and the row of More Top
+  Stories.
+- The Share button opens a [Menu](/components/menu) of [Menu Items](/components/menu-item).
+- An [Empty State](/components/empty-state) takes the list's place when a destination or a
+  search has no stories.
+
+| Control | What it does |
+| --- | --- |
+| A row of the sidebar | Shows that channel beside the sidebar and ends a search. Today is the feed of the screenshots; News Top Stories lists all of the day's stories; a topic lists its two. |
+| A story | Opens it: the publisher, the headline, the picture's placeholder and three paragraphs that say what the demo is. It is added to History. |
+| Back | Returns from a story to where it was opened. Unavailable while no story is open, as captured. |
+| The sidebar button | Hides the sidebar, and shows it again. |
+| Share | A menu that copies the headline to the clipboard, and saves the story to Saved Stories or removes it from there. Unavailable while no story is open, as captured. |
+| Search | Lists the stories whose headline or publisher contains the text, from every channel; Escape empties it. |
+| More Top Stories | Under Today's stories: shows the News Top Stories channel. |
+
+`News` takes an `edition`: the date under the masthead and the day's top stories.
+`news-data.ts` exports the two editions of the reference screenshots, `lightEdition`, the
+default, and `darkEdition`, a day later. Saved Stories and History are kept by the window for
+as long as the page is open.
+
+## On the desktop's Ferrite application
+
+On the desktop served by the `macalicious-desktop` Ferrite application (`ferrite-apps/desktop`),
+`News` is a real news reader (`news-live-window.tsx`, with its data in `news-live.ts` and its
+requests in `news-live-hooks.ts`); everywhere else, this page included, it is the demo above.
+
+- The stories are real: the server reads the RSS and Atom feeds of 22 publishers (BBC News,
+  NPR, The Guardian, The New York Times, Ars Technica and others) and of their topic sections,
+  through the application's declared egress, and keeps each feed for 15 minutes for every
+  reader. Each story is what its publisher puts in its feed: the headline, a summary, the
+  picture, loaded from the publisher, and the link.
+- Today leads with the newest stories of the channels the person follows (BBC News, NPR, The
+  Guardian and Ars Technica at first), two leads from different publishers. More Top Stories
+  lists all of them. Each topic merges the topic feeds of two or three publishers.
+- Discover Channels lists every publisher with Follow and Block; a channel's own page has the
+  same two buttons. A blocked channel's stories leave Today, the topics and search.
+- A story opens as its article when Safari's server route can read its page (`/api/safari/page`,
+  the sites Safari lists; nothing is kept, and it stays out of Safari's History), and otherwise with
+  its feed's summary and the reason. Read Full Story opens the article at its publisher:
+  in Safari when a Safari window is open (the `macalicious:open-url` event), otherwise in a new
+  browser tab. The Share menu opens it in Safari, copies its link, or saves it.
+- The menu bar carries the commands: File has Follow Channel and Share Story; Edit has Search
+  (Command-F); View has Show or Hide Sidebar (Option-Command-S), Go Back (Command-[), Go
+  to Today and Reload (Command-R); Story has Save Story (Command-S), Open in Safari and Block
+  Channel. Reload asks the server now; it answers the copy it keeps until that is 15 minutes old.
+- A secondary click on a story opens, saves, shares or copies it, and in History removes it from
+  there. On a channel's row it opens, follows or blocks the channel; on a topic's row it opens or
+  reloads the topic.
+- The channels followed and blocked, Saved Stories (at most 150) and History (the last 60
+  stories) are kept for the person on the server (`/api/news/library`). A saved story keeps a
+  short summary (300 characters), so it still says what it is about once its feed has moved on.
+- While the window is open it reads its feeds again when they are older than the server keeps
+  them, and a line under each title says when they were read or which could not be. A feed that
+  could not be read is left alone for two minutes. When the list of channels cannot be read the
+  window tries three times, then says News is not available and offers Try Again.
+
+## Hosting the window
+
+<Example name="hosted" />
+
+`News` renders the library's `Window` as its root and passes every `Window` prop to it, so it
+does not assume it fills the page. Place it with `style`; a window manager gives it `state`,
+the size, and eight more props that the component hands to the window controls and to the
+toolbar row, which is this window's drag region. These are the props a
+[Managed Window](/components/managed-window)'s `render` form supplies, so the component can be
+spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { app } from "./app";
+
+<ManagedWindow
+  id={app.id}
+  title={app.name}
+  resizable={app.resizable}
+  minWidth={app.minSize.width}
+  minHeight={app.minSize.height}
+  defaultFrame={{ x: 80, y: 60, ...app.defaultSize }}
+  render={(props) => <app.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `edition` | `NewsEdition` | The date and the top stories; `lightEdition` by default. |
+| `onClose`, `onMinimize`, `onZoom`, `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Called for a press with the primary button, or a double click, on the toolbar row itself, not on a control in it. |
+| `state` | `"key" \| "main" \| "inactive"` | The window's state. |
+| the rest | `WindowProps` | `width` (1222 by default), `height` (842), `style`, `className`, `ref` and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `newsApp` and as `app`: `id`, `name`,
+`component`, `defaultSize` (1222 by 842), `minSize` (760 by 420), `resizable` and `menus`, the
+menu titles after the Apple menu. The [Desktop](/demos/desktop) finds it there, so News is in
+its Dock.
+
+## Accessibility
+
+- The window is a `region` named by its title. The sidebar is a `navigation` landmark named
+  Channels; each group of rows is a `group` named by its header, and the row that is shown has
+  `aria-current="page"`.
+- The pane's title is a level 2 heading: the masthead with the date, a channel's name, or the
+  headline of the open story. "Top Stories" is a level 3 heading that names the grid of the
+  leads, and every headline is a heading one level under the one that names its list.
+- A story's headline is a button, so the keyboard opens a story; the button's area is the
+  whole story for the pointer. Opening a story moves the focus to its headline in the reader,
+  and Back returns it to the headline the story was opened with. More Top Stories moves it
+  to the title of the list it leads to. The pictures' placeholders, the play mark of a video story and
+  the rows' icons are decorative and hidden from assistive technology.
+- Back and Share stay in the toolbar's arrow-key order while they are unavailable, and say so
+  with `aria-disabled`. The sidebar button's name says what it will do: Hide Sidebar or Show
+  Sidebar.
+- The search field is a `searchbox` named Search.
+- The focus ring of a headline and of More Top Stories shows in the key window only.
+
+## Fidelity
+
+`news.visual.json` compares the demo with the two News screenshots, whole, window and shadow,
+in each appearance, twice: once with the demo's own content masked (`window-light`,
+`window-dark`), and once with the remaining text masked as well (`window-layout-light`,
+`window-layout-dark`).
+
+Masked in all four, because the screenshots hold other people's work there and the demo its
+own stand-ins, and the comparison is of Catalina's chrome and layout:
+
+- the five photographs, where the demo has an abstract placeholder;
+- the sixteen channel icons of the sidebar, where the demo has a tile of one colour with the
+  channel's initial;
+- the mark of the masthead, Apple's logo in the screenshots and a folded sheet in the demo;
+- each story's publisher and headline: the publishers' logos and the news of the day in the
+  screenshots, invented names and headlines in the demo;
+- in Dark Aqua, the scroll indicator at the pane's edge.
+
+The layout comparisons also mask the window's title, the three toolbar glyphs, the search
+field's glass and placeholder, the sidebar's headers and labels, the masthead, "Top Stories",
+the stories' ages and "MORE TOP STORIES".
+
+Scores from `npm run visual -- news/` (Chromium on Linux, fallback font), share of pixels that
+differ and mean colour distance out of 255:
+
+| Comparison | 1x | 2x |
+| --- | --- | --- |
+| `window-light` | 1.39%, 1.73 | 1.22%, 2.00 |
+| `window-layout-light` | 0.04%, 0.43 | 0.01%, 0.63 |
+| `window-dark` | 1.30%, 1.67 | 1.20%, 1.93 |
+| `window-layout-dark` | 0.03%, 0.60 | 0.07%, 0.82 |
+
+The budgets in `news.visual.json` are set just above these. What the whole-window scores hold
+beyond the layout scores is the text that both have, in the fallback font.
+
+Measured on the screenshots and reproduced: the window's frame (1222 by 842 pt in Aqua, 1257
+by 842 pt in Dark Aqua) and shadow; the sidebar's width in each appearance; the 820 pt column
+centred on the pane; the masthead's two lines and the line under them; "Top Stories" and its
+red; the two 399 by 300 pt pictures 22 pt apart; the three smaller stories with their 88 pt
+pictures; the line over "MORE TOP STORIES"; and the section's background, which deepens down
+the pane and ends 25 pt above the window's foot.
+
+What differs, and why:
+
+- **Content.** No story, photograph, publisher or logo of the screenshots is reproduced: the
+  headlines and the five publishers are invented, and the same placeholder stands for every
+  picture. The areas are masked in every comparison.
+- **Publishers.** A name in capitals where News shows a logo, at one height. The logos of the
+  Dark Aqua screenshot are less tall than those of the Aqua one, so its smaller stories, the
+  line under them and the section's foot sit 1.5 to 3 pt higher than in the demo, which
+  follows the Aqua screenshot. That is most of what the Dark Aqua layout score holds.
+- **Icons.** The sixteen channel icons are tiles with an initial; the toolbar's three glyphs
+  are the library's System Images.
+- **Typeface.** News sets its masthead and headlines in its own condensed face; the demo uses
+  the system font at the measured sizes, so lines break at other words.
+- **Scroll indicator.** The Dark Aqua screenshot shows the iOS scroll indicator; the demo's
+  pane has the browser's thin scroll bar, which shows only when the content is taller than
+  the pane.
+- **Not in a screenshot (provisional):** every channel but Today; the opened story; the search
+  results; the Share menu; Saved Stories and History; the window with the sidebar hidden, and
+  when it is not key.
+- **Not built:** fetching news, News+ and its issues, following and blocking channels, the
+  story's own layout and typography, notifications, and the menu bar's commands.

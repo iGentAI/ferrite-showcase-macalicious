@@ -1,0 +1,25 @@
+/*
+ * Window banner colours. light-dark(<Aqua>, <Dark Aqua>); tags as in CONTRIBUTING, "Token tags".
+ * Read from 10-15-Catalina-Light-Finder-Home.png and 10-15-Catalina-Dark-Finder-Home.png (the
+ * dark window is tinted by the desktop picture, so its greys are slightly blue).
+ */
+:root {
+  /* [measured] fill @ 1000,250 */
+  --mac-window-banner-fill: light-dark(#f0f0f0, #2a2e30);
+  /* [measured] the two 0.5 pt rows under the fill @ 1000,284 and @ 1000,285 */
+  --mac-window-banner-separator-inner: light-dark(#e1e1e1, #393d3f);
+  --mac-window-banner-separator-outer: light-dark(#cecece, #4c5052);
+  /* [measured] text, plateau of the glyph stems in row 262 */
+  --mac-window-banner-text: light-dark(#717171, #a6aaac);
+
+  /* Action button [provisional] in a banner: no banner shows one. The values are the round-rect
+     button of the Finder scope bar (Light/Dark-Finder-Search @ 2226,218 and @ 1880,218): a 1 pt
+     border of black at 30% / white at 36%, title black at 85% / #f3f4f7. */
+  --mac-window-banner-action-border: light-dark(rgb(0 0 0 / 0.3), rgb(255 255 255 / 0.36));
+  --mac-window-banner-action-border-disabled: light-dark(
+    rgb(0 0 0 / 0.15),
+    rgb(255 255 255 / 0.18)
+  );
+  --mac-window-banner-action-text: light-dark(rgb(0 0 0 / 0.85), #f3f4f7);
+  --mac-window-banner-action-fill-pressed: light-dark(rgb(0 0 0 / 0.12), rgb(255 255 255 / 0.16));
+}

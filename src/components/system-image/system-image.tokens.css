@@ -1,0 +1,16 @@
+/*
+ * System image values that differ between Aqua and Dark Aqua. An image is drawn in
+ * currentColor; these say which of its parts are filled with it in each appearance.
+ */
+:root {
+  /* [measured] The body of `tag` and `rotate-left`: outlined in Aqua, filled in Dark Aqua.
+     10-15-Catalina-Light-Finder-Home.png @ 1017..1050, 138..157: Edit Tags is a 1 pt outline
+     on the button's fill; 10-15-Catalina-Dark-Finder-Home.png @ 1015..1048, 138..157: the
+     same tag filled solid (#8f9192 on #67686a). Quick Look's Rotate Left page is an outline in
+     10-15-Catalina-Light-Finder-Quick-Look.png and filled in the Dark capture, and so is the
+     gallery's Preview pane in the two Gallery View captures. */
+  --mac-system-image-body: light-dark(transparent, currentColor);
+  /* [measured] The hole of `tag`: a filled 2 pt dot in Aqua, cut out of the filled tag in Dark
+     Aqua (the same two Finder Home captures, centred at 1025,148 and 1023,148). */
+  --mac-system-image-dot: light-dark(currentColor, transparent);
+}

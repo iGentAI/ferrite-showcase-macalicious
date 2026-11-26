@@ -1,0 +1,26 @@
+/*
+ * Sidebar badge colours (reference/spec/components/sidebar-badge.md).
+ */
+:root {
+  /* [provisional] pill fill in a key window. No capture shows a pill in a key window; Aqua is
+     the spec's inferred value (the secondary label colour on the sidebar, about #8a8b8b), and
+     the spec infers none for Dark Aqua, where the value measured in the inactive window is
+     reused. */
+  --mac-sidebar-badge-fill: light-dark(#8a8b8b, #a8a9ab);
+  /* [measured] pill fill in a window that is not key: Mail, whose window is inactive in both
+     captures (Light-Mail @ 390,320; Dark-Mail @ 380,318) */
+  --mac-sidebar-badge-fill-inactive: light-dark(#777777, #a8a9ab);
+  /* [provisional] pill on a selected row, unemphasised: the label colour at about 60%; the
+     digits take the row's highlight (sidebar #e7e8e8 / #2c2d2f under the sidebar selection) */
+  --mac-sidebar-badge-fill-selected: light-dark(rgb(0 0 0 / 0.51), rgb(255 255 255 / 0.6));
+  --mac-sidebar-badge-knockout-selected: light-dark(#c7c8c8, #505152);
+  /* [provisional] pill on an emphasised selection: white, with accent-coloured digits */
+  --mac-sidebar-badge-fill-emphasized: #ffffff;
+  /* [measured] plain number: Light-Reminders @ 636,599; dark from the Dark-Mail header colour */
+  --mac-sidebar-badge-text: light-dark(#686867, #a8a9ab);
+  /* [provisional] plain number on a grey selected row: Aqua measured (Light-Notes @ 454,217),
+     Dark Aqua not shown */
+  --mac-sidebar-badge-text-selected: light-dark(#8d8d8d, #a8a9ab);
+  /* [measured] plain number on an accent selected row: Dark-Notes @ 454,217 */
+  --mac-sidebar-badge-text-emphasized: #ffffff;
+}

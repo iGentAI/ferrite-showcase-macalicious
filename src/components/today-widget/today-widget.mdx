@@ -1,0 +1,125 @@
+---
+title: Today Widget
+description: A card of Notification Center's Today view, with a header band that names the app, and the system blocks of that view.
+---
+
+<Example name="basic" both />
+
+The host of a Today extension (`NCWidgetProviding`): a translucent card with the app's icon
+and name in a header band and content the widget draws itself. The same folder has the blocks
+macOS puts above the widgets: rows of switches, the date and the summary. They go in the Today
+view of a [Notification Center](/components/notification-center).
+
+## Usage
+
+```tsx
+import { Switch } from "macalicious/switch";
+import {
+  TodayWidget,
+  TodayWidgetDate,
+  TodayWidgetRow,
+  TodayWidgetSummary,
+} from "macalicious/today-widget";
+import "macalicious/switch.css";
+import "macalicious/today-widget.css";
+
+<TodayWidget aria-label="Quick settings">
+  <TodayWidgetRow label="Do Not Disturb"><Switch /></TodayWidgetRow>
+</TodayWidget>
+<TodayWidgetDate weekday="Thursday," date="October 3" />
+<TodayWidgetSummary><p>Partly Cloudy currently.</p></TodayWidgetSummary>
+<TodayWidget title="Stocks" icon={<StocksIcon />}>…</TodayWidget>
+```
+
+Or copy the source into your project: `npx macalicious add today-widget`. The widget does not
+use the switch itself; import its stylesheet only when a row holds one.
+
+The card has no blur of its own: it is an overlay on the material of the panel behind it, so
+put it on a Notification Center or on a backdrop of your own.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[Notification Center Widgets](https://web.archive.org/web/20200503144232/https://developer.apple.com/design/human-interface-guidelines/macos/extensions/notification-center-widgets/):
+
+- Show a small amount of timely, glanceable information, or one focused function. A widget is
+  not a small version of the app.
+- Keep interaction minimal; a click on the content opens the app.
+- Let the content decide the height at the fixed width, and do not scroll inside the card.
+- Use the system's text colours over the vibrant card, and do not draw a background of your
+  own.
+
+## Variants and states
+
+<Example name="system-cards" both hideCode />
+
+| Variant | How it is triggered | Look |
+| --- | --- | --- |
+| Widget | `title`, optionally `icon` | 26 pt header band with a 14 pt icon and the name in upper case, then the content |
+| System card | no `title` | The card alone |
+| Switch row | `TodayWidgetRow` in a card | 42.5 pt row: a 16 pt glyph, a semibold label in upper case, the control at the trailing edge; a divider from the label between rows |
+| Date | `TodayWidgetDate` | Two lines of 34 pt thin text straight on the panel |
+| Summary | `TodayWidgetSummary` | 12 pt paragraphs straight on the panel, with an optional glyph beside the first |
+
+The parts have no states of their own. Catalina blends the card with vibrancy, so one tint
+cannot reproduce every backdrop: the fill is fitted to the cards at the top of the panel over
+the sky of the default picture, and lower down, over the sea, the captured cards are darker
+than this card would be.
+
+Measured: the card, its edge, corner, header band, row heights, divider and the text colours,
+in both appearances. The corner is drawn with 7 pt, which matches the captured corner; the
+spec's figure of 4 pt was read from a smaller crop. Provisional: nothing drawn; the glyphs of
+the rows are the application's.
+
+## Sizes
+
+One size: 322 pt wide, as tall as the content. `--mac-today-widget-width` changes the width of
+the card, the date and the summary.
+
+## API
+
+<PropsTable name="TodayWidgetProps" />
+
+`className`, `style`, `ref` and other attributes go to the root element of each part.
+
+<PropsTable name="TodayWidgetRowProps" />
+
+<PropsTable name="TodayWidgetDateProps" />
+
+<PropsTable name="TodayWidgetSummaryProps" />
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-today-widget-width` | `322px` | Width of the card, the date and the summary. |
+| `--mac-today-widget-divider` | measured | Read it for dividers between rows of your own content. |
+| `--mac-today-widget-text-secondary` | measured | Read it for secondary text in the content, such as prices and hour labels. |
+
+## Accessibility
+
+- The card is a `<section>`: a `region` named by its title. A card without a title needs an
+  `aria-label`.
+- The icon and the glyphs are decorative and hidden from assistive technology.
+- A switch row is a `<label>`: its label names the control inside it, and a click anywhere on
+  the row operates the control. The control keeps its own keyboard behaviour and focus ring.
+- The date and the summary are plain text.
+- In forced-colours mode the card has a border.
+
+## Visual comparison
+
+`visual-switches` reproduces the card of switches at the top of the Today view over the panel
+colours measured around it. The row labels are masked (the fallback font off Apple platforms)
+together with the two glyphs, which are Apple artwork; the switches are compared. Results in
+Chromium on Linux, at a colour distance of 0.05:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Switches card, Aqua | 0.42% of pixels differ | 0.98% |
+| Switches card, Dark Aqua | 0.53% | 1.16% |
+
+What differs is the outline of the second switch, which the capture draws half a point higher
+in its row. `visual-header` checks the header band and the body of a titled widget against
+the card's tokens composited over the panel colour, because the captured widgets with a header
+lie over the part of the picture that one tint does not reproduce (see Variants and states).
+
+Not compared: the date and the summary, which are text alone, and the content of the Calendar,
+Stocks and Weather widgets, which is the application's.

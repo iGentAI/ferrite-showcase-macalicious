@@ -1,0 +1,67 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "pending": "No reference: no screenshot shows the Fonts panel, and no spec measures it; its layout is inferred from AppKit's NSFontPanel. The checks below hold it to the measured colours of the window and lists it is built from, and to the format it is given.",
+  "comparisons": [
+    {
+      "name": "panel-light",
+      "description": "The panel showing Georgia Bold 14 in red, underlined, Aqua. The panel is at 20, 20 and 444 pt wide.",
+      "example": "visual-panel",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 484, "height": 300 },
+        "pixels": [
+          { "x": 10, "y": 10, "color": "#ffffff", "note": "page beside the panel" },
+          {
+            "x": 440,
+            "y": 60,
+            "color": "#ececec",
+            "note": "the panel's body: window background (measured on every window)"
+          },
+          {
+            "x": 270,
+            "y": 221,
+            "color": "#dcdcdc",
+            "note": "the family given (Georgia) is the selected row, unemphasised while the list has no focus (measured in Mail's message list)"
+          },
+          { "x": 370, "y": 137, "color": "#dcdcdc", "note": "the typeface Bold" },
+          { "x": 440, "y": 205, "color": "#dcdcdc", "note": "the size given (14) is selected" },
+          { "x": 270, "y": 190, "color": "#ffffff", "note": "a list's rows: text background" },
+          { "x": 221, "y": 61, "color": "#ff0000", "note": "the text colour given, in its well" }
+        ]
+      }
+    },
+    {
+      "name": "panel-dark",
+      "description": "The same in Dark Aqua.",
+      "example": "visual-panel",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 484, "height": 300 },
+        "pixels": [
+          { "x": 10, "y": 10, "color": "#000000", "note": "page beside the panel" },
+          {
+            "x": 440,
+            "y": 60,
+            "color": "#323232",
+            "note": "the panel's body: window background in Dark Aqua (measured)"
+          },
+          {
+            "x": 270,
+            "y": 221,
+            "color": "#464646",
+            "note": "the family given, unemphasised selection in Dark Aqua (measured in Mail)"
+          },
+          { "x": 370, "y": 137, "color": "#464646", "note": "the typeface Bold" },
+          { "x": 440, "y": 205, "color": "#464646", "note": "the size 14" },
+          {
+            "x": 270,
+            "y": 190,
+            "color": "#1d1e1f",
+            "note": "a list's rows: text background in Dark Aqua"
+          },
+          { "x": 221, "y": 61, "color": "#ff0000", "note": "the text colour given, in its well" }
+        ]
+      }
+    }
+  ]
+}

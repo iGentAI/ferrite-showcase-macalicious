@@ -1,0 +1,338 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "transcript-light",
+      "description": "The header, the sent two-line bubble, Delivered and the received bubble of the Messages transcript, Aqua. The Messages window is not key in the screenshot. Whole crop.",
+      "example": "visual-transcript",
+      "appearance": "light",
+      "windowState": "inactive",
+      "budget": { "1x": 0.058, "2x": 0.046 },
+      "deltaBudget": { "1x": 4.8, "2x": 4.4 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Messages.png",
+        "crop": { "x": 1300, "y": 230, "width": 900, "height": 250 }
+      }
+    },
+    {
+      "name": "transcript-light-masked",
+      "description": "As transcript-light with the header, the two messages' text and Delivered masked, which are set in the fallback font off Apple platforms: scores the bubbles, their corners, the gradient and both tails.",
+      "example": "visual-transcript",
+      "appearance": "light",
+      "windowState": "inactive",
+      "masks": [
+        { "x": 120, "y": 0, "width": 220, "height": 32 },
+        { "x": 181, "y": 39, "width": 246, "height": 34 },
+        { "x": 380, "y": 77, "width": 64, "height": 14 },
+        { "x": 20, "y": 100, "width": 138, "height": 16 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0015, "2x": 0.0013 },
+      "deltaBudget": { "1x": 0.1, "2x": 0.12 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Messages.png",
+        "crop": { "x": 1300, "y": 230, "width": 900, "height": 250 }
+      }
+    },
+    {
+      "name": "transcript-dark",
+      "description": "The same part of the transcript, Dark Aqua; the dark window sits 12 px right of and 8 px above the light one, and its time line reads Yesterday. Whole crop.",
+      "example": "visual-transcript-dark",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "budget": { "1x": 0.062, "2x": 0.049 },
+      "deltaBudget": { "1x": 5.3, "2x": 4.9 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Messages.png",
+        "crop": { "x": 1312, "y": 222, "width": 900, "height": 250 }
+      }
+    },
+    {
+      "name": "transcript-dark-masked",
+      "description": "As transcript-dark with the header, the two messages' text and Delivered masked, which are set in the fallback font off Apple platforms: scores the bubbles, their corners, the gradient and both tails.",
+      "example": "visual-transcript-dark",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "masks": [
+        { "x": 120, "y": 0, "width": 220, "height": 32 },
+        { "x": 181, "y": 39, "width": 246, "height": 34 },
+        { "x": 380, "y": 77, "width": 64, "height": 14 },
+        { "x": 20, "y": 100, "width": 138, "height": 16 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0014, "2x": 0.0015 },
+      "deltaBudget": { "1x": 0.11, "2x": 0.13 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Messages.png",
+        "crop": { "x": 1312, "y": 222, "width": 900, "height": 250 }
+      }
+    },
+    {
+      "name": "states-light",
+      "description": "What no screenshot shows, Aqua: a received bubble without a tail, a green text-message bubble with one and a blue bubble without.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 300, "height": 99 },
+        "pixels": [
+          {
+            "x": 22,
+            "y": 22,
+            "color": "#e5e5ea",
+            "note": "received fill beside the text (spec: Colours, received fill, measured)"
+          },
+          {
+            "x": 14,
+            "y": 33,
+            "color": "#ffffff",
+            "note": "transcript background where the tail of the received bubble would be: tail off (spec: Variants, tail, inferred)"
+          },
+          {
+            "x": 278,
+            "y": 54,
+            "color": "#5cd568",
+            "tolerance": 3,
+            "note": "middle of the green bubble: halfway between the two provisional text-message tokens #5fd76b and #59d365"
+          },
+          {
+            "x": 284.2,
+            "y": 64.8,
+            "color": "#59d365",
+            "tolerance": 3,
+            "scale": 2,
+            "note": "inside the tail of the green bubble, 1.2 pt beyond its edge and 1.2 pt above its bottom: the gradient's lower colour (provisional token)"
+          },
+          {
+            "x": 285,
+            "y": 90,
+            "color": "#ffffff",
+            "note": "transcript background where the tail of the blue bubble would be: tail off"
+          },
+          {
+            "x": 278,
+            "y": 79,
+            "color": "#48b5fa",
+            "tolerance": 3,
+            "note": "middle of the blue bubble: halfway between #4bb7fa and #44b3f9 (spec: Colours, sent fill, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-dark",
+      "description": "What no screenshot shows, Dark Aqua: a received bubble without a tail, a green text-message bubble with one and a blue bubble without.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 300, "height": 99 },
+        "pixels": [
+          {
+            "x": 22,
+            "y": 22,
+            "color": "#555555",
+            "note": "received fill beside the text (spec: Colours, received fill, measured)"
+          },
+          {
+            "x": 14,
+            "y": 33,
+            "color": "#1d1e1f",
+            "note": "transcript background where the tail of the received bubble would be: tail off"
+          },
+          {
+            "x": 278,
+            "y": 54,
+            "color": "#31c64d",
+            "tolerance": 3,
+            "note": "middle of the green bubble: halfway between the two provisional text-message tokens #32c84e and #30c44c"
+          },
+          {
+            "x": 284.2,
+            "y": 64.8,
+            "color": "#30c44c",
+            "tolerance": 3,
+            "scale": 2,
+            "note": "inside the tail of the green bubble: the gradient's lower colour (provisional token)"
+          },
+          {
+            "x": 285,
+            "y": 90,
+            "color": "#1d1e1f",
+            "note": "transcript background where the tail of the blue bubble would be: tail off"
+          },
+          {
+            "x": 278,
+            "y": 79,
+            "color": "#057cf5",
+            "tolerance": 3,
+            "note": "middle of the blue bubble: halfway between #057df6 and #047bf3 (spec: Colours, sent fill, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sending-light",
+      "description": "A message still being sent, Aqua: the sent bubble at half opacity over the transcript.",
+      "example": "visual-sending",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 300, "height": 42 },
+        "pixels": [
+          {
+            "x": 278,
+            "y": 22,
+            "color": "#a4dafd",
+            "tolerance": 3,
+            "note": "middle of the bubble: the sent fill #48b5fa at 50% over the transcript #ffffff (spec: States, sending = 50% opacity, inferred)"
+          },
+          {
+            "x": 290,
+            "y": 22,
+            "color": "#ffffff",
+            "note": "transcript background beyond the bubble"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sending-dark",
+      "description": "A message still being sent, Dark Aqua: the sent bubble at half opacity over the transcript.",
+      "example": "visual-sending",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 300, "height": 42 },
+        "pixels": [
+          {
+            "x": 278,
+            "y": 22,
+            "color": "#114d8a",
+            "tolerance": 3,
+            "note": "middle of the bubble: the sent fill #057cf5 at 50% over the transcript #1d1e1f (spec: States, sending = 50% opacity, inferred)"
+          },
+          {
+            "x": 290,
+            "y": 22,
+            "color": "#1d1e1f",
+            "note": "transcript background beyond the bubble"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rtl-light",
+      "description": "A right-to-left transcript, Aqua: the sent bubble is at the left with its tail beyond its left edge, the received one at the right with its tail beyond its right edge.",
+      "example": "visual-rtl",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 300, "height": 74 },
+        "pixels": [
+          {
+            "x": 22,
+            "y": 22,
+            "color": "#48b5fa",
+            "tolerance": 3,
+            "note": "middle of the sent bubble, which starts at the left margin: halfway between #4bb7fa and #44b3f9 (spec: Colours, sent fill, measured)"
+          },
+          {
+            "x": 15.6,
+            "y": 32.8,
+            "color": "#44b3f9",
+            "tolerance": 3,
+            "scale": 2,
+            "note": "inside the tail of the sent bubble, 1.2 pt beyond its left edge and 1.2 pt above its bottom: the gradient's lower colour"
+          },
+          {
+            "x": 278,
+            "y": 54,
+            "color": "#e5e5ea",
+            "note": "the received bubble, which ends at the right margin (spec: Colours, received fill, measured)"
+          },
+          {
+            "x": 284.2,
+            "y": 64.8,
+            "color": "#e5e5ea",
+            "tolerance": 3,
+            "scale": 2,
+            "note": "inside the tail of the received bubble, 1.2 pt beyond its right edge and 1.2 pt above its bottom"
+          },
+          {
+            "x": 284.2,
+            "y": 32.8,
+            "color": "#ffffff",
+            "note": "transcript background at the right margin beside the sent bubble's row: no tail there"
+          },
+          {
+            "x": 15.6,
+            "y": 64.8,
+            "color": "#ffffff",
+            "note": "transcript background at the left margin beside the received bubble's row: no tail there"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rtl-dark",
+      "description": "A right-to-left transcript, Dark Aqua: the sent bubble's tail is beyond its left edge and the received bubble's beyond its right edge.",
+      "example": "visual-rtl",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 300, "height": 74 },
+        "pixels": [
+          {
+            "x": 22,
+            "y": 22,
+            "color": "#057cf5",
+            "tolerance": 3,
+            "note": "middle of the sent bubble, which starts at the left margin: halfway between #057df6 and #047bf3 (spec: Colours, sent fill, measured)"
+          },
+          {
+            "x": 278,
+            "y": 54,
+            "color": "#555555",
+            "note": "the received bubble, which ends at the right margin (spec: Colours, received fill, measured)"
+          },
+          {
+            "x": 15.6,
+            "y": 32.8,
+            "color": "#047bf3",
+            "tolerance": 3,
+            "scale": 2,
+            "note": "inside the tail of the sent bubble, beyond its left edge: the gradient's lower colour"
+          },
+          {
+            "x": 284.2,
+            "y": 64.8,
+            "color": "#555555",
+            "tolerance": 3,
+            "scale": 2,
+            "note": "inside the tail of the received bubble, beyond its right edge"
+          }
+        ]
+      }
+    },
+    {
+      "name": "forced-colors-light",
+      "description": "Forced colours: a bubble keeps an outline, one point wide in the system's text colour around the system's background. The colours are the browser's emulated system colours, not Catalina's.",
+      "example": "visual-states",
+      "appearance": "light",
+      "forcedColors": true,
+      "expect": {
+        "pixels": [
+          {
+            "x": 17.5,
+            "y": 22,
+            "color": "#000000",
+            "tolerance": 4,
+            "note": "leading edge of the received bubble: CanvasText"
+          },
+          {
+            "x": 22,
+            "y": 22,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "inside the received bubble: Canvas"
+          }
+        ]
+      }
+    }
+  ]
+}

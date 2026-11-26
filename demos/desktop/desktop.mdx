@@ -1,0 +1,292 @@
+---
+title: Desktop
+description: The Catalina desktop as one page, with the menu bar, the Dock and the desktop's icons, running every demo application as a window that can be moved, resized, minimized, zoomed and closed.
+layout: full
+order: 1
+---
+
+<Example name="basic" />
+
+Click a tile in the Dock to open an application. Drag a window by its title bar, resize it at
+its edges and corners, and use its three buttons: red closes it, yellow sends it to the Dock,
+where a click on its tile brings it back, and green enters full screen (hold Option to zoom
+instead). The menu bar shows the menus of the application whose window is key, and Finder's
+while no window is open. Open **System Preferences** from the Apple menu or its tile in the
+Dock and choose General to switch the appearance and the accent colour of the whole page.
+
+## The applications
+
+Every demo in `demos/` that exports a descriptor is in the Dock: the desktop finds them when
+the page is built, so a demo that is added later appears here without a change to this page.
+These are the demo pages of this site:
+
+<PageList group="Demos" />
+
+## What it shows
+
+- A [Window Manager](/components/window-manager) as the screen. Each application is a
+  [Managed Window](/components/managed-window) in its `render` form: the manager places,
+  sizes, orders and focuses the window, and the application draws it.
+- A [Menu Bar](/components/menu-bar) fixed to the top edge: the Apple menu with the rows of
+  the Apple-Menu screenshots, the front application's [Menus](/components/menu) of
+  [Menu Items](/components/menu-item) and [Submenus](/components/submenu), and the
+  [Menu Bar Extras](/components/menu-bar-extra) of the Desktop screenshots with a clock that
+  keeps the time.
+- A [Dock](/components/dock): Finder, Launchpad, one tile per application with a dot under
+  the ones that are running, a tile for every minimized window after the separator, a
+  Downloads [Dock Stack](/components/dock-stack) that opens as a fan, and the Trash. The tiles
+  shrink from 64 pt towards a least size of 12 pt to fit the desktop's width.
+- [Launchpad](/components/launchpad), [Spotlight](/components/spotlight) and
+  [Siri](/components/siri) over the windows, one at a time. Launchpad lists the desktop's
+  applications and Spotlight searches their names; choosing one opens it. Siri answers nothing:
+  its window shows what a request would look like.
+- A [Desktop](/components/desktop) behind the windows with two volumes as
+  [Desktop Icons](/components/desktop-icon) and two [Desktop Stacks](/components/desktop-stack).
+- The appearance and the accent colour, switched for the whole page. The General pane of the
+  [System Preferences](/demos/system-preferences) demo sets `data-appearance` and
+  `data-accent` on the page, so every window, menu and popup follows. A desktop whose `apps`
+  have no System Preferences brings a General window of its own: the appearance as three
+  thumbnails and the accent colour as eight swatches, both a
+  [Color Swatch Picker](/components/color-swatch-picker), set with the helpers of
+  `macalicious/lib/appearance`; the page gets back what it had when that desktop is removed.
+
+| Command | Where |
+| --- | --- |
+| Open an application | Its Dock tile; Launchpad; Spotlight, Return on a result or a double click; Apple menu, Recent Items; Finder's Go menu, Applications |
+| Launchpad | Its Dock tile shows and hides it; Escape or a click on its background closes it |
+| Spotlight, Siri | Their extras in the menu bar show and hide them; Escape in an empty field, or a press beside the window, closes Spotlight, and Siri has a close button |
+| Bring a window forward | A press anywhere in it; its application's Dock tile; the Window menu |
+| Move, resize | The title bar; the edges and corners. Control-Option with the arrow keys moves, and with Shift resizes |
+| Minimize, zoom, full screen | The window's buttons; the Window and View menus; Control-Option-M, Z and F |
+| Hide, hide others, show all | The application menu |
+| Preferences | The application menu, Preferences…; Command-comma, or Control-comma off Apple platforms, while the application is in front |
+| Close, quit | The red button; File, Close Window; the application menu, Quit |
+
+The menus of an application come from the titles its descriptor names. The desktop fills each
+from its title with the commands it can carry out on the application's windows, and dims the
+rest; a title it knows nothing about holds one dimmed row. In the Apple menu and the status
+menus, the rows that open preferences open System Preferences, About This Mac and Force Quit…
+open the [About This Mac](/demos/about-this-mac) and [Force Quit](/demos/force-quit) windows,
+the applications listed under Recent Items open, and the other rows do nothing.
+
+## Hosting an application
+
+The desktop reads `app` from every `demos/<app>/app.ts`:
+
+```ts
+export const app = {
+  id: "notes", // the folder's name; the window's and the application's id
+  name: "Notes", // the Dock label and the title of the application menu
+  component: Notes, // its root is the library's Window
+  defaultSize: { width: 1000, height: 666 },
+  minSize: { width: 1000, height: 300 }, // optional
+  resizable: true, // optional; false disables zoom and removes the resize handles
+  zoomButton: "zoom", // optional; for a window without full screen
+  sizesItself: true, // optional; the component takes onFrameSizeChange and is given that frame
+  preferences: "own", // optional; or a second window of the desktop, see Preferences below
+  windows: true, // optional; the component opens further windows, see Further windows below
+  menus: ["Notes", "File", "Edit", "Format", "View", "Window", "Help"],
+};
+```
+
+`component` is rendered by a managed window's `render` form, so it takes the props of a
+`Window` and eight more, which it takes out before the rest goes to its `Window`: `onClose`,
+`onMinimize`, `onZoom`, `zoomRole`, `minimizeDisabled` and `zoomDisabled` for its
+`WindowControls`, and `onDragRegionPointerDown` and `onDragRegionDoubleClick` for its
+`TitleBar`. A window opens at `defaultSize`, or at what the desktop has room for when it is
+resizable, centred, a third of the way down the space between the menu bar and the Dock.
+
+Two demos say the last two things in the prose of their descriptors and not as fields, so the
+desktop adds them by the demo's id: a Stickies note zooms, and System Preferences is resized
+to the frame of each pane, which it reports through `onFrameSizeChange`. Stickies opens as one
+note of its default size.
+
+### Preferences
+
+An application whose descriptor names its `preferences` has a Preferences… command in its
+application menu, and Command-comma (Control-comma off Apple platforms) gives it while the
+application is in front. A descriptor without `preferences` leaves the command dimmed. There
+are two forms:
+
+```ts
+// A second window that the desktop hosts beside the main one (Calendar).
+preferences: {
+  component: CalendarPreferences, // its root is the library's PreferencesWindow
+  defaultSize: { width: 537, height: 542 },
+  title: "Calendar Preferences", // optional; this is what it is when left out
+  sharesSettings: true, // optional
+},
+
+// The application renders its Preferences window itself (Mail, Music, Podcasts).
+preferences: "own",
+```
+
+| Form | What `component` is given | What the desktop does |
+| --- | --- | --- |
+| a window | nothing for it: the desktop takes Command-comma before the application's windows see the key | Opens `preferences.component` as a second [Managed Window](/components/managed-window) of the same application, or brings it forward: it is moved by its title bar, minimized into the Dock, listed in the Window menu and closed by itself. The application runs while either window is open. |
+| `"own"` | `preferencesOpen` and `onPreferencesOpenChange`, which it calls with `true` on its own Command-comma and with `false` when its Preferences close | Sets `preferencesOpen`, and while they are open brings them forward: the desktop raises a `DesktopWindow` that says `isPreferences`, and any other form listens with `useOwnPreferencesRaised`. The window is the application's: where it stands and how it is moved are its own, and it goes with the main window. |
+
+`preferences.component` has the library's [Preferences Window](/components/preferences-window)
+as its root and hands it every prop it is given (`state`, `width`, `style`, `onClose`,
+`controls`, `onPointerDown`, `ref`). The window opens at `defaultSize`, cannot be resized, and
+keeps its width; its height is that of the pane it shows, as in Catalina, and the frame
+follows it. With `sharesSettings: true`, `preferences.component` is also given `settings` and
+`onSettingsChange` (always both, so it may declare them required), and the main `component`
+is given `settings`: what `onSettingsChange` was last called with, and `undefined` before
+that, when each window shows its own default.
+
+### Further windows
+
+An application that opens more windows than its main one (Mail's New Message window, the
+Finder's Info window and Quick Look) says `windows: true` in its descriptor. Its `component`
+is then given `DesktopWindow`, a component that renders one of them as a window of the
+desktop. The application renders a `DesktopWindow` where it would otherwise render the window
+itself, for as long as the window is open, and keeps what the window shows; the desktop
+places it, moves it, orders it with the other windows, focuses it, lists it in the Window
+menu and minimizes it into the Dock, as a window of the same application.
+
+```tsx
+function Mail({ DesktopWindow, ...props }: MailProps) {
+  const [draft, setDraft] = useState<MailDraft | null>(null);
+  return (
+    <>
+      <Window {...props}>…</Window>
+      {DesktopWindow && draft ? (
+        <DesktopWindow
+          id="compose"
+          title="New Message"
+          defaultSize={{ width: 886, height: 585 }}
+          onClose={() => setDraft(null)}
+          render={(windowProps) => <MailCompose {...windowProps} defaultDraft={draft} />}
+        />
+      ) : null}
+    </>
+  );
+}
+```
+
+| Prop of `DesktopWindow` | Use |
+| --- | --- |
+| `id` | Names the window among the application's own; on the desktop it is `<app>:<id>`. Not `"preferences"`, which is the id of hosted Preferences: that id is refused. |
+| `title` | Its name in the Window menu and on its Dock tile while it is minimized. |
+| `defaultSize` | The frame it opens at, in points. |
+| `minSize`, `resizable`, `zoomButton` | As in the descriptor, for this window; resizable when left out. |
+| `panel` | A utility panel: it floats above the ordinary windows, and the front one stays main while it is key. |
+| `fitsContent` | The window is as tall as what it shows (an Info window whose sections open and close): `render` is given `style` with an automatic height and no `height`, and the frame follows the window. Such a window is not resizable, whatever `resizable` says. |
+| `dragRegion` | A selector for the part that moves a window whose root takes no drag region callbacks (an [Inspector Panel](/components/inspector-panel), a [Quick Look Panel](/components/quick-look-panel)): `render` is given an `onPointerDown` for the window's root. |
+| `onClose` | Called when the window is closed from the desktop; the application then stops rendering it. |
+| `render` | The window: a component whose root is a window of the library, given the props a managed window's `render` form supplies, as `component` is. |
+
+The windows are the main window's to render. When the main window closes while a further window that is no panel is
+open, the main window stays mounted out of sight (`desktop-hidden.ts`) until the last of them closes, so the further
+windows stay, as on a Mac. A panel goes when the last other window of its application has gone, and all of them go with the
+application's Quit command. Without `windows` in the descriptor no `DesktopWindow` is given,
+and an application's further windows are its own to place, as on its demo page.
+
+`CatalinaDesktop` takes the applications as `apps`, for a desktop with others than the demos:
+
+```tsx
+import { CatalinaDesktop } from "./desktop";
+
+<CatalinaDesktop apps={[notesApp, calculatorApp]} defaultOpen={["notes"]} style={{ height: 720 }} />;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `apps` | descriptors | The applications. By default every demo found in `demos/`. |
+| `defaultOpen` | ids | The applications whose windows are open at first. |
+| `clock` | `string` | Pins the text of the menu bar clock. Without it the clock shows the time. |
+| `userName` | `string` | The user in the menu bar and the Apple menu; `"Stephen"` as captured. |
+| `stacks` | `boolean` | Whether the desktop shows its two stacks; `true` by default. |
+| the rest | `WindowManagerProps` | `style`, `className`, `ref` and so on. Give the desktop a size. |
+
+## Accessibility
+
+- The menu bar is a `menubar`, and the status menus are a second one named "Status menus".
+  Left and Right Arrow move between titles, Down Arrow opens a menu, and Escape closes it.
+- The desktop is a group named "Desktop"; its icons are buttons that the arrow keys move
+  between, and Return opens one.
+- Each window is a `region` named by its title. A window opened or brought forward by a
+  command takes the keyboard focus; the window manager's key commands (Control-Option with
+  the arrow keys, M, W, Z, F and the backquote) act on the key window.
+- The Dock is a `toolbar` named "Dock" with one tab stop. Its tiles are buttons named after
+  their applications; a running application is described as "running", and a minimized
+  window's tile is named with its title and "minimized window".
+- While a full-screen window is key it covers the menu bar and the Dock, which are then
+  `inert`.
+- The pictures are decorative and hidden from assistive technology.
+
+## Fidelity
+
+`desktop.visual.json` compares the desktop, set up as the captures are (a 1680 by 1050 pt
+screen with Finder in front and the captured Dock: Finder, Launchpad and sixteen applications
+that are stand-ins with the captured names), with the Desktop and Apple-Menu screenshots in
+both appearances.
+Scores from `npm run visual -- desktop/` in Chromium on Linux with the fallback font: the share
+of pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `menu-bar-light` | 8.73% | 13.37 | 7.39% | 14.28 |
+| `menu-bar-light-surface` (masked) | 0.00% | 4.47 | 0.00% | 4.92 |
+| `menu-bar-dark` | 8.99% | 12.77 | 7.75% | 13.39 |
+| `menu-bar-dark-surface` (masked) | 0.00% | 1.38 | 0.00% | 1.62 |
+| `apple-menu-light` | 8.20% | 13.07 | 7.38% | 14.70 |
+| `apple-menu-light-drawing` (masked) | 0.00% | 5.86 | 0.01% | 5.98 |
+| `apple-menu-dark` | 8.39% | 11.44 | 7.68% | 13.16 |
+| `apple-menu-dark-drawing` (masked) | 0.04% | 4.26 | 0.06% | 4.49 |
+| `dock-light` (tiles masked) | 0.00% | 6.03 | 0.01% | 6.03 |
+| `dock-dark` (tiles masked) | 0.00% | 2.74 | 0.00% | 2.73 |
+
+The whole-crop comparisons of the menu bar and the Apple menu mostly measure text in the
+fallback font and the stand-in images; their masked companions score the drawing. The mean
+difference that remains there is the desktop picture showing through the materials.
+
+What differs, and why:
+
+- **The desktop picture.** Catalina's picture is Apple's and is not shipped. The stand-in is
+  two gradients that follow the picture's colours behind the menu bar, the Apple menu and the
+  Dock, so the whole screen is not compared: only the menu bar, the Apple menu and the Dock
+  are. The backdrop is a plain gradient standing in for the wallpaper, not a drawing of it.
+  The demo shows an original generated island photograph over that gradient; the visual
+  examples leave the photograph out (`ReferenceDesktop`), so the translucent bar, menu and Dock
+  are compared over the gradient and no pixel of the generated picture is compared.
+- **Artwork.** The Dock's icons, the Apple mark and the status images are stand-in drawings
+  of the measured sizes. The Dock comparison masks the tiles.
+- **Text.** Off Apple devices the titles are set in the fallback font.
+- **Not compared here:** Spotlight, Siri and Launchpad are on the desktop, drawn with the
+  library's components, which are compared with the Spotlight, Siri and Launchpad screenshots
+  on their own pages: [Spotlight](/components/spotlight), [Siri](/components/siri) and
+  [Launchpad](/components/launchpad). The desktop's own versions hold its applications and
+  stand-in content, not what those screenshots show.
+- **Notification Center** opens from its extra in the menu bar, drawn with the library's
+  component, which is compared with the Notification-Center screenshots on
+  [its own page](/components/notification-center). When the desktop is served by its Ferrite
+  application, it lists what every app delivered to the signed-in person, live, grouped by app,
+  and its Today view adds the Do Not Disturb switch and widgets with the person's own Calendar
+  events, Reminders due and Stocks watchlist, and the weather at the places they choose from
+  Open-Meteo; notifications also come in as banners and alerts
+  at the top trailing corner (the library's [Notification Alert](/components/notification-alert)),
+  and an Option-click on the extra turns Do Not Disturb on or off. Every other build shows the
+  date and no notifications. No reference screenshot shows a banner on the desktop or the
+  widgets' content, so their placement and rows are not compared.
+- **Mission Control and the application switcher** use the live windows, scaled apart. F3 or
+  Control-Up shows every window, Control-Down the front application's, and Show All Windows in a
+  Dock tile's menu that application's. Control-Option-D shows the desktop. Option-Tab or Option-`
+  brings up the switcher: keep Option held, Tab steps, Q quits, H hides, the Down Arrow shows that
+  application's windows and letting go chooses. A page cannot have Command-Tab or a swipe.
+- **Spaces** are in Mission Control's bar: add, remove, drag to reorder, and drag a window's thumbnail
+  onto one. Control-Left and Control-Right move between them, Control-Option-1 to 9 go to one, and a
+  window brought forward from the Dock takes you to its Space. Each window is on one Space; the icons,
+  the Dock and the menu bar are shared. Off a Mac those keys come to the page, and a list, table or icon
+  view inside the desktop leaves Control with an arrow alone (`data-system-arrows`), so that it reaches
+  the application in front and then the desktop, as on a Mac.
+- **Compared elsewhere:** the open Downloads fan of the Stacks screenshots, on the
+  [Dock Stack](/components/dock-stack) page, and the battery menu of the Menu-Bar-Battery
+  screenshots, on the [Menu Bar Extra](/components/menu-bar-extra) page.
+- **Key equivalents:** the keys shown in the menus run their commands while the focus is on the
+  desktop, and on the page's body when the desktop fills the page, so they work with no window
+  open. A desktop embedded in a page leaves a key pressed outside it to the page. A browser keeps
+  some of them for itself, such as Command-Q and Command-W.
+- **Not built:** each
+  application has one main window on the desktop unless its descriptor names `newWindowTitle`.

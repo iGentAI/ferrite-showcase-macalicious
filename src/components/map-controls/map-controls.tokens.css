@@ -1,0 +1,46 @@
+/*
+ * Map controls: values no shared token holds. Edges are translucent, solved against the land
+ * colour behind the controls in Maps and Find My (#f9f5ed, Dark Aqua #2b2d2f). Evidence for
+ * each value is on the docs page and in reference/spec/components/map-controls.md.
+ */
+:root {
+  /* [measured] Maps */
+  --mac-map-controls-face: light-dark(#ffffff, #666869);
+  /* [provisional] */
+  --mac-map-controls-face-pressed: light-dark(#e6e6e6, #7b7d7e);
+  /* [measured] half-point edge over a face: a ring, darker at the bottom; Dark Aqua adds a
+     highlight under the top edge */
+  --mac-map-controls-edge:
+    inset 0 0 0 0.5px light-dark(rgb(0 0 0 / 0.19), rgb(0 0 0 / 0.6)),
+    inset 0 -0.5px 0 rgb(0 0 0 / 0.12),
+    inset 0 1px 0 light-dark(transparent, rgb(255 255 255 / 0.2));
+  /* [measured] the same edge around the hole in the compass */
+  --mac-map-controls-hole-edge:
+    0 0 0 0.5px light-dark(rgb(0 0 0 / 0.19), rgb(0 0 0 / 0.6)), 0 -0.5px 0 0.5px rgb(0 0 0 / 0.12),
+    0 1px 0 0.5px light-dark(transparent, rgb(255 255 255 / 0.2));
+  /* [measured, fitted] */
+  --mac-map-controls-shadow: 0 0.5px 1px light-dark(rgb(0 0 0 / 0.14), rgb(0 0 0 / 0.16));
+  /* [measured] */
+  --mac-map-controls-glyph: light-dark(#262626, #e8e8e8);
+  --mac-map-controls-chevron: light-dark(#404040, #e8e8e8);
+  /* [provisional] */
+  --mac-map-controls-opacity-disabled: 0.3;
+
+  /* [measured] Find My's borderless button; its shadow is fitted */
+  --mac-map-controls-rounded-face: light-dark(#ffffff, #67676a);
+  --mac-map-controls-rounded-shadow: 0 0.5px 3px light-dark(rgb(0 0 0 / 0.07), rgb(0 0 0 / 0.2));
+
+  /* [measured] Find My's map-type control: track #e8e7e5 over land, Dark Aqua #343439 */
+  --mac-map-controls-track: rgb(118 118 128 / 0.12);
+  --mac-map-controls-segment: light-dark(#ffffff, #6b6b72);
+  --mac-map-controls-segment-divider: light-dark(rgb(0 0 0 / 0.11), rgb(255 255 255 / 0.13));
+  --mac-map-controls-label: light-dark(#000000, #f2f2f3);
+  /* [measured, fitted] */
+  --mac-map-controls-segment-shadow:
+    0 1.5px 4px light-dark(rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.24)),
+    0 1px 0.5px light-dark(rgb(0 0 0 / 0.06), rgb(0 0 0 / 0.12));
+
+  /* [measured] compass marks (Maps) */
+  --mac-map-controls-compass-north: light-dark(#ff3b30, #ffffff);
+  --mac-map-controls-compass-tick: light-dark(#bfbfbf, #e0e0e0);
+}

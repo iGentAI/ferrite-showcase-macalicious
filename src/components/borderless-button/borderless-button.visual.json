@@ -1,0 +1,331 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "mail-details-light",
+      "description": "\"Details\" in the header of Mail's message, Aqua. The crop is one word, set in the fallback font off Apple platforms, and Mail draws it in a brighter blue than the link colour.",
+      "example": "visual-mail-details",
+      "appearance": "light",
+      "windowState": "inactive",
+      "budget": {
+        "1x": 0.216,
+        "2x": 0.1872
+      },
+      "deltaBudget": {
+        "1x": 18.84,
+        "2x": 20.21
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mail.png",
+        "crop": {
+          "x": 1900,
+          "y": 262,
+          "width": 130,
+          "height": 36
+        }
+      }
+    },
+    {
+      "name": "mail-details-light-box",
+      "description": "As mail-details-light with the word masked: the button draws no bezel, border or fill around its title.",
+      "example": "visual-mail-details",
+      "appearance": "light",
+      "windowState": "inactive",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 15,
+          "y": 7,
+          "width": 42,
+          "height": 11
+        }
+      ],
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0012
+      },
+      "deltaBudget": {
+        "1x": 1.4,
+        "2x": 1.64
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mail.png",
+        "crop": {
+          "x": 1900,
+          "y": 262,
+          "width": 130,
+          "height": 36
+        }
+      }
+    },
+    {
+      "name": "mail-details-dark",
+      "description": "\"Details\" in the header of Mail's message, Dark Aqua. The crop is one word, set in the fallback font off Apple platforms.",
+      "example": "visual-mail-details",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "budget": {
+        "1x": 0.229,
+        "2x": 0.1985
+      },
+      "deltaBudget": {
+        "1x": 16.74,
+        "2x": 17.58
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mail.png",
+        "crop": {
+          "x": 1888,
+          "y": 260,
+          "width": 130,
+          "height": 36
+        }
+      }
+    },
+    {
+      "name": "mail-details-dark-box",
+      "description": "As mail-details-dark with the word masked.",
+      "example": "visual-mail-details",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 15,
+          "y": 7,
+          "width": 42,
+          "height": 11
+        }
+      ],
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0004
+      },
+      "deltaBudget": {
+        "1x": 0.54,
+        "2x": 0.57
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mail.png",
+        "crop": {
+          "x": 1888,
+          "y": 260,
+          "width": 130,
+          "height": 36
+        }
+      }
+    },
+    {
+      "name": "focus-light",
+      "description": "The focus ring around the title after Tab, Aqua. No screenshot shows it.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 10.5,
+            "y": 20,
+            "color": "#8cb5fb",
+            "note": "the ring left of the title: --mac-focus-ring-color, rgb(24 106 246 / 0.5), over the example's #ffffff (computed from the tokens; inferred state)"
+          },
+          {
+            "x": 6,
+            "y": 20,
+            "color": "#ffffff",
+            "note": "outside the ring, which is --mac-focus-ring-width (3 pt) wide: the example's background"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-dark",
+      "description": "The focus ring around the title after Tab, Dark Aqua. No screenshot shows it.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 10.5,
+            "y": 20,
+            "color": "#256490",
+            "note": "the ring left of the title: --mac-focus-ring-color, rgb(43 168 255 / 0.5), over the example's #1e1f21 (computed from the tokens; inferred state)"
+          },
+          {
+            "x": 6,
+            "y": 20,
+            "color": "#1e1f21",
+            "note": "outside the ring: the example's background"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-focus-ring-inactive-light",
+      "description": "After Tab in a window that is not key the button shows no focus ring, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 10.5,
+            "y": 20,
+            "color": "#ffffff",
+            "note": "where the ring is in a key window: the example's background (CONTRIBUTING, Window state; inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-forced-colors",
+      "description": "The focus ring after Tab in forced-colours mode, in the key window: a 2 pt CanvasText outline, 1 pt outside the button.",
+      "example": "visual-states",
+      "appearance": "light",
+      "forcedColors": true,
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 10.5,
+            "y": 20,
+            "color": "#000000",
+            "tolerance": 4,
+            "note": "the outline left of the button, which starts at 12 pt: CanvasText"
+          },
+          {
+            "x": 6,
+            "y": 20,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "outside the outline: Canvas"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-focus-ring-inactive-forced-colors",
+      "description": "After Tab in a window that is not key the button shows no focus ring in forced-colours mode either.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "forcedColors": true,
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 10.5,
+            "y": 20,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "where the outline is in a key window: Canvas (CONTRIBUTING, Window state)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "Under the pointer's press the button looks as it does at rest, Aqua: no bezel or fill, and its ink keeps its colour.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "[data-button]"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 12.5,
+            "y": 12.5,
+            "color": "#ffffff",
+            "note": "the button's top-left corner, above the capitals: the example's background, as a borderless button has no fill (inferred state)"
+          },
+          {
+            "x": 15,
+            "y": 20,
+            "color": "#0168da",
+            "note": "the square drawn in the button's ink: --mac-color-link, unchanged by the press, as in Mail's and Home's buttons, which have no pressed look"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "Under the pointer's press the button looks as it does at rest, Dark Aqua: no bezel or fill, and its ink keeps its colour.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": "[data-button]"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 12.5,
+            "y": 12.5,
+            "color": "#1e1f21",
+            "note": "the button's top-left corner, above the capitals: the example's background (inferred state)"
+          },
+          {
+            "x": 15,
+            "y": 20,
+            "color": "#429bff",
+            "note": "the square drawn in the button's ink: --mac-color-link, unchanged by the press"
+          }
+        ]
+      }
+    }
+  ]
+}

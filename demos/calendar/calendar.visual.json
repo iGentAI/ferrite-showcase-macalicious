@@ -1,0 +1,171 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "window-light",
+      "description": "The Calendar window, Aqua, left of the event popover's arrow (856 of its 1102 pt): the toolbar with the view switcher, the list of calendars over the mini month, and the week of 29 September 2019 from its title to Thursday, with the all-day event, the selected event and the current-time line. Whole crop: the text is set in the fallback font, the plus is the library's system image and the subscription mark is a stand-in drawing.",
+      "example": "visual-window",
+      "appearance": "light",
+      "selector": "[data-crop='window']",
+      "reference": {
+        "file": "10-15-Catalina-Light-Calendar.png",
+        "crop": { "x": 112, "y": 76, "width": 1712, "height": 1248 }
+      },
+      "budget": { "1x": 0.0241, "2x": 0.0176 },
+      "deltaBudget": { "1x": 2.7, "2x": 2.4 }
+    },
+    {
+      "name": "popover-light",
+      "description": "The rest of the light capture: the window's trailing 246 pt (Friday and Saturday, the Today control and the search field) and the event popover over it, which reaches 83 pt past the window's edge. Whole crop: the text is set in the fallback font, the popover's material is its opaque form over the page where the capture has it blended with the desktop, the chip in the pop-up button is a stand-in, and the window's shadow is the library's.",
+      "example": "visual-window",
+      "appearance": "light",
+      "selector": "[data-crop='popover']",
+      "reference": {
+        "file": "10-15-Catalina-Light-Calendar.png",
+        "crop": { "x": 1824, "y": 76, "width": 658, "height": 1248 }
+      },
+      "budget": { "1x": 0.0338, "2x": 0.0304 },
+      "deltaBudget": { "1x": 3.4, "2x": 3.4 }
+    },
+    {
+      "name": "window-dark",
+      "description": "The Calendar window, Dark Aqua, left of the event popover's arrow (978 of its 1102 pt): the toolbar, the list of calendars over the mini month, and the week from its title to Friday, which is today, with Thursday's event unselected and Friday's selected. Whole crop: the text is set in the fallback font, the plus is the library's system image and the subscription mark is a stand-in drawing.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "selector": "[data-crop='window']",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Calendar.png",
+        "crop": { "x": 112, "y": 76, "width": 1956, "height": 1248 }
+      },
+      "budget": { "1x": 0.022, "2x": 0.0173 },
+      "deltaBudget": { "1x": 2.7, "2x": 2.3 }
+    },
+    {
+      "name": "popover-dark",
+      "description": "The rest of the dark capture: the window's trailing 124 pt (Saturday, the Today control and the search field) and the event popover, which reaches 208 pt past the window's edge. Whole crop: the text is set in the fallback font, the popover's material is its opaque form over the page where the capture has it blended with the desktop, the chip in the pop-up button is a stand-in, and the window's shadow is the library's.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "selector": "[data-crop='popover']",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Calendar.png",
+        "crop": { "x": 2068, "y": 76, "width": 664, "height": 1248 }
+      },
+      "budget": { "1x": 0.0489, "2x": 0.047 },
+      "deltaBudget": { "1x": 4.1, "2x": 4.4 }
+    },
+    {
+      "name": "preferences-light",
+      "description": "The whole frame of Calendar's preferences, the General pane, Aqua: title bar, toolbar with General selected, the form's eight rows of labels and pop-up buttons, four separators, three checkboxes, the disabled pop-up button and the help button. Whole crop: the text is set in the fallback font, the four toolbar icons and the Calendar icon in the first pop-up button are stand-in drawings, and the window title sits 3 pt left of the capture's, which is centred on the window.",
+      "example": "visual-preferences",
+      "appearance": "light",
+      "reference": {
+        "file": "10-15-Catalina-Light-Calendar-Preferences.png",
+        "crop": { "x": 112, "y": 76, "width": 1074, "height": 1084 }
+      },
+      "budget": { "1x": 0.048, "2x": 0.034 },
+      "deltaBudget": { "1x": 4.7, "2x": 4.2 }
+    },
+    {
+      "name": "preferences-light-layout",
+      "description": "As preferences-light with the text and the stand-in drawings masked (the window title, the four toolbar icons and their labels, the eight form labels, the titles of the nine pop-up buttons with the Calendar icon, the words after the Show pop-up button and the three checkbox titles), to score the frame, the title bar and its controls, the toolbar's selection, the positions and drawing of the pop-up buttons with their arrows, the separators, the checkboxes and the help button with its glyph.",
+      "example": "visual-preferences",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 240, "y": 4, "width": 54, "height": 14 },
+        { "x": 11, "y": 24, "width": 35, "height": 35 },
+        { "x": 64, "y": 24, "width": 35, "height": 35 },
+        { "x": 112, "y": 24, "width": 35, "height": 35 },
+        { "x": 162, "y": 24, "width": 35, "height": 35 },
+        { "x": 7, "y": 60, "width": 43, "height": 12 },
+        { "x": 56, "y": 60, "width": 51, "height": 12 },
+        { "x": 113, "y": 60, "width": 34, "height": 12 },
+        { "x": 152, "y": 60, "width": 55, "height": 12 },
+        { "x": 110, "y": 100, "width": 133, "height": 17 },
+        { "x": 147, "y": 130, "width": 96, "height": 17 },
+        { "x": 153, "y": 160, "width": 90, "height": 17 },
+        { "x": 101, "y": 190, "width": 142, "height": 17 },
+        { "x": 161, "y": 252, "width": 82, "height": 17 },
+        { "x": 165, "y": 282, "width": 78, "height": 17 },
+        { "x": 203, "y": 312, "width": 40, "height": 17 },
+        { "x": 135, "y": 374, "width": 108, "height": 17 },
+        { "x": 258, "y": 100, "width": 79, "height": 18 },
+        { "x": 258, "y": 130, "width": 11, "height": 17 },
+        { "x": 258, "y": 160, "width": 50, "height": 17 },
+        { "x": 258, "y": 190, "width": 38, "height": 17 },
+        { "x": 258, "y": 252, "width": 55, "height": 17 },
+        { "x": 258, "y": 282, "width": 55, "height": 17 },
+        { "x": 258, "y": 312, "width": 18, "height": 17 },
+        { "x": 311, "y": 312, "width": 93, "height": 17 },
+        { "x": 258, "y": 374, "width": 114, "height": 17 },
+        { "x": 53, "y": 429, "width": 156, "height": 17 },
+        { "x": 53, "y": 449, "width": 156, "height": 17 },
+        { "x": 53, "y": 503, "width": 155, "height": 17 },
+        { "x": 221, "y": 503, "width": 53, "height": 17 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Calendar-Preferences.png",
+        "crop": { "x": 112, "y": 76, "width": 1074, "height": 1084 }
+      },
+      "budget": { "1x": 0.026, "2x": 0.001 },
+      "deltaBudget": { "1x": 1, "2x": 0.3 }
+    },
+    {
+      "name": "preferences-dark",
+      "description": "The whole frame of Calendar's preferences, the General pane, Dark Aqua: title bar, toolbar with General selected, the form's eight rows of labels and pop-up buttons, four separators, three checkboxes, the disabled pop-up button and the help button. Whole crop: the text is set in the fallback font, the four toolbar icons and the Calendar icon in the first pop-up button are stand-in drawings, and the window title sits 3 pt left of the capture's, which is centred on the window.",
+      "example": "visual-preferences-dark",
+      "appearance": "dark",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Calendar-Preferences.png",
+        "crop": { "x": 112, "y": 76, "width": 1074, "height": 1084 }
+      },
+      "budget": { "1x": 0.047, "2x": 0.034 },
+      "deltaBudget": { "1x": 5.6, "2x": 5.1 }
+    },
+    {
+      "name": "preferences-dark-layout",
+      "description": "As preferences-dark with the same regions masked as preferences-light-layout.",
+      "example": "visual-preferences-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 240, "y": 4, "width": 54, "height": 14 },
+        { "x": 11, "y": 24, "width": 35, "height": 35 },
+        { "x": 64, "y": 24, "width": 35, "height": 35 },
+        { "x": 112, "y": 24, "width": 35, "height": 35 },
+        { "x": 162, "y": 24, "width": 35, "height": 35 },
+        { "x": 7, "y": 60, "width": 43, "height": 12 },
+        { "x": 56, "y": 60, "width": 51, "height": 12 },
+        { "x": 113, "y": 60, "width": 34, "height": 12 },
+        { "x": 152, "y": 60, "width": 55, "height": 12 },
+        { "x": 110, "y": 100, "width": 133, "height": 17 },
+        { "x": 147, "y": 130, "width": 96, "height": 17 },
+        { "x": 153, "y": 160, "width": 90, "height": 17 },
+        { "x": 101, "y": 190, "width": 142, "height": 17 },
+        { "x": 161, "y": 252, "width": 82, "height": 17 },
+        { "x": 165, "y": 282, "width": 78, "height": 17 },
+        { "x": 203, "y": 312, "width": 40, "height": 17 },
+        { "x": 135, "y": 374, "width": 108, "height": 17 },
+        { "x": 258, "y": 100, "width": 79, "height": 18 },
+        { "x": 258, "y": 130, "width": 11, "height": 17 },
+        { "x": 258, "y": 160, "width": 50, "height": 17 },
+        { "x": 258, "y": 190, "width": 38, "height": 17 },
+        { "x": 258, "y": 252, "width": 55, "height": 17 },
+        { "x": 258, "y": 282, "width": 55, "height": 17 },
+        { "x": 258, "y": 312, "width": 18, "height": 17 },
+        { "x": 311, "y": 312, "width": 93, "height": 17 },
+        { "x": 258, "y": 374, "width": 114, "height": 17 },
+        { "x": 53, "y": 429, "width": 156, "height": 17 },
+        { "x": 53, "y": 449, "width": 156, "height": 17 },
+        { "x": 53, "y": 503, "width": 155, "height": 17 },
+        { "x": 221, "y": 503, "width": 53, "height": 17 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Calendar-Preferences.png",
+        "crop": { "x": 112, "y": 76, "width": 1074, "height": 1084 }
+      },
+      "budget": { "1x": 0.014, "2x": 0.001 },
+      "deltaBudget": { "1x": 2.3, "2x": 1.7 }
+    }
+  ]
+}

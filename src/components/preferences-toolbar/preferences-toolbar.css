@@ -1,0 +1,127 @@
+/*
+ * Preferences toolbar (NSToolbar with selectable items, icon and label).
+ *
+ * A flex row of items on the surface of the unified title bar it sits in: 56 pt high, of which
+ * the last point is left to the title bar's two bottom rows. An item is a column: a 32 pt icon
+ * square 3 pt under the title strip, then the 11 pt label, whose baseline is 69.5 pt under the
+ * window's top edge. It is as wide as its label (or its icon) plus 4.75 pt on each side, and
+ * the items touch, which puts 9.5 pt between two labels. The first starts 4 pt from the window
+ * edge. The selected item has a translucent background from the title strip down to the bottom
+ * rows, with 4 pt top corners and no border.
+ *
+ * States
+ *   [data-alignment="leading" | "center"]   on the bar
+ *   [data-active]                            the selected item (Base UI)
+ *   :active, [data-force~="pressed"]         pressed: icon and label darkened [provisional]
+ *   [data-disabled]                          icon and label at 35% [provisional]
+ *   [data-window-state="inactive"] *         icon and label at 50% [provisional]
+ *   :focus-visible, [data-force~="focus"]    focus ring inside the item, in a key window
+ */
+.mac-preferences-toolbar-root {
+  min-width: 0;
+}
+
+.mac-preferences-toolbar {
+  display: flex;
+  box-sizing: border-box;
+  min-width: 0;
+  height: 56px;
+  padding: 0 4px 1px;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-preferences-toolbar:where([data-alignment="center"]) {
+  justify-content: center;
+}
+
+.mac-preferences-toolbar-item {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  min-width: 41.5px;
+  height: 55px;
+  margin: 0;
+  padding: 3px 4.75px 0;
+  border: 0;
+  border-radius: 4px 4px 0 0;
+  outline: 0;
+  background: none;
+  color: var(--mac-preferences-toolbar-text);
+  font: var(--mac-font-toolbar-label);
+  letter-spacing: var(--mac-tracking-small);
+  white-space: nowrap;
+  cursor: default;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.mac-preferences-toolbar-item:where([data-active]) {
+  background: var(--mac-preferences-toolbar-selection);
+  color: var(--mac-preferences-toolbar-text-selected);
+}
+
+.mac-preferences-toolbar-item-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+}
+
+.mac-preferences-toolbar-item-label {
+  margin-block-start: 2px;
+}
+
+/* Pressed: a quarter darker until the button is released, as a pressed toolbar item. */
+.mac-preferences-toolbar-item:where(:active, [data-force~="pressed"]):where(:not([data-disabled]))
+> :where(.mac-preferences-toolbar-item-icon, .mac-preferences-toolbar-item-label) {
+  filter: brightness(0.75);
+}
+
+.mac-preferences-toolbar-item:where([data-disabled])
+  > :where(.mac-preferences-toolbar-item-icon, .mac-preferences-toolbar-item-label) {
+  opacity: 0.35;
+}
+
+.mac-preferences-toolbar-item:where([data-window-state="inactive"] *):where(:not([data-disabled]))
+  > :where(.mac-preferences-toolbar-item-icon, .mac-preferences-toolbar-item-label) {
+  opacity: 0.5;
+}
+
+/* The ring is drawn inside the item: the items touch, and the bar clips at the window edge. */
+.mac-preferences-toolbar-item:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+@media (forced-colors: active) {
+  .mac-preferences-toolbar-item {
+    color: ButtonText;
+  }
+
+  .mac-preferences-toolbar-item:where([data-active]) {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  .mac-preferences-toolbar-item:where([data-disabled]) {
+    color: GrayText;
+  }
+
+  .mac-preferences-toolbar-item:where(:focus-visible) {
+    outline: 2px solid ButtonText;
+    outline-offset: -2px;
+  }
+}
+
+/* A pane being left: Base UI holds it for its exit, inert. Without this both show for a frame. */
+.mac-preferences-toolbar-panel:where([inert]) {
+  display: none;
+}

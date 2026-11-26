@@ -1,0 +1,159 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "entry-light",
+      "description": "The whole face of Calculator, Aqua capture: 42 in the display, the clear key reading C. The crop is the window's frame inset by 2 pt, which leaves the window's rim and corners out. Whole crop: the digits and the function labels are set in the fallback font.",
+      "example": "visual-entry",
+      "appearance": "light",
+      "reference": {
+        "file": "10-15-Catalina-Light-Calculator.png",
+        "crop": { "x": 116, "y": 80, "width": 456, "height": 634 }
+      },
+      "budget": { "1x": 0.028, "2x": 0.023 },
+      "deltaBudget": { "1x": 2.7, "2x": 2.7 }
+    },
+    {
+      "name": "entry-light-layout",
+      "description": "As entry-light with the text masked (the display's number and the labels of the thirteen keys that show text), to score the grid, its 1 pt gaps, the three fills and the six drawn symbols.",
+      "example": "visual-entry",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 148, "y": 28, "width": 72, "height": 40 },
+        { "x": 10.5, "y": 91.5, "width": 30, "height": 22 },
+        { "x": 126, "y": 91.5, "width": 30, "height": 22 },
+        { "x": 10.5, "y": 139.5, "width": 30, "height": 22 },
+        { "x": 68, "y": 139.5, "width": 30, "height": 22 },
+        { "x": 126, "y": 139.5, "width": 30, "height": 22 },
+        { "x": 10.5, "y": 187.5, "width": 30, "height": 22 },
+        { "x": 68, "y": 187.5, "width": 30, "height": 22 },
+        { "x": 126, "y": 187.5, "width": 30, "height": 22 },
+        { "x": 10.5, "y": 235.5, "width": 30, "height": 22 },
+        { "x": 68, "y": 235.5, "width": 30, "height": 22 },
+        { "x": 126, "y": 235.5, "width": 30, "height": 22 },
+        { "x": 39.5, "y": 284, "width": 30, "height": 22 },
+        { "x": 126, "y": 284, "width": 30, "height": 22 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Calculator.png",
+        "crop": { "x": 116, "y": 80, "width": 456, "height": 634 }
+      },
+      "budget": { "1x": 0.0135, "2x": 0.0085 },
+      "deltaBudget": { "1x": 1, "2x": 0.95 }
+    },
+    {
+      "name": "cleared-dark",
+      "description": "The whole face of Calculator, Dark Aqua capture: cleared, 0 in the display and the clear key reading AC. Same crop as entry-light. Whole crop: the digits and the function labels are set in the fallback font.",
+      "example": "visual-cleared",
+      "appearance": "dark",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Calculator.png",
+        "crop": { "x": 116, "y": 80, "width": 456, "height": 634 }
+      },
+      "budget": { "1x": 0.025, "2x": 0.02 },
+      "deltaBudget": { "1x": 2.1, "2x": 2.1 }
+    },
+    {
+      "name": "cleared-dark-layout",
+      "description": "As cleared-dark with the same text masked as entry-light-layout, to score the grid, its gaps, the three Dark Aqua fills and the six drawn symbols.",
+      "example": "visual-cleared",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 148, "y": 28, "width": 72, "height": 40 },
+        { "x": 10.5, "y": 91.5, "width": 30, "height": 22 },
+        { "x": 126, "y": 91.5, "width": 30, "height": 22 },
+        { "x": 10.5, "y": 139.5, "width": 30, "height": 22 },
+        { "x": 68, "y": 139.5, "width": 30, "height": 22 },
+        { "x": 126, "y": 139.5, "width": 30, "height": 22 },
+        { "x": 10.5, "y": 187.5, "width": 30, "height": 22 },
+        { "x": 68, "y": 187.5, "width": 30, "height": 22 },
+        { "x": 126, "y": 187.5, "width": 30, "height": 22 },
+        { "x": 10.5, "y": 235.5, "width": 30, "height": 22 },
+        { "x": 68, "y": 235.5, "width": 30, "height": 22 },
+        { "x": 126, "y": 235.5, "width": 30, "height": 22 },
+        { "x": 39.5, "y": 284, "width": 30, "height": 22 },
+        { "x": 126, "y": 284, "width": 30, "height": 22 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Calculator.png",
+        "crop": { "x": 116, "y": 80, "width": 456, "height": 634 }
+      },
+      "budget": { "1x": 0.0135, "2x": 0.0085 },
+      "deltaBudget": { "1x": 1, "2x": 0.95 }
+    },
+    {
+      "name": "pressed-digit-light",
+      "description": "The mouse button held on the 7 key, Aqua: the key lightens and its neighbour does not. No screenshot shows a pressed key; the colour is the spec's inferred value.",
+      "example": "visual-entry",
+      "appearance": "light",
+      "actions": [{ "press": "role=button[name='7']" }],
+      "expect": {
+        "size": { "width": 228, "height": 317 },
+        "pixels": [
+          {
+            "x": 6,
+            "y": 138,
+            "color": "#a5a6a7",
+            "note": "pressed digit key: white at 40% over #68696b, inferred (spec: calculator-keypad, Colours)"
+          },
+          {
+            "x": 63,
+            "y": 138,
+            "color": "#68696b",
+            "note": "the 8 key beside it keeps the measured digit fill"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-operator-light",
+      "description": "The mouse button held on the multiply key, Aqua: an operator key darkens. Inferred, as no screenshot shows it.",
+      "example": "visual-entry",
+      "appearance": "light",
+      "actions": [{ "press": "role=button[name='Multiply']" }],
+      "expect": {
+        "size": { "width": 228, "height": 317 },
+        "pixels": [
+          {
+            "x": 178,
+            "y": 138,
+            "color": "#cc7e0a",
+            "note": "pressed operator key: black at 20% over #ff9f0b, inferred (spec: calculator-keypad, Colours)"
+          },
+          {
+            "x": 178,
+            "y": 90,
+            "color": "#ff9f0b",
+            "note": "the divide key above it keeps the measured operator fill"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-function-dark",
+      "description": "The mouse button held on the percent key, Dark Aqua: a function key lightens. Inferred, as no screenshot shows it.",
+      "example": "visual-cleared",
+      "appearance": "dark",
+      "actions": [{ "press": "role=button[name='Percent']" }],
+      "expect": {
+        "size": { "width": 228, "height": 317 },
+        "pixels": [
+          {
+            "x": 118,
+            "y": 88,
+            "color": "#686a6c",
+            "note": "pressed function key: white at 20% over #424447, inferred (spec: calculator-keypad, Colours)"
+          },
+          {
+            "x": 6,
+            "y": 88,
+            "color": "#424447",
+            "note": "the clear key in the same row keeps the measured Dark Aqua function fill"
+          }
+        ]
+      }
+    }
+  ]
+}

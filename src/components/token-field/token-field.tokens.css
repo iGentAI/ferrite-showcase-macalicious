@@ -1,0 +1,37 @@
+/*
+ * Token field values that no shared token holds. The fill and the top edge of the bezel are
+ * shared (--mac-color-text-field-background, --mac-color-field-border), as are the selection
+ * colours, the text colours and the focus ring.
+ */
+:root {
+  /* [measured, computed] Bezel: the text field's. Side and bottom edges are black at 25% in
+     Aqua; white at 9% and 25% in Dark Aqua (Sharing @ 429,222 and 800,242). */
+  --mac-token-field-border-side: light-dark(rgb(0 0 0 / 0.25), rgb(255 255 255 / 0.09));
+  --mac-token-field-border-bottom: light-dark(rgb(0 0 0 / 0.25), rgb(255 255 255 / 0.25));
+  /* [measured, computed] Shading inside the edge, as on the text field (Sharing @ 800,204..206
+     and 800,241). */
+  --mac-token-field-inner-shadow:
+    inset 0 0 0 0.5px light-dark(#f0f0f0, transparent),
+    inset 0 0.5px 0 light-dark(transparent, rgb(0 0 0 / 0.018)),
+    inset 0 1px 0 light-dark(transparent, rgb(0 0 0 / 0.036)),
+    inset 0 1.5px 0 light-dark(transparent, rgb(0 0 0 / 0.017)),
+    inset 0 -0.5px 0 light-dark(transparent, rgb(255 255 255 / 0.076));
+}
+
+/* [provisional] Token fill for an accent other than blue: the accent at 27% over white, and at
+   32% over the dark text background. The weights are fitted to blue's measured fill; no
+   screenshot shows a token with another accent. */
+[data-accent],
+:root[data-accent] {
+  --mac-token-field-token-fill: light-dark(
+    color-mix(in srgb, var(--mac-accent-light) 27%, white),
+    color-mix(in srgb, var(--mac-accent-dark) 32%, #1e1e20)
+  );
+}
+
+/* [measured] Token fill with the blue accent: Mail @ 610,425 (Aqua) and @ 610,417 (Dark Aqua). */
+:root,
+[data-accent="blue"],
+:root[data-accent="blue"] {
+  --mac-token-field-token-fill: light-dark(#bbd7ff, #1e3d63);
+}

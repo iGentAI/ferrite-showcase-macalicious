@@ -1,0 +1,162 @@
+---
+title: Sticky Note
+description: The note window of Stickies, a square-cornered coloured rectangle with editable text, whose 12 pt title strip and three small widgets show only while it is the key note.
+---
+
+<Example name="basic" both />
+
+Stickies puts small coloured notes on the desktop. A note is a borderless window: square
+corners, no standard title bar and no traffic lights. The frontmost note of the active app
+shows a 12 pt strip in a stronger shade of its colour with three 8 pt boxes: close at the left,
+zoom and collapse at the right. Every other note shows neither strip nor boxes, and its text
+does not move. AppKit has no public class for it. `StickyNote` draws the window, the strip and
+the widgets in CSS; the widgets are Base UI buttons and the text is edited by the browser.
+
+## Usage
+
+```tsx
+import { StickyNote, StickyNoteText, StickyNoteTitleBar } from "macalicious/sticky-note";
+import "macalicious/sticky-note.css";
+
+<StickyNote color="yellow" aria-label="Make a note of it!" style={{ width: 352, height: 260 }}>
+  <StickyNoteTitleBar onClose={remove}>Make a note of it!</StickyNoteTitleBar>
+  <StickyNoteText onInput={save}>
+    <b>Make a note of it!</b>
+    {"\n\nStickies lets you keep notes (like these) on your desktop."}
+  </StickyNoteText>
+</StickyNote>
+```
+
+Or copy the source into your project: `npx macalicious add sticky-note`.
+
+Give the note its size with `style` or a class; Stickies opens a note at 352 x 260 pt. The
+note is a window of its own: it writes its `state` to `data-window-state`, and whoever manages
+the notes decides which one is key, as a window manager does for windows. A note inside an
+ancestor that is not key (a page whose browser window lost focus, with
+`trackWindowActivation()`) loses its strip as well.
+
+The title bar's children are the note's title, which Stickies takes from the first line of
+the text; it is shown only while the note is collapsed. The text is uncontrolled: its children
+are the initial content, and the result is read from the element (`ref`, `onInput`). Children passed later are ignored, so a render of the owner never overwrites an edit; give the
+text another `key` to replace it. Pass text and plain markup only (`<b>`, `<i>`): a component
+with state of its own inside the text would keep rendering into what the browser has edited.
+Line
+breaks in a string are kept.
+
+The close and zoom boxes report to `onClose` and `onZoom` and do nothing themselves: removing
+or resizing a note is the application's job. The collapse box and a double click on the strip
+collapse the note to its title bar; `collapsed` and `onCollapsedChange` control that.
+
+## Guidelines
+
+The Human Interface Guidelines have no entry for this note: it is specific to Stickies. What
+follows is how Stickies itself uses it, read from its menus and the two screenshots (not
+verified against a published guideline):
+
+- A note holds a short piece of text. Its first line is its title, in bold by habit.
+- Offer the six colours of the Color menu and no others; yellow is the default.
+- Only the frontmost note shows its strip. Do not show the widgets of several notes at once.
+- New notes cascade about 10 pt right and down from the previous one.
+
+## Variants and states
+
+<Example name="colors" both />
+
+<Example name="states" both />
+
+| Variant or state | Look | Status |
+| --- | --- | --- |
+| Yellow, key | Body `#fef49c`, strip `#feea3d`, widget border `#dbc503` | measured |
+| Yellow, not key | No strip and no widgets; the 12 pt band stays in the body colour | measured |
+| Blue | Body `#aef4ff` | measured (not key); its strip and widgets are provisional |
+| Green, pink, purple, grey | Stickies' palette as the spec records it; strips and widgets follow the yellow note's steps | provisional |
+| Dark Aqua | The same colours, with a 0.5 pt near-black outline around the note | measured |
+| Shadow | A tight and a wide soft shadow, fitted to the blue note under the yellow one | measured, fitted |
+| Widget hover, pressed | The border darkens; no glyph appears | provisional |
+| Widget keyboard focus | Focus ring around the 8 pt box | provisional |
+| Text focus | The insertion point while the text can be edited; a focus ring inside the note for read-only text | provisional |
+| Collapsed | The note is its 12 pt strip, which shows the title in 9 pt | provisional |
+| Translucent | The whole note at 60% opacity | provisional |
+
+Float on Top, the third command of Stickies' Window menu, has no prop: it changes where the
+note stands among the other windows and nothing about how it is drawn (the spec records it as
+not distinguishable in the screenshots). Keep a floating note above its neighbours with the
+stacking order of whatever holds the notes, such as a window manager's level or a `z-index`.
+
+## Sizes
+
+A note has any size; there is one size of chrome. The title strip is 12 pt tall. Each widget
+is an 8 pt box with a 1 pt border, 2 pt below the top edge: the close box 12 pt from the left
+edge, the collapse box 12 pt from the right edge and the zoom box 4 pt before it. The text is
+Helvetica 12 on a 14 pt line, 11 pt from the left and right edges, with its first baseline
+29 pt below the note's top edge.
+
+## API
+
+<PropsTable name="StickyNoteProps" />
+
+The remaining props are those of a `<div>` and go to the note.
+
+<PropsTable name="StickyNoteTitleBarProps" />
+
+<PropsTable name="StickyNoteTextProps" />
+
+| Attribute or variable | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-color` | note | `yellow`, `blue`, `green`, `pink`, `purple`, `gray` | Reflects `color`. |
+| `data-window-state` | note | `key`, `main`, `inactive` | Reflects `state`; only a key note shows the strip and widgets. |
+| `data-collapsed` | note | present or absent | The note is collapsed to its title bar. |
+| `data-translucent` | note | present or absent | Reflects `translucent`. |
+| `data-widget` | widget | `close`, `zoom`, `collapse` | Which box a widget is. |
+| `aria-pressed` | collapse box | `true`, `false` | Whether the note is collapsed. |
+| `--mac-sticky-note-<color>` | any ancestor | a colour | Body colour of a note of that colour; `-strip` and `-widget` are its strip and widget border. |
+| `--mac-sticky-note-font` | any ancestor | a `font` value | The text's font, Helvetica 12 on 14 pt. |
+| `--mac-sticky-note-shadow` | any ancestor | a `box-shadow` value | The note's shadow and outline. |
+
+Classes: `.mac-sticky-note`, `.mac-sticky-note-title-bar`, `.mac-sticky-note-title`,
+`.mac-sticky-note-widget` and `.mac-sticky-note-text`.
+
+## Accessibility
+
+- The note is a `group`; name it with `aria-label`, usually the first line of its text. Its
+  text is a multi-line `textbox` named "Note"; give it another name with `aria-label` when a
+  page holds several notes.
+- The three widgets are buttons named "Close", "Zoom" and "Collapse" (`closeLabel`,
+  `zoomLabel`, `collapseLabel` translate them). The collapse box is a toggle button whose
+  `aria-pressed` says whether the note is collapsed. Tab reaches them in order, then the text;
+  Return or Space activates one.
+- In a note that is not key the widgets are hidden and leave the Tab order, as in Stickies.
+  Make the note key (on focus or on a click) to bring them back.
+- Focus on text that can be edited shows as its insertion point, as in Stickies. Read-only
+  text stays in the Tab order so that it can be scrolled and copied, and shows a focus ring.
+  In forced-colours mode both are outlined.
+- A double click on the strip is a shortcut for the collapse box, never the only way.
+- The text is black on the note colour in both appearances: at least 12:1 on every body
+  colour, and at least 7:1 for the title on a collapsed note's strip.
+- In forced-colours mode the note is the system's canvas with a border, and the widgets keep
+  their shapes in the system's button text colour.
+
+## Visual comparison
+
+`npm run visual -- sticky-note` compares the yellow note of the Stickies screenshots: key in
+the Aqua capture, not key in the Dark Aqua one, where Finder is frontmost. Two more crops, where
+the yellow note lies over the blue one, compare the shadow and the Dark Aqua outline on a flat
+colour. Share of pixels that differ at 2x, in Chromium on Linux:
+
+| Crop | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Note, 352 x 260 pt (`138,606,704,520`), with text | 4.57% | 4.56% |
+| Note, text masked | 0.00% | 0.00% |
+| Top edge over the blue note, 165 x 27 pt (`470,586,330,54`) | 0.00% | 0.00% |
+| Left edge over the blue note, 20 x 12 pt (`118,624,40,24`) | 0.00% | 0.00% |
+
+Measured: the note's colours, the strip, the widgets' size, position and drawings, the text's
+font size, line pitch, inset and first baseline, the shadow and the Dark Aqua outline. The
+first row scores eleven lines of text set in a stand-in for Helvetica, whose baseline lies
+half a point lower; the comparison's example corrects for that, the component does not.
+
+Provisional, because no screenshot shows them: the strip and widgets of a blue note and all
+of the green, pink, purple and grey notes; the collapsed note; a blue note as the key note and
+a collapsed note, checked in a real browser against the token values (`expect` comparisons);
+the translucent note; the hover, pressed and focus looks of the widgets; and the focus ring
+of read-only text.

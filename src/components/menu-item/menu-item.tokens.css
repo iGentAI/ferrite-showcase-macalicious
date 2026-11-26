@@ -1,0 +1,65 @@
+/*
+ * Menu item colours (reference/spec/components/menu-item.md, Colours and fills). A menu's
+ * text and selection are vibrant in Catalina: they blend with what is behind the menu instead
+ * of painting a fixed colour, which CSS cannot do. These are fixed colours fitted to the
+ * measured composites.
+ */
+:root {
+  /* [measured, computed] title, key equivalent, checkmark, arrow and template image: black at
+     85% over the menu material; white in Dark Aqua [measured] */
+  --mac-menu-item-text: light-dark(rgb(0 0 0 / 0.85), #ffffff);
+  /* [measured, computed] disabled item and section header: about 32% of the title's contrast
+     in Aqua, white at 33% in Dark Aqua */
+  --mac-menu-item-text-disabled: light-dark(rgb(0 0 0 / 0.26), rgb(255 255 255 / 0.33));
+  /* [measured, computed] separator line: #dbdcde on #ebecee, #5f6265 on #3b3e41 */
+  --mac-menu-item-separator: light-dark(rgb(0 0 0 / 0.07), rgb(255 255 255 / 0.18));
+}
+
+/*
+ * Highlight of the item under the pointer, per accent: the colour that, at 85% (Aqua) or 88%
+ * (Dark Aqua) over the menu's fill, gives the highlight measured in the open application menu
+ * of the accent screenshots (Theme-Light-<Accent> and Theme-Dark-<Accent> @ 94,54). The
+ * shared --mac-accent-menu-selection applies one formula to the accent's swatch, which is 12
+ * to 28 levels off for blue and graphite, whose selection is not their swatch.
+ *
+ * Blue is also measured over neutral backdrops (the Print and Contacts menus); its Aqua value
+ * is the mean of the three fits and lands within 14 levels of each, where the highlight
+ * itself moves by 34 levels between them.
+ */
+:root,
+[data-accent="blue"] {
+  /* [measured, computed] */
+  --mac-menu-item-highlight: light-dark(rgb(32 119 245 / 0.85), rgb(8 113 238 / 0.88));
+}
+[data-accent="purple"] {
+  /* [measured, computed] */
+  --mac-menu-item-highlight: light-dark(rgb(151 56 141 / 0.85), rgb(141 55 137 / 0.88));
+}
+[data-accent="pink"] {
+  /* [measured, computed] */
+  --mac-menu-item-highlight: light-dark(rgb(251 75 149 / 0.85), rgb(237 72 144 / 0.88));
+}
+[data-accent="red"] {
+  /* [measured, computed] */
+  --mac-menu-item-highlight: light-dark(rgb(227 54 53 / 0.85), rgb(214 50 53 / 0.88));
+}
+[data-accent="orange"] {
+  /* [measured, computed] */
+  --mac-menu-item-highlight: light-dark(rgb(250 126 26 / 0.85), rgb(237 121 21 / 0.88));
+}
+[data-accent="yellow"] {
+  /* [measured, computed] */
+  --mac-menu-item-highlight: light-dark(rgb(254 181 39 / 0.85), rgb(240 173 32 / 0.88));
+}
+[data-accent="green"] {
+  /* [measured, computed] */
+  --mac-menu-item-highlight: light-dark(rgb(99 182 62 / 0.85), rgb(94 175 60 / 0.88));
+}
+[data-accent="graphite"] {
+  /* [measured, computed] a neutral grey in Aqua; a cool grey in Dark Aqua, as measured */
+  --mac-menu-item-highlight: light-dark(rgb(135 135 135 / 0.85), rgb(106 123 146 / 0.88));
+}
+[data-accent="custom"] {
+  /* [provisional] a custom accent has no measurement: the shared formula */
+  --mac-menu-item-highlight: var(--mac-accent-menu-selection);
+}

@@ -1,0 +1,138 @@
+/*
+ * Colors panel (NSColorPanel): a panel window whose unified title bar holds the toolbar of
+ * pickers, and whose body stacks the chosen picker, the optional opacity row and the footer
+ * with the eyedropper and the current colour.
+ *
+ * States
+ *   .mac-color-panel-mode[aria-selected="true"]   the chosen picker's toolbar button
+ *   .mac-color-panel-mode:active                  pressed
+ *   :focus-visible                                keyboard focus ring (toolbar, eyedropper)
+ *   .mac-color-panel-eyedropper:disabled          the browser cannot pick from the screen
+ *   :where([data-window-state="main"], [data-window-state="inactive"]) *
+ *                                                 not the key window: no focus ring
+ */
+.mac-color-panel {
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+/* The popup that carries the panel under a colour well. */
+.mac-color-panel-positioner {
+  z-index: 1000;
+  outline: none;
+}
+
+/* Toolbar: five 32 x 24 pt buttons, centred, 4 pt above the bar's bottom edge. */
+.mac-color-panel-modes {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  inline-size: 100%;
+  padding-block-end: 4px;
+}
+
+.mac-color-panel-mode,
+.mac-color-panel-eyedropper {
+  display: grid;
+  place-items: center;
+  flex: none;
+  box-sizing: border-box;
+  inline-size: 32px;
+  block-size: 24px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--mac-radius-control-regular);
+  background: none;
+  color: var(--mac-color-panel-glyph);
+  cursor: default;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-color-panel-mode:where([aria-selected="true"]) {
+  background: var(--mac-color-panel-mode-selected);
+}
+
+.mac-color-panel-mode:where(:active),
+.mac-color-panel-eyedropper:where(:active:not(:disabled)) {
+  background: var(--mac-color-panel-mode-pressed);
+}
+
+.mac-color-panel-eyedropper:where(:disabled) {
+  opacity: 0.35;
+}
+
+.mac-color-panel
+  :where(.mac-color-panel-mode, .mac-color-panel-eyedropper):where(:focus-visible):where(
+    :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+  ) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: -1px;
+}
+
+/* Body: 12 pt margins, 10 pt between its parts. */
+.mac-color-panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+}
+
+.mac-color-panel-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-block-size: 236px;
+  outline: none;
+}
+
+/* A picker is as wide as the panel's body, and a palette's list may fill its height. */
+.mac-color-panel-picker > :where(*) {
+  inline-size: 100%;
+  max-block-size: none;
+}
+
+/* Footer: the eyedropper, then the current colour across the rest of the panel. */
+.mac-color-panel-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Under the footer, where the browser has no EyeDropper: why the button is dimmed. */
+.mac-color-panel-eyedropper-reason {
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-control-mini);
+}
+
+.mac-color-panel-swatch {
+  flex: 1;
+  box-sizing: border-box;
+  block-size: 24px;
+  border: var(--mac-hairline) solid var(--mac-color-panel-swatch-edge);
+  border-radius: 3px;
+  /* The colour is the element's `color`; the tiles show through one that is not opaque. */
+  background:
+    linear-gradient(currentColor, currentColor),
+    repeating-conic-gradient(
+      var(--mac-color-panel-checker-dark) 0 25%,
+      var(--mac-color-panel-checker-light) 0 50%
+    )
+    0 0 / 12px 12px;
+}
+
+@media (forced-colors: active) {
+  .mac-color-panel-mode:where([aria-selected="true"]) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+
+  /* The current colour is content: keep it. */
+  .mac-color-panel-swatch {
+    border-color: ButtonText;
+    forced-color-adjust: none;
+  }
+}

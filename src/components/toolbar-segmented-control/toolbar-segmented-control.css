@@ -1,0 +1,265 @@
+/*
+ * Toolbar segmented control (NSSegmentedControl, textured rounded).
+ *
+ * The group's box is the bezel's fill, 22 pt high; ::before on the group is the bezel, one
+ * hairline larger on every side, where Aqua draws its border. Each segment paints its own
+ * ::before only while it is selected or pressed, and that covers the border rows above and
+ * below it, as in the screenshots. The 1 pt divider is the last point of every segment but the
+ * last; a selected segment paints over its own divider and the one before it disappears.
+ *
+ * Measured on the Finder view switcher: 2 pt before the first segment's 26 pt cell, then a
+ * 27 pt pitch.
+ *
+ * States
+ *   [data-variant="separated" | "navigation"]   a bezel per segment; the bezels touch
+ *   [data-pressed] on a segment          selected (set by Base UI)
+ *   :active                              pressed [provisional]
+ *   [data-disabled]                      dimmed glyph
+ *   :focus-visible                       focus ring, in the key window only
+ *   [data-window-state="inactive"] *     flat outlined bezel, grey glyphs
+ *   [data-force~="pressed" | "focus"]    static previews, on a segment
+ */
+.mac-toolbar-segmented-control {
+  --_fill: var(--mac-toolbar-segmented-control-fill);
+  --_border-top: var(--mac-toolbar-segmented-control-border-top);
+  --_border-side: var(--mac-toolbar-segmented-control-border-side);
+  --_border-bottom: var(--mac-toolbar-segmented-control-border-bottom);
+  --_shadow: 0 var(--mac-hairline) 0 var(--mac-toolbar-segmented-control-shadow);
+  --_radius: calc(var(--mac-radius-control-regular) + var(--mac-hairline));
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  flex: none;
+  box-sizing: border-box;
+  height: 22px;
+  color: var(--mac-toolbar-segmented-control-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  vertical-align: middle;
+}
+
+.mac-toolbar-segmented-control:where([data-window-state="inactive"] *) {
+  --_fill: var(--mac-toolbar-segmented-control-fill-inactive);
+  --_border-top: var(--mac-toolbar-segmented-control-border-inactive);
+  --_border-side: var(--mac-toolbar-segmented-control-border-inactive);
+  --_border-bottom: var(--mac-toolbar-segmented-control-border-inactive);
+  --_shadow: inset 0 0 0 var(--mac-hairline) var(--mac-toolbar-segmented-control-ring-inactive);
+
+  color: var(--mac-toolbar-segmented-control-text-inactive);
+}
+
+/* The bezel: on the group when joined, on every segment otherwise. */
+.mac-toolbar-segmented-control:where([data-variant="joined"])::before,
+.mac-toolbar-segmented-control:where(:not([data-variant="joined"]))
+  > .mac-toolbar-segmented-control-segment::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: calc(-1 * var(--mac-hairline));
+  box-sizing: border-box;
+  border: var(--mac-hairline) solid;
+  border-color: var(--_border-top) var(--_border-side) var(--_border-bottom);
+  border-radius: var(--_radius);
+  background: var(--_fill) padding-box;
+  box-shadow: var(--_shadow);
+  pointer-events: none;
+}
+
+/* Separate bezels touch: 1 pt between the fills, which is the two hairlines (measured on
+   Preview's zoom pair and on Back and Forward). */
+.mac-toolbar-segmented-control:where([data-variant="separated"], [data-variant="navigation"]) {
+  gap: 1px;
+}
+
+.mac-toolbar-segmented-control-segment {
+  position: relative;
+  display: inline-flex;
+  flex: 1 0 auto;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 25px;
+  height: 100%;
+  margin: 0;
+  padding: 0 6px;
+  border: 0;
+  border-radius: var(--mac-radius-control-regular);
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+/* Joined: square cells, a divider in each cell's last point, 2 pt more before the first. */
+.mac-toolbar-segmented-control:where([data-variant="joined"])
+> .mac-toolbar-segmented-control-segment {
+  min-width: 27px;
+  padding-inline-end: 7px;
+  border-radius: 0;
+}
+
+.mac-toolbar-segmented-control:where([data-variant="joined"])
+  > .mac-toolbar-segmented-control-segment:where(:first-child) {
+  --_on-start: calc(-1 * var(--mac-hairline));
+  --_on-radius-start: var(--_radius);
+
+  min-width: 29px;
+  padding-inline-start: 8px;
+  border-start-start-radius: var(--mac-radius-control-regular);
+  border-end-start-radius: var(--mac-radius-control-regular);
+}
+
+.mac-toolbar-segmented-control:where([data-variant="joined"])
+  > .mac-toolbar-segmented-control-segment:where(:last-child) {
+  --_on-end: calc(-1 * var(--mac-hairline));
+  --_on-radius-end: var(--_radius);
+
+  border-start-end-radius: var(--mac-radius-control-regular);
+  border-end-end-radius: var(--mac-radius-control-regular);
+}
+
+/* The selected or pressed fill of a joined segment. */
+.mac-toolbar-segmented-control:where([data-variant="joined"])
+> .mac-toolbar-segmented-control-segment::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-block: calc(-1 * var(--mac-hairline));
+  inset-inline: var(--_on-start, 0px) var(--_on-end, 0px);
+  box-sizing: border-box;
+  border: var(--mac-hairline) solid transparent;
+  border-inline-width: 0;
+  border-start-start-radius: var(--_on-radius-start, 0);
+  border-end-start-radius: var(--_on-radius-start, 0);
+  border-start-end-radius: var(--_on-radius-end, 0);
+  border-end-end-radius: var(--_on-radius-end, 0);
+  background: var(--_segment-fill, none) padding-box;
+  pointer-events: none;
+}
+
+.mac-toolbar-segmented-control:where([data-variant="joined"])
+  > .mac-toolbar-segmented-control-segment:where(:first-child)::before {
+  border-inline-start-width: var(--mac-hairline);
+}
+
+.mac-toolbar-segmented-control:where([data-variant="joined"])
+  > .mac-toolbar-segmented-control-segment:where(:last-child)::before {
+  border-inline-end-width: var(--mac-hairline);
+}
+
+/* Divider */
+.mac-toolbar-segmented-control:where([data-variant="joined"])
+> .mac-toolbar-segmented-control-segment:where(
+  :not(:last-child, [data-pressed], :has(+ [data-pressed]))
+)::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: 1px;
+  background: var(--mac-toolbar-segmented-control-divider);
+  pointer-events: none;
+}
+
+/* Pressed */
+.mac-toolbar-segmented-control-segment:where(:active, [data-force~="pressed"]):where(
+  :not([data-disabled])
+) {
+  --_fill: var(--mac-toolbar-segmented-control-fill-pressed);
+  --_segment-fill: var(--mac-toolbar-segmented-control-fill-pressed);
+}
+
+/* Selected */
+.mac-toolbar-segmented-control-segment:where([data-pressed]) {
+  --_fill: var(--mac-toolbar-segmented-control-fill-on);
+  --_segment-fill: var(--mac-toolbar-segmented-control-fill-on);
+  --_border-top: var(--mac-toolbar-segmented-control-border-top-on);
+  --_border-side: var(--mac-toolbar-segmented-control-border-side-on);
+  --_border-bottom: var(--mac-toolbar-segmented-control-border-bottom-on);
+  --_shadow: 0 var(--mac-hairline) 0 var(--mac-toolbar-segmented-control-shadow);
+
+  color: var(--mac-toolbar-segmented-control-text-on);
+}
+
+.mac-toolbar-segmented-control:where([data-variant="joined"])
+  > .mac-toolbar-segmented-control-segment:where([data-pressed])::before {
+  border-color: var(--_border-top) var(--_border-side) var(--_border-bottom);
+}
+
+/* A selection in an inactive window, or a disabled one, is dimmed [provisional]. */
+.mac-toolbar-segmented-control-segment:where([data-pressed]):where(
+  [data-disabled],
+  [data-window-state="inactive"] *
+)::before {
+  opacity: 0.5;
+}
+
+/* Joined, inactive window: a flat grey selection inside the outline (measured on Books). */
+.mac-toolbar-segmented-control:where([data-variant="joined"])
+> .mac-toolbar-segmented-control-segment:where([data-pressed]):where(:not([data-disabled])):where(
+  [data-window-state="inactive"] *
+) {
+  --_segment-fill: var(--mac-toolbar-segmented-control-fill-on-inactive);
+
+  color: var(--mac-toolbar-segmented-control-text-on-inactive);
+}
+
+.mac-toolbar-segmented-control:where([data-variant="joined"])
+  > .mac-toolbar-segmented-control-segment:where([data-pressed]):where(:not([data-disabled])):where(
+    [data-window-state="inactive"] *
+  )::before {
+  border-color: transparent;
+  opacity: 1;
+}
+
+.mac-toolbar-segmented-control-segment:where([data-disabled]):where(:not([data-pressed])) {
+  color: var(--mac-toolbar-segmented-control-text-disabled);
+}
+
+.mac-toolbar-segmented-control-segment:where([data-disabled]):where(:not([data-pressed])):where(
+  [data-window-state="inactive"] *
+) {
+  color: var(--mac-toolbar-segmented-control-text-inactive-disabled);
+}
+
+/* Keyboard focus ring; only in the key window. */
+.mac-toolbar-segmented-control-segment:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  z-index: 1;
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-toolbar-segmented-control {
+    color: ButtonText;
+  }
+
+  .mac-toolbar-segmented-control:where([data-variant="joined"])::before,
+  .mac-toolbar-segmented-control:where(:not([data-variant="joined"]))
+    > .mac-toolbar-segmented-control-segment::before {
+    border: 1px solid ButtonText;
+  }
+
+  .mac-toolbar-segmented-control-segment:where([data-pressed]) {
+    color: HighlightText;
+  }
+
+  .mac-toolbar-segmented-control-segment:where([data-pressed])::before {
+    background: Highlight;
+  }
+
+  .mac-toolbar-segmented-control-segment:where([data-disabled]) {
+    color: GrayText;
+  }
+}

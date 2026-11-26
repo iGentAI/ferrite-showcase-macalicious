@@ -1,0 +1,283 @@
+/*
+ * Dictionary demo: the layout of the window around the library's toolbar, scope bar, split
+ * view, list view and web view, and the typography of an entry.
+ *
+ * Measured on 10-15-Catalina-Light-Dictionary.png (frame 690 x 650 pt at x=112, y=76 of the
+ * 2x image; the dark capture agrees). Distances below are points from the window's top-left
+ * corner.
+ *
+ *   toolbar      Back and Forward x 7.5..59.5; the text size pair x 68.5..120.5; the search
+ *                field x 364..682 (318 wide; its focus ring reaches 361..684.5)
+ *   scope bar    y 55..79.5; the selected scope's pill x 39..110.5, y 59..74.5
+ *   word list    183 wide; rows of 28 pt, the first from y=94; text from x=24.5
+ *   entry        from x=184; headword from x=198.5, cap top y=106; part of speech from x=200;
+ *                senses from x=212 at 17 pt a line; the bullet of a narrower sense at x=213
+ *
+ * Every measured length and font size is a token in dictionary.tokens.css (--mac-dictionary-*).
+ * Literal here, as structure: zeros, the 100% sizes of the entry, the flex factors, the 1 pt
+ * rule under a source's title, and the letter spacing of 0. The entry's sizes are multiplied
+ * by --mac-dictionary-text-scale as before.
+ */
+
+/* The Look Up popover over a selection. */
+.mac-dictionary-look-up {
+  display: flex;
+  max-width: 360px;
+  max-height: 320px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 12px;
+  overflow: auto;
+}
+
+.mac-dictionary-look-up p {
+  margin: 0;
+}
+
+.mac-dictionary-look-up-word {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.mac-dictionary-look-up-senses {
+  margin: 0;
+  padding-inline-start: 18px;
+}
+
+/* The text size pair starts 10 pt after Back and Forward, two more than the toolbar's gap. */
+.mac-dictionary-text-size {
+  margin-inline-start: var(--mac-dictionary-text-size-margin-start);
+}
+
+/* The search field keeps the capture's width and stays at the trailing edge. */
+.mac-dictionary-search {
+  flex: 0 1 var(--mac-dictionary-search-width);
+  min-width: var(--mac-dictionary-search-min-width);
+  margin-inline-start: auto;
+}
+
+/* The two sizes of the letter on the text size buttons, each a point towards the other. */
+.mac-dictionary-letter {
+  position: relative;
+  inset-inline-start: var(--mac-dictionary-letter-shift);
+  font: var(--mac-font-body);
+  font-size: var(--mac-dictionary-letter-size);
+  line-height: var(--mac-dictionary-letter-line-height);
+}
+
+.mac-dictionary-letter:where([data-size="large"]) {
+  inset-inline-start: var(--mac-dictionary-letter-large-shift);
+  font-size: var(--mac-dictionary-letter-large-size);
+}
+
+/* Dictionary's scope bar is the small bar at 25 pt, and its scopes are set in 12 pt of the
+   regular weight, 8 pt from the pill's ends: the selected scope's pill is 72 pt for the 56 pt
+   of its title in San Francisco. */
+.mac-dictionary-scope-bar {
+  height: var(--mac-dictionary-scope-bar-height);
+  padding: var(--mac-dictionary-scope-bar-padding-top) var(--mac-dictionary-scope-bar-padding-right)
+    var(--mac-dictionary-scope-bar-padding-bottom) var(--mac-dictionary-scope-bar-padding-left);
+  font: var(--mac-font-body);
+  font-size: var(--mac-dictionary-scope-bar-size);
+  letter-spacing: var(--mac-tracking-regular);
+}
+
+.mac-dictionary-scope {
+  padding-inline: var(--mac-dictionary-scope-padding-inline);
+}
+
+.mac-dictionary-body {
+  display: flex;
+  overflow: hidden;
+}
+
+.mac-dictionary-split {
+  flex: 1 1 auto;
+}
+
+/* The word list is on the sidebar material; its first row starts 14 pt under the bar. */
+.mac-dictionary-sidebar {
+  display: flex;
+  flex-direction: column;
+  padding-block-start: var(--mac-dictionary-sidebar-padding-top);
+  background: var(--mac-material-sidebar-opaque);
+}
+
+.mac-dictionary-words {
+  flex: 1 1 0;
+  min-height: 0;
+  background: transparent;
+}
+
+.mac-dictionary-word {
+  grid-column: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The entry. Its sizes follow the text size buttons through --mac-dictionary-text-scale. */
+.mac-dictionary-entry-pane {
+  display: flex;
+  flex-direction: column;
+}
+
+.mac-dictionary-entry-area {
+  display: contents;
+}
+
+.mac-dictionary-entry {
+  --_scale: var(--mac-dictionary-text-scale, 1);
+
+  flex: 1 1 0;
+  width: 100%;
+  min-height: 0;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* A synonym reads as the text around it until the pointer is over it. */
+.mac-dictionary-word-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.mac-dictionary-word-link:hover {
+  text-decoration: underline;
+}
+
+/* The word list's menu has an element of its own only to hear the secondary click. */
+.mac-dictionary-words-area {
+  display: contents;
+}
+
+.mac-dictionary-preferences-note {
+  margin: 0 0 var(--mac-space-control-gap);
+}
+
+.mac-dictionary-sources {
+  margin: 0 0 var(--mac-space-window-margin);
+  padding: 0;
+  list-style: none;
+}
+
+.mac-dictionary-source-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: var(--mac-dictionary-source-row-padding);
+}
+
+.mac-dictionary-source-moves {
+  display: flex;
+  gap: var(--mac-dictionary-source-row-padding);
+}
+
+.mac-dictionary-article {
+  padding: var(--mac-dictionary-article-padding-top) var(--mac-dictionary-article-padding-right)
+    var(--mac-dictionary-article-padding-bottom) var(--mac-dictionary-article-padding-left);
+}
+
+.mac-dictionary-source + .mac-dictionary-source {
+  margin-block-start: var(--mac-dictionary-source-gap);
+}
+
+.mac-dictionary-source-title {
+  margin: 0 0 var(--mac-dictionary-source-title-margin-bottom);
+  padding-block-end: var(--mac-dictionary-source-title-padding-bottom);
+  border-block-end: 1px solid var(--mac-color-separator);
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-control-small);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.mac-dictionary-headword {
+  margin: 0;
+  font: var(--mac-font-body);
+  font-size: calc(var(--mac-dictionary-headword-size) * var(--_scale));
+  line-height: calc(var(--mac-dictionary-headword-line-height) * var(--_scale));
+  letter-spacing: 0;
+}
+
+.mac-dictionary-pronunciation {
+  margin-inline-start: var(--mac-dictionary-pronunciation-margin-start);
+  color: var(--mac-dictionary-secondary);
+  font-size: calc(var(--mac-dictionary-pronunciation-size) * var(--_scale));
+}
+
+.mac-dictionary-part {
+  margin: calc(var(--mac-dictionary-part-margin-top) * var(--_scale)) 0 0
+    var(--mac-dictionary-part-margin-start);
+  font: var(--mac-font-body);
+  font-size: calc(var(--mac-dictionary-part-size) * var(--_scale));
+  line-height: calc(var(--mac-dictionary-part-line-height) * var(--_scale));
+  letter-spacing: 0;
+}
+
+.mac-dictionary-senses,
+.mac-dictionary-subsenses {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-dictionary-sense {
+  margin: calc(var(--mac-dictionary-sense-margin-top) * var(--_scale)) 0 0
+    var(--mac-dictionary-sense-margin-start);
+  font: var(--mac-font-body);
+  font-size: calc(var(--mac-dictionary-sense-size) * var(--_scale));
+  line-height: calc(var(--mac-dictionary-sense-line-height) * var(--_scale));
+  letter-spacing: 0;
+}
+
+/* Several senses are numbered; a single one is not. */
+.mac-dictionary-senses:where([data-numbered]) {
+  counter-reset: sense;
+}
+
+.mac-dictionary-senses:where([data-numbered]) > .mac-dictionary-sense::before {
+  content: counter(sense) " ";
+  counter-increment: sense;
+  font-weight: 700;
+}
+
+.mac-dictionary-subsense {
+  margin-block-start: calc(var(--mac-dictionary-subsense-margin-top) * var(--_scale));
+}
+
+.mac-dictionary-subsense::before {
+  content: "•";
+  margin-inline: var(--mac-dictionary-bullet-margin-start) var(--mac-dictionary-bullet-margin-end);
+  color: var(--mac-dictionary-secondary);
+}
+
+/* A sense's example, under it in italics, as Catalina's dictionary sets them. */
+.mac-dictionary-example {
+  display: block;
+  margin-block-start: calc(var(--mac-dictionary-example-margin-top) * var(--_scale));
+  color: var(--mac-dictionary-secondary);
+  font-style: italic;
+}
+
+/* The Listen button sits on the headword's line, after the pronunciation. */
+.mac-dictionary-listen {
+  margin-inline-start: var(--mac-dictionary-listen-margin-start);
+  vertical-align: middle;
+}
+
+/* Where the entry's texts come from, under the last source. */
+.mac-dictionary-credits {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-dictionary-credits-gap);
+  margin-block-start: var(--mac-dictionary-source-gap);
+  padding-block-start: var(--mac-dictionary-credits-padding-top);
+  border-block-start: 1px solid var(--mac-color-separator);
+}

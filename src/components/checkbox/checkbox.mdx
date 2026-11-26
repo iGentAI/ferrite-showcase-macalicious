@@ -1,0 +1,164 @@
+---
+title: Checkbox
+description: Chooses between two opposite states, with a mixed state for a group whose members differ.
+order: 20
+---
+
+<Example name="basic" both />
+
+AppKit calls this control a *checkbox* (`NSButton` of the switch type). It is built on
+[Base UI's Checkbox](https://base-ui.com/react/components/checkbox), which supplies the
+`checkbox` role, the hidden form input, the keyboard handling and the `checked`,
+`indeterminate`, `disabled`, `readOnly` and `render` props. The box, its checkmark and its
+dash are drawn here.
+
+## Usage
+
+```tsx
+import { Checkbox } from "macalicious/checkbox";
+import "macalicious/checkbox.css";
+
+<Checkbox defaultChecked>Show Bluetooth in menu bar</Checkbox>
+<Checkbox checked={on} onCheckedChange={setOn}>Ask to keep changes when closing documents</Checkbox>
+```
+
+The children are the title. It is part of the control: clicking it toggles the checkbox, and it
+is the accessible name. Or copy the source into your project: `npx macalicious add checkbox`.
+See [Installation](/installation).
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[checkboxes](https://web.archive.org/web/20200503161552/https://developer.apple.com/design/human-interface-guidelines/macos/buttons/checkboxes/):
+
+- Use a checkbox for a choice between two opposite states. For a set of mutually exclusive
+  choices use [radio buttons](/components/radio-button).
+- Give every checkbox a title, in sentence case and without ending punctuation, unless it is a
+  cell in a checklist.
+- Checkboxes belong in a view, not in a toolbar or a status bar.
+- Stack related checkboxes vertically with their left edges aligned, 22 pt from one box to the
+  next: `gap: 8px` between 14 pt boxes. Indent a checkbox that depends on another by 26 pt, and
+  disable it while it does not apply.
+- A checkbox that stands for a group whose members differ shows the mixed state.
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Off | – | White well with an inner shadow (a translucent white gradient in Dark Aqua) |
+| On | `checked`, `defaultChecked` | Accent fill, white checkmark (white at 85% in Dark Aqua) |
+| Mixed | `indeterminate` | Accent fill, 8 x 2 pt dash |
+| Pressed | `:active` | The well darkens (lightens in Dark Aqua); an accent fill deepens |
+| Keyboard focus | `:focus-visible` | Focus ring around the box |
+| Disabled | `disabled` | Box at half opacity, title at 25% |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No accent: on and mixed are drawn on the off well with a dark (light in Dark Aqua) glyph; no focus ring |
+
+### Mixed state
+
+`indeterminate` is AppKit's mixed state. It is a prop of its own, as in Base UI: the parent
+decides when its children differ.
+
+<Example name="mixed" />
+
+## Sizes
+
+<Example name="sizes" />
+
+| Size | Box | Font |
+| --- | --- | --- |
+| `regular` | 14 pt (measured) | 13 pt |
+| `small` | 12 pt (provisional) | 11 pt |
+| `mini` | 10 pt (provisional) | 9 pt |
+
+The element's height is the box's, AppKit's alignment rectangle; the title's line extends
+above and below it. A title that does not fit wraps, hanging to the right of the box.
+
+## Accent colour
+
+The fill of an on or mixed checkbox follows the accent colour. Set `data-accent` on any
+ancestor. See [Theming](/theming). With the graphite accent in Dark Aqua the glyph is dark, as
+in Catalina.
+
+<Example name="accents" />
+
+## API
+
+<PropsTable name="CheckboxProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-size` | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-checked`, `data-unchecked` | present or absent | Set by Base UI. |
+| `data-indeterminate` | present or absent | Set by Base UI in the mixed state. |
+| `data-disabled`, `data-readonly`, `data-required` | present or absent | Set by Base UI. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+| Class | Element |
+| --- | --- |
+| `mac-checkbox` | The root, with `role="checkbox"`. |
+| `mac-checkbox-box` | The 14 pt box. |
+| `mac-checkbox-glyph` | The inline SVG holding the checkmark and the dash. |
+| `mac-checkbox-title` | The title, present when there are children. |
+
+## Accessibility
+
+- The root has `role="checkbox"` and `aria-checked` (`true`, `false` or `mixed`); Base UI
+  renders a hidden native input beside it, so the checkbox takes part in forms with `name` and
+  `value`.
+- Space toggles it; Tab reaches it. A disabled checkbox leaves the tab order.
+- The title is the accessible name. A checkbox without a title needs `aria-label` or
+  `aria-labelledby`.
+- The glyph is hidden from assistive technology; the state is carried by `aria-checked`.
+- In forced-colours mode the box is drawn with system colours.
+
+## Visual comparison
+
+`npm run visual -- checkbox` compares five examples with the reference screenshots in both
+appearances (`checkbox.visual.json`). The box geometry, fills, hairlines, inner shadow, the dark
+ring and both checkmarks are measured from those screenshots. Share of pixels that differ at
+2x at a colour distance of 0.05, half the default, and the mean difference per channel out of
+255, in Chromium on Linux:
+
+| Crop | Aqua | Dark Aqua |
+| --- | --- | --- |
+| General, off and on, blue accent | 0.88%, Δ 0.71 | 0.80%, Δ 1.00 |
+| General, pink accent | 0.71%, Δ 0.63 | 0.82%, Δ 0.96 |
+| General, green accent | 0.37%, Δ 0.72 | 0.91%, Δ 1.01 |
+| General, graphite accent | 0.31%, Δ 0.64 | 0.91%, Δ 0.94 |
+| General, purple accent | 0.74%, Δ 0.63 | 0.71%, Δ 0.93 |
+| General, red accent | 0.85%, Δ 0.74 | 0.99%, Δ 0.96 |
+| General, orange accent | 0.31%, Δ 0.73 | 1.02%, Δ 1.01 |
+| General, yellow accent | 0.28%, Δ 0.75 | 0.94%, Δ 1.04 |
+| General, on with its title, title masked | 1.46%, Δ 0.87 | 1.24%, Δ 1.02 |
+| Software Update, mixed | 1.03%, Δ 0.65 | 0.52%, Δ 0.87 |
+| Security and Privacy, disabled off and on | 0.13%, Δ 0.64 | 0.00%, Δ 0.59 |
+
+The pixels that still differ are on the box's four corners and along the edge of the
+checkmark, where the browser's antialiasing and Catalina's differ by a few levels. With its
+title unmasked the titled crop scores 15.1% and 14.9%: that is the title, set in the fallback
+font instead of San Francisco. At 1x the crops score 3% to 18%: there is no 1x reference, so
+the 2x screenshot is averaged down, and a half-point hairline that the browser must draw as a
+full pixel cannot match its averaged counterpart ([Fidelity limits](/fidelity)).
+
+No screenshot shows a pressed checkbox, keyboard focus on one, a checkbox in a window that is
+not key, or the small and mini sizes. Those are checked in a real browser against values from
+the spec (the `expect` comparisons): the example is pressed with the mouse or focused with Tab,
+and chosen pixels must have the expected colour.
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| Pressed | Off well `#f0f0f0` (white at 29.75% in Dark Aqua); on fill at 88% | Inferred |
+| Keyboard focus | Ring colour, and that the band ends 2.5 pt beyond the box | Measured on a text field's ring |
+| Main and inactive window | An on box is drawn as the off well; no focus ring | Off well measured; the fallback inferred |
+| Purple accent | On fill | Measured on the General pane of that accent |
+| Small, mini | 12 and 10 pt boxes | Inferred from AppKit's control metrics |
+
+These checks hold the component to the spec; where the spec infers a value, they do not show
+that Catalina looks that way. Not checked anywhere: the glyph's shape at the small and mini
+sizes (it is the regular glyph scaled) and the title's position at those sizes. All eight
+accents are compared with the General pane's screenshot of that accent, in both appearances.

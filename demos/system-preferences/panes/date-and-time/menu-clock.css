@@ -1,0 +1,15 @@
+/*
+ * The menu bar clock as the Clock tab of Date & Time sets it (menu-clock.ts), on the served desktop.
+ *
+ *   [data-mac-menu-clock-hidden]   Show date and time in menu bar is off
+ *   [data-mac-menu-clock-wide]     the text takes more than the measured cell of the short clock
+ */
+:root[data-mac-menu-clock-hidden] .mac-desktop-shell-menu-bar [aria-label^="Clock,"] {
+  display: none;
+}
+
+:root[data-mac-menu-clock-wide] .mac-desktop-shell-menu-bar [aria-label^="Clock,"] {
+  width: auto !important;
+  padding-inline: 8px !important;
+  white-space: nowrap;
+}

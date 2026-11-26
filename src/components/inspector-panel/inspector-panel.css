@@ -1,0 +1,189 @@
+/*
+ * Inspector / Info panel (Finder's Get Info).
+ *
+ * The frame and title bar are the window and title-bar components. This file lays out the
+ * body: a header (32 pt icon, bold 13 pt name with a detail at the trailing edge, an 11 pt
+ * secondary line, then free content), and sections stacked without gaps, each under a 1 pt
+ * separator. A section's header is 19 pt high: the disclosure triangle 9 pt from the window
+ * edge, the bold 11 pt title 22.5 pt from it. Content is 11 pt text on a 14 pt pitch.
+ *
+ * States
+ *   [data-panel-open]                    on a section header while its content is shown
+ *   :focus-visible, [data-force~="focus"] focus ring on a section header, in a key window
+ *   [data-disabled]                      a section that cannot be toggled
+ *
+ * Hooks
+ *   --mac-inspector-panel-label-width    width of a list's label column (default max-content)
+ */
+.mac-inspector-panel-body {
+  color: var(--mac-color-text);
+  font: var(--mac-font-subheadline);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+/* Header: the name's baseline is 21.5 pt under the title bar, the secondary line's 17 pt on. */
+.mac-inspector-panel-header {
+  padding: 9px 4px 4px;
+}
+
+.mac-inspector-panel-header-summary {
+  display: grid;
+  grid-template-rows: 16px 14px;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  gap: 3px 2px;
+  padding-inline: 11.5px 3.5px;
+  margin-block-end: 9px;
+}
+
+/* Nothing under the summary: 9 pt above the first separator. */
+.mac-inspector-panel-header-summary:where(:last-child) {
+  margin-block-end: 5px;
+}
+
+.mac-inspector-panel-header-icon {
+  display: grid;
+  grid-row: 1 / 3;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin-block-start: 2px;
+}
+
+.mac-inspector-panel-header-title,
+.mac-inspector-panel-header-detail {
+  font: var(--mac-font-headline);
+  letter-spacing: var(--mac-tracking-regular);
+  white-space: nowrap;
+}
+
+.mac-inspector-panel-header-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mac-inspector-panel-header-detail {
+  padding-inline-start: 8px;
+}
+
+.mac-inspector-panel-header-subtitle {
+  grid-column: 2 / 4;
+  padding-inline-start: 1px;
+  overflow: hidden;
+  color: var(--mac-color-label-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Sections */
+.mac-inspector-panel-section {
+  border-block-start: 1px solid var(--mac-color-separator);
+}
+
+.mac-inspector-panel-section-header {
+  display: flex;
+  gap: 2.5px;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 19px;
+  margin: 0;
+  padding: 0 7.5px 0 7px;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: var(--mac-font-weight-bold);
+  letter-spacing: inherit;
+  text-align: start;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.mac-inspector-panel-section-triangle {
+  flex: none;
+  color: var(--mac-inspector-panel-triangle);
+  transition: transform 0.1s ease-out;
+}
+
+.mac-inspector-panel-section-header:where([data-panel-open])
+  > .mac-inspector-panel-section-triangle {
+  transform: rotate(90deg);
+}
+
+.mac-inspector-panel-section-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-inspector-panel-section-header:where([data-disabled]) {
+  color: var(--mac-color-label-tertiary);
+}
+
+.mac-inspector-panel-section-header:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+.mac-inspector-panel-section-content {
+  box-sizing: border-box;
+  padding: 4.5px 12.5px 8px;
+}
+
+/* Labelled values: the label column ends 6 pt before the values; rows are 14 pt apart. */
+.mac-inspector-panel-list {
+  display: grid;
+  grid-template-columns: var(--mac-inspector-panel-label-width, max-content) minmax(0, 1fr);
+  column-gap: 6px;
+  margin: 0 -5px 0 5.5px;
+  padding: 0;
+}
+
+.mac-inspector-panel-item {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+}
+
+.mac-inspector-panel-item-label {
+  margin: 0;
+  text-align: end;
+  white-space: nowrap;
+}
+
+.mac-inspector-panel-item-value {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-inspector-panel-section-triangle {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-inspector-panel-section {
+    border-block-start-color: CanvasText;
+  }
+
+  .mac-inspector-panel-section-triangle {
+    color: ButtonText;
+  }
+
+  .mac-inspector-panel-section-header:where([data-disabled]) {
+    color: GrayText;
+  }
+
+  .mac-inspector-panel-section-header:where(:focus-visible) {
+    outline: 2px solid ButtonText;
+    outline-offset: -2px;
+  }
+}

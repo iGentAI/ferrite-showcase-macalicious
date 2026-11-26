@@ -1,0 +1,177 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "noReference": {
+    "light": "No screenshot shows a Dock menu, and Catalina draws one dark in both appearances; the comparison is with the dark detached menu of Contacts."
+  },
+  "comparisons": [
+    {
+      "name": "menu-dark",
+      "description": "The body of a Dock menu, its second item highlighted, against the dark detached menu of Contacts, the nearest thing in the screenshots (no screenshot shows a Dock menu), Dark Aqua. Captures the area above the Dock item; the pointer at the bottom edge is masked.",
+      "example": "visual-menu",
+      "appearance": "dark",
+      "selector": "[data-testid=area]",
+      "actions": [
+        {
+          "hover": "[data-testid=message]"
+        }
+      ],
+      "budget": {
+        "1x": 0.145,
+        "2x": 0.137
+      },
+      "deltaBudget": {
+        "1x": 18.2,
+        "2x": 20.7
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Contacts.png",
+        "crop": {
+          "x": 1136,
+          "y": 420,
+          "width": 384,
+          "height": 154
+        }
+      }
+    },
+    {
+      "name": "menu-dark-drawing",
+      "description": "As menu-dark with the titles and the pointer masked, to score the drawing alone: text is set in the fallback font off Apple platforms and the images are stand-ins.",
+      "example": "visual-menu",
+      "appearance": "dark",
+      "selector": "[data-testid=area]",
+      "actions": [
+        {
+          "hover": "[data-testid=message]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 27,
+          "y": 11,
+          "width": 142,
+          "height": 17
+        },
+        {
+          "x": 27,
+          "y": 30,
+          "width": 142,
+          "height": 17
+        },
+        {
+          "x": 27,
+          "y": 49,
+          "width": 142,
+          "height": 17
+        },
+        {
+          "x": 88,
+          "y": 70.5,
+          "width": 16,
+          "height": 6.5
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0405,
+        "2x": 0.0395
+      },
+      "deltaBudget": {
+        "1x": 3.9,
+        "2x": 4.1
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Contacts.png",
+        "crop": {
+          "x": 1136,
+          "y": 420,
+          "width": 384,
+          "height": 154
+        }
+      }
+    },
+    {
+      "name": "pointer-dark",
+      "description": "The pointer towards the Dock item, which no screenshot shows, Dark Aqua.",
+      "example": "visual-menu",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 192,
+          "height": 135
+        },
+        "pixels": [
+          {
+            "x": 95.5,
+            "y": 72.5,
+            "color": "#343536",
+            "tolerance": 3,
+            "note": "inside the pointer, under the menu's bottom edge: the dark menu fill (contextual-menu.md, measured #333536 over a dark window; the shape is inferred)"
+          },
+          {
+            "x": 86,
+            "y": 74,
+            "color": "#191a1b",
+            "tolerance": 3,
+            "note": "beside the pointer: the background under the menu's shadow"
+          },
+          {
+            "x": 95.5,
+            "y": 79,
+            "color": "#1e1f20",
+            "tolerance": 3,
+            "note": "between the pointer's tip and the Dock item: the background"
+          },
+          {
+            "x": 95.5,
+            "y": 100,
+            "color": "#ffd60a",
+            "tolerance": 3,
+            "note": "the stand-in Dock item, centred under the pointer"
+          }
+        ]
+      }
+    },
+    {
+      "name": "dark-in-aqua",
+      "description": "A Dock menu is dark in Aqua too (inferred, dock-menu.md).",
+      "example": "visual-menu",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 192,
+          "height": 135
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 15,
+            "color": "#787979",
+            "tolerance": 3,
+            "note": "menu fill: the Dark Aqua menu material over the white page, computed from the tokens"
+          },
+          {
+            "x": 95.5,
+            "y": 72.5,
+            "color": "#686869",
+            "tolerance": 3,
+            "note": "the pointer: the same material, over the page under the menu's shadow"
+          },
+          {
+            "x": 2,
+            "y": 2,
+            "color": "#ffffff",
+            "tolerance": 3,
+            "note": "the page"
+          },
+          {
+            "x": 95.5,
+            "y": 100,
+            "color": "#ffcc00",
+            "tolerance": 3,
+            "note": "the stand-in Dock item"
+          }
+        ]
+      }
+    }
+  ]
+}

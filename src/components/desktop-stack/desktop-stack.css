@@ -1,0 +1,103 @@
+/*
+ * Desktop stack: the pile drawn in a desktop icon's tile. The cell, the label, selection and
+ * focus are the desktop icon's.
+ *
+ * .mac-desktop-stack            the desktop icon that carries the stack
+ * .mac-desktop-stack-pile       the tile: three fanned sheets, or the placeholder when open
+ * .mac-desktop-stack-sheet      the front sheet, which frames the thumbnail
+ * .mac-desktop-stack-collapse   the placeholder: a rounded box with a down triangle
+ *
+ * States
+ *   [data-open]                 expanded: the placeholder replaces the pile
+ */
+.mac-desktop-stack-pile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+}
+
+/* Three sheets with a 2.5 pt white border, 1 pt below and half a point to the right of the
+   middle of the tile as measured (the front frame spans x 3180..3279 where the tile's centre
+   is 3229): the front one 50 pt square, a square one behind it turned 7.9 degrees one way and a landscape
+   one turned 8.3 degrees the other. */
+.mac-desktop-stack-sheet,
+.mac-desktop-stack-pile::before,
+.mac-desktop-stack-pile::after {
+  position: absolute;
+  box-sizing: border-box;
+  width: 50px;
+  height: 50px;
+  border: 2.5px solid var(--mac-desktop-stack-sheet);
+  background: var(--mac-desktop-stack-sheet-behind);
+  box-shadow: var(--mac-desktop-stack-shadow);
+  transform: translate(0.5px, 1px);
+}
+
+.mac-desktop-stack-pile::before,
+.mac-desktop-stack-pile::after {
+  content: "";
+}
+
+.mac-desktop-stack-pile::before {
+  width: 49px;
+  height: 49px;
+  background: var(--mac-desktop-stack-sheet);
+  transform: translate(0.5px, 1px) rotate(-7.9deg);
+}
+
+.mac-desktop-stack-pile::after {
+  width: 53px;
+  height: 35px;
+  border-width: 2px;
+  transform: translate(1px, 1px) rotate(8.3deg);
+}
+
+.mac-desktop-stack-sheet {
+  z-index: 1;
+  display: grid;
+  overflow: hidden;
+  background: var(--mac-desktop-stack-sheet);
+}
+
+.mac-desktop-stack-sheet > * {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Open: the placeholder is drawn by the SVG alone. */
+.mac-desktop-stack:where([data-open]) .mac-desktop-stack-pile::before,
+.mac-desktop-stack:where([data-open]) .mac-desktop-stack-pile::after {
+  content: none;
+}
+
+.mac-desktop-stack-collapse {
+  width: 64px;
+  height: 64px;
+  color: var(--mac-desktop-stack-placeholder-outline);
+}
+
+.mac-desktop-stack-collapse > rect {
+  fill: var(--mac-desktop-stack-placeholder-fill);
+  stroke: var(--mac-desktop-stack-placeholder-outline);
+}
+
+@media (forced-colors: active) {
+  .mac-desktop-stack-sheet,
+  .mac-desktop-stack-pile::before,
+  .mac-desktop-stack-pile::after {
+    border: 1px solid CanvasText;
+    background: Canvas;
+  }
+
+  .mac-desktop-stack-collapse {
+    color: CanvasText;
+  }
+
+  .mac-desktop-stack-collapse > rect {
+    fill: none;
+    stroke: CanvasText;
+  }
+}

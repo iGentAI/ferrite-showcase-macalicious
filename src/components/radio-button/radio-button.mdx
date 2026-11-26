@@ -1,0 +1,184 @@
+---
+title: Radio Button
+description: Chooses one of two to five mutually exclusive options.
+order: 21
+---
+
+<Example name="basic" both />
+
+AppKit calls this control a *radio button* (`NSButton` of the radio type); sibling radio
+buttons form a group. Here the group is explicit: `RadioGroup` is built on
+[Base UI's Radio Group](https://base-ui.com/react/components/radio) and `RadioButton` on its
+Radio, which supply the `radiogroup` and `radio` roles, the single tab stop, the arrow keys and
+the hidden form input. The circle, its dot and the dash are drawn in CSS.
+
+## Usage
+
+```tsx
+import { RadioButton, RadioGroup } from "macalicious/radio-button";
+import "macalicious/radio-button.css";
+
+<RadioGroup defaultValue="automatic" aria-label="Show scroll bars">
+  <RadioButton value="automatic">Automatically based on mouse or trackpad</RadioButton>
+  <RadioButton value="scrolling">When scrolling</RadioButton>
+  <RadioButton value="always">Always</RadioButton>
+</RadioGroup>
+```
+
+A button's children are its title: clicking it selects the button, and it is the accessible
+name. Control the group with `value` and `onValueChange`. Or copy the source into your
+project: `npx macalicious add radio-button`. See [Installation](/installation).
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[radio buttons](https://web.archive.org/web/20200503212902/https://developer.apple.com/design/human-interface-guidelines/macos/buttons/radio-buttons/):
+
+- Use radio buttons for two to five related, mutually exclusive choices. For more, use a pop-up
+  button; for a single on or off choice, a [checkbox](/components/checkbox).
+- Radio buttons present options; they never start an action. They belong in a view, not in a
+  toolbar or a status bar.
+- Title each button in sentence case, without ending punctuation.
+- An introductory label ends with a colon and shares the baseline of the first button's title.
+- In a horizontal group, give every button the same width, that of the longest title, so the
+  spacing is constant.
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Off | – | White well with an inner shadow (a translucent white gradient in Dark Aqua) |
+| On | the group's `value` | Accent fill, white dot (white at 85% in Dark Aqua) |
+| Mixed | `mixed` | Accent fill, 8 x 2 pt dash; a look only (see Accessibility) |
+| Pressed | `:active` | The well darkens (lightens in Dark Aqua); an accent fill deepens |
+| Keyboard focus | `:focus-visible` | Focus ring around the circle |
+| Disabled | `disabled` on the group or a button | Circle at half opacity, title at 25% |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No accent: the selected button is drawn on the off well with a dark (light in Dark Aqua) dot; no focus ring |
+
+### Orientation
+
+A group is a column, 22 pt from one circle to the next. `orientation="horizontal"` lays it out
+as a row with 10 pt between a title and the next circle, as in the Siri pane. The arrow keys
+work the same in both.
+
+<Example name="horizontal" />
+
+## Sizes
+
+<Example name="sizes" />
+
+| Size | Circle | Font |
+| --- | --- | --- |
+| `regular` | 16 pt (measured) | 13 pt |
+| `small` | 14 pt (provisional) | 11 pt |
+| `mini` | 12 pt (provisional) | 9 pt |
+
+The element's height is the circle's, AppKit's alignment rectangle; the title's line extends
+above and below it.
+
+## Accent colour
+
+The fill of the selected button follows the accent colour. Set `data-accent` on any ancestor.
+See [Theming](/theming). With the graphite accent in Dark Aqua the dot is dark, as in Catalina.
+
+<Example name="accents" />
+
+## API
+
+### RadioGroup
+
+<PropsTable name="RadioGroupProps" />
+
+### RadioButton
+
+<PropsTable name="RadioButtonProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-orientation` | group | `vertical`, `horizontal` | Reflects `orientation`. |
+| `data-size` | button | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-mixed` | button | present or absent | Reflects `mixed`. |
+| `data-checked`, `data-unchecked` | button | present or absent | Set by Base UI. |
+| `data-disabled`, `data-readonly`, `data-required` | both | present or absent | Set by Base UI. |
+| `data-force` | button | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+| Class | Element |
+| --- | --- |
+| `mac-radio-button-group` | The group, with `role="radiogroup"`. |
+| `mac-radio-button` | A button, with `role="radio"`. |
+| `mac-radio-button-circle` | The 16 pt circle; the dot is its `::after`. |
+| `mac-radio-button-title` | The title, present when there are children. |
+
+## Accessibility
+
+- The group has `role="radiogroup"` and needs a name: `aria-label`, or `aria-labelledby`
+  pointing at its introductory label. Each button has `role="radio"` and `aria-checked`.
+- The group is one tab stop: Tab moves focus to the selected button, or to the first one when
+  none is selected. The arrow keys move focus and the selection together and wrap around; Space
+  selects the focused button.
+- A disabled button is skipped by the arrow keys. A disabled group keeps its tab stop, as in
+  Base UI, so that it can still be found with the keyboard, but nothing in it can be changed.
+- The title is a button's accessible name. A button without a title needs `aria-label` or
+  `aria-labelledby`.
+- `mixed` changes the look only. ARIA has no mixed radio button, so say what the dash means in
+  the title or with `aria-describedby`.
+- In forced-colours mode the circle, the dot and the dash are drawn with system colours, so an
+  on or mixed button still differs from an off one; a visual check in a real browser covers it.
+
+## Visual comparison
+
+`npm run visual -- radio-button` compares four examples with the reference screenshots in both
+appearances (`radio-button.visual.json`). The circle's size, fills, hairlines, inner shadow,
+the dark ring and the dot are measured from those screenshots. Share of pixels that differ at
+2x at a colour distance of 0.05, half the default, and the mean difference per channel out of
+255, in Chromium on Linux:
+
+| Crop | Aqua | Dark Aqua |
+| --- | --- | --- |
+| General, on and off, blue accent | 2.07%, Δ 1.03 | 1.34%, Δ 1.28 |
+| General, pink accent | 1.86%, Δ 0.94 | 1.45%, Δ 1.24 |
+| General, green accent | 1.58%, Δ 1.09 | 1.55%, Δ 1.26 |
+| General, graphite accent | 1.47%, Δ 0.93 | 1.52%, Δ 1.21 |
+| General, purple accent | 1.70%, Δ 0.92 | 1.21%, Δ 1.21 |
+| General, red accent | 2.22%, Δ 1.11 | 1.70%, Δ 1.24 |
+| General, orange accent | 2.07%, Δ 1.11 | 1.89%, Δ 1.37 |
+| General, yellow accent | 1.42%, Δ 1.10 | 1.86%, Δ 1.38 |
+| Siri, horizontal pair, titles masked | 2.08%, Δ 1.05 | 1.16%, Δ 1.32 |
+| Security and Privacy, disabled off and on | 0.14%, Δ 0.91 | 0.23%, Δ 0.75 |
+
+The pixels that still differ are single pixels on the rim of the circle, mostly on its upper
+diagonals, and on the upper edge of the dot: Catalina's circle is a little fuller there than
+the circle a browser draws for `border-radius: 50%`. With the titles unmasked the Siri crop
+scores 5.4% and 4.7%: that is the titles, set in the fallback font instead of San Francisco.
+At 1x the crops score 0.4% to 8%: there is no 1x reference, so the 2x screenshot is averaged
+down ([Fidelity limits](/fidelity)).
+
+In the Siri example the first button is given the width it has in San Francisco, so the second
+circle stays in place when the titles are set in another font; the 10 pt between a title and
+the next circle is therefore the spec's measurement, not something this comparison checks. The
+General pane sets its radio rows 20 pt apart, so that example overrides the group's 22 pt.
+
+No screenshot shows a pressed radio button, keyboard focus on one, a radio button in a window
+that is not key, the mixed state, or the small and mini sizes. Those are checked in a real
+browser against values from the spec (the `expect` comparisons): the example is pressed with
+the mouse or focused with Tab, and chosen pixels must have the expected colour.
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| Pressed | Off well `#f0f0f0` (white at 29.75% in Dark Aqua); on fill at 88% | Inferred |
+| Keyboard focus | Ring colour, and that the band ends 2.5 pt beyond the circle | Measured on a text field's ring |
+| Main and inactive window | The selected button is drawn as the off well; no focus ring | Off well measured; the fallback inferred |
+| Purple accent | On fill | Measured on the General pane of that accent |
+| Small, mini | 14 and 12 pt circles | Inferred from AppKit's control metrics |
+
+These checks hold the component to the spec; where the spec infers a value, they do not show
+that Catalina looks that way. Not checked anywhere: the mixed dash in Catalina's colours (it
+follows the checkbox's measured 8 x 2 pt dash; only its shape is checked, by the
+forced-colours comparisons), and the dot and the title's position at the small and mini sizes.
+All eight accents are compared with the General pane's screenshot of that accent, in both
+appearances.

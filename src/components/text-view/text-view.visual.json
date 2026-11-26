@@ -1,0 +1,309 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "text-edit-light",
+      "description": "Top left of a TextEdit document, from 2 pt inside the window's edge, Aqua, whole crop.",
+      "example": "visual-text-edit",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.098,
+        "2x": 0.089
+      },
+      "deltaBudget": {
+        "1x": 8.32,
+        "2x": 11.26
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Text-Edit.png",
+        "crop": {
+          "x": 116,
+          "y": 236,
+          "width": 400,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "text-edit-light-masked",
+      "description": "As text-edit-light with the line of text masked: text is set in a fallback font off Apple platforms, which leaves the fill.",
+      "example": "visual-text-edit",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 2,
+          "y": 1,
+          "width": 150,
+          "height": 14
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.05,
+        "2x": 0.18
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Text-Edit.png",
+        "crop": {
+          "x": 116,
+          "y": 236,
+          "width": 400,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "text-edit-dark",
+      "description": "Top left of a TextEdit document, from 2 pt inside the window's edge, Dark Aqua, whole crop.",
+      "example": "visual-text-edit",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.097,
+        "2x": 0.087
+      },
+      "deltaBudget": {
+        "1x": 7.73,
+        "2x": 10.06
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-TextEdit.png",
+        "crop": {
+          "x": 116,
+          "y": 236,
+          "width": 400,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "text-edit-dark-masked",
+      "description": "As text-edit-dark with the line of text masked: text is set in a fallback font off Apple platforms, which leaves the fill.",
+      "example": "visual-text-edit",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 2,
+          "y": 1,
+          "width": 150,
+          "height": 14
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.08,
+        "2x": 0.32
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-TextEdit.png",
+        "crop": {
+          "x": 116,
+          "y": 236,
+          "width": 400,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "selection-light",
+      "description": "Select All in the key window: the highlight colour behind a 16 pt line, the fill below, Aqua.",
+      "example": "visual-selection",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#view"
+        },
+        {
+          "key": "Control+a"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 32
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 8,
+            "color": "#b2d7ff",
+            "tolerance": 2,
+            "note": "selected text background (spec: text-view, Selected text background, measured #b2d7ff)"
+          },
+          {
+            "x": 20,
+            "y": 24,
+            "color": "#ffffff",
+            "note": "fill below the line (spec: Background, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "selection-dark",
+      "description": "Select All in the key window: the highlight colour behind a 16 pt line, the fill below, Dark Aqua.",
+      "example": "visual-selection",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#view"
+        },
+        {
+          "key": "Control+a"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 32
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 8,
+            "color": "#40638b",
+            "tolerance": 2,
+            "note": "selected text background: the blue highlight token (the spec infers #35638f; no dark selection is captured)"
+          },
+          {
+            "x": 20,
+            "y": 24,
+            "color": "#1e1e1e",
+            "note": "fill below the line (spec: Background, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "selection-not-key-light",
+      "description": "Select All in a window that is not key: grey selection, Aqua.",
+      "example": "visual-selection",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "click": "#view"
+        },
+        {
+          "key": "Control+a"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 32
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 8,
+            "color": "#dcdcdc",
+            "tolerance": 1,
+            "note": "selection in an inactive window (spec: text-view, Text selected, inactive window, inferred #dcdcdc)"
+          },
+          {
+            "x": 20,
+            "y": 24,
+            "color": "#ffffff",
+            "note": "fill below the line"
+          }
+        ]
+      }
+    },
+    {
+      "name": "selection-not-key-dark",
+      "description": "Select All in a window that is not key: grey selection, Dark Aqua.",
+      "example": "visual-selection",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "click": "#view"
+        },
+        {
+          "key": "Control+a"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 32
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 8,
+            "color": "#464646",
+            "tolerance": 1,
+            "note": "selection in an inactive window (spec: inferred #464646)"
+          },
+          {
+            "x": 20,
+            "y": 24,
+            "color": "#1e1e1e",
+            "note": "fill below the line"
+          }
+        ]
+      }
+    },
+    {
+      "name": "find-highlight-light",
+      "description": "The find highlight token behind found text on a white page, Aqua.",
+      "example": "visual-find-highlight",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 18,
+            "color": "#ffff00",
+            "note": "the find highlight in Aqua: findHighlightColor as catalogued; no capture shows found text in Aqua"
+          },
+          {
+            "x": 20,
+            "y": 18,
+            "color": "#ffffff",
+            "note": "the page beside the mark"
+          }
+        ]
+      }
+    },
+    {
+      "name": "find-highlight-dark",
+      "description": "The find highlight token behind found text on a white page, Dark Aqua.",
+      "example": "visual-find-highlight",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 18,
+            "color": "#b1d832",
+            "note": "the find highlight in Dark Aqua (spec: tokens, --mac-color-find-highlight, measured on the word Preview found: 10-15-Catalina-Dark-Preview-Search.png @ 2034,586, stored #b9d553)"
+          },
+          {
+            "x": 20,
+            "y": 18,
+            "color": "#ffffff",
+            "note": "the page beside the mark"
+          }
+        ]
+      }
+    }
+  ]
+}

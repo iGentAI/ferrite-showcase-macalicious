@@ -1,0 +1,108 @@
+/*
+ * Status bar: the strip at the bottom of a window.
+ *
+ * The first point of every variant is its separator: two device-pixel rows, drawn as one 1px
+ * strip whose gradient is sampled at the centre of each device pixel (the two measured colours
+ * at 2x, their mean at 1x). A separator that is a single row (flat) uses the fill as its
+ * second colour. The window's own bottom edge and corners are not drawn here.
+ *
+ * Variants
+ *   [data-variant="information"]   23 pt, 11 pt centred text [provisional]
+ *   [data-variant="gradient"]      21 pt, gradient (Automator)
+ *   [data-variant="flat"]          23 pt, flat under a hairline (Script Editor)
+ *   [data-variant="breadcrumb"]    21 pt, flat, 12 pt label (System Information)
+ * States
+ *   [data-window-state="inactive"] *   the gradient flattens, like the title bar [provisional]
+ */
+.mac-status-bar {
+  --_outer: var(--mac-status-bar-separator-outer);
+  --_inner: var(--mac-status-bar-separator-inner);
+  --_top: var(--mac-status-bar-fill);
+  --_bottom: var(--mac-status-bar-fill);
+
+  display: grid;
+  /* A bar keeps its height when the window is too short for its content: the body gives way. */
+  flex: none;
+  /* The sides keep their content's width; the centre gives way first and is cut. */
+  grid-template-columns: minmax(max-content, 1fr) minmax(0, auto) minmax(max-content, 1fr);
+  align-items: center;
+  gap: var(--mac-space-4);
+  box-sizing: border-box;
+  height: 23px;
+  padding: 1px var(--mac-space-4) 0;
+  background:
+    linear-gradient(var(--_outer) 25%, var(--_inner) 75%) top / 100% 1px no-repeat,
+    linear-gradient(to bottom, var(--_top), var(--_bottom)) bottom / 100% calc(100% - 1px) no-repeat;
+  color: var(--mac-status-bar-text);
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-status-bar:where([data-variant="gradient"]) {
+  --_outer: var(--mac-status-bar-gradient-separator-outer);
+  --_inner: var(--mac-status-bar-gradient-separator-inner);
+  --_top: var(--mac-status-bar-gradient-top);
+  --_bottom: var(--mac-status-bar-gradient-bottom);
+  height: 21px;
+}
+
+.mac-status-bar:where([data-variant="flat"]) {
+  --_outer: var(--mac-status-bar-flat-separator);
+  --_inner: var(--mac-status-bar-flat-fill);
+  --_top: var(--mac-status-bar-flat-fill);
+  --_bottom: var(--mac-status-bar-flat-fill);
+}
+
+.mac-status-bar:where([data-variant="breadcrumb"]) {
+  --_outer: var(--mac-status-bar-breadcrumb-separator);
+  --_inner: var(--mac-status-bar-breadcrumb-separator);
+  --_top: var(--mac-status-bar-breadcrumb-fill);
+  --_bottom: var(--mac-status-bar-breadcrumb-fill);
+  height: 21px;
+  color: var(--mac-status-bar-breadcrumb-text);
+  font: var(--mac-font-icon-label);
+  letter-spacing: var(--mac-tracking-regular);
+}
+
+/* Frame chrome flattens in an inactive window. */
+.mac-status-bar:where([data-variant="gradient"]):where([data-window-state="inactive"] *) {
+  --_top: var(--mac-material-titlebar-inactive);
+  --_bottom: var(--mac-material-titlebar-inactive);
+}
+
+.mac-status-bar-leading,
+.mac-status-bar-trailing {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: var(--mac-space-1);
+}
+
+.mac-status-bar-leading {
+  grid-column: 1;
+}
+
+.mac-status-bar-center {
+  grid-column: 2;
+  min-width: 0;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+}
+
+.mac-status-bar-trailing {
+  grid-column: 3;
+  justify-content: flex-end;
+}
+
+@media (forced-colors: active) {
+  .mac-status-bar {
+    border-top: 1px solid CanvasText;
+    padding-top: 0;
+    background: Canvas;
+  }
+}

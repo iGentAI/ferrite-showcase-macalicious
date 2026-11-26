@@ -1,0 +1,120 @@
+/*
+ * Image button (borderless NSButton with an image, optionally with a label below).
+ *
+ * Nothing is drawn but the image and the label. The whole box is the click target, so the box
+ * keeps 5 pt of clear space around its content (the Human Interface Guidelines ask for about
+ * 10 px between the image and the edge of the frame).
+ *
+ * States
+ *   :active                            pressed: the image darkens, the label does not change
+ *   [data-pressed], [aria-pressed="true"]   on, when rendered by a Toggle: as pressed
+ *   :focus-visible                     keyboard focus ring around the image (the label when
+ *                                      there is no image), key window only
+ *   [data-disabled]                    set by Base UI for `disabled`: image and label at 50%
+ *   [data-force~="pressed" | "focus"]  static previews of transient states (docs, visual tests)
+ *
+ * Hooks
+ *   --mac-image-button-padding         clear space between the content and the box, 5px
+ *   --mac-image-button-gap             distance from the image to the label, 7.5px: with the
+ *                                      12 pt label this puts its first ink 9.5 pt below the
+ *                                      image, as in System Preferences
+ */
+.mac-image-button {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--mac-image-button-gap, 7.5px);
+  box-sizing: border-box;
+  margin: 0;
+  padding: var(--mac-image-button-padding, 5px);
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-icon-label);
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+/* Row: a provider of Internet Accounts. Measured there: rows 54 pt tall (y 724 to 831 at 2x)
+   and as wide as the box, the logo centred, the title of the last row 13 pt in the label
+   colour. */
+.mac-image-button:where([data-layout="row"]) {
+  display: flex;
+  width: 100%;
+  min-height: 54px;
+  padding: 0;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+}
+
+.mac-image-button-image {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--mac-radius-control-regular);
+}
+
+/* Children that render nothing (an empty fragment, a condition that is false) leave no image:
+   the box takes no room and the label stands alone. */
+.mac-image-button-image:empty {
+  display: none;
+}
+
+.mac-image-button-label {
+  display: -webkit-box;
+  overflow: hidden;
+  max-width: 100%;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+/* Pressed or on: AppKit composites the image with black at about 30% */
+.mac-image-button:where(
+  :active,
+  [data-force~="pressed"],
+  [data-pressed],
+  [aria-pressed="true"]
+):where(:not([data-disabled])) .mac-image-button-image {
+  filter: brightness(var(--mac-image-brightness-pressed));
+}
+
+/* Disabled */
+.mac-image-button:where([data-disabled]) {
+  opacity: var(--mac-control-opacity-disabled);
+}
+
+/* Keyboard focus ring around the image, or around the label of a button that has no image;
+   only in the key window, as in AppKit. */
+.mac-image-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+)
+:where(
+  .mac-image-button-image,
+  .mac-image-button-label:first-child,
+  .mac-image-button-image:empty + .mac-image-button-label
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-image-button {
+    color: ButtonText;
+  }
+
+  .mac-image-button:where([data-disabled]) {
+    color: GrayText;
+    opacity: 1;
+  }
+}

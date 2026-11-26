@@ -1,0 +1,93 @@
+/*
+ * Toolbar pop-up and pull-down buttons (NSPopUpButton, textured rounded).
+ *
+ * The bezel, its colours and every state are the toolbar button's (toolbar-button.css): the
+ * element also carries the class mac-toolbar-button. Only the layout of its content is here.
+ * Measured on Finder's Group and Action buttons, 46 pt wide:
+ *
+ *   |<-10->[glyph 14]<-9.5->[chevron 7.5]<-5->|
+ *
+ * The split form is a momentary toolbar segmented control of two segments
+ * (toolbar-segmented-control.css): this file sizes its narrow menu part, 19 pt in Preview.
+ *
+ * [data-compact] is Preview's View button, 36 pt wide:
+ *
+ *   |<-5->[glyph 15]<-4->[chevron 7]<-5->|
+ *
+ * States: as the toolbar button. [data-pressed] is set while the menu is open.
+ */
+.mac-toolbar-pop-up {
+  gap: 5px;
+  justify-content: flex-start;
+  padding: 0 5px 0 10px;
+}
+
+/* The parts of the content: an image, a title, and for a pop-up the two parts of its value. A
+   title too long for the button ends with an ellipsis; an empty part takes no room. */
+.mac-toolbar-pop-up > :where(span) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mac-toolbar-pop-up > :where(span:empty) {
+  display: none;
+}
+
+.mac-toolbar-pop-up > :where(span) > :where(span) {
+  margin: 0;
+  vertical-align: middle;
+}
+
+/* The glyph: about 14 pt high, centred, never cut. */
+.mac-toolbar-pop-up-image {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+}
+
+/* The chevron keeps to the trailing edge, at least 9.5 pt after the content. */
+.mac-toolbar-pop-up-arrow {
+  display: block;
+  flex: none;
+  box-sizing: content-box;
+  width: 7.5px;
+  height: 4.5px;
+  margin-inline-start: auto;
+  padding-inline-start: 4.5px;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+/* Compact: the content starts 5 pt in and the chevron follows it after 4 pt, three quarters of
+   a point under the middle. The chevron is scaled to 7 pt wide, so its stroke is 1.4 pt. */
+.mac-toolbar-pop-up:where([data-compact]) {
+  gap: 4px;
+  min-width: 0;
+  padding-inline-start: 5px;
+}
+
+.mac-toolbar-pop-up:where([data-compact]) > .mac-toolbar-pop-up-arrow {
+  width: 7px;
+  margin-block-start: 1.5px;
+  padding: 0;
+}
+
+/* Split: the menu part is 19 pt wide; its chevron is the small heavy one, 7 pt wide, 5 pt
+   from the divider and a quarter point above the middle (Preview's Highlight button). The
+   tripled class outweighs the segmented control's own sizing of a joined segment, whatever
+   the order of the two stylesheets. */
+.mac-toolbar-pop-up-menu-part.mac-toolbar-pop-up-menu-part.mac-toolbar-pop-up-menu-part {
+  flex: none;
+  justify-content: flex-start;
+  width: 19px;
+  min-width: 0;
+  padding: 0 0 0 5px;
+}
+
+.mac-toolbar-pop-up-menu-part > .mac-toolbar-pop-up-arrow {
+  width: 7px;
+  margin: 0 0 0.5px;
+  padding: 0;
+  stroke-linecap: butt;
+}

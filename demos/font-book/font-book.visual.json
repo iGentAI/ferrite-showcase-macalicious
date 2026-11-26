@@ -1,0 +1,111 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "window-light",
+      "description": "The whole Font Book capture, Aqua: the window with its shadow as the demo opens (All Fonts, the font list at its end with Zapf Dingbats expanded, the Sample view at 42 pt), after a click on the selected row gives the font list the keyboard focus it has in the capture. Whole crop: the text is set in the fallback font, the toolbar and sidebar glyphs are original drawings, and the six rows of the sample are the Unicode dingbats in whatever symbol font the system has, not Zapf Dingbats.",
+      "example": "visual-window",
+      "appearance": "light",
+      "actions": [{ "click": ".mac-font-book-list [aria-selected='true']" }],
+      "budget": { "1x": 0.085, "2x": 0.076 },
+      "deltaBudget": { "1x": 11.7, "2x": 11.9 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Font-Book.png",
+        "matte": "#ffffff",
+        "crop": { "x": 0, "y": 0, "width": 2258, "height": 1430 }
+      }
+    },
+    {
+      "name": "window-layout-light",
+      "description": "The same with the text and the stand-in glyphs masked: the window's title, the glyphs of the four segments and of the two toolbar buttons, the search field's magnifier and placeholder, the glyph and label of every sidebar row and the two headers, the names of the font list, the label and the digits of the size control, the font's name and the six rows of the sample. Scores the frame and its shadow, the title bar and the bezels of its toolbar, the three panes and their dividers, the sidebar's and the list's selection, the disclosure triangles, the combo box and the slider, Aqua.",
+      "example": "visual-window",
+      "appearance": "light",
+      "actions": [{ "click": ".mac-font-book-list [aria-selected='true']" }],
+      "masks": [
+        { "x": 490, "y": 40, "width": 150, "height": 18 },
+        { "x": 72, "y": 66, "width": 19, "height": 16 },
+        { "x": 105, "y": 66, "width": 20, "height": 16 },
+        { "x": 135, "y": 65, "width": 27, "height": 18 },
+        { "x": 172, "y": 65, "width": 20, "height": 18 },
+        { "x": 277, "y": 66, "width": 18, "height": 16 },
+        { "x": 334, "y": 65, "width": 20, "height": 18 },
+        { "x": 648, "y": 66, "width": 70, "height": 16 },
+        { "x": 74, "y": 101, "width": 112, "height": 18 },
+        { "x": 64, "y": 138, "width": 112, "height": 15 },
+        { "x": 74, "y": 160, "width": 112, "height": 18 },
+        { "x": 74, "y": 186, "width": 112, "height": 18 },
+        { "x": 64, "y": 223, "width": 112, "height": 15 },
+        { "x": 74, "y": 245, "width": 112, "height": 18 },
+        { "x": 74, "y": 271, "width": 112, "height": 18 },
+        { "x": 74, "y": 297, "width": 112, "height": 18 },
+        { "x": 74, "y": 323, "width": 112, "height": 18 },
+        { "x": 74, "y": 349, "width": 112, "height": 18 },
+        { "x": 277, "y": 93, "width": 179, "height": 548 },
+        { "x": 972, "y": 108, "width": 33, "height": 19 },
+        { "x": 1015, "y": 110, "width": 20, "height": 15 },
+        { "x": 518, "y": 138, "width": 449, "height": 26 },
+        { "x": 460, "y": 166, "width": 565, "height": 256 }
+      ],
+      "budget": { "1x": 0.0035, "2x": 0.0006 },
+      "deltaBudget": { "1x": 0.8, "2x": 0.8 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Font-Book.png",
+        "matte": "#ffffff",
+        "crop": { "x": 0, "y": 0, "width": 2258, "height": 1430 }
+      }
+    },
+    {
+      "name": "window-dark",
+      "description": "The whole Font Book capture, Dark Aqua: the same window, with the same click. Whole crop, as window-light. In this capture the two toolbar buttons stand 45 pt nearer the segmented control than in the Aqua one, and the demo places them so in Dark Aqua.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "actions": [{ "click": ".mac-font-book-list [aria-selected='true']" }],
+      "budget": { "1x": 0.083, "2x": 0.075 },
+      "deltaBudget": { "1x": 10.7, "2x": 10.9 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Font-Book.png",
+        "matte": "#ffffff",
+        "crop": { "x": 0, "y": 0, "width": 2258, "height": 1430 }
+      }
+    },
+    {
+      "name": "window-layout-dark",
+      "description": "As window-dark with the same text and glyphs masked as window-layout-light: the frame and its shadow, the dark title bar and its toolbar, the panes, the selections, the triangles, the combo box and the slider, Dark Aqua. The two toolbar buttons stand 45 pt nearer the segmented control than in the Aqua capture, as this capture has them, and their glyphs are masked there.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "actions": [{ "click": ".mac-font-book-list [aria-selected='true']" }],
+      "masks": [
+        { "x": 490, "y": 40, "width": 150, "height": 18 },
+        { "x": 72, "y": 66, "width": 19, "height": 16 },
+        { "x": 105, "y": 66, "width": 20, "height": 16 },
+        { "x": 135, "y": 65, "width": 27, "height": 18 },
+        { "x": 172, "y": 65, "width": 20, "height": 18 },
+        { "x": 232, "y": 66, "width": 18, "height": 16 },
+        { "x": 289, "y": 65, "width": 20, "height": 18 },
+        { "x": 648, "y": 66, "width": 70, "height": 16 },
+        { "x": 74, "y": 101, "width": 112, "height": 18 },
+        { "x": 64, "y": 138, "width": 112, "height": 15 },
+        { "x": 74, "y": 160, "width": 112, "height": 18 },
+        { "x": 74, "y": 186, "width": 112, "height": 18 },
+        { "x": 64, "y": 223, "width": 112, "height": 15 },
+        { "x": 74, "y": 245, "width": 112, "height": 18 },
+        { "x": 74, "y": 271, "width": 112, "height": 18 },
+        { "x": 74, "y": 297, "width": 112, "height": 18 },
+        { "x": 74, "y": 323, "width": 112, "height": 18 },
+        { "x": 74, "y": 349, "width": 112, "height": 18 },
+        { "x": 277, "y": 93, "width": 179, "height": 548 },
+        { "x": 972, "y": 108, "width": 33, "height": 19 },
+        { "x": 1015, "y": 110, "width": 20, "height": 15 },
+        { "x": 518, "y": 138, "width": 449, "height": 26 },
+        { "x": 460, "y": 166, "width": 565, "height": 256 }
+      ],
+      "budget": { "1x": 0.0033, "2x": 0.0006 },
+      "deltaBudget": { "1x": 0.95, "2x": 1 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Font-Book.png",
+        "matte": "#ffffff",
+        "crop": { "x": 0, "y": 0, "width": 2258, "height": 1430 }
+      }
+    }
+  ]
+}

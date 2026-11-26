@@ -1,0 +1,415 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "get-light",
+      "description": "GET with its In-App Purchases caption, the first offer button of the App Store's lockup list, Aqua.",
+      "example": "visual-get",
+      "appearance": "light",
+      "budget": { "1x": 0.062, "2x": 0.068 },
+      "deltaBudget": { "1x": 3.83, "2x": 5.4 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mac-App-Store.png",
+        "crop": { "x": 1090, "y": 1455, "width": 156, "height": 84 }
+      }
+    },
+    {
+      "name": "get-light-capsule",
+      "description": "As get-light with the title and the caption masked, to score the capsule alone: both are set in the fallback font off Apple platforms.",
+      "example": "visual-get",
+      "appearance": "light",
+      "masks": [
+        { "x": 26, "y": 10, "width": 26, "height": 11 },
+        { "x": 9, "y": 32, "width": 60, "height": 9 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.002, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.09, "2x": 0.07 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mac-App-Store.png",
+        "crop": { "x": 1090, "y": 1455, "width": 156, "height": 84 }
+      }
+    },
+    {
+      "name": "get-dark",
+      "description": "GET with its In-App Purchases caption on the dark page, where the capsule keeps its light fill, Dark Aqua.",
+      "example": "visual-get",
+      "appearance": "dark",
+      "budget": { "1x": 0.072, "2x": 0.071 },
+      "deltaBudget": { "1x": 4.35, "2x": 5.6 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mac-App-Store.png",
+        "crop": { "x": 1090, "y": 1455, "width": 156, "height": 84 }
+      }
+    },
+    {
+      "name": "get-dark-capsule",
+      "description": "As get-dark with the title and the caption masked, to score the capsule alone.",
+      "example": "visual-get",
+      "appearance": "dark",
+      "masks": [
+        { "x": 26, "y": 10, "width": 26, "height": 11 },
+        { "x": 9, "y": 32, "width": 60, "height": 9 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0172, "2x": 0.0085 },
+      "deltaBudget": { "1x": 0.7, "2x": 0.31 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mac-App-Store.png",
+        "crop": { "x": 1090, "y": 1455, "width": 156, "height": 84 }
+      }
+    },
+    {
+      "name": "price-light",
+      "description": "The price $14.99 in the second lockup column, Aqua.",
+      "example": "visual-price",
+      "appearance": "light",
+      "budget": { "1x": 0.095, "2x": 0.079 },
+      "deltaBudget": { "1x": 6, "2x": 6.38 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mac-App-Store.png",
+        "crop": { "x": 1732, "y": 1455, "width": 156, "height": 62 }
+      }
+    },
+    {
+      "name": "price-light-capsule",
+      "description": "As price-light with the price masked, to score the capsule alone: the price is set in the fallback font off Apple platforms.",
+      "example": "visual-price",
+      "appearance": "light",
+      "masks": [{ "x": 17, "y": 9.5, "width": 44, "height": 12 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0026, "2x": 0.0008 },
+      "deltaBudget": { "1x": 0.14, "2x": 0.09 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mac-App-Store.png",
+        "crop": { "x": 1732, "y": 1455, "width": 156, "height": 62 }
+      }
+    },
+    {
+      "name": "price-dark",
+      "description": "The price $14.99 in the second lockup column, Dark Aqua.",
+      "example": "visual-price",
+      "appearance": "dark",
+      "budget": { "1x": 0.103, "2x": 0.081 },
+      "deltaBudget": { "1x": 6.36, "2x": 6.36 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mac-App-Store.png",
+        "crop": { "x": 1732, "y": 1455, "width": 156, "height": 62 }
+      }
+    },
+    {
+      "name": "price-dark-capsule",
+      "description": "As price-dark with the price masked, to score the capsule alone.",
+      "example": "visual-price",
+      "appearance": "dark",
+      "masks": [{ "x": 17, "y": 9.5, "width": 44, "height": 12 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0222, "2x": 0.0111 },
+      "deltaBudget": { "1x": 0.93, "2x": 0.4 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mac-App-Store.png",
+        "crop": { "x": 1732, "y": 1455, "width": 156, "height": 62 }
+      }
+    },
+    {
+      "name": "rest-light",
+      "description": "Both variants at rest on the App Store's page: the tinted capsule's fill and the filled variant's blue, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 178, "height": 37 },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#f2f2f7",
+            "note": "capsule fill (spec: store-pill-button, Capsule fill, measured)"
+          },
+          {
+            "x": 8.25,
+            "y": 18.5,
+            "color": "#f2f2f7",
+            "tolerance": 8,
+            "scale": 2,
+            "note": "first device pixel of the capsule at mid height: no border, the fill starts at the box's edge (spec: Border, none, measured); the tolerance covers the antialiasing of the tangent pixel"
+          },
+          {
+            "x": 7.75,
+            "y": 18.5,
+            "color": "#ffffff",
+            "scale": 2,
+            "note": "page just outside the capsule (spec: Page behind, measured)"
+          },
+          {
+            "x": 92,
+            "y": 18.5,
+            "color": "#027aff",
+            "note": "filled variant: the capsule takes the title's blue, which is measured; that the confirmation step looks so is inferred (spec: States, confirm)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rest-dark",
+      "description": "Both variants at rest on the App Store's dark page: the tinted capsule keeps its light fill, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 178, "height": 37 },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#f2f2f7",
+            "note": "capsule fill, unchanged in Dark Aqua (spec: Capsule fill, measured)"
+          },
+          {
+            "x": 7.75,
+            "y": 18.5,
+            "color": "#1e1f22",
+            "scale": 2,
+            "note": "page just outside the capsule (spec: Page behind, measured)"
+          },
+          {
+            "x": 92,
+            "y": 18.5,
+            "color": "#0884ff",
+            "note": "filled variant: the title's dark blue, measured on the title's stems (the spec's reading is #0885ff); the look of the confirmation step is inferred"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The tinted button while the mouse is held down on it: the whole control at half opacity, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "press": "#tinted" }],
+      "expect": {
+        "size": { "width": 178, "height": 37 },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#f8f8fb",
+            "note": "the measured fill #f2f2f7 at 50% over the white page; the dimming is inferred (spec: States, pressed)"
+          },
+          {
+            "x": 92,
+            "y": 18.5,
+            "color": "#027aff",
+            "note": "the other button is not dimmed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "The tinted button while the mouse is held down on it: the whole control at half opacity, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "press": "#tinted" }],
+      "expect": {
+        "size": { "width": 178, "height": 37 },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#88898d",
+            "note": "the measured fill #f2f2f7 at 50% over the page #1e1f22; the dimming is inferred (spec: States, pressed)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-filled-light",
+      "description": "The filled button while the mouse is held down on it, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "press": "#filled" }],
+      "expect": {
+        "size": { "width": 178, "height": 37 },
+        "pixels": [
+          {
+            "x": 92,
+            "y": 18.5,
+            "color": "#81bdff",
+            "note": "the measured blue #027aff at 50% over the white page; both the filled look and the dimming are inferred"
+          },
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#f2f2f7",
+            "note": "the other button is not dimmed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the tinted button, reached with Tab: the ring follows the capsule, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 178, "height": 37 },
+        "pixels": [
+          {
+            "x": 6.75,
+            "y": 18.5,
+            "color": "#8cb4fa",
+            "tolerance": 4,
+            "note": "the shared focus ring colour, measured on the Go to Folder field (spec: focus-ring), over the white page; that this control shows the standard ring is inferred (spec: States, focused)"
+          },
+          {
+            "x": 41,
+            "y": 6.75,
+            "color": "#8cb4fa",
+            "tolerance": 4,
+            "note": "the ring above the capsule's top edge"
+          },
+          {
+            "x": 4.75,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the capsule's edge (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 8.5,
+            "y": 8.5,
+            "color": "#ffffff",
+            "note": "page outside the rounded end: the ring follows the capsule, not its bounding box"
+          },
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#f2f2f7",
+            "note": "the fill is unchanged by focus"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the tinted button, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 178, "height": 37 },
+        "pixels": [
+          {
+            "x": 6.75,
+            "y": 18.5,
+            "color": "#256490",
+            "tolerance": 6,
+            "note": "the shared dark focus ring colour, measured in Automator (spec: focus-ring), over the page #1e1f22; inferred as above"
+          },
+          {
+            "x": 4.75,
+            "y": 18.5,
+            "color": "#1e1f22",
+            "note": "page just outside the ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-light",
+      "description": "Both buttons in an inactive window, with keyboard focus on the first: grey replaces the blue and there is no focus ring, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 178, "height": 37 },
+        "pixels": [
+          {
+            "x": 6.75,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "no focus ring in a window that is not key (CONTRIBUTING, Window state)"
+          },
+          {
+            "x": 92,
+            "y": 18.5,
+            "color": "#8e8e93",
+            "note": "filled variant without the blue; provisional: the library's rule for accent colours, no screenshot shows the store inactive"
+          },
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#f2f2f7",
+            "note": "the tinted capsule's fill does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-main-dark",
+      "description": "Both buttons in a window that is main but not key, with keyboard focus on the first: grey replaces the blue and there is no focus ring, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "main",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 178, "height": 37 },
+        "pixels": [
+          {
+            "x": 6.75,
+            "y": 18.5,
+            "color": "#1e1f22",
+            "note": "no focus ring in a window that is not key (CONTRIBUTING, Window state)"
+          },
+          {
+            "x": 92,
+            "y": 18.5,
+            "color": "#8e8e93",
+            "note": "filled variant without the blue; provisional, as in window-inactive-light"
+          }
+        ]
+      }
+    },
+    {
+      "name": "progress-light",
+      "description": "The downloading state, Aqua: a ring a quarter filled around the stop square. No screenshot shows a download; the look is provisional.",
+      "example": "visual-progress",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 37, "height": 37 },
+        "pixels": [
+          {
+            "x": 18.5,
+            "y": 18.5,
+            "color": "#027aff",
+            "note": "the stop square in the store's blue (--mac-store-pill-button-tint)"
+          },
+          {
+            "x": 18.5,
+            "y": 13,
+            "color": "#ffffff",
+            "note": "the page between the square and the ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "progress-forced-colors",
+      "description": "The same in forced-colours mode: the stop square keeps a system colour, ButtonText, and does not vanish into the page.",
+      "example": "visual-progress",
+      "appearance": "light",
+      "forcedColors": true,
+      "expect": {
+        "size": { "width": 37, "height": 37 },
+        "pixels": [
+          {
+            "x": 18.5,
+            "y": 18.5,
+            "color": "#000000",
+            "note": "the stop square in ButtonText, which Chromium's forced-colours emulation draws black on a light page"
+          }
+        ]
+      }
+    }
+  ]
+}

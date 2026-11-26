@@ -1,0 +1,144 @@
+---
+title: Launchpad Folder
+description: A folder in Launchpad. Closed, a tile showing up to nine of its apps as small icons; opened, a panel of those apps under the folder's name.
+---
+
+<Example name="basic" both />
+
+A folder groups apps in [Launchpad](/components/launchpad). `LaunchpadFolder` is both of its
+forms: the tile, which is a Launchpad item in the grid, and the panel the tile opens into,
+a dialog built on Base UI's [Dialog](https://base-ui.com/react/components/dialog). Its
+children are the same `LaunchpadItem` elements Launchpad takes.
+
+## Usage
+
+```tsx
+import { Launchpad, LaunchpadItem } from "macalicious/launchpad";
+import { LaunchpadFolder } from "macalicious/launchpad-folder";
+import "macalicious/styles.css";
+
+<Launchpad open={open} onOpenChange={setOpen} container={desktop}>
+  <LaunchpadItem label="Notes" onClick={() => launch("notes")}>
+    <img src={notesIcon} alt="" />
+  </LaunchpadItem>
+  <LaunchpadFolder label="Other">
+    <LaunchpadItem label="Terminal" onClick={() => launch("terminal")}>
+      <img src={terminalIcon} alt="" />
+    </LaunchpadItem>
+    <LaunchpadItem label="Console" onClick={() => launch("console")}>
+      <img src={consoleIcon} alt="" />
+    </LaunchpadItem>
+  </LaunchpadFolder>
+</Launchpad>
+```
+
+Or copy the source into your project: `npx macalicious add launchpad-folder`.
+
+- Put the folder directly inside `Launchpad`, next to the items: Launchpad's search finds it
+  by its `label`, and the arrow keys pass over it like any other item.
+- Inside a Launchpad leave `container` out. The open folder covers the Launchpad it is in,
+  which hides its field, grid and dots meanwhile. Used on its own, as in the example above,
+  give it the positioned element to cover.
+- The tile shows the icons of the first nine items, small. The icons are what you put inside
+  the items: the library ships no app icons.
+- Choosing an app in the folder closes the folder and the Launchpad around it. An item with
+  `closeOnClick={false}` keeps Launchpad open; the folder still closes.
+- `open` with `onOpenChange` controls the folder; `defaultOpen` only starts it.
+
+## Guidelines
+
+The Human Interface Guidelines of Catalina's time have no page on Launchpad; this is how
+Catalina's own folders behave, as the reference specification records it:
+
+- A folder holds apps only, and its tile previews the first nine.
+- Clicking the tile opens the folder in place of the grid; the search field, the page dots
+  and the Dock disappear until it closes.
+- Clicking outside the panel, or Escape, closes the folder and leaves Launchpad open. A
+  second Escape closes Launchpad.
+
+## Variants and states
+
+| State | How it is set | What happens |
+| --- | --- | --- |
+| Closed | the default | The tile in the grid: a translucent rounded square with up to nine small icons, and the name under it. |
+| Open | `open` / `defaultOpen`; a click, Return or Space on the tile | The tile is hidden; the name and the panel fade in over 0.3 s and the panel grows from 80%. With reduced motion it only fades. |
+| Pressed, focused | pointer or keyboard on the tile | As a [Launchpad](/components/launchpad) item: darkened, or ringed. Provisional. |
+
+The folder looks the same in Aqua and Dark Aqua: only what is behind it differs. Renaming a
+folder by clicking its name, and dragging apps in and out, are not implemented.
+
+## Sizes
+
+There is no `size` prop. The tile is 108 points in the 112 point icon box of a Launchpad
+item and shrinks with it. The open panel is `columns` (7) cells of 195 points wide and as
+many 166 point rows high as its items need: 1406 by 573 points for the three rows of the
+screenshots. In a narrower desktop the columns shrink; choose fewer `columns` there.
+
+## API
+
+<PropsTable name="LaunchpadFolderProps" />
+
+`ref`, `className`, `style` and every other prop go to the tile, a `LaunchpadItem` button.
+
+| Attribute or class | On | Description |
+| --- | --- | --- |
+| `.mac-launchpad-folder` | the tile's button | Also `.mac-launchpad-item`. |
+| `data-popup-open` | the tile's button | While the folder is open (Base UI); the tile is hidden. |
+| `.mac-launchpad-folder-tile`, `.mac-launchpad-folder-mini` | the tile | The rounded square and each small icon. |
+| `.mac-launchpad-folder-popup` | the open folder | Base UI's `Dialog.Popup`; covers its container. |
+| `data-starting-style`, `data-ending-style` | the open folder | While it fades in and out (Base UI). |
+| `.mac-launchpad-folder-title` | the name above the panel | A heading. |
+| `.mac-launchpad-folder-panel` | the panel | The grid of items; `data-columns` holds the number of columns. |
+| `.mac-launchpad-folder-dismiss` | the area around the panel | The button that closes the folder. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-launchpad-folder-layer` | `951` | `z-index` of the open folder: above Launchpad. |
+
+## Accessibility
+
+- The tile is a `button` named by `label` that says whether the folder is open
+  (`aria-expanded`, `aria-haspopup="dialog"`).
+- The open folder is a `dialog` named by its title, the folder's name as a heading. It keeps
+  the keyboard focus inside while open; on closing, the focus returns to the tile.
+- Return or Space on the tile opens the folder and focuses its first app. The arrow keys
+  move among the apps, Return or Space launches one, and Escape closes the folder first and
+  Launchpad second.
+- The area around the panel is a button named by `closeLabel`, outside the Tab order because
+  Escape does the same.
+- The small icons on the tile repeat the apps inside; give icon images an empty `alt`.
+- With `prefers-reduced-motion` the panel does not scale; with `prefers-reduced-transparency`
+  tile, panel and background are opaque; in forced colours tile and panel get a border.
+
+## Visual comparison
+
+`launchpad-folder.visual.json` compares the closed tile with the Launchpad screenshots and two
+corners of the open panel with the Launchpad Folder screenshots, in both appearances. Behind
+the folder in the screenshots is Apple's desktop picture, blurred, which the library does not
+have: each example paints the background its crop shows, measured beside the folder, under
+the folder's own fill. On the tile the nine small icons are masked (Apple artwork; the
+example shows stand-ins): 51% of that crop. Nothing is masked in the panel comparisons: the
+crops are parts of the panel that hold no app.
+
+Scores from `npm run visual -- launchpad-folder/` in Chromium on Linux, at threshold 0.05:
+the share of pixels that differ, and the mean colour difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `tile-light` | Light-Launchpad (2720, 1128, 256, 248) | 0.12% | 1.69 | 0.34% | 1.73 |
+| `tile-dark` | Dark-Launchpad (2720, 1128, 256, 248) | 0.28% | 0.80 | 0.41% | 0.83 |
+| `panel-bottom-right-light` | Light-Launchpad-Folder (2700, 1380, 440, 280) | 0.17% | 1.45 | 0.14% | 1.51 |
+| `panel-bottom-right-dark` | Dark-Launchpad-Folder (2700, 1380, 440, 280) | 0.19% | 0.83 | 0.14% | 0.80 |
+| `panel-top-left-light` | Light-Launchpad-Folder (244, 432, 140, 120) | 1.05% | 1.80 | 0.82% | 1.89 |
+| `panel-top-left-dark` | Dark-Launchpad-Folder (244, 432, 140, 120) | 1.36% | 2.29 | 1.00% | 2.25 |
+
+What remains is the corner: Catalina's is a continuous curve, drawn here as a circular one of
+37 points on the panel and 13 on the tile, the radii that fit the pixels best.
+
+Measured: the tile's size and position, the panel's size and position, the grid inside it.
+Measured and computed: the fill of tile and panel, solved from pairs of pixels on either
+side of their edges; it departs from the specification's recipe, which was fitted against
+the bare desktop picture. Provisional: the folder's slight dimming and stronger blur of what
+is behind it (the specification calls its own fit of that background poor), the title's size
+and weight (about 28 points, light, judged from the ink), the 0.3 s opening, and the layout of
+the small icons on the tile, which the comparison masks.

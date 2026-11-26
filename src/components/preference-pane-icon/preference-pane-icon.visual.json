@@ -1,0 +1,393 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "grid-pair-light",
+      "description": "General and Desktop & Screen Saver in the System Preferences grid, Aqua. The artwork is masked: the example draws a stand-in block, not Apple's icons.",
+      "example": "visual-grid-pair",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 21,
+          "y": 5,
+          "width": 40,
+          "height": 40
+        },
+        {
+          "x": 103,
+          "y": 5,
+          "width": 40,
+          "height": 40
+        }
+      ],
+      "budget": {
+        "1x": 0.0495,
+        "2x": 0.0489
+      },
+      "deltaBudget": {
+        "1x": 3.28,
+        "2x": 3.95
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-0.png",
+        "crop": {
+          "x": 122,
+          "y": 400,
+          "width": 328,
+          "height": 160
+        }
+      }
+    },
+    {
+      "name": "grid-pair-light-masked",
+      "description": "As grid-pair-light with the captions masked too, which are set in the fallback font off Apple platforms: scores the band alone, to show that the slot draws nothing else.",
+      "example": "visual-grid-pair",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 21,
+          "y": 5,
+          "width": 40,
+          "height": 40
+        },
+        {
+          "x": 103,
+          "y": 5,
+          "width": 40,
+          "height": 40
+        },
+        {
+          "x": 0,
+          "y": 52,
+          "width": 164,
+          "height": 28
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0011,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.12,
+        "2x": 0.33
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-0.png",
+        "crop": {
+          "x": 122,
+          "y": 400,
+          "width": 328,
+          "height": 160
+        }
+      }
+    },
+    {
+      "name": "grid-pair-dark",
+      "description": "General and Desktop & Screen Saver in the System Preferences grid, Dark Aqua. The artwork is masked: the example draws a stand-in block, not Apple's icons.",
+      "example": "visual-grid-pair",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 21,
+          "y": 5,
+          "width": 40,
+          "height": 40
+        },
+        {
+          "x": 103,
+          "y": 5,
+          "width": 40,
+          "height": 40
+        }
+      ],
+      "budget": {
+        "1x": 0.0545,
+        "2x": 0.0532
+      },
+      "deltaBudget": {
+        "1x": 3.65,
+        "2x": 4.05
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-0.png",
+        "crop": {
+          "x": 122,
+          "y": 400,
+          "width": 328,
+          "height": 160
+        }
+      }
+    },
+    {
+      "name": "grid-pair-dark-masked",
+      "description": "As grid-pair-dark with the captions masked too, which are set in the fallback font off Apple platforms: scores the band alone, to show that the slot draws nothing else.",
+      "example": "visual-grid-pair",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 21,
+          "y": 5,
+          "width": 40,
+          "height": 40
+        },
+        {
+          "x": 103,
+          "y": 5,
+          "width": 40,
+          "height": 40
+        },
+        {
+          "x": 0,
+          "y": 52,
+          "width": 164,
+          "height": 28
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0011,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.11,
+        "2x": 0.11
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-0.png",
+        "crop": {
+          "x": 122,
+          "y": 400,
+          "width": 328,
+          "height": 160
+        }
+      }
+    },
+    {
+      "name": "rest-light",
+      "description": "An enabled and a disabled pane at rest, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 180,
+          "height": 101
+        },
+        "pixels": [
+          {
+            "x": 49,
+            "y": 33,
+            "color": "#6aa6d8",
+            "note": "the artwork fills the 40 pt allocation, 5 pt under the slot's top edge and centred in its 82 pt (spec: Geometry, measured pitch and inferred allocation)"
+          },
+          {
+            "x": 27.5,
+            "y": 33,
+            "color": "#ececec",
+            "note": "no bezel or background beside the artwork (spec: Anatomy, transparent hit rectangle, measured)"
+          },
+          {
+            "x": 131,
+            "y": 33,
+            "color": "#abc9e2",
+            "tolerance": 3,
+            "note": "disabled: the artwork at half opacity over the page (spec: States, disabled, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The pane held down with the mouse, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "#pane"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 180,
+          "height": 101
+        },
+        "pixels": [
+          {
+            "x": 35,
+            "y": 20,
+            "color": "#4a7497",
+            "tolerance": 3,
+            "note": "the artwork darkened to 70% (spec: States, pressed: image-button darkening, inferred)"
+          },
+          {
+            "x": 27.5,
+            "y": 33,
+            "color": "#ececec",
+            "note": "no pressed bezel appears around it"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the pane, reached with Tab, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 180,
+          "height": 101
+        },
+        "pixels": [
+          {
+            "x": 27.5,
+            "y": 33,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the page around the 40 pt artwork allocation, measured on a text field (spec: focus-ring, sRGB; States, focused, inferred)"
+          },
+          {
+            "x": 25.25,
+            "y": 33,
+            "color": "#ececec",
+            "note": "page just outside the 3 pt ring"
+          },
+          {
+            "x": 49,
+            "y": 33,
+            "color": "#6aa6d8",
+            "note": "the artwork does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-light",
+      "description": "The same after Tab in an inactive window, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 180,
+          "height": 101
+        },
+        "pixels": [
+          {
+            "x": 27.5,
+            "y": 33,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          },
+          {
+            "x": 49,
+            "y": 33,
+            "color": "#6aa6d8",
+            "note": "the artwork keeps its colour in an inactive window"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rest-dark",
+      "description": "An enabled and a disabled pane at rest, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 180,
+          "height": 101
+        },
+        "pixels": [
+          {
+            "x": 49,
+            "y": 33,
+            "color": "#6aa6d8",
+            "note": "the artwork fills the 40 pt allocation (spec: Geometry)"
+          },
+          {
+            "x": 27.5,
+            "y": 33,
+            "color": "#323232",
+            "note": "no bezel or background beside the artwork (spec: Anatomy, measured)"
+          },
+          {
+            "x": 131,
+            "y": 33,
+            "color": "#4e6c85",
+            "tolerance": 3,
+            "note": "disabled: the artwork at half opacity over the page (spec: States, disabled, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the pane, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 180,
+          "height": 101
+        },
+        "pixels": [
+          {
+            "x": 27.5,
+            "y": 33,
+            "color": "#2d6c99",
+            "tolerance": 6,
+            "note": "ring over the page around the 40 pt artwork allocation (spec: focus-ring, sRGB; States, focused, inferred)"
+          },
+          {
+            "x": 25.25,
+            "y": 33,
+            "color": "#323232",
+            "note": "page just outside the 3 pt ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "long-title-light",
+      "description": "Titles of more than two lines, one written with three line breaks and one that wraps, Aqua: each caption is cut after its second line, so the slots keep their 85 pt and a grid's rows do not overlap.",
+      "example": "visual-long-title",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 164,
+          "height": 85
+        },
+        "pixels": [
+          {
+            "x": 41,
+            "y": 83.5,
+            "color": "#ececec",
+            "note": "the 5 pt of clear space under the second caption line of the first slot holds no third line (spec: Geometry, 82 x 85 pt slot, two caption lines)"
+          },
+          {
+            "x": 123,
+            "y": 83.5,
+            "color": "#ececec",
+            "note": "the same under the caption that wraps"
+          }
+        ]
+      }
+    }
+  ]
+}

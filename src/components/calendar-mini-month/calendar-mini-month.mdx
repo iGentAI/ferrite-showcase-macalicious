@@ -1,0 +1,133 @@
+---
+title: Calendar Mini Month
+description: The small month calendar at the foot of Calendar's sidebar, for choosing a day and stepping through the months.
+---
+
+<Example name="basic" both />
+
+The month under Calendar's list of calendars: the month and year between two chevrons, the
+initials of the weekdays, and six weeks of days with today in a red disc and the days of the
+neighbouring months dimmed. Choosing a day selects it, and Calendar then shows that day in its
+main view. This is Calendar's own drawing, not AppKit's graphical date picker (`NSDatePicker`),
+which has a different header, pitch and selection; Base UI has no primitive for either, so the
+component is written here as a grid of buttons.
+
+## Usage
+
+```tsx
+import { CalendarMiniMonth } from "macalicious/calendar-mini-month";
+import "macalicious/styles.css";
+
+<CalendarMiniMonth today={new Date()} onValueChange={(day) => console.log(day)} />
+```
+
+Or copy the source into your project: `npx macalicious add calendar-mini-month`.
+
+- It is as wide as its container and has no background: put it on the surface it belongs to.
+  In Calendar that is the foot of the 165 pt [Sidebar](/components/sidebar).
+- `value`, `defaultValue` and `onValueChange` hold the selected day; `month`, `defaultMonth`
+  and `onMonthChange` the month shown. Either pair can be controlled or left to the component.
+  Choosing a day of a neighbouring month also shows that month.
+- `today` puts a day in the red disc. Nothing is marked without it: the component reads no
+  clock while it renders, so a page rendered on a server matches the browser's. Only when
+  neither a month, a value nor `today` is given does it open on the current month.
+- `weekStartsOn` is the first day of the week, Sunday by default, as Calendar's “Start week
+  on” preference sets it.
+- `navigation={false}` leaves the chevrons out, for a month that another control steps: the
+  twelve months of Calendar's year view, say.
+
+<Example name="controlled" />
+
+## Guidelines
+
+The Human Interface Guidelines for macOS describe no month view of this kind; these notes
+describe what Calendar on macOS 10.15 does, as the reference screenshots show it.
+
+- Use it beside a larger view of the same dates, to jump to a day. For entering a date in a
+  form, use a date picker.
+- Mark today whenever today is in the month shown.
+
+## Variants and states
+
+| State | Look | Source |
+| --- | --- | --- |
+| Day of the month | `#353636`, Dark Aqua `#dfdfdf`, 11 pt Semibold | Measured |
+| Saturday, Sunday | The grey of the header: `#696a6a`, Dark Aqua `#9fa0a0` | Measured |
+| Day of another month | `#afb0b0`, Dark Aqua `#5f6061` | Measured |
+| Today | White and Bold in an 18 pt disc, `#dd0e04`, Dark Aqua `#ff453a` | Measured in both appearances |
+| Selected day | An 18 pt disc in the colour of the days, with the number in the background's | Provisional: no screenshot shows a selected day |
+| Pressed | The day at 60%; a chevron in the colour of the days | Provisional |
+| Keyboard focus | The focus ring around the day or the chevron | Provisional |
+| Window not key | No focus ring | Provisional |
+
+## Sizes
+
+One size. With its rule it is 164 pt tall: a 23 pt header 10 pt under the top edge, 21.5 pt
+of weekday initials and six weeks of 17 pt. The seven columns share the width less 9 pt, and
+the days sit 1.75 pt nearer the trailing edge than the leading one, as in Calendar, where the
+trailing edge is the sidebar's divider.
+
+## API
+
+`CalendarMiniMonth` takes the props of a `<div>`, which go to its root with `ref`, `className`
+and `style`, and these:
+
+<PropsTable name="CalendarMiniMonthProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-date` | day | `year-month-day`, such as `2019-10-3` | The day, in local time. |
+| `data-outside` | day | present or absent | A day of the month before or after. |
+| `data-weekend` | day, weekday initial | present or absent | Saturday and Sunday. |
+| `data-today`, `aria-current="date"` | day | present or absent | Today. |
+| `data-selected` | day | present or absent | The selected day; its cell has `aria-selected`. |
+
+Classes: `.mac-calendar-mini-month` (the root), `-header`, `-title`, `-step` (a chevron),
+`-grid`, `-row`, `-weekday` and `-day`, each prefixed with `.mac-calendar-mini-month`. There are
+no CSS variables to set.
+
+## Accessibility
+
+- The weeks are a `grid` named by the title, with a row of column headers that carry the full
+  weekday names and a `gridcell` per day; the selected day's cell has `aria-selected`.
+- Every day is a `<button>` named with its full date (“Thursday, October 3, 2019”). One day is
+  in the tab order: the day the focus was on last, else the selected day, else today, else the
+  first of the month.
+- From a day, the arrow keys move by a day or a week, also into the days of the neighbouring
+  months and, past the weeks shown, into the month beside. Home and End go to the ends of the
+  week, Page Up and Page Down to the same day of the month before and after (or its last day).
+  Space and Return choose the day.
+- The two chevrons are buttons named “Previous month” and “Next month”; translate them with
+  `previousLabel` and `nextLabel`. The title is a polite live region, so a change of month is
+  announced.
+- Today carries `aria-current="date"`. In forced colours today and the selected day are
+  outlined.
+
+## Visual comparison
+
+`calendar-mini-month.visual.json` compares the whole mini month with the foot of Calendar's
+sidebar in each appearance: October 2019 with the 3rd as today in Aqua and the 4th in Dark
+Aqua. Nearly all of the crop is text, so each comparison has a twin with the text masked that
+scores the rule, the chevrons, the fill and today's disc with its number.
+
+Scores from `npm run visual -- calendar-mini-month` in Chromium on Linux, with the text in the
+fallback font: the share of pixels that differ by more than the threshold (0.1; 0.05 for the
+masked twins), and the mean colour difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `calendar-light` | Light-Calendar (114, 996, 326, 326) | 6.27% | 4.92 | 5.27% | 4.73 |
+| `calendar-light-drawing` | the same, text masked | 1.55% | 0.54 | 1.03% | 0.40 |
+| `calendar-dark` | Dark-Calendar (114, 996, 326, 326) | 6.29% | 4.97 | 5.17% | 4.80 |
+| `calendar-dark-drawing` | the same, text masked | 1.44% | 1.17 | 1.31% | 1.19 |
+
+What is left in the masked twins is the number in today's disc and the chevrons, which are
+original drawings.
+
+`selected-light` chooses a day with a click and checks its disc, and `focus-ring-dark` reaches
+today with Tab and checks the ring; no screenshot shows either. Both pass at 1x and 2x.
+
+Measured: the rule, the text colours, today's disc, and the positions of the title, the
+chevrons, the initials and the days. Provisional: the selected day, the pressed looks, the
+focus ring and the look in a window that is not key. The sidebar behind the month is vibrant in
+Catalina; the colours were read over the capture's sidebar, `#e8e9e9` and `#2c2d2e`.

@@ -1,0 +1,189 @@
+/*
+ * Calculator keypad: Calculator's display and key grid.
+ *
+ * Parts
+ *   .mac-calculator-keypad               the grid; its background shows through the 1 pt gaps
+ *   .mac-calculator-keypad-display       the number, across the top row
+ *   .mac-calculator-keypad-display-text  its text, scaled down when it is long
+ *   .mac-calculator-keypad-key           a key (button)
+ *   .mac-calculator-keypad-label         a key's text
+ *   .mac-calculator-keypad-glyph         a key's drawn symbol (inline SVG)
+ *
+ * States
+ *   [data-variant="digit" | "function" | "operator"]   colour role of a key
+ *   [data-glyph]                         the symbol a key draws
+ *   [data-armed]                         operator waiting for its second number
+ *   :active                              pressed
+ *   :focus-visible                       keyboard focus ring, drawn inside the key
+ *   [data-disabled]                      dimmed label
+ *   [data-window-state="main" | "inactive"] *   no focus ring; nothing else changes
+ *   [data-force~="pressed" | "focus"]    static previews of transient states
+ *
+ * Hooks
+ *   --mac-calculator-keypad-columns      column widths (default: the basic calculator's four)
+ *   --mac-calculator-keypad-rows         heights of the key rows (default: four of 47 pt, one of 48)
+ */
+.mac-calculator-keypad {
+  display: grid;
+  /* The display's row is 80 pt and the gap under it, which has the display's colour, makes
+     the measured 81: the first key row starts at exactly y = 81 with no line above it. */
+  grid-template-rows: 80px var(--mac-calculator-keypad-rows, repeat(4, 47px) 48px);
+  grid-template-columns: var(--mac-calculator-keypad-columns, 56px 57px 57px 59px);
+  gap: 1px;
+  box-sizing: border-box;
+  width: max-content;
+  background: var(--mac-calculator-keypad-background);
+  color: var(--mac-calculator-keypad-label);
+  /* A calculator is not mirrored in right-to-left text. */
+  direction: ltr;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* 50 pt Thin digits, right-aligned 16.5 pt from the edge, baseline 68 pt below the top. The
+   element keeps the 50 pt font so that its line, and with it the baseline, stays where it is
+   when the text inside is scaled down. */
+.mac-calculator-keypad-display {
+  display: block;
+  grid-column: 1 / -1;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 20.5px 11.5px 0 12px;
+  overflow: hidden;
+  color: var(--mac-calculator-keypad-display-text);
+  font: 200 50px / 60px var(--mac-font-family-system);
+  font-variant-numeric: lining-nums tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.mac-calculator-keypad-display-text {
+  font-size: calc(1em * var(--_scale, 1));
+}
+
+.mac-calculator-keypad-key {
+  --_fill: var(--mac-calculator-keypad-digit);
+  --_pressed: var(--mac-calculator-keypad-digit-pressed);
+
+  position: relative;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--_fill);
+  color: inherit;
+  /* Digits: 23 pt Regular */
+  font: 400 23px / 28px var(--mac-font-family-system);
+  font-variant-numeric: lining-nums;
+  cursor: default;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Function keys: 18 pt Medium */
+.mac-calculator-keypad-key:where([data-variant="function"]) {
+  --_fill: var(--mac-calculator-keypad-function);
+  --_pressed: var(--mac-calculator-keypad-function-pressed);
+
+  font: 500 18px / 22px var(--mac-font-family-system);
+}
+
+.mac-calculator-keypad-key:where([data-variant="operator"]) {
+  --_fill: var(--mac-calculator-keypad-operator);
+  --_pressed: var(--mac-calculator-keypad-operator-pressed);
+}
+
+.mac-calculator-keypad-key:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  background: var(--_pressed);
+}
+
+.mac-calculator-keypad-key:where([data-armed]) {
+  box-shadow: inset 0 0 0 1px var(--mac-calculator-keypad-armed);
+}
+
+.mac-calculator-keypad-key:where([data-disabled]) > * {
+  opacity: 0.4;
+}
+
+/* Labels are centred on the key less its trailing point: half a point left of the middle. */
+.mac-calculator-keypad-label {
+  display: block;
+  translate: -0.5px 0;
+}
+
+.mac-calculator-keypad-key:where([data-variant="function"]) > .mac-calculator-keypad-label {
+  translate: -0.5px 0.5px;
+}
+
+/* Symbols: 2.5 pt strokes on a 16 pt grid. */
+.mac-calculator-keypad-glyph {
+  display: block;
+  width: 16px;
+  height: 16px;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5px;
+  pointer-events: none;
+}
+
+/* The operator symbols sit below the middle of their key, on the line the digits' lower half
+   is on: the bar of the minus sign is 2.75 pt under the centre of a 47 pt key. */
+.mac-calculator-keypad-key:where([data-variant="operator"]) > .mac-calculator-keypad-glyph {
+  translate: -0.75px 2.75px;
+}
+
+.mac-calculator-keypad-key:where([data-glyph="multiply"]) > .mac-calculator-keypad-glyph {
+  stroke-linecap: round;
+}
+
+.mac-calculator-keypad-key:where([data-glyph="negate"]) > .mac-calculator-keypad-glyph {
+  stroke-width: 1.75px;
+  translate: -0.5px 0;
+}
+
+.mac-calculator-keypad-glyph-dot {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* Keyboard focus ring; only in the key window. The keys touch each other and the window's
+   edge, so the ring is drawn inside the key. */
+.mac-calculator-keypad-key:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+@media (forced-colors: active) {
+  .mac-calculator-keypad {
+    background: Canvas;
+    color: ButtonText;
+  }
+
+  .mac-calculator-keypad-display {
+    color: CanvasText;
+  }
+
+  .mac-calculator-keypad-key {
+    border: 1px solid ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+
+  .mac-calculator-keypad-key:where([data-armed]) {
+    border-width: 3px;
+  }
+
+  .mac-calculator-keypad-key:where([data-disabled]) {
+    border-color: GrayText;
+    color: GrayText;
+  }
+}

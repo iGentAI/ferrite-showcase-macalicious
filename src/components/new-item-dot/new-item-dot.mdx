@@ -1,0 +1,83 @@
+---
+title: New-Item Dot
+description: The small blue dot that marks a new or unseen item in a list.
+---
+
+<Example name="basic" both />
+
+The Extensions pane of System Preferences marks an extension with a small blue dot. It is not a
+standard AppKit control and has no public name; “new item” describes how Catalina's own apps
+use it (new extensions, unread messages, unplayed episodes).
+
+## Usage
+
+```tsx
+import { NewItemDot } from "macalicious/new-item-dot";
+import "macalicious/new-item-dot.css";
+
+<li>
+  <NewItemDot visible={item.isNew} /> {item.name}
+</li>
+```
+
+Or copy the source into your project: `npx macalicious add new-item-dot`.
+
+## Guidelines
+
+- Use the dot to tell people that an item is new or has not been seen yet. It gives feedback;
+  it must not look like something to click.
+- Clear it when the item has been seen.
+- Keep the dot's place in rows that are not new (`visible={false}`), so that the text of all
+  rows stays aligned.
+- Say the same thing in words for assistive technology: include “new” or “unread” in the
+  row's accessible name.
+
+## Variants and states
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Visible | default | Flat 6 pt blue disc, no rim |
+| Hidden | `visible={false}` | Invisible, but still takes its 6 pt |
+
+The blue is fixed (`#0b81ff`); it is not the accent colour. The dot is not interactive, so it
+has no hover, pressed, focus or disabled look, and it does not react to the window state.
+
+## Sizes
+
+One size: 6 pt across (measured).
+
+## API
+
+<PropsTable name="NewItemDotProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-visible` | present or absent | Reflects `visible`. |
+
+The colour is the token `--mac-new-item-dot-fill`, declared in `new-item-dot.tokens.css`.
+
+## Accessibility
+
+- Not focusable and not interactive.
+- By default the dot is decorative (`aria-hidden`). Put the meaning in the item's text, as the
+  example does with visually hidden text, or in the row's `aria-label`.
+- With `aria-label` (or `aria-labelledby`) a visible dot becomes an image (`role="img"`) with
+  that name. A hidden dot is always removed from the accessibility tree.
+- To announce an item that becomes new while the list is on screen, use a live region of your
+  own; the dot does not announce anything.
+
+## Visual comparison
+
+`visual-extensions-list` reproduces the dot in the Extensions pane. Result in Chromium on
+Linux:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Extensions list, Aqua | 0.35% of pixels differ | 0.00% |
+
+The pixels that differ are two antialiased pixels on the edge of the circle.
+
+Provisional: the Dark Aqua rendering. The dark capture of the pane lists other extensions and
+shows no dot, so the dark colour is assumed to be the same blue and there is no dark
+comparison with a screenshot. A pixel check holds the dark rendering to that assumption: the
+same disc in the same place, in `#0b81ff`, on the list background measured in the dark capture.

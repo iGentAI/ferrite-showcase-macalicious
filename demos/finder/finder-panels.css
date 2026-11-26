@@ -1,0 +1,283 @@
+/*
+ * Finder demo, its two panels: the layout of the content the demo puts into the library's
+ * inspector panel (Get Info) and Quick Look panel. The panels, their sections and every control
+ * are the library's own; nothing here restyles them. A class on a library control sets only
+ * its place and size.
+ *
+ * Parts, the Finder window
+ *   .mac-finder-panels                 the group the window's two panels stand in
+ *
+ * Parts, Get Info
+ *   .mac-finder-info                   the Info window (the library's inspector panel)
+ *   .mac-finder-info-tags              the place of the tags field under the header
+ *   .mac-finder-info-checks            General: the two checkboxes under the list
+ *   .mac-finder-info-facts             More Info: the place of the list
+ *   .mac-finder-info-name              Name & Extension: the field and its checkbox
+ *   .mac-finder-info-comments          Comments: the frame of the text
+ *   .mac-finder-info-open-with         Open with: pop-up button, help text, Change All
+ *   .mac-finder-info-preview           Preview: the item's icon
+ *   .mac-finder-info-permissions       Sharing & Permissions: text, list, buttons and lock
+ *
+ * Parts, Quick Look
+ *   .mac-finder-quick-look             the panel (the library's Quick Look panel)
+ *   .mac-finder-quick-look-stage       the place of a picture: all of the panel's preview
+ *   .mac-finder-quick-look-picture     the picture, fitted into the stage and turned
+ *   .mac-finder-quick-look-overlay     the annotations drawn over the picture
+ *   .mac-finder-quick-look-text        a text annotation
+ *   .mac-finder-quick-look-chip        the colour chip of a colour menu's item
+ *   .mac-finder-quick-look-icon        the icon of an item that is not a picture
+ *   .mac-finder-quick-look-file        a drive file's own preview, which fills the panel:
+ *   .mac-finder-quick-look-media         a movie,
+ *   .mac-finder-quick-look-sound         a sound,
+ *   .mac-finder-quick-look-document      a PDF in the browser's viewer,
+ *   .mac-finder-quick-look-plain         the text of a text file
+ *
+ * States
+ *   [data-fit="contain" | "width"]     on the stage: the panel has a height and the picture is
+ *                                      fitted into it, or the panel is as tall as the picture
+ *   [data-turned]                      on the stage: the picture lies on its side
+ *   [data-drawing]                     on the overlay: Markup mode, the pointer draws
+ */
+
+/* The two panels in the Finder window: a group beside the window, of no size, whose origin the
+   panels are placed from. Its z-index is the rank the host gives the window. */
+.mac-finder-panels {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The tags field: 33 pt high in the capture, across the header. */
+.mac-finder-info-tags {
+  display: flex;
+}
+
+.mac-finder-info-tags-field {
+  flex: 1 1 auto;
+  min-height: var(--mac-finder-info-tags-field-min-height);
+}
+
+/* General: the checkboxes stand under the values, 14.5 pt below the list, on an 18 pt pitch. */
+.mac-finder-info-checks {
+  display: grid;
+  gap: var(--mac-finder-info-checks-gap);
+  justify-items: start;
+  margin: var(--mac-finder-info-checks-margin);
+}
+
+/* More Info: the capture has half a point more under the list than the section's own margin. */
+.mac-finder-info-facts {
+  padding-block-end: var(--mac-finder-info-facts-padding-block-end);
+}
+
+/* Name & Extension: the field across the section, its checkbox 4 pt in. */
+.mac-finder-info-name {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-finder-info-name-gap);
+  align-items: flex-start;
+  padding-block-start: var(--mac-finder-info-name-padding-block-start);
+}
+
+.mac-finder-info-name-field {
+  width: 100%;
+}
+
+.mac-finder-info-name-check {
+  margin-inline-start: var(--mac-finder-info-name-check-margin-inline-start);
+}
+
+.mac-finder-info-comments {
+  box-sizing: border-box;
+  height: var(--mac-finder-info-comments-height);
+  border: 1px solid var(--mac-color-list-border);
+  background: var(--mac-color-text-background);
+}
+
+/* Open with: the controls are 2.5 pt inside the section's margins. */
+.mac-finder-info-open-with {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: var(--mac-finder-info-open-with-padding);
+}
+
+.mac-finder-info-open-with-application {
+  width: 100%;
+}
+
+.mac-finder-info-open-with-help {
+  margin: var(--mac-finder-info-open-with-help-margin-top) 0 0;
+}
+
+.mac-finder-info-open-with-change {
+  margin-block-start: var(--mac-finder-info-open-with-change-margin-block-start);
+}
+
+/* The header takes a paste of a picture while it has the keyboard, which its icon shows. */
+.mac-finder-info-pasted-icon:focus {
+  outline: none;
+}
+
+.mac-finder-info-pasted-icon:focus > :first-child > :first-child {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+.mac-finder-info-preview {
+  display: grid;
+  place-items: center;
+  padding-block: var(--mac-finder-info-preview-padding-block);
+}
+
+/* Sharing & Permissions: a 113 pt list, the buttons 4 pt under it and the lock at their
+   level, at the trailing edge. The library's gradient buttons are 21 pt high where Finder's
+   small ones are 17 pt: the bar gives the difference back, so that the window keeps the
+   height of the capture. */
+.mac-finder-info-permissions {
+  display: flex;
+  flex-direction: column;
+  padding-inline: var(--mac-finder-info-permissions-padding-inline);
+}
+
+.mac-finder-info-permissions-summary {
+  margin: var(--mac-finder-info-permissions-summary-margin);
+}
+
+.mac-finder-info-permissions-list {
+  height: var(--mac-finder-info-permissions-list-height);
+}
+
+.mac-finder-info-permissions-name {
+  display: flex;
+  gap: var(--mac-finder-info-permissions-name-gap);
+  align-items: center;
+  height: 100%;
+}
+
+.mac-finder-info-permissions-bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-block: var(--mac-finder-info-permissions-bar-margin-block);
+}
+
+.mac-finder-info-permissions-lock {
+  margin-inline-end: var(--mac-finder-info-permissions-lock-margin-inline-end);
+}
+
+/* Quick Look: the stage is the whole preview and measures it, so that the picture can be as
+   large as fits whichever way it is turned. In a panel without a height the stage has the
+   picture's own shape at the panel's width. */
+.mac-finder-quick-look-stage {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  container-type: size;
+}
+
+.mac-finder-quick-look-stage:where([data-fit="contain"]) {
+  height: 100%;
+}
+
+.mac-finder-quick-look-stage:where([data-fit="width"]) {
+  aspect-ratio: var(--_ratio);
+}
+
+/* On its side the picture is as wide as the panel, so the stage has the picture's shape turned. */
+.mac-finder-quick-look-stage:where([data-fit="width"][data-turned]) {
+  aspect-ratio: calc(1 / (var(--_ratio)));
+}
+
+.mac-finder-quick-look-picture {
+  position: relative;
+  flex: none;
+  width: min(100cqw, calc(100cqh * var(--_ratio)));
+  aspect-ratio: var(--_ratio);
+}
+
+/* On its side the picture's width runs down the stage. */
+.mac-finder-quick-look-stage:where([data-turned]) > .mac-finder-quick-look-picture {
+  width: min(100cqh, calc(100cqw * var(--_ratio)));
+}
+
+.mac-finder-quick-look-overlay {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mac-finder-quick-look-overlay:where([data-drawing]) {
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.mac-finder-quick-look-text {
+  position: absolute;
+  box-sizing: content-box;
+  margin: 0;
+  padding: var(--mac-finder-quick-look-text-padding);
+  border: 0;
+  outline: 0;
+  background: none;
+  font: var(--mac-font-title-2);
+  text-align: center;
+  translate: -50% -50%;
+}
+
+.mac-finder-quick-look-text:where(:focus-visible) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+}
+
+.mac-finder-quick-look-chip {
+  display: block;
+  box-sizing: border-box;
+  width: var(--mac-finder-quick-look-chip-width);
+  height: var(--mac-finder-quick-look-chip-height);
+  border: 1px solid var(--mac-color-separator);
+}
+
+.mac-finder-quick-look-icon {
+  display: grid;
+  place-items: center;
+  padding: var(--mac-finder-quick-look-icon-padding);
+}
+
+.mac-finder-quick-look-file {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: var(--mac-finder-quick-look-file-min-height);
+}
+
+.mac-finder-quick-look-media,
+.mac-finder-quick-look-document {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: var(--mac-color-window-background);
+}
+
+.mac-finder-quick-look-sound {
+  width: var(--mac-finder-quick-look-sound-width);
+  max-width: 100%;
+}
+
+.mac-finder-quick-look-plain {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: var(--mac-finder-quick-look-plain-padding);
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: var(--mac-font-body);
+  color: var(--mac-color-text);
+  background: var(--mac-color-text-background);
+}

@@ -1,0 +1,129 @@
+/*
+ * Section header (NSCollectionView section header; Finder's grouped icon view): a 31 pt bar
+ * with the group's title in 14 pt bold, 12 pt from the leading edge, and an accessory 15 pt
+ * from the trailing edge. The box is the bar with its padding: a plain header is 32 pt high
+ * with its rule, a pinned one 31 pt with the separator drawn under it.
+ *
+ * Measured on Finder's grouped search results: the title's capitals are 10 pt high and start
+ * 10 pt under the top of the bar; a plain header has a 1 pt rule above it; a pinned header is
+ * a band with two hairlines under it; the action is 11 pt text in the secondary label colour.
+ *
+ * Parts
+ *   .mac-section-header             the bar
+ *   .mac-section-header-title       the title (a heading)
+ *   .mac-section-header-accessory   what sits at the trailing edge
+ *   .mac-section-header-action      a text button in the accessory
+ *
+ * States
+ *   [data-variant="plain" | "pinned"]
+ *   .mac-section-header-action:active, [data-force~="pressed"]   pressed: the label colour
+ *   .mac-section-header-action[data-disabled]                   disabled
+ *   .mac-section-header-action:focus-visible, [data-force~="focus"]   focus ring, key window
+ *
+ * The bar does not react to the window state: label colours are the same in a window that is
+ * not key.
+ */
+.mac-section-header {
+  display: flex;
+  box-sizing: border-box;
+  gap: var(--mac-space-control-gap);
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding-inline: 12px 15px;
+  border-block-start: 1px solid var(--mac-section-header-rule);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* The band: no rule above it; one point of separator under it, drawn as two hairlines. */
+.mac-section-header:where([data-variant="pinned"]) {
+  height: 31px;
+  border-block-start: 0;
+  background: var(--mac-section-header-fill);
+  box-shadow:
+    0 var(--mac-hairline) 0 var(--mac-section-header-separator-inner),
+    0 1px 0 var(--mac-section-header-separator-outer);
+}
+
+.mac-section-header-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--mac-color-label);
+  font: var(--mac-font-weight-bold) 14px / 18px var(--mac-font-family-system);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.mac-section-header-accessory {
+  display: flex;
+  flex: none;
+  gap: var(--mac-space-label-gap);
+  align-items: center;
+}
+
+.mac-section-header-action {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--mac-radius-control-mini);
+  background: none;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  appearance: none;
+  outline: none;
+}
+
+/* [provisional] no capture shows the button pressed or disabled. */
+.mac-section-header-action:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  color: var(--mac-color-label);
+}
+
+.mac-section-header-action:where([data-disabled]) {
+  color: var(--mac-color-label-tertiary);
+}
+
+.mac-section-header-action:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-section-header {
+    border-block-start-color: CanvasText;
+  }
+
+  .mac-section-header:where([data-variant="pinned"]) {
+    border-block-end: 1px solid CanvasText;
+    box-shadow: none;
+  }
+
+  .mac-section-header-action {
+    color: ButtonText;
+  }
+
+  .mac-section-header-action:where([data-disabled]) {
+    color: GrayText;
+  }
+
+  .mac-section-header-action:where(:focus-visible, [data-force~="focus"]):where(
+    :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+  ) {
+    outline: 2px solid Highlight;
+  }
+}

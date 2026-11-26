@@ -1,0 +1,401 @@
+---
+title: Voice Memos
+description: The Voice Memos app of macOS 10.15, an iPad app in a Mac window that shows one recording as a waveform under a fixed playhead with an overview, a large timer and transport buttons, and the list of recordings behind Done, built from the library. On the Ferrite desktop it records, plays, renames, trims and deletes the person's recordings on their drive.
+layout: full
+order: 110
+---
+
+<Example name="basic" />
+
+Press play, skip 15 seconds either way, or drag the waveform or the red handle of the
+overview: the position, the ruler and the timer follow. Done shows the list of recordings;
+choosing one there shows it in the player. On this page no sound is played or recorded: every
+recording is an invented amplitude envelope, playing moves the position at one second a second,
+and the recordings live in the page for as long as it is open. Every glyph is an original
+drawing. On the desktop served by the Ferrite application the same window is a working app,
+`VoiceMemosApp`: it records from the microphone, keeps each recording as an audio file on the
+person's drive and plays it back (see [On the Ferrite desktop](#on-the-ferrite-desktop)).
+
+The screenshots show a recording that is being made, 3 seconds in: the pill holds a pause
+mark and Trim is unavailable. The demo opens on that moment and holds it, so a page that shows
+it stays still: no time passes until something is pressed. Pause the take and resume it, and
+the recording grows for as long as it runs, by more of the same invented envelope.
+
+## What it shows
+
+- A [Window](/components/window) that holds a [Catalyst Chrome](/components/catalyst-chrome)
+  with `underToolbar`: the black content starts at the window's top edge and shows through
+  the 38 pt toolbar row, which is why the same toolbar is a darker grey here than over white
+  content. The row holds the [Window Controls](/components/window-controls), the recording's
+  title, which names the window, and a [Toolbar](/components/toolbar) with one
+  [Toolbar Button](/components/toolbar-button), and is the window's drag region.
+- The [Waveform View](/components/waveform-view) with both of its parts: the detailed view,
+  whose bars and ruler move under a playhead that stays at the middle, and the overview, a
+  strip of the whole recording whose handle is the slider that seeks. The demo owns the
+  position (`value`, `onValueChange`), so its transport buttons, its clock and the view's own
+  dragging and keys all move one number. With `span` the strip stands for 20 seconds when the
+  recording is shorter, as in the screenshots.
+- What the library does not have and the blueprint lists as the app's own: the timer, and the
+  bottom bar with the outlined record pill, the three transport buttons and the Done pill.
+  They are plain buttons, drawn in `voice-memos.css` from the colours and sizes in
+  `voice-memos.tokens.css`.
+- Behind Done, the list of recordings: a `CatalystSidebar` of the chrome that holds a
+  [Search Field](/components/search-field), a [List View](/components/list-view) with a title,
+  a date and a length to a row, and a round button that starts a recording. Where a search
+  finds nothing, and in a window without recordings, an
+  [Empty State](/components/empty-state) says so.
+
+<Example name="library" />
+
+| Control | What it does |
+| --- | --- |
+| Play | Moves the position at one second a second and becomes Pause; at the end of the recording it stops and becomes Play again. From the end, it starts over. |
+| Skip back, skip forward | Move the position 15 seconds, no further than the start or the end. |
+| The waveform | Dragging it moves the recording under the playhead: 77 pt are one second. |
+| The overview's handle | Dragging it, or the arrow keys, Page Up, Page Down, Home and End while it has the focus, seek. |
+| The record pill | Pauses the take, and shows Resume; Resume continues the take at the end of the recording, whatever the position was, and the recording grows until the pill is pressed again (or for an hour). Playing, skipping or seeking pauses a take too. |
+| Done | Ends a take and shows the list of recordings beside the player. |
+| A row of the list | Shows that recording from its start. Return, or a double click, plays it. |
+| Search | Keeps the rows whose title contains the text. |
+| The round red button | Starts a recording under the next free title, "New Recording 5", in the editing view. |
+| Edit | Opens the recording shown over the whole window, paused. |
+| Trim | Listed, as in the screenshots, and unavailable in the demo. On the Ferrite desktop it trims the recording shown (below). |
+
+The timer writes minutes, seconds and hundredths, cut and not rounded (`formatTimer` in
+`voice-memos-data.ts`): the two captured recordings are 3.095 s and 3.065 s long and read
+`00:03.09` and `00:03.06`. The envelopes are computed from a seed with integer arithmetic
+(`envelope`), so the server and every browser draw the same bars.
+
+## Hosting the window
+
+<Example name="hosted" />
+
+`VoiceMemos` renders the library's `Window` as its root and passes every `Window` prop to it,
+so it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component hands to the window controls and
+to the toolbar row, which is this window's drag region. These are the props a
+[Managed Window](/components/managed-window)'s `render` form supplies, so the component can be
+spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { app } from "./app";
+
+<ManagedWindow
+  id={app.id}
+  title={app.name}
+  resizable={app.resizable}
+  minWidth={app.minSize.width}
+  minHeight={app.minSize.height}
+  defaultFrame={{ x: 80, y: 60, ...app.defaultSize }}
+  render={(props) => <app.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `CatalystChrome`: a press with the primary button, or a double click, on the toolbar row that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 789 by 630 by default, as captured. |
+| `state` | `"key" \| "main" \| "inactive"` | The window's state. |
+| `defaultRecordings` | `VoiceMemosRecording[]` | The recordings the window opens with; the six of `voice-memos-data.ts` by default. |
+| `defaultRecordingId` | `string` | The recording shown first: `"new-recording-3"`, the Aqua capture's, by default; the Dark Aqua capture shows `"new-recording-4"`. |
+| `defaultView` | `"editor" \| "library"` | One recording over the whole window, as captured, or the list beside the player. |
+| the rest | `WindowProps` | `fullScreen`, `style`, `className`, `ref`, pointer and focus events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `voiceMemosApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (789 by 630), `minSize` (560 by 600, which holds the
+waveform, the overview, the timer and the bar with its two pills), `resizable` and `menus`,
+the menu titles after the Apple menu. Its `component` is `VoiceMemosApp`, which takes the same
+props: where the page is served by the desktop's Ferrite application it is the working app
+below, and everywhere else, as on this site, it renders `VoiceMemos` and requests nothing. Its
+`drive` prop names where recordings are kept (`VoiceMemosDrive` in `voice-memos-drive.ts`); by
+default the person's drive when the desktop app serves the page, otherwise none, and `null`
+asks for the demo.
+
+At other sizes the waveform keeps its scale and its playhead stays at the middle of the
+player, the overview keeps 33 pt from either side, the bar stays at the bottom edge with the
+transport centred, and the space between the timer and the bar takes up the difference.
+
+`voice-memos.tsx` exports the parts both windows are built from: `VoiceMemosFrame` (the window,
+the Catalyst chrome and the black player), `VoiceMemosLibrary` (the sidebar's search field,
+list and record button), `VoiceMemosWaveform`, `VoiceMemosTimer`, `VoiceMemosTransport` and
+`VoiceMemosTrimButton`.
+
+### On the Ferrite desktop
+
+`VoiceMemosApp` keeps the person's recordings as audio files in a `Voice Memos` folder inside
+the Music folder of their drive (`demos/desktop/desktop-files.ts`), so each person, signed in
+or a guest, has their own, and Finder shows the same files. The first recording makes the
+folder.
+
+- **Recording.** The round red button asks for the microphone (`getUserMedia`) and starts a
+  take in the editing view: the timer runs, and the waveform draws the microphone's level
+  (an `AnalyserNode`) fifty times a second. The pill pauses and resumes the take; Done ends it
+  and uploads it. A take is named as on a Mac, "New Recording", then "New Recording 2", with the
+  first number no recording here or in Recently Deleted has, and is saved under that name and no
+  other: the drive refuses a name that is taken rather than choosing another, and answers the
+  file of an earlier save of the same take (one whose answer was lost) rather than making a
+  second, so a save tried again never makes a copy. When another window took the number
+  meanwhile, with other sound, the take moves to the next. The take is recorded by
+  `MediaRecorder` in the first of Ogg Opus
+  (Firefox), WebM Opus
+  (Chromium) and MP4 (Safari) the browser records, and saved with that extension (`.ogg`,
+  `.webm`, `.m4a`). A browser without `MediaRecorder` (WebKit on Linux) records the
+  microphone's samples through Web Audio and saves a 16-bit WAV file. A take stops by itself
+  at an hour, or as a WAV file at the 11 or 12 minutes the drive holds of one, and says so. Replace and Resume write WAV, so a recording longer than 12 minutes has neither, and is trimmed to 12 minutes at most. The microphone is released when the take ends or the window closes; a take
+  under way when the window closes is stopped and saved.
+- **A take the drive refuses** stays in the window's list, first, as a "Not saved" row that
+  plays from what was recorded, with Retry and Discard in the toolbar (Discard asks first),
+  until it is saved or discarded. It is also held in this browser's IndexedDB, for the person
+  signed in, from before its save until the drive has it: closed windows and reloaded pages
+  bring it back as a "Not saved" row, tried again at once. Another browser does not have it, so
+  a window with a take under way or not saved still asks before it closes, and the browser asks
+  before the page is left.
+- **The list.** The audio files of the folder that are not in the Trash, newest first, with
+  the date each was made and its length, which the browser decodes (`decodeAudioData`), one
+  file at a time, and keeps by file in this browser's IndexedDB, for the person signed in, so a
+  reload decodes nothing again. A change made in
+  Finder (a rename, a move to the Trash) changes the list at once.
+- **Dragging out.** A row, or the chosen rows, drag out as their files: Finder and the desktop
+  copy them, and Mail's new messages and Messages attach them. Notes refuses sound, saying what it
+  takes.
+- **Where the person left off.** The recording shown, its playhead and whether the list stands
+  beside the player are kept with the person's desktop settings (`voice-memos.place`), and come
+  back when the window opens again, in any browser.
+- **Playback.** The chosen recording's file is read from the drive and played by an
+  `<audio>` element; the waveform shows its decoded peaks and the playhead follows the audio.
+  Play, Pause, the two skips and dragging the waveform or the overview seek in it. A pinch on the
+  waveform zooms it, from 20 to 308 points a second. Once a recording has played, the keyboard's
+  media keys and the browser's Now Playing name it and control it (the Media Session API), until
+  the window closes. A WebM file
+  from `MediaRecorder`, which names no length, is first sought past its end so that the browser
+  finds its length and can seek.
+- **Rename.** A double click on a row, or Return on it, makes its title a field: Return or leaving
+  the field renames, Escape does not. Rename in the toolbar and the menus opens a sheet with the
+  title, since the list can be hidden; the file keeps its extension. A name the folder already has is refused.
+- **Delete.** Delete in the toolbar, or the Delete key in the list, moves the file to the
+  drive's Trash, from where Finder puts it back.
+- **Recently Deleted.** The row under the list shows the recordings of the folder that are in
+  the drive's Trash, the last deleted first. One plays as before. Recover puts it back; Delete
+  asks, then removes it for good. Finder's Trash is the same place.
+- **Preferences.** The application menu's Preferences (Command-comma) opens a panel with Audio
+  Quality, Compressed or Lossless, which writes the next takes as WAV, and Clear Deleted, when a
+  recording in Recently Deleted leaves the drive: Immediately, After 1, 7 or 30 Days (the
+  default), or Never. Location-based Naming asks the browser where you are and names new
+  recordings after the place. They are kept for the person on the server.
+- **Share.** File, the toolbar and a row's menu hand the file to the apps that take files, and
+  say why AirDrop cannot.
+- **Trim and Delete.** In the editing view, the Trim button puts two yellow handles over the
+  overview's strip; moving one moves the playhead to it, so the waveform shows the cut. Trim keeps
+  the sound between them and Delete keeps the sound around them, and the window then shows and
+  plays the result. Edit's Undo and Redo step through those changes, and Revert goes back to the
+  recording as it was. Save decodes the recording, cuts it, and uploads a 16-bit WAV file with its
+  channels as they were, under the same title beside the original, which goes to the Trash only
+  once the new file is kept. Handles moved but not pressed count at Save as a Trim. Cancel leaves
+  the recording as it was.
+- **Resume and Replace.** In the editing view, the pill says Resume while the playhead is at the
+  end and Replace anywhere else; Edit has Replace too. Recording goes over what is there from the
+  playhead, or adds to the end, and Done saves the two as one WAV file in the original's place,
+  whose old file goes to the Trash. The new take is held in the browser until then. If the change
+  cannot be saved, the recording stays as it was and the new take becomes a recording of its own.
+- **Edit menu.** Undo to Select All act on the search field when it has the keyboard. Elsewhere
+  Select All, and Command-A, choose every recording the list shows, and Cut, Copy and Paste are
+  dimmed with the reason. While a recording is trimmed, Undo and Redo step through its changes,
+  Select All moves the handles to its two ends, and Cut, Copy and Paste stay dimmed, since a browser
+  takes no sound onto the clipboard.
+- **Several recordings.** Command-click and Shift-click choose several rows. Delete, Duplicate and
+  Share act on all of them, and Recover and Delete in Recently Deleted too; Rename and Show in
+  Finder wait for one.
+- **Messages.** A refused microphone, a browser that cannot record, and a drive that refuses
+  a change are said in a banner at the top of the player, never only in the console; a save
+  that fails offers to try again with the same recording.
+
+## Styling hooks
+
+The demo's measured lengths and font sizes are custom properties in `voice-memos.tokens.css`,
+declared on `:root`; set one on the window with `style` to change it. That file tags each
+with where it comes from: the player, the bar and its two pills are measured in the two
+captures; the transport buttons' targets, the focus ring's distance and the sidebar's column,
+which no capture shows, are provisional. Left as literals in `voice-memos.css`, because they
+are structure rather than measurements: zeros, the `0px` fallback of the Catalyst chrome's
+toolbar inset, the 100% height and 50% radius, the flex factors and grid tracks, the stacking
+order of the app's banners, and the forced-colours borders and focus outline. The app's trim
+handles line up with the overview's strip.
+
+| Property | Default | Controls |
+| --- | --- | --- |
+| `--mac-voice-memos-waveform-padding-top` | `28.9px` | The waveform view: top padding |
+| `--mac-voice-memos-overview-margin-top` | `44.95px` | The waveform's overview strip: top margin |
+| `--mac-voice-memos-overview-margin-inline` | `33px` | The waveform's overview strip: distance from either side |
+| `--mac-voice-memos-timer-margin-top` | `18px` | The large timer: top margin |
+| `--mac-voice-memos-timer-size` | `34.5px` | The large timer: font size |
+| `--mac-voice-memos-timer-line-height` | `41px` | The large timer: line height |
+| `--mac-voice-memos-bar-height` | `73.5px` | The bottom bar: height |
+| `--mac-voice-memos-pill-width` | `112.65px` | The record pill: width |
+| `--mac-voice-memos-pill-height` | `46.3px` | The record pill: height |
+| `--mac-voice-memos-pill-margin-top` | `13.2px` | The record pill: top margin |
+| `--mac-voice-memos-pill-margin-start` | `66.1px` | The record pill: distance from the window's leading edge |
+| `--mac-voice-memos-pill-radius` | `23.15px` | The record pill: corner radius |
+| `--mac-voice-memos-pill-outline-width` | `1.75px` | The record pill: width of its outline |
+| `--mac-voice-memos-pill-size` | `11.5px` | The record pill: font size |
+| `--mac-voice-memos-pill-line-height` | `14px` | The record pill: line height |
+| `--mac-voice-memos-transport-gap` | `11.25px` | The three transport buttons: gap between them |
+| `--mac-voice-memos-transport-shift` | `-0.75px` | The three transport buttons: their shift from the middle of the bar |
+| `--mac-voice-memos-play-padding-bottom` | `0.8px` | The play button's triangle: bottom padding |
+| `--mac-voice-memos-play-padding-left` | `3.5px` | The play button's triangle: left padding |
+| `--mac-voice-memos-key-size` | `44px` | A transport button's target: width and height |
+| `--mac-voice-memos-key-radius` | `22px` | A transport button's target: corner radius |
+| `--mac-voice-memos-done-width` | `104.85px` | The Done pill: width |
+| `--mac-voice-memos-done-height` | `38.7px` | The Done pill: height |
+| `--mac-voice-memos-done-margin-top` | `17.05px` | The Done pill: top margin |
+| `--mac-voice-memos-done-margin-end` | `66.65px` | The Done pill: distance from the window's trailing edge |
+| `--mac-voice-memos-done-radius` | `19.35px` | The Done pill: corner radius |
+| `--mac-voice-memos-done-size` | `11.5px` | The Done pill: font size |
+| `--mac-voice-memos-done-line-height` | `14px` | The Done pill: line height |
+| `--mac-voice-memos-focus-offset` | `2px` | The focus ring around the app's own buttons: distance from the button |
+| `--mac-voice-memos-search-margin-block` | `8px` | The sidebar's search field: block margin |
+| `--mac-voice-memos-search-margin-inline` | `9px` | The sidebar's search field: inline margin |
+| `--mac-voice-memos-new-padding-top` | `12px` | The strip under the list: top padding |
+| `--mac-voice-memos-new-padding-bottom` | `14px` | The strip under the list: bottom padding |
+| `--mac-voice-memos-record-size` | `44px` | The record button under the list: width and height |
+| `--mac-voice-memos-record-ring-width` | `2px` | The record button under the list: width of its ring |
+| `--mac-voice-memos-record-padding` | `3px` | The record button under the list: room between the ring and the red disc |
+| `--mac-voice-memos-record-padding-pressed` | `5px` | The record button under the list: that room while it is pressed |
+| `--mac-voice-memos-trim` | `#ffd60a` | The app's trim handles and Trim button: colour |
+| `--mac-voice-memos-trim-pressed` | `#ffe566` | A trim handle while it is held |
+| `--mac-voice-memos-trim-text` | `#000000` | The Trim button's label and the handles' arrows |
+| `--mac-voice-memos-trim-outside` | `#000000b3` | The dimming of the strip outside the handles |
+| `--mac-voice-memos-trim-strip-bottom` | `21.75px` | The handles: distance from the overview's bottom to its strip |
+| `--mac-voice-memos-trim-strip-height` | `44.1px` | The handles: the height of the overview's strip |
+| `--mac-voice-memos-trim-handle-width` | `11px` | A trim handle: width |
+| `--mac-voice-memos-trim-handle-radius` | `3px` | A trim handle: outer corner radius |
+| `--mac-voice-memos-trim-edge` | `2px` | The yellow lines above and below the stretch between the handles |
+| `--mac-voice-memos-trim-grip-size` | `4px` | A trim handle: size of its arrow |
+| `--mac-voice-memos-trim-action-height` | `28px` | Revert, Delete and Trim while trimming: height |
+| `--mac-voice-memos-trim-action-padding` | `12px` | Revert, Delete and Trim while trimming: side padding |
+| `--mac-voice-memos-trim-action-radius` | `14px` | Revert, Delete and Trim while trimming: corner radius |
+
+## Accessibility
+
+- The window is a `region` named by its title, which is the title of the recording shown.
+  The toolbar is one tab stop. Trim shows only a glyph and is named with `aria-label`; it is
+  unavailable through `aria-disabled` and keeps its place in the toolbar's arrow-key order.
+- The waveform is a `group` named by the recording's title. The detailed view is an image,
+  "Waveform of New Recording 3"; the overview is one `slider`, "Recording position", from 0
+  to the length in seconds with the position as its value text, "00:03". Everything the
+  pointer can do to the position, the slider's keys and the two skip buttons can do too.
+- The timer has the `timer` role and the name "Position". It is not a live region that
+  announces: it changes a hundred times a second while something runs.
+- The transport is a `group` named "Playback" of three buttons named with `aria-label`:
+  "Skip Back 15 Seconds", "Play" and "Skip Forward 15 Seconds". The middle one is named
+  "Pause" while the recording plays; its name, not `aria-pressed`, says what a press does.
+- The record pill is named "Pause Recording" while it shows the pause mark and "Resume
+  Recording" while it shows "Resume", so its name contains its text.
+- The list of recordings is a `navigation` landmark named "Recordings" that holds a
+  `searchbox` named "Search recordings", a `listbox` named "Recordings" whose options read a
+  title, a date and a length, and a button named "New Recording". The arrow keys choose a
+  row, typing finds one by title and Return plays it. An empty search result is a `status`.
+- The app's own buttons show the focus ring of the library, in the key window only.
+- The content is dark in both appearances, as in Voice Memos. The transport's grey on the
+  bar is about 4.5:1; the ruler's and the overview's labels are about 3:1, as measured, which
+  is below what small text needs (see [Waveform View](/components/waveform-view)).
+- Nothing moves by itself: the waveform scrolls only while the recording plays or a take runs,
+  which the person has started.
+- In forced-colours mode the bar, the pills and the transport take the system's button
+  colours.
+- On the Ferrite desktop, a problem is a banner with the `alert` role and work under way
+  (saving, trimming) one with the `status` role; the window is `aria-busy` meanwhile. The
+  trim handles are a `group` named "Trim" with two sliders, "Trim start" and "Trim end", whose
+  value text is the time; the arrow keys move them a hundredth of a second, Page Up and Page
+  Down a second, Home and End to either end. The buttons by the timer are named "Trim to
+  Selection" and "Delete Selection". A row's title being renamed is a field named "Recording
+  name". Rename from the toolbar is a sheet named
+  "Rename Recording" whose field is "Recording name"; Return renames.
+
+## Fidelity
+
+`voice-memos.visual.json` compares the demo with the two Voice Memos screenshots, the whole
+capture with the window's shadow in each appearance: once as it is (`window-light`,
+`window-dark`), and once with the text, the stand-in glyphs and the bars masked
+(`window-layout-light`, `window-layout-dark`). The masks cover the title, the Trim glyph, the
+bars of the waveform and of the overview, the ruler's and the overview's labels, the timer,
+the two skip glyphs and the label of Done, a tenth of the capture; the frame and its shadow, the
+toolbar, the panel, the playhead, the ticks, the strip and its handle, the bar, the record
+pill with its pause mark, the play triangle and the Done pill are scored. The two captures
+show different recordings, so each appearance has its own example.
+
+Scores from `npm run visual -- voice-memos/` (Chromium on Linux, fallback font), share of
+pixels that differ and mean colour distance out of 255:
+
+| Comparison | 1x | 2x |
+| --- | --- | --- |
+| `window-light` | 2.1%, 1.9 | 1.7%, 2.0 |
+| `window-layout-light` | 0.5%, 0.4 | 0.3%, 0.5 |
+| `window-dark` | 1.8%, 1.7 | 1.6%, 1.9 |
+| `window-layout-dark` | 0.5%, 0.4 | 0.2%, 0.5 |
+
+The budgets in `voice-memos.visual.json` are set just above these. Two more checks press
+the buttons in a real browser and read pixels, because no screenshot shows what follows:
+`done-shows-library` (Done brings the sidebar with its record button, and the Done pill is
+gone) and `play-shows-pause` (a row of the list is chosen, play is pressed, and the triangle
+has become the two bars of the pause mark).
+
+Taken from the spec's measurements of the screenshots and laid out to them: the 789 by 630 pt
+frame; the 38 pt toolbar row with the centred title and the 39 pt Trim button 7.5 pt from the
+trailing edge; the waveform panel from 74.5 pt and the ruler under it; the overview's strip
+at 394 pt, 33 pt from either side; the timer's baseline; the bottom bar from 556.5 pt with
+its two top rows and its gradient; the record pill, its outline and its pause mark; the
+transport glyphs' places and sizes; and the Done pill. The colours and sizes that are the
+app's own are in `voice-memos.tokens.css`, each with the place it was measured.
+
+What differs, and why:
+
+- **Bars.** The screenshots do not hold the recordings' samples. The demo's envelopes are
+  invented and only follow the captured outlines roughly: quiet, a burst, quiet. They are
+  masked in the layout comparisons, and are most of the whole-window score.
+- **Text.** Set in the fallback font off Apple devices: the timer's digits are wider and
+  heavier than San Francisco's, so the timer is wider than in the screenshots.
+  The label of Done is set in the semibold weight, which is nearer the capture than the bold
+  the spec names.
+- **Glyphs.** The crop mark of Trim, the two skip rings with their "15", the play triangle
+  and the pause marks are original drawings to the measured sizes. The play triangle and the
+  pill's pause mark are near enough to be scored; the others are masked.
+- **Dark edges.** The captures have a row of darker pixels around bright shapes on the bar,
+  on some sides and not on others, which looks like the trace of the 77% scaling of an iPad
+  app. The demo draws a hairline around the record pill's outline, its pause mark and the
+  Done pill, which matches most of them and puts one under Done where the capture has none.
+- **Window rim in Aqua.** The library's window draws its inner rim as white at 16%; over this
+  window's dark content the Aqua capture has it at about 10% (`#191919` over black,
+  `#2c2c2c` over the panel). It is the shared window's value and is not changed here; it is
+  about 0.16 points of the 0.39% of `window-layout-light`.
+- **Title in Aqua.** The capture's title is `#202020`; the library's title bar draws its
+  title in black at 62%, which is about `#434343` over this toolbar. It is masked in the
+  layout comparisons.
+- **Trim's bezel.** The library's toolbar button draws its outline half a point outside its
+  box, so the demo gives the button 38 pt for the captured 39, half a point in from where the
+  chrome puts it.
+- **Overview handle.** The time the strip stands for is fitted (20 s): it puts the handle on
+  the Dark Aqua capture's and half a point left of the Aqua capture's. The library's own
+  comparisons use 19.92 s and 20 s for the two.
+- **Playhead and ticks.** The playhead's line is the waveform view's and stands where the
+  captured one does, as a solid line where the capture has soft edges; the ticks fall
+  on fractions of a pixel in the screenshots. Both score as on that component's page.
+- **Transport greys.** The three glyphs measure `#818181`, `#7d7d7d` and `#797979`; the demo
+  draws them in one grey, `#7d7d7d`. In the screenshots a recording is being made, so these
+  may be the dimmed colours of buttons that cannot be used then; the demo uses them for
+  buttons that work.
+- **Not in a screenshot (provisional):** everything behind Done, that is the sidebar, the
+  search field, the rows, the round record button and the Edit button; "Resume" in the pill;
+  the pause mark of the play button; pressed, unavailable and focused buttons; a recording
+  that plays, or grows; the window when it is not key and every size other than the captured
+  one. In Voice Memos the list is beside a lighter player with its own controls; the demo
+  keeps one player for both views.
+- **Held at the captured moment.** A recording that is being made counts on; the demo's does
+  not until a button is pressed, so that a page that shows the demo is still.
+- **Not built in the demo:** sound, in or out; trimming and replacing; renaming, deleting and
+  sharing a recording; recently deleted recordings; the names Voice Memos takes from a place;
+  iCloud; the menus and their keys (Space to play, for one). On the Ferrite desktop recording,
+  playback, trimming, replacing, renaming, deleting, Recently Deleted (the drive's Trash), sharing
+  and the menus are built; place names are not.

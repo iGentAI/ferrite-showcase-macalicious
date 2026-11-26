@@ -1,0 +1,148 @@
+/*
+ * Lengths of the Finder demo's own, in points, read from the Finder captures of
+ * reference/screenshots (Applications, Finder-Network, Finder-Gallery-View, Finder-Get-Info,
+ * Go to Folder, Connect to Server). The stylesheets read them with var(); nothing here depends
+ * on the appearance.
+ */
+:root {
+  /* Not measured: no reference screenshot shows Customize Toolbar. */
+  --mac-finder-customize-gap: 8px;
+  --mac-finder-customize-row: 32px;
+  --mac-finder-customize-radius: 4px;
+  --mac-finder-customize-item-padding: 3px 8px;
+  --mac-finder-customize-used: 0.4;
+  /* Not measured: no reference screenshot shows a name being edited or Rename N Items. */
+  --mac-finder-rename-min-width: 96px;
+  --mac-finder-batch-gap: 8px;
+  /* Not measured: no reference screenshot shows View Options. */
+  --mac-finder-options-gap: 8px;
+  --mac-finder-options-stack-gap: 4px;
+  --mac-finder-options-padding: 12px;
+
+  /* [measured] Column view's glyph segment: 5 pt before the glyph and 6 pt after it. */
+  --mac-finder-view-columns-padding-inline: 5px 6px;
+
+  /* [measured] The toolbar's items: the pull-downs 46 pt, Share and Tags 38 pt, the search
+     field 323 pt (it gives way down to 120 pt, the demo's choice), the icon size slider
+     80 pt, the gap before the search terms. */
+  --mac-finder-menu-button-width: 46px;
+  --mac-finder-item-button-width: 38px;
+  --mac-finder-search-width: 323px;
+  --mac-finder-search-min-width: 120px;
+  --mac-finder-criterion-number-width: 56px;
+  --mac-finder-icon-size-width: 80px;
+  --mac-finder-name-gap: 6px;
+
+  /* [measured] The panel of a computer that is not connected: 172 pt high, its content 22 pt
+     under the top, the name 9 pt under the picture and 3 pt over the state, buttons 114 pt
+     wide and 8 pt apart. */
+  --mac-finder-server-panel-height: 172px;
+  --mac-finder-server-padding-block-start: 22px;
+  --mac-finder-server-name-margin-block: 9px 3px;
+  --mac-finder-server-button-width: 114px;
+  --mac-finder-server-button-margin-block-start: 8px;
+
+  /* [provisional] The preview of a file in column view: the demo's own spacing. */
+  --mac-finder-file-gap: 4px;
+  --mac-finder-file-padding: 24px 12px;
+  --mac-finder-file-name-margin-block-start: 8px;
+
+  /* [measured] The Preview pane: 20 pt insets, a 94 pt header, 19 pt rows. */
+  --mac-finder-preview-padding: 0 20px 14px;
+  --mac-finder-group-head-padding: 6px 12px 3px;
+  --mac-finder-slideshow-layer: 2000;
+  --mac-finder-slideshow-background: #000000;
+  --mac-finder-slideshow-gap: 12px;
+  --mac-finder-slideshow-cell: 140px;
+  --mac-finder-preview-header-gap: 10px;
+  --mac-finder-preview-header-min-height: 94px;
+  --mac-finder-preview-heading-padding-block: 9px 6px;
+  --mac-finder-preview-facts-margin: 0 0 14px;
+  --mac-finder-preview-fact-gap: 8px;
+  --mac-finder-preview-fact-min-height: 19px;
+
+  /* [measured] Go to Folder: the field 7.5 pt under the label's line, half a point inside the
+     dialog's width; the line saying the path leads nowhere 6 pt under the field. */
+  --mac-finder-go-path-margin: 7.5px 0.5px 0;
+  --mac-finder-go-missing-margin-block-start: 6px;
+
+  /* [measured] Connect to Server: the field half a point inside the width, the list's title
+     12 pt under it and 7.5 pt over the list, the list 87 pt high, the segments 27 and 41 pt
+     wide. */
+  --mac-finder-connect-address-margin: -0.5px 0.5px 0;
+  --mac-finder-connect-label-margin-block: 12px 7.5px;
+  --mac-finder-connect-favorites-height: 87px;
+  --mac-finder-connect-edit-width: 27px;
+  --mac-finder-connect-action-width: 41px;
+
+  /* [provisional] The Copy window stands 96 pt under the page's top; the notifications 30 pt
+     under it (below the menu bar), 8 pt from the corner and 8 pt apart. */
+  --mac-finder-copy-inset-block-start: 96px;
+  --mac-finder-notices-inset-block-start: 30px;
+  --mac-finder-notices-inset-inline-end: 8px;
+  --mac-finder-notices-gap: 8px;
+
+  /* [measured] Get Info: the tags field 33 pt high; the General checkboxes 14.5 pt under the
+     list, 42.5 pt in, 6 pt apart; More Info half a point more under the list. */
+  --mac-finder-info-tags-field-min-height: 33px;
+  --mac-finder-info-checks-gap: 6px;
+  --mac-finder-info-checks-margin: 14.5px 0 0 42.5px;
+  --mac-finder-info-facts-padding-block-end: 0.5px;
+
+  /* [measured] Name & Extension: the field 1 pt under the section's top, the checkbox 9.5 pt
+     under it and 4 pt in. */
+  --mac-finder-info-name-gap: 9.5px;
+  --mac-finder-info-name-padding-block-start: 1px;
+  --mac-finder-info-name-check-margin-inline-start: 4px;
+
+  /* [measured] Comments: the frame of the text, 62 pt high. */
+  --mac-finder-info-comments-height: 62px;
+
+  /* [measured] Open with: the controls 2.5 pt inside the section's margins, the help text
+     4 pt and Change All 8 pt under the control above. */
+  --mac-finder-info-open-with-padding: 0.5px 2.5px 0;
+  --mac-finder-info-open-with-help-margin-top: 4px;
+  --mac-finder-info-open-with-change-margin-block-start: 8px;
+
+  /* [measured] Preview: 6 pt over and under the icon. */
+  --mac-finder-info-preview-padding-block: 6px;
+
+  /* [measured] Sharing & Permissions: 2.5 pt inside the margins, the text 8.5 pt over the
+     113 pt list, the buttons 4 pt under it and 3 pt back (the library's buttons are taller
+     than Finder's), the lock 2.5 pt from the end. */
+  --mac-finder-info-permissions-padding-inline: 2.5px;
+  --mac-finder-info-permissions-summary-margin: 0 0 8.5px;
+  --mac-finder-info-permissions-list-height: 113px;
+  --mac-finder-info-permissions-name-gap: 4px;
+  --mac-finder-info-permissions-bar-margin-block: 4px -3px;
+  --mac-finder-info-permissions-lock-margin-inline-end: 2.5px;
+
+  /* [provisional] Quick Look: the padding of a text annotation, the colour chip's box and the
+     padding round the icon of an item that is not a picture. */
+  --mac-finder-quick-look-text-padding: 1px 4px;
+  --mac-finder-quick-look-chip-width: 16px;
+  --mac-finder-quick-look-chip-height: 12px;
+  --mac-finder-quick-look-icon-padding: 40px;
+
+  /* [provisional] Quick Look of a drive file: the least height of its preview, the width of the
+     sound player and the margin round a text file's text. The demo's own choices. */
+  --mac-finder-quick-look-file-min-height: 240px;
+  --mac-finder-quick-look-sound-width: 360px;
+  --mac-finder-quick-look-plain-padding: 16px 20px;
+
+  /* [provisional] Drag and drop on the drive (finder.css, finder-drag.ts): the colours used when
+     the theme's accent or window background is not set, and the shadow of the notice saying why
+     a drop was refused. The demo's own choices. */
+  --mac-finder-drop-notice-background-fallback: #ececec;
+  --mac-finder-drop-notice-shadow: 0 1px 4px rgb(0 0 0 / 25%);
+  /* [provisional] Finder's search suggestions and the Hide and Show of a sidebar section: the demo's
+     own choices, from a Mac's at a glance. */
+  --mac-finder-suggestions-width: 240px;
+  --mac-finder-suggestions-max-height: 240px;
+  --mac-finder-suggestions-radius: 5px;
+  --mac-finder-suggestions-shadow: 0 4px 16px rgb(0 0 0 / 30%);
+  --mac-finder-suggestion-padding: 3px 12px;
+  --mac-finder-suggestions-inset: 8px;
+  --mac-finder-suggestions-font-size: 12px;
+  --mac-finder-section-toggle-font-size: 10px;
+}

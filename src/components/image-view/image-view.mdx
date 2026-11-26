@@ -1,0 +1,155 @@
+---
+title: Image View
+description: Shows one image, scaled to its view, optionally cut to a circle or tinted as a template.
+---
+
+<Example name="basic" both />
+
+AppKit's `NSImageView` without a frame: the view adds no border, background or shadow. An
+editable image view is an image well, and a clickable image is an image button; this one is
+neither.
+
+The library contains no artwork. App icons, device pictures and glyphs in the Catalina
+screenshots are Apple's and are not reproduced: supply your own images. The pictures on this
+page are stand-ins drawn for the examples.
+
+## Usage
+
+```tsx
+import { ImageView } from "macalicious/image-view";
+import "macalicious/image-view.css";
+
+<ImageView src="/printer.png" alt="Office printer" width={93} height={68} />
+<ImageView src={user.picture} alt="" mask="circle" width={24} height={24} />
+<ImageView alt="Stephen Hackett" mask="circle" width={62} height={62}>SH</ImageView>
+```
+
+Or copy the source into your project: `npx macalicious add image-view`.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for image views:
+
+- Use an image view to show a picture, not to start an action. If people can click it, use a
+  button with an image.
+- Give the view the size the image should have, and let the image scale down to it. Do not
+  enlarge small artwork.
+- Use a template image for a glyph that should follow the text colour of its surroundings and
+  both appearances.
+- Centre a pane's hero image in its column; put its caption 10 pt below it, in the emphasised
+  body font.
+
+Sizes measured in System Preferences: a pane's hero image is 117 pt square, a user picture is
+62 pt in the detail area and 24 pt in a list row, a monogram avatar 98 pt, a list icon 24 to
+32 pt.
+
+## Variants and states
+
+<Example name="variants" both hideCode />
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Scaling | `scaling` | Shrink to fit (default), always fit, stretch, or own size |
+| Circle mask | `mask="circle"` | The view is cut to a circle |
+| Template | `template` | The image's alpha channel, filled with the surrounding text colour |
+| Monogram | no `src`, initials as children | Initials on a grey disc; use with `mask="circle"` |
+| Disabled | `disabled` | Grey and at half opacity, as the Guest User's picture in a disabled row |
+
+A template image scales like a bitmap: by default it shrinks to fit the view and is never
+enlarged. Its `<img>` sits inside a `<span>` the size of the view, which is the element that
+takes `className`, `style` and `ref`.
+
+Measured: the monogram's disc in both appearances, and its initials in Aqua: their colour and
+the height of their capitals, a quarter of the view (24.5 pt in the 98 pt avatar). Inferred:
+the light weight of the initials, from the 2.5 pt stems of the capture. Provisional: the
+disabled look (the screenshot shows a grey picture; the exact treatment of a coloured one is
+not shown), and the monogram's initials in Dark Aqua, which the capture draws in the disc's
+own colour and which are white here so that they can be read.
+
+An image view is not interactive and is drawn the same in a key and in an inactive window.
+
+## Sizes
+
+An image view has the size you give it: `width` and `height`, or CSS. A bitmap without a size
+is shown at its own size, limited to the width of its container. A template without a size is
+as large as its image; a monogram has no size of its own and needs one.
+
+## API
+
+<PropsTable name="ImageViewProps" />
+
+A bitmap also takes every attribute of `<img>` (`srcSet`, `sizes`, `loading`, `decoding`); an
+image given by `srcSet` alone, without `src`, is a bitmap too.
+
+`onLoad` and `onError` (and their capture forms) are called with the `<img>` as
+`currentTarget` in a bitmap and in a template; a monogram has no image and never calls them.
+Every other event handler goes to the rendered element: the `<img>` of a bitmap, the `<span>`
+of a template or a monogram.
+
+A template image is read as a CSS mask, and the browser fetches a mask with CORS. An image on
+the page's own origin, or a `data:` address, always works; an image from another origin must
+be served with an `Access-Control-Allow-Origin` header, and without one the template draws
+nothing even though the same address works as a bitmap. The browser fetches the mask as soon
+as the view is styled, whatever the `<img>` inside does: `loading="lazy"` defers a bitmap and
+does not defer a template.
+
+`aria-label` and `aria-labelledby` name the image in every form. One that is empty or only
+white space names nothing and is left out, so the image is then decorative unless it has an
+`alt`.
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-scaling` | `proportionally-down`, `proportionally-up-or-down`, `axes-independently`, `none` | Reflects `scaling`. |
+| `data-mask` | `none`, `circle` | Reflects `mask`. |
+| `data-kind` | `template`, `monogram` | On the `<span>` forms. |
+| `data-disabled` | present or absent | Reflects `disabled`. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-image-view-position` | `center` | Where the image sits in a view of another shape (NSImageView.imageAlignment), as an `object-position` value. A template image that is scaled down or shown at its own size does not use it: set the two below. |
+| `--mac-image-view-align` | `center` | Template image that is scaled down or shown at its own size: `start`, `center` or `end` on the block axis (top to bottom). |
+| `--mac-image-view-justify` | `center` | The same on the inline axis; `start` is the leading side, so it follows the text direction. |
+
+## Accessibility
+
+- Give a meaningful image an `alt` that says what it shows. Leave `alt` empty for a decorative
+  image: it is then hidden from assistive technology.
+- A bitmap is a native `<img>`. A template image is a native `<img>` too, inside a `<span>`;
+  only its colour is replaced. A monogram is a `<span>` with `role="img"` and the `alt` as its
+  name; its initials are not read separately.
+- The view is not focusable.
+- Use `loading="lazy"` for bitmaps below the fold (it does not defer a template image, see
+  above), and always give `width` and `height` so the page does not shift when the image
+  arrives.
+- In forced-colours mode a template image is drawn in the system text colour.
+
+## Visual comparison
+
+Only the monogram can be compared: every other image view in the screenshots shows Apple's
+artwork. `visual-monogram` reproduces the avatar of the Screen Time pane. Results in Chromium
+on Linux with the fallback font:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Monogram, Aqua | 1.35% of pixels differ | 1.19% |
+| Monogram, Aqua, initials masked, strict | 0.24% | 0.08% |
+| Monogram, Dark Aqua | 2.81% | 3.17% |
+| Monogram, Dark Aqua, initials masked, strict | 0.07% | 0.02% |
+
+The masked comparisons count a pixel as different at half the usual colour distance
+(`threshold` 0.05); what they find is antialiasing on the rim of the disc.
+
+The disc matches; what differs in the first row is the initials, set in the fallback font
+instead of San Francisco: the fallback's letters are wider and their strokes are cut
+differently. On an Apple device the initials are San Francisco and this figure differs; it has
+not been measured there. The unmasked Dark Aqua comparison scores the initials too: the
+capture draws them in the disc's own colour, so they barely show, and the component
+deliberately draws them in white; that is most of its difference.
+
+The scaling of a template image is checked without a screenshot: `visual-template-scaling`
+puts a 16 pt and a 128 by 64 pt template in 64 pt views and reads pixels to confirm that the
+first stays 16 pt and the second shrinks to 64 by 32 pt, in both appearances.
+`visual-template-alignment` does the same for `--mac-image-view-align` and
+`--mac-image-view-justify`: a 16 pt template in the top leading corner of a 64 pt view, one in
+the bottom trailing corner, a 128 by 64 pt template scaled down and placed at the bottom of
+its view, and one shown at its own size, larger than its view, aligned to its leading edge.

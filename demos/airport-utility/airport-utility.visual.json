@@ -1,0 +1,67 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "window-light",
+      "description": "The whole AirPort Utility window against the capture named Light, which shows a dark window like its Dark twin: the demo is dark in both appearances and is compared with each capture as it is. Masked: the globe with its ground shadow (128.5 by 138.5 pt), which is Apple's artwork in the capture and an abstract placeholder here that takes nothing from it. Text is set in the fallback font.",
+      "example": "visual-window",
+      "appearance": "light",
+      "masks": [{ "x": 284, "y": 82, "width": 130, "height": 139 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Airport-Utility.png",
+        "crop": { "x": 112, "y": 76, "width": 1392, "height": 1064 }
+      },
+      "budget": { "1x": 0.0068, "2x": 0.0059 },
+      "deltaBudget": { "1x": 1.5, "2x": 1.6 }
+    },
+    {
+      "name": "window-light-layout",
+      "description": "As window-light with the text masked too (the title, the button's title and the name Internet), to score the frame, the title bar, the gradient, the button's bezel and the status dot.",
+      "example": "visual-window",
+      "appearance": "light",
+      "masks": [
+        { "x": 284, "y": 82, "width": 130, "height": 139 },
+        { "x": 300, "y": 3, "width": 96, "height": 16 },
+        { "x": 30, "y": 45, "width": 124, "height": 14 },
+        { "x": 324, "y": 232, "width": 68, "height": 20 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Airport-Utility.png",
+        "crop": { "x": 112, "y": 76, "width": 1392, "height": 1064 }
+      },
+      "budget": { "1x": 0.002, "2x": 0.0018 },
+      "deltaBudget": { "1x": 1.05, "2x": 1.15 }
+    },
+    {
+      "name": "window-dark",
+      "description": "The whole AirPort Utility window against the Dark capture, with the same region masked as window-light: the globe with its ground shadow.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "masks": [{ "x": 284, "y": 82, "width": 130, "height": 139 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-AirPort-Utility.png",
+        "crop": { "x": 112, "y": 76, "width": 1392, "height": 1064 }
+      },
+      "budget": { "1x": 0.0068, "2x": 0.0059 },
+      "deltaBudget": { "1x": 1.35, "2x": 1.45 }
+    },
+    {
+      "name": "window-dark-layout",
+      "description": "As window-dark with the same regions masked as window-light-layout.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "masks": [
+        { "x": 284, "y": 82, "width": 130, "height": 139 },
+        { "x": 300, "y": 3, "width": 96, "height": 16 },
+        { "x": 30, "y": 45, "width": 124, "height": 14 },
+        { "x": 324, "y": 232, "width": 68, "height": 20 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-AirPort-Utility.png",
+        "crop": { "x": 112, "y": 76, "width": 1392, "height": 1064 }
+      },
+      "budget": { "1x": 0.002, "2x": 0.0018 },
+      "deltaBudget": { "1x": 0.9, "2x": 1 }
+    }
+  ]
+}

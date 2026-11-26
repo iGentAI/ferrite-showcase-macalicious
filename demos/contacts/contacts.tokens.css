@@ -1,0 +1,169 @@
+/*
+ * Contacts: the colours no shared token holds (reference/spec/apps/contacts.md). The Aqua
+ * capture shows a card being edited and the Dark Aqua one a finished card, so several values
+ * are measured in one appearance only; such a token is tagged provisional and says which
+ * half is measured.
+ */
+:root,
+[data-appearance] {
+  /* [provisional] the gap between a smart group's rules and between a rule's controls; no capture
+     shows the sheet */
+  --mac-contacts-rule-gap: 8px;
+  --mac-contacts-rule-field-width: 120px;
+  --mac-contacts-rule-test-width: 140px;
+  /* [measured] the name list and the card (Light-Contacts @ 1700,300; Dark-Contacts @ 1500,300) */
+  --mac-contacts-pane: light-dark(#ffffff, #1e1f20);
+  /* [measured] the line between the name list and the card (Light-Contacts @ 858,214;
+     Dark-Contacts @ 884,420). The line beside the sidebar is the same in Dark Aqua; in the
+     Aqua capture it is blended with the desktop picture behind the sidebar. */
+  --mac-contacts-divider: light-dark(#d5d5d5, #000000);
+  /* [measured] the rules between a card's fields and over the bar of a card being edited
+     (Light-Contacts @ 1700,420; Dark-Contacts @ 1500,420) */
+  --mac-contacts-rule: light-dark(#e6e6e6, #333435);
+  /* [measured] the monogram disc, a vertical gradient (Light-Contacts @ 1054,82..191;
+     Dark-Contacts @ 1081,102..211) */
+  --mac-contacts-picture-top: light-dark(#a5abb8, #6d6e6e);
+  --mac-contacts-picture-bottom: light-dark(#878c96, #474647);
+  /* [measured] the initials on it (Light-Contacts @ 1036,136; Dark-Contacts @ 1060,156) */
+  --mac-contacts-picture-text: #ffffff;
+  /* [provisional] the glyph of a round button that does something for the card: the Dark
+     Aqua value is the mail badge (Dark-Contacts @ 1836,449); the Aqua one is the link colour
+     of a label of the card being edited, "mobile" (Light-Contacts @ 1064,342), because no
+     Aqua capture shows a finished card */
+  --mac-contacts-link: light-dark(#2687fa, #0884ff);
+  /* [measured] a label that opens nothing: "text tone" (Light-Contacts @ 1012,612) and
+     "note" (Dark-Contacts @ 1088,505) */
+  --mac-contacts-label: light-dark(#c0c0c0, #9a9a9a);
+  /* [provisional] the capsule behind a label whose row is under the pointer: Dark Aqua
+     measured (Dark-Contacts @ 1080,448); no Aqua capture shows a finished card */
+  --mac-contacts-capsule: light-dark(#b9b9b9, #555657);
+  /* [provisional] the label on the capsule: Dark Aqua measured (@ 1125,448); Aqua inferred */
+  --mac-contacts-capsule-text: #ffffff;
+  /* [provisional] the captions under the four buttons of a finished card: Dark Aqua measured
+     (Dark-Contacts @ 1243,325); the Aqua value is the label colour, which no capture shows */
+  --mac-contacts-caption: light-dark(#262626, #ffffff);
+  /* [provisional] what the visual examples paint behind the window's round corners, where
+     the captures show the desktop picture, which is not reproduced */
+  --mac-contacts-visual-desktop: light-dark(#757371, #1b2632);
+
+  /* Lengths, in points of 10-15-Catalina-Light-Contacts.png (a card being edited) and
+     10-15-Catalina-Dark-Contacts.png (a finished card); see the comments in contacts.css. */
+
+  /* [measured] The groups column: its first row 22 pt under the window's top (the 5 pt the
+     sidebar's tree has over its rows and this 17 pt spacer); the window controls' strip,
+     the close button's centre 14 pt in and 11 pt down. */
+  --mac-contacts-controls-room-height: 17px;
+  --mac-contacts-top-height: 22px;
+  --mac-contacts-controls-inset-block-start: 5px;
+  --mac-contacts-controls-inset-inline-start: 8px;
+
+  /* [measured] The names column: a 21 pt search field 24.5 pt under the top, 14.5 pt from the
+     left and 18.5 pt from the right; the first name at 54 pt. The mark of the user's own
+     card 10 pt after the name, a point under its line's middle. */
+  --mac-contacts-search-strip-height: 54px;
+  --mac-contacts-search-strip-padding: 24.5px 18.5px 0 14.5px;
+  --mac-contacts-me-margin-inline-start: 10px;
+  --mac-contacts-me-vertical-align: -1px;
+
+  /* [measured] The head: 155 pt on a finished card and 141 pt on one being edited; the
+     picture 24 pt under the window's top and 70 pt from the card's edge. */
+  --mac-contacts-head-height: 155px;
+  --mac-contacts-head-edit-height: 141px;
+  /* [provisional] What each further line of a head adds, once a card has a nickname, a job
+     title, a department or a phonetic name: no capture shows one. */
+  --mac-contacts-head-line-height: 17px;
+  --mac-contacts-head-edit-line-height: 21px;
+  --mac-contacts-picture-inset-block-start: 24px;
+  --mac-contacts-picture-inset-inline-start: 70px;
+
+  /* [measured] The name: 18 pt on 22 pt lines, its ink 133.5 pt from the card's edge and its
+     baseline 53.5 pt under the top on a finished card; on a card being edited the line is at
+     the picture's top. The parts of the name 3 pt apart; the company 2 pt under it; the
+     Company checkbox's 12 pt box 133 pt from the card's edge and 65.5 pt under the top. */
+  --mac-contacts-identity-inset-block-start: 37.5px;
+  --mac-contacts-identity-inset-inline: 132.5px 35px;
+  --mac-contacts-identity-edit-inset-block-start: 19.5px;
+  --mac-contacts-identity-edit-inset-inline-start: 130.5px;
+  --mac-contacts-name-gap: 3px;
+  --mac-contacts-name-font-size: 18px;
+  --mac-contacts-name-line-height: 22px;
+  --mac-contacts-company-margin-block-start: 2px;
+  --mac-contacts-company-box-margin: 6px 0 0 2.5px;
+
+  /* [measured] The four round buttons of a finished card, 56 pt apart, centred where the
+     captured 24 pt discs are (178.5 pt from the card's edge, 115 pt under the top); the 11 pt
+     captions on 13 pt lines, 5 pt under them. */
+  --mac-contacts-actions-inset-block-start: 104.5px;
+  --mac-contacts-actions-inset-inline-start: 150.5px;
+  --mac-contacts-action-width: 56px;
+  --mac-contacts-caption-margin-block-start: 5px;
+  --mac-contacts-caption-font-size: 11px;
+  --mac-contacts-caption-line-height: 13px;
+
+  /* [measured] Info and Picture: the control centred in the card, 106 pt under the top.
+     [provisional] The Picture pane's spacing: no capture shows it. */
+  --mac-contacts-panes-inset-block-start: 105.5px;
+  --mac-contacts-panes-width: 216px;
+  --mac-contacts-picture-pane-gap: 24px;
+  --mac-contacts-picture-pane-padding: 12px 70px;
+
+  /* [measured] The fields: 35 pt from each side of the card; a row 24 pt, a group 2 pt over
+     and under its rows. A finished card's labels end 124 pt from the card's edge, in a 96 pt
+     column, and its values start at 133.5 pt; a card being edited has a 90.5 pt label column
+     half a point in and its field's box from 131 pt. */
+  --mac-contacts-fields-padding-inline: 35px;
+  --mac-contacts-group-padding-block: 2px;
+  --mac-contacts-row-height: 24px;
+  --mac-contacts-row-label-width: 96px;
+  --mac-contacts-row-column-gap: 1.5px;
+  --mac-contacts-row-edit-label-width: 90.5px;
+  --mac-contacts-row-edit-column-gap: 5px;
+  --mac-contacts-row-edit-padding-inline-start: 0.5px;
+
+  /* [measured] A card being edited: the remove button's 14 pt disc 35 pt from the card's
+     edge, the first 15 pt of the label column; the title of a pop-up button without a bezel
+     2 pt before a field's text; the fixed label ending over the pop-up buttons' arrows,
+     116.5 pt from the card's edge. */
+  --mac-contacts-remove-room: 15px;
+  --mac-contacts-remove-inset-block-start: 3.5px;
+  --mac-contacts-remove-inset-inline-start: -0.5px;
+  --mac-contacts-choice-margin-inline-start: 3px;
+  --mac-contacts-label-edit-padding-inline-end: 9.5px;
+
+  /* [measured] A field's label: 12 pt on 15 pt lines in a 15 pt capsule; on a finished card
+     the capsule starts 8 pt before the label, ends 7 pt after it and sits half a point over
+     the middle of the row. */
+  --mac-contacts-label-height: 15px;
+  --mac-contacts-label-padding-inline: 8px;
+  --mac-contacts-label-radius: 7.5px;
+  --mac-contacts-label-font-size: 12px;
+  --mac-contacts-label-line-height: 15px;
+  --mac-contacts-label-view-margin-block-end: 1px;
+  --mac-contacts-label-view-padding-inline: 8px 7px;
+
+  /* [measured] A value: its parts 6 pt apart, half a point under the row's middle on a
+     finished card; a note's lines 4 pt inside the row. A row's round buttons 6 pt apart,
+     their cell ending a point past the rules. */
+  --mac-contacts-value-gap: 6px;
+  --mac-contacts-value-view-padding-block-start: 0.5px;
+  --mac-contacts-value-wrap-padding-block: 4px;
+  --mac-contacts-badges-gap: 6px;
+  --mac-contacts-badges-margin-inline-end: -1px;
+
+  /* [measured] A field as wide as its text: the field's 2 pt of padding, and a point more
+     for the insertion point. */
+  --mac-contacts-autosize-padding-inline: 2px 3px;
+
+  /* [measured] The bar: 51 pt; the bezels 20 pt high, 35.5 pt from each side of the card and
+     13 pt over the window's bottom, the share button 10 pt after Edit or Done. */
+  --mac-contacts-bar-height: 51px;
+  --mac-contacts-bar-gap: 9px;
+  --mac-contacts-bar-padding: 17px 35px 0;
+  --mac-contacts-bar-edit-padding-block-start: 16px;
+
+  /* [provisional] On the desktop served by Ferrite only: the layer the drive's Open panel
+     stands in, in front of the windows and under the menus (TextEdit's layer), and the room
+     the panel keeps from the page's edges. No capture shows it. */
+  --mac-contacts-panel-layer-z-index: 800;
+  --mac-contacts-panel-layer-margin: 16px;
+}

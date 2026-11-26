@@ -1,0 +1,286 @@
+/*
+ * Scope bar. The last point is the separator: two device-pixel rows drawn as one 1px strip
+ * whose gradient is sampled at each device pixel's centre (two colours at 2x, their mean at
+ * 1x). [data-surface="plain"] is 32 pt and flat, "toolbar" 31 pt on the toolbar gradient.
+ * [data-size="small"] is Console's 23 pt bar with 11 pt medium scopes.
+ */
+.mac-scope-bar {
+  --_top: var(--mac-scope-bar-fill);
+  --_bottom: var(--mac-scope-bar-fill);
+  --_inner: var(--mac-scope-bar-separator-inner);
+  --_outer: var(--mac-scope-bar-separator-outer);
+  --_label: var(--mac-scope-bar-label);
+  --_off: var(--mac-scope-bar-off-text);
+  --_on-fill: var(--mac-scope-bar-on-fill);
+  --_on-text: var(--mac-scope-bar-on-text);
+  --_label-gap: 7px;
+  --_scope-padding: 8px;
+  --_action-height: 16px;
+  --_action-gap: 2px;
+
+  display: flex;
+  /* A bar keeps its height when the window is too short for its content: the body gives way. */
+  flex: none;
+  align-items: center;
+  box-sizing: border-box;
+  height: 32px;
+  padding: 1px 10px 1px 7px;
+  background:
+    linear-gradient(var(--_inner) 25%, var(--_outer) 75%) bottom / 100% 1px no-repeat,
+    linear-gradient(to bottom, var(--_top), var(--_bottom)) top / 100% calc(100% - 1px) no-repeat;
+  font: var(--mac-font-body-emphasized);
+  letter-spacing: var(--mac-tracking-regular);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-scope-bar:where([data-surface="toolbar"]) {
+  --_top: var(--mac-scope-bar-toolbar-top);
+  --_bottom: var(--mac-scope-bar-toolbar-bottom);
+  --_inner: var(--mac-scope-bar-toolbar-separator-inner);
+  --_outer: var(--mac-scope-bar-toolbar-separator-outer);
+  --_label: var(--mac-scope-bar-toolbar-label);
+  --_off: var(--mac-scope-bar-toolbar-off-text);
+  --_on-fill: var(--mac-scope-bar-toolbar-on-fill);
+  --_on-text: var(--mac-scope-bar-toolbar-on-text);
+  --_label-gap: 2px;
+  --_scope-padding: 13.5px;
+  --_action-height: 18px;
+  --_action-gap: 8px;
+  height: 31px;
+  padding-inline: 9px;
+}
+
+.mac-scope-bar:where([data-size="small"]) {
+  --_scope-padding: 6.5px;
+  height: 23px;
+  padding-block: 0 1px;
+  font:
+    var(--mac-font-weight-medium) var(--mac-font-size-small) / var(--mac-line-height-small)
+    var(--mac-font-family-system);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+.mac-scope-bar:where([data-size="small"][data-surface="toolbar"]) {
+  --_top: var(--mac-scope-bar-toolbar-small-top);
+  --_bottom: var(--mac-scope-bar-toolbar-small-bottom);
+  --_inner: var(--mac-scope-bar-toolbar-small-separator-inner);
+  --_outer: var(--mac-scope-bar-toolbar-small-separator-outer);
+  --_off: var(--mac-scope-bar-toolbar-small-off-text);
+  --_on-fill: var(--mac-scope-bar-toolbar-small-on-fill);
+  --_on-text: var(--mac-scope-bar-toolbar-small-on-text);
+}
+
+.mac-scope-bar:where([data-surface="toolbar"]):where([data-window-state="inactive"] *) {
+  --_top: var(--mac-material-titlebar-inactive);
+  --_bottom: var(--mac-material-titlebar-inactive);
+  --_inner: var(--mac-scope-bar-toolbar-separator-inner-inactive);
+  --_outer: var(--mac-scope-bar-toolbar-separator-outer-inactive);
+}
+
+.mac-scope-bar-label {
+  flex: none;
+  margin-inline-end: var(--_label-gap);
+  color: var(--_label);
+}
+
+.mac-scope-bar-group {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 2px;
+}
+
+.mac-scope-bar-button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 16px;
+  padding: 0 var(--_scope-padding);
+  /* Nominally 4 pt; 3.5px is the value that reproduces the corner pixels */
+  border-radius: 3.5px;
+  color: var(--_off);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-scope-bar-button:where(:hover, [data-force~="hover"]):where(
+  [data-unchecked]:not([data-disabled])
+) {
+  box-shadow: inset 0 0 0 1px var(--mac-scope-bar-hover-outline);
+}
+
+.mac-scope-bar-button:where([data-checked]) {
+  background: var(--_on-fill);
+  color: var(--_on-text);
+}
+
+.mac-scope-bar-button:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  background: var(--mac-scope-bar-pressed-fill);
+  box-shadow: none;
+  color: var(--_on-text);
+}
+
+/* Selection emphasis belongs to the key window. */
+.mac-scope-bar-button:where([data-checked]):where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  background: var(--mac-scope-bar-on-fill-not-key);
+  color: var(--mac-scope-bar-on-text-not-key);
+}
+
+.mac-scope-bar-button:where([data-disabled]) {
+  opacity: 0.5;
+}
+
+.mac-scope-bar-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--_action-gap);
+  margin-inline-start: auto;
+  padding-inline-start: 8px;
+  color: var(--mac-color-label);
+  font: var(--mac-font-icon-label);
+}
+
+.mac-scope-bar-action-group {
+  display: flex;
+}
+
+.mac-scope-bar-action {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-sizing: border-box;
+  min-width: 18px;
+  height: var(--_action-height);
+  margin: 0;
+  padding: 0 7px;
+  border: 1px solid var(--mac-scope-bar-action-border);
+  border-radius: 4px;
+  background: none;
+  color: var(--mac-scope-bar-action-text);
+  font: var(--mac-font-icon-label);
+  letter-spacing: var(--mac-tracking-regular);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-scope-bar-action:where([data-glyph]) {
+  padding: 0 4px;
+}
+
+.mac-scope-bar-action:where(.mac-scope-bar-action-group > *) {
+  min-width: 21px;
+}
+
+.mac-scope-bar-action:where(.mac-scope-bar-action-group > :not(:first-child)) {
+  min-width: 20px;
+  border-inline-start-width: 0;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+.mac-scope-bar-action:where(.mac-scope-bar-action-group > :not(:last-child)) {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.mac-scope-bar-action:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  background: var(--mac-scope-bar-action-fill-pressed);
+}
+
+.mac-scope-bar-action:where([data-disabled]) {
+  border-color: var(--mac-scope-bar-action-border-disabled);
+  color: var(--mac-color-control-text-disabled);
+}
+
+/* Plus and minus: 8 pt with 2 pt strokes (measured). Chevrons: 5.25 x 7 pt of ink, set off
+   centre away from the other segment (measured on Preview's disabled arrows). */
+.mac-scope-bar-glyph {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  background: currentColor;
+  color: var(--mac-scope-bar-action-glyph);
+  clip-path: polygon(
+    37.5% 0,
+    62.5% 0,
+    62.5% 37.5%,
+    100% 37.5%,
+    100% 62.5%,
+    62.5% 62.5%,
+    62.5% 100%,
+    37.5% 100%,
+    37.5% 62.5%,
+    0 62.5%,
+    0 37.5%,
+    37.5% 37.5%
+  );
+}
+
+.mac-scope-bar-glyph:where([data-glyph="minus"]) {
+  clip-path: inset(37.5% 0);
+}
+
+.mac-scope-bar-glyph:where([data-glyph="previous"], [data-glyph="next"]) {
+  width: 7px;
+  height: 7px;
+  translate: 0 -0.5px;
+  clip-path: polygon(75% 0, 75% 16%, 16.5% 50%, 75% 84%, 75% 100%, 0 57%, 0 43%);
+}
+
+.mac-scope-bar-glyph:where([data-glyph="next"]:dir(ltr), [data-glyph="previous"]:dir(rtl)) {
+  transform: scaleX(-1);
+}
+
+.mac-scope-bar-glyph:where([data-disabled] > *) {
+  color: inherit;
+}
+
+/* Keyboard focus ring; only in the key window. */
+.mac-scope-bar-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+),
+.mac-scope-bar-action:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  z-index: 1;
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-scope-bar {
+    border-bottom: 1px solid CanvasText;
+    padding-bottom: 0;
+    background: Canvas;
+  }
+
+  .mac-scope-bar-button:where([data-checked]) {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  .mac-scope-bar-action {
+    border-color: ButtonText;
+  }
+
+  .mac-scope-bar-action:where([data-disabled]) {
+    border-color: GrayText;
+    color: GrayText;
+  }
+}

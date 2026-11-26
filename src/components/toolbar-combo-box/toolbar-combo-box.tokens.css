@@ -1,0 +1,26 @@
+/*
+ * Toolbar combo box values that no other token holds. The edges, the row under the bezel and
+ * every state's ink are the toolbar button's tokens. Measured on the font size control of the
+ * format bar in Light-Text-Edit and Dark-TextEdit (fill x 550..635, y 131..160).
+ */
+:root {
+  /*
+   * Fill, top to bottom: two device-pixel rows, then the gradient (column x=570).
+   * Aqua #fcfdfc, #fbfbfb, #fafafa to #f3f3f3 [measured].
+   * Dark Aqua #8a8c8d, #727475, #6d6f71 to #6a6c6d on a #3c3f42 to #383a3d bar, as white at
+   * 40%, 27.7% and 25.1% [measured, computed]. A little lighter than the toolbar button's,
+   * which is measured on Finder's toolbar.
+   */
+  --mac-toolbar-combo-box-fill: linear-gradient(
+    light-dark(#fcfdfc, rgb(255 255 255 / 0.4)) 0 0.5px,
+    light-dark(#fbfbfb, rgb(255 255 255 / 0.277)) 0.5px 1px,
+    light-dark(#fafafa, rgb(255 255 255 / 0.251)) 1px,
+    light-dark(#f3f3f3, rgb(255 255 255 / 0.251))
+  );
+  /* [measured, computed] The line before the button, 1 pt: #dddede on #f6f6f6 and #606163 on
+     #6b6d6f are both black at 10% (row y=146, x 598 and 599). */
+  --mac-toolbar-combo-box-divider: rgb(0 0 0 / 0.1);
+  /* [measured, computed] The chevron: #565656 on #f6f6f6 is black at 65%, #e9e8e9 on #6b6d6f
+     white at 85% (row y=146, x 613). */
+  --mac-toolbar-combo-box-arrow: light-dark(rgb(0 0 0 / 0.65), rgb(255 255 255 / 0.85));
+}

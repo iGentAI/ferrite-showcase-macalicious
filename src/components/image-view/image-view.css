@@ -1,0 +1,143 @@
+/*
+ * Image view (NSImageView, no frame): the image only.
+ *
+ * States
+ *   [data-scaling="proportionally-down" | "proportionally-up-or-down" | "axes-independently"
+ *     | "none"]
+ *   [data-mask="circle"]          cut to a circle
+ *   [data-kind="template"]        a <span> the size of the view; .mac-image-view-template is
+ *                                 the <img> inside it, painted in currentColor through the
+ *                                 image's alpha
+ *   [data-kind="monogram"]        a <span> with initials on a grey disc, or an inline SVG;
+ *                                 .mac-image-view-initials holds them
+ *   [data-disabled]               dimmed and without colour
+ *
+ * An image view is not interactive and does not react to the window state.
+ *
+ * Hooks
+ *   --mac-image-view-position   where the image sits in a view of another shape
+ *                               (object-position; default center). Not for a template that
+ *                               is scaled down, or not scaled: that one takes the two below.
+ *   --mac-image-view-align      a template scaled down or not scaled: start, center or end
+ *   --mac-image-view-justify    on the block and on the inline axis (default center)
+ */
+.mac-image-view {
+  display: inline-block;
+  flex: none;
+  box-sizing: border-box;
+  max-width: 100%;
+  object-fit: scale-down;
+  object-position: var(--mac-image-view-position, center);
+  vertical-align: middle;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+}
+
+.mac-image-view:where([data-scaling="proportionally-up-or-down"]) {
+  object-fit: contain;
+}
+
+.mac-image-view:where([data-scaling="axes-independently"]) {
+  object-fit: fill;
+}
+
+.mac-image-view:where([data-scaling="none"]) {
+  object-fit: none;
+}
+
+.mac-image-view:where([data-mask="circle"]) {
+  border-radius: 50%;
+}
+
+/* The picture of a disabled row (the Guest User in Users & Groups) is grey and faint. */
+.mac-image-view:where([data-disabled]) {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+/*
+ * Template image: the label colour of its context, shaped by the image's alpha channel.
+ *
+ * The view is a one-cell grid and the <img> its item. Left to its natural size and limited to
+ * the cell, the <img> box is the image scaled down to fit and never scaled up, which
+ * mask-size alone cannot say (it has no "scale-down"). That box is filled with the text
+ * colour and masked with the image; the <img>'s own pixels are moved out of its box, where
+ * they are clipped.
+ */
+.mac-image-view:where([data-kind="template"]) {
+  display: inline-grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  place-items: var(--mac-image-view-align, center) var(--mac-image-view-justify, center);
+  overflow: hidden;
+}
+
+.mac-image-view-template {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  background: currentColor;
+  mask: var(--_src) center / 100% 100% no-repeat;
+  object-fit: none;
+  object-position: 0 -100000px;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Always fitted, or stretched: the <img> box is the whole view. */
+.mac-image-view:where(
+  [data-scaling="proportionally-up-or-down"],
+  [data-scaling="axes-independently"]
+) .mac-image-view-template {
+  width: 100%;
+  height: 100%;
+}
+
+.mac-image-view:where([data-scaling="proportionally-up-or-down"]) .mac-image-view-template {
+  mask-position: var(--mac-image-view-position, center);
+  mask-size: contain;
+}
+
+/* Natural size, cropped by the view. */
+.mac-image-view:where([data-scaling="none"]) .mac-image-view-template {
+  max-width: none;
+  max-height: none;
+}
+
+/* Monogram: light initials with capitals a quarter of the view high, measured on the 98 pt
+   Screen Time avatar (capitals 24.5 pt, stems 2.5 pt): San Francisco's capitals are 0.705 em,
+   so the font is 35% of the view. The weight is inferred from the stems. The view is a size
+   container so that the initials scale with it. */
+.mac-image-view:where([data-kind="monogram"]) {
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  container-type: size;
+  background: var(--mac-image-view-monogram-fill);
+  color: var(--mac-image-view-monogram-text);
+  cursor: default;
+}
+
+/* Container units are relative to an ancestor container, so the initials have their own
+   element inside the view. */
+.mac-image-view-initials {
+  display: grid;
+  place-items: center;
+  font: var(--mac-font-body);
+  font-weight: 300;
+  font-size: 35cqh;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  .mac-image-view-template {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
+
+  .mac-image-view:where([data-kind="monogram"]) {
+    border: 1px solid CanvasText;
+  }
+}

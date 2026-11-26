@@ -1,0 +1,174 @@
+---
+title: Color Swatch Picker
+description: Chooses one of a row of colour swatches or pictures, as the accent colour and the appearance in System Preferences.
+order: 27
+---
+
+<Example name="basic" both />
+
+System Preferences › General chooses the accent colour from a row of eight discs and the
+appearance from three pictures. Both are single-choice groups, so both are radio groups here:
+`ColorSwatchPicker` is built on
+[Base UI's Radio Group](https://base-ui.com/react/components/radio), and `ColorSwatch` and
+`ThumbnailSwatch` on its Radio. AppKit has no public control for either; the spec measures the
+General pane.
+
+## Usage
+
+```tsx
+import { ColorSwatch, ColorSwatchPicker } from "macalicious/color-swatch-picker";
+import "macalicious/color-swatch-picker.css";
+
+<ColorSwatchPicker aria-label="Accent color" value={accent} onValueChange={setAccent}>
+  <ColorSwatch value="blue" aria-label="Blue" />
+  <ColorSwatch value="purple" aria-label="Purple" />
+  <ColorSwatch value="graphite" aria-label="Graphite" />
+</ColorSwatchPicker>
+```
+
+A swatch whose `value` is one of Catalina's eight accent names is drawn with the fill and edge
+measured for it. Give any other swatch a `color`. Or copy the source into your project:
+`npx macalicious add color-swatch-picker`. See [Installation](/installation).
+
+## Guidelines
+
+The Human Interface Guidelines have no page for this control; these follow what they say about
+[radio buttons](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/buttons/radio-buttons/)
+and [colour](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/visual-design/color/):
+
+- Use it for a small, fixed set of mutually exclusive choices that are best told apart by
+  sight. It is not a colour well: it does not open a colour panel.
+- Apply the choice immediately, as preferences do.
+- Introduce the row with a label that ends in a colon, right-aligned with the other labels of
+  the pane.
+- Never rely on hue alone: every swatch has a name, and the chosen one carries a dot or a ring.
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | 16 pt disc with a 1 pt edge, darker than the fill in Aqua and lighter in Dark Aqua |
+| Chosen | the group's `value` | 5.5 pt white dot (swatch); 1.5 pt accent ring outside the picture (thumbnail) |
+| Pressed | `:active` | The swatch or picture darkens to 88% |
+| Keyboard focus | `:focus-visible` | Focus ring, as well as the dot or ring |
+| Disabled | `disabled` on the group or a swatch | Half opacity |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No focus ring; swatches keep their colours and the dot; a thumbnail's ring turns grey |
+
+### Any colour
+
+`color` takes any CSS colour; the edge is derived from it.
+
+<Example name="custom-colors" />
+
+### Thumbnails
+
+`ThumbnailSwatch` is a 67 x 44 pt picture with a caption, for a choice such as Light, Dark and
+Auto. The picture is its children: an image, an inline SVG or any element. The library ships no
+artwork; Catalina's thumbnails are miniature desktops, and this example uses gradients in
+their place.
+
+<Example name="thumbnails" both />
+
+## Sizes
+
+The control has one size: 16 pt swatches 8 pt apart, and 67 x 44 pt thumbnails 19 pt apart.
+Both are measured.
+
+## Accent colour
+
+The swatches show the eight accents whatever the current accent is. What follows the accent is
+the focus ring and a thumbnail's selection ring. This example sets `data-accent` from the
+picker's value:
+
+<Example name="accents" />
+
+## API
+
+### ColorSwatchPicker
+
+<PropsTable name="ColorSwatchPickerProps" />
+
+### ColorSwatch
+
+<PropsTable name="ColorSwatchProps" />
+
+### ThumbnailSwatch
+
+<PropsTable name="ThumbnailSwatchProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-color` | swatch | one of the eight accent names | Set when the colour is a preset. |
+| `data-checked`, `data-unchecked` | swatch, thumbnail | present or absent | Set by Base UI. |
+| `data-disabled`, `data-readonly` | all | present or absent | Set by Base UI. |
+| `data-force` | swatch, thumbnail | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+| CSS variable | On | Description |
+| --- | --- | --- |
+| `--mac-color-swatch-picker-color` | swatch | Fill of a swatch that is not a preset. The `color` prop sets it. |
+
+| Class | Element |
+| --- | --- |
+| `mac-color-swatch-picker` | The group, with `role="radiogroup"`. |
+| `mac-color-swatch-picker-swatch` | A swatch, with `role="radio"`. |
+| `mac-color-swatch-picker-thumbnail` | A thumbnail, with `role="radio"`. |
+| `mac-color-swatch-picker-thumbnail-image` | The picture's frame. |
+| `mac-color-swatch-picker-thumbnail-label` | The caption. |
+
+## Accessibility
+
+- The group has `role="radiogroup"` and needs a name: `aria-label`, or `aria-labelledby`
+  pointing at its introductory label.
+- A swatch has no text, so it needs an `aria-label` with the name of its colour, not its value.
+  A thumbnail is named by its caption; mark its picture decorative.
+- The group is one tab stop. The arrow keys move focus and the choice together and wrap
+  around; Space chooses the focused swatch.
+- The chosen swatch is marked by a dot and the chosen thumbnail by a ring, not by colour alone,
+  and the state is carried by `aria-checked`.
+- In forced-colours mode the swatches and a thumbnail's picture keep their colours, which are
+  their content, and the rings are drawn with system colours.
+
+## Visual comparison
+
+`npm run visual -- color-swatch-picker` compares the swatch row with System Preferences ›
+General and with the General pane of all eight accent screenshots, and the thumbnails with the
+Appearance row, in both appearances (`color-swatch-picker.visual.json`). Swatch fills, edges,
+the dot and its shadow, the thumbnail ring and hairlines are measured from those screenshots.
+Share of pixels that differ at 2x at a colour distance of 0.05, half the default, and the mean
+difference per channel out of 255, in Chromium on Linux:
+
+| Crop | Aqua | Dark Aqua |
+| --- | --- | --- |
+| General, eight swatches, Blue chosen | 0.16%, Δ 0.41 | 0.21%, Δ 0.44 |
+| Accent screenshots, each accent chosen (eight crops) | 0.16% to 0.25%, Δ 0.40 to 0.42 | 0.20% to 0.22%, Δ 0.43 |
+| Appearance thumbnails, pictures and captions masked | 0.62%, Δ 0.25 | 0.20%, Δ 0.44 |
+
+The thumbnail comparison masks the three pictures, which are Apple's artwork, and the captions,
+which are set in the fallback font off Apple platforms: it scores the accent ring, the
+hairlines around the other pictures and where they sit. The caption's position is therefore
+not scored. At 1x the crops score 4% to 9%: there is no 1x reference, so the 2x screenshot is
+averaged down ([Fidelity limits](/fidelity)).
+
+No screenshot shows a pressed, focused or disabled swatch or thumbnail, a swatch in a window
+that is not key, or a swatch of another colour. Those are checked in a real browser against
+values from the spec and the tokens (the `expect` comparisons): the example is pressed with the
+mouse or focused with Tab, and chosen pixels must have the expected colour.
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| Pressed | The swatch at 88% of its fill | Inferred |
+| Keyboard focus | Ring colour and extent, in blue and purple | Measured on a text field's ring |
+| Main and inactive window | No focus ring; fill and dot unchanged; a thumbnail's ring grey | Inferred |
+| Disabled, other colour | Half opacity; a custom colour's fill and derived edge | Inferred; edge recipe computed from the sixteen measured edges |
+| Thumbnail, purple accent | The ring is the accent colour | Measured accent colour |
+| Thumbnail, pressed | The picture at 88%; the chosen thumbnail keeps its picture and ring | Inferred |
+| Thumbnail, keyboard focus | Focus ring colour and extent outside the accent ring, which stays | Ring colour measured on a text field; that a thumbnail shows it is inferred |
+| Thumbnail, disabled | Picture and accent ring at half opacity, chosen or not | Inferred |
+
+These checks hold the component to the spec; where the spec infers a value, they do not show
+that Catalina looks that way.

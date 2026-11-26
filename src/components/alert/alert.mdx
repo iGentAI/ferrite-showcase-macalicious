@@ -1,0 +1,212 @@
+---
+title: Alert
+description: A modal window that tells people about a problem or a consequence and waits for their answer, with an icon, a message, informative text and up to three buttons.
+---
+
+<Example name="basic" both />
+
+An alert (`NSAlert`) interrupts: nothing else in the application can be used until it is
+answered. The parts are built on Base UI's
+[Alert Dialog](https://base-ui.com/react/components/alert-dialog) and keep its anatomy;
+`AlertPopup` combines Base UI's portal and popup with the library's
+[Window](/components/window), and lays out the icon and the text column, because an alert is
+always assembled the same way.
+
+## Usage
+
+```tsx
+import {
+  Alert,
+  AlertButtons,
+  AlertClose,
+  AlertInformativeText,
+  AlertMessage,
+  AlertPopup,
+  AlertTrigger,
+} from "macalicious/alert";
+import { DefaultButton } from "macalicious/default-button";
+import { PushButton } from "macalicious/push-button";
+import "macalicious/styles.css";
+
+<Alert>
+  <AlertTrigger render={<PushButton />}>Empty Trash…</AlertTrigger>
+  <AlertPopup icon={<TrashIcon />}>
+    <AlertMessage>Are you sure you want to permanently erase the items in the Trash?</AlertMessage>
+    <AlertInformativeText>You can’t undo this action.</AlertInformativeText>
+    <AlertButtons>
+      <AlertClose>Cancel</AlertClose>
+      <AlertClose render={<DefaultButton />} onClick={emptyTrash}>Empty Trash</AlertClose>
+    </AlertButtons>
+  </AlertPopup>
+</Alert>
+```
+
+Or copy the source into your project: `npx macalicious add alert`.
+
+- Open it with `AlertTrigger`, or control it with `open` and `onOpenChange` on `Alert`.
+- `icon` is the application's icon, or the icon of what the alert is about, 64 pt (32 pt in the
+  compact kind). The library ships no artwork; pass an image or a drawing of your own.
+- `AlertMessage` is NSAlert's message text and names the alert; `AlertInformativeText` is the
+  smaller explanation and describes it. `AlertAccessory` holds the suppression checkbox or a
+  view of your own under the text.
+- `AlertButtons` sets its children at the trailing end, the default button last. `AlertClose`
+  is a [Push Button](/components/push-button) that answers and closes the alert;
+  `render={<DefaultButton />}` makes it the [Default Button](/components/default-button).
+  `leading` takes a third button or a [Help Button](/components/help-button) for the other end
+  of the row.
+- To attach an alert to one window instead, put the same content in a
+  [Sheet](/components/sheet).
+- The alert does not move by itself. A window manager moves it with
+  `onDragRegionPointerDown` and `onDragRegionDoubleClick` on `AlertPopup`: they report a press
+  and a double click on the title bar of a regular alert, and on the body of the compact kind,
+  which has no title bar, but never one on a button or another control.
+
+## Guidelines
+
+From the Human Interface Guidelines for macOS,
+[Alerts](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/alerts/):
+
+- Use alerts sparingly, for something people must know or decide now. An alert that appears
+  often is dismissed unread.
+- Write a message that is a short, complete statement or question, and informative text that
+  adds what the message does not say. Do not repeat the message.
+- Give buttons titles that say what they do (“Erase”, “Empty Trash”) instead of “Yes” and
+  “No”, and include Cancel whenever the action can be avoided.
+- Put the button people are most likely to choose at the trailing end and make it the default.
+  Do not make a destructive button the default: make Cancel the default, or leave the alert
+  without one.
+- Use the caution badge (`alertStyle="critical"`) only for an action that may destroy data.
+- Offer the suppression checkbox for an alert people may see repeatedly and no longer need.
+
+## Variants and states
+
+<Example name="critical" />
+
+| Prop | Values | Source |
+| --- | --- | --- |
+| `alertStyle` | `warning` (default) and `informational` look the same, as in AppKit; `critical` badges the icon with a caution triangle | The plain icon is measured (Empty Trash). The badge is a drawing of the library's, with colours read from Finder's Replace alert: provisional |
+| `size` | `regular` (default): NSAlert, 420 pt wide, an empty title bar, a bold 13 pt message. `small`: the compact alert of a Finder copy conflict, 399 pt wide, no title bar, 11 pt text, small buttons | Both measured: Finder's Empty Trash and Replace alerts, in both appearances |
+| `controls` | Window controls: none in an NSAlert; the compact kind shows them with close and zoom disabled | Measured on the Replace alert |
+
+<Example name="compact" />
+
+| State | Look | Source |
+| --- | --- | --- |
+| Open | A key window with the window shadow; the default button carries the accent | Measured |
+| With a suppression checkbox | A small checkbox 8 pt under the text, aligned with it | Provisional: no screenshot shows one; the spacing is AppKit's documented layout |
+| Page in the background | The default button loses its accent, as in any window that is not key | Provisional |
+| Taller than the viewport | The body scrolls under the title bar | Provisional |
+
+## Sizes
+
+A regular alert is 420 pt wide: the icon 24 pt from the left edge, the text column 106 pt from
+it and 20 pt from the right edge, 20 pt between the text and the buttons, 18 pt below them. The
+buttons are 14 pt apart (15 pt between their bezels) and at least 84 pt wide
+(`--mac-alert-button-min-width`). The compact kind is 399 pt wide with a 32 pt icon. `width`
+changes the frame's width; the height follows the text.
+
+## API
+
+`Alert` takes Base UI's Alert Dialog Root props, `AlertTrigger` its Trigger props, `AlertPopup`
+its Popup props, `AlertMessage` its Title props, `AlertInformativeText` its Description props,
+`AlertClose` its Close props, and `AlertAccessory` and `AlertButtons` those of a `<div>`, plus
+these:
+
+### Alert
+
+<PropsTable name="AlertProps" />
+
+### AlertTrigger
+
+<PropsTable name="AlertTriggerProps" />
+
+### AlertPopup
+
+<PropsTable name="AlertPopupProps" />
+
+### AlertMessage
+
+<PropsTable name="AlertMessageProps" />
+
+### AlertInformativeText
+
+<PropsTable name="AlertInformativeTextProps" />
+
+### AlertAccessory
+
+<PropsTable name="AlertAccessoryProps" />
+
+### AlertButtons
+
+<PropsTable name="AlertButtonsProps" />
+
+### AlertClose
+
+<PropsTable name="AlertCloseProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-style` | window | `warning`, `informational`, `critical` | Reflects `alertStyle`. |
+| `data-size` | window | `regular`, `small` | Reflects `size`. |
+| `data-window-state` | window | `key` | An open alert is the key window. |
+| `data-open`, `data-closed` | window | present or absent | Set by Base UI. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-alert-top` | `20vh` | Distance of the alert from the top of the viewport. Its greatest height is the viewport's less this distance and 8 pt. A `top` given in `style` is turned into this variable, so the limit follows it too. |
+| `--mac-alert-button-min-width` | `84px` (compact: `85.5px`) | Least width of a button in the trailing group. |
+
+Classes: `.mac-alert` (the window), `.mac-alert-body`, `.mac-alert-icon`, `.mac-alert-badge`,
+`.mac-alert-content`, `.mac-alert-controls`, `.mac-alert-message`,
+`.mac-alert-informative-text`, `.mac-alert-accessory`, `.mac-alert-buttons`,
+`.mac-alert-buttons-leading` and `.mac-alert-buttons-trailing`.
+
+## Accessibility
+
+- The alert is an `alertdialog`, named by its `AlertMessage` and described by its
+  `AlertInformativeText`, so both are read when it opens. It is modal: the rest of the page is
+  inert and hidden from assistive technology, and a click outside does not close it.
+- When it opens the focus goes to the window itself, as in AppKit without full keyboard access,
+  so that Space cannot press a button by accident; Tab then reaches the buttons. Mark an
+  element `data-autofocus`, or pass `initialFocus`, to start elsewhere; a marked element that
+  cannot take the focus (disabled, inert, hidden or not focusable) is passed over. When it
+  closes the focus returns to the control that opened it. An alert opened without an
+  `AlertTrigger`, from a menu item that is gone by then or from your own state, has no such
+  control: name where the focus goes with `finalFocus` on `AlertPopup`.
+- Return activates the default button from anywhere in the alert. Escape closes the alert
+  without running any button's action, which is what Cancel means; `onOpenChange` reports it.
+- The icon and its badge are decoration and hidden from assistive technology: say in the
+  message what the badge implies.
+- In forced colours the badge uses the system's mark colours.
+
+## Visual comparison
+
+`alert.visual.json` compares two whole window captures, each with its shadow, in both
+appearances: Finder's Empty Trash alert (the regular kind) and its Replace alert for a copy
+conflict (the compact kind). The icons are Apple's artwork: the examples leave the icon area
+empty and every comparison masks it. The `-layout` twins also mask all text, which is set in
+the fallback font off Apple platforms, and score the frame, the shadow, the title bar, the
+window controls and the buttons' drawing at the tighter threshold (0.05).
+
+Scores from `npm run visual -- alert` in Chromium on Linux with the fallback font: the share of
+pixels that differ by more than the comparison's threshold, and the mean colour difference out
+of 255.
+
+| Comparison | Reference (whole capture) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `empty-trash-light` | Light-Finder-Empty-Trash | 2.71% | 3.17 | 2.17% | 3.49 |
+| `empty-trash-light-layout` (masked) | Light-Finder-Empty-Trash | 0.61% | 0.57 | 0.01% | 0.71 |
+| `empty-trash-dark` | Dark-Finder-Empty-Trash | 2.70% | 3.00 | 2.20% | 3.36 |
+| `empty-trash-dark-layout` (masked) | Dark-Finder-Empty-Trash | 0.15% | 0.55 | 0.03% | 0.83 |
+| `replace-light` | Light-Finder-Copy-Replace | 4.39% | 5.15 | 3.03% | 4.41 |
+| `replace-light-layout` (masked) | Light-Finder-Copy-Replace | 0.94% | 0.63 | 0.07% | 0.81 |
+| `replace-dark` | Dark-Finder-Copy-Replace | 4.34% | 4.66 | 3.07% | 4.11 |
+| `replace-dark-layout` (masked) | Dark-Finder-Copy-Replace | 0.34% | 0.57 | 0.07% | 0.85 |
+
+The dark captures' window background is tinted by the desktop picture (`#303031` and
+`#303235`); the examples set that colour, since the tint depends on what is behind the window.
+
+Measured: both frames, the title bar, the icon and text positions, the fonts' sizes and
+weights, the button row, the compact kind's window controls and top highlight. Provisional: the
+caution badge, the suppression checkbox's place, an alert in a page that is in the background,
+the scrolling body, and the forced-colours look.

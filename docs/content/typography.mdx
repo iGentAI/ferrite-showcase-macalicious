@@ -1,0 +1,86 @@
+---
+title: Typography
+description: The system font stack, and a metric-compatible fallback for platforms without San Francisco.
+group: Foundations
+order: 2
+---
+
+Catalina sets its interface in San Francisco: SF Pro Text below 20 pt and SF Pro Display from
+20 pt up. Apple licenses those fonts for use on Apple platforms only, so this library does not
+contain or download them.
+
+## The stack
+
+```css
+--mac-font-family-system:
+  -apple-system, BlinkMacSystemFont, "SF Pro Text", "Mac System Fallback", "Inter Variable",
+  "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+```
+
+- On macOS, iOS and iPadOS the first two names resolve to the real system font, with the
+  system's own optical sizes and tracking. Nothing is downloaded.
+- Elsewhere the stack falls through to **Mac System Fallback**, which is not a font file but an
+  `@font-face` alias declared by `macalicious/fallback-font.css`.
+
+## The fallback
+
+```bash
+npm install @fontsource-variable/inter
+```
+
+```tsx
+import "macalicious/fallback-font.css";
+```
+
+The alias points at [Inter](https://rsms.me/inter/) (SIL Open Font License), the closest freely
+licensed design to SF Pro Text, and overrides its vertical metrics with San Francisco's
+(ascent 0.952 em, descent 0.241 em, no line gap) so a baseline sits on the same pixel inside a
+control as it does in AppKit.
+
+Measured against the reference screenshots at 13 pt, on push button titles:
+
+| | Reference (San Francisco) | Fallback (Inter) |
+| --- | --- | --- |
+| “Cancel” ink width | 40.5 pt | 41 pt |
+| “Go” ink width | 16 pt | 16 pt |
+| Cap height | 9 pt | 9.5 pt |
+| Baseline inside a 21 pt button | same device pixel | same device pixel |
+
+The cap heights are counted in device pixels at 2x. San Francisco's is 0.705 em, 9.17 pt at
+13 pt: a flat-topped capital is 18 px of full ink in the screenshots, and the pointed "A" of a
+button title has one more row at half strength, which is where a reading of 19 px comes from.
+Inter's capitals are 19 px of full ink in Chromium. The fallback therefore stands half a point
+taller above the same baseline.
+
+So layout matches to within half a point on short labels. Letter shapes still differ (Inter's
+`a`, `G` and `l` are not San Francisco's), which is why text is the largest remaining term in
+every visual comparison run off Apple hardware. The fallback is only fetched when text actually
+falls through to it.
+
+If your bundler does not resolve package paths inside CSS `url()`, copy the two `@font-face`
+rules from `fallback-font.css` and point `src` at your own copy of Inter.
+
+## Sizes
+
+Fonts are tokens, one shorthand per role: `font: var(--mac-font-control-regular)`. One AppKit
+point is one CSS pixel. The full list is in [Theming](/theming#typography).
+
+| Role | Token | Size |
+| --- | --- | --- |
+| Control, regular | `--mac-font-control-regular` | 13 / 16 |
+| Control, small | `--mac-font-control-small` | 11 / 14 |
+| Control, mini | `--mac-font-control-mini` | 9 / 13 |
+| Body | `--mac-font-body` | 13 / 16 |
+| Alert title | `--mac-font-alert-title` | 13 / 16 bold |
+
+## Rendering
+
+Since macOS 10.14, text is antialiased in greyscale, without sub-pixel colour. Set this on
+your page to get the same on Apple platforms:
+
+```css
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+```

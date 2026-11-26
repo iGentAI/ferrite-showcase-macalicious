@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Macalicious</title>
+    <script>
+      // Apply the stored appearance and accent before first paint.
+      try {
+        const settings = JSON.parse(localStorage.getItem("macalicious-docs") || "{}");
+        const root = document.documentElement;
+        if (settings.appearance === "light" || settings.appearance === "dark") {
+          root.setAttribute("data-appearance", settings.appearance);
+        }
+        if (settings.accent) root.setAttribute("data-accent", settings.accent);
+      } catch {
+        // Storage is unavailable; keep the defaults.
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"><!--app--></div>
+    <script type="module" src="/src/entry-client.tsx"></script>
+  </body>
+</html>

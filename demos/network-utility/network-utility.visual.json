@@ -1,0 +1,176 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "window-light",
+      "description": "The whole Network Utility window on its Info pane, Aqua. Whole crop: the text is set in the fallback font off Apple devices.",
+      "example": "visual-window",
+      "appearance": "light",
+      "reference": {
+        "file": "10-15-Catalina-Light-Network-Utility.png",
+        "crop": { "x": 112, "y": 76, "width": 1288, "height": 770 }
+      },
+      "budget": { "1x": 0.055, "2x": 0.046 },
+      "deltaBudget": { "1x": 5.8, "2x": 6.5 }
+    },
+    {
+      "name": "window-light-layout",
+      "description": "As window-light with the text masked (the window title, the eight tab titles, the prompt, the pop-up button's title, the two box titles and the keys and values of both boxes), to score the frame, the title bar and its controls, the tab strip's bezel with its dividers and selected tab, the pane and its top line, the pop-up button's bezel and cap, and the two boxes.",
+      "example": "visual-window",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 268, "y": 2, "width": 108, "height": 18 },
+        { "x": 66, "y": 38, "width": 38, "height": 14 },
+        { "x": 113, "y": 38, "width": 58, "height": 14 },
+        { "x": 180, "y": 38, "width": 40, "height": 14 },
+        { "x": 229, "y": 38, "width": 58, "height": 14 },
+        { "x": 296, "y": 38, "width": 79, "height": 14 },
+        { "x": 384, "y": 38, "width": 51, "height": 14 },
+        { "x": 444, "y": 38, "width": 52, "height": 14 },
+        { "x": 505, "y": 38, "width": 73, "height": 14 },
+        { "x": 20, "y": 74, "width": 264, "height": 17 },
+        { "x": 37, "y": 106, "width": 72, "height": 16 },
+        { "x": 40, "y": 131, "width": 132, "height": 15 },
+        { "x": 366, "y": 131, "width": 118, "height": 15 },
+        { "x": 40, "y": 157, "width": 297, "height": 156 },
+        { "x": 366, "y": 157, "width": 162, "height": 116 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Network-Utility.png",
+        "crop": { "x": 112, "y": 76, "width": 1288, "height": 770 }
+      },
+      "budget": { "1x": 0.019, "2x": 0.0008 },
+      "deltaBudget": { "1x": 1.6, "2x": 1.0 }
+    },
+    {
+      "name": "window-dark",
+      "description": "The whole Network Utility window on its Info pane, Dark Aqua, with the transfer statistics of the dark capture. Whole crop: the text is set in the fallback font off Apple devices.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Network-Utility.png",
+        "crop": { "x": 112, "y": 76, "width": 1288, "height": 770 }
+      },
+      "budget": { "1x": 0.053, "2x": 0.0455 },
+      "deltaBudget": { "1x": 6.6, "2x": 7.0 }
+    },
+    {
+      "name": "window-dark-layout",
+      "description": "As window-dark with the same regions masked as window-light-layout. Scores the frame, the title bar and its controls, the tab strip, the pane and its top line, the pop-up button's bezel and cap, and the two boxes, Dark Aqua.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 268, "y": 2, "width": 108, "height": 18 },
+        { "x": 66, "y": 38, "width": 38, "height": 14 },
+        { "x": 113, "y": 38, "width": 58, "height": 14 },
+        { "x": 180, "y": 38, "width": 40, "height": 14 },
+        { "x": 229, "y": 38, "width": 58, "height": 14 },
+        { "x": 296, "y": 38, "width": 79, "height": 14 },
+        { "x": 384, "y": 38, "width": 51, "height": 14 },
+        { "x": 444, "y": 38, "width": 52, "height": 14 },
+        { "x": 505, "y": 38, "width": 73, "height": 14 },
+        { "x": 20, "y": 74, "width": 264, "height": 17 },
+        { "x": 37, "y": 106, "width": 72, "height": 16 },
+        { "x": 40, "y": 131, "width": 132, "height": 15 },
+        { "x": 366, "y": 131, "width": 118, "height": 15 },
+        { "x": 40, "y": 157, "width": 297, "height": 156 },
+        { "x": 366, "y": 157, "width": 162, "height": 116 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Network-Utility.png",
+        "crop": { "x": 112, "y": 76, "width": 1288, "height": 770 }
+      },
+      "budget": { "1x": 0.015, "2x": 0.0027 },
+      "deltaBudget": { "1x": 3.1, "2x": 2.5 }
+    },
+    {
+      "name": "ping-light",
+      "description": "A pane no screenshot shows, reached with real input: a click on the Ping tab, the address 10.0.2.1 typed in the field and Return. The pixels check the tab switch and the pane's surfaces only: the Info tab is no longer selected, the pane keeps its fill and the output well has the content fill. That Return runs the tool and what it prints is checked by the behaviour tests, not here. Aqua.",
+      "example": "visual-window",
+      "appearance": "light",
+      "actions": [
+        { "click": ".mac-tab-view-tab:nth-of-type(3)" },
+        { "click": ".mac-network-utility-tool:not([hidden] *) input" },
+        { "key": "1" },
+        { "key": "0" },
+        { "key": "." },
+        { "key": "0" },
+        { "key": "." },
+        { "key": "2" },
+        { "key": "." },
+        { "key": "1" },
+        { "key": "Enter" }
+      ],
+      "expect": {
+        "size": { "width": 644, "height": 385 },
+        "pixels": [
+          {
+            "x": 66,
+            "y": 44,
+            "color": "#ffffff",
+            "note": "an unselected tab segment, measured #ffffff (spec: network-utility, tab control); the Info tab after another tab is chosen"
+          },
+          {
+            "x": 10,
+            "y": 370,
+            "color": "#e3e3e3",
+            "tolerance": 2,
+            "note": "the pane's fill, measured #e3e3e3 (spec: network-utility, tab pane)"
+          },
+          {
+            "x": 600,
+            "y": 350,
+            "color": "#ffffff",
+            "note": "the output well: the box's content fill, --mac-box-content-fill, measured on Screen Time; its use here is inferred"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ping-dark",
+      "description": "As ping-light, Dark Aqua.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "actions": [
+        { "click": ".mac-tab-view-tab:nth-of-type(3)" },
+        { "click": ".mac-network-utility-tool:not([hidden] *) input" },
+        { "key": "1" },
+        { "key": "0" },
+        { "key": "." },
+        { "key": "0" },
+        { "key": "." },
+        { "key": "2" },
+        { "key": "." },
+        { "key": "1" },
+        { "key": "Enter" }
+      ],
+      "expect": {
+        "size": { "width": 644, "height": 385 },
+        "pixels": [
+          {
+            "x": 66,
+            "y": 44,
+            "color": "#646465",
+            "tolerance": 4,
+            "note": "an unselected tab segment, measured #646465 (spec: network-utility, tab control); the Info tab after another tab is chosen"
+          },
+          {
+            "x": 10,
+            "y": 370,
+            "color": "#363638",
+            "tolerance": 4,
+            "note": "the pane's fill, measured #363638 (spec: network-utility, tab pane)"
+          },
+          {
+            "x": 600,
+            "y": 350,
+            "color": "#1d1e1f",
+            "note": "the output well: the box's content fill, --mac-box-content-fill, measured on Screen Time; its use here is inferred"
+          }
+        ]
+      }
+    }
+  ]
+}

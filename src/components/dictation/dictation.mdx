@@ -1,0 +1,123 @@
+---
+title: Dictation
+description: The Dictation feedback panel, a microphone whose capsule fills with the input level above a Done button, with a pointer toward the window that receives the text.
+---
+
+<Example name="basic" both />
+
+The small panel Catalina shows beside a window while the user dictates into it. The component
+is the panel only: it recognises no speech. The application supplies the level and ends
+dictation in its callbacks.
+
+## Usage
+
+```tsx
+import { Dictation } from "macalicious/dictation";
+import "macalicious/dictation.css";
+
+<Dictation level={level} onDone={stop} onCancel={cancel} />
+```
+
+Or copy the source into your project: `npx macalicious add dictation`.
+
+The panel has no position of its own. Place it beside the window that receives the text,
+with the tip of the pointer 2 to 3 pt from the window's edge and level with the line being
+dictated, and move the keyboard focus to it only if the user should be able to end dictation
+with Return.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines on entering data, and the macOS User Guide on
+Dictation:
+
+- Show the panel only while dictation is listening, and remove it as soon as the user is done.
+  The text itself appears at the insertion point, not in the panel.
+- Keep the panel beside the window being dictated into, with the pointer on the edge that
+  faces it: normally to the left of the window, to the right when there is no room.
+- Let the level follow the user's voice, so that they can see they are being heard.
+- End dictation when the user clicks Done or presses Return, and cancel it with Escape.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Level | `level`, 0 to 1 | The capsule fills from the bottom; the top of the fill is soft over 2 pt |
+| Pointer on the right | default | A 12 pt pointer with concave joins and a rounded tip, 48 pt below the top |
+| Pointer on the left | `pointer="left"` | The same, mirrored |
+| No pointer | `pointer="none"` | The rounded body alone |
+| Done pressed | pointer or keyboard press | The button darkens by 10% |
+| Keyboard focus | Tab | Focus ring inside the button |
+| Not the key window | `data-window-state` of `main` or `inactive` on an ancestor | No focus ring; the panel itself does not change |
+
+Measured: the panel, its edge, divider and pointer, the microphone, the title of Done and the
+shadow, in both appearances; the level's colour in Dark Aqua. Provisional: the level's colour
+in Aqua (the capture shows a silent microphone, so it takes the outline's colour), the alpha
+of the Dark Aqua fill, the pressed look, the pointer on the left and the panel without one,
+none of which a screenshot shows.
+
+## Sizes
+
+One size, as in Catalina: the body is 84 x 95 pt, and the pointer adds 12 pt beyond the edge it
+is on. The pointer and the shadow are outside the element's box, so leave room for them.
+
+## API
+
+<PropsTable name="DictationProps" />
+
+`className`, `style`, `ref` and other attributes go to the root element. `aria-label` defaults
+to "Dictation".
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-pointer` | `right`, `left`, `none` | Reflects `pointer`. |
+
+The size is fixed, so there is no variable for it. The colours are the component's own tokens,
+declared in `dictation.tokens.css`; set one on the panel or an ancestor to change it.
+
+| CSS variable | Default (Aqua, Dark Aqua) | Description |
+| --- | --- | --- |
+| `--mac-dictation-fill` | the menu material, `rgb(41 41 43 / 0.96)` | Fill of the panel, under the menu material's filter. |
+| `--mac-dictation-foreground` | `#3b6477`, `#a2a3a4` | Microphone and title of Done. |
+| `--mac-dictation-capsule` | `#ffffff`, `#a2a3a4` | Inside of the capsule above the level. |
+| `--mac-dictation-level` | `#3b6477`, `#424243` | The level. |
+| `--mac-dictation-divider` | black at 10%, white at 16% | Line above Done. |
+
+## Accessibility
+
+- The root is a `group` named "Dictation". Inside it the microphone is a `status` whose
+  content is an image named by `statusLabel` ("Listening"), so the state can be read and a
+  change of the label is announced. The level is not exposed: it changes many times a second.
+- Done is a native button: Tab reaches it, Return and Space activate it. Escape calls
+  `onCancel` while the keyboard focus is in the panel. Keys pressed while the focus is in the
+  document being dictated into are the application's to handle.
+- The level moves with a transition of a tenth of a second, which `prefers-reduced-motion`
+  turns off.
+- In forced-colours mode the outline and the divider are drawn in the system text colour.
+
+## Visual comparison
+
+`visual-light` and `visual-dark` reproduce the panel of the two Dictation captures with 12 pt
+of the desktop around it. The desktop picture cannot be reproduced: the examples paint the sky
+as a gradient through three colours measured clear of the panel, and an element at the right
+edge stands for the TextEdit window, whose shadow falls on the gap. Results in Chromium on
+Linux with the fallback font:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Panel, Aqua | 0.41% of pixels differ, mean Δ 5.12 | 2.02%, mean Δ 6.21 |
+| Panel, Aqua, title masked, threshold 0.05 | 0.44%, mean Δ 4.98 | 2.33%, mean Δ 6.13 |
+| Panel, Dark Aqua | 0.29%, mean Δ 3.40 | 1.55%, mean Δ 4.17 |
+| Panel, Dark Aqua, title masked, threshold 0.05 | 0.75%, mean Δ 3.32 | 2.21%, mean Δ 4.13 |
+
+What remains is the sky, which is a picture with clouds and grain where the example has a
+gradient, antialiasing along the pointer and the microphone, and in Aqua the fill: the shared
+menu material gives #c3def0 over this sky where the capture measures #bde4f8, which is most of
+the mean difference of 5 levels. The crops start on odd pixels because the panel does: on an
+even origin it would sit half a point off at 1x.
+
+What no screenshot shows is checked on a flat grey, where the colours follow from the tokens
+(`visual-states`): the fill, the capsule, the level at 0.5, the divider, Done held down with
+the mouse, and the focus ring after Tab, in both appearances. The pressed look and the Aqua
+level colour are inferred; the checks only hold the component to what is inferred.

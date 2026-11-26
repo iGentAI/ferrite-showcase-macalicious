@@ -1,0 +1,275 @@
+---
+title: About Window
+description: The About This Mac window, a fixed-size window with a tab control centred in its title bar and an overview of a picture, a product title, details, buttons and legal text.
+---
+
+<Example name="basic" />
+
+About This Mac is System Information's window: an `NSWindow` whose title bar holds a segmented
+control in place of a title, over panes for Overview, Displays, Storage, Support and Service.
+`AboutWindow` assembles the library's [Window](/components/window),
+[Title Bar](/components/title-bar) and [Window Controls](/components/window-controls) that way,
+and its parts lay out the Overview pane. The tabs are built on Base UI's
+[Tabs](https://base-ui.com/react/components/tabs) and keep its anatomy: `AboutWindow` is the
+root, `AboutWindowTabs` the list, `AboutWindowTab` a tab and `AboutWindowPanel` a panel.
+
+## Usage
+
+```tsx
+import {
+  AboutWindow,
+  AboutWindowActions,
+  AboutWindowDetail,
+  AboutWindowDetails,
+  AboutWindowFooter,
+  AboutWindowLink,
+  AboutWindowOverview,
+  AboutWindowPanel,
+  AboutWindowTab,
+  AboutWindowTabs,
+  AboutWindowTitle,
+  AboutWindowVersion,
+} from "macalicious/about-window";
+import { PushButton } from "macalicious/push-button";
+import "macalicious/styles.css";
+
+<AboutWindow
+  title="About This Mac"
+  onClose={close}
+  tabs={
+    <AboutWindowTabs aria-label="Sections">
+      <AboutWindowTab value="overview">Overview</AboutWindowTab>
+      <AboutWindowTab value="storage">Storage</AboutWindowTab>
+    </AboutWindowTabs>
+  }
+>
+  <AboutWindowPanel value="overview">
+    <AboutWindowOverview image={<img src={badge} alt="" width={153} height={153} />}>
+      <AboutWindowTitle emphasized="macOS">Catalina</AboutWindowTitle>
+      <AboutWindowVersion label="Version">10.15</AboutWindowVersion>
+      <AboutWindowDetails>
+        <AboutWindowDetail label="MacBook Pro (15-inch, 2019)" />
+        <AboutWindowDetail label="Memory">16 GB 2400 MHz DDR4</AboutWindowDetail>
+      </AboutWindowDetails>
+      <AboutWindowActions>
+        <PushButton size="small">System Report…</PushButton>
+      </AboutWindowActions>
+    </AboutWindowOverview>
+    <AboutWindowFooter>
+      © 2019 Example Inc. <AboutWindowLink href="/license">License Agreement</AboutWindowLink>
+    </AboutWindowFooter>
+  </AboutWindowPanel>
+  <AboutWindowPanel value="storage">…</AboutWindowPanel>
+</AboutWindow>
+```
+
+Or copy the source into your project: `npx macalicious add about-window`.
+
+- `tabs` takes an `AboutWindowTabs` element, which the window centres in its title bar. The
+  first tab that is not disabled is selected unless `defaultValue` or `value` says otherwise;
+  pass `value` and `onValueChange` to control the pane. The window reads the tabs from the
+  element, fragments included, so that a server-rendered window arrives with its pane. A
+  component of yours that renders the tabs itself cannot be read that way: give such a window
+  a `defaultValue`.
+- With tabs the bar shows no title, and `title` only names the window for assistive
+  technology. Without `tabs` the window has the plain title bar and shows the title.
+- `AboutWindowOverview` puts its `image` at the left and its children in the text column:
+  `AboutWindowTitle` (26 pt, light, with an optional bold beginning), `AboutWindowVersion`,
+  `AboutWindowDetails` with one `AboutWindowDetail` per row, and `AboutWindowActions` for small
+  [Push Buttons](/components/push-button). `AboutWindowFooter` is the legal text under it, and
+  `AboutWindowLink` a link in that text.
+- The library ships no artwork. Supply the picture yourself: an
+  [Image View](/components/image-view), an `<img>` or an inline SVG, up to 153 pt.
+- The window does not open, move or close itself: a window manager gives it `state` and a
+  position through `style`, moves it from `onDragRegionPointerDown` (a press on the title bar,
+  not on a window control or a tab), and unmounts it on `onClose`.
+
+## Guidelines
+
+From the Human Interface Guidelines for macOS,
+[Menu Bar Menus](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/menus/menu-bar-menus/)
+and
+[Window Anatomy](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/window-anatomy/):
+
+- Open the About window from the first item of the app menu, "About" followed by the app's
+  name, separated from the items after it. Use the same short app name there as in the menu's
+  title.
+- Put the version and the copyright in the About window. A version number does not belong in
+  the app's menus or in its name.
+- A window may leave out its title where the context makes one unnecessary, and a window
+  control may be disabled individually: About This Mac shows tabs in place of a title and
+  disables the zoom button.
+- When controls share the bar that moves the window, leave enough of it free to drag the
+  window without activating them.
+
+## Variants and states
+
+<Example name="without-tabs" both />
+
+| Prop | Values | Source |
+| --- | --- | --- |
+| `tabs` | An `AboutWindowTabs` element: a 38 pt title bar with the control centred on the window. None: the plain 22 pt title bar with the title | With tabs: measured on About This Mac. Without: the library's title bar; the standard About panel of an application (icon above a centred name) is not in the reference and is not reproduced |
+| `controls` | The usual three with zoom disabled (default), another element, or `null` | Measured: close and minimize coloured, zoom grey |
+| `state` | `key` (default), `main`, `inactive` | Key measured; the others provisional |
+| `activateOnFocus` (on `AboutWindowTabs`) | `true` (default): the arrow keys select as they move. `false`: they only move the focus | AppKit's behaviour; not a look |
+
+<Example name="states" />
+
+| State | Look | Source |
+| --- | --- | --- |
+| Selected tab | Dark grey with a white title in Aqua, light grey with a dark title in Dark Aqua; no divider beside it | Measured in both appearances |
+| Pressed tab | Darker fill while the pointer is down | Provisional |
+| Disabled tab | Dimmed title | Provisional |
+| Keyboard focus | Focus ring around the tab, the pane or the link; none in a window that is not key | Provisional: no screenshot shows it |
+| Inactive window | Flat title bar and grey window controls, as any window; dimmed tab titles and a selection at half strength | Provisional |
+
+## Sizes
+
+An About window is not resizable. `width` is 586 pt unless given, the width of About This Mac;
+the height follows the content, or `height`. With six rows of details the window comes to the
+353 pt of the capture. Measured from the window's top-left corner: title bar 38 pt; tab control
+18 pt high (19 pt with its border), its tabs 10 pt wider than their titles on either side;
+picture 153 pt at 51, 109; text column at 255; baselines of the title at 102, of the version at
+118 and of the details at 150 and every 19 pt after; button bezels 17 pt high, 11 pt apart;
+baseline of the legal text 8 pt above the bottom edge. The tab titles, the version and the
+details are 11 pt, the title 26 pt and the legal text 10 pt.
+
+## API
+
+`AboutWindow` takes Base UI's Tabs Root props, `AboutWindowTabs` its List props,
+`AboutWindowTab` its Tab props and `AboutWindowPanel` its Panel props; the other parts take the
+props of the element they render (`<div>`, `<h1>`, `<p>`, `<ul>`, `<li>`, `<a>`), plus these:
+
+### AboutWindow
+
+<PropsTable name="AboutWindowProps" />
+
+### AboutWindowTabs
+
+<PropsTable name="AboutWindowTabsProps" />
+
+### AboutWindowTab
+
+<PropsTable name="AboutWindowTabProps" />
+
+### AboutWindowPanel
+
+<PropsTable name="AboutWindowPanelProps" />
+
+### AboutWindowOverview
+
+<PropsTable name="AboutWindowOverviewProps" />
+
+### AboutWindowTitle
+
+<PropsTable name="AboutWindowTitleProps" />
+
+### AboutWindowVersion
+
+<PropsTable name="AboutWindowVersionProps" />
+
+### AboutWindowDetails
+
+<PropsTable name="AboutWindowDetailsProps" />
+
+### AboutWindowDetail
+
+<PropsTable name="AboutWindowDetailProps" />
+
+### AboutWindowActions
+
+<PropsTable name="AboutWindowActionsProps" />
+
+### AboutWindowFooter
+
+<PropsTable name="AboutWindowFooterProps" />
+
+### AboutWindowLink
+
+<PropsTable name="AboutWindowLinkProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-window-state` | window | `key`, `main`, `inactive` | Reflects `state`; everything inside reads it. |
+| `data-active` | tab | present or absent | The selected tab. Set by Base UI. |
+| `data-disabled` | tab | present or absent | Set by Base UI for `disabled`. |
+| `data-orientation`, `data-activation-direction` | window, tab control, tab, pane | as Base UI sets them | Base UI's Tabs attributes. |
+| `data-force` | tab, link | `pressed`, `focus`, `hover` | Pins a transient state in documentation and visual tests. |
+
+The component has no CSS variables of its own to set; its colours are the tokens in
+`about-window.tokens.css` (`--mac-about-window-tab-*`).
+
+Classes: `.mac-about-window` (the window), `.mac-about-window-bar`, `.mac-about-window-tabs`,
+`.mac-about-window-tab`, `.mac-about-window-body`, `.mac-about-window-panel`,
+`.mac-about-window-overview`, `.mac-about-window-image`, `.mac-about-window-content`,
+`.mac-about-window-title`, `.mac-about-window-title-emphasized`, `.mac-about-window-version`,
+`.mac-about-window-version-label`, `.mac-about-window-details`, `.mac-about-window-detail`,
+`.mac-about-window-detail-label`, `.mac-about-window-detail-value`,
+`.mac-about-window-actions`, `.mac-about-window-footer` and `.mac-about-window-link`.
+
+## Accessibility
+
+- The window is a `region`. With tabs it is named by `title` through `aria-label`, since the
+  bar shows no title: always pass one, or an `aria-label` of your own. Without tabs it is
+  named by the visible title.
+- The tab control is a `tablist` of `tab` buttons, each linked to its `tabpanel`. Give the
+  control an `aria-label`. It is one tab stop: the left and right arrow keys move between the
+  tabs, wrapping round, and select as they move; Home and End go to the first and last tab.
+  With `activateOnFocus={false}` the arrow keys only move the focus and Space or Return
+  selects.
+- Control-Tab and Control-Shift-Tab select the next and the previous tab while the focus is
+  in the tab control, as in AppKit. A browser keeps those keys for its own tabs, so the page
+  only receives them in an installed web app or an embedded web view.
+- The pane is in the tab order after the control, as Base UI makes it, and shows a focus ring
+  inside its edge when it is reached with the keyboard.
+- `AboutWindowTitle` is an `<h1>`: the heading of the window. The details are a list; each
+  row reads as its label followed by its value. The picture is decoration next to that text:
+  give it an empty `alt`, or `aria-hidden` for an inline SVG.
+- `AboutWindowLink` has the colour of the legal text around it, as in Catalina, so it is told
+  apart only by its wording and by the underline under the pointer: word it as an action or a
+  document ("License Agreement").
+- Command-W is a window manager's key; the window only reports its close button through
+  `onClose`.
+
+## Visual comparison
+
+`about-window.visual.json` compares the whole window with the About This Mac capture in both
+appearances. The capture is a full screen, so the window is cropped at its frame: the shadow is
+not compared, and the four corners, where the desktop picture shows, are masked. The macOS
+Catalina badge is Apple's artwork: a plain ring stands in for it and every comparison masks
+it, with the serial number, which only the dark capture shows. The `-layout` twins also mask
+the tab titles, the title, the version, the details, the button titles and the legal text,
+which are set in the fallback font off Apple platforms, and score the frame, the title bar,
+the tab control and the buttons at the tighter threshold (0.05).
+
+Scores from `npm run visual -- about-window` in Chromium on Linux with the fallback font: the
+share of pixels that differ by more than the comparison's threshold, and the mean colour
+difference out of 255.
+
+| Comparison | Reference (crop 1094, 386, 1172 x 706) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `about-this-mac-light` | Light-About-This-Mac | 6.00% | 6.73 | 4.86% | 6.37 |
+| `about-this-mac-light-layout` (masked) | Light-About-This-Mac | 1.16% | 0.51 | 0.02% | 0.11 |
+| `about-this-mac-dark` | Dark-About-This-Mac | 5.97% | 6.28 | 4.88% | 5.92 |
+| `about-this-mac-dark-layout` (masked) | Dark-About-This-Mac | 0.73% | 0.74 | 0.01% | 0.34 |
+
+The unmasked scores are text: the title is San Francisco's display cut at 26 pt, which the
+fallback font sets about a tenth wider. At 1x the masked score is the hairlines of the tab
+control and the buttons, which a 1x screen cannot draw at half a point. The dark capture's
+window background is tinted by the desktop picture (`#303032`); the example sets that colour,
+and its title bar is up to three levels lighter than the library's for the same reason.
+
+State checks with real input, since no screenshot shows these: `tab-click-*` clicks another
+tab and reads the selected and unselected fills; `tab-arrow-key-*` moves with the right arrow
+key and reads the selection and the focus ring; `inactive-*` reads the control in an inactive
+window.
+
+Measured: the title bar and the place of the window controls; the tab control's size, fills,
+borders, dividers and title colours in both appearances; the picture's place and size; the
+text column, the sizes and weights of its text and every baseline; the buttons' place and
+spacing; the legal text's size, colour and baseline. Provisional: a pressed tab, a disabled
+tab, the focus rings, the control in a window that is not key, the underline of a link under
+the pointer, and the forced-colours look. Not reproduced: the panes other than Overview, which
+the reference does not show, and the standard About panel of an application. In the capture the
+legal text sits 5.5 pt to the left of the window's centre; the component centres it, and the
+comparison's example adds the padding that moves it.

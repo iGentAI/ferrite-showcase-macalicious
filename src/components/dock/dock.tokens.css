@@ -1,0 +1,26 @@
+/*
+ * Dock: the values that belong to the Dock alone (reference/spec/components/dock.md). The
+ * shelf's material is shared: --mac-material-dock and --mac-material-filter-dock.
+ */
+:root {
+  /* [measured, computed] Inner border on the top and the sides, 1 pt. Dark Aqua: #344150 on
+     the fill #102031 is white at 0.15 (Dark-Desktop 300,1940). Aqua: the edge pixel is the
+     fill's own colour (Light-Desktop 300,1940), so there is none. */
+  --mac-dock-border: light-dark(transparent, rgb(255 255 255 / 0.15));
+  /* [measured, computed] Outer hairline, half a point. Dark Aqua: #03080c over a wallpaper
+     of #07111c (Dark-Desktop 300,1939). Aqua: none visible. */
+  --mac-dock-outline: light-dark(transparent, rgb(0 0 0 / 0.5));
+  /* [measured, computed] Separator line; both are vibrant, so neither is a neutral tint, and
+     one composite cannot separate colour from alpha: the alpha is chosen. Aqua: #0f2d49 on
+     the fill #496683 (the spec approximates it with black at 0.6, which is 20 levels too
+     grey). Dark Aqua: #516377 on #0f2236 (Desktop 2768,2000). */
+  --mac-dock-separator: light-dark(rgb(0 31 58 / 0.8), rgb(228 240 255 / 0.31));
+  /* [measured, computed] Running indicator. Aqua: #000008, black. Dark Aqua: #8e9bad on
+     #111f30 (Desktop 357,2091), as vibrant as the separator; the alpha is chosen. */
+  --mac-dock-indicator: light-dark(rgb(0 0 0), rgb(225 238 255 / 0.6));
+  /* [provisional] The label of the tile under the pointer: no screenshot shows one. The
+     colours are those of a Dock stack's label, made opaque enough to read without a blur. */
+  --mac-dock-label-background: light-dark(rgb(240 240 240 / 0.92), rgb(46 48 51 / 0.92));
+  --mac-dock-label-border: light-dark(rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.6));
+  --mac-dock-label-text: light-dark(#4c4c4c, #e3e3e3);
+}

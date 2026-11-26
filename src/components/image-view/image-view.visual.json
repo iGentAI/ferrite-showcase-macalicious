@@ -1,0 +1,339 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "monogram-light",
+      "description": "The 98 pt monogram avatar of the Screen Time pane, Aqua. The initials are set in the fallback font off Apple platforms.",
+      "example": "visual-monogram",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0124,
+        "2x": 0.014
+      },
+      "deltaBudget": {
+        "1x": 1.1,
+        "2x": 1
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Screen-Time.png",
+        "crop": {
+          "x": 177,
+          "y": 196,
+          "width": 216,
+          "height": 216
+        }
+      }
+    },
+    {
+      "name": "monogram-light-disc",
+      "description": "As monogram-light with the initials masked, to score the disc alone.",
+      "example": "visual-monogram",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0017,
+        "2x": 0.0029
+      },
+      "deltaBudget": {
+        "1x": 0.35,
+        "2x": 0.29
+      },
+      "masks": [
+        {
+          "x": 30,
+          "y": 38,
+          "width": 48,
+          "height": 32
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Screen-Time.png",
+        "crop": {
+          "x": 177,
+          "y": 196,
+          "width": 216,
+          "height": 216
+        }
+      }
+    },
+    {
+      "name": "monogram-dark",
+      "description": "The 98 pt monogram avatar of the Screen Time pane, Dark Aqua, whole crop: the capture draws the initials in the disc's own colour, the component in white, which is what differs (see monogram-dark-disc for the disc alone).",
+      "example": "visual-monogram",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.0333,
+        "2x": 0.0365
+      },
+      "deltaBudget": {
+        "1x": 3.62,
+        "2x": 3.59
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Screen-Time.png",
+        "crop": {
+          "x": 177,
+          "y": 196,
+          "width": 216,
+          "height": 216
+        }
+      }
+    },
+    {
+      "name": "monogram-dark-disc",
+      "description": "The monogram avatar of the Screen Time pane, Dark Aqua, with the initials masked: the capture draws them in the disc's own colour, the component in white.",
+      "example": "visual-monogram",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0005,
+        "2x": 0.0012
+      },
+      "deltaBudget": {
+        "1x": 0.29,
+        "2x": 0.26
+      },
+      "masks": [
+        {
+          "x": 30,
+          "y": 38,
+          "width": 48,
+          "height": 32
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Screen-Time.png",
+        "crop": {
+          "x": 177,
+          "y": 196,
+          "width": 216,
+          "height": 216
+        }
+      }
+    },
+    {
+      "name": "template-scaling-light",
+      "description": "Template images in 64 pt views with the default scaling, Aqua: a 16 pt image stays 16 pt, a 128 x 64 pt image shrinks to 64 x 32 pt. Stand-in artwork; no screenshot can show this.",
+      "example": "visual-template-scaling",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 158,
+          "height": 84
+        },
+        "pixels": [
+          {
+            "x": 42,
+            "y": 42,
+            "color": "#232323",
+            "note": "small template, centre: --mac-color-label over #ececec (spec: image-view, template tint follows the label colour, documented)"
+          },
+          {
+            "x": 30,
+            "y": 42,
+            "color": "#ececec",
+            "note": "small template is not enlarged: 4 pt left of its 16 pt box the view is empty"
+          },
+          {
+            "x": 42,
+            "y": 54,
+            "color": "#ececec",
+            "note": "small template is not enlarged: 4 pt below its box"
+          },
+          {
+            "x": 86,
+            "y": 42,
+            "color": "#232323",
+            "note": "wide template fills the view's width"
+          },
+          {
+            "x": 146,
+            "y": 56,
+            "color": "#232323",
+            "note": "wide template, bottom right corner of its 64 x 32 pt box"
+          },
+          {
+            "x": 116,
+            "y": 22,
+            "color": "#ececec",
+            "note": "wide template keeps its proportions: the band above its box is empty"
+          },
+          {
+            "x": 116,
+            "y": 62,
+            "color": "#ececec",
+            "note": "wide template keeps its proportions: the band below its box is empty"
+          }
+        ]
+      }
+    },
+    {
+      "name": "template-scaling-dark",
+      "description": "Template images in 64 pt views with the default scaling, Dark Aqua: the tint follows the label colour.",
+      "example": "visual-template-scaling",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 158,
+          "height": 84
+        },
+        "pixels": [
+          {
+            "x": 42,
+            "y": 42,
+            "color": "#e0e0e0",
+            "note": "small template, centre: --mac-color-label, white at 85% over #2f3031"
+          },
+          {
+            "x": 30,
+            "y": 42,
+            "color": "#2f3031",
+            "note": "small template is not enlarged"
+          },
+          {
+            "x": 116,
+            "y": 42,
+            "color": "#e0e0e0",
+            "note": "wide template, centre"
+          },
+          {
+            "x": 116,
+            "y": 22,
+            "color": "#2f3031",
+            "note": "wide template keeps its proportions"
+          }
+        ]
+      }
+    },
+    {
+      "name": "template-alignment-light",
+      "description": "16 pt template images in 64 pt views, Aqua, placed with --mac-image-view-align and --mac-image-view-justify: the first in the top leading corner, the second in the bottom trailing corner. Then two 128 x 64 pt templates: one scaled down to 64 x 32 pt at the bottom of its view, one at its own size, larger than the view, aligned to its leading edge. Stand-in artwork; no screenshot can show this.",
+      "example": "visual-template-alignment",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 306,
+          "height": 84
+        },
+        "pixels": [
+          {
+            "x": 190,
+            "y": 66,
+            "color": "#232323",
+            "note": "third template, scaled down to 64 x 32 pt and placed at the bottom (y 42..74)"
+          },
+          {
+            "x": 190,
+            "y": 30,
+            "color": "#ececec",
+            "note": "third view, above the template: empty; centred, the template would cover y 26..58"
+          },
+          {
+            "x": 280,
+            "y": 42,
+            "color": "#232323",
+            "note": "fourth template, own size and larger than the view, aligned to its leading edge: the view's trailing side shows the filled half; centred it would show the empty half here"
+          },
+          {
+            "x": 248,
+            "y": 42,
+            "color": "#232323",
+            "note": "fourth view, leading side: filled; aligned to the trailing edge it would be empty"
+          },
+          {
+            "x": 18,
+            "y": 18,
+            "color": "#232323",
+            "note": "first template, centre of its 16 pt box in the top leading corner: --mac-color-label over #ececec"
+          },
+          {
+            "x": 42,
+            "y": 42,
+            "color": "#ececec",
+            "note": "first view, centre: empty, the template is not centred"
+          },
+          {
+            "x": 30,
+            "y": 18,
+            "color": "#ececec",
+            "note": "first template is not enlarged: 4 pt right of its box the view is empty"
+          },
+          {
+            "x": 140,
+            "y": 66,
+            "color": "#232323",
+            "note": "second template, centre of its 16 pt box in the bottom trailing corner"
+          },
+          {
+            "x": 116,
+            "y": 42,
+            "color": "#ececec",
+            "note": "second view, centre: empty"
+          },
+          {
+            "x": 92,
+            "y": 18,
+            "color": "#ececec",
+            "note": "second view, top leading corner: empty"
+          }
+        ]
+      }
+    },
+    {
+      "name": "template-alignment-dark",
+      "description": "Template images in 64 pt views, Dark Aqua: 16 pt ones in the top leading and the bottom trailing corner, a scaled-down one at the bottom, and one larger than its view aligned to its leading edge.",
+      "example": "visual-template-alignment",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 306,
+          "height": 84
+        },
+        "pixels": [
+          {
+            "x": 190,
+            "y": 66,
+            "color": "#e0e0e0",
+            "note": "third template, scaled down and placed at the bottom"
+          },
+          {
+            "x": 190,
+            "y": 30,
+            "color": "#2f3031",
+            "note": "third view, above the template: empty"
+          },
+          {
+            "x": 280,
+            "y": 42,
+            "color": "#e0e0e0",
+            "note": "fourth template, larger than the view, aligned to its leading edge: filled half"
+          },
+          {
+            "x": 18,
+            "y": 18,
+            "color": "#e0e0e0",
+            "note": "first template, in the top leading corner: --mac-color-label, white at 85% over #2f3031"
+          },
+          {
+            "x": 42,
+            "y": 42,
+            "color": "#2f3031",
+            "note": "first view, centre: empty"
+          },
+          {
+            "x": 140,
+            "y": 66,
+            "color": "#e0e0e0",
+            "note": "second template, in the bottom trailing corner"
+          },
+          {
+            "x": 116,
+            "y": 42,
+            "color": "#2f3031",
+            "note": "second view, centre: empty"
+          }
+        ]
+      }
+    }
+  ]
+}

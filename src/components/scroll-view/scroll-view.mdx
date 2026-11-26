@@ -1,0 +1,157 @@
+---
+title: Scroll View
+description: A scrolling region with Catalina's overlay or always-visible scroll bars.
+---
+
+<Example name="basic" both />
+
+AppKit's `NSScrollView` with its `NSScroller`s. The content scrolls natively; the scroll bars
+are drawn by the component on [Base UI's Scroll Area](https://base-ui.com/react/components/scroll-area).
+The other data views ([table view](/components/table-view), [list view](/components/list-view),
+[sidebar](/components/sidebar) and the rest) scroll inside one.
+
+## Usage
+
+```tsx
+import { ScrollView } from "macalicious/scroll-view";
+import "macalicious/scroll-view.css";
+
+<ScrollView style={{ height: 240 }}>…</ScrollView>
+<ScrollView axis="both" scrollerStyle="legacy" style={{ height: 240 }}>…</ScrollView>
+```
+
+Or copy the source into your project: `npx macalicious add scroll-view`.
+
+Give the root a height (or put it in a flex or grid cell that has one); the content is the
+children. To read or set the scroll position, or to listen for scrolling, use the scrolling
+element through `viewportProps`:
+
+```tsx
+const viewport = useRef<HTMLDivElement>(null);
+
+<ScrollView viewportProps={{ ref: viewport, onScroll: () => save(viewport.current?.scrollTop) }}>
+  …
+</ScrollView>
+```
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[scroll views](https://web.archive.org/web/20200504054757/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/scroll-views/):
+
+- Scroll bars are transient by default: they appear while the content moves and never take
+  space from it. Do not put controls where a scroll bar appears.
+- People can ask for scroll bars that are always visible, and some pointing devices require
+  them. Make sure the layout still works with `scrollerStyle="legacy"`, where each scroll bar
+  takes 15 pt (11 pt small) from the content.
+- Choose the knob for the content, not for the window: a dark knob over light content, a
+  light knob over dark content.
+- Use the small size only in small panels whose other controls are small.
+
+## Variants and states
+
+<Example name="variants" both hideCode />
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Overlay, at rest | default | No scroll bar |
+| Overlay, scrolling | wheel, trackpad, keyboard or touch scrolling | A 7 pt knob with round ends, 2 pt from the edge, black at 50% (white at 50% in Dark Aqua); fades in over 0.1 s and out over 0.25 s about half a second after scrolling stops |
+| Overlay, pointer over the visible scroll bar | hover or drag | A translucent 15 pt track with a leading border; the knob widens to 11 pt |
+| Legacy | `scrollerStyle="legacy"` | An opaque 15 pt track with a 1 pt inner border beside the content, shown while the content overflows; a 7 pt knob that darkens under the pointer; a corner square where two tracks meet |
+| Knob style | `knobStyle="dark"` or `"light"` | Fixes the overlay knob's colour, whatever the appearance: use it when the content's background does not follow the appearance (a white page in a dark window) |
+| Small | `size="small"` or `"mini"` | 11 pt track, 5 pt knob |
+
+A scroll bar that is not visible cannot be hovered or clicked, so an overlay scroll bar never
+blocks the content under it. Clicking the track jumps to that position and the knob can be
+dragged. A scroll view looks the same in a key and in an inactive window, except that the
+viewport's keyboard focus ring is drawn only in a key window.
+
+Measured: the overlay knob's width, radius, inset and colour over light content. Documented
+by Apple: the 15 pt and 11 pt tracks. Provisional (no screenshot shows them): the light knob
+and its outline, the track under a hovered overlay knob, every colour of the legacy scroll
+bar, the small knob's width and the fade timing.
+
+## Sizes
+
+| Size | Track | Overlay knob | Legacy knob |
+| --- | --- | --- | --- |
+| `regular` | 15 pt | 7 pt, 11 pt under the pointer | 7 pt |
+| `small`, `mini` | 11 pt | 5 pt, 7 pt under the pointer | 5 pt |
+
+The view itself is as large as its root element, which you size.
+
+## API
+
+<PropsTable name="ScrollViewProps" />
+
+The remaining props are those of Base UI's `ScrollArea.Root` and go to the root element with
+`ref`, `className` and `style`.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-scroller-style` | root | `overlay`, `legacy` | Reflects `scrollerStyle`. |
+| `data-knob-style` | root | `default`, `dark`, `light` | Reflects `knobStyle`. |
+| `data-size` | root | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-has-overflow-x`, `data-has-overflow-y` | root | present or absent | Set by Base UI when the content overflows on that axis. |
+| `data-scrolling` | root, scroll bar | present or absent | Set by Base UI while the user scrolls and for half a second afterwards. |
+| `data-orientation` | scroll bar | `vertical`, `horizontal` | Set by Base UI. |
+
+| Class | Part |
+| --- | --- |
+| `.mac-scroll-view` | Root |
+| `.mac-scroll-view-viewport` | The scrolling element that holds the children |
+| `.mac-scroll-view-scroller` | A scroll bar (track) |
+| `.mac-scroll-view-knob` | Its knob |
+| `.mac-scroll-view-corner` | The square between two legacy scroll bars |
+
+| Custom property | Default | Description |
+| --- | --- | --- |
+| `--mac-scroll-view-overlay-opacity` | `0` | Opacity of an overlay scroll bar at rest. Set `1`, with the next one, to keep scroll bars showing, as System Preferences' Show scroll bars: Always does. |
+| `--mac-scroll-view-overlay-pointer-events` | `none` | Whether an overlay scroll bar at rest takes the pointer. |
+
+## Accessibility
+
+- Scrolling is native, so the keyboard works as in any scrolling element once the viewport
+  or something inside it has focus: arrow keys by line, Space, Page Up and Page Down by page,
+  Home and End to the ends.
+- A viewport whose content overflows is a tab stop, so that keyboard users can scroll content
+  that holds no focusable element; one whose content fits is not. When the content manages
+  focus itself (a list or table), pass `viewportProps={{ tabIndex: -1 }}`.
+- The scroll bars are hidden from assistive technology (`aria-hidden`), which scrolls the
+  content itself. The root has no role of its own: when the scroll view is a landmark of the
+  page, give it `role="region"` and an `aria-label` (a label without a role is ignored), or
+  put the role and name on the content.
+- Keyboard focus on the viewport draws the focus ring inside its edge, in a key window only.
+- With reduced motion the scroll bars appear and disappear without fading. In forced-colours
+  mode the knob is drawn in the system text colour.
+- Rubber-band overscroll is the platform's and is not simulated.
+
+## Visual comparison
+
+The reference screenshots show a scroll bar in four windows. In Preview, in both appearances,
+the knob is at full strength over the flat menu-bar band of the desktop picture: the dark
+knob in Aqua, the light one in Dark Aqua, each in the appearance's default style.
+`visual-preview-knob` reproduces the upper end of that knob over the band's colour. The
+other two are dark knobs over light content in a Dark Aqua window: at full strength over a
+Safari page, and fading out in Script Editor. `visual-overlay-knob` reproduces the lower end
+of the Safari knob. Results in Chromium on Linux:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Overlay knob over the Preview picture, Aqua window | 0.14% of pixels differ, mean Δ 1.45 | 1.12%, mean Δ 1.18 |
+| Overlay knob over the Preview picture, Dark Aqua window | 0.15%, mean Δ 1.54 | 0.30%, mean Δ 1.40 |
+| Overlay knob over the Safari page, Dark Aqua window | 0.02%, mean Δ 0.95 | 0.27%, mean Δ 0.99 |
+
+The Preview knobs have a faint outline in the screenshots, a point lighter than the band in
+Aqua and darker in Dark Aqua, which the component does not draw; that and the picture's
+slight grain around the band's mean colour are what remains. The Dark Aqua crop leaves out
+the window's lighter edge, its last point. In the Safari comparison the remaining difference
+is the last trace of the shadow that the page's header casts on the page in the screenshot,
+and the window's edge highlight in the crop's last two pixel columns.
+
+`visual-states` is checked pixel by pixel in both appearances against the spec's values: the
+default knob's colour and position, the widened knob and track under the pointer, and the
+legacy track, border and knob at both sizes. Apart from the dark knob's colour and geometry
+those values are inferred in the spec, so these checks prove that the component draws what
+the spec says, not that Catalina looked like it. The Script Editor knob is a frame of the
+fade-out (black at 6%) and is not compared.

@@ -1,0 +1,26 @@
+/*
+ * Popover values of its own (reference/spec/components/popover.md), measured on the Calendar
+ * event popover.
+ */
+:root {
+  /* [measured, computed] the outline of the arrow: the outer hairline of the popover shadow,
+     Light-Calendar @ 1851,900 and Dark-Calendar @ 2097,560 */
+  --mac-popover-edge: light-dark(rgb(0 0 0 / 0.19), rgb(0 0 0 / 0.85));
+  /* [measured, computed] inner rim: half a point of white at 23% in light (#f5f5f5 on the
+     fill, Light-Calendar @ 2429,1000), 1 pt of white at 20% in dark (#535353, Dark-Calendar
+     @ 2098,560) */
+  --mac-popover-rim:
+    inset 0 0 0 0.5px light-dark(rgb(255 255 255 / 0.23), transparent),
+    inset 0 0 0 1px light-dark(transparent, rgb(255 255 255 / 0.2));
+  --mac-popover-rim-arrow: light-dark(transparent, rgb(255 255 255 / 0.2));
+  /* [measured, computed] the popover shadow as a drop shadow, for the arrow: a drop shadow's
+     blur is a standard deviation, half the blur radius of the box shadow */
+  --mac-popover-arrow-shadow: drop-shadow(
+    0 4px 8px light-dark(rgb(0 0 0 / 0.26), rgb(0 0 0 / 0.3))
+  );
+  /* [measured, computed] a line between groups of content: #dbdbdb on the #f2f2f2 fill and
+     #4b4b4b on #282828 in Reminders' info popover (Light- and Dark-Reminders, the column
+     @ 1900,380,1,650), and the same two colours in Calendar's event popover, where the
+     comparisons score them: black at 9.5%, white at 16.3% */
+  --mac-popover-separator: light-dark(rgb(0 0 0 / 0.095), rgb(255 255 255 / 0.163));
+}

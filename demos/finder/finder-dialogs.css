@@ -1,0 +1,111 @@
+/*
+ * Finder demo, the windows it puts up for a moment: the place and size of the library's
+ * controls in the two dialogs, and the place of the Copy window and of the notifications over
+ * the page. The alerts, the dialogs, the progress window, the notification and every control
+ * are the library's own; nothing here restyles them.
+ *
+ * Parts, Go to Folder
+ *   .mac-finder-go-path                the combo box, across the dialog under its label
+ *   .mac-finder-go-missing             the line that says the path leads nowhere
+ *
+ * Parts, Connect to Server
+ *   .mac-finder-connect-address        the combo box, across the dialog
+ *   .mac-finder-connect-label          the title of the list
+ *   .mac-finder-connect-favorites      the list of favorite servers
+ *   .mac-finder-connect-edit           the add and the remove segment
+ *   .mac-finder-connect-action         the Action segment
+ *
+ * Parts, over the page
+ *   .mac-finder-floating               the layer the Copy window and the notifications are in
+ *   .mac-finder-copy                   the Copy window
+ *   .mac-finder-notices                the notifications, one under the other
+ *
+ * Parts, renaming (finder-rename.tsx)
+ *   .mac-finder-rename                 the field over an item's name
+ *   [data-finder-renaming]             the name it stands over
+ *   .mac-finder-batch                  Rename N Items' form
+ *   .mac-finder-batch-field            a field of that form, across it
+ */
+
+.mac-finder-rename {
+  position: absolute;
+  z-index: 1;
+  min-inline-size: var(--mac-finder-rename-min-width);
+}
+
+/* The name under the field: its second line would show below it. */
+[data-finder-renaming] {
+  visibility: hidden;
+}
+
+.mac-finder-batch {
+  display: grid;
+  gap: var(--mac-finder-batch-gap);
+}
+
+.mac-finder-batch-field {
+  inline-size: 100%;
+}
+
+/* Go to Folder, as measured in the capture: the field 7.5 pt under the label's line, its
+   bezel's edge 20.5 pt from the window's edges. */
+.mac-finder-go-path {
+  width: calc(100% - 1px);
+  margin: var(--mac-finder-go-path-margin);
+}
+
+.mac-finder-go-missing {
+  margin-block-start: var(--mac-finder-go-missing-margin-block-start);
+}
+
+/* Connect to Server, as measured in the capture: the field's bezel 41.5 pt under the window's
+   top and 20.5 pt from its sides, the title of the list 12 pt under the field, the list 7.5 pt
+   under it and 87 pt high, the segments 27, 27 and 41 pt wide. */
+.mac-finder-connect-address {
+  width: calc(100% - 1px);
+  margin: var(--mac-finder-connect-address-margin);
+}
+
+.mac-finder-connect-label {
+  margin-block: var(--mac-finder-connect-label-margin-block);
+}
+
+.mac-finder-connect-favorites {
+  height: var(--mac-finder-connect-favorites-height);
+}
+
+.mac-finder-connect-edit {
+  width: var(--mac-finder-connect-edit-width);
+}
+
+.mac-finder-connect-action {
+  width: var(--mac-finder-connect-action-width);
+}
+
+/* The Copy window and the notifications are windows of their own. The layer covers the page
+   and takes no presses itself; the Copy window stands where a new window opens, and the
+   notifications in the corner under the menu bar, as on a Mac. */
+.mac-finder-floating {
+  position: fixed;
+  z-index: 890;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mac-finder-floating > * {
+  position: absolute;
+  pointer-events: auto;
+}
+
+.mac-finder-floating > .mac-finder-copy {
+  inset-block-start: var(--mac-finder-copy-inset-block-start);
+  inset-inline: 0;
+  margin-inline: auto;
+}
+
+.mac-finder-notices {
+  inset-block-start: var(--mac-finder-notices-inset-block-start);
+  inset-inline-end: var(--mac-finder-notices-inset-inline-end);
+  display: grid;
+  gap: var(--mac-finder-notices-gap);
+}

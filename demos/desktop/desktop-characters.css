@@ -1,0 +1,66 @@
+/*
+ * The character viewer: a small panel under the menu bar, over the windows.
+ *
+ * .mac-desktop-characters        the panel
+ * .mac-desktop-characters-body   its search field and list
+ * .mac-desktop-characters-note   why a character went nowhere
+ * .mac-desktop-characters-list   the groups, which scroll
+ * .mac-desktop-characters-group  a group's name
+ * .mac-desktop-characters-grid   a group's characters
+ * .mac-desktop-characters-cell   one character
+ */
+.mac-desktop-characters {
+  position: absolute;
+  inset-block-start: var(--mac-desktop-characters-top);
+  inset-inline-end: var(--mac-desktop-characters-inset);
+  z-index: calc(var(--mac-window-manager-layer-chrome) - 40);
+  width: var(--mac-desktop-characters-width);
+  height: var(--mac-desktop-characters-height);
+}
+
+.mac-desktop-characters-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-desktop-characters-gap);
+  min-height: 0;
+  padding: var(--mac-desktop-characters-gap);
+}
+
+.mac-desktop-characters-note {
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-control-small);
+}
+
+.mac-desktop-characters-list {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.mac-desktop-characters-group {
+  margin: var(--mac-desktop-characters-gap) 0 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-control-small);
+}
+
+.mac-desktop-characters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, var(--mac-desktop-characters-cell));
+}
+
+.mac-desktop-characters-cell {
+  width: var(--mac-desktop-characters-cell);
+  height: var(--mac-desktop-characters-cell);
+  padding: 0;
+  border: 0;
+  border-radius: var(--mac-radius-group);
+  background: transparent;
+  color: var(--mac-color-label);
+  font-size: var(--mac-desktop-characters-glyph);
+  line-height: 1;
+}
+
+.mac-desktop-characters-cell:hover {
+  background: var(--mac-color-selected-content-background-unemphasized);
+}

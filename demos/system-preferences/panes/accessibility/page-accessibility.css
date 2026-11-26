@@ -1,0 +1,18 @@
+/*
+ * Accessibility's Captions on the served desktop, for the subtitles a browser draws over a `<video>`
+ * (TV's home videos). The whole page follows, as the setting is read from `<html>`
+ * (`page-accessibility.ts`).
+ */
+:root[data-mac-caption-style="transparent"] video::cue {
+  background: transparent;
+}
+
+:root[data-mac-caption-style="classic"] video::cue {
+  background: black;
+  color: yellow;
+  font-family: monospace;
+}
+
+:root[data-mac-caption-style="large"] video::cue {
+  font-size: 150%;
+}

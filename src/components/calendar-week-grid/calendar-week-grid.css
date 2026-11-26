@@ -1,0 +1,340 @@
+/*
+ * Calendar week grid (reference/spec/apps/calendar.md): title row 51 pt, day names 29 pt,
+ * all-day row (1 pt line, 22 pt, 3 pt band), then the hours. The gutter is 74 pt.
+ *
+ * States: -day[data-weekend], [aria-current]; -cell and -column[data-weekend];
+ * -event[aria-pressed="true"]; no focus ring in a window that is not key.
+ * Hooks: --mac-calendar-week-grid-columns (the days' tracks),
+ * --mac-calendar-week-grid-event-color (events without a colour).
+ */
+.mac-calendar-week-grid {
+  --_columns: 74px var(--mac-calendar-week-grid-columns, repeat(var(--_days), minmax(0, 1fr)));
+
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--mac-calendar-week-grid-background);
+  color: var(--mac-calendar-week-grid-text);
+  font: var(--mac-font-control-small);
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.mac-calendar-week-grid-header {
+  box-sizing: border-box;
+  display: flex;
+  flex: none;
+  align-items: flex-start;
+  justify-content: space-between;
+  height: 51px;
+  padding-inline: 14.5px 6px;
+}
+
+/* SF Pro Display at about 32 pt: the month Bold, the year Light. */
+.mac-calendar-week-grid-title {
+  overflow: hidden;
+  margin: 7px 0 0;
+  font: 300 32px / 40px var(--mac-font-family-system);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mac-calendar-week-grid-month {
+  font-weight: var(--mac-font-weight-bold);
+}
+
+.mac-calendar-week-grid-days,
+.mac-calendar-week-grid-all-day,
+.mac-calendar-week-grid-body,
+.mac-calendar-week-grid-cells {
+  display: grid;
+  grid-template-columns: var(--_columns);
+}
+
+.mac-calendar-week-grid-days {
+  flex: none;
+  height: 29px;
+}
+
+.mac-calendar-week-grid-day {
+  overflow: hidden;
+  font: 17px / 27px var(--mac-font-family-system);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.mac-calendar-week-grid-day:where([data-weekend]) {
+  color: var(--mac-calendar-week-grid-weekend-text);
+}
+
+/* Today's number in its 26 pt disc. */
+.mac-calendar-week-grid-day:where([aria-current]) > .mac-calendar-week-grid-day-number {
+  display: inline-block;
+  box-sizing: border-box;
+  min-width: 26px;
+  height: 26px;
+  margin-inline-start: 2px;
+  padding-inline: 4px;
+  border-radius: 13px;
+  background: var(--mac-calendar-week-grid-now);
+  color: var(--mac-calendar-week-grid-on-color);
+  font-weight: var(--mac-font-weight-medium);
+  line-height: 26px;
+}
+
+/* Fills and separators of the day columns behind the all-day row. */
+.mac-calendar-week-grid-cells {
+  position: absolute;
+  inset: 0;
+}
+
+.mac-calendar-week-grid-cell {
+  border-inline-end: 1px solid var(--mac-calendar-week-grid-separator);
+}
+
+/* The first day follows the gutter. */
+.mac-calendar-week-grid-day:where(:first-child),
+.mac-calendar-week-grid-cell:where(:first-child),
+.mac-calendar-week-grid-column:where(:first-child) {
+  grid-column-start: 2;
+}
+
+.mac-calendar-week-grid-cell:where(:last-child) {
+  border-inline-end: 0;
+}
+
+.mac-calendar-week-grid-cell:where([data-weekend]),
+.mac-calendar-week-grid-column:where([data-weekend]) {
+  background: var(--mac-calendar-week-grid-weekend);
+}
+
+/* Its line and band stop 14 pt short of the leading edge. */
+.mac-calendar-week-grid-all-day {
+  position: relative;
+  box-sizing: border-box;
+  flex: none;
+  grid-auto-rows: 18px;
+  row-gap: 2px;
+  min-height: 26px;
+  padding-block: 3px 5px;
+}
+
+.mac-calendar-week-grid-all-day > .mac-calendar-week-grid-cells {
+  inset-block: 1px 3px;
+}
+
+.mac-calendar-week-grid-all-day::before,
+.mac-calendar-week-grid-all-day::after {
+  position: absolute;
+  inset-inline: 14px 0;
+  top: 0;
+  height: 1px;
+  background: var(--mac-calendar-week-grid-separator);
+  content: "";
+}
+
+.mac-calendar-week-grid-all-day::after {
+  top: auto;
+  bottom: 0;
+  height: 3px;
+  background: var(--mac-calendar-week-grid-band);
+}
+
+.mac-calendar-week-grid-all-day-label,
+.mac-calendar-week-grid-hour,
+.mac-calendar-week-grid-now {
+  box-sizing: border-box;
+  color: var(--mac-calendar-week-grid-hour-text);
+  font: 11px / 14px var(--mac-font-family-system);
+  text-align: end;
+  white-space: nowrap;
+}
+
+.mac-calendar-week-grid-all-day-label {
+  position: relative;
+  top: -0.5px;
+  grid-area: 1 / 1;
+  align-self: center;
+  overflow: hidden;
+  padding-inline-end: 5.5px;
+}
+
+.mac-calendar-week-grid-scroll {
+  flex: 1;
+  min-height: 0;
+}
+
+.mac-calendar-week-grid-body {
+  position: relative;
+  height: var(--_height);
+}
+
+/* The hours, over the columns' fills. An hour is its label, ending 7 pt before the days and
+   centred on its 1 pt line. */
+.mac-calendar-week-grid-hours {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mac-calendar-week-grid-hour,
+.mac-calendar-week-grid-now {
+  position: absolute;
+  inset-inline: 0;
+  height: 14px;
+  margin-top: -7px;
+  padding-inline-end: calc(100% - 67px);
+}
+
+.mac-calendar-week-grid-hour::after,
+.mac-calendar-week-grid-now::after {
+  position: absolute;
+  inset-inline: 74px 0;
+  top: 7px;
+  height: 1px;
+  background: var(--mac-calendar-week-grid-line);
+  content: "";
+}
+
+.mac-calendar-week-grid-now {
+  color: var(--mac-calendar-week-grid-now);
+  font-weight: var(--mac-font-weight-medium);
+}
+
+.mac-calendar-week-grid-now::after {
+  inset-inline-start: 69px;
+  background: var(--mac-calendar-week-grid-now);
+}
+
+/* A day's events. Its separator is drawn over the hour lines. */
+.mac-calendar-week-grid-column {
+  position: relative;
+  min-width: 0;
+}
+
+.mac-calendar-week-grid-column:where(:nth-last-child(n + 3))::after {
+  position: absolute;
+  z-index: 1;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: 1px;
+  background: var(--mac-calendar-week-grid-separator);
+  content: "";
+}
+
+/* A 10 pt disc where today's column starts, ringed by the background. */
+.mac-calendar-week-grid-now-dot {
+  position: absolute;
+  z-index: 2;
+  inset-inline-start: -4px;
+  width: 10px;
+  height: 10px;
+  margin-top: -4.5px;
+  border-radius: 50%;
+  background: var(--mac-calendar-week-grid-now);
+  box-shadow: 0 0 0 1px var(--mac-calendar-week-grid-background);
+  pointer-events: none;
+}
+
+/* An event: a tint of its colour with a 2 pt bar; solid with white text while selected. */
+.mac-calendar-week-grid-event {
+  --_color: var(--mac-calendar-week-grid-event-color, var(--mac-calendar-week-grid-event-default));
+
+  position: absolute;
+  z-index: 1;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  overflow: hidden;
+  min-height: 14px;
+  margin: 0;
+  padding: 2px 3px 0 6px;
+  border: 0;
+  border-inline-start: 2px solid var(--_color);
+  border-radius: 0;
+  outline: 0;
+  background: color-mix(
+    in srgb,
+    var(--_color) var(--mac-calendar-week-grid-event-tint),
+    transparent
+  );
+  background-clip: padding-box;
+  color: color-mix(
+    in srgb,
+    var(--_color),
+    var(--mac-calendar-week-grid-event-ink) var(--mac-calendar-week-grid-event-ink-share)
+  );
+  font: var(--mac-font-weight-bold) 11px / 16px var(--mac-font-family-system);
+  text-align: start;
+  cursor: default;
+}
+
+.mac-calendar-week-grid-column > .mac-calendar-week-grid-event {
+  /* Keeps the block a point clear of the separator. */
+  border-inline-end: 2px solid transparent;
+}
+
+.mac-calendar-week-grid-all-day > .mac-calendar-week-grid-event {
+  position: relative;
+  display: block;
+  height: 18px;
+  margin-inline-end: 3px;
+  padding: 0 4px 0 8px;
+  border-inline-start: 0;
+  line-height: 18px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mac-calendar-week-grid-event:where([aria-pressed="true"]) {
+  border-inline-start-color: transparent;
+  background-color: color-mix(
+    in srgb,
+    var(--_color) var(--mac-calendar-week-grid-event-selected-tint),
+    transparent
+  );
+  background-clip: border-box;
+  color: var(--mac-calendar-week-grid-on-color);
+}
+
+.mac-calendar-week-grid-column > .mac-calendar-week-grid-event:where([aria-pressed="true"]) {
+  background-clip: padding-box;
+  border-inline-start-width: 0;
+  padding-inline-start: 8px;
+}
+
+.mac-calendar-week-grid-event:where(:focus-visible, [data-force~="focus"]) {
+  z-index: 3;
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  /* Inside the edge, where nothing clips it. */
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+.mac-calendar-week-grid-event:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  outline: 0;
+}
+
+/* The start time, over the bold title. */
+.mac-calendar-week-grid-event-time {
+  display: block;
+  margin-bottom: -1px;
+  font-weight: var(--mac-font-weight-regular);
+  line-height: 15px;
+}
+
+@media (forced-colors: active) {
+  .mac-calendar-week-grid-event {
+    border: 1px solid ButtonText;
+  }
+
+  .mac-calendar-week-grid-event:where([aria-pressed="true"]) {
+    border-width: 3px;
+  }
+}

@@ -1,0 +1,138 @@
+/*
+ * Colours and sizes of Photos' own that no shared token holds.
+ */
+:root {
+  /* [provisional] Ferrite desktop: the floating panels, the strip under an open photo and the
+     full-screen stage, which no capture shows. */
+  --mac-photos-panel-inset: 20px;
+  --mac-photos-panel-height: 460px;
+  --mac-photos-keyword-key-width: 28px;
+  --mac-photos-row-photo: 18px;
+  --mac-photos-duration-size: 11px;
+  /* [provisional] A pin on the Places map: no capture shows it. */
+  --mac-photos-place-size: 52px;
+  --mac-photos-place-border: 2px;
+  --mac-photos-place-shadow: 4px;
+  --mac-photos-place-count: 18px;
+  --mac-photos-info-map-height: 140px;
+  --mac-photos-info-pin: 14px;
+  --mac-photos-import-size: 110px;
+  --mac-photos-curve-size: 150px;
+  /* [provisional] the histogram over Levels: no capture shows the Levels section */
+  --mac-photos-histogram-height: 60px;
+  /* [provisional] a Selective Color swatch: no capture shows that section */
+  --mac-photos-hue-size: 16px;
+  --mac-photos-curve-point: 10px;
+  /* [provisional] A tile of the Memories row: no capture of the served library shows one. */
+  --mac-photos-memory-width: 300px;
+  --mac-photos-memory-height: 200px;
+  --mac-photos-memory-gap: 12px;
+  --mac-photos-person-size: 120px;
+  --mac-photos-on-picture: #ffffff;
+  --mac-photos-strip-size: 44px;
+  --mac-photos-stage-background: #000000;
+  --mac-photos-stage-controls: rgb(40 40 40 / 80%);
+  --mac-photos-stage-controls-inset: 28px;
+  --mac-photos-stage-button: 28px;
+  /* [measured] The pane of pictures and its header: 10-15-Catalina-Light-Photos.png and
+     10-15-Catalina-Dark-Photos.png @ 1000,200. */
+  --mac-photos-background: light-dark(#ffffff, #1e2022);
+  /* [measured] The line between the sidebar and the pictures: both captures @ 470,1180. */
+  --mac-photos-divider: light-dark(#d1d2d2, #404143);
+  /* [measured] The half-point rule under the album's header: both captures @ 1000,301. */
+  --mac-photos-rule: light-dark(#e6e6e6, #343638);
+  /* [measured] The album's title, which is black on white and white on the dark pane, where
+     the label colour is 85% of either: both captures @ 497,188,290,50. */
+  --mac-photos-title: light-dark(#000000, #ffffff);
+  /* [measured] The two picture frames at the ends of the zoom slider: both captures
+     @ 364,114 and 551,114. */
+  --mac-photos-zoom-glyph: light-dark(#6f6f6f, #cacbcc);
+  /* [provisional] The heart and the duration on a thumbnail, and the shade under them. No
+     capture shows a favorite or a video. */
+  --mac-photos-badge: #ffffff;
+  --mac-photos-badge-shade: rgb(0 0 0 / 0.45);
+
+  /* Sizes, in points from the window's top-left corner of 10-15-Catalina-Light-Photos.png (the
+     dark capture agrees), the same in both appearances. photos.css says where each lies. */
+  /* [measured] the toolbar: Back's fill from x 79, 32 pt wide; the small zoom glyph 15 pt
+     after Back, the 63 pt track 6 pt after it and ending 4.5 pt before the large glyph; Info,
+     Share, Favorite and Rotate 40 pt each; the 167 pt search field 11 pt after Rotate */
+  --mac-photos-back-width: 32px;
+  --mac-photos-back-margin-start: 1px;
+  --mac-photos-zoom-gap: 6px;
+  --mac-photos-zoom-height: 22px;
+  --mac-photos-zoom-margin-start: 5px;
+  --mac-photos-zoom-slider-width: 63px;
+  --mac-photos-zoom-glyph-large-margin-start: -1.5px;
+  --mac-photos-tool-width: 40px;
+  --mac-photos-search-width: 167px;
+  --mac-photos-search-margin-start: 1px;
+  /* [provisional] The search list and a row's name being changed: no screenshot shows them. */
+  --mac-photos-suggest-width: 260px;
+  --mac-photos-suggest-gap: 2px;
+  --mac-photos-suggest-margin: 8px;
+  --mac-photos-suggest-padding: 4px;
+  --mac-photos-suggest-row-padding: 10px;
+  --mac-photos-suggest-row-block: 2px;
+  --mac-photos-suggest-radius: 5px;
+  --mac-photos-suggest-shadow: 0 8px 24px rgb(0 0 0 / 30%);
+  --mac-photos-suggest-count-opacity: 0.6;
+  --mac-photos-row-name-padding: 2px;
+  --mac-photos-row-name-radius: 2px;
+  --mac-photos-tools-gap: 6px;
+  --mac-photos-tools-row: 32px;
+  --mac-photos-tools-radius: 4px;
+  --mac-photos-tools-item-padding: 3px 8px;
+  --mac-photos-tools-used: 0.4;
+  /* [measured] the sidebar's icons 18 pt from the window's edge, 6 pt before the icon box of
+     outline rows */
+  --mac-photos-source-icon-shift: -6px;
+  /* [measured] the header, y 38..113: the 28 pt bold title with its capitals at y 56..76 from
+     x 193, the line under it 8.5 pt lower with its items 15 pt apart, the half-point rule
+     11 pt from both edges; "Showing"'s 21 pt menu button 2.5 pt over the line at each side */
+  --mac-photos-header-min-height: 75px;
+  --mac-photos-header-padding-top: 11px;
+  --mac-photos-header-padding-right: 13px;
+  --mac-photos-header-padding-bottom: 5.5px;
+  --mac-photos-header-padding-left: 12px;
+  --mac-photos-rule-inset: 11px;
+  --mac-photos-title-size: 28px;
+  --mac-photos-title-line-height: 34px;
+  --mac-photos-meta-column-gap: 15px;
+  --mac-photos-meta-min-height: 16px;
+  --mac-photos-meta-margin-top: 8.5px;
+  --mac-photos-showing-gap: 4px;
+  --mac-photos-showing-margin-block: -2.5px;
+  /* [provisional] what no capture shows: the gap between the header's lines when it wraps in a
+     narrow pane, the Info popover's width, the selection ring, the badges of a favorite and a
+     video, an album's tile in a folder and the margin of an open picture */
+  --mac-photos-meta-row-gap: 4px;
+  --mac-photos-info-width: 240px;
+  --mac-photos-selection-width: 3px;
+  --mac-photos-favorite-inset: 5px;
+  --mac-photos-favorite-shade-blur: 1.5px;
+  --mac-photos-duration-inset-bottom: 4px;
+  --mac-photos-duration-inset-end: 5px;
+  --mac-photos-duration-shade-blur: 2px;
+  --mac-photos-tile-radius: 6px;
+  --mac-photos-viewer-padding: 20px;
+
+  /* [provisional] the library served by the desktop's Ferrite application, which no capture
+     shows: the Days, Months and Years views, the drop outline, the album name popover, and the
+     editor with its crop and inspector */
+  --mac-photos-group-padding-top: 14px;
+  --mac-photos-group-title-size: 17px;
+  --mac-photos-group-title-line-height: 22px;
+  --mac-photos-cell-default: 128px;
+  --mac-photos-cell-gap: 2px;
+  --mac-photos-drop-width: 3px;
+  --mac-photos-name-width: 260px;
+  --mac-photos-edit-panel-width: 260px;
+  --mac-photos-filter-preview: 96px;
+  --mac-photos-crop-handle: 14px;
+  --mac-photos-crop-line: 1.5px;
+  --mac-photos-crop-color: #ffffff;
+  --mac-photos-crop-shade: rgb(0 0 0 / 0.5);
+  /* The editor's backdrop is dark in both appearances, as in Photos. */
+  --mac-photos-edit-background: light-dark(#262626, #1a1a1a);
+}

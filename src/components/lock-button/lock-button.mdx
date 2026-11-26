@@ -1,0 +1,130 @@
+---
+title: Lock Button
+description: The padlock and status text at the foot of a preference pane that guard settings needing an administrator.
+order: 19
+---
+
+<Example name="basic" both />
+
+This is the authorization lock of System Preferences (`SFAuthorizationView` of the
+SecurityInterface framework). It is built on
+[Base UI's Button](https://base-ui.com/react/components/button) and shows one of three
+states; what unlocks it is the application's business.
+
+The padlock is drawn for this library. Catalina's is skeuomorphic artwork, which is not
+copied: the stand-in has the measured size and palette and a simpler shape. See
+[Visual comparison](#visual-comparison).
+
+## Usage
+
+```tsx
+import { LockButton } from "macalicious/lock-button";
+import "macalicious/lock-button.css";
+
+<LockButton state={state} onClick={state === "locked" ? askForPassword : lock} />
+```
+
+The component never changes state by itself. On a click, ask for the password (a sheet or a
+dialog), set `state` to `"authenticating"` meanwhile, then to `"unlocked"`; a click on the open
+lock locks again. While locked, disable the controls it guards.
+
+<Example name="authorization" />
+
+Or copy the source into your project: `npx macalicious add lock-button`. See
+[Installation](/installation).
+
+## Guidelines
+
+From the macOS Human Interface Guidelines on security, and the behaviour of the system's
+authorization view:
+
+- Use the system's way of authenticating rather than inventing one, and ask for authorization
+  only when a change needs it.
+- The lock sits in the bottom-left corner of a preference pane, on the window background, with
+  the help button in the bottom-right corner of the same row.
+- The text says what a click will do: "Click the lock to make changes." while locked and
+  "Click the lock to prevent further changes." while unlocked.
+
+In the Date & Time pane the padlock is 25.5 pt from the window's left edge and 18 pt from its
+bottom edge.
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Locked | `state="locked"` (the default) | Closed padlock; "Click the lock to make changes." |
+| Authenticating | `state="authenticating"` | The shackle moves up and down (still with reduced motion); "Authenticating…" |
+| Unlocked | `state="unlocked"` | The shackle is raised out of the body; "Click the lock to prevent further changes." |
+| Pressed | `:active` | The padlock darkens to 70% |
+| Keyboard focus | `:focus-visible` | Focus ring around padlock and text |
+| Disabled | `disabled` | Half opacity |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | Unchanged, but no focus ring |
+
+The padlock is the same in Aqua and Dark Aqua, as in Catalina; only the text colour follows
+the appearance.
+
+## Sizes
+
+| `size` | Look |
+| --- | --- |
+| `regular` | 22 x 27.5 pt padlock, then the status text 14 pt to its right: the foot of a preference pane. |
+| `small` | 13 x 16 pt padlock alone, as in the corner of a Finder Info window. The text is kept for assistive technology. |
+
+This control's sizes are its two uses in Catalina, not AppKit's control sizes.
+
+## API
+
+<PropsTable name="LockButtonProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-state` | `locked`, `authenticating`, `unlocked` | Reflects `state`. |
+| `data-size` | `regular`, `small` | Reflects `size`. |
+| `aria-pressed` | `true`, `false` | `true` while unlocked. |
+| `aria-busy` | `true` or absent | Present while authenticating. |
+| `data-disabled` | present or absent | Set by Base UI while the button is disabled. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+## Accessibility
+
+- Renders a native `<button>`. Space and Return activate it; Tab reaches it. Padlock and text
+  are one click target.
+- The status text is the accessible name, at both sizes, and `aria-pressed` reports whether
+  the lock is open. Translate the text by passing it as children.
+- The padlock is decorative and hidden from assistive technology.
+- The shackle's movement stops when the system asks for reduced motion.
+
+## Visual comparison
+
+The example `visual-pane-lock` reproduces the closed lock and its text at the foot of the Date
+& Time pane and is compared with the screenshots in both appearances by `npm run visual`
+(`lock-button.visual.json`). Share of pixels that differ at 2x, in Chromium on Linux with the
+fallback font:
+
+| Crop, 238 x 36 pt | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Padlock and text | 11.60% | 11.98% |
+| Padlock only, text masked | 2.59% | 2.53% |
+| Small padlock in Finder's Info window, 38 x 28 pt | 6.91% | 7.52% |
+
+Neither row is a pixel match and neither can be. The padlock is **substitute artwork**: its
+box (22 x 27.5 pt), the position of the text (14 pt after the padlock, baseline 22 pt below its
+top), the text's size and colour and the padlock's palette are measured, but its shape is the
+library's own drawing, and the "padlock only" row scores that drawing against Apple's. The
+first row adds the text, set in the fallback font instead of San Francisco. The last row is the
+example `visual-info-lock`: the small padlock in the corner of Finder's Info window, in its
+measured 13 x 16 pt box and place; it scores the same drawing at the small size.
+
+No screenshot shows the lock unlocked, authenticating, pressed, focused or disabled; those
+looks are the spec's inference and provisional. They are checked in a real browser (the
+`expect` comparisons), against the stand-in's own geometry: the shackle's left leg is in the
+body while locked and clear of it after a real click unlocks the fixture, the padlock darkens
+under a real mouse press, the focus ring appears after a real Tab and not in an inactive
+window, and a disabled lock is at half opacity. The authenticating state is covered by
+behaviour tests only (its text and `aria-busy`); its animation is this library's own and has
+no pixel check.

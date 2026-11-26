@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "finder-home-light",
+      "description": "The tab bar of the Finder Home window, Aqua: three tabs, the middle one selected, and the new-tab cell. Whole crop, titles included.",
+      "example": "visual-finder-home-light",
+      "appearance": "light",
+      "budget": { "1x": 0.035, "2x": 0.012 },
+      "deltaBudget": { "1x": 3.6, "2x": 2.3 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Home.png",
+        "crop": { "x": 114, "y": 186, "width": 2206, "height": 50 }
+      }
+    },
+    {
+      "name": "finder-home-light-drawing",
+      "description": "As finder-home-light with the three titles masked (they are set in the fallback font off Apple platforms), to score the fills, the dividers, the bottom rows and the + glyph.",
+      "example": "visual-finder-home-light",
+      "appearance": "light",
+      "masks": [
+        { "x": 160, "y": 6, "width": 49, "height": 13 },
+        { "x": 525, "y": 6, "width": 52, "height": 13 },
+        { "x": 872, "y": 6, "width": 67, "height": 13 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 1.0, "2x": 1.1 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Home.png",
+        "crop": { "x": 114, "y": 186, "width": 2206, "height": 50 }
+      }
+    },
+    {
+      "name": "finder-home-dark",
+      "description": "The tab bar of the Finder Home window, Dark Aqua: three tabs, the middle one selected, and the new-tab cell. Whole crop, titles included.",
+      "example": "visual-finder-home-dark",
+      "appearance": "dark",
+      "budget": { "1x": 0.036, "2x": 0.0128 },
+      "deltaBudget": { "1x": 4.7, "2x": 3.2 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Home.png",
+        "crop": { "x": 114, "y": 186, "width": 2144, "height": 50 }
+      }
+    },
+    {
+      "name": "finder-home-dark-drawing",
+      "description": "As finder-home-dark with the three titles masked, to score the fills, the dividers, the bottom rows and the + glyph.",
+      "example": "visual-finder-home-dark",
+      "appearance": "dark",
+      "masks": [
+        { "x": 155, "y": 6, "width": 49, "height": 13 },
+        { "x": 509, "y": 6, "width": 52, "height": 13 },
+        { "x": 846, "y": 6, "width": 67, "height": 13 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 1.9, "2x": 1.9 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Home.png",
+        "crop": { "x": 114, "y": 186, "width": 2144, "height": 50 }
+      }
+    }
+  ]
+}

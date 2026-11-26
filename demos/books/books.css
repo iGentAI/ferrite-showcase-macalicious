@@ -1,0 +1,1268 @@
+/*
+ * Books: the layout of the library window's body and of the book window's bar and page area.
+ * The toolbar, the sidebar's rows, the card grid and every button are their components; what
+ * is here places them and draws the app's own parts: the cover cell, the placeholders, the
+ * page thumbnails and their numbered badges.
+ *
+ * States
+ *   [aria-current="page"]              on a thumbnail: larger, raised, badge in the accent
+ *   [data-window-state="inactive"] *   the sidebar's pane takes the inactive material
+ *   [data-window-state="main" | "inactive"] *   no focus ring, grey current badge
+ */
+.mac-books-body {
+  display: flex;
+  min-height: 0;
+  background: var(--mac-books-content);
+}
+
+.mac-books-split {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* The sidebar's pane: the list as high as its rows, the add button under it. */
+.mac-books-sidebar {
+  display: flex;
+  flex-direction: column;
+  background: var(--mac-material-sidebar-opaque);
+}
+
+.mac-books-sidebar:where([data-window-state="inactive"] *) {
+  background: var(--mac-books-sidebar-inactive);
+}
+
+/* Measured: 18 pt from the edge, its top 15.5 pt under the header's cap top. */
+.mac-books-add {
+  align-self: flex-start;
+  margin: -1.5px 0 0 18px;
+}
+
+/* The sidebar's menu has an element of its own only to hear the secondary click. */
+.mac-books-menu-area {
+  display: contents;
+}
+
+.mac-books-rename {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0;
+  border: 1px solid var(--mac-color-separator);
+  background: var(--mac-color-control-background);
+  color: var(--mac-color-label);
+  font: inherit;
+}
+
+/* What a cover says of its reading: New until it is first opened, then how far it is read. */
+.mac-books-cover-status {
+  position: absolute;
+  inset-block-end: 4px;
+  inset-inline-end: 4px;
+  width: auto;
+  height: auto;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: var(--mac-color-selected-content-background-unemphasized);
+  color: var(--mac-color-label);
+  font: var(--mac-font-label);
+}
+
+.mac-books-cover-status:where([data-status="new"]) {
+  background: var(--mac-accent);
+  color: var(--mac-color-selected-content-text);
+}
+
+/* Where covers dragged under Sort By > Manually go: before this one. */
+.mac-books-cover:where([data-books-drop]) {
+  outline: 2px solid var(--mac-accent);
+  outline-offset: 4px;
+}
+
+/* A cover selected in the library, and a row of the sidebar that takes the covers dragged to it. */
+.mac-books-cover:where([data-selected]) {
+  outline: 3px solid var(--mac-accent);
+  outline-offset: 2px;
+}
+
+[data-books-drop] {
+  box-shadow: inset 0 0 0 2px var(--mac-accent);
+}
+
+.mac-books-section-icon {
+  display: block;
+}
+
+.mac-books-section-icon-plate {
+  fill: var(--mac-books-icon-fill);
+}
+
+.mac-books-section-icon-glyph {
+  fill: var(--mac-books-icon-glyph);
+}
+
+.mac-books-glyph {
+  display: block;
+  flex: none;
+}
+
+.mac-books-content {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  background: var(--mac-books-content);
+}
+
+/* Sort By: its cap top 12 pt under the toolbar, its chevron 23 pt from the window's edge; the
+   covers start 35 pt under the toolbar. */
+.mac-books-sort {
+  display: flex;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  height: 35px;
+  padding: 8px 23px 0 0;
+}
+
+.mac-books-content:where(:not([data-view="library"])) .mac-books-shelf:first-child {
+  padding-block-start: 24px;
+}
+
+.mac-books-shelf {
+  padding-block-end: 28px;
+}
+
+/* The library as a list: the rest of the pane under Sort By, which takes what its selector does. */
+.mac-books-list {
+  height: calc(100% - 35px);
+}
+
+.mac-books-list-area {
+  display: contents;
+}
+
+.mac-books-empty {
+  height: calc(100% - 70px);
+}
+
+/* A cover is the library's book cover, 145.5 by 190 pt in the capture; the grid sets its
+   width. Its shadow, its focus ring and its pressed look are the component's. */
+
+/* The placeholder of a cover, a page or a thumbnail: a flat panel, a mark, plain text. */
+.mac-books-artwork {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 12px;
+  overflow: hidden;
+  background: var(--mac-books-cover-fill);
+  color: var(--mac-books-artwork-mark);
+  font: var(--mac-font-body);
+  text-align: center;
+}
+
+/* A generated cover fills the panel; in a square store card it sits whole on the panel. */
+.mac-books-artwork:where([data-art]) {
+  padding: 0;
+}
+
+.mac-books-artwork-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mac-books-artwork:where([data-art]) > .mac-books-artwork-image:where(:not(.mac-books-cover *)) {
+  object-fit: contain;
+}
+
+.mac-books-artwork:where([data-kind="page"], [data-kind="thumbnail"]) {
+  background: var(--mac-books-page-fill);
+  color: var(--mac-books-page-mark);
+}
+
+.mac-books-mark {
+  flex: none;
+  margin-block-end: 4px;
+}
+
+.mac-books-artwork-title {
+  color: var(--mac-books-artwork-text);
+  font-weight: var(--mac-font-weight-semibold);
+}
+
+.mac-books-artwork-note {
+  color: var(--mac-books-artwork-note);
+}
+
+.mac-books-artwork:where([data-kind="page"]) > .mac-books-artwork-title {
+  color: var(--mac-books-page-text);
+}
+
+.mac-books-artwork:where([data-kind="page"]) > .mac-books-artwork-note {
+  color: var(--mac-books-page-note);
+}
+
+/* The book window's bar: the glyph buttons centred on the title bar's 37 pt, the first 8 pt
+   after the window controls and the chevron of the last 9 pt from the window's edge. */
+.mac-books-reader-bar {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 0 6px 0 2.75px;
+}
+
+/* The bookmark is dimmed while the page has none, as the captures show it. */
+.mac-books-bookmarks:where(:not([data-marked])) .mac-books-glyph {
+  color: var(--mac-books-bookmark);
+}
+
+.mac-books-reader-bar-space {
+  flex: 1 1 auto;
+}
+
+/* The page area: the page as large as fits, centred, over the surround. */
+.mac-books-reader-body {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  container-type: size;
+  background: var(--mac-color-window-background);
+  color: var(--mac-books-page-note);
+}
+
+/* Measured: the page is 1024 by 748 pt where it fills the Dark Aqua window. */
+.mac-books-spread {
+  flex: none;
+  width: min(100cqw, 100cqh * 1024 / 748);
+  aspect-ratio: 1024 / 748;
+}
+
+/* The page buttons: at the page's edges, shown while the pointer is over the page or the
+   keyboard is on them. */
+.mac-books-turn {
+  position: absolute;
+  top: calc(50% - 22px);
+  display: flex;
+  opacity: 0;
+}
+
+.mac-books-turn:where([data-direction="previous"]) {
+  left: 0;
+}
+
+.mac-books-turn:where([data-direction="next"]) {
+  right: 0;
+}
+
+.mac-books-reader-body:hover > .mac-books-turn,
+.mac-books-turn:focus-within {
+  opacity: 1;
+}
+
+/* The strip of thumbnails at the bottom left: 164 by 120 pt each, the current one 184 by 135
+   and over its neighbours (measured). It lies in a box that scrolls it sideways when the
+   window is narrower than the strip; the box leaves room above and beside the strip for the
+   thumbnails' shadows, and shows no scroller, as Books shows none. */
+.mac-books-strip-scroller {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 8px 8px 0 0;
+  overflow: auto hidden;
+  scrollbar-width: none;
+}
+
+.mac-books-strip {
+  /* The thumbnails' shadows lie under every thumbnail of the strip but the raised one's. */
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  width: max-content;
+}
+
+/* A thumbnail is the library's borderless button; its size and its square corners, which the
+   focus ring follows, are set here. */
+.mac-books-thumbnail {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 164px;
+  max-width: none;
+  height: 120px;
+  border-radius: 0;
+}
+
+/* Measured: a thumbnail's edge and shadow fall on the page around the strip and not on the
+   thumbnail beside it; only the current one, which is raised, shades its neighbours. */
+.mac-books-thumbnail::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  box-shadow: var(--mac-books-thumbnail-shadow);
+}
+
+.mac-books-thumbnail:where([aria-current="page"]) {
+  z-index: 1;
+  width: 184px;
+  height: 135px;
+}
+
+/* The badge: a 23 pt disc in a 1 pt rim, 4 pt from the thumbnail's right and bottom edges. */
+.mac-books-badge {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 25px;
+  height: 25px;
+  border: 1px solid var(--mac-books-badge-rim);
+  border-radius: 50%;
+  /* The disc is inside the rim, which Dark Aqua does not draw. */
+  background-clip: padding-box;
+  background-color: var(--mac-books-badge-fill);
+  color: var(--mac-books-badge-text);
+  font: var(--mac-books-badge-font);
+}
+
+/* The square inside the disc that holds the numeral: what the visual comparisons crop. */
+.mac-books-badge-number {
+  display: grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+}
+
+.mac-books-thumbnail:where([aria-current="page"]) > .mac-books-badge {
+  background-color: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-content-text);
+}
+
+.mac-books-thumbnail:where([aria-current="page"]):where(
+    [data-window-state="main"] *,
+    [data-window-state="inactive"] *
+  )
+  > .mac-books-badge {
+  background-color: var(--mac-color-selected-content-background-unemphasized);
+  color: var(--mac-books-badge-text);
+}
+
+@media (forced-colors: active) {
+  .mac-books-thumbnail,
+  .mac-books-badge {
+    border: 1px solid CanvasText;
+  }
+
+  .mac-books-thumbnail:where([aria-current="page"]) > .mac-books-badge {
+    background-color: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  .mac-books-highlight {
+    outline: 1px solid Highlight;
+  }
+}
+
+/*
+ * The desktop app (a real library, store and reader, only when its Ferrite application serves
+ * Books; the documentation and the visual comparisons never show these).
+ *
+ * States
+ *   .mac-books-sort[data-real]                 Add EPUB… and a notice before Sort By
+ *   .mac-books-highlight[data-color] [data-note]   a highlight, and one with a note
+ */
+.mac-books-sort:where([data-real]) {
+  justify-content: space-between;
+  gap: 12px;
+  padding-inline-start: 23px;
+}
+
+.mac-books-sort-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.mac-books-notice {
+  overflow: hidden;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-label);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-books-welcome {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: calc(100% - 70px);
+  padding: 0 42px;
+  text-align: center;
+}
+
+.mac-books-welcome-text {
+  max-width: 420px;
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-body);
+}
+
+/* The Book Store: shelves of covers with the title, the author and Get or Read under each. */
+.mac-books-store {
+  padding-block-end: 12px;
+}
+
+.mac-books-store-heading {
+  margin: 0;
+  padding: 24px 42px 10px;
+  color: var(--mac-color-label);
+  font: var(--mac-font-weight-semibold) 13px / 16px var(--mac-font-family-system);
+}
+
+.mac-books-store-status {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 0 42px 28px;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-body);
+}
+
+.mac-books-store-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.mac-books-store-title {
+  display: -webkit-box;
+  max-width: 100%;
+  margin-block-start: 8px;
+  overflow: hidden;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body-emphasized);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.mac-books-store-author {
+  max-width: 100%;
+  margin-block-end: 6px;
+  overflow: hidden;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-label);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-books-store-back {
+  align-self: flex-start;
+  margin: 8px 0 0 42px;
+  color: var(--mac-color-link);
+  font: var(--mac-font-body);
+}
+
+.mac-books-store-book {
+  display: flex;
+  gap: 28px;
+  padding: 16px 42px 24px;
+}
+
+.mac-books-store-book-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.mac-books-store-book-title {
+  margin: 0;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body-emphasized);
+}
+
+.mac-books-store-author-link {
+  color: var(--mac-color-link);
+  font: var(--mac-font-body);
+}
+
+.mac-books-store-book-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-block-start: 8px;
+}
+
+.mac-books-store-book-summary {
+  max-width: 60ch;
+  margin: 12px 0 0;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+}
+
+.mac-books-store-more {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 42px 28px;
+}
+
+.mac-books-store-more-error {
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-body);
+}
+
+.mac-books-store-note {
+  margin: 0;
+  padding: 0 42px 16px;
+  color: var(--mac-color-label-tertiary);
+  font: var(--mac-font-label);
+}
+
+/* The reader of a real book: the page of text on the paper, its number and the source's
+   credit and licence under it. The hidden copy of the page is what a page's length is
+   measured in, so the two are set alike. */
+.mac-books-text-body {
+  align-items: stretch;
+  background: var(--mac-books-paper);
+  color: var(--mac-books-ink);
+}
+
+/* A theme draws the footer, the highlights and the turn buttons in its own appearance. */
+[data-books-theme="white"] {
+  --mac-books-paper: var(--mac-books-white-paper);
+  --mac-books-ink: var(--mac-books-white-ink);
+  color-scheme: light;
+}
+
+[data-books-theme="sepia"] {
+  --mac-books-paper: var(--mac-books-sepia-paper);
+  --mac-books-ink: var(--mac-books-sepia-ink);
+  color-scheme: light;
+}
+
+[data-books-theme="gray"] {
+  --mac-books-paper: var(--mac-books-gray-paper);
+  --mac-books-ink: var(--mac-books-gray-ink);
+  color-scheme: dark;
+}
+
+[data-books-theme="night"] {
+  --mac-books-paper: var(--mac-books-night-paper);
+  --mac-books-ink: var(--mac-books-night-ink);
+  color-scheme: dark;
+}
+
+[data-books-face="georgia"] {
+  --mac-books-text-face: var(--mac-books-face-georgia);
+}
+
+[data-books-face="palatino"] {
+  --mac-books-text-face: var(--mac-books-face-palatino);
+}
+
+[data-books-face="times"] {
+  --mac-books-text-face: var(--mac-books-face-times);
+}
+
+[data-books-face="san-francisco"] {
+  --mac-books-text-face: var(--mac-books-face-san-francisco);
+}
+
+.mac-books-text-sheet {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: min(100%, 760px);
+  height: 100%;
+  padding: 28px 64px 12px;
+}
+
+.mac-books-text-box {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.mac-books-text {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  overflow: hidden;
+  font: 400 var(--mac-books-text-size) / 1.55 var(--mac-books-text-face);
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  cursor: text;
+  user-select: text;
+}
+
+[data-books-justify] .mac-books-text {
+  text-align: justify;
+}
+
+/* View > Two Pages: the page is two columns, and a page's length is measured in both. */
+[data-books-layout="two"] .mac-books-text {
+  column-count: 2;
+  column-fill: auto;
+  column-gap: 40px;
+  column-rule: 1px solid var(--mac-color-separator);
+}
+
+/* View > Scroll: the text runs on and the page scrolls; the hidden copy still gives page numbers. */
+[data-books-layout="scroll"] .mac-books-text:not(.mac-books-text-measure) {
+  overflow-y: auto;
+}
+
+/* A picture of the source, on the page and at the same size in the hidden copy. */
+.mac-books-picture {
+  display: block;
+  max-width: 100%;
+  margin: var(--mac-books-picture-margin) auto;
+  break-inside: avoid;
+  object-fit: contain;
+  cursor: default;
+}
+
+.mac-books-picture[data-inline] {
+  display: inline-block;
+  margin: 0;
+  vertical-align: text-bottom;
+}
+
+.mac-books-text-measure {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Hidden, not removed: a place and a highlight are offsets that count it. */
+.mac-books-emphasis-mark {
+  display: none;
+}
+
+.mac-books-text-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-body);
+}
+
+.mac-books-text-footer {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin: 10px 0 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-label);
+}
+
+.mac-books-text-page {
+  flex: none;
+}
+
+.mac-books-text-credit {
+  overflow: hidden;
+  text-align: end;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-books-text-credit a {
+  color: var(--mac-color-link);
+}
+
+.mac-books-text-notice {
+  margin: 6px 0 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-label);
+}
+
+.mac-books-text-status {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 64px;
+  text-align: center;
+}
+
+/* Highlights: a translucent colour over the words; a note underlines them. Nothing here may
+   change the text's layout, or the page measured would not be the page shown. */
+.mac-books-highlight {
+  border-radius: 2px;
+  background: var(--mac-books-highlight-yellow);
+  color: inherit;
+  cursor: pointer;
+}
+
+.mac-books-highlight:where([data-color="green"]) {
+  background: var(--mac-books-highlight-green);
+}
+
+.mac-books-highlight:where([data-color="blue"]) {
+  background: var(--mac-books-highlight-blue);
+}
+
+.mac-books-highlight:where([data-color="pink"]) {
+  background: var(--mac-books-highlight-pink);
+}
+
+.mac-books-highlight:where([data-color="purple"]) {
+  background: var(--mac-books-highlight-purple);
+}
+
+.mac-books-highlight:where([data-note]) {
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+/* The menu of a highlight: the five colours, then Add Note, or the note and its buttons. */
+.mac-books-highlight-menu {
+  display: grid;
+  gap: 10px;
+  width: 260px;
+}
+
+.mac-books-highlight-colors {
+  display: flex;
+  gap: 10px;
+}
+
+.mac-books-highlight-colors .mac-books-highlight-swatch {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--mac-books-swatch-yellow);
+  box-shadow: inset 0 0 0 1px var(--mac-books-swatch-rim);
+}
+
+.mac-books-highlight-swatch[data-color="green"] {
+  background: var(--mac-books-swatch-green);
+}
+
+.mac-books-highlight-swatch[data-color="blue"] {
+  background: var(--mac-books-swatch-blue);
+}
+
+.mac-books-highlight-swatch[data-color="pink"] {
+  background: var(--mac-books-swatch-pink);
+}
+
+.mac-books-highlight-swatch[data-color="purple"] {
+  background: var(--mac-books-swatch-purple);
+}
+
+.mac-books-highlight-swatch:where([aria-pressed="true"]) {
+  outline: 2px solid var(--mac-color-label);
+  outline-offset: 2px;
+}
+
+.mac-books-highlight-note {
+  display: grid;
+  gap: 8px;
+}
+
+.mac-books-highlight-text {
+  height: 88px;
+  border: 1px solid var(--mac-color-separator);
+}
+
+.mac-books-highlight-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* Notes and Search: lists of passages that open their page. */
+.mac-books-notes,
+.mac-books-search {
+  display: grid;
+  gap: 8px;
+  width: 300px;
+}
+
+.mac-books-notes-list {
+  max-height: 320px;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.mac-books-notes-row {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.mac-books-notes-list .mac-books-notes-item {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 2px;
+  justify-items: start;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 6px 8px;
+  border-inline-start: 3px solid var(--mac-color-separator);
+  border-radius: 0;
+  text-align: start;
+}
+
+.mac-books-notes-list .mac-books-notes-edit {
+  flex: none;
+  padding: 2px 6px;
+}
+
+.mac-books-notes-item:where([data-color="yellow"]) {
+  border-inline-start-color: var(--mac-books-swatch-yellow);
+}
+
+.mac-books-notes-item:where([data-color="green"]) {
+  border-inline-start-color: var(--mac-books-swatch-green);
+}
+
+.mac-books-notes-item:where([data-color="blue"]) {
+  border-inline-start-color: var(--mac-books-swatch-blue);
+}
+
+.mac-books-notes-item:where([data-color="pink"]) {
+  border-inline-start-color: var(--mac-books-swatch-pink);
+}
+
+.mac-books-notes-item:where([data-color="purple"]) {
+  border-inline-start-color: var(--mac-books-swatch-purple);
+}
+
+.mac-books-notes-quote {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.mac-books-notes-note {
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-label);
+  white-space: pre-wrap;
+}
+
+.mac-books-notes-empty {
+  padding: 8px 0;
+}
+
+.mac-books-search-form {
+  display: flex;
+}
+
+/* Go to Page: the number, how many there are, and Go. */
+.mac-books-go-to {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font: var(--mac-font-body);
+}
+
+.mac-books-go-to-field {
+  width: 64px;
+}
+
+/* The Aa button's popover: text size, the themes, then the faces. */
+.mac-books-appearance-glyph {
+  font: var(--mac-font-title-3);
+}
+
+.mac-books-appearance {
+  display: grid;
+  gap: 10px;
+  width: 200px;
+}
+
+.mac-books-appearance-sizes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+  align-items: center;
+}
+
+.mac-books-appearance-small {
+  font: var(--mac-font-body);
+}
+
+.mac-books-appearance-large {
+  font: var(--mac-font-title-1);
+}
+
+.mac-books-appearance-themes {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.mac-books-appearance-themes .mac-books-appearance-theme {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--mac-books-paper);
+  box-shadow: inset 0 0 0 1px var(--mac-books-swatch-rim);
+}
+
+.mac-books-appearance-theme:where([aria-pressed="true"]) {
+  outline: 2px solid var(--mac-color-label);
+  outline-offset: 2px;
+}
+
+.mac-books-appearance-faces {
+  display: grid;
+  gap: 2px;
+}
+
+.mac-books-appearance-faces .mac-books-appearance-face {
+  justify-content: flex-start;
+  padding: 3px 6px 3px 20px;
+  font-family: var(--mac-books-text-face);
+  text-align: start;
+}
+
+.mac-books-appearance-face:where([aria-pressed="true"])::before {
+  content: "✓";
+  margin-inline: -14px 3px;
+}
+
+.mac-books-search-status {
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-label);
+}
+
+/* A cover the person hid, seen under View > Show Hidden Books. */
+.mac-books-cover:where([data-hidden]) {
+  opacity: 0.5;
+}
+
+/* The edges that resize a book window of the desktop. Its bar moves it, so its top has none. */
+.mac-books-reader-edge {
+  position: absolute;
+  z-index: 2;
+}
+
+.mac-books-reader-edge:where([data-edge="e"]) {
+  inset-block: 0 8px;
+  inset-inline-end: 0;
+  width: 5px;
+  cursor: ew-resize;
+}
+
+.mac-books-reader-edge:where([data-edge="w"]) {
+  inset-block: 0 8px;
+  inset-inline-start: 0;
+  width: 5px;
+  cursor: ew-resize;
+}
+
+.mac-books-reader-edge:where([data-edge="s"]) {
+  inset-block-end: 0;
+  inset-inline: 8px;
+  height: 5px;
+  cursor: ns-resize;
+}
+
+.mac-books-reader-edge:where([data-edge="se"]) {
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  width: 8px;
+  height: 8px;
+  cursor: nwse-resize;
+}
+
+.mac-books-reader-edge:where([data-edge="sw"]) {
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  width: 8px;
+  height: 8px;
+  cursor: nesw-resize;
+}
+
+/* A PDF's window: the page as large as the window holds it, and its number under it. */
+.mac-books-pdf-body {
+  flex-direction: column;
+  padding: 16px 48px 8px;
+}
+
+.mac-books-pdf-page {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+}
+
+.mac-books-pdf-footer {
+  margin: 8px 0 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-label);
+}
+
+/* An audiobook's window: the player beside the chapters. */
+.mac-books-audiobook-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  min-height: 0;
+}
+
+.mac-books-audiobook-player {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  padding: 20px;
+  overflow: auto;
+  text-align: center;
+}
+
+.mac-books-audiobook-title {
+  margin: 4px 0 0;
+  color: var(--mac-color-label);
+  font: var(--mac-font-weight-semibold) 15px / 20px var(--mac-font-family-system);
+}
+
+.mac-books-audiobook-line,
+.mac-books-audiobook-credit {
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-label);
+}
+
+.mac-books-audiobook-position {
+  width: 100%;
+}
+
+.mac-books-audiobook-times {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-label);
+  font-variant-numeric: tabular-nums;
+}
+
+.mac-books-audiobook-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.mac-books-audiobook-credit {
+  margin-block-start: auto;
+}
+
+.mac-books-audiobook-chapters {
+  min-height: 0;
+  overflow: auto;
+  border-inline-start: 1px solid var(--mac-color-separator);
+}
+
+.mac-books-audiobook-chapter {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  padding-inline: 12px;
+  font: var(--mac-font-body);
+  line-height: 36px;
+  font-variant-numeric: tabular-nums;
+}
+
+.mac-books-store-chapters {
+  padding-block-end: 20px;
+}
+
+.mac-books-store-chapters ol {
+  display: grid;
+  gap: 4px;
+  max-width: 60ch;
+  margin: 0;
+  padding: 0 42px;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  list-style: none;
+}
+
+.mac-books-store-chapters li {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+/* The end of a sample. */
+.mac-books-text-sample-end {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-body);
+}
+
+/* The store's genres, under its toolbar. */
+.mac-books-store-genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  padding: 16px 42px 0;
+}
+
+/* A book's ratings and reviews, on its page in the store. */
+.mac-books-reviews {
+  display: grid;
+  gap: 8px;
+  max-width: 60ch;
+  padding: 0 42px 28px;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+}
+
+.mac-books-reviews .mac-books-store-heading {
+  padding: 0;
+}
+
+.mac-books-reviews-source,
+.mac-books-reviews-date {
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-label);
+}
+
+.mac-books-reviews-summary {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+}
+
+.mac-books-reviews-form {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.mac-books-reviews-text {
+  width: 100%;
+  height: 72px;
+}
+
+.mac-books-reviews-actions {
+  display: flex;
+  gap: 12px;
+  justify-self: end;
+}
+
+.mac-books-reviews-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-books-reviews-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: center;
+}
+
+.mac-books-reviews-item p {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+/* Study Cards, in the Notes panel. */
+.mac-books-study {
+  display: grid;
+  gap: 8px;
+}
+
+.mac-books-notes .mac-books-study-card {
+  display: block;
+  width: 100%;
+  min-height: 140px;
+  max-height: 240px;
+  padding: 12px;
+  overflow: auto;
+  border-inline-start: 4px solid transparent;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  text-align: start;
+  white-space: normal;
+}
+
+.mac-books-study-card:where([data-color="yellow"]) {
+  border-inline-start-color: var(--mac-books-swatch-yellow);
+}
+
+.mac-books-study-card:where([data-color="green"]) {
+  border-inline-start-color: var(--mac-books-swatch-green);
+}
+
+.mac-books-study-card:where([data-color="blue"]) {
+  border-inline-start-color: var(--mac-books-swatch-blue);
+}
+
+.mac-books-study-card:where([data-color="pink"]) {
+  border-inline-start-color: var(--mac-books-swatch-pink);
+}
+
+.mac-books-study-card:where([data-color="purple"]) {
+  border-inline-start-color: var(--mac-books-swatch-purple);
+}
+
+.mac-books-study-count {
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-label);
+  text-align: center;
+}
+
+.mac-books-study-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}

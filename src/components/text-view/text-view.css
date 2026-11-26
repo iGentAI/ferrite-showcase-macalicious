@@ -1,0 +1,77 @@
+/*
+ * Text view (NSTextView): pane-filling multi-line text. No bezel, no inner shadow and, as in
+ * AppKit, no focus ring: the insertion point shows where the keyboard is.
+ *
+ * The text sits 5 pt from the left and right edges (the line-fragment padding) and starts at
+ * the top edge.
+ *
+ * States
+ *   [data-monospace]                  fixed-pitch font
+ *   [data-rich]                       rich text: an editable element instead of a textarea
+ *   :disabled, [data-disabled]        dimmed text
+ *   [data-window-state="main" | "inactive"] *
+ *                                     window that is not key: grey selection
+ *
+ * Hooks
+ *   --mac-text-view-background        the view's fill, for paper or a note's colour
+ *                                     (default: the text background colour)
+ */
+.mac-text-view {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0 5px;
+  border: 0;
+  border-radius: 0;
+  background: var(--mac-text-view-background, var(--mac-color-text-background));
+  color: var(--mac-color-text);
+  caret-color: var(--mac-color-text);
+  font: var(--mac-font-body);
+  letter-spacing: var(--mac-tracking-regular);
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  overflow: auto;
+  resize: none;
+  cursor: text;
+  appearance: none;
+  outline: none;
+}
+
+.mac-text-view:where([data-monospace]) {
+  font: 400 11px / 14px var(--mac-font-family-monospace);
+  letter-spacing: normal;
+}
+
+.mac-text-view::placeholder {
+  color: var(--mac-color-text-placeholder);
+  opacity: 1;
+}
+
+.mac-text-view::selection,
+.mac-text-view ::selection {
+  background: var(--mac-highlight);
+}
+
+.mac-text-view:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+)::selection,
+.mac-text-view:where(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+  ::selection {
+  background: var(--mac-color-selected-text-background-unemphasized);
+}
+
+/* Disabled (provisional): no screenshot shows a disabled text view. */
+.mac-text-view:where(:disabled, [data-disabled]) {
+  color: var(--mac-color-label-tertiary);
+  cursor: default;
+  opacity: 1;
+  -webkit-text-fill-color: currentcolor;
+}
+
+@media (forced-colors: active) {
+  .mac-text-view:where(:disabled, [data-disabled]) {
+    color: GrayText;
+  }
+}

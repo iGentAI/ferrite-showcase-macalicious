@@ -1,0 +1,150 @@
+/*
+ * Messages: the colours and sizes no shared token holds (reference/spec/apps/messages.md). Both captures
+ * show the Messages window inactive behind its Preferences, so the values of its bars are
+ * those of an inactive window; the demo uses them in a key window too, which no screenshot
+ * shows. Coordinates are image pixels of 10-15-Catalina-Light-Messages.png and
+ * 10-15-Catalina-Dark-Messages.png.
+ */
+:root,
+[data-appearance] {
+  /* [provisional] a message's screen effect, with stand-in shapes; no capture shows one */
+  --mac-messages-effect-balloon: 30px;
+  --mac-messages-effect-piece: 7px;
+  --mac-messages-effect-beam: 2px;
+  --mac-messages-effect-reach: 170px;
+  /* [provisional] a person's picture in a conversation's row, with initials when there is no
+     contact picture, and a group's overlapping discs; no capture shows them */
+  --mac-messages-picture-size: 48px;
+  --mac-messages-monogram: linear-gradient(
+    light-dark(#a8a8ae, #8a8a90),
+    light-dark(#86868c, #6a6a70)
+  );
+  --mac-messages-monogram-text: #ffffff;
+  --mac-messages-monogram-font-size: 20px;
+  --mac-messages-monogram-small-font-size: 12px;
+  --mac-messages-person-ring: 1px solid var(--mac-messages-list-separator);
+  /* [provisional] a recording beside the message field: the gap between its parts, its dot and
+     its player's width; no capture shows one */
+  --mac-messages-recording-gap: 6px;
+  --mac-messages-recording-dot: 8px;
+  --mac-messages-recording-player-width: 180px;
+  --mac-messages-recording-player-height: 24px;
+  /* [measured] the bar over the transcript and the bar of the message field (Light @
+     1700,104,1,108 and 1700,1062,1,16; Dark @ 1712,96,1,108 and 1712,1054,1,16) */
+  --mac-messages-bar: light-dark(#f0f0f0, #292929);
+  /* [measured] the 1 pt rule under the first bar and over the second (Light @ 1700,212 and
+     1700,1060; Dark @ 1712,204 and 1712,1052) */
+  --mac-messages-bar-rule: light-dark(#d9d9d9, #4c4c4c);
+  /* [measured] behind the transcript (Light @ 1700,600; Dark @ 1712,600) */
+  --mac-messages-transcript: light-dark(#ffffff, #1d1e1f);
+  /* [measured, computed] the 1 pt rule between the search field's strip and the first
+     conversation: #b2b0a6 over the list's #c8c7be is black at 11% (Light @ 840,212); #52535a
+     over #2d2f33 is white at 18% (Dark @ 1100,204) */
+  --mac-messages-list-rule: light-dark(rgb(0 0 0 / 0.11), rgb(255 255 255 / 0.18));
+  /* [measured, computed] the 1 pt line in the last point of every 64 pt row of the list, from
+     20 pt in to the divider, drawn under the empty rows too: black at 6.0% over the list in
+     all five empty rows of Dark Aqua (Dark @ 1240,460,56,2 and every 128 px down to 972) and
+     at 5.8% in the one empty row Aqua shows (Light @ 786..1286,1108) */
+  --mac-messages-list-separator: rgb(0 0 0 / 0.06);
+  /* [provisional] the line between the list and the conversation over the opaque list: black
+     in Dark Aqua, as measured (Dark @ 1298,600); in Aqua the capture's line is tinted by the
+     desktop picture like the list beside it (see --mac-messages-visual-divider), and this is
+     the line Reminders has beside the same surface */
+  --mac-messages-divider: light-dark(#cfcfce, #000000);
+  /* [provisional] the one colour of the abstract placeholders: a contact's picture, the two
+     icons of the Preferences toolbar and the folder in a pop-up button. Apple's artwork is
+     not reproduced and not approximated, so this is a neutral grey and not a measured colour;
+     the comparisons mask what it fills */
+  --mac-messages-placeholder: light-dark(#b9b9be, #68686d);
+  /* [measured] what the two visual examples give the list, whose material is vibrant in the
+     captures and tinted by the desktop picture behind the window: the mean of the list's
+     strip over the first conversation (Light @ 748,196,536,14; Dark @ 762,190,530,12), the
+     mean of the selected row, which the picture brightens from #0b61d0 at the left to #287aee
+     at the right in Aqua (Light @ 1000,300,280,38 and 748,326,30,14; Dark @ 1100,208,190,20),
+     and the line beside the list (Light @ 1286,260; Dark @ 1298,600) */
+  --mac-messages-visual-list: light-dark(#cfcbc0, #2c2e32);
+  --mac-messages-visual-selection: light-dark(#186de1, #0866d2);
+  --mac-messages-visual-divider: light-dark(#c2bbae, #000000);
+  /* [provisional] what the visual examples paint where the captures show the desktop
+     picture, which is not reproduced */
+  --mac-messages-visual-desktop: light-dark(#4b4f4c, #1b2a3d);
+
+  /* Sizes, in points, the same in both appearances; messages.css says where each lies. */
+  /* [measured] the strip over the list, 55 pt and a 1 pt rule: the search field's edge
+     20.5 pt from the window's and 25.5 pt under its top, the compose button 11 pt later (the
+     gap and the bezel's half point) and half a point higher, ending 12.5 pt before the
+     divider; the window controls 8 pt from the left edge and 5 pt from the top */
+  --mac-messages-top-gap: 10.5px;
+  --mac-messages-top-height: 56px;
+  --mac-messages-top-padding-top: 25.5px;
+  --mac-messages-top-padding-right: 12px;
+  --mac-messages-top-padding-left: 20.5px;
+  --mac-messages-controls-top: 5px;
+  --mac-messages-controls-start: 8px;
+  --mac-messages-compose-margin-top: -0.5px;
+  /* [measured] a conversation's row, 64 pt: the 48 pt picture 20 pt from the edge and 1.5 pt
+     above the middle, the text 76 pt from the edge on lines 15.5 pt apart, ending 13 pt
+     before the divider; the time and the last message 12 pt */
+  --mac-messages-row-avatar-top: -1.5px;
+  --mac-messages-row-avatar-start: 5.5px;
+  --mac-messages-row-line-height: 15.5px;
+  --mac-messages-row-head-gap: 6px;
+  --mac-messages-row-head-margin-top: -4px;
+  --mac-messages-row-text-margin-start: -1px;
+  --mac-messages-row-text-margin-end: 6px;
+  --mac-messages-row-detail-size: 12px;
+  --mac-messages-row-time-offset: -0.5px;
+  --mac-messages-row-snippet-offset: 0.5px;
+  --mac-messages-row-snippet-height: 31px;
+  /* [measured] the bar over the transcript, 55 pt and a 1 pt rule, its text 12 pt: "To:"
+     13 pt from the divider with its baseline 40 pt under the window's top, Details ending
+     14 pt before the window's edge with its baseline a point lower */
+  --mac-messages-header-gap: 6px;
+  --mac-messages-header-height: 56px;
+  --mac-messages-header-padding-top: 27px;
+  --mac-messages-header-padding-right: 14px;
+  --mac-messages-header-padding-left: 13px;
+  --mac-messages-header-size: 12px;
+  --mac-messages-details-offset: 1px;
+  /* [measured] the bar of the message field, 40 pt under a 1 pt rule: the field 14 pt from
+     the divider, the audio button's bars 12 pt after it and 12.5 pt before the window's edge */
+  --mac-messages-input-gap: 7px;
+  --mac-messages-input-height: 41px;
+  --mac-messages-input-padding-right: 7px;
+  --mac-messages-input-padding-left: 14px;
+  /* [provisional] what no capture shows: 8 pt above and below the 24 pt field, a rule under 41 pt
+     in all; a line of text 16 pt high, 4 pt from the capsule's edge, and a field of several lines
+     up to six of them, keeping the capsule's 12 pt ends */
+  --mac-messages-input-padding-block: 8px;
+  --mac-messages-input-button-margin: -2px;
+  --mac-messages-field-padding-block: 4px;
+  --mac-messages-field-line-height: 16px;
+  --mac-messages-field-max-height: 104px;
+  --mac-messages-field-radius: 12px;
+  /* [provisional] the conversation's pictures and files in Details: no screenshot shows them */
+  --mac-messages-files-max-height: 180px;
+  /* [provisional] what the Details popover holds: no screenshot shows it */
+  --mac-messages-details-gap: 8px;
+  --mac-messages-details-min-width: 156px;
+  /* [measured] the General pane of Preferences: the block reaches 10 pt into the pane's
+     padding above and 5 pt into it below; the slider's track is 198 pt long, half a point
+     inside the pop-up buttons' bezels, with its two letters over its ends */
+  --mac-messages-preferences-general-margin-top: -10px;
+  --mac-messages-preferences-general-margin-bottom: -5px;
+  --mac-messages-preferences-size-width: 198px;
+  --mac-messages-preferences-size-margin-top: -3px;
+  --mac-messages-preferences-size-margin-start: 1px;
+  --mac-messages-preferences-size-letter-offset: 2.5px;
+  /* [provisional] the iMessage pane, a stand-in that no screenshot shows */
+  --mac-messages-preferences-imessage-gap: 12px;
+  --mac-messages-preferences-indent-gap: 6px;
+  --mac-messages-preferences-indent-margin-start: 20px;
+  /* [provisional] the desktop served by Ferrite, which no capture shows: the unread dot before
+     a row's name, a group member's name over their bubbles, the contacts offered under the To
+     field, and what a message carries under its bubble (a reply's quote, its tapbacks) */
+  --mac-messages-sender-margin-start: 14px;
+  --mac-messages-suggestions-gap: 2px;
+  --mac-messages-suggestions-padding: 4px 13px;
+  --mac-messages-extras-gap: 4px;
+  --mac-messages-extras-margin-inline: 14px;
+}

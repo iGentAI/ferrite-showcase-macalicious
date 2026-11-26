@@ -1,0 +1,288 @@
+---
+title: Mission Control
+description: The overview of a desktop. The Spaces bar across the top lists the desktops, and every open window is a thumbnail under it, none over another. Choosing a window brings it forward and closes the overview.
+---
+
+<Example name="basic" both />
+
+Mission Control covers the desktop it is rendered into. It is a modal overlay built on Base
+UI's [Dialog](https://base-ui.com/react/components/dialog): Escape, a click on the desktop, or
+a chosen window or space closes it. `MissionControl` is the overlay, `MissionControlSpace` a
+desktop in the Spaces bar and `MissionControlWindow` a window's thumbnail.
+
+## Usage
+
+```tsx
+import {
+  MissionControl,
+  MissionControlSpace,
+  MissionControlWindow,
+} from "macalicious/mission-control";
+import "macalicious/styles.css";
+
+const [desktop, setDesktop] = useState<HTMLDivElement | null>(null);
+const [open, setOpen] = useState(false);
+
+<div ref={setDesktop} style={{ position: "relative", height: "100vh" }}>
+  …the desktop picture, the windows, the Dock…
+  <MissionControl
+    open={open}
+    onOpenChange={setOpen}
+    container={desktop}
+    onAddSpace={addDesktop}
+    spaces={
+      <>
+        <MissionControlSpace label="Desktop 1" current>
+          <img src={desktopOne} alt="" />
+        </MissionControlSpace>
+        <MissionControlSpace label="Desktop 2" onClick={() => switchTo(2)}>
+          <img src={desktopTwo} alt="" />
+        </MissionControlSpace>
+      </>
+    }
+  >
+    <MissionControlWindow
+      title="Notes"
+      icon={<img src={notesIcon} alt="" />}
+      frame={{ x: 80, y: 60, width: 640, height: 420 }}
+      onClick={() => bringForward("notes")}
+    >
+      <NotesPicture />
+    </MissionControlWindow>
+  </MissionControl>
+</div>
+```
+
+Or copy the source into your project: `npx macalicious add mission-control`.
+
+- **Render it into the desktop.** `container` is the element Mission Control covers, which
+  must be positioned. Without it the overview covers the page.
+- **It paints the desktop again.** The real windows are still on the desktop, so the overlay
+  is opaque: set `--mac-mission-control-desktop` to the desktop picture (any CSS background),
+  on the desktop element or on `MissionControl`. The Spaces bar is a material over it: it
+  blurs what the overlay paints, in the same page ([Fidelity limits](/fidelity)).
+- **Windows are data.** Each `MissionControlWindow` takes the window's `frame` on the
+  desktop. Mission Control lays the thumbnails out from the frames (see
+  [Sizes](/components/mission-control#sizes)); you do not position them.
+- **What a thumbnail shows is yours.** The children are laid out at the frame's size and
+  scaled down with the thumbnail: a picture of the window, or its elements rendered a second
+  time. A browser cannot take a snapshot of part of a page, so there is no live thumbnail
+  for free. The content is decoration: it is `inert` and hidden from assistive technology,
+  and the button over it carries the window's title.
+- **The Dock stays.** The overlay's `z-index` is `--mac-mission-control-layer` (890), above
+  the windows of a [Window Manager](/components/window-manager) and below its Dock (900), and
+  the thumbnails keep `--mac-mission-control-inset-bottom` (80 points) clear at the bottom.
+  Hide a menu bar while Mission Control is open: the Spaces bar takes its place. A managed
+  window in full screen is stacked above 1000 while it is key, over the overview: do not
+  offer Mission Control while the manager's `fullScreenWindowId` is set, or take the window
+  out of full screen first.
+
+### With a window manager
+
+<Example name="window-manager" />
+
+`useWindowManager()` gives the open windows and `focus(id)`; each window's `title` and
+`frame` are what a thumbnail needs. The hook has to be called below `<WindowManager>`, so the
+overview is a component of its own inside the manager, and it is rendered into the manager's
+element:
+
+```tsx
+import { MissionControl, MissionControlWindow } from "macalicious/mission-control";
+import { useWindowManager } from "macalicious/window-manager";
+
+function Overview({ open, onOpenChange, container }: OverviewProps) {
+  const { windows, focus } = useWindowManager();
+  return (
+    <MissionControl open={open} onOpenChange={onOpenChange} container={container}>
+      {windows
+        .filter((window) => !window.minimized)
+        .map((window) => (
+          <MissionControlWindow
+            key={window.id}
+            title={window.title}
+            frame={window.frame}
+            onClick={() => focus(window.id)}
+          >
+            <Picture of={window.id} />
+          </MissionControlWindow>
+        ))}
+    </MissionControl>
+  );
+}
+```
+
+`focus(id)` brings the window to the front, makes it key and moves the keyboard focus into
+it; Mission Control then closes and leaves the focus there. A window's `frame` is where it
+is when it is neither zoomed nor in full screen, so a zoomed window's thumbnail has the
+window's own size.
+
+## Guidelines
+
+From the Human Interface Guidelines for macOS,
+[Mission Control](https://web.archive.org/web/20200503153858/https://developer.apple.com/design/human-interface-guidelines/macos/system-capabilities/mission-control/):
+
+- Mission Control lets people preview and move between open windows, full-screen apps,
+  desktops and spaces. It is entered with a gesture or a keyboard shortcut (a swipe up with
+  three fingers, Control-Up Arrow) that the user can change.
+- Respect the ways of entering it: they have to work all the time, whatever the application
+  is doing.
+- Be prepared for a change of context: when the user leaves Mission Control, a different
+  window may be active, or a different application.
+
+A browser keeps Control-Up Arrow and the trackpad gestures for the operating system: offer a
+button, a Dock item or a shortcut of your own to open the overview.
+
+## Variants and states
+
+<Example name="rows" />
+
+| State | How it is set | What happens |
+| --- | --- | --- |
+| Open, closed | `open` / `defaultOpen`; Escape, the desktop, a chosen window or space | The overlay fades over 0.25 s while the bar slides in from the top and the thumbnails settle from 108%; with reduced motion it only fades. Closed, nothing is rendered. |
+| Current space | `current` on a `MissionControlSpace` | A 3 point ring, 1 point away from the thumbnail. Measured. |
+| Window under the pointer or the focus | hover, arrow keys, Tab | The same ring around the thumbnail, and the window's icon and title on a dark plate at its bottom. Provisional. |
+| Space focused | Tab, arrow keys in the bar | The focus ring around its thumbnail. Provisional. |
+| Add button | `onAddSpace` | A 20 point plus at the right of the bar; dimmed while pressed. |
+| No bar | neither `spaces` nor `onAddSpace` | Only the thumbnails. |
+
+Not implemented: the collapsed bar that shows names only, the close button of a space under
+the pointer, dragging windows onto spaces, and grouping windows by application.
+
+## Sizes
+
+There is no `size` prop. The Spaces bar is 146 points high; a space's thumbnail is 144 by 90
+points, a 16 by 10 screen at 3/35, and narrower when the bar has no room for all of them.
+
+The window thumbnails are laid out from the `frame` of every window:
+
+- Windows are put side by side in rows, 12 points apart, so that none covers another. From
+  top to bottom of the desktop they are dealt into the rows, each row runs from left to
+  right as the windows are on the desktop, and within a row every window keeps its height on
+  the desktop relative to its neighbours.
+- The number of rows is the one that shows the windows largest in an area twice as wide as
+  it is high, about what a 16 by 10 desktop leaves between the bar and the Dock.
+- The whole layout is scaled by one factor to fit the area, which is 18 points away from the
+  bar and the sides and from `--mac-mission-control-inset-bottom` above the bottom, and it
+  is centred there. It is never shown larger than life.
+
+The scale is computed in CSS from the size of the area (a size container), so the overview
+follows a desktop that is resized without script and without measuring anything.
+
+## API
+
+### MissionControl
+
+<PropsTable name="MissionControlProps" />
+
+Other props, `ref`, `className` and `style` go to the overlay, Base UI's `Dialog.Popup`.
+
+### MissionControlSpace
+
+<PropsTable name="MissionControlSpaceProps" />
+
+### MissionControlWindow
+
+<PropsTable name="MissionControlWindowProps" />
+
+### MissionControlFrame
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `x`, `y` | `number` | The window's top-left corner on the desktop, in points. |
+| `width`, `height` | `number` | Its size, in points. |
+
+It is the shape of a [Window Manager](/components/window-manager) window's `frame`.
+
+| Attribute or class | On | Description |
+| --- | --- | --- |
+| `.mac-mission-control` | the overlay | Paints the desktop; `position: absolute`, covering its container. |
+| `data-starting-style`, `data-ending-style` | the overlay | While it fades in and out (Base UI). |
+| `.mac-mission-control-bar` | the Spaces bar | A `group`. |
+| `.mac-mission-control-space` | a space's button | With `.mac-mission-control-space-thumbnail`, `-picture` and `-label` inside. |
+| `data-current` | a space's button | The current space. |
+| `.mac-mission-control-add` | the add button | |
+| `.mac-mission-control-area`, `.mac-mission-control-windows`, `.mac-mission-control-slot` | the thumbnails | The room for them, the scaled layout (a `group`) and each window's place. |
+| `.mac-mission-control-window` | a window's button | Covers the thumbnail; holds `.mac-mission-control-window-caption`, `-icon` and `-title`. |
+| `.mac-mission-control-window-content` | a window's content | Laid out at the frame's size and scaled. |
+| `.mac-mission-control-dismiss` | the desktop | The button that closes Mission Control. |
+| `data-force` | a window's button, a space's button, the add button | `hover`, `focus` or `pressed`: pins the state for documentation. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-mission-control-desktop` | a plain blue | What the overlay paints behind the bar and the thumbnails: your desktop picture. |
+| `--mac-mission-control-layer` | `890` | `z-index` of the overlay. |
+| `--mac-mission-control-inset-bottom` | `80px` | Room the thumbnails keep clear at the bottom, for the Dock. |
+| `--mac-mission-control-window-shadow` | `var(--mac-shadow-window-inactive)` | Shadow of a window thumbnail at full size; it is scaled with the thumbnail. `none` when the content brings its own. |
+| `--mac-mission-control-opening-scale` | `1.08` | Scale the thumbnails come from and go to as the overview opens and closes. `1` keeps them still, for a page that measures them to lay its own windows over them. |
+
+## Accessibility
+
+- The overlay is a `dialog` named "Mission Control" (pass `aria-label` to rename it). It
+  keeps the keyboard focus inside while it is open. After Escape the focus returns to where
+  it was; after a chosen window it stays where the choice put it.
+- The Spaces bar is a `group` named by `spacesLabel`, with one `button` per space, named by
+  its `label`; the current space has `aria-current`. The add button is named by `addLabel`.
+- The windows are a `group` named by `windowsLabel`, with one `button` per window, named by
+  its `title`, in reading order: row by row, left to right. Pictures, thumbnail content and
+  icons are hidden from assistive technology.
+- When the overview opens, the overlay itself has the focus, so no window looks chosen. Any
+  arrow key then goes to the first window. The arrow keys move along the windows (Right and
+  Down to the next, Left and Up to the previous) or, in the bar, along its buttons; Arrow
+  Down in the bar goes to the first window. Tab goes through every button. Return or Space
+  chooses, Escape closes.
+- The desktop behind the thumbnails is a button named by `closeLabel`, outside the Tab order
+  because Escape does the same.
+- A window's title is shown only under the pointer or the focus; it is always the button's
+  accessible name.
+- With `prefers-reduced-motion` nothing moves; with `prefers-reduced-transparency` the bar is
+  an opaque colour; in forced colours the bar, the thumbnails and the windows have borders.
+
+## Visual comparison
+
+`mission-control.visual.json` compares the Spaces bar, the top 1680 by 148 points of the
+screen, with the Mission Control screenshots in both appearances. The two captures have a
+different space current, so each has an example of its own.
+
+The bar in the screenshots is a material over Apple's desktop picture, which the library
+does not have. The examples paint the bar's fill as captured (its top and bottom rows,
+blended down the bar) and the strip of picture under it, and switch the bar's own tint and
+blur off; thumbnails, ring, names, plus and the edge under the bar are Mission Control's.
+Masked: the four space thumbnails, which in the captures are pictures of Apple's desktops
+and in the examples plain stand-ins (21% of the crop); the `-drawing` comparisons also mask
+the four names, which are text in the fallback font (26% in all), and use threshold 0.05.
+
+Scores from `npm run visual -- mission-control/` in Chromium on Linux with the fallback
+font: the share of pixels that differ by more than the threshold, and the mean colour
+difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `bar-light` | Light-Mission-Control (0, 0, 3360, 296) | 0.73% | 1.89 | 0.60% | 1.77 |
+| `bar-light-drawing` (names masked) | Light-Mission-Control (0, 0, 3360, 296) | 0.93% | 1.36 | 0.03% | 1.17 |
+| `bar-dark` | Dark-Mission-Control (0, 0, 3360, 296) | 0.69% | 1.46 | 0.59% | 1.51 |
+| `bar-dark-drawing` (names masked) | Dark-Mission-Control (0, 0, 3360, 296) | 0.03% | 0.78 | 0.03% | 0.78 |
+
+The window thumbnails are not compared with the screenshots pixel for pixel: there they are
+Apple's applications over Apple's desktop picture. State checks hold them to the measured
+layout instead, in a real browser, on a 1680 by 1050 point desktop painted a flat grey. Two
+windows of the captures' sizes, which overlap on the desktop, come out side by side at
+97.9%: from 18 to 996 points and from 1008 to 1662, as measured in the captures. Further
+checks: the bar's material over the grey, the ring of the current space, the ring and the
+title plate of a window under the keyboard focus and under the pointer, and that Return on a
+window closes the overview.
+
+Measured: the bar's height, the thumbnails' size, position and spacing, their shadow, the
+ring and its colour, the names' position and colour, the plus, the edge under the bar in
+Aqua, the 18 point margins and 12 point gaps of the window thumbnails and that they are
+scaled as one. Provisional:
+
+- the bar's material (25% white in Aqua, 15% black in Dark Aqua, blur 60, saturation 180%):
+  the specification's estimate, because no screenshot shows that desktop picture bare;
+- where the layout sits vertically: it is centred above the Dock inset, which puts the two
+  windows of the captures 10 points higher than they are there;
+- how windows are dealt into several rows, since the captures show a single row;
+- everything about a window under the pointer or the focus (ring, plate, where the title is),
+  the focus rings, the pressed plus, and the opening and closing;
+- the ring's colour does not follow the accent colour: both captures use blue;
+- the names in Aqua are a dark navy that Catalina computes from the picture behind the bar;
+  here it is the captured colour.

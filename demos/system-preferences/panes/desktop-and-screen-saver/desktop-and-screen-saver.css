@@ -1,0 +1,58 @@
+/*
+ * Desktop & Screen Saver pane. Every control is a library component placed by form.tsx; this
+ * file lays out what is inside the frame of the picture browser: the source list beside the
+ * gallery, the gallery's two headings and its rows of pictures.
+ *
+ *   .mac-system-preferences-desktop-and-screen-saver-browser   source list and gallery in a row
+ *   .mac-system-preferences-desktop-and-screen-saver-gallery   the gallery's column, with the
+ *                                                              divider on its leading edge
+ *   .mac-system-preferences-desktop-and-screen-saver-heading   a 22 pt band over a group of
+ *                                                              pictures, its title 3 pt in
+ *   .mac-system-preferences-desktop-and-screen-saver-pictures  four pictures to a row at a
+ *                                                              104 pt pitch, rows 73 pt apart;
+ *                                                              a picture's button keeps 5 pt of
+ *                                                              clear space around the picture
+ *   .mac-system-preferences-desktop-and-screen-saver-source    a row of the source list: its
+ *                                                              icon and its name
+ */
+.mac-system-preferences-desktop-and-screen-saver-browser {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+}
+
+.mac-system-preferences-desktop-and-screen-saver-gallery {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  border-inline-start: 1px solid var(--mac-color-list-border);
+}
+
+/* The band's two lines measure half a point of #cecece and half a point of #e1e1e1 each
+   (#4c4d4e and #393a3b in Dark Aqua): one point of the list border at 60% over the band is
+   their mean. The band ends a point before the frame, as captured. */
+.mac-system-preferences-desktop-and-screen-saver-heading {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 22px;
+  margin-inline-end: 1px;
+  padding-inline-start: 2px;
+  border-block: 1px solid color-mix(in srgb, var(--mac-color-list-border) 60%, transparent);
+  background: var(--mac-color-content-background-alternate);
+}
+
+.mac-system-preferences-desktop-and-screen-saver-pictures {
+  display: grid;
+  grid-template-columns: repeat(4, 101px);
+  gap: 2.5px 3px;
+  padding: 5.5px 8px 6px;
+}
+
+/* The names start 1.5 pt nearer the triangle than an outline's own; an icon is 15 pt wide. */
+.mac-system-preferences-desktop-and-screen-saver-source {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-inline-start: -1.5px;
+}

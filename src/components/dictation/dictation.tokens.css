@@ -1,0 +1,39 @@
+/*
+ * Dictation panel (reference/spec/components/dictation.md). Measured over the default desktop
+ * picture: the sky #7daed9 in Aqua, #2c4568 in Dark Aqua. The filter is the shared
+ * --mac-material-filter-menu.
+ */
+:root {
+  /* [provisional] Aqua is the shared menu material, which the panel measures like (#bde4f8
+     over the sky). Dark Aqua measures #29292b with no blue of the sky in it; its alpha is
+     inferred. */
+  --mac-dictation-fill: light-dark(var(--mac-material-menu), rgb(41 41 43 / 0.96));
+  /* [measured] microphone and title: #376476 to #3f6578, #a2a3a4. These are the vibrant
+     colours as captured over the sky. */
+  --mac-dictation-foreground: light-dark(#3b6477, #a2a3a4);
+  /* [measured] inside of the capsule above the level */
+  --mac-dictation-capsule: light-dark(#ffffff, #a2a3a4);
+  /* [provisional] the level: #424243 is measured in Dark Aqua; the Aqua capture shows no
+     level, so it takes the outline's colour */
+  --mac-dictation-level: light-dark(#3b6477, #424243);
+  /* [measured, computed] #a7cde2 on #bce7f6, #4b4b4d on #292a2b */
+  --mac-dictation-divider: light-dark(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.16));
+  /* [measured, computed] lighter line inside the edge: #c4e6f9 beside #bde4f8, #535355 on
+     #29292b */
+  --mac-dictation-rim: light-dark(rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.2));
+  /* [measured, computed] half-point line outside the edge: #6489ab on #75a6d0, #040608 on
+     #2a3f60 */
+  --mac-dictation-hairline: light-dark(rgb(0 0 0 / 0.16), rgb(0 0 0 / 0.9));
+  /* [measured, computed] fit of the darkening of the sky around the panel: 29% just under it,
+     12% at 25 pt, 4% at 43 pt in Aqua; 42%, 27% and 9% in Dark Aqua. It is the falloff of
+     the window shadow. The hairline is drawn apart, along the pointer. */
+  --mac-dictation-shadow: 0 14px 40px light-dark(rgb(0 0 0 / 0.38), rgb(0 0 0 / 0.55));
+  /* [provisional] no capture shows Done pressed */
+  --mac-dictation-pressed: rgb(0 0 0 / 0.1);
+}
+
+:root,
+[data-appearance] {
+  /* [measured] the rim is one device pixel in Aqua and 1 pt in Dark Aqua */
+  --mac-dictation-rim-width: calc(0.5px + 0.5px * var(--mac-appearance-dark));
+}

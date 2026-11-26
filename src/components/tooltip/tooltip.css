@@ -1,0 +1,67 @@
+/*
+ * Tooltip, or help tag (NSView.toolTip): a square-cornered floating label with a hairline
+ * border and a soft shadow, 11 pt text, no arrow. Every value is provisional; no screenshot
+ * shows one.
+ *
+ * States (set by Base UI on the popup)
+ *   [data-kind="expansion"]    expansion tooltip: the field's own font, laid over the field
+ *   [data-starting-style]      before it has faded in (0.1 s)
+ *   [data-ending-style]        while it fades out (0.5 s)
+ *   [data-instant]             shown or hidden without a fade
+ *
+ * Hooks
+ *   --mac-tooltip-font         font of an expansion tooltip, set on the popup, when its
+ *                              field is not in the regular control font (a popup is rendered
+ *                              in a portal and cannot inherit the field's font)
+ */
+.mac-tooltip-positioner {
+  z-index: 1000;
+}
+
+.mac-tooltip {
+  box-sizing: border-box;
+  max-width: min(300px, var(--available-width, 300px));
+  padding: 2px 4px;
+  border: var(--mac-hairline) solid var(--mac-tooltip-border);
+  border-radius: 0;
+  background: var(--mac-tooltip-fill);
+  box-shadow: var(--mac-tooltip-shadow);
+  color: var(--mac-color-label);
+  font: var(--mac-font-tooltip);
+  letter-spacing: var(--mac-tracking-small);
+  overflow-wrap: break-word;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: opacity 0.5s;
+}
+
+.mac-tooltip:where([data-open]) {
+  transition-duration: 0.1s;
+}
+
+.mac-tooltip:where([data-starting-style], [data-ending-style]) {
+  opacity: 0;
+}
+
+.mac-tooltip:where([data-instant]) {
+  transition: none;
+}
+
+/* Expansion tooltip: the text continues the field's, so it takes the regular control font
+   unless --mac-tooltip-font names the field's own, and the text field's 3.5 pt text origin,
+   and is at least as wide as the field. */
+.mac-tooltip:where([data-kind="expansion"]) {
+  min-width: var(--anchor-width);
+  max-width: var(--available-width, none);
+  padding: 1.5px 3px;
+  font: var(--mac-tooltip-font, var(--mac-font-control-regular));
+  letter-spacing: var(--mac-tracking-regular);
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  .mac-tooltip {
+    border-color: CanvasText;
+  }
+}

@@ -1,0 +1,133 @@
+/*
+ * Path bar (NSPathControl, standard style).
+ *
+ * 25 pt: two 0.5 pt rows, then 24 pt of fill. The rows are one 1px strip whose gradient is
+ * sampled at the centre of each device pixel: the two measured colours at 2x, their mean at
+ * 1x. Only the empty bar is measured; everything about the components is [provisional].
+ *
+ * Parts
+ *   .mac-path-bar-list        the ordered list
+ *   .mac-path-bar-item        one component; all but the last draw a chevron after themselves
+ *   .mac-path-bar-component   the button (or plain text) inside an item
+ *   .mac-path-bar-icon, .mac-path-bar-name
+ * States of a component
+ *   :active, :focus-visible, [data-force~="pressed" | "focus"]
+ *   [data-window-state="main" | "inactive"] *   no focus ring in a window that is not key
+ */
+.mac-path-bar {
+  display: block;
+  /* A bar keeps its height when the window is too short for its content: the body gives way. */
+  flex: none;
+  box-sizing: border-box;
+  height: 25px;
+  padding: 1px var(--mac-space-4) 0;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      var(--mac-path-bar-separator-outer) 25%,
+      var(--mac-path-bar-separator-inner) 75%
+    )
+    top / 100% 1px no-repeat,
+    var(--mac-path-bar-fill);
+  color: var(--mac-color-label);
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-path-bar-list {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-path-bar-item {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  min-width: 0;
+}
+
+/* The last component keeps its full name; the ones before it give way first. */
+.mac-path-bar-item:where(:last-child) {
+  flex-shrink: 0;
+}
+
+/* Chevron, 5 x 8 pt with 6 pt either side, drawn as a clipped block of the current colour. */
+.mac-path-bar-item:where(:not(:last-child))::after {
+  content: "";
+  flex: none;
+  width: 5px;
+  height: 8px;
+  margin: 0 var(--mac-space-3);
+  background: currentColor;
+  color: var(--mac-path-bar-chevron);
+  clip-path: polygon(0 9%, 15% 0, 100% 50%, 15% 100%, 0 91%, 70% 50%);
+}
+
+.mac-path-bar-item:where(:dir(rtl))::after {
+  transform: scaleX(-1);
+}
+
+.mac-path-bar-component {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mac-space-2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-path-bar-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+}
+
+.mac-path-bar-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-path-bar-component:where(button):where(:active, [data-force~="pressed"]) {
+  background: var(--mac-path-bar-fill-pressed);
+}
+
+/* Keyboard focus ring; only in the key window. */
+.mac-path-bar-component:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-path-bar {
+    border-top: 1px solid CanvasText;
+    padding-top: 0;
+    background: Canvas;
+  }
+
+  .mac-path-bar-item::after {
+    color: CanvasText;
+  }
+}

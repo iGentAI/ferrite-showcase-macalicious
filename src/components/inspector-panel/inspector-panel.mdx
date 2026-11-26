@@ -1,0 +1,168 @@
+---
+title: Inspector Panel
+description: An Info window or inspector, a narrow window of collapsible sections that describe the selected item in small text.
+---
+
+<Example name="basic" both />
+
+Finder's Get Info window: a standard title bar with a proxy icon, a header that names the item,
+and sections stacked under 1 pt separators, each with a disclosure triangle and a bold title.
+The same layout serves an inspector, which follows the selection instead of staying with one
+item. Sections are built on
+[Base UI's Collapsible](https://base-ui.com/react/components/collapsible); the frame is the
+library's [Window](/components/window) and [Title Bar](/components/title-bar).
+
+## Usage
+
+```tsx
+import {
+  InspectorPanel,
+  InspectorPanelHeader,
+  InspectorPanelItem,
+  InspectorPanelList,
+  InspectorPanelSection,
+} from "macalicious/inspector-panel";
+import "macalicious/styles.css";
+
+<InspectorPanel title="Report.pdf Info" icon={<DocumentIcon />} onClose={close}>
+  <InspectorPanelHeader
+    icon={<DocumentIcon />}
+    title="Report.pdf"
+    detail="2.4 MB"
+    subtitle="Modified: Today at 9:41 AM"
+  />
+  <InspectorPanelSection title="General:" defaultOpen>
+    <InspectorPanelList>
+      <InspectorPanelItem label="Kind:">PDF document</InspectorPanelItem>
+      <InspectorPanelItem label="Size:">2,412,544 bytes</InspectorPanelItem>
+    </InspectorPanelList>
+  </InspectorPanelSection>
+  <InspectorPanelSection title="Comments:">…</InspectorPanelSection>
+</InspectorPanel>
+```
+
+- A section is collapsed unless `defaultOpen` or `open` says otherwise. Control it with `open`
+  and `onOpenChange` to remember which sections were open.
+- A section's content is free: an `InspectorPanelList` of labelled values, or small controls
+  (`size="small"`) with the section's 12.5 pt side margins.
+- The panel is as tall as its sections, so it grows and shrinks as they open and close, as in
+  Finder. With a `height` the body scrolls instead.
+- The window does not move, order or close itself: a window manager gives it `state` and a
+  position through `style`, moves it from `onDragRegionPointerDown` (a press on the title bar,
+  not on a window control), and unmounts it on `onClose`.
+
+## Guidelines
+
+From the Human Interface Guidelines for macOS,
+[Panels](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/panels/):
+
+- An inspector shows, and sometimes edits, the attributes of the current selection. Keep it
+  up to date: when the selection or its attributes change, the inspector changes with them.
+- An Info window shows the attributes captured when it was opened and keeps showing them when
+  the selection changes. It is a standard window: it does not float above other windows, it
+  can be minimized, and it is listed in the Window menu.
+- Title a panel after its purpose, with a noun or a noun phrase in title-style capitalisation.
+
+Not from that page: Finder's Info window uses small text and small controls throughout
+(measured), and the keyboard behaviour of the section headers (Right Arrow expands, Left Arrow
+collapses) follows the measured spec's reading of the Disclosure Controls page, which was not
+checked here.
+
+## Variants and states
+
+<Example name="sections" both />
+
+| State | Look | Source |
+| --- | --- | --- |
+| Section expanded | Triangle points down; content shown | Measured (General, Open with) |
+| Section collapsed | Triangle points right; header only, 19 pt | Measured (Comments, Preview) |
+| Section disabled | Title dimmed, cannot be toggled | Provisional: no screenshot |
+| Keyboard focus on a header | Focus ring inside the header | Provisional: no screenshot |
+| Inactive window | Standard inactive title bar; content unchanged | Provisional: no screenshot |
+
+## Sizes
+
+One size: small text (11 pt) throughout, a 13 pt bold name in the header. The window is 265
+points wide by default, Finder's width, and is not resizable in width. A list's label column
+fits its longest label; set `--mac-inspector-panel-label-width` on a list, a section or the
+panel to line lists up, as Finder does per section.
+
+## API
+
+### InspectorPanel
+
+<PropsTable name="InspectorPanelProps" />
+
+### InspectorPanelHeader
+
+<PropsTable name="InspectorPanelHeaderProps" />
+
+### InspectorPanelSection
+
+<PropsTable name="InspectorPanelSectionProps" />
+
+### InspectorPanelList
+
+<PropsTable name="InspectorPanelListProps" />
+
+### InspectorPanelItem
+
+<PropsTable name="InspectorPanelItemProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-window-state` | panel | `key`, `main`, `inactive` | Reflects `state`. |
+| `data-panel-open` | section header | present | The section is expanded (Base UI). |
+| `data-disabled` | section, header | present | The section cannot be toggled (Base UI). |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-inspector-panel-label-width` | `max-content` | Width of a list's label column. |
+
+Classes: `.mac-inspector-panel`, `.mac-inspector-panel-body`, `.mac-inspector-panel-header`
+(with `-summary`, `-icon`, `-title`, `-detail`, `-subtitle`), `.mac-inspector-panel-section`
+(with `-header`, `-triangle`, `-title`, `-content`), `.mac-inspector-panel-list` and
+`.mac-inspector-panel-item` (with `-label`, `-value`).
+
+## Accessibility
+
+- The panel is a `region` named by its title.
+- A section's header is one `button` with `aria-expanded`, pointing at its content with
+  `aria-controls`. Space and Return toggle it; Right Arrow expands and Left Arrow collapses.
+  Every header is in the tab order.
+- Collapsed content is not in the DOM (unless `keepMounted`), so it is not read or focused.
+- A list is a description list (`dl`, `dt`, `dd`): each value is announced with its label.
+- The header's icon and the proxy icon are decorative and hidden from assistive technology.
+- In forced-colours mode the separators and triangles use system colours.
+
+## Visual comparison
+
+`inspector-panel.visual.json` compares the top of Finder's Info window (title bar, header and
+the General section) and a pair of section headers (Comments collapsed, Open with expanded)
+with the reference screenshots in both appearances. The proxy icon and the item's icon are
+Apple artwork and the tags field is a token field; the example leaves them out and the
+comparisons mask them.
+
+Scores from `npm run visual -- inspector-panel` in Chromium on Linux with the fallback font:
+the share of pixels that differ by more than the comparison's threshold, and the mean colour
+difference out of 255. A masked comparison also leaves out all text.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `get-info-light` | Light-Finder-Get-Info (112, 76, 530, 572) | 13.57% | 16.31 | 11.14% | 16.01 |
+| `get-info-light-layout` (masked) | Light-Finder-Get-Info (112, 76, 530, 572) | 0.43% | 0.24 | 1.29% | 0.49 |
+| `section-headers-light` | Light-Finder-Get-Info (114, 1086, 526, 84) | 6.31% | 8.84 | 5.39% | 8.89 |
+| `section-headers-light-drawing` (masked) | Light-Finder-Get-Info (114, 1086, 526, 84) | 0.00% | 0.06 | 0.00% | 0.06 |
+| `get-info-dark` | Dark-Finder-Get-Info (112, 76, 530, 572) | 13.64% | 17.07 | 11.17% | 16.47 |
+| `get-info-dark-layout` (masked) | Dark-Finder-Get-Info (112, 76, 530, 572) | 0.23% | 2.60 | 1.11% | 2.78 |
+| `section-headers-dark` | Dark-Finder-Get-Info (114, 1086, 526, 84) | 6.20% | 9.97 | 5.32% | 9.87 |
+| `section-headers-dark-drawing` (masked) | Dark-Finder-Get-Info (114, 1086, 526, 84) | 0.00% | 2.32 | 0.00% | 2.32 |
+
+The dark comparisons' mean difference is the window background: Finder's Info window was
+captured over the desktop picture and is tinted by it (`#323437`), where the library's window
+background is the untinted `#323232`.
+
+Measured: the header, the separators, the section header's height, triangle and title
+positions, the label column and its gutter, the row pitch. Provisional: the disabled section,
+the focus ring, the inactive window. Not built here: the tags field, the permissions table and
+the lock, which are other components placed in a section.

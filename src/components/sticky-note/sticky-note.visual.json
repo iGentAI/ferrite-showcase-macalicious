@@ -1,0 +1,190 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "note-light",
+      "description": "The yellow note of Stickies, key, with its title strip, widgets and text, Aqua. Whole crop.",
+      "example": "visual-note",
+      "appearance": "light",
+      "budget": { "1x": 0.09, "2x": 0.0485 },
+      "deltaBudget": { "1x": 8.4, "2x": 3.7 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Stickies.png",
+        "crop": { "x": 138, "y": 606, "width": 704, "height": 520 }
+      }
+    },
+    {
+      "name": "note-light-masked",
+      "description": "As note-light with the lines of text (and the insertion point under the last one) masked, to score the note, its strip and its widgets alone: the text is set in a stand-in for Helvetica off Apple platforms.",
+      "example": "visual-note",
+      "appearance": "light",
+      "masks": [
+        { "x": 10, "y": 19, "width": 330, "height": 12 },
+        { "x": 10, "y": 47, "width": 330, "height": 56 },
+        { "x": 10, "y": 117, "width": 330, "height": 14 },
+        { "x": 10, "y": 145, "width": 330, "height": 14 },
+        { "x": 10, "y": 173, "width": 330, "height": 28 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0007, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.1, "2x": 0.1 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Stickies.png",
+        "crop": { "x": 138, "y": 606, "width": 704, "height": 520 }
+      }
+    },
+    {
+      "name": "note-dark",
+      "description": "The yellow note with Finder frontmost, so not key: no strip and no widgets, Dark Aqua. Whole crop.",
+      "example": "visual-note",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "budget": { "1x": 0.09, "2x": 0.0485 },
+      "deltaBudget": { "1x": 8.4, "2x": 3.7 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Stickies.png",
+        "crop": { "x": 138, "y": 606, "width": 704, "height": 520 }
+      }
+    },
+    {
+      "name": "note-dark-masked",
+      "description": "As note-dark with the lines of text masked: the text is set in a stand-in for Helvetica off Apple platforms.",
+      "example": "visual-note",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "masks": [
+        { "x": 10, "y": 19, "width": 330, "height": 12 },
+        { "x": 10, "y": 47, "width": 330, "height": 56 },
+        { "x": 10, "y": 117, "width": 330, "height": 14 },
+        { "x": 10, "y": 145, "width": 330, "height": 14 },
+        { "x": 10, "y": 173, "width": 330, "height": 28 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0005, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.1, "2x": 0.1 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Stickies.png",
+        "crop": { "x": 138, "y": 606, "width": 704, "height": 520 }
+      }
+    },
+    {
+      "name": "top-edge-light",
+      "description": "The top edge of the key yellow note over the blue note, Aqua: the shadow on a flat colour, the strip and the zoom box. No text is in the crop.",
+      "example": "visual-top-edge",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": { "1x": 0.0005, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.85, "2x": 0.85 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Stickies.png",
+        "crop": { "x": 470, "y": 586, "width": 330, "height": 54 }
+      }
+    },
+    {
+      "name": "top-edge-dark",
+      "description": "The top edge of the yellow note, not key, over the blue note, Dark Aqua: the shadow and the 0.5 pt outline. No text is in the crop.",
+      "example": "visual-top-edge",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "threshold": 0.05,
+      "budget": { "1x": 0.0005, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.55, "2x": 0.6 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Stickies.png",
+        "crop": { "x": 470, "y": 586, "width": 330, "height": 54 }
+      }
+    },
+    {
+      "name": "left-edge-light",
+      "description": "The left edge of the key yellow note over the blue note, Aqua: the shadow beside the note.",
+      "example": "visual-left-edge",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": { "1x": 0.0005, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.8, "2x": 1 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Stickies.png",
+        "crop": { "x": 118, "y": 624, "width": 40, "height": 24 }
+      }
+    },
+    {
+      "name": "left-edge-dark",
+      "description": "The left edge of the yellow note, not key, over the blue note, Dark Aqua: the shadow and the 0.5 pt outline beside the note.",
+      "example": "visual-left-edge",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "threshold": 0.05,
+      "budget": { "1x": 0.0005, "2x": 0.0005 },
+      "deltaBudget": { "1x": 1.4, "2x": 1.55 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Stickies.png",
+        "crop": { "x": 118, "y": 624, "width": 40, "height": 24 }
+      }
+    },
+    {
+      "name": "states-key",
+      "description": "A blue note as the key note over a yellow note collapsed to its title bar, Aqua. No screenshot shows either.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 100, "height": 52 },
+        "pixels": [
+          {
+            "x": 50,
+            "y": 6,
+            "color": "#6decff",
+            "note": "title strip of a key blue note (spec: Colours, blue strip, inferred by the yellow note's steps)"
+          },
+          {
+            "x": 50,
+            "y": 17,
+            "color": "#aef4ff",
+            "note": "blue body (spec: Colours, blue body, measured)"
+          },
+          {
+            "x": 16,
+            "y": 6,
+            "color": "#aef4ff",
+            "note": "centre of the close box: the body colour (spec: Colours, widget centre, measured on the yellow note)"
+          },
+          {
+            "x": 50,
+            "y": 46,
+            "color": "#feea3d",
+            "note": "the collapsed yellow note is its 12 pt title strip (spec: States, collapsed, inferred; strip colour measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-not-key",
+      "description": "The same notes in a window that is not key, Dark Aqua: the strips take the body colour and the widgets are gone.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "expect": {
+        "size": { "width": 100, "height": 52 },
+        "pixels": [
+          {
+            "x": 50,
+            "y": 6,
+            "color": "#aef4ff",
+            "note": "no strip on a note that is not key: the band is the body colour (spec: States, non-key note, measured)"
+          },
+          {
+            "x": 13,
+            "y": 6,
+            "color": "#aef4ff",
+            "note": "no close box on a note that is not key (spec: States, non-key note, measured)"
+          },
+          {
+            "x": 50,
+            "y": 46,
+            "color": "#fef49c",
+            "note": "a collapsed note that is not key is a 12 pt band in the body colour (inferred)"
+          }
+        ]
+      }
+    }
+  ]
+}

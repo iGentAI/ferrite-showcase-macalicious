@@ -1,0 +1,258 @@
+---
+title: Stickies
+description: The Stickies notes of macOS 10.15 on a small desktop with the app's menu bar; notes are typed in, styled from the Font menu, its key equivalents and the Fonts and Colors panels, moved, resized, collapsed, recoloured, made and closed, and last for the page session.
+order: 80
+---
+
+<Example name="basic" />
+
+Type in a note: its first line is its title. Drag a note by the 12 pt band at its top, resize
+it by its edges, collapse it to its title bar with the box at the right or a double click on
+the band, and close it with the box at the left. Click the note behind to bring it forward:
+only the front note has the coloured title strip and its three boxes. The menus act on the
+front note: **File** makes a new note and closes one, **Font** styles the selected text,
+**Color** gives the note one of the six note colours, and **Window** collapses it, zooms it,
+makes it see-through and lists the notes. Nothing is stored, so a reload brings the two notes
+of the reference screenshots back.
+
+## Text styles
+
+A note's text is Helvetica 12 on a 14 pt line, its first line bold, as in the captures. The
+Font menu styles the selection, or what is typed next at the insertion point:
+
+| Command | Key | Does |
+| --- | --- | --- |
+| Show Fonts | `Command-T` | Shows the [Fonts panel](/components/font-panel): family, typeface, size, underline, strikethrough and text colour. |
+| Bold, Italic, Underline | `Command-B`, `-I`, `-U` | Sets or clears the style; the item is checked where the insertion point has it. |
+| Bigger, Smaller | `Command-+`, `Command--` | One point more or less. A line of bigger text is taller in proportion, as AppKit lays it out. |
+| Show Colors | `Shift-Command-C` | Shows the [Colors panel](/components/color-panel), which colours the text (the Color menu colours the note). |
+| Text > Align Left, Center, Justify, Align Right | `Command-{`, `Command-\|`, none, `Command-}` | Aligns the paragraphs the selection touches; the item of the insertion point's paragraph is checked. |
+
+Command is the Control key off Apple platforms. The keys work while a note has the keyboard.
+The same menu is the Font submenu of a note's contextual menu, which is what the desktop that
+hosts Stickies offers, since its menu bar does not hold the app's commands. A menu or a panel
+takes the keyboard while it is used; the note is given its selection back before each command,
+and keeps the keyboard when a panel is shown, as a Catalina document does. The panels follow
+the insertion point. The commands are the browser's own editing commands, through
+`macalicious/lib/rich-text`, so each one is in the browser's undo history.
+
+## What it shows
+
+Stickies has no document window: the app is its notes, on the desktop, under its menu bar.
+
+- A [Sticky Note](/components/sticky-note) per note: the coloured window, its title strip and
+  widgets, and the text, which the browser edits in place.
+- A [Window Manager](/components/window-manager) as the desktop, with each note in a
+  [Managed Window](/components/managed-window) through its `render` form: the manager moves,
+  resizes, orders and focuses the notes and decides which one is key.
+- A [Menu Bar](/components/menu-bar) with the menus of Stickies, built from
+  [Menu Items](/components/menu-item): commands, checkbox items for the text styles and the
+  see-through note, radio groups for the colour and the alignment, and the Text
+  [Submenu](/components/submenu). It sits in the manager's chrome layer, above the notes, and
+  the manager keeps the notes' title bars below it.
+- The [Fonts panel](/components/font-panel) and the [Colors panel](/components/color-panel),
+  as utility panels of the same window manager: they float above the notes, and while one is
+  key the note in front stays main and the menus act on it.
+- A [Desktop](/components/desktop) with two [Desktop Icons](/components/desktop-icon), as in
+  the captures, under the notes.
+
+A collapsed note is 12 pt tall. The demo also makes its managed window 12 pt tall, by changing
+the window's frame in the manager's store (`useWindowManagerStore().patch`), so that what was
+under the rest of the note can be clicked; expanding the note gives it its height back.
+
+## Hosting the notes
+
+<Example name="hosted" />
+
+`StickiesNote` is one note as a window. Its root is the library's `StickyNote`, which is a
+window of its own, and it takes the props of a `Window`, so it does not assume it fills the
+page: place it with `style`, or let a window manager give it `state`, the size and the eight
+props that a [Managed Window](/components/managed-window)'s `render` form supplies. The
+component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { app } from "./app";
+
+app.notes.map((note) => (
+  <ManagedWindow
+    key={note.id}
+    id={note.id}
+    app={app.id}
+    title={app.name}
+    zoomButton="zoom"
+    minWidth={app.minSize.width}
+    minHeight={app.minSize.height}
+    defaultFrame={note.frame}
+    render={(props) => (
+      // Each window shows and saves its own note.
+      <app.component {...props} noteId={note.id} color={note.color} defaultText={note.text} />
+    )}
+  />
+));
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `color` | `string` | One of `"yellow"`, `"blue"`, `"green"`, `"pink"`, `"purple"`, `"gray"`; anything else is yellow. |
+| `defaultText` | `string` | The text the note opens with; its first line is set in bold. Read once. |
+| `defaultHtml` | `string` | The text with its formats, as `onTextChange` gave it. Only what formatting writes is kept (`richTextFromHtml`): nothing in it runs or loads. Shown in place of `defaultText` when it reads as that text, and otherwise taken as out of date. Read once. |
+| `onTitleChange` | function | Called with the first line that is not blank when typing changes it. |
+| `onTextChange` | function | Called with the whole text, one `\n` per line break, and with the text and its formats as HTML, when typing or a format changes them. |
+| `onFormatChange` | function | Called with the format where the insertion point is (`RichTextFormat`) when it changes. |
+| `onShowPanel` | function | Called with `"fonts"` or `"colors"` when the note is asked for a panel, by an app that shows one of each for all its notes. Without it the note shows them itself: as windows of a desktop that gives it `DesktopWindow`, as utility panels of the window manager it is in, or over the page. In a window manager or on a desktop the notes still keep one of each between them: a note that shows a panel closes the same panel of the other notes there, so the panel acts on the note that showed it last. |
+| `actionsRef` | ref | The note's text commands, for a menu bar or panels outside it: `runCommand` (a command of the Font menu), `applyFormat` (a panel's change) and `restoreSelection`. |
+| `DesktopWindow` | component | Given by a desktop whose descriptor says `windows`: the note's panels open as its windows. |
+| `maxLength` | `number` | The most characters the text holds (Unicode characters, as the application counts them), line breaks counted; typing or pasting past it is refused, and an edit the browser makes without asking (a line break that becomes a block, text from an input method) is undone when it takes the kept text past it. No limit by default; `StickiesDesktopNote` holds at most 20,000, what the application keeps. |
+| `unsaved` | `boolean` | Marks the note's changes as not saved: the close box is filled (`data-unsaved` on the note) and the note is described as "Not saved". Default `false`; `StickiesDesktopNote` sets it while a change is not stored. |
+| `onColorChange` | function | Called with a colour chosen from the note's contextual menu, which then lists the six colours of the Color menu before its other rows, and from Command-1 to Command-6. |
+| `desktopMenus` | object | Rows of the desktop's File and Window menus (`file`, `window`), shown while the note is the one used last. |
+| `keyCommands` | array | Key equivalents the note answers while it has the keyboard, each `[key, what it does]`. |
+| `startFormat` | object | The font the first text typed in an empty note takes. |
+| `onFindElsewhere` | function | Asked when Find Next or Find Previous passes the note's last match: what opens the find in another note, or `undefined` for the find to wrap. |
+| `collapsed`, `defaultCollapsed`, `onCollapsedChange` | as on `StickyNote` | The note collapsed to its title bar. |
+| `translucent` | `boolean` | The see-through note. |
+| `onClose` | function | The close box. |
+| `onZoom` | function | The zoom box; called with the click. |
+| `onDragRegionPointerDown` | function | A press with the primary button on the title bar, outside its three boxes. |
+| `onMinimize`, `zoomRole`, `minimizeDisabled`, `zoomDisabled`, `onDragRegionDoubleClick` | as a managed window gives them | Taken and not used: a note has no minimize button, its zoom box has one drawing and no disabled look, and a double click on its title bar collapses it. |
+| `width`, `height` | `number \| string` | The frame; 352 by 260 by default, as captured. |
+| the rest | `WindowProps` | `state`, `style`, `className`, `ref`, pointer and focus events and so on. `variant` and `fullScreen` are taken and have no effect. |
+
+`Stickies` is the whole of the first example: its root is the `WindowManager`, it takes that
+component's props (give it a size with `style`; it is 480 pt tall by default) and
+`defaultNotes`, the notes it opens with.
+
+`app.ts` exports the descriptor a desktop page reads, as `stickiesApp` and as `app`: `id`,
+`name`, `component` (`StickiesDesktopNote`, a `StickiesNote` with the same props),
+`defaultSize` (352 by 260), `minSize` (120 by 48),
+`resizable` (`true`), `windows` (`true`: the note opens every other saved note and its Fonts and
+Colors panels as windows of the desktop), `menus`, the menu titles after the Apple menu, and
+`notes`, the two notes the app opens with: each one's `id`, `color`, `text` and `frame`.
+
+Served by the macalicious-desktop Ferrite application (`ferrite-apps/desktop`), the desktop's
+note is saved: `StickiesDesktopNote` opens with the text, formats and colour the browser
+session saved through `/api/stickies/data`, saves its text and formats as they are typed and
+styled and its colour as it is chosen from the note's contextual menu (a colour change alone
+is saved too, and keeps the formats), so it survives a reload. Each saved note keeps `text`,
+its plain text, which names the note, is searched by Spotlight and is held to 20,000
+characters, and `html`, the same text with its formats: the markup the note's editor writes,
+at most 100,000 bytes. A picture dropped from Finder or pasted is part of that markup, as a
+data address of a PNG, JPEG, WebP or GIF redrawn to at most 40,000 bytes. The application refuses
+any other markup; the page cleans what it sends and what it reads, and a note whose formats would
+be longer is saved as its text alone.
+A note saved before formats were kept opens as its text, its first line bold. On a desktop that
+gives it `DesktopWindow` every saved note opens as a window at its saved frame and keeps its
+frame, collapse and translucency; the window the desktop opened holds the first note, and when
+that note is removed the next one takes the window. The note in front answers File > New Note
+and Close (which asks, then removes the note), Window > Collapse, Floating Window, Translucent,
+Use as Default and Arrange By (by colour, by title, or as the notes were made, since no note
+keeps a date). Use as Default and the floating notes are kept with the person's desktop values.
+Without a `DesktopWindow` it shows the session's first saved note, or the one its `noteId` names
+(give each note window its
+own); a note whose `noteId` changes opens that note's own text and colour, and never saves one
+note's content under another id. Saving changes only that note's text, formats and colour, and
+keeps its frame and the other notes. `color`, `defaultText` and `defaultHtml` are only what a
+note not saved yet opens with; the saved colour wins, and a colour the host gives later is not
+taken.
+
+The application keeps a revision of the session's notes, and a save names the revision it was
+made on; one save is under way at a time. A save that met a network error, or had no answer within 15 seconds, is
+sent once more, unchanged. When another window saved first, or a save's outcome is not known,
+the change is dropped: every note reads the stored notes and shows them. When two windows edit
+at the same time, the later conflicting edit is discarded. When the stored notes are the page's own save, stored
+though its answer never came, nothing is dropped and the changes made meanwhile are saved. A
+save the application refuses as it is also marks the note `unsaved`, until a later change is
+stored. The note cannot be edited until the session's notes are read, and nothing is saved when
+they could not be. Only
+the desktop build made for that application turns this on (`VITE_MACALICIOUS_API=1`); on this
+site and anywhere else it is a plain `StickiesNote` that fetches nothing.
+
+In a manager that does not know about notes, a collapsed note keeps its window's frame: the
+note is 12 pt tall at the top of an otherwise empty window. A host that wants the window to
+shrink changes the frame as this demo does.
+
+## Accessibility
+
+- Each note is a `group` named by its title, the first line of its text, or "Empty note". Its
+  text is a multi-line `textbox` named "Note".
+- A note is not a tab stop. Focus that a window manager gives to a note goes on to its text,
+  so typing lands in the note that was brought forward.
+- The close, zoom and collapse boxes are buttons; the collapse box is a toggle button. Only
+  the key note shows them, and only its boxes are in the Tab order. A double click on the
+  title bar is a shortcut for the collapse box, and Window > Collapse does the same from the
+  menu bar.
+- The menu bar is a `menubar`; the mark at its left is named "Apple". The colours and the
+  alignments are radio items, and Bold, Italic, Underline and the see-through note are
+  checkbox items, so the menus say what the front note and the text at its insertion point
+  have. Each Font command announces its key equivalent (`aria-keyshortcuts`).
+  The Window menu lists the notes by title and says which one is in front; choosing one
+  brings it forward and moves the focus into it.
+- The Fonts and Colors panels are dialogs named by their titles. Their controls take the
+  keyboard while they are used; the note gets it back, with its selection, for each change.
+- The window manager's own keys work on the front note: with Control-Option held, the arrow
+  keys move it, Shift and the arrow keys resize it, and W closes it.
+- The desktop is a `group` named "Desktop" and its two icons are toggle buttons.
+- The text is black on the note colour in both appearances.
+
+## Fidelity
+
+`stickies.visual.json` compares the demo with the two Stickies screenshots, which show the
+whole 1680 by 1050 pt screen. Two parts of it are compared: the 373 by 282 pt box around both
+notes, in both appearances, and the left end of the menu bar in Aqua. In the Aqua capture
+Stickies is frontmost and the yellow note is key; in the Dark Aqua capture Finder is frontmost,
+so the comparison renders the page as an inactive window and no note has a strip. Scores from
+`npm run visual -- stickies/` in Chromium on Linux with the fallback fonts: the share of
+pixels that differ and the mean colour difference out of 255.
+
+| Comparison | 1x | 2x |
+| --- | --- | --- |
+| `notes-light` | 8.1%, 7.8 | 6.1%, 6.8 |
+| `notes-light-drawing` | 0.1%, 0.3 | 0.1%, 0.3 |
+| `notes-dark` | 8.1%, 7.7 | 6.0%, 6.8 |
+| `notes-dark-drawing` | 0.1%, 0.3 | 0.1%, 0.3 |
+| `menu-bar-light` | 15.5%, 17.4 | 12.5%, 19.1 |
+| `menu-bar-light-drawing` | 0.0%, 3.5 | 0.0%, 3.8 |
+
+Measured in the screenshots and reproduced: the two notes' sizes (355 by 268 and 352 by 260
+pt), the front note 21 pt right of and 22 pt below the one behind, their colours, the key
+note's strip and widgets, the shadow of the front note on the other, the Dark Aqua outline,
+the text's place, and the menu titles.
+
+What differs, and why:
+
+- **Text.** The notes' text is set in a stand-in for Helvetica off Apple platforms, whose
+  baseline lies half a point lower, and the menu titles in the fallback system font. That is
+  the difference between a comparison and its `-drawing` companion, where the text is masked.
+  In `menu-bar-light-drawing` the mask runs to the crop's trailing edge, because the first
+  letters of Help reach past 392 pt in the fallback font.
+- **Desktop picture.** The Catalina pictures are Apple's and are not shipped. The demo paints
+  a plain gradient from the sky colour measured under the menu bar, so the two corners of the
+  notes' box that show the picture are masked, and the menu bar's material lies over a flat
+  sky. The backdrop is a plain gradient standing in for the wallpaper, not a drawing of it.
+- **Insertion point.** The Aqua capture has it under the yellow note's last line; the
+  comparison's note does not have the keyboard focus.
+
+Not compared, and why:
+
+- **The rest of the screen**: the desktop picture, the volume icons (stand-in drawings here)
+  and the Dock. This demo has no Dock of its own; the [Desktop](/demos/desktop) demo, which
+  hosts Stickies, has the library's [Dock](/components/dock).
+- **The menu bar in Dark Aqua and its right end.** The Dark Aqua capture shows Finder's
+  menus, and the status items at the right are Apple's images; the demo's bar has none.
+- **Provisional, because no screenshot shows them:** a blue note as the key note, the green,
+  pink, purple and grey notes, a collapsed note, a see-through note, a new note's size
+  (300 by 200 pt) and place (20 pt right of and below the front note), the Font menu's items
+  and their order (AppKit's standard Font menu with Stickies' Text submenu), and where the
+  Fonts and Colors panels open (at the top right of the desktop).
+
+Not built:
+
+- In the demo's own menu bar the Edit and Help menus and the About and Quit commands list their
+  items dimmed. The browser edits the text, with its own keys for cut, copy, paste and undo. Kern,
+  ligatures, baseline, Copy Style and Paste Style, pictures in a note, spelling and import and
+  export are not built.
+- On the desktop that hosts Stickies, File > Close Window is the desktop's own: it closes the
+  note's window without removing the note, and on the window the desktop opened, every note's.
+- Clicking the desktop does not bring Finder forward, so one note always stays key.
+- On the desktop, Window > Zoom fits the note to its text and back, as its zoom box does; a real Mac's Stickies does the same.

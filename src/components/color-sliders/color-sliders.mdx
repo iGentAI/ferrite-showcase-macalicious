@@ -1,0 +1,111 @@
+---
+title: Color Sliders
+description: The sliders picker of the Colors panel, which sets a colour's components one by one.
+order: 55
+---
+
+<Example name="basic" both />
+
+The second picker of the [Colors panel](/components/color-panel) (`NSColorPanel`, modes
+`gray`, `RGB` and `HSB`) sets a colour component by component: a pop-up button chooses the
+colour model, each component has a slider and a number field, and a field holds the colour as
+six hexadecimal digits. It is assembled from the library's
+[`PopUpButton`](/components/pop-up-button), [`Slider`](/components/slider) and
+[`TextField`](/components/text-field), which are built on Base UI's Select, Slider and Input.
+
+**No reference screenshot shows the Colors panel.** The controls are the measured ones; their
+arrangement here is an estimate, tagged provisional.
+
+## Usage
+
+```tsx
+import { ColorSliders } from "macalicious/color-sliders";
+import "macalicious/color-sliders.css";
+
+<ColorSliders defaultValue="#ff9300" onValueChange={setColor} />
+<ColorSliders model="hsb" onModelChange={setModel} value={color} onValueChange={setColor} />
+```
+
+The value is a colour as `#rrggbb`; the opacity of a `#rrggbbaa` value is kept and reported
+back. Or copy the source into your project: `npx macalicious add color-sliders`. See
+[Installation](/installation).
+
+<Example name="models" />
+
+`ColorSlidersChannel` is one row on its own: a name, a slider from 0 to `max` and its number
+field. The Colors panel uses it for the opacity.
+
+## Guidelines
+
+Apple's Human Interface Guidelines do not describe the pickers of the colour panel; the
+documentation of
+[NSColorPanel](https://developer.apple.com/documentation/appkit/nscolorpanel) names them as
+its modes. In practice:
+
+- Offer sliders where people need an exact colour, or need to reproduce one from its numbers
+  or its hex value.
+- These are parts of a colour panel. To let people set the colour of something, show a
+  [colour well](/components/color-well) that opens the panel.
+
+## Variants and states
+
+| Colour model | Sliders | Notes |
+| --- | --- | --- |
+| `gray` | Brightness, 0 to 100 | Moving it makes the colour a grey: the saturation becomes 0. |
+| `rgb` (default) | Red, Green and Blue, 0 to 255 | |
+| `hsb` | Hue, 0 to 360; Saturation and Brightness, 0 to 100 | The hue is kept while the colour is black or grey. |
+
+AppKit's panel also has CMYK sliders and a choice of colour space; this component has neither:
+it works in sRGB, the colour space of the hex value it reports.
+
+The states are those of the controls it is built from: the sliders' tracks are tinted with the
+accent colour only in a key window, the fields and the pop-up button show the focus ring, and
+so on. The number field of a component takes whole numbers in its range and ignores anything
+else; the hex field shows what is typed until it is left and takes it as soon as it is six
+hexadecimal digits.
+
+## Sizes
+
+The picker is 200 pt wide by default and follows a `width` set with CSS. Its controls are
+small ones, as in AppKit's panel; there is no `size` prop.
+
+## API
+
+<PropsTable name="ColorSlidersProps" />
+
+<PropsTable name="ColorSlidersChannelProps" />
+
+Both pass every other `<div>` prop to their root element.
+
+| Class | Element |
+| --- | --- |
+| `mac-color-sliders` | The root |
+| `mac-color-sliders-channel`, `mac-color-sliders-name` | One row, and its name |
+| `mac-color-sliders-hex` | The label that holds the hex field |
+
+The component has no data attributes and no CSS variables of its own.
+
+## Accessibility
+
+- Every control is in the tab order and has a name: the pop-up button is "Color model", each
+  slider has its component's name ("Red"), each number field that name and "value" ("Red
+  value"), and the hex field is labelled by its visible text, "Hex Color #".
+- The sliders are native range inputs: the arrow keys change the value by one, Page Up and
+  Page Down by more, Home and End go to the ends.
+- Every value a slider sets can also be typed, so no colour needs dragging.
+
+## Visual comparison
+
+No screenshot shows the Colors panel, so `npm run visual -- color-sliders` has no crop to
+score against. Its checks render the picker in a real browser, at 1x and 2x, and hold chosen
+pixels to colours measured on the library's slider and text field (`color-sliders.visual.json`):
+
+| What is checked | How it is brought about | Source of the values |
+| --- | --- | --- |
+| Each track is filled as far as its component's value, and the fields have the text field's fill, in both appearances | the RGB sliders of `#ff9300` | Filled and unfilled track measured on the Displays and Sound panes; the field's fill on Go to Folder |
+| A slider follows the keyboard | Tab to Blue, End | The same |
+| A slider follows its number field | Green's field emptied with Backspace | The same |
+
+Provisional: the arrangement (the name above each slider, the widths of the fields, the
+place of the hex field). Not checked by pixels: the HSB and grey-scale models and the hex
+field, which unit tests cover. Not checked anywhere: Firefox and Safari.

@@ -1,0 +1,182 @@
+---
+title: Storage Management
+description: The Storage Management window of macOS 10.15 with its sidebar of categories and sizes, the four recommendations whose buttons carry them out, and each category's files in a sortable table from which the selected file can be deleted.
+layout: full
+order: 26
+---
+
+<Example name="basic" />
+
+Press a recommendation's button: Store in iCloud…, Optimize… and Turn On… carry the
+recommendation out and the row then says Completed, and Review Files opens Documents. Select a
+category in the sidebar for its files, sort them by a heading, select one and press Delete…:
+the category's size in the sidebar and the free space in the window's title follow. The
+recommendations and the sidebar are those of the reference screenshots; the files are
+invented, the icons are plain stand-in shapes, and nothing on the machine the page runs on is
+read or changed.
+
+## What it shows
+
+- A [Window](/components/window) with the plain 22 pt [Title Bar](/components/title-bar): the
+  [Window Controls](/components/window-controls), all three enabled, and a title computed from
+  the disk's name, the free space and the capacity.
+- The sidebar: a [Sidebar](/components/sidebar) set with its custom properties to 28 pt rows
+  that touch, 20 pt glyphs and a 6 pt label gap. Recommendations comes first, a
+  [Separator](/components/separator) under it, then the categories that can be opened, each
+  with its size as the row's accessory, a second separator, and the categories that cannot:
+  System and Other are disabled rows, dimmed and skipped by the pointer and the keyboard. The
+  selection is emphasised while the sidebar has the keyboard focus in the key window.
+- A [Split View](/components/split-view) with a fixed divider: the sidebar keeps its 200 pt.
+- Recommendations: a list in a [Scroll View](/components/scroll-view). Each row has an
+  [Image View](/components/image-view) as the stand-in for its 44 pt icon, a bold title and
+  12 pt text set with [Labels](/components/label), a 127 pt [Push Button](/components/push-button)
+  centred on the row, and a separator under it. A recommendation that was carried out shows a
+  check mark and "Completed" in place of its button.
+- A category: a [Table View](/components/table-view) of its files with the columns Name, Kind,
+  Last Accessed and Size, whose every heading sorts (sizes as numbers, dates by day), over a
+  bar with the number of files or the selected file and the Delete… button. A category with no
+  files says so with an [Empty State](/components/empty-state). The order is shared by all
+  categories, and each keeps its selected file while another row is shown.
+
+<Example name="documents" />
+
+Storage Management has no toolbar and no search field, so this demo has none either. Catalina
+asks for confirmation before it turns a recommendation on or deletes a file; the demo has no
+confirmation sheet: it acts at once and then tells its host, which cannot cancel the change.
+
+## Hosting the window
+
+`StorageManagement` renders the library's `Window` as its root and passes every `Window` prop
+to it, so it does not assume it fills the page. Place it with `style`; a window manager gives
+it `state`, the size, and eight more props that the component hands to the window controls and
+the title bar. These are the props a [Managed Window](/components/managed-window)'s `render`
+form supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { storageManagementApp } from "./app";
+
+<ManagedWindow
+  id={storageManagementApp.id}
+  defaultFrame={{ x: 80, y: 60, ...storageManagementApp.defaultSize }}
+  minWidth={storageManagementApp.minSize.width}
+  minHeight={storageManagementApp.minSize.height}
+  render={(props) => <storageManagementApp.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `categories` | `StorageCategory[]` | The rows under Recommendations, each with its size and files; the sidebar of the light screenshot by default. |
+| `diskName`, `capacity`, `available` | `string`, bytes, bytes | The window's title: "Macintosh SSD", 249.85 GB and 195.81 GB by default. |
+| `selectedId`, `defaultSelectedId`, `onSelectedIdChange` | `string` and a function | The selected row, controlled or not: `"recommendations"` or a category's id. An id that names no row that can be opened shows Recommendations. |
+| `material` | `"translucent" \| "opaque"` | The sidebar's surface; translucent by default, opaque on a plain page. |
+| `onRecommendation` | `(id) => void` | A recommendation's button: `"icloud"`, `"optimize"`, `"trash"` or `"clutter"`. |
+| `onDelete` | `(file, categoryId) => void` | Delete… removed a file. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 801 by 532 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `storageManagementApp` and as `app`:
+`id`, `name`, `component`, `defaultSize` (801 by 532), `minSize` (640 by 320), `resizable` and
+`menus`, the menu titles after the Apple menu. The [Desktop](/demos/desktop) finds it there
+and launches the window from its Dock.
+
+The content is data (`storage-management-data.ts`): a category has an `id`, a `name`, a `size`
+in bytes, optional `files` and `description`, and `selectable: false` when it cannot be opened.
+`defaultCategories` is the sidebar of the light screenshot and `darkCaptureCategories`, with
+`darkCaptureAvailable`, that of the dark one. The pure functions are there too: `formatSize()`
+and `formatDate()`, `sortFiles()`, `deleteFile()`, `categorySize()`, `availableSize()`,
+`windowTitle()` and `resolveSelection()`. A size that is nothing, negative or not a number is
+written "Zero KB"; a category is taken to be at least as large as the files it lists; a
+category whose id is taken, or is `"recommendations"`, is not listed.
+
+## On the desktop's Ferrite application
+
+When the `macalicious-desktop` Ferrite application serves the desktop (`ferrite-apps/desktop`),
+`DesktopStorageManagement` (`storage-management-desktop.tsx`) reports the signed-in person's
+**Ferrite Drive** instead of the captured Mac. The title gives the free space of the drive's
+quota (128 MiB a person). The sidebar lists Documents, Photos, Music, Movies and Other Files in
+the drive, each content counted once however many copies name it, the Trash, **Large Files** (5
+MB or more, largest first), **File Browser** (every file of the drive with its folder) and **App
+Data**, the documents the desktop's apps keep for the person in Ferrite's store, which do not
+count against the quota; a **Kept by** row for each app shows what it holds, and Unsupported Apps
+is dimmed, as a browser runs no Mac applications. Recommendations offer Empty
+Trash, Review Large Files and Reduce Clutter, each carried out for real: Empty Trash and
+Delete… on a drive file go through the drive's own routes (`/api/files/ops`), and Delete… on
+an app's document through that app's own `DELETE` route. The report comes from
+`GET /api/storage-management/usage` (`ferrite-apps/desktop/src/apps/storage_management`).
+
+Show in Finder, on a drive file, asks Finder to show it through the desktop's open-file channel
+(`demos/finder/finder-open.ts`, app `finder`) and opens Finder, which shows the file's folder
+with the file selected. Delete… and Empty Trash ask first, as macOS does: a drive file and the
+Trash are erased for good. Old Messages attachments are not offered: this build keeps none.
+
+## Accessibility
+
+- The window is a `region` named by its title, so the free space is part of its name.
+- The sidebar is a `tree` named "Categories" and one tab stop: the up and down arrow keys move
+  the selection, Home and End go to the first and last row, and typing selects by name. A
+  category's row is named by its name and its size ("Documents 6.92 GB"). System and Other are
+  `aria-disabled` and are never selected. The glyphs and the lines are decoration.
+- The recommendations are a list named "Recommendations"; each title is an `h2`. A
+  recommendation that was carried out announces "Completed" as a `status`.
+- A category's pane is a `region` named after it. Its table is a `grid` named after the
+  category ("Documents files") and one tab stop; each heading is a button, and its column
+  reports the order with `aria-sort`. The line beside Delete… is a `status`: the number of
+  files and their size, or the selected file.
+- Delete… is disabled until a file is selected. The fixed divider is not a tab stop.
+
+## Fidelity
+
+`storage-management.visual.json` compares the whole window with the Storage Management
+screenshots in both appearances, each as captured and again as `-layout` with the text and the
+stand-in artwork masked. The dark screenshot lists Podcasts and Trash as well, has Other alone
+under the second line and 193.78 GB free, so it has an example of its own. The accent
+selection of the screenshots needs the keyboard focus, which the comparisons give the sidebar
+with a real click. Scores from `npm run visual -- storage-management/` in Chromium on Linux
+with the fallback font: the share of pixels that differ and the mean colour difference out of
+255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 7.50% | 7.83 | 6.22% | 7.45 |
+| `window-light-layout` (masked) | 0.51% | 0.46 | 0.02% | 0.33 |
+| `window-dark` | 7.67% | 8.33 | 6.29% | 7.83 |
+| `window-dark-layout` (masked) | 0.52% | 1.07 | 0.01% | 0.88 |
+
+The masks of `window-light-layout` cover 31.6% of the crop and those of `window-dark-layout`
+32.8%: the title, the glyphs, names and sizes of the sidebar, the icon and text of each
+recommendation, and the button titles. A fifth comparison, `documents-light`, checks a state
+no screenshot shows: after a click on Documents and one on its first file it reads the
+emphasised selection of the table, the grey selection of the sidebar that gave up the focus,
+the sidebar's fill where Recommendations was selected, and the bar under the table.
+
+Measured in the screenshots and reproduced: the 801 by 532 pt frame, the 22 pt title bar, the
+200 pt sidebar and the 1 pt divider; the 28 pt rows with Recommendations directly under the
+title bar, the glyphs 12 pt from the window's edge, the names 38 pt from it and the sizes
+ending 9 pt before the divider; the two lines of the sidebar, 3 pt from the rows around them
+and 8 pt from each edge, in their measured colour; the name and glyph colours of System and
+Other, whose sizes are not dimmed; the recommendations 113 pt apart (128 pt with three lines
+of text) with their lines 21 pt and 22 pt from the pane's edges; the icons 35 pt from the
+pane's edge, the text 18 pt after them, breaking where the capture breaks it; and the 127 pt
+buttons 34.5 pt from the window's edge, centred on their rows.
+
+What differs, and why:
+
+- **The icons and glyphs** are Apple's artwork and are not reproduced: the four 44 pt icons of
+  the recommendations are plain rounded squares, the glyph of Recommendations a plain disc and
+  those of the categories plain rounded squares, in neutral token colours. The `-layout`
+  comparisons mask them.
+- **Text.** Set in the fallback font off Apple devices, which is nearly all of the unmasked
+  scores.
+- **The fills.** The sidebar is the library's opaque sidebar colour (`#e7e8e8`, `#2c2d2f`)
+  where the captures hold `#e7e7e5` and `#2b2c2d`, and the dark content is `#1e1e1e` where the
+  capture, tinted by the desktop picture, holds `#1e1e20`: the mean difference of the masked
+  comparisons.
+- **Not in a screenshot (provisional):** a category's pane (its description, table, columns,
+  bar and Delete… button, and the files themselves), a completed recommendation, the sidebar
+  when it does not have the keyboard focus, the window when it is not key, and every size
+  other than the captured one.

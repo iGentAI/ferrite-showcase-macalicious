@@ -1,0 +1,42 @@
+/*
+ * Quick Look panel tokens (reference/spec/components/quick-look-panel.md). Measured on
+ * Light-/Dark-Finder-Quick-Look, where the panel floats over the Catalina desktop picture: the
+ * material's colours are recovered from composites over that picture.
+ */
+:root {
+  /* The bar and frame: a tint over the blurred, saturated backdrop. Light: the backdrop pushed
+     60% towards white (#b0d6f2 over sky #6296c3). Dark: rgb(70 70 70) at 0.42 (#263549 over
+     desktop #0e284b). [measured, computed] */
+  --mac-quick-look-panel-material: light-dark(rgb(255 255 255 / 0.6), rgb(70 70 70 / 0.42));
+  /* [provisional] the blur radius cannot be read from a still; the saturation fits the tint */
+  --mac-quick-look-panel-filter: blur(40px) saturate(1.8);
+  /* Dark only: the 1 pt highlight inside the outer hairline, #4e5f6c over the bar [measured,
+     computed] */
+  --mac-quick-look-panel-rim: light-dark(transparent, rgb(255 255 255 / 0.2));
+  /* Title and the two discs: a vibrant label, #3a5b71 over the light bar and #a8afc9 over the
+     dark one; stored as its neutral equivalent [provisional] */
+  --mac-quick-look-panel-label: light-dark(rgb(0 0 0 / 0.6), rgb(255 255 255 / 0.6));
+  /* Buttons: white; in Dark Aqua white at 30% over the bar (#656e85 over #283448) [measured,
+     computed] */
+  --mac-quick-look-panel-button: light-dark(#ffffff, rgb(255 255 255 / 0.3));
+  /* [provisional] pressed: not shown */
+  --mac-quick-look-panel-button-pressed: light-dark(#e3e3e3, rgb(255 255 255 / 0.42));
+  /* Half-point edge of a light button: #a5b8cb above and #9db2c4 beside, over the bar
+     #c3dbef; below it #8da1b2 and then a faint row #aac2d2, which the edge and the shadow
+     give together. None in Dark Aqua. [measured, computed] */
+  --mac-quick-look-panel-button-edge: light-dark(rgb(0 0 0 / 0.2), transparent);
+  --mac-quick-look-panel-button-shadow: light-dark(rgb(0 0 0 / 0.12), transparent);
+  /* Dark only: the first device-pixel row of a button, #8495ab over the fill #636e87
+     [measured, computed] */
+  --mac-quick-look-panel-button-highlight: light-dark(transparent, rgb(255 255 255 / 0.21));
+  /* Glyph and title of a button: #262626; #e1efff over the dark fill [measured, computed] */
+  --mac-quick-look-panel-button-text: light-dark(rgb(0 0 0 / 0.85), rgb(255 255 255 / 0.92));
+}
+
+/* Without transparency: the neutral equivalents of the tint. [provisional] */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --mac-quick-look-panel-material: light-dark(#e6e6e6, #2d2d2d);
+    --mac-quick-look-panel-filter: none;
+  }
+}

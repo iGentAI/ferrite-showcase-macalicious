@@ -1,0 +1,231 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "window-light",
+      "description": "The whole Automator window, Aqua: an untitled workflow with nothing in it, Library selected in the outline, Activate Fonts in the list and its description under both; a click on the search field gives it the keyboard focus the capture shows, so both selections are unemphasised. Whole crop: the text is set in the fallback font, the colour icons are plain placeholders and the toolbar and bottom bar glyphs are stand-in marks.",
+      "example": "visual-window",
+      "appearance": "light",
+      "actions": [{ "click": ".mac-automator-search input" }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Automator.png",
+        "crop": { "x": 112, "y": 76, "width": 2000, "height": 1736 }
+      },
+      "budget": { "1x": 0.052, "2x": 0.037 },
+      "deltaBudget": { "1x": 5.7, "2x": 4.2 }
+    },
+    {
+      "name": "window-light-layout",
+      "description": "As window-light with the text and every stand-in masked (the title; the six toolbar glyphs and their labels; the titles of the two scopes, the magnifier and the placeholder; the icons and names of the outline and of the list, without the ends of the two selected rows; the description's icon, title, sentence and three lines; the capsule's text; the two headings of the log; the four glyphs of the bottom bars), to score the frame, the 68 pt chrome and its six bezels, the band with its pill and bottom rows, the search field with its focus ring, the disclosure triangle, both selections, the three dividers and the line over the description, the workflow area and the capsule, the log's header with its separator and top line, the stripes and the line between the columns, and the two bottom bars.",
+      "example": "visual-window",
+      "appearance": "light",
+      "threshold": 0.05,
+      "actions": [{ "click": ".mac-automator-search input" }],
+      "masks": [
+        { "x": 470, "y": 3, "width": 60, "height": 17 },
+        { "x": 15, "y": 28, "width": 24, "height": 16 },
+        { "x": 61, "y": 28, "width": 24, "height": 16 },
+        { "x": 823, "y": 28, "width": 24, "height": 16 },
+        { "x": 869, "y": 28, "width": 24, "height": 16 },
+        { "x": 915, "y": 28, "width": 24, "height": 16 },
+        { "x": 961, "y": 28, "width": 24, "height": 16 },
+        { "x": 4, "y": 49, "width": 92, "height": 14 },
+        { "x": 812, "y": 49, "width": 184, "height": 14 },
+        { "x": 18, "y": 75, "width": 48, "height": 12 },
+        { "x": 82, "y": 73, "width": 66, "height": 16 },
+        { "x": 158, "y": 74, "width": 58, "height": 13 },
+        { "x": 19, "y": 94, "width": 62, "height": 16 },
+        { "x": 19, "y": 112, "width": 141, "height": 285 },
+        { "x": 168, "y": 94, "width": 100, "height": 16 },
+        { "x": 168, "y": 112, "width": 211, "height": 619 },
+        { "x": 11, "y": 740, "width": 34, "height": 34 },
+        { "x": 54, "y": 746, "width": 132, "height": 20 },
+        { "x": 11, "y": 780, "width": 340, "height": 14 },
+        { "x": 58, "y": 803, "width": 160, "height": 44 },
+        { "x": 542, "y": 366, "width": 299, "height": 16 },
+        { "x": 385, "y": 706, "width": 22, "height": 13 },
+        { "x": 903, "y": 706, "width": 48, "height": 13 },
+        { "x": 6, "y": 850, "width": 30, "height": 15 },
+        { "x": 41, "y": 850, "width": 17, "height": 15 },
+        { "x": 390, "y": 850, "width": 17, "height": 15 },
+        { "x": 422, "y": 850, "width": 17, "height": 15 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Automator.png",
+        "crop": { "x": 112, "y": 76, "width": 2000, "height": 1736 }
+      },
+      "budget": { "1x": 0.0045, "2x": 0.0009 },
+      "deltaBudget": { "1x": 0.6, "2x": 0.55 }
+    },
+    {
+      "name": "window-dark",
+      "description": "The whole Automator window, Dark Aqua, in the same state as window-light, the search field focused by a click. Whole crop: fallback font, placeholder icons and stand-in glyphs.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "actions": [{ "click": ".mac-automator-search input" }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Automator.png",
+        "crop": { "x": 112, "y": 76, "width": 2000, "height": 1736 }
+      },
+      "budget": { "1x": 0.052, "2x": 0.037 },
+      "deltaBudget": { "1x": 5.4, "2x": 4.0 }
+    },
+    {
+      "name": "window-dark-layout",
+      "description": "As window-dark with the same regions masked as window-light-layout. Scores the frame, the chrome and its bezels, the band, the pill, the search field and its focus ring, the triangle, both selections, the dividers, the workflow area and the capsule, the log's header, stripes and lines, and the two bottom bars, which differ in Dark Aqua.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "actions": [{ "click": ".mac-automator-search input" }],
+      "masks": [
+        { "x": 470, "y": 3, "width": 60, "height": 17 },
+        { "x": 15, "y": 28, "width": 24, "height": 16 },
+        { "x": 61, "y": 28, "width": 24, "height": 16 },
+        { "x": 823, "y": 28, "width": 24, "height": 16 },
+        { "x": 869, "y": 28, "width": 24, "height": 16 },
+        { "x": 915, "y": 28, "width": 24, "height": 16 },
+        { "x": 961, "y": 28, "width": 24, "height": 16 },
+        { "x": 4, "y": 49, "width": 92, "height": 14 },
+        { "x": 812, "y": 49, "width": 184, "height": 14 },
+        { "x": 18, "y": 75, "width": 48, "height": 12 },
+        { "x": 82, "y": 73, "width": 66, "height": 16 },
+        { "x": 158, "y": 74, "width": 58, "height": 13 },
+        { "x": 19, "y": 94, "width": 62, "height": 16 },
+        { "x": 19, "y": 112, "width": 141, "height": 285 },
+        { "x": 168, "y": 94, "width": 100, "height": 16 },
+        { "x": 168, "y": 112, "width": 211, "height": 619 },
+        { "x": 11, "y": 740, "width": 34, "height": 34 },
+        { "x": 54, "y": 746, "width": 132, "height": 20 },
+        { "x": 11, "y": 780, "width": 340, "height": 14 },
+        { "x": 58, "y": 803, "width": 160, "height": 44 },
+        { "x": 542, "y": 366, "width": 299, "height": 16 },
+        { "x": 385, "y": 706, "width": 22, "height": 13 },
+        { "x": 903, "y": 706, "width": 48, "height": 13 },
+        { "x": 6, "y": 850, "width": 30, "height": 15 },
+        { "x": 41, "y": 850, "width": 17, "height": 15 },
+        { "x": 390, "y": 850, "width": 17, "height": 15 },
+        { "x": 422, "y": 850, "width": 17, "height": 15 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Automator.png",
+        "crop": { "x": 112, "y": 76, "width": 2000, "height": 1736 }
+      },
+      "budget": { "1x": 0.0035, "2x": 0.0009 },
+      "deltaBudget": { "1x": 0.5, "2x": 0.4 }
+    },
+    {
+      "name": "run-light",
+      "description": "A state no screenshot shows: a workflow of two steps after a click on Run, which finishes at once in the example, Aqua. Both steps carry the mark of a step that has run, and the log lists them and the run on its stripes.",
+      "example": "visual-run",
+      "appearance": "light",
+      "actions": [{ "click": ".mac-toolbar-labelled-item:has-text('Run') button" }],
+      "expect": {
+        "size": { "width": 1000, "height": 868 },
+        "pixels": [
+          {
+            "x": 700,
+            "y": 143,
+            "color": "#e7e9e9",
+            "note": "the workflow area between the two steps: measured @ 1400,400 of the capture (token --mac-automator-workflow-background)"
+          },
+          {
+            "x": 700,
+            "y": 95,
+            "color": "#dedede",
+            "note": "the heading band of the first step: the provisional token --mac-automator-step-head; no capture shows a step"
+          },
+          {
+            "x": 700,
+            "y": 125,
+            "color": "#f6f6f6",
+            "note": "the first step under its heading: the provisional token --mac-automator-step-fill"
+          },
+          {
+            "x": 948,
+            "y": 95.5,
+            "color": "#28cd41",
+            "tolerance": 3,
+            "note": "the mark of a step that has run, 8 pt before the remove button: the shared system green; that Automator marks a step so is inferred"
+          },
+          {
+            "x": 600,
+            "y": 734,
+            "color": "#ffffff",
+            "note": "the log's first row, after its text: the content background measured @ 1400,1540 of the capture"
+          },
+          {
+            "x": 600,
+            "y": 753,
+            "color": "#f4f5f5",
+            "note": "the log's second row is striped whether or not it holds a row: measured @ 1400,1580 of the capture"
+          },
+          {
+            "x": 899.5,
+            "y": 753,
+            "color": "#cccccc",
+            "scale": 2,
+            "note": "the line between the log's columns, over a row with text: measured @ 1910,1560 of the capture"
+          }
+        ]
+      }
+    },
+    {
+      "name": "run-dark",
+      "description": "As run-light, Dark Aqua.",
+      "example": "visual-run",
+      "appearance": "dark",
+      "actions": [{ "click": ".mac-toolbar-labelled-item:has-text('Run') button" }],
+      "expect": {
+        "size": { "width": 1000, "height": 868 },
+        "pixels": [
+          {
+            "x": 700,
+            "y": 143,
+            "color": "#2c2d2f",
+            "note": "the workflow area between the two steps: measured @ 1400,400 of the dark capture"
+          },
+          {
+            "x": 700,
+            "y": 95,
+            "color": "#48494c",
+            "note": "the heading band of the first step: the provisional token --mac-automator-step-head"
+          },
+          {
+            "x": 700,
+            "y": 125,
+            "color": "#3a3b3d",
+            "note": "the first step under its heading: the provisional token --mac-automator-step-fill"
+          },
+          {
+            "x": 948,
+            "y": 95.5,
+            "color": "#32d74b",
+            "tolerance": 3,
+            "note": "the mark of a step that has run: the shared system green of Dark Aqua; inferred as in run-light"
+          },
+          {
+            "x": 600,
+            "y": 734,
+            "color": "#1e1f21",
+            "note": "the log's first row, after its text: the content background measured @ 1400,1540 of the dark capture"
+          },
+          {
+            "x": 600,
+            "y": 753,
+            "color": "#292a2c",
+            "tolerance": 3,
+            "note": "the log's second row: the alternate row token, white at 5%, over #1e1f21; measured as #28292b @ 1400,1580 of the dark capture"
+          },
+          {
+            "x": 899.5,
+            "y": 753,
+            "color": "#3e3f41",
+            "tolerance": 3,
+            "scale": 2,
+            "note": "the line between the log's columns over a striped row: white at 10% over the stripe; measured as #3e3e40 @ 1910,1580 of the dark capture"
+          }
+        ]
+      }
+    }
+  ]
+}

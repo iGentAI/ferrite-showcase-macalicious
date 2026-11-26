@@ -1,0 +1,23 @@
+/*
+ * Markup toolbar tokens (reference/spec/components/markup-toolbar.md). Measured on
+ * Light-/Dark-Finder-Quick-Look-Markup, where the toolbar sits on Quick Look's translucent bar
+ * over the desktop picture.
+ */
+:root {
+  /* Glyph of a tool: a vibrant label, #355472 over the light bar and about #a8afc9 over the
+     dark one; stored as the spec's neutral equivalents [provisional] */
+  --mac-markup-toolbar-glyph: light-dark(#4d4d4d, #d0d0d0);
+  /* Separator: #99c2da over the light bar #b3d8f1 is black at about 10%; lighter than the bar
+     in Dark Aqua [measured, computed] light, [provisional] dark */
+  --mac-markup-toolbar-separator: light-dark(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.15));
+  /* Swatch: 1 pt frame, the "none" square and its diagonal [provisional] read from the 1x crop */
+  --mac-markup-toolbar-swatch-frame: light-dark(rgb(0 0 0 / 0.55), rgb(255 255 255 / 0.7));
+  --mac-markup-toolbar-swatch-none: #ffffff;
+  --mac-markup-toolbar-swatch-none-line: #ff3b30;
+}
+
+:root,
+[data-accent] {
+  /* The active drawing tool: the accent colour (#1481e9 body with blue) [measured] */
+  --mac-markup-toolbar-selected: light-dark(var(--mac-accent-light), var(--mac-accent-dark));
+}

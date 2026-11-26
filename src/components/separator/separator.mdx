@@ -1,0 +1,93 @@
+---
+title: Separator
+description: A one-point line that divides groups of controls without enclosing them.
+---
+
+<Example name="basic" both />
+
+AppKit draws a separator with an `NSBox` whose box type is `separator`, in
+`NSColor.separatorColor`. It is built on
+[Base UI's Separator](https://base-ui.com/react/components/separator), which supplies the
+`separator` role and the orientation.
+
+## Usage
+
+```tsx
+import { Separator } from "macalicious/separator";
+import "macalicious/separator.css";
+
+<Separator />
+<Separator orientation="vertical" />
+```
+
+Or copy the source into your project: `npx macalicious add separator`.
+
+## Guidelines
+
+- Use a separator to divide a pane into groups when a [box](/components/box) would be too
+  heavy. Extra space between groups is often enough; do not add a line to every gap.
+- Leave the section spacing above and below it: `margin-block: var(--mac-space-section)`
+  (20 pt). The Catalina panes leave 13 to 32 pt.
+- Inset the line from the edges of the box it lies in, in line with the controls (14 to 23 pt
+  in the reference panes); do not run it into the border.
+
+## Variants and states
+
+<Example name="vertical" both />
+
+| Orientation | Size | Notes |
+| --- | --- | --- |
+| `horizontal` | As wide as its container, 1 pt high | Measured |
+| `vertical` | 1 pt wide; stretches to the height of a flex row | Provisional: the screenshots show vertical lines only as the edges of regions |
+
+The line is the separator colour, 10% black in Aqua and 10% white in Dark Aqua, so it works on
+the window background and on a box. It is two device pixels thick on a 2x display, not a
+hairline. A separator is not interactive and does not react to the window state.
+
+## Sizes
+
+One thickness: 1 pt.
+
+## API
+
+<PropsTable name="SeparatorProps" />
+
+It also accepts every prop of Base UI's Separator, including `render` (for example
+`render={<hr />}`).
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-orientation` | `horizontal`, `vertical` | Set by Base UI from `orientation`. |
+
+## Accessibility
+
+- Renders `role="separator"` with `aria-orientation`; it is not focusable.
+- A separator that only decorates should not be announced: pass `aria-hidden`.
+- In forced-colours mode the line is drawn in the system text colour.
+
+## Visual comparison
+
+`visual-on-box` reproduces the left end of the separator in Security & Privacy, which lies on a
+box, and `visual-on-window` the one in Screen Time's sidebar, on the window background. Results
+in Chromium on Linux:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| On a box, Aqua | 0.00% of pixels differ | 0.00% |
+| On a box, Dark Aqua | 0.00% | 0.00% |
+| On the window, Aqua | 0.00% | 0.00% |
+| On the window, Dark Aqua | 0.00% | 0.00% |
+| Right end in the Trackpad pane, Aqua, strict | 1.14% | 0.00% |
+| Right end in the Trackpad pane, Dark Aqua, strict | 0.00% | 0.00% |
+
+The line is 23 levels from the window background and a comparison at the default colour
+distance would count none of it, so the first four count a pixel as different at a distance of
+0.02, a fifth of the default, and the last two at 0.01.
+
+`visual-trackpad-end` reproduces the right end of the separator above the sliders of the
+Trackpad pane, in a 12 by 11 pt crop close around the end: the end is square. At 0.01 six of
+the 528 pixels at 2x differ, because the line is one level off on that box; with a rounded end
+ten do, and the comparison fails. At 1x a rounded end is not seen. In Dark Aqua the same crop
+matches exactly.
+
+Provisional: the vertical orientation, which no screenshot shows as a separator of its own.

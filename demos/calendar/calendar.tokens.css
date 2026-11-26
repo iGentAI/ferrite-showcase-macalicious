@@ -1,0 +1,165 @@
+/*
+ * Colours and sizes of the Calendar demo's own that no shared token holds.
+ */
+:root {
+  /* [measured] Calendar's blue, the US Holidays calendar: its checkbox, row 363 x=150, and the
+     all-day event's text in the dark capture, row 336 x=850 */
+  --mac-calendar-blue: #1dadf8;
+  /* [measured] the Home calendar's checkbox: row 213 x=150 of both captures */
+  --mac-calendar-cyan: #3db9e3;
+  /* [measured] the Work calendar's checkbox: row 261 x=150 of each capture; its events have
+     the same colour (the selected event of the light capture is it at 90% over white) */
+  --mac-calendar-purple: light-dark(#bf57db, #cc73e1);
+  /* [measured] the Siri Suggestions calendar's checkbox: row 423 x=150 of both captures */
+  --mac-calendar-gray: #94a6bd;
+  /* [provisional] the other colours of Calendar's colour menu, for the person's own calendars;
+     no capture shows them */
+  --mac-calendar-red: #fc3d39;
+  --mac-calendar-orange: #fd9426;
+  --mac-calendar-yellow: #fecb2e;
+  --mac-calendar-green: #53d769;
+  --mac-calendar-brown: #a2845e;
+  /* [provisional] the separators of the event popover, as the library's popover examples
+     draw them over its material */
+  --mac-calendar-popover-line: light-dark(#dbdbdb, #4b4b4b);
+  /* [measured] the title of the month and year views, as the week grid's: col 700 y=194 */
+  --mac-calendar-heading: light-dark(#272727, #dddddd);
+  /* [measured] the pane of the views, as the week grid's weekday columns: row 700 x=838 */
+  --mac-calendar-pane: light-dark(#ffffff, #1e1f20);
+
+  /* Sizes, the same in both appearances. calendar.css and calendar-preferences.css say where
+     each lies. */
+  /* [measured] the main window of 10-15-Catalina-Light-Calendar.png and its Dark twin: the
+     toolbar's groups, the trailing one wider by the room the window controls take; the 11 pt
+     plus half a point before the centre of the New Event button both ways; the title row's
+     control 15.5 pt under the pane's top and 13 pt from its trailing edge (7 pt and the
+     heading's 6); the chevrons half a point under and after the centre of their segments,
+     the one of previous 1.25 pt before it */
+  --mac-calendar-toolbar-gap: 10px;
+  --mac-calendar-toolbar-trailing-basis: 72px;
+  --mac-calendar-plus-offset: -0.5px;
+  --mac-calendar-navigation-margin-top: 15.5px;
+  --mac-calendar-navigation-margin-end: 7px;
+  --mac-calendar-chevron-offset: 0.5px;
+  --mac-calendar-chevron-back-offset: -1.25px;
+  /* [measured] the event popover beside the window: 289 pt wide, a 60 pt head, then rows of
+     35 pt and the notes row's 38 pt */
+  --mac-calendar-popover-width: 289px;
+  --mac-calendar-popover-head-gap: 3px;
+  --mac-calendar-popover-head-min-height: 60px;
+  --mac-calendar-popover-head-padding-top: 12px;
+  --mac-calendar-popover-head-padding-right: 12px;
+  --mac-calendar-popover-head-padding-bottom: 10px;
+  --mac-calendar-popover-head-padding-left: 15px;
+  --mac-calendar-popover-row-min-height: 35px;
+  --mac-calendar-popover-row-padding-block: 8px;
+  --mac-calendar-popover-row-padding-inline: 15px;
+  --mac-calendar-popover-invitees-min-height: 29px;
+  --mac-calendar-popover-invitees-padding-block: 6px;
+  --mac-calendar-popover-notes-min-height: 38px;
+  /* [provisional] the popover's editors, which no capture shows: Calendar's label column of
+     the date editor, its line gap, the count field and the notes; the search results over the
+     view */
+  --mac-calendar-editor-label-width: 84px;
+  --mac-calendar-editor-gap: 6px;
+  --mac-calendar-editor-count-width: 48px;
+  --mac-calendar-editor-notes-height: 72px;
+  --mac-calendar-detail-gap: 2px;
+  --mac-calendar-results-height: 180px;
+  --mac-calendar-results-empty-padding: 12px;
+  /* [provisional] the colour chip in the popover's menu, which no capture shows */
+  --mac-calendar-chip-size: 12px;
+  --mac-calendar-chip-margin: 2px;
+  --mac-calendar-chip-radius: 2px;
+  /* [provisional] the month and year views, which no capture shows: their title row takes
+     the measured week grid's (51 pt, the title 14.5 pt in), and the rest is composed to
+     Catalina's conventions */
+  --mac-calendar-heading-height: 51px;
+  --mac-calendar-heading-padding-start: 14.5px;
+  --mac-calendar-heading-padding-end: 6px;
+  --mac-calendar-heading-title-margin-top: 7px;
+  --mac-calendar-heading-title-size: 32px;
+  --mac-calendar-heading-title-line-height: 40px;
+  --mac-calendar-month-weekdays-height: 22px;
+  --mac-calendar-month-day-height: 22px;
+  --mac-calendar-month-event-height: 16px;
+  --mac-calendar-month-event-radius: 3px;
+  --mac-calendar-month-cell-padding: 4px;
+  --mac-calendar-month-font-size: 11px;
+  --mac-calendar-month-number-size: 18px;
+  --mac-calendar-month-number-padding: 4px;
+  --mac-calendar-month-dot-size: 7px;
+  --mac-calendar-year-column-min-width: 190px;
+  --mac-calendar-year-row-gap: 4px;
+  --mac-calendar-year-column-gap: 24px;
+  --mac-calendar-year-padding-top: 4px;
+  --mac-calendar-year-padding-inline: 20px;
+  --mac-calendar-year-padding-bottom: 20px;
+  /* [measured] the Preferences window, on 10-15-Catalina-Light-Calendar-Preferences.png
+     (frame 537 x 542 pt): the labels' column ending at 241.5 pt with the pane's 16 pt margin
+     and the 20 pt of the window; the pop-up buttons' 181 pt boxes and the 54 pt one of the
+     hours shown, the text after it 7 pt on; rows 30 pt apart (a 9 pt gap); 20 pt above and
+     below a separator between rows, 9 of them the row gap; the two checkboxes 20 pt apart
+     with 16 pt above and below; the last row's pop-up button 213 pt from the frame's left
+     edge and its checkbox 3 pt under the button's top edge. The Advanced pane's list, which
+     no capture shows, takes the checkboxes' gap and margin. */
+  --mac-calendar-preferences-margin-inline: 16px;
+  --mac-calendar-preferences-label-column: 206.5px;
+  --mac-calendar-preferences-row-gap: 9px;
+  --mac-calendar-preferences-choice-width: 181px;
+  --mac-calendar-preferences-number-width: 54px;
+  --mac-calendar-preferences-unit-margin-start: -1px;
+  --mac-calendar-preferences-rule-margin-block: 11px;
+  --mac-calendar-preferences-line-margin-top: 20px;
+  --mac-calendar-preferences-checks-gap: 6px;
+  --mac-calendar-preferences-checks-margin-block: 16px;
+  --mac-calendar-preferences-alternate-width: 358px;
+  --mac-calendar-preferences-switch-margin-top: 3px;
+  /* [provisional] the layer of the drive's Open panel, over the desktop's windows and under
+     its menus, and the room it leaves at the page's edges: as Contacts' */
+  --mac-calendar-panel-layer-z-index: 800;
+  --mac-calendar-panel-layer-margin: 16px;
+  /* [provisional] where the alerts of events stand: under the 22 pt menu bar at the screen's
+     trailing edge, as Reminders' (reminders.tokens.css) and Notification Center's banners */
+  --mac-calendar-alerts-layer-z-index: 2147483000;
+  --mac-calendar-alerts-top: 32px;
+  --mac-calendar-alerts-end: 10px;
+  --mac-calendar-alerts-gap: 10px;
+  /* [provisional] the year view's shades of a day by its events, yellow to red as Calendar's;
+     no capture shows them */
+  --mac-calendar-density-1: light-dark(#fdf2b8, #5c5120);
+  --mac-calendar-density-2: light-dark(#fbd96f, #7d6420);
+  --mac-calendar-density-3: light-dark(#f8a95a, #96551f);
+  --mac-calendar-density-4: light-dark(#ef7360, #a8392e);
+  /* [provisional] the day view's details, the Inspector and Quick Event, which no capture shows */
+  --mac-calendar-day-detail-width: 240px;
+  --mac-calendar-inspector-z-index: 5;
+  --mac-calendar-print-preview-width: 280px;
+  --mac-calendar-print-preview-height: 360px;
+  --mac-calendar-print-preview-border: 1px solid var(--mac-color-separator);
+  --mac-calendar-print-preview-paper: #ffffff;
+  --mac-calendar-inspector-top: 60px;
+  --mac-calendar-inspector-end: 16px;
+  --mac-calendar-quick-event-width: 240px;
+  /* [provisional] a free event's stripes and the block of a travel time */
+  --mac-calendar-stripe: light-dark(#ffffff55, #00000040);
+  --mac-calendar-stripe-width: 4px;
+  --mac-calendar-stripe-angle: 45deg;
+  --mac-calendar-travel-opacity: 0.6;
+  /* View > Make Text Bigger and Smaller, a point at a time: the month view's text and its event rows,
+     as `calendar.css` selects them. [provisional] the sizes are not measured. */
+  --mac-calendar-text-smaller-font-size: 10px;
+  --mac-calendar-text-smaller-event-height: 15px;
+  --mac-calendar-text-big-font-size: 12px;
+  --mac-calendar-text-big-event-height: 17px;
+  --mac-calendar-text-bigger-font-size: 13px;
+  --mac-calendar-text-bigger-event-height: 18px;
+  --mac-calendar-text-biggest-font-size: 14px;
+  --mac-calendar-text-biggest-event-height: 19px;
+  /* [provisional] the alternate calendar's day and the week's number beside a view's headings, and
+     the shade of the hours outside the day of Preferences; no capture shows them */
+  --mac-calendar-note-gap: 4px;
+  --mac-calendar-note-size: 10px;
+  --mac-calendar-note-text: var(--mac-color-secondary-label);
+  --mac-calendar-off-hours: light-dark(rgb(0 0 0 / 0.04), rgb(255 255 255 / 0.04));
+}

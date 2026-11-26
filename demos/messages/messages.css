@@ -1,0 +1,693 @@
+/*
+ * Messages demo: the layout of the window and of its Preferences, and the application's own
+ * surfaces. Every control is a library component; this file places them and draws what only
+ * Messages has: the two bars, a conversation's row and the placeholders' colour.
+ *
+ * Parts
+ *   .mac-messages                  the window
+ *   .mac-messages-split            the split view, filling it
+ *   .mac-messages-list-pane        the conversation list's column, on the sidebar material
+ *   .mac-messages-top              over the list: window controls, search field, compose button
+ *   .mac-messages-list             the list view of conversations
+ *   .mac-messages-row-head         a row's first line: the name, a mark and the time
+ *   .mac-messages-row-mark, -time  the list view's row detail, placed in that line
+ *   .mac-messages-row-last         the list view's row detail around the last message
+ *   .mac-messages-row-snippet      the last message, on up to two lines
+ *   .mac-messages-avatar           the placeholder for a contact's picture
+ *   .mac-messages-placeholder      an abstract placeholder: a picture, a pane's icon, the folder
+ *   .mac-messages-pane             the conversation's column
+ *   .mac-messages-header           the bar over the transcript: "To:", the name, Details
+ *   .mac-messages-transcript       the scroll view of the transcript
+ *   .mac-messages-input            the bar under it: the message field and the audio button
+ *   .mac-messages-text             a bubble's text at another size than the bubble's own
+ *   .mac-messages-details          the Details link: the library's borderless button, placed
+ *   .mac-messages-details-content  what the Details popover holds
+ *   .mac-messages-preferences-*    the panes of the Preferences window
+ *
+ * On a library control this file sets a width, a margin or a place and nothing else; the
+ * custom properties the controls document as hooks are set in messages.tsx, where each is
+ * named with the page that documents it.
+ *
+ * States
+ *   [data-material="opaque"]       on the list's column: a flat surface in place of the
+ *                                  vibrant one
+ *
+ * Hooks (set on the window or an ancestor)
+ *   --mac-messages-list-background the opaque list surface (default: the opaque sidebar
+ *                                  material)
+ *   --mac-messages-divider-color   the line between the list and the conversation
+ *
+ * The selected conversation's row is the list view's always-emphasised selection, in the
+ * library's selection colour token.
+ *
+ * Every measured length and font size is a token in messages.tokens.css (--mac-messages-*).
+ * Literal here, as structure: zeros, the 100% width of an account row, the 1 pt rules of the
+ * bars, the flex factors and grid tracks, the grid column numbers and the two-line clamp.
+ */
+.mac-messages-split {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* The list's column: Messages keeps its material vibrant in a window that is not key. */
+.mac-messages-list-pane {
+  display: flex;
+  flex-direction: column;
+  background: var(--mac-material-sidebar);
+  -webkit-backdrop-filter: var(--mac-material-filter);
+  backdrop-filter: var(--mac-material-filter);
+}
+
+.mac-messages-list-pane:where([data-material="opaque"]) {
+  background: var(--mac-messages-list-background, var(--mac-material-sidebar-opaque));
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* 55 pt and a 1 pt rule over the first conversation. The search field's edge is 20.5 pt
+   from the window's and 25.5 pt under its top; the compose button's bezel follows 11 pt
+   later and ends 12.5 pt before the divider. */
+.mac-messages-top {
+  position: relative;
+  display: flex;
+  flex: none;
+  gap: var(--mac-messages-top-gap);
+  align-items: flex-start;
+  box-sizing: border-box;
+  height: var(--mac-messages-top-height);
+  padding: var(--mac-messages-top-padding-top) var(--mac-messages-top-padding-right) 0
+    var(--mac-messages-top-padding-left);
+  border-block-end: 1px solid var(--mac-messages-list-rule);
+}
+
+/* The window controls float over the list: 8 pt from the left edge and 5 pt from the top. */
+.mac-messages-controls {
+  position: absolute;
+  inset-block-start: var(--mac-messages-controls-top);
+  inset-inline-start: var(--mac-messages-controls-start);
+}
+
+.mac-messages-search {
+  flex: 1 1 0;
+  width: auto;
+}
+
+/* The library's compact push button: its 21 pt bezel 8 pt beside the 18 pt glyph, in a box
+   34 pt wide. It starts half a point higher than the search field, where the capture's bezel
+   does. */
+.mac-messages-compose {
+  flex: none;
+  margin-block-start: var(--mac-messages-compose-margin-top);
+}
+
+/* The contextual menu's trigger adds no box of its own. */
+.mac-messages-list-menu {
+  display: contents;
+}
+
+.mac-messages-list {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.mac-messages-empty {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* A conversation's row, 64 pt: the 48 pt picture 20 pt from the edge and 1.5 pt above the
+   middle, the text 76 pt from the edge on three lines 15.5 pt apart (the name with the time,
+   then up to two of the last message), ending 13 pt before the divider. */
+.mac-messages-row-avatar {
+  position: relative;
+  inset-block-start: var(--mac-messages-row-avatar-top);
+  inset-inline-start: var(--mac-messages-row-avatar-start);
+}
+
+.mac-messages-avatar {
+  display: block;
+  flex: none;
+}
+
+/* A conversation's people: one disc filling the picture, or a group's overlapping smaller ones. */
+.mac-messages-people {
+  position: relative;
+  width: var(--mac-messages-picture-size);
+  height: var(--mac-messages-picture-size);
+}
+
+.mac-messages-person {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.mac-messages-monogram {
+  background: var(--mac-messages-monogram);
+  color: var(--mac-messages-monogram-text);
+  font-size: var(--mac-messages-monogram-font-size);
+  font-weight: 500;
+}
+
+.mac-messages-people:not([data-count="1"]) .mac-messages-person {
+  width: 62%;
+  height: 62%;
+  border: var(--mac-messages-person-ring);
+  font-size: var(--mac-messages-monogram-small-font-size);
+}
+
+.mac-messages-people[data-count="2"] .mac-messages-person:nth-child(1) {
+  inset-block-start: 0;
+  inset-inline-start: 0;
+}
+
+.mac-messages-people[data-count="2"] .mac-messages-person:nth-child(2) {
+  inset-block-end: 0;
+  inset-inline-end: 0;
+}
+
+.mac-messages-people[data-count="3"] .mac-messages-person:nth-child(1) {
+  inset-block-start: 0;
+  inset-inline-start: 19%;
+}
+
+.mac-messages-people[data-count="3"] .mac-messages-person:nth-child(2) {
+  inset-block-end: 0;
+  inset-inline-start: 0;
+}
+
+.mac-messages-people[data-count="3"] .mac-messages-person:nth-child(3) {
+  inset-block-end: 0;
+  inset-inline-end: 0;
+}
+
+.mac-messages-row-head {
+  display: flex;
+  grid-column: 2;
+  gap: var(--mac-messages-row-head-gap);
+  align-items: baseline;
+  height: var(--mac-messages-row-line-height);
+  margin-block-start: var(--mac-messages-row-head-margin-top);
+  margin-inline: var(--mac-messages-row-text-margin-start) var(--mac-messages-row-text-margin-end);
+  line-height: var(--mac-messages-row-line-height);
+}
+
+.mac-messages-row-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: var(--mac-font-weight-semibold);
+  text-overflow: ellipsis;
+}
+
+/* The mark, the time and the last message are the list view's row detail, which gives them
+   the secondary colour and, on the selection, the detail colour of a selected row. Here they
+   are placed: in the first line, without the margin a detail line has under a title. */
+.mac-messages-row-mark {
+  display: flex;
+  flex: none;
+  align-self: center;
+  margin-block: 0;
+}
+
+.mac-messages-row-time {
+  flex: none;
+  margin-block: 0;
+}
+
+.mac-messages-row-last {
+  margin-block: 0;
+  margin-inline: var(--mac-messages-row-text-margin-start) var(--mac-messages-row-text-margin-end);
+}
+
+/* The demo's own elements inside the details: the time and two lines of the last message,
+   12 pt where the row's name is 13 (measured: "New macOS, who dis?" and "3:27 PM" are 7%
+   narrower in the capture than at 13 pt, with a cap height of 8.5 pt). */
+.mac-messages-row-time-text {
+  position: relative;
+  inset-block-start: var(--mac-messages-row-time-offset);
+  font-size: var(--mac-messages-row-detail-size);
+}
+
+.mac-messages-row-snippet {
+  position: relative;
+  inset-block-start: var(--mac-messages-row-snippet-offset);
+  font-size: var(--mac-messages-row-detail-size);
+  display: -webkit-box;
+  height: var(--mac-messages-row-snippet-height);
+  overflow: hidden;
+  line-height: var(--mac-messages-row-line-height);
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+/* The conversation's column. */
+.mac-messages-pane {
+  display: flex;
+  flex-direction: column;
+  background: var(--mac-messages-transcript);
+}
+
+/* 55 pt and a 1 pt rule, its text 12 pt (measured: "To:" and "Details" have the widths and
+   cap height of 12 pt). "To:" starts 13 pt from the divider with its baseline 40 pt under the
+   window's top; Details ends 14 pt before the window's edge with its baseline 1 pt lower. */
+.mac-messages-header {
+  display: flex;
+  flex: none;
+  gap: var(--mac-messages-header-gap);
+  align-items: baseline;
+  box-sizing: border-box;
+  height: var(--mac-messages-header-height);
+  padding: var(--mac-messages-header-padding-top) var(--mac-messages-header-padding-right) 0
+    var(--mac-messages-header-padding-left);
+  border-block-end: 1px solid var(--mac-messages-bar-rule);
+  background: var(--mac-messages-bar);
+  font-size: var(--mac-messages-header-size);
+}
+
+.mac-messages-to {
+  flex: none;
+}
+
+.mac-messages-recipient {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* The Details link is the library's borderless button in its link colour. Only its place in
+   the bar is set here; the button draws itself. */
+.mac-messages-details {
+  position: relative;
+  inset-block-start: var(--mac-messages-details-offset);
+  flex: none;
+}
+
+.mac-messages-transcript {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.mac-messages-empty-transcript {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* The files a new message carries, over the bar that sends it. */
+.mac-messages-draft-files {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--mac-messages-suggestions-gap);
+  margin: 0;
+  padding: var(--mac-messages-suggestions-padding);
+  list-style: none;
+}
+
+.mac-messages-draft-file {
+  display: flex;
+  gap: var(--mac-messages-suggestions-gap);
+  align-items: center;
+}
+
+/* 40 pt under a 1 pt rule. The field is the library's capsule text field, 24 pt high, 14 pt
+   from the divider; the audio button's bars start 12 pt after it and end 12.5 pt before the
+   window's edge. */
+.mac-messages-input {
+  display: flex;
+  flex: none;
+  gap: var(--mac-messages-input-gap);
+  align-items: center;
+  box-sizing: border-box;
+  min-height: var(--mac-messages-input-height);
+  padding: var(--mac-messages-input-padding-block) var(--mac-messages-input-padding-right)
+    var(--mac-messages-input-padding-block) var(--mac-messages-input-padding-left);
+  border-block-start: 1px solid var(--mac-messages-bar-rule);
+  background: var(--mac-messages-bar);
+}
+
+.mac-messages-field {
+  --_radius: var(--mac-messages-field-radius);
+  flex: 1 1 0;
+  width: auto;
+  height: auto;
+}
+
+/* A button's 28 pt reach past the field's 24 pt and into the bar's padding: only the field sets the
+   bar's height. */
+.mac-messages-input > button {
+  margin-block: var(--mac-messages-input-button-margin);
+}
+
+/* A recording beside the field: its time and Stop, then its player, Cancel and Send. */
+.mac-messages-recording {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--mac-messages-recording-gap);
+}
+
+.mac-messages-recording-dot {
+  width: var(--mac-messages-recording-dot);
+  height: var(--mac-messages-recording-dot);
+  border-radius: 50%;
+  background: var(--mac-color-system-red);
+}
+
+.mac-messages-recording-player {
+  width: var(--mac-messages-recording-player-width);
+  height: var(--mac-messages-recording-player-height);
+}
+
+/* One line in the capsule's 24 pt, and more with Option-Return, up to where it scrolls. */
+.mac-messages-field-input {
+  max-height: var(--mac-messages-field-max-height);
+  padding-block: var(--mac-messages-field-padding-block);
+  line-height: var(--mac-messages-field-line-height);
+  resize: none;
+}
+
+/* A line break in a message stays one. */
+/* An address, a phone number or a date in a bubble: plain text that shows it can be pressed when the
+   pointer is over it. [provisional: no capture shows one] */
+.mac-messages-detected {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: default;
+}
+
+.mac-messages-detected:hover,
+.mac-messages-detected[aria-expanded="true"] {
+  text-decoration: underline dotted;
+}
+
+/* A message's screen effect, over the conversation and never in the way of it. Each piece has where it
+   runs (--_along), when it starts (--_delay) and its angle (--_turn). */
+.mac-messages-pane {
+  position: relative;
+}
+
+.mac-messages-effect {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.mac-messages-effect > span {
+  position: absolute;
+  animation: 2.4s var(--_delay) ease-in both;
+}
+
+.mac-messages-effect > span:nth-child(5n + 1) {
+  background: var(--mac-color-system-red);
+}
+
+.mac-messages-effect > span:nth-child(5n + 2) {
+  background: var(--mac-color-system-blue);
+}
+
+.mac-messages-effect > span:nth-child(5n + 3) {
+  background: var(--mac-color-system-yellow);
+}
+
+.mac-messages-effect > span:nth-child(5n + 4) {
+  background: var(--mac-color-system-green);
+}
+
+.mac-messages-effect > span:nth-child(5n) {
+  background: var(--mac-color-system-pink);
+}
+
+.mac-messages-effect[data-effect="balloons"] > span {
+  inset-inline-start: var(--_along);
+  width: var(--mac-messages-effect-balloon);
+  height: calc(var(--mac-messages-effect-balloon) * 1.2);
+  border-radius: 50%;
+  animation-name: mac-messages-rise;
+}
+
+.mac-messages-effect[data-effect="confetti"] > span {
+  inset-inline-start: var(--_along);
+  width: var(--mac-messages-effect-piece);
+  height: calc(var(--mac-messages-effect-piece) * 1.6);
+  animation-name: mac-messages-fall;
+}
+
+.mac-messages-effect[data-effect="fireworks"] > span {
+  inset-block-start: 40%;
+  inset-inline-start: 50%;
+  width: var(--mac-messages-effect-piece);
+  height: var(--mac-messages-effect-piece);
+  border-radius: 50%;
+  animation-name: mac-messages-burst;
+  animation-timing-function: ease-out;
+}
+
+.mac-messages-effect[data-effect="lasers"] > span {
+  inset-block-start: var(--_along);
+  width: 40%;
+  height: var(--mac-messages-effect-beam);
+  animation-name: mac-messages-beam;
+  animation-timing-function: linear;
+}
+
+@keyframes mac-messages-rise {
+  from {
+    inset-block-start: 110%;
+  }
+  to {
+    inset-block-start: -20%;
+  }
+}
+
+@keyframes mac-messages-fall {
+  from {
+    inset-block-start: -5%;
+    rotate: 0deg;
+  }
+  to {
+    inset-block-start: 105%;
+    rotate: 540deg;
+  }
+}
+
+@keyframes mac-messages-burst {
+  from {
+    opacity: 1;
+    transform: rotate(var(--_turn)) translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: rotate(var(--_turn)) translateX(var(--mac-messages-effect-reach));
+  }
+}
+
+@keyframes mac-messages-beam {
+  from {
+    inset-inline-start: -40%;
+  }
+  to {
+    inset-inline-start: 100%;
+  }
+}
+
+.mac-messages-bubble {
+  white-space: pre-wrap;
+}
+
+/* A message selected with Command: the focus ring's colour, so it follows the accent. */
+.mac-messages-bubble[data-marked] {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+}
+
+/* Over the transcript, in the window: Spelling and Grammar, and Substitutions. */
+.mac-messages-tool-panels {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: var(--mac-space-window-margin);
+  inset-inline-end: var(--mac-space-window-margin);
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-space-control-gap);
+}
+
+/* Around the message field for its menu, which takes no part in the row's layout. */
+.mac-messages-field-menu {
+  display: contents;
+}
+
+/* A row's delete mark takes the time's place while the pointer is over the row: a mark for the
+   pointer, since a list's row holds no control. The keyboard and a screen reader have the row's menu
+   and Edit > Delete. */
+.mac-messages-row-delete {
+  display: none;
+  flex: none;
+  align-self: flex-start;
+  height: var(--mac-messages-row-line-height);
+}
+
+[role="option"]:hover .mac-messages-row-delete {
+  display: inline-flex;
+}
+
+[role="option"]:hover .mac-messages-row-time:has(~ .mac-messages-row-delete) {
+  display: none;
+}
+
+.mac-messages-files {
+  width: 100%;
+  max-height: var(--mac-messages-files-max-height);
+  overflow: auto;
+}
+
+.mac-messages-glyph {
+  display: block;
+}
+
+/* A bubble's text at a size the Text size setting chose: a block of the demo's own inside
+   the bubble, whose size and line height the window sets on it. */
+.mac-messages-text {
+  display: block;
+}
+
+/* What the Details popover holds: the name over the conversation's checkbox. */
+.mac-messages-details-actions {
+  display: flex;
+  gap: var(--mac-messages-suggestions-gap);
+}
+
+.mac-messages-add-member {
+  width: 100%;
+}
+
+.mac-messages-members {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-messages-details-content {
+  display: grid;
+  gap: var(--mac-messages-details-gap);
+  justify-items: start;
+  min-width: var(--mac-messages-details-min-width);
+}
+
+/* Preferences. The General pane as captured: the labels end 174.5 pt from the window's edge
+   and the controls' bezels start 8.5 pt later; the first pop-up button's bezel is 10.5 pt
+   under the toolbar and the pane ends 15 pt under the slider's row. The pane keeps the
+   library's 20 pt of padding; this block of the demo's own, inside it, reaches 10 pt into
+   the padding above and 5 pt into the padding below. */
+.mac-messages-preferences-general {
+  margin-block: var(--mac-messages-preferences-general-margin-top)
+    var(--mac-messages-preferences-general-margin-bottom);
+}
+
+/* The slider under its two letters, the small one over its first tick mark and the large one
+   over its last. Its track is 198 pt long and starts half a point inside the pop-up buttons'
+   bezels. */
+.mac-messages-preferences-size {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  width: var(--mac-messages-preferences-size-width);
+  margin-block-start: var(--mac-messages-preferences-size-margin-top);
+  margin-inline-start: var(--mac-messages-preferences-size-margin-start);
+}
+
+.mac-messages-preferences-size-small,
+.mac-messages-preferences-size-large {
+  position: relative;
+  inset-block-start: var(--mac-messages-preferences-size-letter-offset);
+}
+
+.mac-messages-preferences-size-small {
+  font: var(--mac-font-control-small);
+}
+
+.mac-messages-preferences-size-large {
+  font: var(--mac-font-title-3);
+}
+
+.mac-messages-preferences-slider {
+  grid-column: 1 / -1;
+}
+
+/* The iMessage pane's content, in a block of the demo's own inside the pane. */
+.mac-messages-preferences-imessage {
+  display: grid;
+  gap: var(--mac-messages-preferences-imessage-gap);
+  justify-items: start;
+}
+
+.mac-messages-preferences-account {
+  display: flex;
+  gap: var(--mac-messages-preferences-imessage-gap);
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.mac-messages-preferences-indent {
+  display: grid;
+  gap: var(--mac-messages-preferences-indent-gap);
+  justify-items: start;
+  margin-inline-start: var(--mac-messages-preferences-indent-margin-start);
+}
+
+/* The abstract placeholders (a contact's picture, a pane's icon, the folder) are one neutral
+   colour from the demo's tokens. */
+.mac-messages-placeholder {
+  display: block;
+  color: var(--mac-messages-placeholder);
+}
+
+/*
+ * The desktop served by Ferrite (messages-live.tsx): the unread dot before a row's name, a group
+ * member's name over their bubbles, the contacts the To field of a new conversation offers, and
+ * what a message carries under its bubble.
+ */
+.mac-messages-row-unread {
+  flex: none;
+  align-self: center;
+}
+
+.mac-messages-sender {
+  margin-inline-start: var(--mac-messages-sender-margin-start);
+}
+
+.mac-messages-suggestions {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  gap: var(--mac-messages-suggestions-gap);
+  min-inline-size: 0;
+  margin: 0;
+  padding: var(--mac-messages-suggestions-padding);
+  border: 0;
+  border-block-end: 1px solid var(--mac-messages-bar-rule);
+}
+
+.mac-messages-extras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-messages-extras-gap);
+  align-items: center;
+  margin-inline: var(--mac-messages-extras-margin-inline);
+}
+
+.mac-messages-extras:where([data-direction="sent"]) {
+  align-self: flex-end;
+  justify-content: flex-end;
+}

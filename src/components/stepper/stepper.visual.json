@@ -1,0 +1,697 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "pressed-increment-light",
+      "description": "The upper half while the mouse is held down on it in the key window: it takes the accent bezel and a white chevron; the lower half is unchanged. Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": ".mac-stepper-increment"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 29,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 10.25,
+            "y": 14,
+            "color": "#3b87fd",
+            "tolerance": 4,
+            "note": "middle stop #3d88fd of the measured blue default-button gradient, at 2x read 2.5% below it on the way to #1c76ff: the half is 10 pt of gradient from y 9 to 19. That a pressed half takes it is inferred (spec: stepper, States)"
+          },
+          {
+            "x": 12.5,
+            "y": 15.25,
+            "color": "#ffffff",
+            "scale": 2,
+            "tolerance": 6,
+            "note": "left arm of the upper chevron: white on the accent (--mac-color-control-text-on-accent); inferred"
+          },
+          {
+            "x": 11.25,
+            "y": 20.5,
+            "color": "#ffffff",
+            "note": "fill of the lower half, unchanged (spec: Fill, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-increment-dark",
+      "description": "The upper half while pressed in the key window, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": ".mac-stepper-increment"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 29,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 10.25,
+            "y": 14,
+            "color": "#1764da",
+            "tolerance": 4,
+            "note": "the measured blue default-button gradient, dark, just below its middle stop #1764db, on the way to #1561d3; inferred as above"
+          },
+          {
+            "x": 11.25,
+            "y": 20.5,
+            "color": "#636465",
+            "note": "fill of the lower half, unchanged: white at 25% over the #2f3032 window background (spec measures #686869 over #363637)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-decrement-light",
+      "description": "The lower half while pressed in the key window; the upper half is unchanged. Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": ".mac-stepper-decrement"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 29,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 10.25,
+            "y": 24,
+            "color": "#3886fd",
+            "tolerance": 4,
+            "note": "the measured blue default-button gradient 2.5% (at 2x) to 5% (at 1x) below its middle stop #3d88fd, on the way to #1c76ff: the half is 10 pt of gradient from y 19 to 29; inferred as above"
+          },
+          {
+            "x": 10.25,
+            "y": 14,
+            "color": "#ffffff",
+            "note": "fill of the upper half, unchanged (spec: Fill, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-decrement-dark",
+      "description": "The lower half while pressed in the key window; the upper half is unchanged. Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": ".mac-stepper-decrement"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 29,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 10.25,
+            "y": 24,
+            "color": "#1764da",
+            "tolerance": 4,
+            "note": "the measured blue default-button gradient, dark, 2.5% (at 2x) to 5% (at 1x) below its middle stop #1764db, on the way to #1561d3: the half is 10 pt of gradient from y 19 to 29; that a pressed half takes it is inferred (spec: stepper, States)"
+          },
+          {
+            "x": 10.25,
+            "y": 14,
+            "color": "#636465",
+            "note": "fill of the upper half, unchanged: white at 25% over the #2f3032 window background (spec measures #686869 over #363637)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-increment-purple",
+      "description": "The upper half while pressed, with the purple accent, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "accent": "purple",
+      "actions": [
+        {
+          "press": ".mac-stepper-increment"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 29,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 10.25,
+            "y": 14,
+            "color": "#bc5fb1",
+            "tolerance": 4,
+            "note": "the measured purple gradient just below its middle stop #be63b3, on the way to #b54ba8 (accent table, Theme-Light-Purple)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-increment-purple-dark",
+      "description": "The upper half while pressed, with the purple accent, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "accent": "purple",
+      "actions": [
+        {
+          "press": ".mac-stepper-increment"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 29,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 10.25,
+            "y": 14,
+            "color": "#9c3e9a",
+            "tolerance": 4,
+            "note": "the measured purple gradient, dark, just below its middle stop #9d3e9b, on the way to #973b95 (accent table, Theme-Dark-Purple)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-increment-green",
+      "description": "The upper half while pressed, with the green accent, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "accent": "green",
+      "actions": [
+        {
+          "press": ".mac-stepper-increment"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 29,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 10.25,
+            "y": 14,
+            "color": "#6eaf46",
+            "tolerance": 4,
+            "note": "the measured green gradient just below its middle stop #70b049, on the way to #5aa42c (accent table, Theme-Light-Green)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-increment-green-dark",
+      "description": "The upper half while pressed, with the green accent, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "accent": "green",
+      "actions": [
+        {
+          "press": ".mac-stepper-increment"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 29,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 10.25,
+            "y": 14,
+            "color": "#39b724",
+            "tolerance": 4,
+            "note": "the measured green gradient, dark, just below its middle stop #39b824, on the way to #37b124 (accent table, Theme-Dark-Green)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-inactive-light",
+      "description": "The upper half while pressed in an inactive window: no accent, the fill darkens. Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "press": ".mac-stepper-increment"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 29,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 10.25,
+            "y": 14,
+            "color": "#f0f0f0",
+            "note": "the shared pressed bezel fill (--mac-bezel-fill-pressed); inferred, no screenshot shows it"
+          },
+          {
+            "x": 11.25,
+            "y": 20.5,
+            "color": "#ffffff",
+            "note": "fill of the lower half, unchanged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-inactive-dark",
+      "description": "The upper half while pressed in an inactive window: no accent, the fill lightens. Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "press": ".mac-stepper-increment"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 29,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 10.25,
+            "y": 14,
+            "color": "#7a7b7c",
+            "note": "the shared pressed bezel fill (--mac-bezel-fill-pressed), white at 36% over the #2f3032 window background: the stepper reaches it with white at 14.7% over its 25% fill #636465; inferred, no screenshot shows it"
+          },
+          {
+            "x": 11.25,
+            "y": 20.5,
+            "color": "#636465",
+            "note": "fill of the lower half, unchanged: white at 25% over #2f3032"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus, reached with Tab, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 29,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 19,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the window background, measured on the Go to Folder field (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 6.25,
+            "y": 19,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "outermost quarter point of the ring: the band is flat and reaches 2.5 pt beyond the bezel's edge at x 8.5"
+          },
+          {
+            "x": 5.25,
+            "y": 19,
+            "color": "#ececec",
+            "note": "window background just outside the ring (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 14.5,
+            "y": 6.25,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "outermost quarter point of the ring above the bezel's top edge at y 8.5"
+          },
+          {
+            "x": 10.25,
+            "y": 19,
+            "color": "#ffffff",
+            "note": "the fill is unchanged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 29,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 19,
+            "color": "#2d6c99",
+            "tolerance": 4,
+            "note": "ring over the #2f3032 window background, measured in Automator (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 5.25,
+            "y": 19,
+            "color": "#2f3032",
+            "note": "window background just outside the ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-focus-ring-main",
+      "description": "Focused with Tab in a main window that is not key: no ring. Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "main",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 29,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 19,
+            "color": "#ececec",
+            "note": "window background where the ring would be: AppKit removes the ring when the window is not key (spec: focus-ring, States, documented)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-focus-ring-inactive",
+      "description": "Focused with Tab in an inactive window: no ring. Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 29,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 19,
+            "color": "#ececec",
+            "note": "window background where the ring would be (spec: focus-ring, States, documented)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-focus-ring-main-dark",
+      "description": "Focused with Tab in a main window that is not key: no ring. Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "main",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 29,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 19,
+            "color": "#2f3032",
+            "note": "the example's window background where the ring would be: AppKit removes the ring when the window is not key (spec: focus-ring, States, documented)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-focus-ring-inactive-dark",
+      "description": "Focused with Tab in an inactive window: no ring. Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 29,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 19,
+            "color": "#2f3032",
+            "note": "the example's window background where the ring would be (spec: focus-ring, States, documented)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sizes-light",
+      "description": "Regular, small and mini side by side, aligned at the top: the boxes are 13 x 22, 11 x 19 and 10 x 16 pt. Aqua.",
+      "example": "visual-sizes",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 66,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 10.25,
+            "y": 19,
+            "color": "#ffffff",
+            "note": "fill of the regular stepper (measured)"
+          },
+          {
+            "x": 31.25,
+            "y": 17.5,
+            "color": "#ffffff",
+            "note": "fill of the small stepper at its middle: 19 pt high (inferred: spec, Small / mini sizes)"
+          },
+          {
+            "x": 34.5,
+            "y": 28.75,
+            "color": "#ececec",
+            "note": "window background below the small stepper, whose bezel and shadow end at y 28: a regular stepper would still show its fill here"
+          },
+          {
+            "x": 50.25,
+            "y": 16,
+            "color": "#ffffff",
+            "note": "fill of the mini stepper at its middle: 16 pt high (inferred)"
+          },
+          {
+            "x": 53,
+            "y": 26.25,
+            "color": "#ececec",
+            "note": "window background below the mini stepper, whose bezel and shadow end at y 25"
+          },
+          {
+            "x": 59.25,
+            "y": 16,
+            "color": "#ececec",
+            "note": "window background right of the mini stepper, whose bezel ends at x 57.5 and halo at 58"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sizes-dark",
+      "description": "Regular, small and mini side by side, aligned at the top: the boxes are 13 x 22, 11 x 19 and 10 x 16 pt. Dark Aqua.",
+      "example": "visual-sizes",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 66,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 10.25,
+            "y": 19,
+            "color": "#636465",
+            "note": "fill of the regular stepper: white at 25% over the #2f3032 window background (spec measures #686869 over #363637)"
+          },
+          {
+            "x": 31.25,
+            "y": 17.5,
+            "color": "#636465",
+            "note": "fill of the small stepper at its middle: 19 pt high (inferred: spec, Small / mini sizes)"
+          },
+          {
+            "x": 34.5,
+            "y": 28.75,
+            "color": "#2f3032",
+            "note": "window background below the small stepper, whose bezel and shadow end at y 28: a regular stepper would still show its fill here"
+          },
+          {
+            "x": 50.25,
+            "y": 16,
+            "color": "#636465",
+            "note": "fill of the mini stepper at its middle: 16 pt high (inferred)"
+          },
+          {
+            "x": 53,
+            "y": 26.25,
+            "color": "#2f3032",
+            "note": "window background below the mini stepper, whose bezel and shadow end at y 25"
+          },
+          {
+            "x": 59.25,
+            "y": 16,
+            "color": "#2f3032",
+            "note": "window background right of the mini stepper, whose bezel ends at x 57.5 and halo at 58"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pane-light",
+      "description": "The stepper beside the From time field of the Notifications pane, Aqua.",
+      "example": "visual-pane",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.196,
+        "2x": 0.0087
+      },
+      "deltaBudget": {
+        "1x": 7.5,
+        "2x": 0.71
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Notifications.png",
+        "crop": {
+          "x": 950,
+          "y": 540,
+          "width": 38,
+          "height": 58
+        }
+      }
+    },
+    {
+      "name": "pane-dark",
+      "description": "The stepper beside the From time field of the Notifications pane, Dark Aqua.",
+      "example": "visual-pane",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.116,
+        "2x": 0.0092
+      },
+      "deltaBudget": {
+        "1x": 5.3,
+        "2x": 0.78
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Notifications.png",
+        "crop": {
+          "x": 950,
+          "y": 540,
+          "width": 38,
+          "height": 58
+        }
+      }
+    },
+    {
+      "name": "pane-disabled-light",
+      "description": "The disabled stepper beside the date field of the Date & Time pane, Aqua.",
+      "example": "visual-pane-disabled",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.089,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 3.9,
+        "2x": 0.63
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Date-and-Time.png",
+        "crop": {
+          "x": 634,
+          "y": 388,
+          "width": 38,
+          "height": 58
+        }
+      }
+    },
+    {
+      "name": "pane-disabled-dark",
+      "description": "The disabled stepper beside the date field of the Date & Time pane, Dark Aqua.",
+      "example": "visual-pane-disabled",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.06,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 2.6,
+        "2x": 0.53
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Date-and-Time.png",
+        "crop": {
+          "x": 634,
+          "y": 388,
+          "width": 38,
+          "height": 58
+        }
+      }
+    }
+  ]
+}

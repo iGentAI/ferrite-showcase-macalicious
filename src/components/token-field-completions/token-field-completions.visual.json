@@ -1,0 +1,415 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "pending": "No reference: no screenshot shows a token field's completions (the spec documents them from the Human Interface Guidelines). The checks below type into the field in a real browser and hold the list to the shared menu and selection tokens and to its place under the text box.",
+  "comparisons": [
+    {
+      "name": "list-light",
+      "description": "The list after typing \"tr\": under the text box, first completion active, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#field"
+        },
+        {
+          "key": "t"
+        },
+        {
+          "key": "r"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 216,
+          "height": 112
+        },
+        "pixels": [
+          {
+            "x": 120,
+            "y": 45,
+            "color": "#0164e1",
+            "tolerance": 2,
+            "note": "active completion: the selected-content colour for blue (inferred; value of the measured selection token)"
+          },
+          {
+            "x": 120,
+            "y": 64,
+            "color": "#ebebeb",
+            "tolerance": 2,
+            "note": "second row: menu material, rgb(234 234 234) at 70%, over the window background #ececec (shared token --mac-material-menu; inferred use)"
+          },
+          {
+            "x": 120,
+            "y": 83,
+            "color": "#ebebeb",
+            "tolerance": 2,
+            "note": "third row, the last: three completions contain \"tr\""
+          },
+          {
+            "x": 56,
+            "y": 64,
+            "color": "#ebebeb",
+            "tolerance": 2,
+            "note": "the list starts at the text box, which follows the token (provisional position)"
+          },
+          {
+            "x": 30,
+            "y": 45,
+            "color": "#ececec",
+            "note": "no list under the token, beside the active row: the list hangs under the text being typed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "arrow-light",
+      "description": "Down Arrow moves the active completion to the second row, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#field"
+        },
+        {
+          "key": "t"
+        },
+        {
+          "key": "r"
+        },
+        {
+          "key": "ArrowDown"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 216,
+          "height": 112
+        },
+        "pixels": [
+          {
+            "x": 120,
+            "y": 45,
+            "color": "#ebebeb",
+            "tolerance": 2,
+            "note": "first row, no longer active: menu material, rgb(234 234 234) at 70%, over the window background #ececec (shared token --mac-material-menu; inferred use)"
+          },
+          {
+            "x": 120,
+            "y": 64,
+            "color": "#0164e1",
+            "tolerance": 2,
+            "note": "active completion: the selected-content colour for blue (inferred; value of the measured selection token)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "taken-light",
+      "description": "Return takes the active completion: a second token, and no list, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#field"
+        },
+        {
+          "key": "t"
+        },
+        {
+          "key": "r"
+        },
+        {
+          "key": "Enter"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 216,
+          "height": 112
+        },
+        "pixels": [
+          {
+            "x": 58,
+            "y": 19,
+            "color": "#bbd7ff",
+            "tolerance": 1,
+            "note": "the completion is a token after the first (spec: token-field, Token fill, measured #bbd7ff)"
+          },
+          {
+            "x": 120,
+            "y": 45,
+            "color": "#ececec",
+            "note": "the list is gone: the active row was here"
+          }
+        ]
+      }
+    },
+    {
+      "name": "dismissed-light",
+      "description": "Escape dismisses the list, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#field"
+        },
+        {
+          "key": "t"
+        },
+        {
+          "key": "r"
+        },
+        {
+          "key": "Escape"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 216,
+          "height": 112
+        },
+        "pixels": [
+          {
+            "x": 120,
+            "y": 45,
+            "color": "#ececec",
+            "note": "the list is gone"
+          },
+          {
+            "x": 60,
+            "y": 45,
+            "color": "#ececec",
+            "note": "the list is gone: the active row began here"
+          }
+        ]
+      }
+    },
+    {
+      "name": "list-dark",
+      "description": "The list after typing \"tr\": under the text box, first completion active, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#field"
+        },
+        {
+          "key": "t"
+        },
+        {
+          "key": "r"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 216,
+          "height": 112
+        },
+        "pixels": [
+          {
+            "x": 120,
+            "y": 45,
+            "color": "#0158d0",
+            "tolerance": 2,
+            "note": "active completion: the selected-content colour for blue (inferred; value of the measured selection token)"
+          },
+          {
+            "x": 120,
+            "y": 64,
+            "color": "#3a3b3c",
+            "tolerance": 2,
+            "note": "second row: menu material, rgb(62 63 64) at 70%, over the window background #323232 (shared token --mac-material-menu; inferred use)"
+          },
+          {
+            "x": 120,
+            "y": 83,
+            "color": "#3a3b3c",
+            "tolerance": 2,
+            "note": "third row, the last: three completions contain \"tr\""
+          },
+          {
+            "x": 56,
+            "y": 64,
+            "color": "#3a3b3c",
+            "tolerance": 2,
+            "note": "the list starts at the text box, which follows the token (provisional position)"
+          },
+          {
+            "x": 30,
+            "y": 45,
+            "color": "#323232",
+            "note": "no list under the token, beside the active row: the list hangs under the text being typed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "arrow-dark",
+      "description": "Down Arrow moves the active completion to the second row, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#field"
+        },
+        {
+          "key": "t"
+        },
+        {
+          "key": "r"
+        },
+        {
+          "key": "ArrowDown"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 216,
+          "height": 112
+        },
+        "pixels": [
+          {
+            "x": 120,
+            "y": 45,
+            "color": "#3a3b3c",
+            "tolerance": 2,
+            "note": "first row, no longer active: menu material, rgb(62 63 64) at 70%, over the window background #323232 (shared token --mac-material-menu; inferred use)"
+          },
+          {
+            "x": 120,
+            "y": 64,
+            "color": "#0158d0",
+            "tolerance": 2,
+            "note": "active completion: the selected-content colour for blue (inferred; value of the measured selection token)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "taken-dark",
+      "description": "Return takes the active completion: a second token, and no list, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#field"
+        },
+        {
+          "key": "t"
+        },
+        {
+          "key": "r"
+        },
+        {
+          "key": "Enter"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 216,
+          "height": 112
+        },
+        "pixels": [
+          {
+            "x": 58,
+            "y": 19,
+            "color": "#1e3d63",
+            "tolerance": 1,
+            "note": "the completion is a token after the first (spec: token-field, Token fill, measured #1e3d63)"
+          },
+          {
+            "x": 120,
+            "y": 45,
+            "color": "#323232",
+            "note": "the list is gone: the active row was here"
+          }
+        ]
+      }
+    },
+    {
+      "name": "dismissed-dark",
+      "description": "Escape dismisses the list, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#field"
+        },
+        {
+          "key": "t"
+        },
+        {
+          "key": "r"
+        },
+        {
+          "key": "Escape"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 216,
+          "height": 112
+        },
+        "pixels": [
+          {
+            "x": 120,
+            "y": 45,
+            "color": "#323232",
+            "note": "the list is gone"
+          },
+          {
+            "x": 60,
+            "y": 45,
+            "color": "#323232",
+            "note": "the list is gone: the active row began here"
+          }
+        ]
+      }
+    },
+    {
+      "name": "forced-colors",
+      "description": "The list in forced-colours mode: a border, the canvas for a surface and the system highlight on the active completion. The colours are the browser's emulated system colours, not Catalina's.",
+      "example": "visual-states",
+      "appearance": "light",
+      "forcedColors": true,
+      "actions": [
+        {
+          "click": "#field"
+        },
+        {
+          "key": "t"
+        },
+        {
+          "key": "r"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 216,
+          "height": 112
+        },
+        "pixels": [
+          {
+            "x": 120,
+            "y": 45,
+            "color": "#37336d",
+            "tolerance": 2,
+            "note": "active completion: Highlight as Chromium emulates it"
+          },
+          {
+            "x": 120,
+            "y": 64,
+            "color": "#ffffff",
+            "note": "other rows: Canvas"
+          },
+          {
+            "x": 120,
+            "y": 32,
+            "color": "#000000",
+            "note": "the list's border, CanvasText: its top edge is at y 31.5"
+          }
+        ]
+      }
+    }
+  ]
+}

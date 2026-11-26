@@ -1,0 +1,66 @@
+/*
+ * Book cover: a book in the Books library. Measured on Books (cover at image 656,244,291,380 in
+ * both appearances): 145.5 x 190 pt, square corners, no border, a soft shadow that is deepest
+ * under the cover.
+ *
+ * States
+ *   :active on a link or a button       dimmed by a tenth (provisional)
+ *   :focus-visible                      focus ring, in the key window only
+ *   :disabled, [aria-disabled="true"]   half opacity (provisional)
+ *   [data-force~="pressed" | "focus"]   previews of the transient states
+ *
+ * Consumer variables
+ *   --mac-book-cover-width              width of the cell (145.5 pt)
+ *   --mac-book-cover-aspect             its proportions (291 / 380)
+ */
+.mac-book-cover {
+  position: relative;
+  display: grid;
+  flex: none;
+  box-sizing: border-box;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  width: var(--mac-book-cover-width, 145.5px);
+  aspect-ratio: var(--mac-book-cover-aspect, 291 / 380);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--mac-book-cover-placeholder);
+  box-shadow: var(--mac-book-cover-shadow);
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+  cursor: default;
+  appearance: none;
+  outline: none;
+}
+
+/* The picture covers the cell, whatever its own proportions. */
+.mac-book-cover > :where(*) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Pressed: a cover that is a link or a button dims */
+.mac-book-cover:where(:where(:any-link, :enabled):active, [data-force~="pressed"]) {
+  filter: brightness(0.9);
+}
+
+.mac-book-cover:where(:disabled, [aria-disabled="true"]) {
+  opacity: 0.5;
+}
+
+/* Keyboard focus ring; key window only */
+.mac-book-cover:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-book-cover {
+    border: 1px solid CanvasText;
+  }
+}

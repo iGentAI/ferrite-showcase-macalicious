@@ -1,0 +1,156 @@
+/*
+ * Calendar mini month: the month at the foot of Calendar's sidebar, 164 pt tall with its rule.
+ *
+ * States
+ *   .mac-calendar-mini-month-day[data-weekend]     Saturday, Sunday
+ *   .mac-calendar-mini-month-day[data-outside]     a day of the month before or after
+ *   .mac-calendar-mini-month-day[data-today]       today, in the red disc
+ *   .mac-calendar-mini-month-day[data-selected]    the selected day
+ *   :active / [data-force~="pressed"], :focus-visible / [data-force~="focus"]
+ *   :where([data-window-state="main"], [data-window-state="inactive"]) *
+ *                                      not the key window: no focus ring
+ */
+.mac-calendar-mini-month {
+  box-sizing: border-box;
+  min-width: 150px;
+  padding: 9px 0 7.5px;
+  border-top: 1px solid var(--mac-calendar-mini-month-rule);
+  color: var(--mac-calendar-mini-month-text);
+  font: var(--mac-font-weight-semibold) 11px / 17px var(--mac-font-family-system);
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.mac-calendar-mini-month-header {
+  display: flex;
+  align-items: center;
+  height: 23px;
+  padding-inline: 6px 3.5px;
+  color: var(--mac-calendar-mini-month-header-text);
+}
+
+.mac-calendar-mini-month-title {
+  position: relative;
+  top: -0.5px;
+  flex: 1;
+  overflow: hidden;
+  padding-inline-end: 3.5px;
+  font: var(--mac-font-weight-bold) 13px / 16px var(--mac-font-family-system);
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mac-calendar-mini-month-step,
+.mac-calendar-mini-month-day {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  outline: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: default;
+}
+
+.mac-calendar-mini-month-step {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 22px;
+  height: 18px;
+}
+
+.mac-calendar-mini-month-step:where(:active, [data-force~="pressed"]) {
+  color: var(--mac-calendar-mini-month-text);
+}
+
+/* The days sit 1.75 pt nearer the divider than the window's edge, as in Calendar. */
+.mac-calendar-mini-month-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  padding-inline: 6.25px 2.75px;
+}
+
+.mac-calendar-mini-month-weekday {
+  box-sizing: border-box;
+  height: 21.5px;
+  padding-top: 3.75px;
+  color: var(--mac-calendar-mini-month-header-text);
+  font-weight: var(--mac-font-weight-semibold);
+  font-size: 11.5px;
+  line-height: 16px;
+  text-align: center;
+}
+
+.mac-calendar-mini-month-day {
+  position: relative;
+  isolation: isolate;
+  display: block;
+  width: 100%;
+  height: 17px;
+  text-align: center;
+}
+
+.mac-calendar-mini-month-day:where([data-weekend]) {
+  color: var(--mac-calendar-mini-month-weekend-text);
+}
+
+.mac-calendar-mini-month-day:where([data-outside]) {
+  color: var(--mac-calendar-mini-month-outside-text);
+}
+
+/* The 18 pt disc of today and of the selected day, centred on the number. */
+.mac-calendar-mini-month-day:where([data-today], [data-selected])::before {
+  position: absolute;
+  z-index: -1;
+  top: -0.5px;
+  left: calc(50% - 8.5px);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--mac-calendar-mini-month-selected);
+  content: "";
+}
+
+.mac-calendar-mini-month-day:where([data-today], [data-selected]) {
+  color: var(--mac-calendar-mini-month-selected-text);
+  font-weight: var(--mac-font-weight-bold);
+}
+
+.mac-calendar-mini-month-day:where([data-today])::before {
+  background: var(--mac-calendar-mini-month-today);
+}
+
+.mac-calendar-mini-month-day:where([data-today]) {
+  color: var(--mac-calendar-mini-month-today-text);
+}
+
+.mac-calendar-mini-month-day:where(:active, [data-force~="pressed"]) {
+  opacity: 0.6;
+}
+
+.mac-calendar-mini-month-step:where(:focus-visible, [data-force~="focus"]),
+.mac-calendar-mini-month-day:where(:focus-visible, [data-force~="focus"]) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: -1px;
+}
+
+.mac-calendar-mini-month-step:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+),
+.mac-calendar-mini-month-day:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  outline: 0;
+}
+
+@media (forced-colors: active) {
+  .mac-calendar-mini-month-day:where([data-today], [data-selected]) {
+    outline: 1px solid ButtonText;
+    outline-offset: -1px;
+  }
+}

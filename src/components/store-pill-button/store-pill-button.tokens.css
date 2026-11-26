@@ -1,0 +1,35 @@
+/*
+ * Offer button colours (reference/spec/components/store-pill-button.md). The store draws this
+ * control itself, in its own colours: none of them is a system colour, and the capsule's fill
+ * is the same light grey in Aqua and in Dark Aqua.
+ */
+:root {
+  /* [measured] capsule fill, Mac-App-Store @ 1110,1486 in both captures: it stays light on
+     the dark page */
+  --mac-store-pill-button-fill: #f2f2f7;
+  /* [measured] title, Mac-App-Store row 1486 (stems of G, E and T). The store's own blue: in
+     Aqua it equals the blue accent, in Dark Aqua it does not (the spec's sRGB reading is
+     #0885ff, one level from this one). Also the fill of the filled variant. */
+  --mac-store-pill-button-tint: light-dark(#027aff, #0884ff);
+  /* [measured] caption under the capsule, Mac-App-Store @ 1110,1521,115,13 */
+  --mac-store-pill-button-caption: light-dark(#808080, #9a9a9b);
+  /* [provisional] title of the filled variant. No screenshot shows the confirmation step. */
+  --mac-store-pill-button-on-tint: #ffffff;
+  /* [provisional] what replaces the blue in a window that is not key: the library's rule for
+     accent colours, applied to the store's blue. No screenshot shows the store inactive. The
+     grey is systemGray, dark enough to read on the light capsule in both appearances. */
+  --mac-store-pill-button-tint-not-key: #8e8e93;
+  /* [provisional] the part of the progress ring not yet filled. No screenshot shows a
+     download. */
+  --mac-store-pill-button-track: light-dark(#e5e5ea, #48484a);
+  /* [measured] the capsule: 66 x 21 pt, fully rounded (Mac-App-Store @ 1110,1486) */
+  --mac-store-pill-button-width: 66px;
+  --mac-store-pill-button-height: 21px;
+  --mac-store-pill-button-radius: 10.5px;
+  /* [measured] 6.5 pt caption under the capsule: "In-App Purchases" is 57 pt of ink */
+  --mac-store-pill-button-caption-font:
+    var(--mac-font-weight-regular) 6.5px / 9px var(--mac-font-family-system);
+  /* [provisional] pressed: the whole control; disabled: the title or the ring */
+  --mac-store-pill-button-pressed-opacity: 0.5;
+  --mac-store-pill-button-disabled-opacity: 0.35;
+}

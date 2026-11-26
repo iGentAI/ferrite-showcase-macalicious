@@ -1,0 +1,44 @@
+/*
+ * Shadows [measured, computed]: each is fitted to the alpha falloff of the transparent window
+ * captures (reference/spec/components/window-shadow.md has the falloff tables). The first layer
+ * of every shadow is the 0.5 pt outer hairline.
+ *
+ * Shadows take no part in layout. Around a key window leave 48 pt at the sides, 31 pt above and
+ * 67 pt below if its shadow must not be clipped.
+ */
+:root {
+  /* [measured, computed] */
+  --mac-shadow-window:
+    0 0 0 0.5px light-dark(rgb(0 0 0 / 0.19), rgb(0 0 0 / 0.95)),
+    0 18px 40px light-dark(rgb(0 0 0 / 0.4), rgb(0 0 0 / 0.7));
+  /* Differenced against the Desktop captures */
+  --mac-shadow-window-inactive:
+    0 0 0 0.5px light-dark(rgb(0 0 0 / 0.19), rgb(0 0 0 / 0.87)),
+    0 8px 24px light-dark(rgb(0 0 0 / 0.26), rgb(0 0 0 / 0.46));
+  /* Inner rim of a window, painted over its content: 0.5 pt of white at 16% in light, 1 pt of
+     white at 20% in dark */
+  --mac-shadow-window-rim:
+    inset 0 0 0 0.5px light-dark(rgb(255 255 255 / 0.16), transparent),
+    inset 0 0 0 1px light-dark(transparent, rgb(255 255 255 / 0.2));
+  /* Utility panels */
+  --mac-shadow-panel:
+    0 0 0 0.5px light-dark(rgb(0 0 0 / 0.19), rgb(0 0 0 / 0.85)),
+    0 4px 16px light-dark(rgb(0 0 0 / 0.26), rgb(0 0 0 / 0.3));
+  --mac-shadow-menu:
+    0 0 0 0.5px light-dark(rgb(0 0 0 / 0.15), rgb(0 0 0 / 0.8)), 0 3px 14px rgb(0 0 0 / 0.31);
+  /* Inner rim of a dark menu: 1 pt of white at 15% */
+  --mac-shadow-menu-rim: inset 0 0 0 1px light-dark(transparent, rgb(255 255 255 / 0.15));
+  --mac-shadow-popover:
+    0 0 0 0.5px light-dark(rgb(0 0 0 / 0.19), rgb(0 0 0 / 0.85)),
+    0 4px 16px light-dark(rgb(0 0 0 / 0.26), rgb(0 0 0 / 0.3));
+  /* Clipped above the line where the sheet attaches to its window */
+  --mac-shadow-sheet: 0 5px 18px rgb(0 0 0 / 0.3);
+  /* Light and dark have different layers; the unused ones are transparent */
+  --mac-shadow-notification:
+    0 0 0 0.5px light-dark(rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.75)),
+    0 1px 3px light-dark(rgb(0 0 0 / 0.18), transparent),
+    0 4px 16px light-dark(rgb(0 0 0 / 0.26), transparent),
+    0 1px 12px light-dark(transparent, rgb(0 0 0 / 0.3));
+  --mac-shadow-tooltip:
+    0 0 0 0.5px rgb(0 0 0 / 0.15), 0 2px 6px rgb(0 0 0 / 0.2); /* [provisional] not shown */
+}

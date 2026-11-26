@@ -1,0 +1,184 @@
+/*
+ * Progress window (Finder's Copy window): a window without a title whose title bar is
+ * transparent, holding one row per operation.
+ *
+ * Parts
+ *   .mac-progress-window          the window (also .mac-window)
+ *   .mac-progress-window-header   the 22 pt title bar strip with the window controls
+ *   .mac-progress-window-item     one operation: a grid of icon, title, bar, stop button, status
+ *   .mac-progress-window-icon     32 pt canvas for the item's icon
+ *   .mac-progress-window-title    11 pt title, one line
+ *   .mac-progress-window-bar      the progress bar (also .mac-progress-bar)
+ *   .mac-progress-window-stop     the 14 pt stop button: a disc with an x cut out
+ *   .mac-progress-window-status   9 pt secondary status line
+ *   .mac-progress-window-name     a file name that truncates in the middle (-start, -end)
+ *
+ * States
+ *   :active on the stop button            pressed [provisional]
+ *   :focus-visible on the stop button     focus ring, in the key window only
+ *   [data-force~="pressed" | "focus"]     static previews of those two
+ *   [data-window-state="main" | "inactive"] *
+ *                                         the bar and the window controls turn grey (their
+ *                                         own rules); no focus ring
+ *
+ * Measured on Light-/Dark-Finder-Copy, in points from the window's top-left corner: icon canvas
+ * at 12, 27.5; text and bar from 57 to 364; title baseline 33; bar 40.5 to 46.5; stop button
+ * 373 to 387 by 37 to 51; status baseline 62; window 399 by 69.
+ */
+
+/* The title bar strip keeps its two highlight rows and loses its fill and its separator: the
+   whole window is the window background. Two classes, so that the order of the stylesheets in
+   a bundle does not decide which rule wins. */
+.mac-progress-window > .mac-progress-window-header {
+  border: 0;
+  background: none;
+  box-shadow:
+    inset 0 var(--mac-hairline) 0 var(--mac-progress-window-highlight),
+    inset 0 calc(2 * var(--mac-hairline)) 0 var(--mac-progress-window-highlight-second);
+}
+
+.mac-progress-window-item {
+  display: grid;
+  flex: none;
+  grid-template-rows: auto auto auto;
+  grid-template-columns: 45px minmax(0, 1fr) auto;
+  box-sizing: border-box;
+  padding: 0 12px 3.5px;
+  color: var(--mac-color-label);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Several operations [provisional]: a 1 pt line between rows, 47 pt from line to line. */
+.mac-progress-window-item:where(:not(:last-child)) {
+  padding-bottom: 1.5px;
+}
+
+.mac-progress-window-item:where(.mac-progress-window-item ~ *) {
+  padding-top: 1px;
+  border-top: 1px solid var(--mac-color-separator);
+}
+
+.mac-progress-window-icon {
+  display: grid;
+  grid-area: 1 / 1 / -1 / 2;
+  align-self: start;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin-top: 5.5px;
+}
+
+/* A flex row, so that a ProgressWindowName inside gives way while the text around it stays. */
+.mac-progress-window-title {
+  display: flex;
+  grid-area: 1 / 2;
+  min-width: 0;
+  overflow: hidden;
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+  white-space: pre;
+}
+
+/* A plain string title truncates at its end. */
+.mac-progress-window-title-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mac-progress-window-bar {
+  grid-area: 2 / 2;
+  margin-block: 4.5px 6px;
+}
+
+.mac-progress-window-status {
+  grid-area: 3 / 2;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-control-mini);
+  letter-spacing: var(--mac-tracking-mini);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Stop button: 9 pt after the bar, centred on it half a point low, as measured. */
+.mac-progress-window-stop {
+  display: block;
+  grid-area: 2 / 3;
+  align-self: start;
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  margin: 1px 0 0;
+  margin-inline-start: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--mac-progress-window-stop);
+  cursor: default;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-progress-window-stop:where(:active, [data-force~="pressed"]) {
+  color: var(--mac-progress-window-stop-pressed);
+}
+
+/* Keyboard focus ring; only in the key window. */
+.mac-progress-window-stop:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+.mac-progress-window-stop-glyph {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Middle truncation: the start gives way with an ellipsis, the end never shrinks. */
+.mac-progress-window-name {
+  display: inline-flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  vertical-align: bottom;
+  white-space: pre;
+}
+
+.mac-progress-window-name-start {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mac-progress-window-name-end {
+  flex: none;
+}
+
+@media (forced-colors: active) {
+  .mac-progress-window-item {
+    color: CanvasText;
+  }
+
+  .mac-progress-window-item:where(.mac-progress-window-item ~ *) {
+    border-top-color: CanvasText;
+  }
+
+  .mac-progress-window-status {
+    color: CanvasText;
+  }
+
+  .mac-progress-window-stop {
+    color: ButtonText;
+  }
+}

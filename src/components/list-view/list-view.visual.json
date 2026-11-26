@@ -1,0 +1,1127 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "notes-light",
+      "description": "Note list of Notes, Aqua: five two-line rows, the first selected in grey (the list does not have focus), inset separators. Whole crop: the text is set in the fallback font off Apple platforms, the thumbnails are stand-ins, and the screenshot's paper noise texture is painted as its mean colour.",
+      "example": "visual-notes",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.1512,
+        "2x": 0.1368
+      },
+      "deltaBudget": {
+        "1x": 18.57,
+        "2x": 20.59
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Notes.png",
+        "crop": {
+          "x": 494,
+          "y": 152,
+          "width": 496,
+          "height": 560
+        }
+      }
+    },
+    {
+      "name": "notes-drawing-light",
+      "description": "The same crop with the text lines and the two thumbnails (stand-in artwork) masked: scores the row height, the selection, the separators and their inset over the mean colour of the paper texture.",
+      "example": "visual-notes",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 24,
+          "y": 10,
+          "width": 170,
+          "height": 34
+        },
+        {
+          "x": 199,
+          "y": 6,
+          "width": 43,
+          "height": 43
+        },
+        {
+          "x": 24,
+          "y": 66,
+          "width": 218,
+          "height": 34
+        },
+        {
+          "x": 24,
+          "y": 122,
+          "width": 170,
+          "height": 34
+        },
+        {
+          "x": 199,
+          "y": 118,
+          "width": 43,
+          "height": 43
+        },
+        {
+          "x": 24,
+          "y": 178,
+          "width": 218,
+          "height": 34
+        },
+        {
+          "x": 24,
+          "y": 234,
+          "width": 218,
+          "height": 34
+        }
+      ],
+      "budget": {
+        "1x": 0.0005,
+        "2x": 0.0006
+      },
+      "deltaBudget": {
+        "1x": 1.63,
+        "2x": 2.67
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Notes.png",
+        "crop": {
+          "x": 494,
+          "y": 152,
+          "width": 496,
+          "height": 560
+        }
+      }
+    },
+    {
+      "name": "notes-dark",
+      "description": "Note list of Notes, Dark Aqua: whole crop, with text in the fallback font and stand-in thumbnails.",
+      "example": "visual-notes",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.1485,
+        "2x": 0.135
+      },
+      "deltaBudget": {
+        "1x": 16.49,
+        "2x": 17.43
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Notes.png",
+        "crop": {
+          "x": 494,
+          "y": 152,
+          "width": 496,
+          "height": 560
+        }
+      }
+    },
+    {
+      "name": "notes-drawing-dark",
+      "description": "The same crop with the text lines and the two thumbnails (stand-in artwork) masked, Dark Aqua.",
+      "example": "visual-notes",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 24,
+          "y": 10,
+          "width": 170,
+          "height": 34
+        },
+        {
+          "x": 199,
+          "y": 6,
+          "width": 43,
+          "height": 43
+        },
+        {
+          "x": 24,
+          "y": 66,
+          "width": 218,
+          "height": 34
+        },
+        {
+          "x": 24,
+          "y": 122,
+          "width": 170,
+          "height": 34
+        },
+        {
+          "x": 199,
+          "y": 118,
+          "width": 43,
+          "height": 43
+        },
+        {
+          "x": 24,
+          "y": 178,
+          "width": 218,
+          "height": 34
+        },
+        {
+          "x": 24,
+          "y": 234,
+          "width": 218,
+          "height": 34
+        }
+      ],
+      "budget": {
+        "1x": 0.0005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.17,
+        "2x": 0.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Notes.png",
+        "crop": {
+          "x": 494,
+          "y": 152,
+          "width": 496,
+          "height": 560
+        }
+      }
+    },
+    {
+      "name": "contacts-light",
+      "description": "Name list of Contacts, Aqua: two one-line rows, the second selected in grey, and the row below. Whole crop: the names are set in the fallback font, and the screenshot has a third contact that the example does not.",
+      "example": "visual-contacts",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.1146,
+        "2x": 0.0902
+      },
+      "deltaBudget": {
+        "1x": 13.96,
+        "2x": 12.73
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Contacts.png",
+        "crop": {
+          "x": 482,
+          "y": 142,
+          "width": 376,
+          "height": 144
+        }
+      }
+    },
+    {
+      "name": "contacts-drawing-light",
+      "description": "The same crop with the names masked, including the third name and its glyph, which only the screenshot has: scores the row height, the grey selection across the whole pane and the background.",
+      "example": "visual-contacts",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 28,
+          "y": 4,
+          "width": 124,
+          "height": 16
+        },
+        {
+          "x": 28,
+          "y": 28,
+          "width": 124,
+          "height": 16
+        },
+        {
+          "x": 28,
+          "y": 52,
+          "width": 128,
+          "height": 16
+        }
+      ],
+      "budget": {
+        "1x": 0.0005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.16,
+        "2x": 0.24
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Contacts.png",
+        "crop": {
+          "x": 482,
+          "y": 142,
+          "width": 376,
+          "height": 144
+        }
+      }
+    },
+    {
+      "name": "contacts-dark",
+      "description": "Name list of Contacts, Dark Aqua: whole crop, names in the fallback font.",
+      "example": "visual-contacts",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.0696,
+        "2x": 0.0503
+      },
+      "deltaBudget": {
+        "1x": 6.82,
+        "2x": 5.63
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Contacts.png",
+        "crop": {
+          "x": 508,
+          "y": 162,
+          "width": 376,
+          "height": 144
+        }
+      }
+    },
+    {
+      "name": "contacts-drawing-dark",
+      "description": "The same crop with the two names masked, Dark Aqua.",
+      "example": "visual-contacts",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 28,
+          "y": 4,
+          "width": 124,
+          "height": 16
+        },
+        {
+          "x": 28,
+          "y": 28,
+          "width": 124,
+          "height": 16
+        }
+      ],
+      "budget": {
+        "1x": 0.0005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.16,
+        "2x": 0.22
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Contacts.png",
+        "crop": {
+          "x": 508,
+          "y": 162,
+          "width": 376,
+          "height": 144
+        }
+      }
+    },
+    {
+      "name": "reminders-light",
+      "description": "Six reminders with their completion circles and inset separators, Aqua. Whole crop: the titles are set in the fallback font.",
+      "example": "visual-reminders",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0214,
+        "2x": 0.0178
+      },
+      "deltaBudget": {
+        "1x": 2.46,
+        "2x": 2.59
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Reminders.png",
+        "crop": {
+          "x": 674,
+          "y": 264,
+          "width": 800,
+          "height": 408
+        }
+      }
+    },
+    {
+      "name": "reminders-drawing-light",
+      "description": "The same crop with the titles masked: scores the 34 pt row pitch, the separators from 50 pt and the circles.",
+      "example": "visual-reminders",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 49,
+          "y": 8,
+          "width": 76,
+          "height": 18
+        },
+        {
+          "x": 49,
+          "y": 42,
+          "width": 76,
+          "height": 18
+        },
+        {
+          "x": 49,
+          "y": 76,
+          "width": 76,
+          "height": 18
+        },
+        {
+          "x": 49,
+          "y": 110,
+          "width": 76,
+          "height": 18
+        },
+        {
+          "x": 49,
+          "y": 144,
+          "width": 76,
+          "height": 18
+        },
+        {
+          "x": 49,
+          "y": 178,
+          "width": 76,
+          "height": 18
+        }
+      ],
+      "budget": {
+        "1x": 0.0042,
+        "2x": 0.0007
+      },
+      "deltaBudget": {
+        "1x": 0.3,
+        "2x": 0.21
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Reminders.png",
+        "crop": {
+          "x": 674,
+          "y": 264,
+          "width": 800,
+          "height": 408
+        }
+      }
+    },
+    {
+      "name": "reminders-dark",
+      "description": "Six reminders, Dark Aqua: whole crop, titles in the fallback font.",
+      "example": "visual-reminders",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.0212,
+        "2x": 0.0176
+      },
+      "deltaBudget": {
+        "1x": 2.3,
+        "2x": 2.36
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Reminders.png",
+        "crop": {
+          "x": 674,
+          "y": 264,
+          "width": 800,
+          "height": 408
+        }
+      }
+    },
+    {
+      "name": "reminders-drawing-dark",
+      "description": "The same crop with the titles masked, Dark Aqua.",
+      "example": "visual-reminders",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 49,
+          "y": 8,
+          "width": 76,
+          "height": 18
+        },
+        {
+          "x": 49,
+          "y": 42,
+          "width": 76,
+          "height": 18
+        },
+        {
+          "x": 49,
+          "y": 76,
+          "width": 76,
+          "height": 18
+        },
+        {
+          "x": 49,
+          "y": 110,
+          "width": 76,
+          "height": 18
+        },
+        {
+          "x": 49,
+          "y": 144,
+          "width": 76,
+          "height": 18
+        },
+        {
+          "x": 49,
+          "y": 178,
+          "width": 76,
+          "height": 18
+        }
+      ],
+      "budget": {
+        "1x": 0.0048,
+        "2x": 0.0006
+      },
+      "deltaBudget": {
+        "1x": 0.28,
+        "2x": 0.19
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Reminders.png",
+        "crop": {
+          "x": 674,
+          "y": 264,
+          "width": 800,
+          "height": 408
+        }
+      }
+    },
+    {
+      "name": "forced-colors-text-light",
+      "description": "Forced colours, after a click on the first row of a list whose text is full blocks and whose emphasised text colours are a marker (red): the title, the lead and the detail of the focused selection are the system's highlight text, not the marker. The colours are the browser's emulated system colours, not Catalina's.",
+      "example": "visual-forced-colors",
+      "appearance": "light",
+      "forcedColors": true,
+      "actions": [
+        {
+          "click": ".mac-list-view-row"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 200,
+          "height": 112
+        },
+        "pixels": [
+          {
+            "x": 31,
+            "y": 17.5,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "title of the focused selected row: HighlightText, not the marker"
+          },
+          {
+            "x": 31,
+            "y": 35.5,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "lead of its detail line: HighlightText, not the marker"
+          },
+          {
+            "x": 95,
+            "y": 35.5,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "its detail text: HighlightText, not the marker"
+          },
+          {
+            "x": 180,
+            "y": 28,
+            "color": "#37336d",
+            "tolerance": 6,
+            "note": "the row beside its text: Highlight"
+          },
+          {
+            "x": 31,
+            "y": 73.5,
+            "color": "#000000",
+            "tolerance": 4,
+            "note": "title of the row that is not selected: CanvasText"
+          }
+        ]
+      }
+    },
+    {
+      "name": "forced-colors-light",
+      "description": "Forced colours, after a click on the first name: the focused selection is the system's highlight colour, not the accent, and the row that was selected is the canvas again. The colours are the browser's emulated system colours, not Catalina's.",
+      "example": "visual-contacts",
+      "appearance": "light",
+      "forcedColors": true,
+      "actions": [
+        {
+          "click": ".mac-list-view-row"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 188,
+          "height": 72
+        },
+        "pixels": [
+          {
+            "x": 170,
+            "y": 12,
+            "color": "#37336d",
+            "tolerance": 6,
+            "note": "focused selection: Highlight, which the forced-colours rule sets over the accent"
+          },
+          {
+            "x": 2,
+            "y": 23.25,
+            "color": "#37336d",
+            "tolerance": 6,
+            "note": "Highlight across the whole row"
+          },
+          {
+            "x": 170,
+            "y": 36,
+            "color": "#ffffff",
+            "note": "the second row is no longer selected: Canvas"
+          }
+        ]
+      }
+    },
+    {
+      "name": "emphasized-light",
+      "description": "A click on the first name selects it and gives the list focus: the selection is the accent colour across the whole row, and the row that was selected is plain again. Aqua. No Contacts screenshot shows a focused list; the colour is the emphasised selection the spec measures elsewhere.",
+      "example": "visual-contacts",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": ".mac-list-view-row"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 188,
+          "height": 72
+        },
+        "pixels": [
+          {
+            "x": 170,
+            "y": 12,
+            "color": "#0164e1",
+            "note": "emphasised selection, token --mac-color-selected-content-background (measured on Finder list rows; inferred for this list)"
+          },
+          {
+            "x": 2,
+            "y": 23.25,
+            "color": "#0164e1",
+            "note": "the selection starts at the pane's edge and fills the row's 24 pt"
+          },
+          {
+            "x": 170,
+            "y": 36,
+            "color": "#ffffff",
+            "note": "the second row is no longer selected: list background"
+          },
+          {
+            "x": 170,
+            "y": 60,
+            "color": "#ffffff",
+            "note": "list background below the rows"
+          }
+        ]
+      }
+    },
+    {
+      "name": "emphasized-dark",
+      "description": "The same click in Dark Aqua.",
+      "example": "visual-contacts",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": ".mac-list-view-row"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 188,
+          "height": 72
+        },
+        "pixels": [
+          {
+            "x": 170,
+            "y": 12,
+            "color": "#0158d0",
+            "note": "emphasised selection in Dark Aqua, token --mac-color-selected-content-background (measured elsewhere; inferred for this list)"
+          },
+          {
+            "x": 170,
+            "y": 36,
+            "color": "#1e1f20",
+            "note": "the second row is no longer selected: the pane's background (measured, Dark-Contacts @ 860,100)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "keyboard-focus-light",
+      "description": "Tab moves keyboard focus to the list: the selected second row turns to the accent colour and the focus ring is drawn inside the list's edge; Up Arrow then moves the selection to the first row. Aqua, inferred: no screenshot shows a list with keyboard focus.",
+      "example": "visual-contacts",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowUp"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 188,
+          "height": 72
+        },
+        "pixels": [
+          {
+            "x": 170,
+            "y": 12,
+            "color": "#0164e1",
+            "note": "Up Arrow moved the emphasised selection to the first row (token colour, inferred state)"
+          },
+          {
+            "x": 170,
+            "y": 36,
+            "color": "#ffffff",
+            "note": "second row no longer selected"
+          },
+          {
+            "x": 1.5,
+            "y": 12,
+            "color": "#0d67ec",
+            "tolerance": 3,
+            "note": "the focus ring is drawn over the selected row too: #186af6 at 50% over the #0164e1 selection, computed from the tokens"
+          },
+          {
+            "x": 1.5,
+            "y": 60,
+            "color": "#8cb5fb",
+            "tolerance": 3,
+            "note": "focus ring, 3 pt inside the edge: --mac-focus-ring-color (#186af6 at 50%) over the white list, computed from the token"
+          },
+          {
+            "x": 4.5,
+            "y": 60,
+            "color": "#ffffff",
+            "note": "list background just inside the 3 pt ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inactive-light",
+      "description": "The same click in an inactive window: the row is selected but stays grey, as in the screenshot of the unfocused list. Aqua, inferred.",
+      "example": "visual-contacts",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "click": ".mac-list-view-row"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 188,
+          "height": 72
+        },
+        "pixels": [
+          {
+            "x": 170,
+            "y": 12,
+            "color": "#dcdcdc",
+            "note": "unemphasised selection (measured, Light-Contacts @ 800,214) on the clicked row although the list has focus: the window is not key (inferred)"
+          },
+          {
+            "x": 170,
+            "y": 36,
+            "color": "#ffffff",
+            "note": "second row no longer selected"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inactive-dark",
+      "description": "Keyboard focus in an inactive window, Dark Aqua: grey selection and no focus ring. Inferred.",
+      "example": "visual-contacts",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 188,
+          "height": 72
+        },
+        "pixels": [
+          {
+            "x": 170,
+            "y": 36,
+            "color": "#464646",
+            "note": "unemphasised selection (measured, Dark-Contacts @ 860,234) while focused in a window that is not key (inferred)"
+          },
+          {
+            "x": 1.5,
+            "y": 60,
+            "color": "#1e1f20",
+            "note": "no focus ring in a window that is not key: the pane's background"
+          }
+        ]
+      }
+    },
+    {
+      "name": "keyboard-focus-dark",
+      "description": "Tab moves keyboard focus to the list: the selected second row turns to the accent colour and the focus ring is drawn inside the list's edge; Up Arrow then moves the selection to the first row. Dark Aqua, inferred: no screenshot shows a list with keyboard focus.",
+      "example": "visual-contacts",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowUp"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 188,
+          "height": 72
+        },
+        "pixels": [
+          {
+            "x": 170,
+            "y": 12,
+            "color": "#0158d0",
+            "note": "Up Arrow moved the emphasised selection to the first row: Dark Aqua value of --mac-color-selected-content-background (measured in Activity Monitor; inferred state)"
+          },
+          {
+            "x": 170,
+            "y": 36,
+            "color": "#1e1f20",
+            "note": "second row no longer selected: the pane's background (measured, Dark-Contacts @ 860,100)"
+          },
+          {
+            "x": 1.5,
+            "y": 12,
+            "color": "#1680e8",
+            "tolerance": 3,
+            "note": "the focus ring is drawn over the selected row too: #2ba8ff at 50% over the #0158d0 selection, computed from the tokens"
+          },
+          {
+            "x": 1.5,
+            "y": 60,
+            "color": "#256490",
+            "tolerance": 3,
+            "note": "focus ring, 3 pt inside the edge: the Dark Aqua --mac-focus-ring-color (#2ba8ff at 50%) over the #1e1f20 pane, computed from the token"
+          },
+          {
+            "x": 4.5,
+            "y": 60,
+            "color": "#1e1f20",
+            "note": "list background just inside the 3 pt ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "emphasized-accent-purple-light",
+      "description": "The same click as emphasized-light with the purple accent, Aqua: the emphasised selection follows the accent. No screenshot shows a selected row in this accent, so the colour is inferred from the accent with the offset fitted to blue.",
+      "example": "visual-contacts",
+      "appearance": "light",
+      "accent": "purple",
+      "actions": [
+        {
+          "click": ".mac-list-view-row"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 188,
+          "height": 72
+        },
+        "pixels": [
+          {
+            "x": 170,
+            "y": 12,
+            "color": "#7f2a7d",
+            "note": "emphasised selection, token --mac-color-selected-content-background: the measured purple swatch #963d96 with the selected-content offset of the token sheet (oklch lightness less 0.069, chroma times 0.947, hue plus 1.5 degrees), computed by hand; inferred, the offset reproduces the measured blue #0164e1"
+          },
+          {
+            "x": 2,
+            "y": 23.25,
+            "color": "#7f2a7d",
+            "note": "the purple selection starts at the pane's edge and fills the row's 24 pt (same computed colour)"
+          },
+          {
+            "x": 170,
+            "y": 36,
+            "color": "#ffffff",
+            "note": "the second row is no longer selected: list background"
+          }
+        ]
+      }
+    },
+    {
+      "name": "emphasized-accent-purple-dark",
+      "description": "The same click as emphasized-dark with the purple accent, Dark Aqua: the emphasised selection follows the accent. Inferred from the accent with the offset fitted to blue.",
+      "example": "visual-contacts",
+      "appearance": "dark",
+      "accent": "purple",
+      "actions": [
+        {
+          "click": ".mac-list-view-row"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 188,
+          "height": 72
+        },
+        "pixels": [
+          {
+            "x": 170,
+            "y": 12,
+            "color": "#83347f",
+            "note": "emphasised selection, token --mac-color-selected-content-background: the measured dark purple swatch #a650a7 with the selected-content offset of the token sheet (oklch lightness less 0.107, chroma times 0.914, hue plus 2.3 degrees), computed by hand; inferred, the offset reproduces the measured blue #0158d0"
+          },
+          {
+            "x": 170,
+            "y": 36,
+            "color": "#1e1f20",
+            "note": "the second row is no longer selected: the pane's background (measured, Dark-Contacts @ 860,100)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "always-emphasized-light",
+      "description": "emphasis=\"always\": the selection is the accent colour although the list does not have the keyboard, as the conversation list of Messages (whose blue is vibrant over the desktop in the capture and the flat selection colour here). Aqua.",
+      "example": "visual-always-emphasized",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 188,
+          "height": 72
+        },
+        "pixels": [
+          {
+            "x": 170,
+            "y": 36,
+            "color": "#0164e1",
+            "note": "emphasised selection on the selected second row without focus, token --mac-color-selected-content-background"
+          },
+          {
+            "x": 177,
+            "y": 36,
+            "color": "#ffffff",
+            "note": "the selected row's text colour (a square drawn in currentColor): white on the emphasised selection"
+          },
+          {
+            "x": 177,
+            "y": 12,
+            "color": "#262626",
+            "tolerance": 2,
+            "note": "the first row's text colour: the label colour, black at 85% on white"
+          },
+          {
+            "x": 170,
+            "y": 12,
+            "color": "#ffffff",
+            "note": "first row, not selected: list background"
+          }
+        ]
+      }
+    },
+    {
+      "name": "always-emphasized-inactive-light",
+      "description": "emphasis=\"always\" in an inactive window: the selection keeps the accent colour, as in both Messages captures, whose window is not key. Aqua.",
+      "example": "visual-always-emphasized",
+      "appearance": "light",
+      "windowState": "inactive",
+      "expect": {
+        "size": {
+          "width": 188,
+          "height": 72
+        },
+        "pixels": [
+          {
+            "x": 170,
+            "y": 36,
+            "color": "#0164e1",
+            "note": "emphasised selection in a window that is not key"
+          },
+          {
+            "x": 177,
+            "y": 36,
+            "color": "#ffffff",
+            "note": "the selected row's text colour stays white in a window that is not key"
+          },
+          {
+            "x": 2,
+            "y": 47.25,
+            "color": "#0164e1",
+            "note": "the selection starts at the pane's edge and fills the row's 24 pt"
+          }
+        ]
+      }
+    },
+    {
+      "name": "always-emphasized-inactive-dark",
+      "description": "emphasis=\"always\" in an inactive window, Dark Aqua.",
+      "example": "visual-always-emphasized",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "expect": {
+        "size": {
+          "width": 188,
+          "height": 72
+        },
+        "pixels": [
+          {
+            "x": 170,
+            "y": 36,
+            "color": "#0158d0",
+            "note": "emphasised selection in Dark Aqua in a window that is not key"
+          },
+          {
+            "x": 177,
+            "y": 36,
+            "color": "#ffffff",
+            "note": "the selected row's text colour: white"
+          },
+          {
+            "x": 170,
+            "y": 12,
+            "color": "#1e1f20",
+            "note": "first row, not selected: the pane's background"
+          }
+        ]
+      }
+    },
+    {
+      "name": "messages-empty-rows-dark",
+      "description": "emptyRows=\"separator\": the five empty 64 pt rows under the one conversation of Messages, Dark Aqua, a 28 pt strip at the trailing end of their lines. Whole crop: there is no text; the list's vibrant surface, which the Preferences window's shadow shades by up to two levels, is painted as its measured mean, and the line as measured, black at 6%.",
+      "example": "visual-empty-rows-dark",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.0005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.95,
+        "2x": 1.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Messages.png",
+        "crop": {
+          "x": 1240,
+          "y": 334,
+          "width": 56,
+          "height": 640
+        }
+      }
+    },
+    {
+      "name": "messages-empty-row-light",
+      "description": "emptyRows=\"separator\" in Aqua: the last 16 pt of the empty row of Messages that shows below the Preferences window, across the whole list, with its line from 20 pt (--mac-list-view-separator-inset) to the divider. Whole crop: there is no text; the list's surface, tinted by the desktop picture, is painted as its measured mean.",
+      "example": "visual-empty-rows-light",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 2.85,
+        "2x": 3
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Messages.png",
+        "crop": {
+          "x": 746,
+          "y": 1078,
+          "width": 540,
+          "height": 32
+        }
+      }
+    },
+    {
+      "name": "empty-rows-lines-dark",
+      "description": "Where the empty rows' lines fall: in the last point of each 64 pt row below the last real row, and nowhere else.",
+      "example": "visual-empty-rows-dark",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 28,
+          "height": 320
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 63.5,
+            "color": "#282a2d",
+            "tolerance": 2,
+            "note": "the first empty row's last point: black at 6% over #2b2d30"
+          },
+          {
+            "x": 14,
+            "y": 62.5,
+            "color": "#2b2d30",
+            "note": "one point higher: the list's surface, so the line is 1 pt"
+          },
+          {
+            "x": 14,
+            "y": 64.5,
+            "color": "#2b2d30",
+            "note": "the next row's first point: the list's surface"
+          },
+          {
+            "x": 14,
+            "y": 319.5,
+            "color": "#282a2d",
+            "tolerance": 2,
+            "note": "the fifth empty row's last point"
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty-row-line-start-light",
+      "description": "Where the empty row's line starts: at --mac-list-view-separator-inset (20 pt, as in Messages), not at the text inset, and only in the row's last point.",
+      "example": "visual-empty-rows-light",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 270,
+          "height": 16
+        },
+        "pixels": [
+          {
+            "x": 100,
+            "y": 15.5,
+            "color": "#aeb3b5",
+            "tolerance": 2,
+            "note": "on the line: black at 6% over #b9bec0"
+          },
+          {
+            "x": 20.5,
+            "y": 15.5,
+            "color": "#aeb3b5",
+            "tolerance": 2,
+            "note": "the line's first point, 20 pt in (Light-Messages @ 786,1108)"
+          },
+          {
+            "x": 19.5,
+            "y": 15.5,
+            "color": "#b9bec0",
+            "note": "the point before it: the list's surface"
+          },
+          {
+            "x": 100,
+            "y": 14.5,
+            "color": "#b9bec0",
+            "note": "one point higher: the list's surface"
+          }
+        ]
+      }
+    }
+  ]
+}

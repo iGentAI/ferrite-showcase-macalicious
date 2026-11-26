@@ -1,0 +1,183 @@
+/*
+ * Checkbox (NSButton, switch type). The root has role="checkbox" and holds the box and the
+ * title; its height is the box's, AppKit's alignment rectangle (stack with gap: 8px for the
+ * 22 pt pitch).
+ *
+ *   .mac-checkbox-box            the well: hairline, fill, inner shadow
+ *   .mac-checkbox-box::before    Dark Aqua: the ring and shadow outside the box
+ *   .mac-checkbox-glyph          checkmark or dash, inline SVG in currentColor
+ *
+ * States: [data-checked], [data-indeterminate] (mixed), [data-disabled] from Base UI;
+ * [data-size]; :active; :focus-visible; a window that is not key (no accent, no focus ring);
+ * [data-force~="pressed" | "focus"] pin the transient states for docs and visual tests.
+ */
+.mac-checkbox {
+  --_box: 14px;
+  --_radius: var(--mac-radius-checkbox);
+  --_line: var(--mac-line-height-regular);
+  --_fill-top: var(--mac-checkbox-fill-top);
+  --_fill-bottom: var(--mac-checkbox-fill-bottom);
+  --_border-top: var(--mac-checkbox-border-top);
+  --_border-side: var(--mac-checkbox-border-side);
+  --_border-bottom: var(--mac-checkbox-border-bottom);
+  --_well-shadow: var(--mac-checkbox-well-shadow);
+  --_ring-top: var(--mac-checkbox-ring-top);
+  --_ring-side: var(--mac-checkbox-ring-side);
+  --_ring-bottom: var(--mac-checkbox-ring-bottom);
+  --_glyph: var(--mac-color-control-text);
+  --_glyph-shadow: none;
+
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--mac-space-2);
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.mac-checkbox-box {
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  inline-size: var(--_box);
+  block-size: var(--_box);
+  border: var(--mac-hairline) solid;
+  border-color: var(--_border-top) var(--_border-side) var(--_border-bottom);
+  border-radius: var(--_radius);
+  background: linear-gradient(to bottom, var(--_fill-top), var(--_fill-bottom)) border-box;
+  box-shadow: var(--_well-shadow);
+  color: var(--_glyph);
+}
+
+.mac-checkbox-box::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--mac-hairline) * -2);
+  border: var(--mac-hairline) solid;
+  border-color: var(--_ring-top) var(--_ring-side) var(--_ring-bottom);
+  border-radius: calc(var(--_radius) + var(--mac-hairline));
+  box-shadow: var(--mac-checkbox-shadow);
+  pointer-events: none;
+}
+
+.mac-checkbox-glyph {
+  position: absolute;
+  inset: calc(var(--mac-hairline) * -1);
+  inline-size: var(--_box);
+  block-size: var(--_box);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: var(--_glyph-shadow);
+  pointer-events: none;
+}
+
+/* One checkmark per appearance: the other has a stroke width of zero. */
+.mac-checkbox-check-light {
+  stroke-width: var(--mac-checkbox-check-light-width);
+}
+
+.mac-checkbox-check-dark {
+  stroke-width: var(--mac-checkbox-check-dark-width);
+}
+
+/* Mixed: the dash replaces the checkmark. */
+.mac-checkbox:where(:not([data-indeterminate])) .mac-checkbox-dash,
+.mac-checkbox:where([data-indeterminate])
+  :where(.mac-checkbox-check-light, .mac-checkbox-check-dark) {
+  display: none;
+}
+
+.mac-checkbox-title {
+  margin-block: calc((var(--_box) - var(--_line)) / 2);
+}
+
+/* Sizes [provisional]: only the regular size is captured. */
+.mac-checkbox:where([data-size="small"]) {
+  --_box: 12px;
+  --_radius: calc(var(--mac-radius-checkbox) - 0.5px);
+  --_line: var(--mac-line-height-small);
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+.mac-checkbox:where([data-size="mini"]) {
+  --_box: 10px;
+  --_radius: calc(var(--mac-radius-checkbox) - 1px);
+  --_line: var(--mac-line-height-mini);
+  font: var(--mac-font-control-mini);
+  letter-spacing: var(--mac-tracking-mini);
+}
+
+/* Pressed, off */
+.mac-checkbox:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  --_fill-top: var(--mac-checkbox-fill-pressed-top);
+  --_fill-bottom: var(--mac-checkbox-fill-pressed-bottom);
+}
+
+/* On and mixed: accent fill. Only in the key window. */
+.mac-checkbox:where([data-checked], [data-indeterminate]):where(:not([data-disabled])):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  --_fill-top: var(--mac-accent-control-fill-top);
+  --_fill-bottom: var(--mac-accent-control-fill-bottom);
+  --_border-top: var(--mac-checkbox-on-border-top);
+  --_border-side: var(--mac-accent-control-edge);
+  --_border-bottom: var(--mac-accent-control-edge);
+  --_well-shadow: var(--mac-checkbox-on-well-shadow);
+  --_ring-top: var(--mac-bezel-accent-border-top);
+  --_ring-side: var(--mac-bezel-accent-border-side);
+  --_ring-bottom: var(--mac-bezel-accent-border-bottom);
+  --_glyph: var(--mac-color-control-text-on-accent);
+  --_glyph-shadow: var(--mac-checkbox-glyph-shadow);
+}
+
+.mac-checkbox:where([data-checked], [data-indeterminate]):where(
+  :active,
+  [data-force~="pressed"]
+):where(:not([data-disabled])):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  --_fill-top: var(--mac-checkbox-on-fill-pressed-top);
+  --_fill-bottom: var(--mac-checkbox-on-fill-pressed-bottom);
+}
+
+/* Disabled: the box at half opacity, the title in the disabled text colour */
+.mac-checkbox:where([data-disabled]) {
+  --_border-top: var(--mac-checkbox-border-top-disabled);
+  --_border-side: var(--mac-checkbox-border-side-disabled);
+  --_border-bottom: var(--mac-checkbox-border-side-disabled);
+  --_glyph: var(--mac-checkbox-glyph-disabled);
+  color: var(--mac-color-control-text-disabled);
+}
+
+.mac-checkbox:where([data-disabled]) .mac-checkbox-box {
+  opacity: var(--mac-bezel-opacity-disabled);
+}
+
+/* Focus ring around the box, from its hairline to 2.5 pt beyond; only in the key window. */
+.mac-checkbox:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) .mac-checkbox-box {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(var(--mac-focus-ring-offset) - var(--mac-hairline));
+}
+
+@media (forced-colors: active) {
+  .mac-checkbox-box {
+    border-color: ButtonText;
+  }
+
+  .mac-checkbox:where([data-disabled]) .mac-checkbox-box {
+    border-color: GrayText;
+    opacity: 1;
+  }
+}

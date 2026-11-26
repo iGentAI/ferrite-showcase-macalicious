@@ -1,0 +1,65 @@
+/*
+ * Toolbar search field tokens. The bezel is the toolbar button's without its darker first and
+ * last rows. Measured on Finder's field (Light-/Dark-Finder-Network, Finder-Search); the
+ * pixel positions are in the docs page.
+ */
+:root {
+  /* Aqua #fcfcfc to #f3f3f3 [measured]. Dark Aqua white at 36%, 25.4% and 22.5%
+     [measured, computed]. */
+  --mac-toolbar-search-field-fill: linear-gradient(
+    light-dark(#fcfcfc, rgb(255 255 255 / 0.36)) 0 0.5px,
+    light-dark(#fcfcfc, rgb(255 255 255 / 0.254)) 0.5px 1px,
+    light-dark(#fbfbfb, rgb(255 255 255 / 0.225)) 1px,
+    light-dark(#f3f3f3, rgb(255 255 255 / 0.225))
+  );
+  /* Hairline border, Aqua only, and the row under it [measured, computed] */
+  --mac-toolbar-search-field-border-top: light-dark(rgb(0 0 0 / 0.096), transparent);
+  --mac-toolbar-search-field-border-side: light-dark(rgb(0 0 0 / 0.099), transparent);
+  --mac-toolbar-search-field-border-bottom: light-dark(rgb(0 0 0 / 0.237), transparent);
+  --mac-toolbar-search-field-shadow: light-dark(rgb(0 0 0 / 0.048), transparent);
+
+  /* Bright variant [measured, computed] on Console's dark field: white at 54%, 37.6% and
+     33.6%, placeholder at 38%. Aqua is the standard field. Its cross is [provisional]. */
+  --mac-toolbar-search-field-fill-bright: linear-gradient(
+    light-dark(#fcfcfc, rgb(255 255 255 / 0.54)) 0 0.5px,
+    light-dark(#fcfcfc, rgb(255 255 255 / 0.376)) 0.5px 1px,
+    light-dark(#fbfbfb, rgb(255 255 255 / 0.336)) 1px,
+    light-dark(#f3f3f3, rgb(255 255 255 / 0.336))
+  );
+  --mac-toolbar-search-field-placeholder-bright: light-dark(
+    rgb(0 0 0 / 0.31),
+    rgb(255 255 255 / 0.38)
+  );
+  --mac-toolbar-search-field-clear-cross-bright: light-dark(#fcfbfb, #7f8081);
+
+  /* Inactive window [provisional]: the inactive toolbar button's bezel */
+  --mac-toolbar-search-field-fill-inactive: linear-gradient(
+    light-dark(transparent, rgb(255 255 255 / 0.16)) 0 0.5px,
+    light-dark(transparent, rgb(255 255 255 / 0.09)) 0.5px 1px,
+    light-dark(transparent, rgb(255 255 255 / 0.071)) 1px
+  );
+  --mac-toolbar-search-field-border-inactive: light-dark(rgb(0 0 0 / 0.11), transparent);
+  --mac-toolbar-search-field-ring-inactive: light-dark(rgb(0 0 0 / 0.04), transparent);
+
+  /* Magnifier, typed text (label colour with the keyboard focus), placeholder
+     [measured, computed] */
+  --mac-toolbar-search-field-glyph: light-dark(rgb(0 0 0 / 0.65), rgb(255 255 255 / 0.84));
+  --mac-toolbar-search-field-text: light-dark(rgb(0 0 0 / 0.66), #ffffff);
+  --mac-toolbar-search-field-text-focused: light-dark(rgb(0 0 0 / 0.85), rgb(255 255 255 / 0.85));
+  --mac-toolbar-search-field-placeholder: light-dark(rgb(0 0 0 / 0.31), rgb(255 255 255 / 0.26));
+  /* Disabled glyph and text [provisional] */
+  --mac-toolbar-search-field-disabled: light-dark(rgb(0 0 0 / 0.2), rgb(255 255 255 / 0.2));
+  /* Clear button: its cross shows the field's fill [measured] */
+  --mac-toolbar-search-field-clear: light-dark(#7b7b7b, #b9b9ba);
+  --mac-toolbar-search-field-clear-cross: light-dark(#fcfbfb, #646566);
+
+  /* Search token [provisional]: the Dark Aqua values are measured (Dark-Finder-Search), the
+     Aqua ones inferred. */
+  --mac-toolbar-search-field-token-criterion: light-dark(
+    rgb(0 0 0 / 0.42),
+    rgb(255 255 255 / 0.38)
+  );
+  --mac-toolbar-search-field-token-value: light-dark(rgb(0 0 0 / 0.3), rgb(255 255 255 / 0.2));
+  --mac-toolbar-search-field-token-text: #ffffff;
+  --mac-toolbar-search-field-token-value-text: light-dark(#ffffff, #ececec);
+}

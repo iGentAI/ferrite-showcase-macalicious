@@ -1,0 +1,44 @@
+/*
+ * Share menu (NSSharingServicePicker).
+ *
+ * The surface is the menu's (menu.css) and the rows are menu items (menu-item.css): the
+ * elements also carry those classes, and this stylesheet comes after theirs. Only what the
+ * Safari Sharing screenshots show differently is here: the icons start 17 pt from the menu's
+ * edge instead of 21, and a row is 5 pt higher than its icon (21 pt with a 16 pt application
+ * icon, 20 pt with a 15 pt template glyph).
+ *
+ * States: as the menu item ([data-highlighted], [data-disabled]).
+ */
+.mac-share-menu-item {
+  padding-inline-start: 17px;
+}
+
+/* The title's box lays the icon and the text out in a row, centred on each other. */
+.mac-share-menu-item > :where(span) {
+  display: flex;
+  align-items: center;
+}
+
+/* The icon: a 16 pt column, 2.5 pt above and below the image, 5 pt before the title. */
+.mac-share-menu-image {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+  margin-block: 2.5px;
+  margin-inline-end: 5px;
+}
+
+/* While its menu is open the Share button has the toolbar button's pressed bezel, as in the
+   Sharing captures: a darker fill in Aqua, a lighter one in Dark Aqua, inside the resting
+   border. Base UI marks an open trigger data-pressed, which alone would give it a toggle's
+   "on" bezel.
+   Only the menu's own button: a trigger that was passed in keeps its own look. */
+.mac-share-menu-button:where([data-popup-open]) {
+  --_fill: var(--mac-toolbar-button-fill-pressed);
+  --_border-top: var(--mac-toolbar-button-border-top);
+  --_border-side: var(--mac-toolbar-button-border-side);
+  --_border-bottom: var(--mac-toolbar-button-border-bottom);
+
+  color: var(--mac-toolbar-button-text-pressed);
+}

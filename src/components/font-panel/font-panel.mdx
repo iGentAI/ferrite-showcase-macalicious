@@ -1,0 +1,144 @@
+---
+title: Font Panel
+description: The Fonts panel, a floating window that sets the family, typeface, size and effects of the selected text.
+order: 53
+---
+
+<Example name="basic" both />
+
+AppKit calls this window the *font panel* (`NSFontPanel`); its title is "Fonts", and every
+Catalina app with styled text opens it from Format > Font > Show Fonts (Command-T). It sets the
+font of the selected text: a row of text effects sits over four columns, and a search field
+under them filters the families.
+
+| Part | What it does | Built from |
+| --- | --- | --- |
+| Text underline, Text strikethrough | None or Single | [`PopUpButton`](/components/pop-up-button), small |
+| Text color | The colour of the text | [`ColorWell`](/components/color-well), toolbar bezel |
+| Collection | Filters the families: All Fonts, Fixed Width, Fun, Modern, Traditional, Web | [`BorderedList`](/components/bordered-list) |
+| Family | Sets the family | `BorderedList` |
+| Typeface | Sets bold and italic, by the family's names for them (Helvetica's are Oblique) | `BorderedList` |
+| Size | A field for any size, over AppKit's list of sizes | [`TextField`](/components/text-field) and `BorderedList` |
+| Search | Filters the families by name | [`SearchField`](/components/search-field) |
+
+**No reference screenshot shows the Fonts panel.** Its arrangement follows AppKit's panel;
+every measurement of its own is an estimate. See [Visual comparison](#visual-comparison).
+
+## Usage
+
+```tsx
+import { FontPanel } from "macalicious/font-panel";
+import "macalicious/font-panel.css";
+import { applyRichTextFormat, FONT_FAMILIES, readRichTextFormat } from "macalicious/lib/rich-text";
+
+<FontPanel
+  families={FONT_FAMILIES}
+  value={format}
+  onFontChange={(change) => {
+    keeper.restore();
+    applyRichTextFormat(editor, change);
+    setFormat(readRichTextFormat(editor));
+  }}
+  onClose={() => setShown(false)}
+/>
+```
+
+The panel holds no font of its own. `families` are the families it lists: `FONT_FAMILIES`,
+the families that come with Catalina (with fallbacks for other systems), or a list of your own.
+`value` is the format of the selection, which it shows;
+every change a control makes is reported to `onFontChange` as the part that changed
+(`{ family }`, `{ bold, italic }`, `{ size }`, `{ underline }`, `{ strikethrough }` or
+`{ color }`). Or copy the source into your project: `npx macalicious add font-panel`. See
+[Installation](/installation).
+
+### With a rich text view
+
+The helper `macalicious/lib/rich-text` applies such a change to the selection of a
+[`RichTextView`](/components/text-view) and reads the format back where the insertion point is.
+A click in the panel takes the focus from the text, so give the text its selection back before
+the change is applied: `keepRichTextSelection(editor).restore()` does that. The helper also
+knows the key equivalents of the Format menu (`richTextKeyCommand`), such as Command-T for
+Show Fonts and Command-B for Bold.
+
+<Example name="with-text" />
+
+## Guidelines
+
+From Apple's documentation of
+[NSFontPanel](https://developer.apple.com/documentation/appkit/nsfontpanel) and of the
+[Font menu](https://developer.apple.com/documentation/appkit/nsfontmanager), not verified
+against a screenshot:
+
+- The Fonts panel is the system's one place to choose a font. Open it from Format > Font > Show
+  Fonts (Command-T) rather than building a chooser of your own, and keep the format bar or the
+  Format menu for the common styles.
+- It acts on the selection of the key window and follows it: when the insertion point moves
+  into other text, the panel shows that text's font.
+- A change applies at once; there is no OK button. Close the panel with its close button or
+  Command-T again.
+
+## Variants and states
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| The selection's font | `value` | Its family, typeface and size are the selected rows; the size is in the field |
+| A family the panel does not list | `value.family` names one | No family row is selected; its typefaces are not listed |
+| Filtered families | a collection, or text in the search field | Only those families are listed |
+| Window not key | `state="main"` or `"inactive"`, or such an ancestor | As any window, and the lists' selections are grey |
+
+The controls' own states (focus, a pressed pop-up button) are on their pages.
+
+## Sizes
+
+The panel is 444 pt wide by default (`width`) and as tall as its content; the four lists are
+150 pt high. Its controls are small ones, as in AppKit's panel.
+
+## API
+
+<PropsTable name="FontPanelProps" />
+
+`FontPanel` also takes the props of [`Window`](/components/window): `state`, `height`,
+`style`, `ref` and every `<div>` attribute.
+
+| Class | Element |
+| --- | --- |
+| `mac-font-panel` | The window |
+| `mac-font-panel-body` | The window's body |
+| `mac-font-panel-effects`, `mac-font-panel-effect` | The row of text effects and its two pop-up buttons |
+| `mac-font-panel-columns`, `mac-font-panel-heading`, `mac-font-panel-list` | The four columns, their headings and their lists |
+| `mac-font-panel-rows`, `mac-font-panel-row` | A list's rows (a `listbox`) and one row (an `option`; `aria-selected` marks the chosen one) |
+| `mac-font-panel-size` | The size column: the field over its list |
+| `mac-font-panel-search` | The search field |
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-window-state`, `data-variant="panel"` | as on `Window` | Set by the window. |
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `--mac-font-panel-list-height` | `150px` | The height of the four lists. |
+
+## Accessibility
+
+- The panel is a region named by its title, "Fonts".
+- The effects are a group named "Text effects": two pop-up buttons named "Text underline" and
+  "Text strikethrough", and a colour well named "Text color".
+- Each column is a `listbox` named after its heading ("Collection", "Family", "Typeface",
+  "Size") and is one tab stop; the arrow keys, Home, End and typing a name move its selection,
+  which applies at once.
+- The size field is named "Font size"; Return or leaving the field applies what was typed,
+  Escape puts back the size of the text.
+- The search field is named "Search fonts".
+
+## Visual comparison
+
+No screenshot in the reference set shows the Fonts panel, and no spec measures it, so there is
+no crop to compare with and `npm run visual -- font-panel` reports no score. Its checks hold
+chosen pixels of the panel, in both appearances, to the measured colours of the window and of
+the lists it is built from, and to the format it is given (`font-panel.visual.json`).
+
+Everything about the panel's own geometry is provisional: its width, the 10 pt margins, the
+columns' widths and the lists' height. Not implemented: the action menu (Add to Favorites,
+Show Preview, Characters), the document colour and the text shadow controls, double underline
+and coloured underlines, the size slider, and the families a visitor's system has beyond the
+list the panel is given.

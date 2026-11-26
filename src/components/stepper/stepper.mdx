@@ -1,0 +1,176 @@
+---
+title: Stepper
+description: Two stacked arrow halves in one bezel that raise or lower a value shown in a field beside it.
+order: 50
+---
+
+<Example name="basic" both />
+
+AppKit calls this control a *stepper* (`NSStepper`). It shows no value of its own: it changes
+a number, a date or a time that a field next to it displays.
+
+It is not built on a Base UI primitive. The closest one, Base UI's Number Field, keeps the
+keyboard handling, the focus and the `spinbutton` semantics in its text input, and its two
+buttons are out of the tab order because that input is always there; a stepper has no input.
+Hiding the input would leave an invisible text field that takes typed digits, and Number Field
+has no wrapping (its buttons disable at the bounds) and no Page Up and Page Down. So the
+stepper is written here after the WAI-ARIA Authoring Practices
+[spinbutton pattern](https://www.w3.org/WAI/ARIA/apg/patterns/spinbutton/): one focusable
+element with `role="spinbutton"` and two buttons inside it. Its prop names are Number Field's
+where the concept is the same (`value`, `defaultValue`, `onValueChange`, `min`, `max`, `step`,
+`largeStep`, `disabled`, `name`) and AppKit's where it is the stepper's own (`valueWraps`,
+`autorepeat`).
+
+## Usage
+
+```tsx
+import { Stepper } from "macalicious/stepper";
+import "macalicious/stepper.css";
+
+<Stepper aria-label="Copies" defaultValue={1} min={1} max={99} />
+<Stepper aria-labelledby="hours-label" value={hours} onValueChange={setHours} min={0} max={23} valueWraps />
+```
+
+The stepper needs an accessible name, and it needs something that shows its value: put it
+4 pt to the right of the field it changes, centred on it, and keep the two in step yourself
+(`value` and `onValueChange`). Or copy the source into your project:
+`npx macalicious add stepper`. See [Installation](/installation).
+
+<Example name="wrapping" />
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[steppers](https://web.archive.org/web/20200503153700/https://developer.apple.com/design/human-interface-guidelines/macos/selectors/steppers/):
+
+- Use a stepper to let people raise or lower a numeric, date or time value in increments.
+- Place it next to a field that displays the current value, because the stepper itself
+  displays none.
+
+The page says no more than that. From AppKit's `NSStepper`: holding a half repeats the step
+(`autorepeat`), and a stepper may wrap from its maximum to its minimum (`valueWraps`), which
+suits cyclic values such as minutes and not quantities.
+
+## Variants and states
+
+A pressed half and keyboard focus are transient, so this gallery pins them. In an application
+they appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | White bezel (translucent white in Dark Aqua), two chevrons, no divider |
+| Half pressed | `:active` on the upper or the lower half | That half takes the accent gradient and a white chevron; the other half is unchanged |
+| Keyboard focus | `:focus-visible` | Focus ring in the accent colour around the bezel |
+| Disabled | `disabled` | Bezel at half opacity, grey chevrons |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No accent: a pressed half darkens instead; no focus ring |
+
+The pressed half follows the accent colour: set `data-accent` on any ancestor. See
+[Theming](/theming). The window state is not a prop; a window component sets
+`data-window-state` on itself.
+
+## Sizes
+
+<Example name="sizes" />
+
+| Size | Box | Bezel |
+| --- | --- | --- |
+| `regular` | 13 x 22 pt | 12 x 21 pt (measured) |
+| `small` | 11 x 19 pt | 10 x 18 pt (provisional) |
+| `mini` | 10 x 16 pt | 9 x 15 pt (provisional) |
+
+The element's box is AppKit's alignment rectangle; the visible bezel is one hairline smaller on
+every side, like a push button's. Beside the field it changes the stepper is centred with
+`align-items: center`: the regular bezel is 1 pt shorter than Catalina's 23 pt date field at
+the top and at the bottom.
+
+## API
+
+<PropsTable name="StepperProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-size` | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-disabled` | present or absent | Present while the stepper is disabled. |
+| `aria-valuenow`, `aria-valuemin`, `aria-valuemax` | numbers | The value and the bounds that are set. |
+| `data-force` | `pressed` (the upper half), `pressed-increment`, `pressed-decrement`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+| Class | Element |
+| --- | --- |
+| `mac-stepper` | The root, with `role="spinbutton"`. |
+| `mac-stepper-increment`, `mac-stepper-decrement` | The upper and the lower half, each a `<button>`. |
+| `mac-stepper-glyph` | The chevron in a half, an inline SVG in `currentColor`. |
+
+The stepper has no CSS variables for a consumer to set.
+
+## Accessibility
+
+- The root has `role="spinbutton"` with `aria-valuenow`, and `aria-valuemin` and
+  `aria-valuemax` for the bounds that are set. It has no visible text, so it requires a name:
+  `aria-label`, or `aria-labelledby` pointing at the label of the field it changes. Give a
+  value that is not a plain number a spoken form with `aria-valuetext`, and name the field it
+  changes with `aria-controls`.
+- Tab reaches the stepper. Up and Down step by `step`, Page Up and Page Down by `largeStep`,
+  Home and End go to `min` and `max` when they are set. Keys held with Command, Control or
+  Option are left to the page.
+- The halves are buttons named "Increment" and "Decrement" (`incrementLabel`,
+  `decrementLabel`). They are out of the tab order, because the keyboard works on the stepper
+  itself, but assistive technology that walks the page, such as a touch screen reader, finds
+  them and can activate them.
+- Clicking a half does not move keyboard focus, so a field that is being edited keeps it.
+- Holding a half repeats the step after 400 ms, every 60 ms, until the button is released,
+  the pointer leaves the half or the value reaches a bound. The timer belongs to the instance
+  and is cleared when the stepper is disabled or unmounted; there are no global listeners.
+- A disabled stepper has `aria-disabled`, leaves the tab order, and its halves are disabled
+  buttons.
+- With `name`, a hidden input submits the value with a form.
+- In forced-colours mode the bezel is drawn with system colours.
+
+## Visual comparison
+
+`npm run visual -- stepper` compares two examples with the reference screenshots in both
+appearances (`stepper.visual.json`): the stepper beside the From time field of the
+Notifications pane, and the disabled one beside the date field of Date & Time. The bezel is
+the shared control bezel, whose fill, hairlines, halo and shadow read the same on the stepper
+as on a push button; the bezel's size, the chevrons and their colours are measured on those
+screenshots. Share of pixels that differ at a colour distance of 0.05, half the default, and
+the mean difference per channel out of 255, in Chromium on Linux:
+
+| Crop | Aqua, 2x | Dark Aqua, 2x | Aqua, 1x | Dark Aqua, 1x |
+| --- | --- | --- | --- | --- |
+| Notifications, enabled (`@ 950,540,38,58`) | 0.82%, Δ 0.61 | 0.86%, Δ 0.67 | 19.06%, Δ 7.13 | 11.07%, Δ 4.98 |
+| Date & Time, disabled (`@ 634,388,38,58`) | 0.00%, Δ 0.52 | 0.00%, Δ 0.43 | 8.35%, Δ 3.52 | 5.44%, Δ 2.29 |
+
+The pixels that still differ at 2x are on the edge of the chevrons and on the bezel's four
+corners. The corner is not a quarter circle in Catalina (it is flat for 2 pt at the top of a
+12 pt bezel and straight from 5.75 pt down the side); a 5px circle is the closest CSS corner.
+The chevron is a filled outline fitted to the screenshot's pixels; it measures 5.9 x 3.6 pt
+with a 1.2 pt arm, where the spec's reading is a 6 x 3.5 pt stroke of 1.4 pt. At 1x the
+scores are high because the crop is 19 x 29 pt and nearly all edge: there is no 1x reference,
+so the 2x screenshot is averaged down, and the bezel's outline, which sits on half points,
+cannot match its averaged counterpart ([Fidelity limits](/fidelity)).
+
+No screenshot shows a pressed half, keyboard focus on a stepper, the small and mini sizes or a
+stepper in a window that is not key. Those are checked in a real browser against values from
+the spec instead (the `expect` comparisons): the example is pressed with the mouse or focused
+with Tab, and chosen pixels must have the expected colour.
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| Upper half pressed | Accent gradient in the half, white chevron, the other half unchanged; blue, purple and green, each in both appearances | Gradient measured on the default button; that a pressed half takes it is inferred |
+| Lower half pressed | Accent gradient in the lower half, the upper half unchanged; both appearances | As above |
+| Pressed, inactive window | The half takes the shared pressed fill, no accent: `#f0f0f0`, and white at 36% in Dark Aqua | Inferred |
+| Keyboard focus | Ring colour in both appearances, and that the band ends 2.5 pt beyond the bezel | Measured on a text field's ring |
+| Main and inactive window | No focus ring; both appearances | Documented by AppKit |
+| Small and mini | Box sizes 11 x 19 and 10 x 16 pt, fill; both appearances | Inferred (spec: AppKit's small and mini metrics) |
+
+The lower half pressed, the half pressed in an inactive window, the missing ring in a main or
+inactive window and the three sizes are checked in Dark Aqua as well as in Aqua. Over the
+example's `#2f3032` the dark fill is `#636465` (white at 25%) and the pressed fill of an
+inactive window `#7a7b7c`.
+
+Provisional, and checked nowhere against Catalina: the chevrons of the small and mini sizes
+(the regular drawing scaled down), the corner radii of those sizes, whether the accent
+gradient of a pressed half spans the half (as drawn here) or the whole bezel, and the
+repeat timing (400 ms, then 60 ms, Base UI's values; AppKit's are not documented).

@@ -1,0 +1,883 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "sizes-light",
+      "description": "A small and a mini default button, Aqua: the accent bezel at 17 and 14 pt. No screenshot shows a default button at these sizes.",
+      "example": "visual-sizes",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 148,
+          "height": 34
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 17,
+            "color": "#3d88fd",
+            "tolerance": 3,
+            "note": "small: middle stop of the measured blue gradient (spec: default-button, Fill gradient, measured at the regular size; the sizes are inferred)"
+          },
+          {
+            "x": 14,
+            "y": 27.25,
+            "color": "#ececec",
+            "scale": 2,
+            "note": "small: page below the 18 pt box and its shadow rows"
+          },
+          {
+            "x": 86,
+            "y": 15.5,
+            "color": "#3d88fd",
+            "tolerance": 6,
+            "note": "mini: middle stop of the measured blue gradient; the gradient is steeper on a 14 pt bezel, and at 1x the pixel row reads #428bfd"
+          },
+          {
+            "x": 86,
+            "y": 24.25,
+            "color": "#ececec",
+            "scale": 2,
+            "note": "mini: page below the 15 pt box and its shadow rows"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sizes-dark",
+      "description": "A small and a mini default button, Dark Aqua: the accent bezel at 17 and 14 pt. No screenshot shows a default button at these sizes.",
+      "example": "visual-sizes",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 148,
+          "height": 34
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 17,
+            "color": "#1764db",
+            "tolerance": 3,
+            "note": "small: middle stop of the measured blue gradient (spec: default-button, Fill gradient, measured at the regular size; the sizes are inferred)"
+          },
+          {
+            "x": 14,
+            "y": 27.25,
+            "color": "#323232",
+            "scale": 2,
+            "note": "small: page below the 18 pt box and its shadow rows"
+          },
+          {
+            "x": 86,
+            "y": 15.5,
+            "color": "#1764db",
+            "tolerance": 3,
+            "note": "mini: middle stop of the measured blue gradient"
+          },
+          {
+            "x": 86,
+            "y": 24.25,
+            "color": "#323232",
+            "scale": 2,
+            "note": "mini: page below the 15 pt box and its shadow rows"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-purple-light",
+      "description": "The default button with the purple accent, Aqua. No screenshot shows a default button in this accent: the gradient is the one measured on the pop-up button of the purple accent screenshot.",
+      "example": "visual-states",
+      "appearance": "light",
+      "accent": "purple",
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#be63b3",
+            "tolerance": 3,
+            "note": "middle stop of the purple bezel gradient (spec: tokens, accent matrix, cap.50, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-pink-light",
+      "description": "The default button with the pink accent, Aqua. No screenshot shows a default button in this accent: the gradient is the one measured on the pop-up button of the pink accent screenshot.",
+      "example": "visual-states",
+      "appearance": "light",
+      "accent": "pink",
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#ec53af",
+            "tolerance": 3,
+            "note": "middle stop of the pink bezel gradient (spec: tokens, accent matrix, cap.50, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-red-light",
+      "description": "The default button with the red accent, Aqua. No screenshot shows a default button in this accent: the gradient is the one measured on the pop-up button of the red accent screenshot.",
+      "example": "visual-states",
+      "appearance": "light",
+      "accent": "red",
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#d14f44",
+            "tolerance": 3,
+            "note": "middle stop of the red bezel gradient (spec: tokens, accent matrix, cap.50, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-orange-light",
+      "description": "The default button with the orange accent, Aqua. No screenshot shows a default button in this accent: the gradient is the one measured on the pop-up button of the orange accent screenshot.",
+      "example": "visual-states",
+      "appearance": "light",
+      "accent": "orange",
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#ed9010",
+            "tolerance": 5,
+            "note": "middle stop of the orange bezel gradient (spec: tokens, accent matrix, cap.50, measured); at 1x the pixel row sits half a point off the stop and reads #ed9214"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-yellow-light",
+      "description": "The default button with the yellow accent, Aqua. No screenshot shows a default button in this accent: the gradient is the one measured on the pop-up button of the yellow accent screenshot.",
+      "example": "visual-states",
+      "appearance": "light",
+      "accent": "yellow",
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#efac32",
+            "tolerance": 3,
+            "note": "middle stop of the yellow bezel gradient (spec: tokens, accent matrix, cap.50, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-green-light",
+      "description": "The default button with the green accent, Aqua. No screenshot shows a default button in this accent: the gradient is the one measured on the pop-up button of the green accent screenshot.",
+      "example": "visual-states",
+      "appearance": "light",
+      "accent": "green",
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#70b049",
+            "tolerance": 3,
+            "note": "middle stop of the green bezel gradient (spec: tokens, accent matrix, cap.50, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-graphite-light",
+      "description": "The default button with the graphite accent, Aqua. No screenshot shows a default button in this accent: the gradient is the one measured on the pop-up button of the graphite accent screenshot.",
+      "example": "visual-states",
+      "appearance": "light",
+      "accent": "graphite",
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#a2a2a7",
+            "tolerance": 3,
+            "note": "middle stop of the graphite bezel gradient (spec: tokens, accent matrix, cap.50, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-purple-dark",
+      "description": "The default button with the purple accent, Dark Aqua. No screenshot shows a default button in this accent: the gradient is the one measured on the pop-up button of the purple accent screenshot.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "accent": "purple",
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#9d3e9b",
+            "tolerance": 3,
+            "note": "middle stop of the purple bezel gradient (spec: tokens, accent matrix, cap.50, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-pink-dark",
+      "description": "The default button with the pink accent, Dark Aqua. No screenshot shows a default button in this accent: the gradient is the one measured on the pop-up button of the pink accent screenshot.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "accent": "pink",
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#d23978",
+            "tolerance": 3,
+            "note": "middle stop of the pink bezel gradient (spec: tokens, accent matrix, cap.50, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-red-dark",
+      "description": "The default button with the red accent, Dark Aqua. No screenshot shows a default button in this accent: the gradient is the one measured on the pop-up button of the red accent screenshot.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "accent": "red",
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#eb3c34",
+            "tolerance": 3,
+            "note": "middle stop of the red bezel gradient (spec: tokens, accent matrix, cap.50, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-orange-dark",
+      "description": "The default button with the orange accent, Dark Aqua. No screenshot shows a default button in this accent: the gradient is the one measured on the pop-up button of the orange accent screenshot.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "accent": "orange",
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#ff8800",
+            "tolerance": 3,
+            "note": "middle stop of the orange bezel gradient (spec: tokens, accent matrix, cap.50, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-yellow-dark",
+      "description": "The default button with the yellow accent, Dark Aqua. No screenshot shows a default button in this accent: the gradient is the one measured on the pop-up button of the yellow accent screenshot.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "accent": "yellow",
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#efb401",
+            "tolerance": 3,
+            "note": "middle stop of the yellow bezel gradient (spec: tokens, accent matrix, cap.50, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-green-dark",
+      "description": "The default button with the green accent, Dark Aqua. No screenshot shows a default button in this accent: the gradient is the one measured on the pop-up button of the green accent screenshot.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "accent": "green",
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#39b824",
+            "tolerance": 3,
+            "note": "middle stop of the green bezel gradient (spec: tokens, accent matrix, cap.50, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-graphite-dark",
+      "description": "The default button with the graphite accent, Dark Aqua. No screenshot shows a default button in this accent: the gradient is the one measured on the pop-up button of the graphite accent screenshot.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "accent": "graphite",
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#999999",
+            "tolerance": 3,
+            "note": "middle stop of the graphite bezel gradient (spec: tokens, accent matrix, cap.50, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pane-button-light",
+      "description": "Next, the default button of the Family Sharing pane, Aqua. The title is set in the fallback font off Apple platforms, which is most of this score.",
+      "example": "visual-pane-button",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.15,
+        "2x": 0.062
+      },
+      "deltaBudget": {
+        "1x": 9.48,
+        "2x": 4.63
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Family-Sharing.png",
+        "crop": {
+          "x": 1284,
+          "y": 642,
+          "width": 134,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "pane-button-light-bezel",
+      "description": "As pane-button-light with the title masked, to score the bezel alone at half the colour distance.",
+      "example": "visual-pane-button",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 18,
+          "y": 8,
+          "width": 29,
+          "height": 12
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.166,
+        "2x": 0.0018
+      },
+      "deltaBudget": {
+        "1x": 6.54,
+        "2x": 0.68
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Family-Sharing.png",
+        "crop": {
+          "x": 1284,
+          "y": 642,
+          "width": 134,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "alert-button-light-bezel",
+      "description": "Empty Trash, the default button of Finder's alert, Aqua, with the title masked: the bezel alone at half the colour distance.",
+      "example": "visual-alert-button",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 24,
+          "y": 8,
+          "width": 77,
+          "height": 14
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.195,
+        "2x": 0.0008
+      },
+      "deltaBudget": {
+        "1x": 7.53,
+        "2x": 0.63
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Empty-Trash.png",
+        "crop": {
+          "x": 674,
+          "y": 292,
+          "width": 248,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "rest-light",
+      "description": "An enabled and a disabled default button at rest, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#3d88fd",
+            "tolerance": 3,
+            "note": "middle stop of the measured blue gradient (spec: default-button, Fill gradient, sRGB)"
+          },
+          {
+            "x": 110,
+            "y": 18.5,
+            "color": "#f6f6f6",
+            "note": "a disabled default button is drawn as a disabled push button: the standard bezel at half opacity, no accent (spec: default-button, States, inferred; push-button, Fill, disabled, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The default button held down with the mouse, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "#default"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#3678df",
+            "tolerance": 3,
+            "note": "88% of the measured middle stop; the darkening is inferred (spec: default-button, States: about 12%)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the default button, reached with Tab, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the page, measured on a text field (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 5.25,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the edge of the bezel (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#3d88fd",
+            "tolerance": 3,
+            "note": "the button keeps its accent bezel"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-main-light",
+      "description": "The same after Tab in a window that is main but not key, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "main",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "drawn as a standard push button (spec: default-button, States, inactive window, inferred; push-button, Fill, measured)"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-light",
+      "description": "The same after Tab in a window that is inactive, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "drawn as a standard push button (spec: default-button, States, inactive window, inferred; push-button, Fill, measured)"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pane-button-dark",
+      "description": "Next, the default button of the Family Sharing pane, Dark Aqua. The title is set in the fallback font off Apple platforms, which is most of this score.",
+      "example": "visual-pane-button",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.143,
+        "2x": 0.062
+      },
+      "deltaBudget": {
+        "1x": 9.45,
+        "2x": 5.12
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Family-Sharing.png",
+        "crop": {
+          "x": 1284,
+          "y": 642,
+          "width": 134,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "pane-button-dark-bezel",
+      "description": "As pane-button-dark with the title masked, to score the bezel alone at half the colour distance.",
+      "example": "visual-pane-button",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 18,
+          "y": 8,
+          "width": 29,
+          "height": 12
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.087,
+        "2x": 0.0033
+      },
+      "deltaBudget": {
+        "1x": 5.88,
+        "2x": 0.62
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Family-Sharing.png",
+        "crop": {
+          "x": 1284,
+          "y": 642,
+          "width": 134,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "alert-button-dark-bezel",
+      "description": "Empty Trash, the default button of Finder's alert, Dark Aqua, with the title masked: the bezel alone at half the colour distance.",
+      "example": "visual-alert-button",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 24,
+          "y": 8,
+          "width": 77,
+          "height": 14
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.101,
+        "2x": 0.0019
+      },
+      "deltaBudget": {
+        "1x": 6.89,
+        "2x": 0.46
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Empty-Trash.png",
+        "crop": {
+          "x": 674,
+          "y": 292,
+          "width": 248,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "rest-dark",
+      "description": "An enabled and a disabled default button at rest, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#1764db",
+            "tolerance": 3,
+            "note": "middle stop of the measured blue gradient (spec: default-button, Fill gradient, sRGB)"
+          },
+          {
+            "x": 110,
+            "y": 18.5,
+            "color": "#4c4c4c",
+            "note": "a disabled default button is drawn as a disabled push button: the standard bezel at half opacity, no accent (spec: default-button, States, inferred; push-button, Fill, disabled, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "The default button held down with the mouse, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": "#default"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#1458c1",
+            "tolerance": 3,
+            "note": "88% of the measured middle stop; the darkening is inferred (spec: default-button, States: about 12%)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the default button, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#2d6c99",
+            "tolerance": 6,
+            "note": "ring over the page, measured on a text field (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 5.25,
+            "y": 18.5,
+            "color": "#323232",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the edge of the bezel (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#1764db",
+            "tolerance": 3,
+            "note": "the button keeps its accent bezel"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-main-dark",
+      "description": "The same after Tab in a window that is main but not key, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "main",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#656565",
+            "note": "drawn as a standard push button (spec: default-button, States, inactive window, inferred; push-button, Fill, measured)"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#323232",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-dark",
+      "description": "The same after Tab in a window that is inactive, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 196,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#656565",
+            "note": "drawn as a standard push button (spec: default-button, States, inactive window, inferred; push-button, Fill, measured)"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#323232",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          }
+        ]
+      }
+    }
+  ]
+}

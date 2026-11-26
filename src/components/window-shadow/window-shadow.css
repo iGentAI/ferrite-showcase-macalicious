@@ -1,0 +1,53 @@
+/*
+ * Window shadow: the soft shadow and the 0.5 pt outer hairline that the window server draws
+ * around a surface. Both are layers of one box-shadow token (tokens/elevation.css), fitted to
+ * the alpha falloff of the transparent window captures.
+ *
+ * States
+ *   [data-level="window" | "panel" | "menu" | "popover" | "banner" | "none"]
+ *   [data-window-state="inactive"]     on the element or an ancestor: the smaller shadow of a
+ *                                      window that fell back (level "window" only)
+ *
+ * Hooks
+ *   --mac-window-shadow-radius         corner radius of the surface (default: the window radius)
+ */
+.mac-window-shadow {
+  --_shadow: var(--mac-shadow-window);
+
+  border-radius: var(--mac-window-shadow-radius, var(--mac-radius-window));
+  box-shadow: var(--_shadow);
+}
+
+.mac-window-shadow:where([data-level="window"]):where(
+  [data-window-state="inactive"],
+  [data-window-state="inactive"] *
+) {
+  --_shadow: var(--mac-shadow-window-inactive);
+}
+
+.mac-window-shadow:where([data-level="panel"]) {
+  --_shadow: var(--mac-shadow-panel);
+}
+
+.mac-window-shadow:where([data-level="menu"]) {
+  --_shadow: var(--mac-shadow-menu);
+}
+
+.mac-window-shadow:where([data-level="popover"]) {
+  --_shadow: var(--mac-shadow-popover);
+}
+
+.mac-window-shadow:where([data-level="banner"]) {
+  --_shadow: var(--mac-shadow-notification);
+}
+
+.mac-window-shadow:where([data-level="none"]) {
+  --_shadow: none;
+}
+
+/* Shadows are dropped in forced-colours mode; the edge must survive. */
+@media (forced-colors: active) {
+  .mac-window-shadow {
+    outline: 1px solid CanvasText;
+  }
+}

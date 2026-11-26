@@ -1,0 +1,466 @@
+/*
+ * Script Editor demo: the layout of the window around the library's toolbar, pop-up buttons,
+ * split views, text views and status bar, and the styles of a script's text.
+ *
+ * Measured on 10-15-Catalina-Light-Script-Editor.png (frame 700 x 705 pt at x=112, y=76 of
+ * the 2x image; the dark capture agrees). Distances below are points from the window's
+ * top-left corner.
+ *
+ *   toolbar          four 38 pt buttons from x=8, 46 pt apart; the pane toggles x 619..692
+ *   navigation bar   y 55..74, its line the last half point
+ *   script           y 74..494; Verdana 12 on a 15 pt line, from x=6.5; a level is 29 pt
+ *   divider          y 494..495
+ *   header           y 495..518, its line the last half point; 12 pt bold from x=7.5
+ *   accessory view   y 518..682
+ *   bottom bar       y 682..705; three 16 pt glyphs 30 pt apart, from x=9
+ */
+
+.mac-script-editor-tool {
+  width: 38px;
+  padding: 0;
+}
+
+/* File > Revert To > Browse All Versions…: the dates, then the script beside the chosen version. */
+.mac-script-editor-versions {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--mac-space-control-gap);
+  block-size: 320px;
+}
+
+.mac-script-editor-versions-list {
+  block-size: 100%;
+  min-block-size: 0;
+}
+
+.mac-script-editor-version {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-block-size: 0;
+}
+
+.mac-script-editor-version-page {
+  flex: 1;
+  min-block-size: 0;
+  overflow: auto;
+  padding: 8px;
+  font:
+    11px / 1.3 Menlo,
+    Monaco,
+    Consolas,
+    monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--mac-color-label);
+  background: var(--mac-color-control-background);
+}
+
+.mac-script-editor-version-note {
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-script-editor-record {
+  color: var(--mac-script-editor-record);
+}
+
+/* A disabled button's glyph is the button's dimmed colour, the record dot included. */
+.mac-script-editor-tool:where([data-disabled]) .mac-script-editor-record {
+  color: inherit;
+}
+
+.mac-script-editor-panes {
+  margin-inline-start: auto;
+}
+
+/* Two cells of 36 pt with the divider between them. */
+.mac-script-editor-pane-toggle {
+  width: 37px;
+}
+
+.mac-script-editor-pane-toggle:where(:last-child) {
+  width: 36px;
+}
+
+.mac-script-editor-pane-toggle:where(:last-child) > svg {
+  position: relative;
+  inset-inline-start: -0.5px;
+}
+
+/* A pane toggle that is on draws its glyph in the accent colour, in the key window only. */
+.mac-script-editor-pane-toggle:where([aria-pressed="true"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) > svg {
+  color: var(--mac-script-editor-toggle-on);
+}
+
+.mac-script-editor-body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* The bars above the script and above the accessory view. */
+.mac-script-editor-bar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  box-sizing: border-box;
+  border-block-end: var(--mac-hairline) solid var(--mac-script-editor-bar-line);
+  background: var(--mac-script-editor-bar);
+  cursor: default;
+}
+
+.mac-script-editor-navigation {
+  height: 19px;
+  padding-inline-start: 2px;
+}
+
+/* Each pop-up button ends at a line as high as the bar. */
+.mac-script-editor-navigation-item {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  padding-inline: 4px 5px;
+  border-inline-end: var(--mac-hairline) solid var(--mac-script-editor-bar-divider);
+}
+
+.mac-script-editor-navigation-item + .mac-script-editor-navigation-item {
+  padding-inline-start: 10px;
+}
+
+.mac-script-editor-header {
+  height: 23px;
+  padding-inline-start: 7.5px;
+  font: var(--mac-font-body-emphasized);
+  font-size: 11.5px;
+}
+
+/* The Log's tabs, served only: no capture shows them. */
+.mac-script-editor-log-tabs {
+  margin-inline-start: var(--mac-script-editor-log-tabs-margin);
+}
+
+.mac-script-editor-split {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.mac-script-editor-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.mac-script-editor-pane {
+  display: flex;
+  flex-direction: column;
+}
+
+/* The editor's paper is white in both appearances, so the text views inside are told to be
+   Aqua (data-appearance on this element) and their colours follow. */
+.mac-script-editor-paper {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+/* The script: a tab is a level of 29 pt, and a line does not wrap. */
+.mac-script-editor-script {
+  padding: 10.75px 6.5px 4px;
+  tab-size: 29px;
+  white-space: pre;
+}
+
+/* Preferences > Wrap lines. */
+.mac-script-editor-script[data-wrap] {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Preferences > Indent wrapped lines: the first line of each stays where it is. */
+.mac-script-editor-script[data-wrap] > * {
+  padding-inline-start: var(--mac-script-editor-wrap-indent, 0);
+  text-indent: calc(var(--mac-script-editor-wrap-indent, 0px) * -1);
+}
+
+/* Format > Text > Show Ruler: above the script, showing its tab stops. */
+.mac-script-editor-ruler {
+  flex: none;
+}
+
+.mac-script-editor-line {
+  min-height: 15px;
+}
+
+/* The script's menu has an element of its own only to hear the secondary click. */
+.mac-script-editor-menu-area {
+  display: contents;
+}
+
+.mac-script-editor-run:where([data-style="keyword"]) {
+  color: var(--mac-script-editor-keyword, inherit);
+  font-weight: 700;
+}
+
+.mac-script-editor-run:where([data-style="command"]) {
+  color: var(--mac-script-editor-term);
+  font-weight: 700;
+}
+
+.mac-script-editor-run:where([data-style="class"]) {
+  color: var(--mac-script-editor-term);
+  font-style: italic;
+}
+
+.mac-script-editor-run:where([data-style="parameter"]) {
+  color: var(--mac-script-editor-term);
+}
+
+.mac-script-editor-run:where([data-style="string"]) {
+  color: var(--mac-script-editor-string);
+}
+
+.mac-script-editor-run:where([data-style="number"]) {
+  color: var(--mac-script-editor-number);
+}
+
+.mac-script-editor-run:where([data-style="pattern"]) {
+  color: var(--mac-script-editor-pattern);
+}
+
+.mac-script-editor-run:where([data-style="template"]) {
+  color: var(--mac-script-editor-template);
+}
+
+.mac-script-editor-run:where([data-style="variable"]) {
+  color: var(--mac-script-editor-variable);
+}
+
+.mac-script-editor-run:where([data-style="comment"]) {
+  color: var(--mac-script-editor-comment);
+}
+
+/* The accessory views: 5 pt above the first line. */
+.mac-script-editor-accessory {
+  padding-block-start: 5px;
+}
+
+/* The Description is rich text: its lines wrap as the plain views' do. */
+.mac-script-editor-description {
+  white-space: pre-wrap;
+}
+
+/* The Open panel is a window of its own, in front of the script and under any menu. */
+.mac-script-editor-panel-layer {
+  position: fixed;
+  z-index: 800;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  pointer-events: none;
+}
+
+.mac-script-editor-panel-layer > * {
+  pointer-events: auto;
+}
+
+/* The Fonts and Colors panels float at the top right of the page, in front of the windows,
+   the Fonts panel above the Colors panel. */
+.mac-script-editor-panels {
+  position: fixed;
+  z-index: 790;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--mac-script-editor-panels-gap);
+  padding: var(--mac-script-editor-panels-padding-top) var(--mac-script-editor-panels-padding)
+    var(--mac-script-editor-panels-padding);
+  overflow: auto;
+  pointer-events: none;
+}
+
+.mac-script-editor-panel {
+  flex: none;
+  pointer-events: auto;
+}
+
+/* The side pane: the bundle's values in a form. */
+.mac-script-editor-bundle {
+  display: flex;
+  flex-direction: column;
+  background: var(--mac-color-window-background);
+}
+
+.mac-script-editor-tool-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mac-script-editor-bundle-form {
+  padding: 12px;
+}
+
+/* The bundle's Resources and Scripts lists, each with its add and remove buttons. */
+.mac-script-editor-bundle-list {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 72px;
+  padding-inline: var(--mac-space-control-gap);
+  padding-block-end: var(--mac-space-control-gap);
+  font: var(--mac-font-body);
+}
+
+.mac-script-editor-bundle-files {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
+  border: var(--mac-hairline) solid var(--mac-script-editor-bar-line);
+  background: var(--mac-color-control-background);
+}
+
+.mac-script-editor-bundle-files > :where([aria-selected="true"]) {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-menu-item-text);
+}
+
+.mac-script-editor-bundle-buttons {
+  display: flex;
+  flex: none;
+}
+
+/* The Library, the Dictionaries and the Log History. No capture shows them. */
+.mac-script-editor-aux {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mac-script-editor-aux-list {
+  flex: 1 1 0;
+  min-height: 0;
+  font: var(--mac-font-body);
+}
+
+.mac-script-editor-aux-footer {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  gap: var(--mac-space-control-gap);
+  align-items: center;
+  padding: var(--mac-space-control-gap);
+  border-block-start: var(--mac-hairline) solid var(--mac-script-editor-bar-line);
+  background: var(--mac-color-window-background);
+}
+
+.mac-script-editor-dictionary-bar {
+  display: flex;
+  flex: none;
+  justify-content: flex-end;
+  padding: var(--mac-space-control-gap);
+  border-block-end: var(--mac-hairline) solid var(--mac-script-editor-bar-line);
+}
+
+.mac-script-editor-dictionary-browser {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.mac-script-editor-dictionary-pane {
+  flex: 1 1 0;
+  min-height: 0;
+  padding: var(--mac-space-control-gap);
+  overflow: auto;
+  border-block-start: var(--mac-hairline) solid var(--mac-script-editor-bar-line);
+  background: var(--mac-color-control-background);
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+}
+
+.mac-script-editor-dictionary-call {
+  margin: 0;
+  font: var(--mac-font-body-emphasized);
+}
+
+.mac-script-editor-dictionary-detail p,
+.mac-script-editor-dictionary-empty {
+  margin-block: var(--mac-script-editor-log-tabs-margin) 0;
+}
+
+.mac-script-editor-dictionary-detail dl {
+  margin-block: var(--mac-script-editor-log-tabs-margin) 0;
+}
+
+.mac-script-editor-dictionary-detail dt {
+  font: var(--mac-font-body-emphasized);
+}
+
+.mac-script-editor-dictionary-detail dd {
+  margin: 0;
+}
+
+.mac-script-editor-history-detail {
+  flex: 1 1 0;
+  min-height: 0;
+  border-block-start: var(--mac-hairline) solid var(--mac-script-editor-bar-line);
+}
+
+/* Edit > Complete's list, at the insertion point; drawn as the library's completions list. */
+.mac-script-editor-completions {
+  position: fixed;
+  z-index: 800;
+  box-sizing: border-box;
+  min-width: 120px;
+  max-height: 198px;
+  padding-block: 4px;
+  overflow-y: auto;
+  border-radius: var(--mac-radius-menu);
+  background: var(--mac-material-menu-opaque);
+  box-shadow: var(--mac-shadow-menu-rim), var(--mac-shadow-menu);
+  color: var(--mac-color-label);
+  font: var(--mac-font-menu);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-script-editor-completions > * {
+  padding-inline: 9px;
+}
+
+.mac-script-editor-completions > :where([aria-selected="true"]) {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-menu-item-text);
+}
+
+/* The bottom bar's three glyphs, where the capture has them: their centres 16.5, 49 and
+   79 pt from the window's edge. */
+.mac-script-editor-views {
+  display: flex;
+  margin-inline-start: -3.5px;
+}
+
+.mac-script-editor-view {
+  width: 24px;
+  height: 20px;
+}
+
+.mac-script-editor-view + .mac-script-editor-view {
+  margin-inline-start: 8.5px;
+}
+
+/* Log, the third: on the desktop's server a fourth, Library, follows it at the usual gap. */
+.mac-script-editor-view:where(:nth-child(3)) {
+  margin-inline-start: 3.25px;
+}
+
+/* The view that is shown has its glyph in the accent colour, in the key window only. */
+.mac-script-editor-view:where([aria-current="true"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  color: var(--mac-accent);
+}

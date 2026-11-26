@@ -1,0 +1,164 @@
+/*
+ * Editorial card: the App Store's editorial panel and the hero banner of a store page. The
+ * measurements are on the docs page.
+ *
+ * States
+ *   [data-variant="panel" | "hero"]     layout
+ *   [data-raised]                       a hero as TV draws it: hairline, shadow, larger corners
+ *   :active on a link or a button       dimmed by a tenth (provisional)
+ *   :focus-visible                      focus ring, in the key window only
+ *   :disabled, [aria-disabled="true"]   half opacity (provisional)
+ *   [data-force~="pressed" | "focus"]   previews of the transient states
+ *
+ * Consumer variables
+ *   --mac-editorial-card-aspect         a hero's proportions (945 / 340; raised 1214 / 455)
+ *   --mac-editorial-card-radius         corner radius (panel 8 pt, hero 6 pt, raised 12 pt)
+ */
+.mac-editorial-card {
+  position: relative;
+  display: grid;
+  box-sizing: border-box;
+  grid-template-columns: minmax(0, 1fr) auto;
+  width: 100%;
+  min-height: 230px;
+  margin: 0;
+  padding: 30px 15px;
+  padding-inline-start: 32px;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--mac-editorial-card-radius, 8px);
+  background: var(--mac-editorial-card-fill);
+  color: var(--mac-editorial-card-secondary);
+  font: var(--mac-font-weight-regular) 13px / 19px var(--mac-font-family-system);
+  text-align: start;
+  text-decoration: none;
+  cursor: default;
+  outline: none;
+}
+
+/* Panel text: cap tops 28, 45.5 and 83.5 pt below the card's top, in at most 224 pt. */
+.mac-editorial-card-text {
+  position: relative;
+  z-index: 1;
+  display: block;
+  max-width: 224px;
+  margin-top: -4.5px;
+}
+
+.mac-editorial-card-text > * {
+  display: block;
+}
+
+.mac-editorial-card-eyebrow {
+  font: var(--mac-font-weight-semibold) 11px / 13px var(--mac-font-family-system);
+  text-transform: uppercase;
+}
+
+.mac-editorial-card-title {
+  margin-top: 2.75px;
+  color: var(--mac-editorial-card-title);
+  font: var(--mac-font-weight-regular) 24px / 25px var(--mac-font-family-system);
+}
+
+.mac-editorial-card-body {
+  margin-top: 12.25px;
+}
+
+/* Panel artwork: a 170 pt circle, 15 pt from the trailing edge. */
+.mac-editorial-card-artwork {
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  width: 170px;
+  height: 170px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--mac-editorial-card-placeholder);
+}
+
+/* Hero: the artwork fills the card; the text lies over it, 27.5 pt in. Its place is measured
+   from the hero's bottom edge, the only one the capture shows: cap tops 289, 258 and 230 pt
+   above it. The spacer before the text takes what a taller hero has left over, and never
+   less than 48.5 pt, where the text of a 340 pt hero starts. The body's size is provisional. */
+.mac-editorial-card:where([data-variant="hero"]) {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  aspect-ratio: var(--mac-editorial-card-aspect, 945 / 340);
+  padding: 0 27.5px;
+  border-radius: var(--mac-editorial-card-radius, 6px);
+  background: var(--mac-editorial-card-placeholder);
+  color: var(--mac-editorial-card-hero-secondary);
+  line-height: 20px;
+}
+
+.mac-editorial-card:where([data-variant="hero"])::before {
+  content: "";
+  flex: 1 0 48.5px;
+}
+
+:where(.mac-editorial-card[data-variant="hero"]) > .mac-editorial-card-text {
+  flex: none;
+  max-width: 290px;
+  min-height: 291.5px;
+  margin: 0;
+}
+
+:where(.mac-editorial-card[data-variant="hero"]) .mac-editorial-card-title {
+  margin-top: 15px;
+  color: var(--mac-editorial-card-hero-title);
+  line-height: 28px;
+}
+
+:where(.mac-editorial-card[data-variant="hero"]) > .mac-editorial-card-artwork {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+}
+
+/* TV's hero: the landscape card's corner and shadow, with a hairline on every side. */
+.mac-editorial-card:where([data-raised]) {
+  aspect-ratio: var(--mac-editorial-card-aspect, 1214 / 455);
+  overflow: visible;
+  border-radius: var(--mac-editorial-card-radius, 12px);
+  box-shadow: var(--mac-editorial-card-raised-shadow);
+}
+
+:where(.mac-editorial-card[data-raised]) > .mac-editorial-card-artwork {
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.mac-editorial-card:where([data-raised])::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: var(--mac-hairline) solid var(--mac-editorial-card-raised-edge);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Pressed: a card that is a link or a button dims */
+.mac-editorial-card:where(:where(:any-link, :enabled):active, [data-force~="pressed"]) {
+  filter: brightness(0.9);
+}
+
+.mac-editorial-card:where(:disabled, [aria-disabled="true"]) {
+  opacity: 0.5;
+}
+
+/* Keyboard focus ring; key window only */
+.mac-editorial-card:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-editorial-card {
+    border: 1px solid CanvasText;
+  }
+}

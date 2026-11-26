@@ -1,0 +1,54 @@
+/*
+ * Start Dictation's floating panel: beside the insertion point, over the windows, taking no keyboard.
+ *
+ * .mac-desktop-dictation        the panel
+ * .mac-desktop-dictation-mic    the microphone, which pulses while it listens
+ * .mac-desktop-dictation-words  what is being heard, or why nothing can be
+ */
+.mac-desktop-dictation {
+  position: fixed;
+  z-index: calc(var(--mac-window-manager-layer-chrome) - 30);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--mac-desktop-dictation-gap);
+  width: var(--mac-desktop-dictation-width);
+  padding: var(--mac-desktop-dictation-padding);
+  border-radius: var(--mac-desktop-dictation-radius);
+  background: var(--mac-color-window-background);
+  box-shadow: var(--mac-desktop-dictation-shadow);
+  color: var(--mac-color-label);
+  user-select: none;
+}
+
+.mac-desktop-dictation-mic {
+  width: var(--mac-desktop-dictation-mic);
+  height: var(--mac-desktop-dictation-mic);
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-desktop-dictation[data-state="listening"] .mac-desktop-dictation-mic {
+  color: var(--mac-accent-bezel-middle);
+  animation: mac-desktop-dictation-pulse 1.4s ease-in-out infinite;
+}
+
+.mac-desktop-dictation-words {
+  margin: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-control-small);
+  text-align: center;
+}
+
+@keyframes mac-desktop-dictation-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-desktop-dictation[data-state="listening"] .mac-desktop-dictation-mic {
+    animation: none;
+  }
+}

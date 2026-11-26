@@ -1,0 +1,33 @@
+/*
+ * Segmented control: colours of its own that differ between Aqua and Dark Aqua. The bezel is
+ * the shared one (src/styles/tokens/controls.css, accent.css).
+ */
+:root {
+  /* Divider between two segments, 1 pt wide, over the bezel fill: #e5e5e5 on #ffffff, #585859
+     on #686869 [measured, computed] Light- and Dark-System-Preferences-Desktop-and-Screen-Saver
+     @ 226,1040..1077 */
+  --mac-segmented-control-divider: light-dark(rgb(0 0 0 / 0.1), rgb(0 0 0 / 0.15));
+
+  /* Hairline (top, side, bottom) of a selected segment in the rounded style, painted over the
+     hairline of the whole bezel. Light: none, the accent's hairline gradient covers it. Dark:
+     what the standard outline (black at 8.3, 12.5, 21%) lacks to composite to the accent
+     outline (14.6, 19, 27%) [measured, computed] Dark-System-Preferences-Sound @ 660,193 */
+  --mac-segmented-control-selected-border: light-dark(transparent, rgb(0 0 0 / 0.069))
+    light-dark(transparent, rgb(0 0 0 / 0.074)) light-dark(transparent, rgb(0 0 0 / 0.076));
+
+  /* [provisional] Fill of a selected segment that is disabled or in a window that is not key:
+     grey in place of the accent. No screenshot shows it; the spec infers the same for the tab
+     view. */
+  --mac-segmented-control-selected-fill-inactive: linear-gradient(
+    light-dark(#d5d5d5, #6a6a6a),
+    light-dark(#d5d5d5, #6a6a6a)
+  );
+
+  /* [provisional] Fill of a segment pressed in a window that is not key, painted over the fill
+     of the whole bezel in the rounded style: it composites to the shared pressed bezel
+     (--mac-bezel-fill-pressed), #f0f0f0 and white at 36%. No screenshot shows it. */
+  --mac-segmented-control-fill-pressed: linear-gradient(
+    light-dark(#f0f0f0, rgb(255 255 255 / 0.147)),
+    light-dark(#f0f0f0, rgb(255 255 255 / 0.147))
+  );
+}

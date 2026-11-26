@@ -1,0 +1,869 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "network-light",
+      "description": "Finder's Network window in column view, Aqua: device column with the emphasised selection, divider, connection panel, divider. Texts are set in the fallback font off Apple platforms; device pictures and the panel's content are stand-ins.",
+      "example": "visual-network",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0345,
+        "2x": 0.0313
+      },
+      "deltaBudget": {
+        "1x": 3.49,
+        "2x": 3.55
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Network.png",
+        "crop": {
+          "x": 444,
+          "y": 186,
+          "width": 1520,
+          "height": 400
+        }
+      }
+    },
+    {
+      "name": "network-drawing-light",
+      "description": "The same crop with the device pictures and names masked (stand-in icons, fallback font) and the panel's artwork, texts and buttons masked (stand-ins; the buttons have a bezel this library does not draw): scores the column background, the 17 pt selection, the triangles, both dividers, the panel fill and its bottom line.",
+      "example": "visual-network",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 4,
+          "y": 1,
+          "width": 136,
+          "height": 72
+        },
+        {
+          "x": 270,
+          "y": 30,
+          "width": 121,
+          "height": 136
+        }
+      ],
+      "budget": {
+        "1x": 0.0013,
+        "2x": 0.0006
+      },
+      "deltaBudget": {
+        "1x": 0.26,
+        "2x": 0.17
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Network.png",
+        "crop": {
+          "x": 444,
+          "y": 186,
+          "width": 1520,
+          "height": 400
+        }
+      }
+    },
+    {
+      "name": "network-dark",
+      "description": "Finder's Network window in column view, Dark Aqua: three devices with the first selected, two 204 pt columns. Texts are set in the fallback font off Apple platforms; device pictures and the panel's content are stand-ins.",
+      "example": "visual-network-dark",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.0372,
+        "2x": 0.0371
+      },
+      "deltaBudget": {
+        "1x": 2.76,
+        "2x": 2.84
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Network.png",
+        "crop": {
+          "x": 378,
+          "y": 186,
+          "width": 1730,
+          "height": 400
+        }
+      }
+    },
+    {
+      "name": "network-drawing-dark",
+      "description": "The same crop with the device pictures and names masked (stand-in icons, fallback font) and the panel's artwork, texts and buttons masked (stand-ins): scores the column background, the 17 pt selection, the triangles, both dividers, the panel fill and its bottom line.",
+      "example": "visual-network-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 4,
+          "y": 1,
+          "width": 136,
+          "height": 54
+        },
+        {
+          "x": 247,
+          "y": 30,
+          "width": 121,
+          "height": 136
+        }
+      ],
+      "budget": {
+        "1x": 0.0006,
+        "2x": 0.0006
+      },
+      "deltaBudget": {
+        "1x": 0.16,
+        "2x": 0.16
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Network.png",
+        "crop": {
+          "x": 378,
+          "y": 186,
+          "width": 1730,
+          "height": 400
+        }
+      }
+    },
+    {
+      "name": "states-rest-light",
+      "description": "Two columns on the path, focus elsewhere, Aqua: both selections unemphasised.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 60
+        },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 10,
+            "color": "#dcdcdc",
+            "note": "selected row of the first column: unemphasised selection, inferred in the spec (as table-view)"
+          },
+          {
+            "x": 161,
+            "y": 10,
+            "color": "#dcdcdc",
+            "note": "selected row of the second column: the same grey, inferred"
+          },
+          {
+            "x": 60,
+            "y": 0.5,
+            "color": "#ffffff",
+            "note": "first point of the row slot stays clear: the selection is 17 pt of the 18 pt pitch (measured in Finder Network)"
+          },
+          {
+            "x": 100.5,
+            "y": 40,
+            "color": "#e6e6e6",
+            "note": "divider after the first 100 pt column (colour measured in Finder Network)"
+          },
+          {
+            "x": 201.5,
+            "y": 40,
+            "color": "#e6e6e6",
+            "note": "divider after the second column"
+          },
+          {
+            "x": 93.5,
+            "y": 9,
+            "color": "#6e6e6e",
+            "tolerance": 4,
+            "note": "triangle 2 pt from the column edge: secondary label colour over the grey selection, computed from the tokens"
+          },
+          {
+            "x": 220,
+            "y": 40,
+            "color": "#ffffff",
+            "note": "empty rest of the view: control background token"
+          }
+        ]
+      }
+    },
+    {
+      "name": "forced-colors-text-light",
+      "description": "Forced colours, after a click on the first row of the second column of a view whose names are full blocks and whose emphasised text and triangle colours are a marker (red): text and triangle of the focused column's selection are the system's highlight text, not the marker, and so is the triangle of the selected row in the column before it. The colours are the browser's emulated system colours, not Catalina's.",
+      "example": "visual-forced-colors",
+      "appearance": "light",
+      "forcedColors": true,
+      "actions": [
+        {
+          "click": ".mac-column-view-list >> nth=1 >> .mac-column-view-row >> nth=0"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 320,
+          "height": 60
+        },
+        "pixels": [
+          {
+            "x": 112,
+            "y": 9,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "text of the clicked row in the focused column: HighlightText, not the marker"
+          },
+          {
+            "x": 195,
+            "y": 9,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "its triangle: HighlightText, not the marker"
+          },
+          {
+            "x": 170,
+            "y": 9,
+            "color": "#37336d",
+            "tolerance": 6,
+            "note": "the row between its text and its triangle: Highlight"
+          },
+          {
+            "x": 94,
+            "y": 9,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "triangle of the selected row in the column before: HighlightText, not CanvasText"
+          },
+          {
+            "x": 12,
+            "y": 9,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "text of that row: HighlightText"
+          },
+          {
+            "x": 195,
+            "y": 27,
+            "color": "#000000",
+            "tolerance": 4,
+            "note": "triangle of a row that is not selected: CanvasText"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-forced-colors-light",
+      "description": "Forced colours, after a real click on \"Two\": the selection of the focused column and of the column before it are the system's highlight colour, not the accent and the grey. The colours are the browser's emulated system colours, not Catalina's.",
+      "example": "visual-states",
+      "appearance": "light",
+      "forcedColors": true,
+      "actions": [
+        {
+          "click": "role=option[name=\"Two\"]"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 60
+        },
+        "pixels": [
+          {
+            "x": 161,
+            "y": 28,
+            "color": "#37336d",
+            "tolerance": 6,
+            "note": "clicked row in the focused column: Highlight, which the forced-colours rule sets over the accent"
+          },
+          {
+            "x": 161,
+            "y": 10,
+            "color": "#ffffff",
+            "note": "the row selected before is no longer selected: Canvas"
+          },
+          {
+            "x": 60,
+            "y": 10,
+            "color": "#37336d",
+            "tolerance": 6,
+            "note": "selected row of the parent column: Highlight too"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-click-light",
+      "description": "After a real click on \"Two\", Aqua: accent in the clicked column, grey in the column before it, no focus ring for a pointer.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "role=option[name=\"Two\"]"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 60
+        },
+        "pixels": [
+          {
+            "x": 161,
+            "y": 28,
+            "color": "#0164e1",
+            "tolerance": 4,
+            "note": "clicked row: emphasised selection (measured in Finder Network)"
+          },
+          {
+            "x": 161,
+            "y": 10,
+            "color": "#ffffff",
+            "note": "the row selected before is no longer selected"
+          },
+          {
+            "x": 60,
+            "y": 10,
+            "color": "#dcdcdc",
+            "note": "parent column: unemphasised selection, inferred"
+          },
+          {
+            "x": 1.5,
+            "y": 40,
+            "color": "#ffffff",
+            "note": "no focus ring after a click"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-left-light",
+      "description": "Tab into the view, then Left Arrow, Aqua: the parent column takes the keyboard and the emphasised selection; the focus ring is inside the edge of the whole view.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowLeft"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 60
+        },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 10,
+            "color": "#0164e1",
+            "tolerance": 4,
+            "note": "\"Alpha\" in the first column: emphasised selection (measured in Finder Network)"
+          },
+          {
+            "x": 93.5,
+            "y": 9,
+            "color": "#ffffff",
+            "tolerance": 6,
+            "note": "its triangle: white in Aqua, white at 86% over the selection in Dark Aqua (measured in Finder Network)"
+          },
+          {
+            "x": 161,
+            "y": 10,
+            "color": "#ffffff",
+            "note": "the child column lists Alpha's items with none selected"
+          },
+          {
+            "x": 1.5,
+            "y": 40,
+            "color": "#8cb5fb",
+            "tolerance": 4,
+            "note": "3 pt focus ring inside the view's edge: focus ring token over the background, computed; no screenshot shows a focused column view (inferred)"
+          },
+          {
+            "x": 4.5,
+            "y": 40,
+            "color": "#ffffff",
+            "note": "just inside the ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-inactive-light",
+      "description": "Tab into the view in a window that is not key, Aqua: grey selection, no focus ring.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 60
+        },
+        "pixels": [
+          {
+            "x": 161,
+            "y": 10,
+            "color": "#dcdcdc",
+            "note": "focused column in an inactive window: unemphasised selection (inferred; no screenshot shows it)"
+          },
+          {
+            "x": 60,
+            "y": 10,
+            "color": "#dcdcdc",
+            "note": "parent column: unemphasised"
+          },
+          {
+            "x": 1.5,
+            "y": 40,
+            "color": "#ffffff",
+            "note": "no focus ring in a window that is not key"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-rest-dark",
+      "description": "Two columns on the path, focus elsewhere, Dark Aqua: both selections unemphasised.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 60
+        },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 10,
+            "color": "#464646",
+            "note": "selected row of the first column: unemphasised selection, inferred in the spec (as table-view)"
+          },
+          {
+            "x": 161,
+            "y": 10,
+            "color": "#464646",
+            "note": "selected row of the second column: the same grey, inferred"
+          },
+          {
+            "x": 60,
+            "y": 0.5,
+            "color": "#1e1e1e",
+            "note": "first point of the row slot stays clear: the selection is 17 pt of the 18 pt pitch (measured in Finder Network)"
+          },
+          {
+            "x": 100.5,
+            "y": 40,
+            "color": "#000000",
+            "note": "divider after the first 100 pt column (colour measured in Finder Network)"
+          },
+          {
+            "x": 201.5,
+            "y": 40,
+            "color": "#000000",
+            "note": "divider after the second column"
+          },
+          {
+            "x": 93.5,
+            "y": 9,
+            "color": "#acacac",
+            "tolerance": 4,
+            "note": "triangle 2 pt from the column edge: secondary label colour over the grey selection, computed from the tokens"
+          },
+          {
+            "x": 220,
+            "y": 40,
+            "color": "#1e1e1e",
+            "note": "empty rest of the view: control background token"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-click-dark",
+      "description": "After a real click on \"Two\", Dark Aqua: accent in the clicked column, grey in the column before it, no focus ring for a pointer.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "role=option[name=\"Two\"]"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 60
+        },
+        "pixels": [
+          {
+            "x": 161,
+            "y": 28,
+            "color": "#0357cf",
+            "tolerance": 4,
+            "note": "clicked row: emphasised selection (measured in Finder Network)"
+          },
+          {
+            "x": 161,
+            "y": 10,
+            "color": "#1e1e1e",
+            "note": "the row selected before is no longer selected"
+          },
+          {
+            "x": 60,
+            "y": 10,
+            "color": "#464646",
+            "note": "parent column: unemphasised selection, inferred"
+          },
+          {
+            "x": 1.5,
+            "y": 40,
+            "color": "#1e1e1e",
+            "note": "no focus ring after a click"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-left-dark",
+      "description": "Tab into the view, then Left Arrow, Dark Aqua: the parent column takes the keyboard and the emphasised selection; the focus ring is inside the edge of the whole view.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowLeft"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 60
+        },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 10,
+            "color": "#0357cf",
+            "tolerance": 4,
+            "note": "\"Alpha\" in the first column: emphasised selection (measured in Finder Network)"
+          },
+          {
+            "x": 93.5,
+            "y": 9,
+            "color": "#dbe8f8",
+            "tolerance": 6,
+            "note": "its triangle: white in Aqua, white at 86% over the selection in Dark Aqua (measured in Finder Network)"
+          },
+          {
+            "x": 161,
+            "y": 10,
+            "color": "#1e1e1e",
+            "note": "the child column lists Alpha's items with none selected"
+          },
+          {
+            "x": 1.5,
+            "y": 40,
+            "color": "#25638f",
+            "tolerance": 4,
+            "note": "3 pt focus ring inside the view's edge: focus ring token over the background, computed; no screenshot shows a focused column view (inferred)"
+          },
+          {
+            "x": 4.5,
+            "y": 40,
+            "color": "#1e1e1e",
+            "note": "just inside the ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-inactive-dark",
+      "description": "Tab into the view in a window that is not key, Dark Aqua: grey selection, no focus ring.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 60
+        },
+        "pixels": [
+          {
+            "x": 161,
+            "y": 10,
+            "color": "#464646",
+            "note": "focused column in an inactive window: unemphasised selection (inferred; no screenshot shows it)"
+          },
+          {
+            "x": 60,
+            "y": 10,
+            "color": "#464646",
+            "note": "parent column: unemphasised"
+          },
+          {
+            "x": 1.5,
+            "y": 40,
+            "color": "#1e1e1e",
+            "note": "no focus ring in a window that is not key"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-arrows-light",
+      "description": "Tab, Left, Down, Aqua: moving to the leaf \"Beta\" closes the child column.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowLeft"
+        },
+        {
+          "key": "ArrowDown"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 60
+        },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 28,
+            "color": "#0164e1",
+            "tolerance": 4,
+            "note": "\"Beta\": emphasised selection"
+          },
+          {
+            "x": 60,
+            "y": 10,
+            "color": "#ffffff",
+            "note": "\"Alpha\" is no longer selected"
+          },
+          {
+            "x": 150,
+            "y": 10,
+            "color": "#ffffff",
+            "note": "the child column is gone"
+          },
+          {
+            "x": 201.5,
+            "y": 40,
+            "color": "#ffffff",
+            "note": "and so is its divider"
+          },
+          {
+            "x": 100.5,
+            "y": 40,
+            "color": "#e6e6e6",
+            "note": "the first column's divider stays"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-resize-dark",
+      "description": "Tab, then Option-Right Arrow twice, Dark Aqua: the focused column grows by 10 pt each time and its divider moves with it.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "Alt+ArrowRight"
+        },
+        {
+          "key": "Alt+ArrowRight"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 60
+        },
+        "pixels": [
+          {
+            "x": 221.5,
+            "y": 40,
+            "color": "#000000",
+            "note": "divider of the second column after 100 + 20 pt"
+          },
+          {
+            "x": 201.5,
+            "y": 40,
+            "color": "#1e1e1e",
+            "note": "where it was"
+          },
+          {
+            "x": 100.5,
+            "y": 40,
+            "color": "#000000",
+            "note": "the first column's divider did not move"
+          },
+          {
+            "x": 161,
+            "y": 10,
+            "color": "#0357cf",
+            "tolerance": 4,
+            "note": "the selection stays emphasised (measured in Finder Network)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-arrows-dark",
+      "description": "Tab, Left, Down, Dark Aqua: moving to the leaf \"Beta\" closes the child column.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowLeft"
+        },
+        {
+          "key": "ArrowDown"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 60
+        },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 28,
+            "color": "#0357cf",
+            "tolerance": 4,
+            "note": "\"Beta\": emphasised selection (measured in Finder Network, spec: column-view)"
+          },
+          {
+            "x": 60,
+            "y": 10,
+            "color": "#1e1e1e",
+            "note": "\"Alpha\" is no longer selected: control background token"
+          },
+          {
+            "x": 150,
+            "y": 10,
+            "color": "#1e1e1e",
+            "note": "the child column is gone: control background token"
+          },
+          {
+            "x": 201.5,
+            "y": 40,
+            "color": "#1e1e1e",
+            "note": "and so is its divider"
+          },
+          {
+            "x": 100.5,
+            "y": 40,
+            "color": "#000000",
+            "note": "the first column's divider stays (colour measured in Finder Network)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-click-purple-light",
+      "description": "As states-click-light, with the purple accent: the emphasised selection follows the accent. No screenshot shows a selection in an accent other than blue, so the colour is the token's, computed.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "role=option[name=\"Two\"]"
+        }
+      ],
+      "accent": "purple",
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 60
+        },
+        "pixels": [
+          {
+            "x": 161,
+            "y": 28,
+            "color": "#7f2a7d",
+            "tolerance": 4,
+            "note": "the selected row in the purple accent: #963d96 darkened by the amount measured for blue (the formula of --mac-color-selected-content-background in accent.css); computed, not measured"
+          },
+          {
+            "x": 161,
+            "y": 10,
+            "color": "#ffffff",
+            "note": "the row selected before is no longer selected"
+          },
+          {
+            "x": 60,
+            "y": 10,
+            "color": "#dcdcdc",
+            "note": "parent column: unemphasised selection, inferred"
+          },
+          {
+            "x": 1.5,
+            "y": 40,
+            "color": "#ffffff",
+            "note": "no focus ring after a click"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-click-purple-dark",
+      "description": "As states-click-dark, with the purple accent: the emphasised selection follows the accent. No screenshot shows a selection in an accent other than blue, so the colour is the token's, computed.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "role=option[name=\"Two\"]"
+        }
+      ],
+      "accent": "purple",
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 60
+        },
+        "pixels": [
+          {
+            "x": 161,
+            "y": 28,
+            "color": "#83347f",
+            "tolerance": 4,
+            "note": "the selected row in the purple accent: #a650a7 darkened by the amount measured for blue (the formula of --mac-color-selected-content-background in accent.css); computed, not measured"
+          },
+          {
+            "x": 161,
+            "y": 10,
+            "color": "#1e1e1e",
+            "note": "the row selected before is no longer selected"
+          },
+          {
+            "x": 60,
+            "y": 10,
+            "color": "#464646",
+            "note": "parent column: unemphasised selection, inferred"
+          },
+          {
+            "x": 1.5,
+            "y": 40,
+            "color": "#1e1e1e",
+            "note": "no focus ring after a click"
+          }
+        ]
+      }
+    }
+  ]
+}

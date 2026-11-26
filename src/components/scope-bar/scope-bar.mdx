@@ -1,0 +1,181 @@
+---
+title: Scope Bar
+description: The strip under a toolbar that narrows a search, with scope buttons that toggle and round-rect buttons that act.
+order: 21
+---
+
+<Example name="basic" both />
+
+A scope bar appears beneath the toolbar while people search. Its scopes are a single-selection
+group built on [Base UI's Radio Group](https://base-ui.com/react/components/radio); its action
+buttons are Base UI's [Button](https://base-ui.com/react/components/button).
+
+## Usage
+
+```tsx
+import {
+  ScopeBar,
+  ScopeBarAction,
+  ScopeBarActions,
+  ScopeBarButton,
+  ScopeBarGroup,
+  ScopeBarLabel,
+} from "macalicious/scope-bar";
+import "macalicious/scope-bar.css";
+
+<ScopeBar>
+  <ScopeBarLabel id="scope">Search:</ScopeBarLabel>
+  <ScopeBarGroup aria-labelledby="scope" defaultValue="folder" onValueChange={setScope}>
+    <ScopeBarButton value="mac">This Mac</ScopeBarButton>
+    <ScopeBarButton value="folder">“Macintosh SSD”</ScopeBarButton>
+  </ScopeBarGroup>
+  <ScopeBarActions>
+    <ScopeBarAction onClick={save}>Save</ScopeBarAction>
+    <ScopeBarAction glyph="plus" aria-label="Add criterion" onClick={add} />
+  </ScopeBarActions>
+</ScopeBar>
+```
+
+Place it under the [Title Bar](/components/title-bar) or the
+[Window Tab Bar](/components/window-tab-bar), and give the bar above it `divider="bar"`.
+
+## Guidelines
+
+Not verified: this section paraphrases Apple's Human Interface Guidelines and was not checked
+against Apple's text.
+
+- A scope button (AppKit's recessed style) selects one search scope, and the others are
+  deselected; a round-rect button starts an action or adds search criteria. Use both only in
+  a scope bar.
+- Show the bar while a search is in progress, not permanently.
+- Lead with a short label that says what the scopes narrow ("Search:").
+
+## Variants and states
+
+<Example name="find-bar" both />
+
+| Surface | Height | Seen in |
+| --- | --- | --- |
+| `plain` (default) | 32 pt, flat | Finder search |
+| `toolbar` | 31 pt, on the toolbar gradient, with wider scopes and 18 pt actions | Preview's find bar |
+| `toolbar` with `size="small"` | 23 pt, with 11 pt medium scopes, darker scope titles and lighter bottom rows | Console, Dictionary |
+
+<Example name="compact" both />
+
+`ScopeBarActionGroup` joins the actions inside it into one segmented round-rect, like the
+previous and next buttons of the find bar.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Scope off | – | Bold text |
+| Scope on | its value is the group's value | Filled pill, 16 pt high |
+| Scope under the pointer | `:hover` | Outline pill (provisional) |
+| Pressed, keyboard focus | `:active`, `:focus-visible` | provisional; the focus ring shows in the key window only |
+| Disabled | `disabled` | Dimmed (measured on the find bar's arrows) |
+| Window not key | `data-window-state="main"` or `"inactive"` on an ancestor | The pill of the scope that is on turns the unemphasised grey (provisional) |
+| Inactive window | `data-window-state="inactive"` on an ancestor | The toolbar surface flattens (provisional) |
+
+## Sizes
+
+`surface` and `size` set the bar's height. There is no mini bar.
+
+| Size | Height | Scopes |
+| --- | --- | --- |
+| `regular` (default) | 32 pt for `plain`, 31 pt for `toolbar` | 13 pt bold, 16 pt pill; 8 pt or 13.5 pt beside the title |
+| `small` | 23 pt: 22 pt of fill over the bottom point | 11 pt medium, 16 pt pill centred on the fill; 6.5 pt beside the title |
+
+The small bar is measured on the toolbar surface only; on the plain surface it keeps the plain
+bar's colours with the small height and type (provisional). Dictionary's bar is the same bar
+25 pt high: set `style={{ height: 25 }}`. The action buttons are 16 pt high on the plain
+surface and 18 pt on the toolbar surface.
+
+## API
+
+<PropsTable name="ScopeBarProps" />
+
+<PropsTable name="ScopeBarLabelProps" />
+
+<PropsTable name="ScopeBarGroupProps" />
+
+<PropsTable name="ScopeBarButtonProps" />
+
+<PropsTable name="ScopeBarActionsProps" />
+
+<PropsTable name="ScopeBarActionGroupProps" />
+
+<PropsTable name="ScopeBarActionProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-surface` | bar | `plain`, `toolbar` | Reflects `surface`. |
+| `data-size` | bar | `regular`, `small` | Reflects `size`. |
+| `data-checked` | scope | present or absent | Set by Base UI on the scope that is on. |
+| `data-glyph` | action | `plus`, `minus`, `previous`, `next` | Reflects `glyph`. |
+| `data-disabled` | scope, action | present or absent | Set by Base UI. |
+| `data-force` | scope, action | `hover`, `pressed`, `focus` | Documentation and visual tests only. |
+
+## Accessibility
+
+- The scopes are a `radiogroup` of `radio`s: one tab stop, arrow keys move the selection. Name
+  the group with `aria-labelledby` pointing at the `ScopeBarLabel`, or with `aria-label`.
+- Actions are native buttons. One that shows only a glyph needs an `aria-label`.
+- Name a `ScopeBarActionGroup` with `aria-label`.
+- A scope that is on is told apart by its pill and, for assistive technology, by its checked
+  state; in Dark Aqua the pill is light with dark text.
+
+## Visual comparison
+
+`scope-bar.visual.json` compares Finder's search bar (the label and scopes, and the Save and +
+actions), Preview's find bar (label and scopes, and the arrows and Done) and the leading end of
+Console's small bar, each whole and with the text masked, in both appearances. The scores are
+in the table below.
+
+Scores from `npm run visual -- scope-bar` in Chromium on Linux with the fallback font: the share of
+pixels that differ by more than the comparison's threshold, and the mean colour difference out
+of 255. A masked comparison leaves out stand-in artwork and fallback-font text.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `finder-search-light` | Light-Finder-Search (442, 186, 560, 64) | 13.30% | 10.13 | 10.13% | 8.99 |
+| `finder-search-light-drawing` (masked) | Light-Finder-Search (442, 186, 560, 64) | 0.57% | 0.35 | 0.03% | 0.11 |
+| `finder-search-dark` | Dark-Finder-Search (442, 186, 560, 64) | 14.13% | 11.86 | 10.45% | 10.49 |
+| `finder-search-dark-drawing` (masked) | Dark-Finder-Search (442, 186, 560, 64) | 0.65% | 0.40 | 0.08% | 0.03 |
+| `finder-search-actions-light` | Light-Finder-Search (1968, 186, 400, 64) | 1.89% | 1.63 | 1.66% | 1.82 |
+| `finder-search-actions-light-drawing` (masked) | Light-Finder-Search (1968, 186, 400, 64) | 0.00% | 0.10 | 0.42% | 0.15 |
+| `finder-search-actions-dark` | Dark-Finder-Search (1622, 186, 400, 64) | 1.92% | 1.56 | 1.62% | 1.69 |
+| `finder-search-actions-dark-drawing` (masked) | Dark-Finder-Search (1622, 186, 400, 64) | 0.00% | 0.12 | 0.45% | 0.15 |
+| `preview-find-light` | Light-Preview-Search (114, 186, 520, 62) | 12.27% | 8.24 | 9.32% | 7.88 |
+| `preview-find-light-drawing` (masked) | Light-Preview-Search (114, 186, 520, 62) | 3.96% | 2.11 | 0.03% | 0.78 |
+| `preview-find-dark` | Dark-Preview-Search (114, 186, 268, 62) | 10.83% | 8.03 | 9.76% | 8.44 |
+| `preview-find-dark-drawing` (masked) | Dark-Preview-Search (114, 186, 268, 62) | 0.00% | 0.37 | 0.00% | 0.36 |
+| `preview-find-actions-light` | Light-Preview-Search (2196, 186, 208, 62) | 8.53% | 6.28 | 3.68% | 4.62 |
+| `preview-find-actions-light-drawing` (masked) | Light-Preview-Search (2196, 186, 208, 62) | 11.27% | 3.26 | 0.40% | 0.70 |
+| `console-light` | Light-Console (112, 212, 600, 46) | 11.36% | 9.03 | 5.32% | 5.14 |
+| `console-light-drawing` (masked) | Light-Console (112, 212, 600, 46) | 0.20% | 0.76 | 0.05% | 0.87 |
+| `console-dark` | Dark-Console (112, 212, 600, 46) | 12.03% | 12.92 | 5.71% | 9.12 |
+| `console-dark-drawing` (masked) | Dark-Console (112, 212, 600, 46) | 1.06% | 5.05 | 0.85% | 5.01 |
+
+Measured: both bars' heights and fills, the bottom rows, the pill, the label and scope
+colours, the round-rect buttons, the + glyph and the find bar's chevrons (5.25 x 7 pt, measured
+on Preview's disabled arrows in Aqua). The plain surface is read from the Finder Search captures
+(fill at 1500,200; bottom rows at 1500,248 and 1500,249; pill at 710,218), the toolbar surface
+from the Preview Search captures (column 1500 in Aqua, column 130 in Dark Aqua, over the
+sidebar). Provisional: hover, pressed, focus and the
+looks in a window that is not key, which no screenshot shows, and the pill's corner radius. In
+Preview the label is drawn in the accent colour on a Mac; text is San Francisco only on Apple
+devices.
+
+The small bar is read from the Console captures: 46 device rows from y=212, the fill `#d2d2d2`
+to `#cccccc` and `#3a3b3b` to `#373839` at column 900 (y=212 and y=255), the two bottom rows
+`#bdbdbd`, `#a7a7a7` and `#2c2c2d`, `#000000` (y=256, y=257), the pill of "All Messages" from
+x=192 to 357 and y=218 to 249 (`#848484` on `#cecece`, black at 36%; `#b9babb` on `#2e2f30`,
+white at 66.5%) with its title `#ffffff` and `#2d2e2f`, and the darkest and lightest pixel of
+"Errors and Faults" (`#4e4e4e`, `#b3b4b5`), whose ink starts 9.5 pt after the pill. Dictionary's
+25 pt bar measures the same bottom rows, a fill of `#d4d4d4` to `#cccccc` and `#3a3b3c` to
+`#363738`, and a dark pill of white at 70%; the tokens hold one fill for both heights
+(`#d3d3d3`, `#3a3b3c` at the top) and white at 68% for the dark pill. In the dark Console
+capture the bar is darker over its first 150 pt (`#2e2f30` at the pill), where the desktop
+picture shows through; that is not reproduced and is most of the dark comparisons' mean
+difference. The inactive small bar is provisional.

@@ -1,0 +1,116 @@
+/*
+ * Voice Memos: the colours and sizes of the app that no shared token and no library component
+ * holds,
+ * from reference/spec/apps/voice-memos.md and the two captures
+ * (10-15-Catalina-Light-Voice-Memos.png, 10-15-Catalina-Dark-Voice-Memos.png; coordinates are
+ * image pixels). The content is the same in both appearances: Voice Memos keeps it black
+ * whatever the system's appearance, and only the toolbar, which is the library's, changes.
+ */
+:root {
+  /* [measured] the content around the waveform: Light- and Dark-Voice-Memos @ 300,180 */
+  --mac-voice-memos-background: #000000;
+  /* [measured] the timer's digits: @ 861,1047,180,49, brightest stems */
+  --mac-voice-memos-timer: #f0f0f0;
+
+  /* [measured] the bottom bar: col x=300, its first two rows 1189 and 1190, then 1191 down to
+     1334 */
+  --mac-voice-memos-bar-line: #212121;
+  --mac-voice-memos-bar-line-second: #1d1d1d;
+  --mac-voice-memos-bar-top: #191919;
+  --mac-voice-memos-bar-bottom: #0d0d0d;
+
+  /* [measured] the record pill's outline: row y=1262, 245..246 and 467..468 */
+  --mac-voice-memos-pill-outline: #ffffff;
+  /* [measured] the row of pixels either side of the outline and around its pause mark:
+     row y=1262 @ 243, 248 and 465 */
+  --mac-voice-memos-pill-edge: #000000;
+  /* [measured] the pause mark of the pill, in sRGB: row y=1262, 340..352 */
+  --mac-voice-memos-record: #ff3b30;
+
+  /* [measured] skip back @ 790,1262, play @ 900,1262 and skip forward @ 1010,1262 read
+     #818181, #7d7d7d and #797979; drawn in one grey between them */
+  --mac-voice-memos-transport: #7d7d7d;
+  /* [provisional] a transport button or a pill while it is pressed: no capture shows one */
+  --mac-voice-memos-transport-pressed: #b4b4b4;
+  /* [provisional] a transport button that cannot be used: no capture shows one */
+  --mac-voice-memos-transport-disabled: #3c3c3c;
+
+  /* [measured] the Done pill: fill @ 1360,1262, label @ 1424,1255,57,16 darkest stems */
+  --mac-voice-memos-done-fill: #7f7f7f;
+  --mac-voice-memos-done-text: #000000;
+  /* [provisional] the Done pill while it is pressed */
+  --mac-voice-memos-done-pressed: #a6a6a6;
+
+  /* [provisional] the ring around the record button under the list: no capture shows the list */
+  --mac-voice-memos-record-ring: light-dark(#b9b9b9, #6d6d6d);
+
+  /* Sizes, in points, the same in both appearances. voice-memos.css says where each lies; the
+     positions are from the window's top-left corner of the two captures. */
+  /* [measured] the waveform 7.6 pt above its panel at 74.5, the overview strip at 394 and 33 pt
+     from either side, the 34.5 pt bold timer with its cap top at 485.5, the 73.5 pt bar */
+  --mac-voice-memos-waveform-padding-top: 28.9px;
+  --mac-voice-memos-overview-margin-top: 44.95px;
+  --mac-voice-memos-overview-margin-inline: 33px;
+  --mac-voice-memos-timer-margin-top: 18px;
+  --mac-voice-memos-timer-size: 34.5px;
+  --mac-voice-memos-timer-line-height: 41px;
+  --mac-voice-memos-bar-height: 73.5px;
+  /* [measured, computed] the record pill: nominally 113 x 46.5 pt at 66 pt with a 1.5 pt
+     outline; these match its pixels. Its label is 11.5 pt bold. */
+  --mac-voice-memos-pill-width: 112.65px;
+  --mac-voice-memos-pill-height: 46.3px;
+  --mac-voice-memos-pill-margin-top: 13.2px;
+  --mac-voice-memos-pill-margin-start: 66.1px;
+  --mac-voice-memos-pill-radius: 23.15px;
+  --mac-voice-memos-pill-outline-width: 1.75px;
+  --mac-voice-memos-pill-size: 11.5px;
+  --mac-voice-memos-pill-line-height: 14px;
+  /* [measured, computed] the transport: skip glyphs centred at 338.5 and 449 pt, three quarters
+     of a point left of centre; the play triangle's box 383..408 by 578.65..607 */
+  --mac-voice-memos-transport-gap: 11.25px;
+  --mac-voice-memos-transport-shift: -0.75px;
+  --mac-voice-memos-play-padding-bottom: 0.8px;
+  --mac-voice-memos-play-padding-left: 3.5px;
+  /* [provisional] the transport buttons' targets, which are not drawn: 44 pt round */
+  --mac-voice-memos-key-size: 44px;
+  --mac-voice-memos-key-radius: 22px;
+  /* [measured, computed] the Done pill: nominally 105 x 39 pt ending 66.5 pt from the trailing
+     edge; these match its pixels. Its label is 11.5 pt semibold. */
+  --mac-voice-memos-done-width: 104.85px;
+  --mac-voice-memos-done-height: 38.7px;
+  --mac-voice-memos-done-margin-top: 17.05px;
+  --mac-voice-memos-done-margin-end: 66.65px;
+  --mac-voice-memos-done-radius: 19.35px;
+  --mac-voice-memos-done-size: 11.5px;
+  --mac-voice-memos-done-line-height: 14px;
+  /* [provisional] the focus ring's distance from the app's own buttons: no capture shows it */
+  --mac-voice-memos-focus-offset: 2px;
+  /* [provisional] the sidebar's column, which no capture shows: the search field's margins, the
+     strip under the list and its 44 pt record button with its ring */
+  --mac-voice-memos-search-margin-block: 8px;
+  --mac-voice-memos-search-margin-inline: 9px;
+  --mac-voice-memos-new-padding-top: 12px;
+  --mac-voice-memos-new-padding-bottom: 14px;
+  /* [provisional] the row of Recently Deleted: no capture shows it */
+  --mac-voice-memos-place-padding-block: 6px;
+  --mac-voice-memos-place-padding-inline: 14px;
+  --mac-voice-memos-record-size: 44px;
+  --mac-voice-memos-record-ring-width: 2px;
+  --mac-voice-memos-record-padding: 3px;
+  --mac-voice-memos-record-padding-pressed: 5px;
+  /* [provisional] the handles over the overview's 44.1 pt strip and the buttons beside the timer:
+     no capture shows Voice Memos trimming. The strip ends 21.75 pt above the overview's bottom. */
+  --mac-voice-memos-trim: #ffd60a;
+  --mac-voice-memos-trim-pressed: #ffe566;
+  --mac-voice-memos-trim-text: #000000;
+  --mac-voice-memos-trim-outside: #000000b3;
+  --mac-voice-memos-trim-strip-bottom: 21.75px;
+  --mac-voice-memos-trim-strip-height: 44.1px;
+  --mac-voice-memos-trim-handle-width: 11px;
+  --mac-voice-memos-trim-handle-radius: 3px;
+  --mac-voice-memos-trim-edge: 2px;
+  --mac-voice-memos-trim-grip-size: 4px;
+  --mac-voice-memos-trim-action-height: 28px;
+  --mac-voice-memos-trim-action-padding: 12px;
+  --mac-voice-memos-trim-action-radius: 14px;
+}

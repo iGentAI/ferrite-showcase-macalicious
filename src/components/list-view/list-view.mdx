@@ -1,0 +1,284 @@
+---
+title: List View
+description: A scrolling single-column list of one- or two-line rows with selection, as in Notes, Contacts and Reminders.
+---
+
+<Example name="basic" both />
+
+The item list of Mail, Notes, Contacts, Messages and Reminders: AppKit's view-based
+`NSTableView` with one column, no header and custom cells. Each row summarises one item on
+one or two lines; selecting a row usually shows the item in a detail pane beside the list.
+The list scrolls in a [scroll view](/components/scroll-view) and renders only the rows in
+view, so it can hold many thousands. For rows with columns and a header use a table with a
+[table header](/components/table-header); for a navigation list use the
+[sidebar](/components/sidebar).
+
+## Usage
+
+```tsx
+import { ListView, ListViewRowDetail, ListViewRowTitle } from "macalicious/list-view";
+import "macalicious/scroll-view.css";
+import "macalicious/list-view.css";
+
+const renderRow = (index: number) => (
+  <>
+    <ListViewRowTitle>{notes[index].title}</ListViewRowTitle>
+    <ListViewRowDetail lead={notes[index].date}>{notes[index].snippet}</ListViewRowDetail>
+  </>
+);
+
+<ListView
+  aria-label="Notes"
+  count={notes.length}
+  rowHeight={56}
+  separator="inset"
+  renderRow={renderRow}
+  getRowId={(index) => notes[index].id}
+  getRowLabel={(index) => notes[index].title}
+  value={selected}
+  onValueChange={setSelected}
+  style={{ width: 248, height: 400 }}
+/>
+```
+
+Or copy the source into your project: `npx macalicious add list-view`.
+
+The list does not hold your data. It asks for `count` rows and calls `renderRow(index)` for
+the ones in view; a row's content is plain text or the row parts:
+
+| Part | What it is |
+| --- | --- |
+| `ListViewRowTitle` | The primary line, 13 pt bold, cut with an ellipsis. |
+| `ListViewRowDetail` | A secondary line in the secondary label colour; its `lead` (a date) is in the primary colour. |
+| `ListViewRowLeading` | An accessory centred in the gutter before the text: a reminder's circle, an avatar. |
+| `ListViewRowTrailing` | An accessory after the text, vertically centred: a thumbnail, a date. |
+
+Things to know:
+
+- Give the root a height (or a flex or grid cell that has one). Every row has the same
+  `rowHeight`, unless `rowHeight` is a function of the row's index: Reminders gives a reminder
+  with a picture 70 pt and the others 34. Keep that function's identity stable, as for
+  `renderRow`; the rows stay virtualised and Page Up and Page Down move by what the view holds.
+- Define `renderRow` outside the component, or with `useCallback`. Rows are memoised: with a
+  stable function a selection change re-renders only the rows it touches.
+- The selection holds row ids. `getRowId` maps an index to an id (default: the index); use
+  real ids when rows can be inserted, removed or sorted.
+- `separatorInset` is the text inset of every row, with or without separators: a leading
+  accessory sits in the gutter it leaves.
+- Text in a row belongs in `ListViewRowTitle` or `ListViewRowDetail`, which cut it with an
+  ellipsis. Plain text or an element of your own is shown on the row's one line, but is not
+  cut where a trailing accessory begins.
+
+### Large lists
+
+<Example name="large" hideCode />
+
+Measured in Chromium with this example (10,000 rows of 56 pt in a 280 pt view, React's
+development build): 13 row elements and 56 elements in all under the list at rest, at most
+22 rows while scrolling. Twenty scroll steps from the top to the bottom, waiting one
+animation frame after each, took 334 ms in all, 17 ms per step: one frame each, with the rows
+rendered before the frame is painted. Selecting a row changes the DOM of two rows (the old
+and the new selection). The listbox carries all event handlers; rows have none.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[table views](https://web.archive.org/web/20200503153039/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/table-views/),
+of which this list is the single-column case:
+
+- A table is ideal for text-based content and is often used for navigation on one side of a
+  split view, with the related content on the other side.
+- A single-column table has no column heading, so make sure a label or the surrounding
+  window gives enough context. Here that is also the list's accessible name.
+- Use a pop-up button instead when the list only presents a short set of choices: it takes
+  far less space.
+- Use an outline view instead to present hierarchical data.
+- Truncate text that does not fit with an ellipsis rather than clipping it. The guidelines
+  prefer a centred ellipsis; the row parts end the line with one, as Notes and Mail do.
+- Consider a search field for a lengthy list.
+
+## Variants and states
+
+<Example name="variants" both hideCode />
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| One-line rows | `rowHeight={24}` (default) | 13 pt text centred in the row, as in Contacts |
+| Rows with a leading accessory | `rowHeight={34}`, `separatorInset={50}`, `ListViewRowLeading` | The accessory is centred in the 50 pt gutter, as the completion circle in Reminders |
+| Two-line rows | `rowHeight={56}`, `ListViewRowTitle` and `ListViewRowDetail` | Bold title, second line 18 pt lower, as in Notes; 64 pt rows fit Messages |
+| Separators | `separator="inset"` | A 1 pt line in the row's last point, from `separatorInset` to the trailing edge; the label colour at 10% |
+| Empty rows | `emptyRows="separator"` | Below the last row, the same line every row height (the last row's) to the bottom of the view, as under the conversations of Messages. The lines take no space and scroll with the rows; they are not rows and cannot be selected |
+| Separators from another inset | `--mac-list-view-separator-inset` on the list or an ancestor | Both lines start there instead of at the text: 20 pt in Messages, whose text starts at 77 |
+| Selected, list without focus | click a row, focus elsewhere (`emphasis="focus"`, the default) | Grey across the whole row, separator included (`#dcdcdc`, `#464646` in Dark Aqua); text unchanged |
+| Selected, list with focus | click a row or Tab to the list, in a key window | Accent colour; text white, `ListViewRowDetail` white at 73% |
+| Inactive or main window | `data-window-state` on an ancestor | With `emphasis="focus"` the selection stays grey also while the list has focus; no focus ring |
+| Always emphasised | `emphasis="always"` | The accent selection and its white text also without the keyboard and in a window that is not key, as the conversation list of Messages in both captures |
+| Keyboard focus | Tab | Focus ring inside the list's edge, never around a row |
+| No selection | `selectionMode="none"` | Rows cannot be selected; the keys scroll |
+
+Measured: the row heights, text insets, separator and grey selection of Notes, Contacts and
+Reminders in both appearances, and the white and 73% white text on the accent selection (the
+conversation list of Messages). Provisional: the accent selection in a list of this kind
+outside Messages, where it is a vibrant blue over the desktop and is drawn here as the flat
+system selection colour; the focus ring around the list; the look in an inactive window
+while the list has focus. Not reproduced: Notes' paper texture, the hover button of
+Reminders and trackpad swipe actions.
+
+## Sizes
+
+A list has no control sizes; its rows have the height you give them. The reference apps use:
+
+| `rowHeight` | `separatorInset` | Content | App |
+| --- | --- | --- | --- |
+| 24 | 29 | one line | Contacts |
+| 34 | 50 | one line and an 18 pt leading circle | Reminders |
+| 56 | 25 | title and detail, optional 41 pt thumbnail | Notes |
+| 64 | 77 | name, snippet and a 48 pt picture; lines from 20 pt, under the empty rows too | Messages |
+
+## API
+
+<PropsTable name="ListViewProps" />
+
+The remaining props are those of [`ScrollView`](/components/scroll-view) (`scrollerStyle`,
+`knobStyle`, `size`) and of its root element, to which `ref`, `className` and `style` go.
+`aria-label` and `aria-labelledby` are given to the scrolling element, which is the listbox.
+
+<PropsTable name="ListViewRowTitleProps" />
+
+<PropsTable name="ListViewRowDetailProps" />
+
+<PropsTable name="ListViewRowLeadingProps" />
+
+<PropsTable name="ListViewRowTrailingProps" />
+
+The four row parts are `div`s and take a `div`'s attributes, `ref`, `className` and `style`.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-separator` | root | `none`, `inset` | Reflects `separator`. |
+| `data-empty-rows` | root | `none`, `separator` | Reflects `emptyRows`. |
+| `data-emphasis` | root | `focus`, `always` | Reflects `emphasis`. |
+| `aria-selected` | row | `true`, `false` | The row is selected; the selection's look hangs on it. |
+| `data-index` | row | number | The row's index. |
+| `data-force` | root | `focus` | Pins the emphasised selection for documentation and tests. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-list-view-selected-background` | `var(--mac-color-selected-content-background-unemphasized)` | The grey selection. Notes uses the separator's tint over its paper. |
+| `--mac-list-view-separator` | `var(--mac-color-separator)` | Colour of the separator: the label colour at 10%. Messages sets its own, black at 6%. |
+| `--mac-list-view-separator-inset` | `separatorInset` | Where the rows' and the empty rows' separators start, when not where the text does. |
+
+| Class | Part |
+| --- | --- |
+| `.mac-list-view` | Root (also `.mac-scroll-view`) |
+| `.mac-list-view-viewport` | The scrolling listbox (also `.mac-scroll-view-viewport`) |
+| `.mac-list-view-rows` | The element as tall as all rows, inside the listbox |
+| `.mac-list-view-row` | A row |
+| `.mac-list-view-row-title`, `-detail`, `-detail-lead`, `-leading`, `-trailing` | The row parts |
+
+## Accessibility
+
+- The scrolling element is a `listbox` and each row an `option` with `aria-selected`,
+  `aria-setsize` and `aria-posinset`, so assistive technology knows the list's real length
+  although only the rows in view exist. Give the list a name with `aria-label` or
+  `aria-labelledby`.
+- The list is one tab stop. Focus stays on the listbox, which names the current row with
+  `aria-activedescendant`. A row out of view is not in the document and cannot be named, so
+  the current row is scrolled into view when the keyboard focus enters the list, and when
+  the selection is changed from outside while the list has the focus. Scrolling the current
+  row out of view with the pointer leaves it unnamed until the next key.
+- Keys: Up and Down Arrow move the selection (Up from nothing selected starts at the last
+  row); Home and End go to the first and last row; Page Up and Page Down move by a page;
+  Return calls `onRowAction` for the current row, as a double click does. With
+  `getRowLabel`, typing the start of a row's text selects it, and repeating a letter steps
+  through the rows that start with it. In `selectionMode="multiple"` Shift with any of the
+  movement keys extends the selection, Command-click (Control-click) toggles a row,
+  Shift-click extends, and Command-A selects all. Control with a movement key moves the
+  current row without changing the selection, and Control-Space adds the current row to the
+  selection or takes it out; AppKit has no such keys, they are here so that any set of rows
+  can be selected without a pointer.
+- A difference from AppKit: there Home, End, Page Up and Page Down scroll without changing
+  the selection. Here they move it, as the WAI-ARIA listbox pattern describes, so that a
+  keyboard user reaches the ends of a long list.
+- The row moved to is scrolled into view.
+- The emphasised selection and the focus ring are drawn only in a key window. In
+  forced-colours mode the selection uses the system highlight colours.
+- A row's accessible name is its text content. Give a leading or trailing accessory that
+  carries meaning a text alternative; decorative ones should be hidden with `aria-hidden`.
+- Rows take content that is not interactive: an `option` must not contain buttons,
+  checkboxes, fields or links, because assistive technology does not expose controls inside
+  an option. Rows that need a control belong in a [table view](/components/table-view),
+  whose cells can hold one; other row actions go in a contextual menu or the detail pane. As
+  a safeguard only, a press on such an element inside a row is left to it and does not select
+  the row.
+- With `selectionMode="none"` no row is selected, whatever `value` names.
+- A row `isRowHeading` names has `role="none"`, not `option`; `renderRow` renders a
+  heading element in it, such as an `h2`. It is left out of `aria-setsize` and `aria-posinset`,
+  the keys pass over it and a press on it selects nothing. A Shift range and Command-A still
+  name its id, so `onValueChange` leaves that out; give it no text in `getRowLabel`, so that
+  type-select passes it too.
+
+## Visual comparison
+
+Three lists are compared in both appearances, each twice: the whole crop, where the text is
+set in the fallback font off Apple platforms, and the same crop with the text lines and
+stand-in artwork masked, which scores the drawing (row height, selection, separators,
+insets, circles). Results in Chromium on Linux:
+
+| Comparison | Whole crop, 2x | Whole crop, 1x | Masked, 2x | Masked, 1x |
+| --- | --- | --- | --- | --- |
+| Notes, Aqua | 13.63% of pixels differ, mean Δ 20.43 | 15.06%, mean Δ 18.41 | 0.01%, mean Δ 2.51 | 0.00%, mean Δ 1.47 |
+| Notes, Dark Aqua | 13.45%, mean Δ 17.27 | 14.79%, mean Δ 16.34 | 0.00%, mean Δ 0.04 | 0.00%, mean Δ 0.01 |
+| Contacts, Aqua | 8.96%, mean Δ 12.58 | 11.41%, mean Δ 13.80 | 0.00%, mean Δ 0.09 | 0.00%, mean Δ 0.01 |
+| Contacts, Dark Aqua | 4.97%, mean Δ 5.47 | 6.91%, mean Δ 6.67 | 0.00%, mean Δ 0.07 | 0.00%, mean Δ 0.01 |
+| Reminders, Aqua | 1.72%, mean Δ 2.44 | 2.09%, mean Δ 2.31 | 0.01%, mean Δ 0.06 | 0.37%, mean Δ 0.14 |
+| Reminders, Dark Aqua | 1.70%, mean Δ 2.20 | 2.07%, mean Δ 2.14 | 0.01%, mean Δ 0.04 | 0.43%, mean Δ 0.13 |
+
+The crops (2x pixels): Notes `494,152,496,560` in `10-15-Catalina-Light-Notes.png` and
+`10-15-Catalina-Dark-Notes.png` (five rows, the first selected in grey); Contacts
+`482,142,376,144` in `10-15-Catalina-Light-Contacts.png` and `508,162,376,144` in the dark
+file (two rows, the second selected, and one row height below); Reminders `674,264,800,408`
+in both Reminders files (six rows with circles).
+
+What remains, and why:
+
+- The whole-crop figures are the text. The fallback font is wider and its capitals are
+  taller; baselines and text insets agree with the screenshots to the device pixel.
+- The Aqua list of Notes has a paper noise texture. The example paints its mean colour
+  (`#fafaf8`, and the separator tint over it for the selection), which leaves a mean Δ of
+  2.5 and almost no mismatched pixel.
+- The thumbnails of Notes are stand-ins (plain squares) and are masked, as is the third
+  contact that only the Aqua screenshot of Contacts has.
+- At 1x the completion circles of Reminders differ along their ring from the averaged 2x
+  reference (0.4%); at 2x four antialiasing pixels per circle differ.
+- Contacts sets the name it sorts by in semibold and the rest in regular weight; the
+  example does the same with plain markup rather than `ListViewRowTitle`.
+
+The selection of a focused list, keyboard focus and the inactive window are not in these
+screenshots. They are checked with `expect` comparisons on the Contacts example with real
+input: a click on a row (accent selection across the row, the old row plain again), Tab and
+Up Arrow (focus ring inside the edge, selection moved), and a click and Tab in an inactive
+window (grey selection, no ring). The Tab and Up Arrow check now runs in Dark Aqua too, and
+the accent selection after a click is also checked with the purple accent in both
+appearances. The colours are the tokens' values, so these checks prove
+the behaviour, not that Catalina looked exactly so.
+
+Empty rows are compared with the conversation list of Messages, which has one conversation
+and draws a line in every empty 64 pt row below it:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Empty rows, Dark Aqua | 0.00% of pixels differ, mean Δ 1.07 | 0.00%, mean Δ 0.83 |
+| Empty row, Aqua | 0.00%, mean Δ 2.88 | 0.00%, mean Δ 2.74 |
+
+The crops: `1240,334,56,640` in `10-15-Catalina-Dark-Messages.png`, a 28 pt strip of five
+empty rows right of the Preferences window, which covers the rest of the list; and
+`746,1078,540,32` in `10-15-Catalina-Light-Messages.png`, the whole width of the list over
+the last 16 pt of the one empty row that shows below the Preferences window, with the line's
+start 20 pt in. The line is black at 6.0% over the list in all five Dark Aqua rows and 5.8%
+in Aqua; the examples set it and the start through the two hooks above, and paint the list's
+vibrant, picture-tinted surface as its measured mean (`#2b2d30`, `#b9bec0`), which is what
+remains: the Preferences window's shadow and the desktop picture shade it by a few levels
+(most in Aqua, from `#b5bbc1` at the leading edge to `#bfc2c5` near the divider). Two
+`expect` comparisons check that the line is 1 pt, in each empty row's last point, and starts
+at the hook's 20 pt.

@@ -1,0 +1,343 @@
+/*
+ * Terminal: a window, its tab bar, and panes of terminal screens.
+ *
+ * Parts
+ *   .mac-terminal             the window; holds the profile's colours as --_foreground,
+ *                             --_background, --_bold, --_cursor and --_selection
+ *   .mac-terminal-body        the panes, one above the other
+ *   .mac-terminal-screen      one terminal: lines, cursor and a hidden text area for the keyboard
+ *   .mac-terminal-row         one line of the buffer, placed by its number
+ *   .mac-terminal-cursor      the cursor, a block, underline or bar [data-shape], hollow when the
+ *                             window is not key
+ *   .mac-terminal-selection   one line's part of the selection
+ *   .mac-terminal-find        the Find bar
+ *   .mac-terminal-proxy       the working folder's icon in the title, which drags the folder
+ */
+.mac-terminal-proxy {
+  display: inline-flex;
+  touch-action: none;
+}
+
+.mac-terminal {
+  --_foreground: var(--mac-terminal-basic-foreground);
+  --_background: var(--mac-terminal-basic-background);
+  --_bold: var(--_foreground);
+  --_cursor: var(--mac-terminal-basic-cursor);
+  --_selection: var(--mac-terminal-basic-selection);
+
+  display: flex;
+  flex-direction: column;
+  outline: none;
+}
+
+.mac-terminal-body {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--_background);
+}
+
+.mac-terminal-pane {
+  display: flex;
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.mac-terminal-divider {
+  flex: none;
+  height: 8px;
+  background: var(--mac-terminal-divider);
+  border-block: var(--mac-hairline) solid var(--mac-terminal-divider-edge);
+  cursor: row-resize;
+}
+
+.mac-terminal-screen {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  color: var(--_foreground);
+  background: var(--_background);
+  font-family: var(--_font-family, var(--mac-font-family-monospace));
+  font-size: var(--_font-size);
+  line-height: var(--_cell-height);
+  font-variant-ligatures: none;
+  white-space: pre;
+  cursor: text;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-terminal-screen:where([data-reverse]) {
+  color: var(--_background);
+  background: var(--_foreground);
+}
+
+.mac-terminal-screen:where([data-bell]) {
+  filter: invert(1);
+}
+
+.mac-terminal-measure {
+  position: absolute;
+  visibility: hidden;
+  top: 0;
+  left: 0;
+  line-height: normal;
+}
+
+.mac-terminal-scroller {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mac-terminal-lines {
+  position: relative;
+  min-height: 100%;
+}
+
+.mac-terminal-row {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: var(--_cell-height);
+  padding-inline: 2px;
+  overflow: hidden;
+}
+
+.mac-terminal-row:where([data-marked])::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  border-block: var(--mac-hairline) solid var(--mac-terminal-mark);
+  border-inline-start: var(--mac-hairline) solid var(--mac-terminal-mark);
+  content: "";
+}
+
+.mac-terminal-wide {
+  display: inline-block;
+  overflow: visible;
+  text-align: left;
+}
+
+.mac-terminal-selection {
+  position: absolute;
+  height: var(--_cell-height);
+  background: var(--_selection);
+}
+
+.mac-terminal-selection:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  background: var(--mac-terminal-selection-inactive);
+}
+
+.mac-terminal-cursor {
+  position: absolute;
+  width: var(--_cell-width);
+  height: var(--_cell-height);
+  background: var(--_cursor);
+  mix-blend-mode: difference;
+  pointer-events: none;
+}
+
+.mac-terminal-cursor:where([data-shape="underline"]) {
+  height: 2px;
+  margin-top: calc(var(--_cell-height) - 2px);
+}
+
+.mac-terminal-cursor:where([data-shape="bar"]) {
+  width: 1px;
+}
+
+.mac-terminal-cursor:where([data-blink]) {
+  animation: mac-terminal-blink 1s steps(1) infinite;
+}
+
+.mac-terminal-cursor:where(:where([data-window-state="main"], [data-window-state="inactive"]) *) {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--_foreground);
+  mix-blend-mode: normal;
+  animation: none;
+}
+
+@keyframes mac-terminal-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-terminal-cursor:where([data-blink]) {
+    animation: none;
+  }
+}
+
+.mac-terminal-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  outline: none;
+  opacity: 0;
+  resize: none;
+  overflow: hidden;
+}
+
+.mac-terminal-find {
+  display: flex;
+  flex: none;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 4px 8px;
+  background: var(--mac-color-window-background);
+  border-bottom: var(--mac-hairline) solid var(--mac-color-separator);
+}
+
+.mac-terminal-find-note {
+  color: var(--mac-color-secondary-label);
+  font: var(--mac-font-subheadline);
+}
+
+.mac-terminal-tabs {
+  display: contents;
+}
+
+.mac-terminal-panel-layer {
+  position: fixed;
+  z-index: 790;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.mac-terminal-panel-layer > * {
+  pointer-events: auto;
+}
+
+.mac-terminal-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-end;
+  padding: 20px;
+  background: var(--mac-color-window-background);
+}
+
+.mac-terminal-colors {
+  position: fixed;
+  z-index: 790;
+  top: 30px;
+  right: 12px;
+}
+
+.mac-terminal-sheet-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+  padding-block: 8px;
+}
+
+.mac-terminal-size-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.mac-terminal-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mac-terminal-inspector-body {
+  padding: 12px;
+  overflow: auto;
+  background: var(--mac-color-window-background);
+}
+
+.mac-terminal-processes {
+  margin: 0;
+  padding: 4px 8px;
+  list-style: none;
+  background: var(--mac-color-control-background);
+  border: var(--mac-hairline) solid var(--mac-color-separator);
+  font: var(--mac-font-subheadline);
+}
+
+.mac-terminal-profiles {
+  display: flex;
+  gap: 16px;
+  padding: 16px 20px 20px;
+}
+
+.mac-terminal-profile-list {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 6px;
+  width: 180px;
+}
+
+.mac-terminal-profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.mac-terminal-profile-editor {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.mac-terminal-profile-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.mac-terminal-profile-tile {
+  flex: none;
+  width: 40px;
+  height: 30px;
+  font: var(--mac-font-subheadline);
+  line-height: 30px;
+  text-align: center;
+  border: var(--mac-hairline) solid var(--mac-color-separator);
+}
+
+.mac-terminal-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 20px 20px;
+}
+
+.mac-terminal-groups ul {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: var(--mac-font-body);
+  color: var(--mac-color-label);
+}
+
+.mac-terminal-groups li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

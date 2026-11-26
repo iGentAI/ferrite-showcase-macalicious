@@ -1,0 +1,29 @@
+/*
+ * App switcher values that no shared token holds.
+ */
+:root {
+  /* [measured, computed] The panel's tint, over what --mac-material-filter makes of the page
+     under it. A least-squares fit to the Command-Tab captures, where the panel covers part of
+     the System Preferences window: the System-Preferences-0 captures, which show that window
+     uncovered, were laid under the panel pixel for pixel, blurred and saturated as the filter
+     does, and the tint solved for over the panel's pixels outside icons, tile and name
+     (rms 1.5 of 255 in Aqua, 2.0 in Dark Aqua). The spec's estimate, made without the
+     backdrop, was 0.8 and 0.75 of #ececec and #323232, which misses by 13. */
+  --mac-app-switcher-material: light-dark(rgb(233 233 237 / 0.41), rgb(62 61 61 / 0.5));
+  /* [measured] The panel as captured over a neutral window: Command-Tab @ 1262,1170 (Aqua)
+     and the typical fill of the Dark Aqua panel. Used without backdrop-filter. */
+  --mac-app-switcher-material-opaque: light-dark(#e5e5e3, #44484b);
+  /* [measured, computed] The tile behind the selected icon: #c3c1bf on #e5e5e3 in Aqua,
+     #34342e on #4f4e47 in Dark Aqua (Command-Tab @ 1300,1170 and 1262,1170; 1300,1100 and
+     1262,1100), as black at the alpha that gives those composites. */
+  --mac-app-switcher-selection: light-dark(rgb(0 0 0 / 0.15), rgb(0 0 0 / 0.34));
+  /* [measured] The selected application's name: Command-Tab @ 1357,1201,113,22. */
+  --mac-app-switcher-name-color: light-dark(#777574, #bababa);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    /* [measured] The opaque panel above; --mac-material-filter is off under this preference. */
+    --mac-app-switcher-material: light-dark(#e5e5e3, #44484b);
+  }
+}

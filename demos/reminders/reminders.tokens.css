@@ -1,0 +1,138 @@
+/*
+ * Reminders: the colours no shared token holds (reference/spec/apps/reminders.md). The blue,
+ * orange and red of the discs are the shared system colours, which the measured values match
+ * within two levels.
+ */
+:root,
+[data-appearance] {
+  /* [measured] the disc of the All tile, the same in both appearances (@ 165,430) */
+  --mac-reminders-gray: #5b626a;
+  /* [measured] the disc of the Work list (Light-Reminders @ 152,658,44,44); the dark value
+     is the same within two levels */
+  --mac-reminders-green: #008000;
+  /* [measured] the glyph in a list's disc */
+  --mac-reminders-glyph: #ffffff;
+  /* [measured] the row being edited (Light- and Dark-Reminders @ 1500,700) */
+  --mac-reminders-row-selected: light-dark(#f3f3f3, #303133);
+  /* [measured] the count of the selected list, darker than the others' where Notes' is
+     lighter (darkest ink, Light-Reminders @ 612,736,50,35: #484847;
+     Dark-Reminders: #cccdce) */
+  --mac-reminders-count-selected: light-dark(#484847, #cccdce);
+  /* [measured] the line between the sidebar and the list (@ 672,1180) */
+  --mac-reminders-divider: light-dark(#cfcfce, #000000);
+
+  /* Lengths, in points of 10-15-Catalina-Light-Reminders.png and
+     10-15-Catalina-Dark-Reminders.png; see the comments in reminders.css. */
+
+  /* [measured] The sidebar's header: 223 pt over the lists; the 21 pt search field from
+     y 105 at 2x, its edges half a point inside the tiles'; the tiles 16.5 pt under it, at
+     y 180 at 2x, 16 pt from the sides; the window controls 13 pt in and down (the close
+     button's centre 19 pt in); a list's 22 pt disc. */
+  --mac-reminders-top-height: 223px;
+  --mac-reminders-top-gap: 16.5px;
+  --mac-reminders-top-padding: 52.5px 16px 0;
+  --mac-reminders-controls-inset: 13px;
+  --mac-reminders-search-margin-inline: 0.5px;
+  --mac-reminders-disc-size: 22px;
+
+  /* [measured] The list's header: 94 pt over the first reminder; the New Reminder button,
+     40 pt wide, 7.5 pt from the top and the right, its plus 1.5 pt under the middle of its
+     title box; the title's ink 17 pt from the left, 33 pt heavy on 44 pt lines, and the
+     count's 18.5 pt from the right, 34 pt light. */
+  --mac-reminders-header-height: 94px;
+  --mac-reminders-header-gap: 16px;
+  --mac-reminders-header-padding: 40px 16.5px 0;
+  --mac-reminders-add-inset: 7px;
+  --mac-reminders-add-width: 40px;
+  --mac-reminders-plus-offset: 1.5px;
+  --mac-reminders-title-font-size: 33px;
+  --mac-reminders-title-line-height: 44px;
+  --mac-reminders-title-letter-spacing: -0.8px;
+  --mac-reminders-count-font-size: 34px;
+  --mac-reminders-count-line-height: 44px;
+
+  /* [measured] A reminder: the 18 pt circle 17 pt from the edge, 1 pt right of and half a
+     point above the gutter's centre, its completed disc 6 pt in radius (a half-point edge);
+     the trailing accessories 8 pt apart; a picture under the title, 43 x 28 pt, 5.5 pt below
+     the title's line, in a 70 pt row; the info mark's ring 18 pt from the list's edge. */
+  --mac-reminders-circle-size: 18px;
+  --mac-reminders-circle-margin: -1px 0 0 2px;
+  --mac-reminders-circle-dot-radius: 6px;
+  --mac-reminders-circle-dot-edge: 6.5px;
+  --mac-reminders-trailing-gap: 8px;
+  --mac-reminders-thumbnail-width: 43px;
+  --mac-reminders-thumbnail-height: 28px;
+  --mac-reminders-thumbnail-margin-block: 5.5px 2.5px;
+  --mac-reminders-thumbnail-radius: 2px;
+  --mac-reminders-info-mark-margin-inline-end: 11px;
+
+  /* [measured] The info popover: 290 pt wide; the title 17 pt bold on 20 pt lines, the flag
+     button 32 pt; the title, the notes and the separators 14 pt from each side; a 72.5 pt
+     column of right-aligned labels, 11.5 pt before the controls, and each row's padding at
+     the capture's distances. */
+  --mac-reminders-info-width: 290px;
+  --mac-reminders-info-padding-block-end: 10px;
+  --mac-reminders-info-head-gap: 8px;
+  --mac-reminders-info-head-padding: 16.5px 14px 0 14.5px;
+  --mac-reminders-info-title-margin-block-start: 1px;
+  --mac-reminders-info-title-font-size: 17px;
+  --mac-reminders-info-title-line-height: 20px;
+  --mac-reminders-info-flag-width: 32px;
+  --mac-reminders-info-notes-inset: 26px;
+  --mac-reminders-info-notes-margin: 7px 12px 7.5px 12.5px;
+  --mac-reminders-info-line-margin-inline: 14px;
+  --mac-reminders-info-label-width: 72.5px;
+  --mac-reminders-info-row-column-gap: 11.5px;
+  --mac-reminders-info-row-padding: 9px 14px 9px 0;
+  --mac-reminders-info-remind-padding-block: 12px 6.5px;
+  --mac-reminders-info-priority-padding-block: 7px 6px;
+  --mac-reminders-info-url-padding-block-start: 10px;
+  --mac-reminders-info-images-padding-block-start: 5.5px;
+  --mac-reminders-info-choices-row-gap: 14px;
+  --mac-reminders-info-lead-offset: -1px;
+  --mac-reminders-info-hint-margin: -8.5px 0 0 18px;
+  --mac-reminders-info-url-margin-inline-start: -3.5px;
+  --mac-reminders-info-images-row-gap: 2.5px;
+  --mac-reminders-info-image-width: 175px;
+  --mac-reminders-info-image-margin-inline-start: -3px;
+  --mac-reminders-info-add-margin-inline-start: -2px;
+
+  /* [provisional] Where the alerts of reminders that fell due stand: under the 22 pt menu bar
+     with Notification Center's margin, 10 pt apart. No reference capture shows one. */
+  --mac-reminders-alerts-top: 32px;
+  --mac-reminders-alerts-end: 10px;
+  --mac-reminders-alerts-gap: 10px;
+
+  /* [provisional] Where Edit's text panels stand: no reference capture shows them over Reminders. */
+  --mac-reminders-tool-panels-top: 44px;
+  --mac-reminders-tool-panels-end: 20px;
+
+  /* [provisional] No reference capture shows a due date, a priority or a repeat. The
+     priority's marks stand 4 pt before the title; the date and time fields under their
+     checkboxes 18 pt in, in line with the checkboxes' titles (the box and its gap), 6 pt
+     closer than the next checkbox; and the repeat rows with the priority row's padding. */
+  --mac-reminders-priority-gap: 4px;
+  --mac-reminders-info-date-margin: -6px 0 0 18px;
+  --mac-reminders-info-repeat-padding-block: 7px 6px;
+  --mac-reminders-info-every-number-width: 44px;
+  --mac-reminders-info-end-gap: 6px;
+
+  /* [provisional] No reference capture shows a shared list. Its owner's name stands 6 pt
+     before its count; the Share List popover is 260 pt wide with 8 pt between its parts. */
+  --mac-reminders-shared-gap: 6px;
+  --mac-reminders-share-width: 260px;
+  --mac-reminders-share-gap: 8px;
+
+  /* [provisional] No reference capture shows a list's Info popover. Its colour swatches are
+     18 pt discs 8 pt apart, the chosen one ringed 2 pt out. */
+  --mac-reminders-swatch-size: 18px;
+  --mac-reminders-swatch-gap: 8px;
+  --mac-reminders-swatch-ring: 2px;
+
+  /* [provisional] No reference capture shows a sub-reminder, or a heading of Scheduled. A
+     sub-reminder stands 28 pt further in, and a parent's triangle 4 pt from the list's edge; a
+     heading lines up with a circle's edge. */
+  --mac-reminders-sub-indent: 28px;
+  --mac-reminders-disclosure-inset: 4px;
+  --mac-reminders-day-inset: 18px;
+}

@@ -1,0 +1,188 @@
+---
+title: Level Indicator
+description: Shows a value within a range as a capacity bar, a row of segments, a rating or a relevance.
+---
+
+<Example name="basic" both />
+
+AppKit's `NSLevelIndicator`. It is built on
+[Base UI's Meter](https://base-ui.com/react/components/meter), which supplies the `meter`
+role and the value attributes. A level indicator shows a quantity, such as free space or a
+signal strength; for the progress of a task use a [progress bar](/components/progress-bar).
+
+## Usage
+
+```tsx
+import { LevelIndicator } from "macalicious/level-indicator";
+import "macalicious/level-indicator.css";
+
+<LevelIndicator value={62} aria-label="Input level" />
+<LevelIndicator variant="discrete" value={3} max={5} aria-label="Signal strength" />
+<LevelIndicator variant="rating" value={4} max={5} aria-label="Rating" />
+<LevelIndicator variant="rating" editable value={stars} onValueChange={setStars} max={5} aria-label="Rating" />
+```
+
+Or copy the source into your project: `npx macalicious add level-indicator`.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for level indicators:
+
+- Use the continuous style for a large range and the discrete style for a small one. A
+  discrete segment is full or empty, never partly filled.
+- Use tick marks only with the continuous style, to give the level a scale.
+- The fill is green by default. Change it at a warning and at a critical level only when
+  those levels mean something to people (a disk that is nearly full, a battery that is nearly
+  empty).
+- Introduce the indicator with a label that ends in a colon, to its leading side and centred
+  on it.
+- Use level indicators in views, not in window frames.
+
+## Variants and states
+
+<Example name="styles" both />
+
+| Style | How it is triggered | Look |
+| --- | --- | --- |
+| Continuous capacity | default | 12 pt track with 2 pt corners that fills from the leading end; optional tick marks below |
+| Discrete capacity | `variant="discrete"` | `max - min` equal segments, 2 pt apart; whole segments fill |
+| Rating | `variant="rating"` | `max - min` stars, 13 pt at a 16 pt pitch |
+| Relevancy | `variant="relevancy"` | Thin vertical bars; the filled part is darker |
+| Storage | `variant="storage"` | Disk Utility's capacity bar: 24 pt, bordered, with an outlined blue used part |
+
+<Example name="levels" both />
+
+| Level | When | Fill |
+| --- | --- | --- |
+| Normal | – | System green |
+| Warning | the value has reached `warningValue` | System yellow |
+| Critical | the value has reached `criticalValue` | System red |
+
+When `criticalValue` is lower than `warningValue`, low values are the problem and the fill
+changes at or below each limit; otherwise it changes at or above each. Levels apply to the
+continuous and discrete styles.
+
+With `tiered` (NSLevelIndicator's `drawsTieredCapacityLevels`) the fill is not one colour:
+each part of a continuous fill, and each filled segment, keeps the colour of the level it lies
+in, so a nearly full disk shows green, then yellow, then red. No screenshot shows a tiered
+indicator; where the colours change follows from the two values, and the colours are the same
+three.
+
+Measured: the storage style, from Disk Utility, in both appearances. Everything else is
+provisional: no screenshot shows a standard `NSLevelIndicator` (the Sound pane is captured on
+its Sound Effects tab, not on Input). The standard styles follow AppKit's documented metrics;
+their track reuses the measured track of the progress bar, their fills are the system colours,
+and the star is original artwork, not Apple's glyph.
+
+A level indicator is drawn the same in a key and in an inactive window.
+
+### Editable
+
+<Example name="editable" both />
+
+With `editable` (`NSLevelIndicator.isEditable`) people set the value themselves, as with the
+star rating of a song. The indicator is then built on
+[Base UI's Slider](https://base-ui.com/react/components/slider) instead of the Meter and
+looks the same.
+
+| Input | Effect |
+| --- | --- |
+| Click | Sets the value to the point clicked. A segment or a star fills when any part of it is clicked |
+| Drag | The value follows the pointer; dragging past the leading end sets `min` |
+| Left or Down Arrow, Right or Up Arrow | One step down or up: one segment or star, or `step` |
+| Page Down, Page Up, or Shift with an arrow key | Ten steps |
+| Home, End | `min`, `max` |
+
+Use it controlled (`value` with `onValueChange`) or uncontrolled (`defaultValue`).
+`onValueCommitted` fires once when a drag or a key press ends, for work that should not run on
+every step. `name` submits the value with a form. `disabled` dims the indicator and takes it
+out of the tab order. Keyboard focus shows the focus ring around the whole indicator, in the
+key window only.
+
+Everything about the editable form is provisional: no screenshot shows one.
+
+## Sizes
+
+One size. The capacity styles are as wide as their container and 12 pt high (24 pt for
+storage); a rating is as wide as its stars.
+
+## API
+
+<PropsTable name="LevelIndicatorProps" />
+
+A read-only indicator passes `format`, `locale`, `getAriaValueText` and `aria-valuetext` to
+Base UI's `Meter.Root`; an editable one passes them, with `step`, `name` and `disabled`, to
+Base UI's `Slider`. `max` defaults to 100: for the discrete and rating styles set it to the
+number of segments or stars.
+
+The root takes the attributes of Base UI's `Meter.Root`: `className` and `style` may be
+functions of the component's state, and `render` an element or a function. A read-only
+indicator renders `Meter.Root` and those functions receive the meter's state; an editable one
+renders `Slider.Root` and they receive the slider's state (`disabled`, `dragging` and so on).
+The three props are typed accordingly: with `editable` the functions are typed with the
+slider's state, without it with the meter's.
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-variant` | `continuous`, `discrete`, `rating`, `relevancy`, `storage` | Reflects `variant`. |
+| `data-level` | `normal`, `warning`, `critical` | The level reached; only on the continuous and discrete styles. With `tiered`, also on each filled segment: that segment's own level. |
+| `data-tiered` | `rising`, `falling` | Present with `tiered` and a warning or critical value; `falling` when low values are the problem. |
+| `data-editable` | present or absent | Reflects `editable`. |
+| `data-disabled` | present or absent | Reflects `disabled`. |
+| `data-dragging` | present or absent | While an editable indicator is being dragged; set by Base UI. |
+| `data-filled` | present or absent | On a filled segment or star. |
+
+The storage colours are the tokens `--mac-level-indicator-storage-*`, declared in
+`level-indicator.tokens.css`.
+
+## Accessibility
+
+- A read-only indicator has `role="meter"` with `aria-valuenow`, `aria-valuemin` and
+  `aria-valuemax`. It is not focusable.
+- An editable indicator is a slider: a visually hidden `<input type="range">` holds the value,
+  takes keyboard focus and is what assistive technology operates. It is one tab stop.
+- It needs a name: `aria-label`, or `aria-labelledby` pointing at its label.
+- `aria-describedby` and `aria-details` go to the element that has the role. On an editable
+  indicator that is the range input, and Base UI has no prop that puts `aria-details` on it:
+  the component sets it when the input mounts, so markup rendered on a server carries
+  `aria-details` only after hydration. A read-only indicator has it in its server markup.
+- Use `getAriaValueText` when the number alone is not the natural reading (“3 of 5 stars”).
+- A warning or critical level is shown by colour only. Say it in text as well, for example in
+  `aria-valuetext` (“95% used, almost full”).
+- In forced-colours mode the track is outlined and the fill uses the system highlight colour,
+  in every style and with `tiered` too: the levels are then not told apart by colour.
+
+## Visual comparison
+
+`visual-disk-utility-start-light`, `visual-disk-utility-start-dark` and
+`visual-disk-utility-end` reproduce the two ends of the capacity bar in Disk Utility (the
+volume is fuller in the Aqua capture than in the Dark Aqua one). They count a pixel as
+different at a colour distance of 0.05, half the default, so that the corners are judged.
+Results in Chromium on Linux:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Leading end, Aqua | 0.10% of pixels differ | 0.05% |
+| Leading end, Dark Aqua | 0.15% | 0.15% |
+| Trailing end, Aqua | 0.09% | 0.00% |
+| Trailing end, Dark Aqua | 0.21% | 0.59% |
+
+The pixels that differ are in the antialiasing of the corners. The corner radius is 4.5 pt.
+The measured spec first read 3.5 pt from the capture's pixel grid and, after a least-squares
+fit over eight corners, now gives 5 pt (4.75 to 5.125 pt on the outer edge of the border).
+Rendered against the same four crops, 4.5 pt differs least overall: the four 2x figures above
+add up to 0.55%, against 0.65% at 5 pt (0.17%, 0.16%, 0.00% and 0.32%) and 1.84% at 3.5 pt.
+It is within half a point of the fit; 5 pt is better for the trailing end in Aqua alone.
+
+The standard styles have no comparison: no screenshot shows them. The editable form is checked
+with real input instead: `visual-editable` is clicked on its fourth star and on its seventh
+segment, and stepped with the Right Arrow key, and the colours of the stars and segments on
+either side of the new value, and of the focus ring, are read back, in both appearances. Those
+clicks land in the middle of a star or a segment. Which one a click at its edge fills depends
+on layout, so a browser test clicks the first and the last pixel column of stars and segments
+in Chromium, Firefox and WebKit and reads the value and the number filled, also for an
+indicator with more steps than segments and for a rating that is an item of a grid.
+
+Give a discrete indicator room for its segments, which are at least 3 pt wide and 2 pt apart:
+in less, the row is wider than the indicator and a click is no longer read as the segment
+under it.

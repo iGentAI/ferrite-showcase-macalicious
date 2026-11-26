@@ -1,0 +1,115 @@
+---
+title: Fidelity limits
+description: What matches the reference screenshots, and what a browser cannot reproduce.
+group: Foundations
+order: 4
+---
+
+The goal is a pixel match with the Catalina reference screenshots. These are the places where a
+web page cannot get there, or can only get there on some devices.
+
+## Text
+
+San Francisco is only available on Apple devices, where the system font stack selects it.
+Elsewhere text is set in a metric-adjusted Inter ([Typography](/typography)): the same width
+and baseline to within half a point, different letter shapes. Even on a Mac, a browser's text
+rasteriser is not AppKit's: glyph positions can differ by a fraction of a pixel, and Chrome and
+Safari differ from each other.
+
+## Vibrancy and materials
+
+AppKit materials (sidebars, menus, the menu bar, the Dock) blur and tint whatever is behind
+the window, including other applications and the desktop picture. A page can blur only its own
+content with `backdrop-filter`. A sidebar over page content can match; a window showing the
+desktop through itself can only match when the demo draws that desktop too. Several dark
+screenshots also show *desktop tinting*: Catalina mixes the wallpaper's average colour into
+dark window backgrounds, so the same dialog is `#303031` over one wallpaper and `#323232` over
+another.
+
+## Hairlines and 1x displays
+
+The reference screenshots are all 2x captures, and Catalina draws control borders one device
+pixel wide: half a point. On a 2x display a `0.5px` CSS border matches exactly. On a 1x display
+the browser draws a full pixel, and there is no 1x reference to say what Catalina would have
+drawn. The 1x score of a visual comparison is therefore measured against a downsampled 2x
+screenshot and is always worse than the 2x score.
+
+## Colour
+
+The screenshots were captured on a Display P3 panel and embed that profile. All measured values
+in the tokens are converted to sRGB, which is what CSS hex colours mean. On a wide-gamut display
+a browser shows the sRGB value correctly but cannot show a colour outside sRGB unless the token
+is written with `color(display-p3 …)`; no Catalina system colour measured so far needs that.
+
+Translucent tokens are written with three decimals of alpha (`rgb(0 0 0 / 0.153)`). A CSS
+minifier rewrites such a colour as eight hex digits, which rounds the alpha to the nearest
+1/255. The package's `styles.css` and `tokens.css` are minified this way, and so is whatever
+your own bundler emits from the copied source. In a measurement taken when the library had 31
+components (Chromium at 2x, not repeated since), rendering the comparison examples from the
+minified `styles.css` instead of the source
+stylesheets changed pixels in 29 of the 149 comparisons, 25 of them in the dark appearance,
+by one level out of 255 everywhere except one image, where the largest change was two levels;
+every comparison stayed within its budget.
+
+## Antialiasing of curves
+
+Rounded corners agree with the screenshots to within a few levels of grey on the edge pixels.
+AppKit and each browser engine compute coverage slightly differently, so the edge pixels of a
+curve are rarely identical.
+
+## Window chrome and system behaviour
+
+A page cannot draw outside its browser window, change the real menu bar, or take part in
+Mission Control. Windows, the menu bar and the Dock are components inside the page. Pointer
+cursors, system sounds and haptics are the host platform's.
+
+## Artwork
+
+Apple's application icons, SF Symbols, desktop pictures and other artwork are not included.
+Controls are drawn in CSS; glyphs that Catalina takes from an icon font or image (chevrons,
+checkmarks) are redrawn as CSS shapes or original inline SVG. The application demos use original
+stand-in icons and wallpapers, so a comparison of a whole demo with its screenshot differs
+wherever artwork is: only the interface components are measured against the reference.
+
+## Where the comparisons have run
+
+The scores on the component pages come from the visual harness running Chromium on Linux with
+the fallback font. The comparisons have not been run on macOS, in Safari or in Firefox, so how
+close the components are there, including with the real San Francisco font, is not known.
+
+## What is measured and what is not
+
+Every token carries a tag, shown in the tables in [Theming](/theming):
+
+- **measured**: read from the reference screenshots, or computed from such readings.
+- **catalog**: a value Apple documents for 10.15 that no screenshot shows. These were written
+  from recollection of Apple's documentation and have **not been checked against it**.
+- **provisional**: an estimate, because no screenshot shows it.
+
+What is provisional for one component is listed at the end of its page, under Visual
+comparison. Limits that cut across components:
+
+- A few screenshots show a window that is not key, and what they show there is measured:
+  Mail and Books are inactive, a Safari window stands behind a Picture in Picture window,
+  and a Finder window is main behind Quick Look. From them come the window controls in a
+  main and in an inactive window, the inactive title bar and toolbar with their buttons and
+  segmented controls, Safari's tab bar and Smart Search field, the sidebar with its
+  selection and badges, and the split view dividers. No screenshot shows a control of a
+  window's content (a push button, checkbox, radio button, pop-up button, segmented control,
+  slider, progress bar or text field) in a main or inactive window, so those looks are
+  provisional. A component's page says which of its states are measured.
+- The eight accent colours are measured on bezels and control fills. The emphasised selection
+  colour and the focus ring are measured for blue only and derived for the other seven.
+- A custom accent (`data-accent="custom"`) is derived by a formula fitted to blue and is an
+  approximation.
+- Transient states that a screenshot cannot catch, such as a pressed button, are provisional
+  unless a component's page says otherwise.
+
+## Guidelines text
+
+Component pages have a Guidelines section that says when and how to use the control, after
+Apple's macOS Human Interface Guidelines. Those sections were written from recollection of the
+guidelines as they stood for Catalina; Apple has since replaced that edition online. Unless a
+section links the Apple document it was checked against, treat it as unverified. The Markdown
+version of each page marks such sections "not verified" automatically
+([For coding agents](/machine-readable-docs)).

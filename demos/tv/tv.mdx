@@ -1,0 +1,310 @@
+---
+title: TV
+description: The TV window of macOS 10.15, with the five sections and a search field in its bar, shelves that chevrons page, a hero and grids of titles over an invented catalogue with original generated key art, and its modal Preferences window.
+layout: full
+order: 118
+---
+
+<Example name="basic" />
+
+Choose a section in the bar, move the pointer over a shelf and turn its page with the
+chevrons, open a title and add it to the Library, or search for "comedy". The catalogue is a
+dozen titles invented for the demo, and every picture is original generated key art for its
+invented title, with no title text on it. Nothing is played or streamed.
+
+## YouTube on the desktop
+
+The [Desktop](/demos/desktop) opens TV as `TvYouTube` (`tv-youtube.tsx`), the same window
+built on the same frame (`TvFrame`), which plays YouTube videos for real:
+
+- Paste a YouTube link (`youtube.com/watch?v=`, `youtu.be/`, Shorts, embeds) into the search
+  field: its card appears, and Return plays it. On the desktop that the Ferrite application
+  serves, the card shows YouTube's own title and channel, which the application asks of
+  YouTube's oEmbed endpoint.
+- Movies and Kids hold open films that the Blender Foundation publishes on YouTube under
+  Creative Commons licences; Watch Now has Up Next, Continue Watching, those films as its hero,
+  and a hint about pasting links; TV Shows holds open series (Caminandes, Pepper & Carrot,
+  Morevna) by shelf in episode order, then what the person added, and an episode that ends goes
+  on to the next one; Library holds Watch Later and History, with Clear History.
+- A video plays in YouTube's official embedded player (the IFrame Player API, from
+  `youtube-nocookie.com`) with YouTube's own controls off and TV's controller under it: a
+  [HUD Window](/components/hud-window) with play and pause, back and forward ten seconds, a
+  timeline, mute, volume, Watch Later and full screen. Nothing of TV's lies over YouTube's
+  player, so its own screens (consent, sign-in, its links) stay usable. With the player
+  focused, Space plays and pauses and the arrows skip ten seconds. Done returns to the video's
+  page, where Resume starts where it was left.
+- When YouTube will not play a video (its owner does not allow it in other apps, it is
+  private, or YouTube refuses the network it is asked from), the window says so in its own
+  words and offers Watch on YouTube.
+- Searching words searches the videos the window knows; YouTube itself is searched only when
+  the desktop has a YouTube Data API key, and otherwise the window says so.
+- Home Videos are files of the person's drive. File > Import… chooses one, a drag from a Finder
+  window adds one, and Finder's Open With plays one (QuickTime Player stays a movie's default). A
+  home video is read from the drive and played in the page under the same controller, and it can
+  float in Picture in Picture. The Library keeps the file's id and the place; the bytes stay in
+  the drive, and a file moved to the Trash leaves the shelf.
+- Get Info, in a card's menu and in the Edit menu, sets a video's or a home video's Genre, typed
+  or chosen from the iTunes Store's list. Once one has a genre the Library shows a sidebar of
+  its Genres, and a row shows that genre's videos; the desktop's application keeps them.
+
+Apart from home videos, nothing is downloaded or kept but video ids, titles, channel names and
+times; the pictures are
+YouTube's own thumbnails, which the browser loads from YouTube. On the desktop that the
+Ferrite application serves, History, Up Next, Watch Later and the place in every started video
+are the person's own, kept by the application (`/api/tv/library`); elsewhere they last as long
+as the page. Picture in Picture is not offered for a YouTube video: a browser cannot float
+another site's player.
+
+## What it shows
+
+- A [Window](/components/window) whose [Title Bar](/components/title-bar) is the
+  `title-hidden` layout: the [Window Controls](/components/window-controls) and a
+  [Toolbar](/components/toolbar) on one row, without a title.
+- The sections: a [Toolbar Segmented Control](/components/toolbar-segmented-control) of five
+  equal segments that selects one, placed against the middle of the window, and a
+  [Toolbar Search Field](/components/toolbar-search-field) at the trailing edge.
+- The page: [Card Grids](/components/card-grid) in a [Scroll View](/components/scroll-view).
+  A shelf is a grid of one row of `landscape` cards with a `See All` action; the sections
+  after the first draw the line that separates them.
+- The hero: an [Editorial Card](/components/editorial-card) in its `hero` variant, `raised`
+  as TV draws it.
+- The paging chevrons: a [Shelf Pager](/components/shelf-pager) around every shelf.
+- A title's page with a [Push Button](/components/push-button), and an
+  [Empty State](/components/empty-state) for a search that finds nothing and for an empty
+  Library.
+- The Preferences: a [Preferences Window](/components/preferences-window) of the modal kind
+  with a centred [Preferences Toolbar](/components/preferences-toolbar),
+  [Checkboxes](/components/checkbox), [Labels](/components/label), a
+  [Pop-Up Button](/components/pop-up-button), [Separators](/components/separator), a
+  [Help Button](/components/help-button), a Push Button and a
+  [Default Button](/components/default-button).
+
+| Command | Where | What it does |
+| --- | --- | --- |
+| Choose a section | the bar | Watch Now is the shelves; Movies, TV Shows and Kids are grids of the catalogue; Library lists what was added. |
+| Turn a page | a shelf's chevrons | What to Watch has two pages of four, the hero three titles, the trailers two pages of three. A chevron is dimmed at its end. The chevrons are drawn while the pointer or the keyboard is in the shelf. |
+| See All | What to Watch | All eight titles of the shelf as a grid; Done goes back. |
+| Open a title | a card or the hero | The title's page: what it is, a sentence about it, and Add to Library or Remove from Library. Back returns to where the title was opened: the section, all of What to Watch, or the results when the title was found by a search. |
+| Search | the search field | Lists the titles whose name or genre contains the text, in every section. Escape or the clear button empties the field. |
+| Preferences | Command-comma | Reported to the host through `onOpenPreferences`; on the [Desktop](/demos/desktop) it opens the Preferences window. |
+
+<Example name="preferences" />
+
+The Preferences window edits a copy of the settings. OK reports the copy and closes, Cancel
+and Escape close without reporting. Two of the settings change the main window: "Checkboxes
+in library" gives every title of the Library a checkbox, and List Size sets how wide the
+Library's cards are. The other panes hold one checkbox each, which changes nothing.
+
+## Placeholders and masks
+
+The screenshots show third parties' films and series: four cards, a hero and three trailers,
+two thirds of the window. The demo does not reproduce them and does not imitate their
+colours or composition. In their place it shows original key art for its invented titles (`tv-artwork.tsx`), and
+the comparisons mask these boxes, so that no score depends on a picture:
+
+| Masked box | Where (pt from the window's top-left corner) | In the capture | In the demo |
+| --- | --- | --- | --- |
+| The four cards of What to Watch | 288.5 by 162.5 at x 40, 348.5, 657 and 965.5, y 85 | Artwork of four series and films | A muted field with a circle, a triangle, a square or three bars |
+| The hero | 1214 by 455 at 40, 319 | Artwork of a series | The same kind of placeholder |
+| The tops of the three trailers | 391.5 by 21.5 from y 854.5 | The top edge of three trailers | The same kind of placeholder |
+| The heading over the hero | 82 by 22 at 39, 288 | The wordmark of Apple's streaming service | The word "Originals" in the shelves' title font |
+
+Together they are 67.5% of the window. What the comparisons score is what the library draws
+around them: the bar, the sections, the search field, the titles, the cards' shadows, the
+lines between the shelves and the chevrons. The corners of the cards and of the hero lie
+inside the masks; the [Card Grid](/components/card-grid) and the
+[Editorial Card](/components/editorial-card) compare them with the same screenshots on their
+own pages. The five icons of the Preferences toolbar are original drawings and are masked in
+the layout comparisons of that window.
+
+## Source walkthrough
+
+The demo is seven files in `demos/tv/`, and four more for YouTube.
+
+**`tv-data.ts`** is the catalogue, the lists of the three shelves and the settings. A title
+has a name, a kind, a year, a genre and a sentence; `inSection` filters the catalogue for a
+section and `titleMatches` is the search.
+
+**`tv.tsx`** is the window. Its bar is the title bar without a title. The window controls are
+the demo's own first item, because TV has them 10 pt from the edge, and the sections are
+placed against the window in `tv.css`:
+
+```tsx
+<TitleBar variant="title-hidden" divider="bar" style={{ gridTemplateRows: "37px" }}>
+  <div className="mac-tv-bar">
+    <div className="mac-tv-controls">
+      <WindowControls onClose={onClose} onMinimize={onMinimize} onZoom={onZoom} />
+    </div>
+    <Toolbar aria-label="Toolbar" style={{ "--mac-toolbar-padding-top": "6.5px" }}>
+      <ToolbarSegmentedControl aria-label="Sections" value={[section]} onValueChange={choose}>
+        {SECTIONS.map((item) => (
+          <ToolbarSegment key={item.id} value={item.id}>{item.name}</ToolbarSegment>
+        ))}
+      </ToolbarSegmentedControl>
+      <ToolbarSearchField value={query} onValueChange={setQuery} />
+    </Toolbar>
+  </div>
+</TitleBar>
+```
+
+A shelf shows one page of its titles, and its chevrons turn the page. The Shelf Pager does
+not scroll anything itself, so the page is state:
+
+```tsx
+<Pager label="What to Watch" pages={2} page={shelf.watch} onPageChange={setWatchPage}>
+  <CardGrid
+    title="What to Watch"
+    action={<CardGridAction render={<button type="button" />}>See All</CardGridAction>}
+    columns={4}
+  >
+    {titlesOfThePage.map((title) => (
+      <CardGridCard
+        key={title.id}
+        render={<button type="button" />}
+        aria-label={title.title}
+        artwork={<Artwork title={title} />}
+        onClick={() => open(title)}
+      />
+    ))}
+  </CardGrid>
+</Pager>
+```
+
+`Pager` is the demo's wrapper of the Shelf Pager. TV draws a shelf's chevrons only under the
+pointer, so the wrapper sets the pager's two colour properties to `transparent` while neither
+the pointer nor the keyboard focus is in the shelf; the chevrons stay in the tab order, and
+tabbing to one draws them. `--mac-shelf-pager-offset` moves them level with the cards.
+
+The hero is a grid of one column whose only card is the Editorial Card:
+
+```tsx
+<CardGrid title="Originals" separator columns={1}>
+  <EditorialCard
+    variant="hero"
+    raised
+    render={<button type="button" />}
+    aria-label={hero.title}
+    artwork={<Artwork title={hero} />}
+  />
+</CardGrid>
+```
+
+**`tv-preferences.tsx`** is the Preferences window: the modal kind of the Preferences Window,
+whose form is laid out against the left edge with a 172 pt label column, each row carrying
+the height the capture gives it. It keeps a draft of the settings in state and hands it to
+`onSettingsChange` when OK is chosen.
+
+**`tv-artwork.tsx`** draws the placeholders and the five toolbar icons. **`tv.css`** places
+the bar's items and lays out a title's page and the YouTube player; **`tv.tokens.css`** holds
+TV's own colours and the player's sizes. **`app.ts`** is the descriptor the
+[Desktop](/demos/desktop) reads.
+
+**`tv-youtube.tsx`** is the YouTube window, **`tv-youtube-player.tsx`** its player (it loads
+YouTube's IFrame API once per page and gives YouTube an element of its own to replace with its
+frame), **`tv-youtube-data.ts`** the person's library as pure functions, and
+**`tv-youtube-server.ts`** its calls to the desktop's Ferrite application.
+
+## Hosting the window
+
+`Tv` renders the library's `Window` as its root and passes every `Window` prop to it, so it
+does not assume it fills the page. Place it with `style`; a window manager gives it `state`,
+the size, and eight more props that the component hands to the window controls and the bar.
+These are the props a [Managed Window](/components/managed-window)'s `render` form supplies,
+so the component can be spread with them as they come.
+
+<Example name="hosted" />
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `titles` | `TvTitle[]` | The catalogue; the demo's own by default. |
+| `defaultSection` | `"watch-now" \| "movies" \| "tv-shows" \| "kids" \| "library"` | The section selected at first; `"watch-now"`, as captured. |
+| `onSectionChange` | `(section) => void` | Called with the section the user selects. |
+| `defaultLibrary` | `string[]` | The `id`s of the titles in the Library at first; none by default. |
+| `settings` | `TvSettings` | The settings the Library follows; those of the screenshots by default. |
+| `onOpenPreferences` | `() => void` | Called on Command-comma or Control-comma in the window. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 1294 by 876 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`TvPreferences` renders the library's `PreferencesWindow` as its root and passes it every
+prop it does not set itself. Its own are `settings`, the settings it opens with, and
+`onSettingsChange`, called with the edited settings when OK is chosen; `onClose` is called by
+OK, Cancel and Escape.
+
+`app.ts` exports the descriptor a desktop page reads, as `tvApp` and as `app`: `id`, `name`,
+`component` (`TvYouTube`, above), `defaultSize` (1294 by 876), `minSize` (900 by 420),
+`resizable`, `menus`, and
+`preferences`, which names `TvPreferences` as a second window of 640 by 360 that shares the
+settings with the first. `TvYouTube` applies List Size to its Library's cards, as `Tv` does. On the
+desktop it also carries out "Checkboxes in library", where a cleared box keeps Up Next from playing
+the video, and "Use the screen saver while paused", which starts the desktop's screen saver after a
+minute paused with no input. The downloads, the media folder and restrictions have no counterpart
+in a window of YouTube videos and change nothing there.
+
+## Accessibility
+
+- The window is a `region` named "TV".
+- The bar's toolbar is one tab stop; the arrow keys move between the five sections and the
+  search field. The sections are a group named "Sections" of toggle buttons, of which one is
+  pressed.
+- The search field is a `searchbox` named "Search"; its clear button is named "Clear".
+- Every shelf and grid is a `region` named by its title, which is a heading, and its cards
+  are a list. A card is a button: a card of a shelf is named after its title, a card of a
+  grid by the name and the line under it.
+- The chevrons are buttons named after their shelf ("More in What to Watch"). One that has
+  nothing further is marked unavailable (`aria-disabled`) and stays reachable. They are in
+  the tab order whether or not they are drawn, and are drawn when one has the focus.
+- "No Results" and "Your library is empty" are a `status`, so they are announced.
+- The Preferences window is a `dialog` named by its pane. It takes the focus when it appears
+  and Escape closes it. It does not make the page behind it inert: a host that wants it
+  modal presents it so. Its panes are `tabpanel`s of a `tablist` named "TV preferences".
+- The two unavailable checkboxes are disabled; the reason, that downloads need an account, is
+  not in the window, as in TV.
+
+## Fidelity
+
+`tv.visual.json` compares the window with the TV screenshots and the Preferences window with
+the TV Preferences screenshots, in both appearances, each as captured and again with the text
+masked. The window's comparisons mask the pictures as listed above and move the pointer over
+the shelf whose chevrons the capture shows: the hero in Aqua, What to Watch in Dark Aqua.
+Scores from `npm run visual -- tv/` in Chromium on Linux with the fallback font: the share of
+pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` (pictures masked) | 1.68% | 2.11 | 1.07% | 1.84 |
+| `window-light-layout` (text masked too) | 0.81% | 0.80 | 0.18% | 0.46 |
+| `window-dark` (pictures masked) | 1.30% | 1.93 | 1.01% | 1.90 |
+| `window-dark-layout` (text masked too) | 0.46% | 0.74 | 0.11% | 0.65 |
+| `preferences-light` | 4.89% | 4.84 | 3.61% | 4.00 |
+| `preferences-light-layout` (masked) | 0.65% | 0.35 | 0.11% | 0.21 |
+| `preferences-dark` | 4.93% | 6.18 | 3.66% | 5.41 |
+| `preferences-dark-layout` (masked) | 0.31% | 1.89 | 0.07% | 1.75 |
+
+Measured in the screenshots and reproduced: the 1294 by 876 pt frame, the 37 pt bar, the
+window controls at x 10, the five sections at a 95 pt pitch, 4 pt left of the window's middle, the 176 pt
+search field, the shelves' titles and See All, the four cards from y 85, the hero from y 319,
+the trailers from y 854.5, the two lines and the chevrons level with the cards; in the
+Preferences window the 640 by 360 pt frame, the control column at x 200, every row of the
+General pane, both separators and the footer.
+
+What differs, and why:
+
+- **Pictures.** Abstract placeholders, masked: see above.
+- **Text.** Set in the fallback font off Apple devices, which is nearly all of the unmasked
+  scores.
+- **The bar's bottom rows.** The capture has two device-pixel rows of one colour under the
+  bar, `#b8b8b8` in Aqua and `#4a4b4c` in Dark Aqua. The title bar's `bar` divider is the
+  nearest pair the library has: `#c4c4c4` over `#aeaeae`, and `#434445` over `#505152`.
+- **The search field.** The library's toolbar search field is half a point taller on each
+  side than TV's, which is 22 pt with its border.
+- **The first line.** The line under What to Watch is half a point lower than in the capture:
+  the cards are 16:9 of their 288.5 pt width, a quarter point taller than captured.
+- **The chevrons at rest.** In TV a shelf's chevrons are not there until the pointer is over
+  it. Here they are there, invisible, so that the keyboard reaches them.
+- **Not in a screenshot (provisional):** the Movies, TV Shows, Kids and Library sections, See
+  All, a title's page, searching, the pages after the first of every shelf, the four other
+  panes of the Preferences window, the Library's checkboxes and List Size, the minimum size,
+  and both windows when they are not key.

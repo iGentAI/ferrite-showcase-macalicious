@@ -1,0 +1,179 @@
+---
+title: Image Well
+description: Shows an image in a bezel and takes a new one by drag and drop, paste or the file dialog.
+order: 52
+---
+
+<Example name="basic" both />
+
+AppKit calls this control an *image well*: an `NSImageView` with a frame that is editable.
+The one in the reference screenshots is the desktop picture well of Desktop & Screen Saver.
+Base UI has no primitive for it, so it is written here: a `<div>` that is a button when the
+well is editable, with the handlers of the HTML drag-and-drop and clipboard events on the
+element itself and a hidden `<input type="file">` for the file dialog. For an image that is
+only displayed, without a frame, use [Image View](/components/image-view).
+
+## Usage
+
+```tsx
+import { ImageWell } from "macalicious/image-well";
+import "macalicious/image-well.css";
+
+<ImageWell aria-label="Desktop picture" defaultSrc="/pictures/island.jpg" onImageChange={upload} />
+<ImageWell aria-label="User picture" src={url} onImageChange={(file) => save(file)} />
+<ImageWell editable={false} src="/pictures/island.jpg" alt="An island at dusk" />
+```
+
+`onImageChange` receives the `File` that was dropped, pasted or chosen, or `null` when the
+well was cleared. Uncontrolled (`defaultSrc`, or neither prop), the well shows the new file by
+itself through an object URL, which it releases when the image is replaced and when it
+unmounts. Controlled (`src`), it shows only what you pass, and `src={null}` is an empty well.
+The library ships no artwork. Or copy the source into your project:
+`npx macalicious add image-well`. See [Installation](/installation).
+
+<Example name="controlled" />
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[image wells](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/selectors/image-wells/):
+
+- An image well is an editable image view. People can drag a new image into it, press Delete
+  to clear it or to revert it to a default image, and copy its content or replace it by
+  pasting.
+- The well must be selected, shown by a selection ring around it, for Delete, Copy and Paste.
+  Here the selection is keyboard focus.
+- Revert to a default image when the well requires one: when `onImageChange` reports `null`,
+  set `src` to the default image again.
+- Provide the standard Copy and Paste menu commands if the well supports them; they tell
+  people that the actions exist and give another way to start them.
+
+This component does not copy: writing an image to the clipboard needs its bytes and the
+asynchronous Clipboard API, which is left to the application (the `copy` event reaches
+`onCopy`).
+
+## Variants and states
+
+Keyboard focus and the drop highlight are transient, so this gallery pins them. In an
+application they appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| With an image | `src`, `defaultSrc`, or a file taken by the well | The image, 5 pt inside the ring |
+| Empty | no image and no children | The recess alone |
+| Selected | `:focus-visible` | Focus ring in the accent colour around the well |
+| Drop target | a file is dragged over an editable well | 2 pt of the accent colour over the frame's edge |
+| Disabled | `disabled` | The image at half opacity; the well takes nothing |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No focus ring. The drop highlight stays, because a file dragged from another application arrives while this window is not key. |
+
+The focus ring and the drop highlight follow the accent colour: set `data-accent` on any
+ancestor. See [Theming](/theming).
+
+### Frames
+
+`frame` is `NSImageView.imageFrameStyle`. Only the bezel is in a screenshot; the other four
+are drawn from AppKit's one-line descriptions and are provisional.
+
+<Example name="frames" both />
+
+| Frame | Look | Status |
+| --- | --- | --- |
+| `bezel` | A 2 pt ring around a recess with an inner shadow | Measured |
+| `photo` | A thin outline and a drop shadow | Provisional |
+| `groove` | An etched hairline, as around a box | Provisional |
+| `button` | The raised bezel of a push button | Provisional (the bezel is the shared, measured one) |
+| `none` | No frame | – |
+
+### Scaling
+
+`scaling` is `NSImageView.imageScaling`, with the values of [Image View](/components/image-view).
+
+<Example name="scaling" />
+
+## Sizes
+
+An image well has no control sizes. It is 48 x 48 pt unless `width` and `height` are set with
+CSS, which they usually are: the desktop picture well is 138 x 88 pt. The space between the
+frame and the image is 5 pt in the bezel and can be set with `--mac-image-well-padding`.
+
+## API
+
+<PropsTable name="ImageWellProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-frame` | `bezel`, `photo`, `groove`, `button`, `none` | Reflects `frame`. |
+| `data-scaling` | `proportionally-down`, `proportionally-up-or-down`, `axes-independently`, `none` | Reflects `scaling`. |
+| `data-editable` | present or absent | Reflects `editable`. |
+| `data-empty` | present or absent | Present while there is no image and there are no children. |
+| `data-drag-over` | present or absent | Present while a file is dragged over an editable well. |
+| `data-disabled` | present or absent | Reflects `disabled`. |
+| `data-force` | `focus`, `drag-over` | Documentation and visual tests only: pins a transient state. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-image-well-padding` | `5px` in the bezel, `3px` in the groove and the button, `0` otherwise | Space between the frame and the image. |
+
+| Class | Element |
+| --- | --- |
+| `mac-image-well` | The root. |
+| `mac-image-well-image` | The `<img>`. |
+
+## Accessibility
+
+- An editable well has `role="button"` and is in the tab order. It requires a name:
+  `aria-label` or `aria-labelledby` saying what the image is for ("Desktop picture"), or, when
+  there is neither, `alt`, which names the well whether or not it shows an image.
+- Drag and drop has an alternative, as it must: activating the well opens the file dialog.
+  A click, Return and Space do that (Space when the key is released, as on a button); Delete
+  or Backspace clears the well; pasting an image
+  file while the well is focused replaces the image. AppKit's well does not open a dialog on a
+  click; to keep that, call `event.preventDefault()` in `onClick`, which Return and Space
+  reach too, as a click.
+- A well that is not editable has no role of its own: it is a frame around an `<img>`, which
+  is named by `alt`.
+- A disabled well has `aria-disabled` and leaves the tab order.
+- The drop highlight is visual only. Say what the well accepts in its name or in a description
+  (`aria-describedby`).
+- All listeners are on the well's own element: nothing listens on the window or the document,
+  so a file dropped beside the well is handled by the page as before.
+- In forced-colours mode the frame is drawn with system colours.
+
+## Visual comparison
+
+`npm run visual -- image-well` compares one example with the desktop picture well of
+Desktop & Screen Saver in both appearances (`image-well.visual.json`). The picture itself is
+masked, 59% of the crop: the screenshot shows Apple's wallpaper there and the example an
+original drawing, so only the ring, the recess, its edge and its inner shadow are scored;
+they are measured on those screenshots. Share of pixels that differ at a colour distance of
+0.05, half the default, and the mean difference per channel out of 255, in Chromium on Linux:
+
+| Crop | Aqua, 2x | Dark Aqua, 2x | Aqua, 1x | Dark Aqua, 1x |
+| --- | --- | --- | --- | --- |
+| Desktop picture well (`@ 201,250,300,200`), picture masked | 0.02%, Δ 0.47 | 0.00%, Δ 0.57 | 1.19%, Δ 1.27 | 0.03%, Δ 0.60 |
+
+The outer corner measures about 5.5 pt; a radius of 6px reproduces its pixels (5px scores
+0.41% and 7px 0.42% in Aqua). That the image sits 5 pt inside the ring on every side is
+measured above and below it; at the sides the screenshot's picture is narrower than the space.
+
+No screenshot shows an empty well, a selected well, a drop target, a disabled well, a well in
+a window that is not key or any frame but the bezel. The first four are checked in a real
+browser against values from the spec instead (the `expect` comparisons); the runner cannot
+perform a drag, so the drop target is pinned with `data-force` there, and the unit tests
+cover the real drag events.
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| Empty | Ring, recess and the hairline outside the ring, in both appearances | Colours measured; that an empty well shows only the recess is inferred |
+| Selected | Ring colour in both appearances, and that the band ends 2.5 pt beyond the well | Measured on a text field's ring; that the selection ring is the focus ring is documented by the Human Interface Guidelines |
+| Drop target | The accent colour over the frame's edge: blue in both appearances, purple in an inactive window in both appearances | Inferred |
+| Main and inactive window | No focus ring; both appearances | Documented by AppKit |
+
+The purple drop target in an inactive window and the missing ring in a main or inactive window
+are checked in Dark Aqua as well as in Aqua. The dark highlight is the Dark Aqua purple
+`#a650a7`, a different swatch from Aqua's `#963d96`.
+
+Provisional, and checked nowhere against Catalina: the photo, groove and button frames, the
+disabled look, the default size of 48 x 48 pt, and the drop highlight.

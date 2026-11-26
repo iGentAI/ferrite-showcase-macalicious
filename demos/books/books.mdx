@@ -1,0 +1,346 @@
+---
+title: Books
+description: The Books library window of macOS 10.15, with its unified toolbar, segmented navigation, sidebar and covers, and the book window that opens in front of it with its page and numbered page thumbnails; covers and pages are abstract placeholders.
+layout: full
+order: 130
+---
+
+<Example name="basic" />
+
+**What the book window guarantees.** The first two hold in Chromium, Firefox and WebKit,
+where each is tested; the third is held by a unit test:
+
+- The book window's box is drawn `bookOffset` from the library window's corner, its own margin
+  and transform allowed for.
+- The window in front is drawn over the other. That holds in an ordinary container, in a
+  container that is a stacking context of its own, and at the highest and lowest `z-index`
+  levels.
+- Working out the levels never makes `Books` render without end.
+
+Known limits, outside that guarantee: CSS features that make a stacking context beyond the
+cases tested here, and style or animation changes that land after `Books` renders, are not
+promised to keep the order. A book window rendered inside the library window itself is
+moved beside it when the two overlap. In a containing block that is mirrored (a negative
+scale), the book window is placed `bookOffset` from the library window in the block's own,
+mirrored coordinates, with its own margin and transform allowed for; in one that is turned (a
+rotation), its place follows the library window's corner on the screen, and its own margin and
+transform are not allowed for.
+Where the order has to be measured (a container whose
+stacking context computed style does not tell, such as `transform-style: preserve-3d`), it is
+measured when `Books` renders and when the share of each window in view crosses a quarter;
+windows that enter the view by less than a pixel and are then scrolled in by small steps can
+keep the wrong order until the next of those. Clipping by an ancestor's `overflow` can hide the
+points measured, and moving the book window beside the library can drop the keyboard focus
+in it.
+
+Choose a row of the sidebar, reorder the covers with Sort By, type in the search field, or
+switch to one of the two stores with the control in the middle of the toolbar. Double-click a
+cover, or press Return on it, to open the book: its window comes up in front of the library,
+which becomes inactive behind it, and the thumbnails at its bottom edge turn the pages.
+
+Books is mostly pictures, and none of them is reproduced. The cover, the page and the page
+thumbnails are the same abstract placeholder everywhere: a flat panel with the usual sign for
+"a picture goes here" and the title or the page number as plain text. One book is the one
+named in the reference screenshots; every other title and author is invented.
+
+On the desktop served by the `macalicious-desktop` Ferrite application (`ferrite-apps/desktop`),
+Books is a real reading app, kept for each person. The library holds the books the person got
+and none of the placeholders. The Book Store lists Project Gutenberg's most downloaded books and
+Standard Ebooks' new releases with their own covers, the toolbar's field searches both, and Get
+adds a book. The Audiobook Store lists LibriVox's recordings, the same field searching the start of
+a title or an author's last name; Get adds one to the Audiobooks row, and it plays from the Internet
+Archive through one audio element, by chapters, its place kept on the server
+(`books-audiobook-player.tsx`). A book opens in a reader of its real text (`books-reader.tsx`). The text is cut
+into pages that fit the window, and the place, bookmarks, highlights and notes are kept on the
+server (`/api/books/library` and `/api/books/reading/<book>`, through `books-server.ts`), so
+another browser of the same person opens the book at the same words. The window is marked busy
+until the library has loaded. An EPUB on the person's drive opens in the same reader, read in the
+browser, with its pictures in the text (`books-epub.ts`): a picture is a position between two
+characters, so it moves no place, bookmark or highlight. A book from those two sources shows its
+text alone. Elsewhere, including this page, nothing is fetched or kept.
+
+## What it shows
+
+`books.tsx` holds both windows; read it from the top.
+
+- **The library window** is a [Window](/components/window) with a
+  [Title Bar](/components/title-bar) in its `title-hidden` layout, which puts the
+  [Window Controls](/components/window-controls) and a [Toolbar](/components/toolbar) on one
+  38 pt row. The toolbar holds a [Toolbar Button](/components/toolbar-button) for the sidebar,
+  a [Toolbar Segmented Control](/components/toolbar-segmented-control) of three segments kept
+  in the middle by a fixed and two flexible spaces, and a
+  [Toolbar Search Field](/components/toolbar-search-field). This is the store layout that the
+  [Media App Chrome](/components/media-app-chrome) page describes: it needs nothing from that
+  component, which is the player layout of Music and Podcasts.
+- **The body** is a [Split View](/components/split-view) with a fixed divider. Its first pane
+  holds a [Sidebar](/components/sidebar) of two sections, whose rows take Books' 24 pt pitch
+  and label inset through the sidebar's variables, and under the list a
+  [Round-Rect Button](/components/round-rect-button) around the add image of
+  [System Image](/components/system-image), which adds a collection.
+- **The content** is a [Scroll View](/components/scroll-view). Sort By is a
+  [Pull-Down Button](/components/pull-down-button) without a bezel, whose menu is a radio
+  group of [Menu Items](/components/menu-item). The covers are the cells of a
+  [Card Grid](/components/card-grid): one grid, or one per author or category, each under its
+  heading. A cover is the library's [Book Cover](/components/book-cover), 145.5 by 190 pt with
+  square corners and a soft shadow, rendered as a button and as wide as its cell. The stores'
+  shelves are card grids of `square` cards. An [Empty State](/components/empty-state) stands
+  in when a row or a search has no books.
+- **The book window**, `BooksReader`, is a second `Window`. Its title bar is the `title-hidden`
+  layout again, one point lower, with the book's title centred over it and five glyph buttons
+  on it: [Image Buttons](/components/image-button) for Library, Table of Contents (which opens
+  a [Menu](/components/menu) of the pages), Notes and Search, and a pull-down button without a
+  bezel for the bookmarks. Under the bar are the page, two
+  [Borderless Buttons](/components/borderless-button) at its edges that turn it, and the strip
+  of page thumbnails: each is a borderless button around the page's picture and its numbered
+  badge, which is the demo's own drawing. The strip lies in a box that scrolls it sideways
+  when the window is narrower than the thumbnails.
+
+| Control | What it does |
+| --- | --- |
+| Sidebar button | Hides and shows the sidebar. Unavailable in the stores, which have none. |
+| Library, Book Store, Audiobook Store | Switches the content. The library comes back as it was left. |
+| Search | Lists the books of the chosen row whose title or author contains the text; in a store, the cards. Escape clears it. |
+| Sidebar rows | All Books, Books, Audiobooks and PDFs filter the covers by kind. Authors and Categories put every book under a heading. A collection lists its own books. |
+| Add button | Adds an empty collection as a row under Collections and selects it. |
+| Sort By | Most Recent, Title, Author or Manually: the order of the covers, in every row. |
+| A cover | Double click, or Return or Space while it has the keyboard, opens the book. The keyboard goes to the book window, on the thumbnail of its page. |
+| Library (book window), close button | Closes the book window. The book opens again at the page it was left on, and the keyboard returns to its cover. |
+| Table of Contents | A menu of the book's pages. |
+| Thumbnails, page buttons, Left and Right Arrow | Turn the page. The page shown and the badge in the accent colour follow; a strip that is wider than the window scrolls to the page's thumbnail. |
+| Bookmarks | Adds or removes a bookmark on the page shown and lists the bookmarked pages. A book keeps its bookmarks while its window is closed. |
+
+Notes and Search in the book window are there and unavailable: a placeholder page has no text
+to annotate or to search.
+
+## Hosting the window
+
+<Example name="hosted" />
+
+`Books` renders the library's `Window` as its root and passes every `Window` prop to it, so it
+does not assume it fills the page. Place it with `style`; a window manager gives it `state`,
+the size, and eight more props that the component hands to the window controls and to its
+title bar, which is its drag region. These are the props a
+[Managed Window](/components/managed-window)'s `render` form supplies, so the component can be
+spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { app } from "./app";
+
+<ManagedWindow
+  id={app.id}
+  title={app.name}
+  resizable={app.resizable}
+  defaultFrame={{ x: 80, y: 60, ...app.defaultSize }}
+  minWidth={app.minSize.width}
+  minHeight={app.minSize.height}
+  render={(props) => <app.component {...props} />}
+/>;
+```
+
+**The book window when the app is hosted.** The app is one window of a desktop, and the book
+window is the app's own second window, as the New Message window is Mail's: the manager is
+not told about it. `Books` renders it outside the library window's element, into that
+element's offset parent (or into `windowsContainer`), and places it `bookOffset` points from
+the library window's corner. In a managed window that parent is the managed window's own
+element, so the book window moves, stacks, minimizes and closes with the library window. It
+keeps the size given in `readerProps` whatever the manager's frame, and it may reach outside
+that frame. The app decides which of its two windows is in front: a press on either brings
+it forward, and so does the keyboard moving into it (Tab and Shift-Tab), and that one has the
+`state` the manager gave the app while the other is inactive; a `state` in `readerProps` is
+not used. The book window is placed in
+the container's own coordinates, so a container that is scaled with a CSS transform places it
+right. The book window has no drag of its own in there; `readerProps` takes the hosting
+props for a host that wants to move it.
+
+<Example name="container" />
+
+**A container of your own.** `windowsContainer` need not be positioned. An absolutely
+positioned window is placed against the nearest positioned element around it, which may not
+be the container, and a scaled `document.body` draws it at the body's scale; so `Books` renders
+an empty, hidden box beside the book window, placed as it is but at its corner, and measures
+it to find where the window's containing block is and at what scale, then places the window
+`bookOffset` points from the library window's corner. Where the book window itself is drawn is
+measured too, so a margin or a transform it is given (in `readerProps.style` or a style sheet)
+moves its `left` and `top` and not its place: its box is drawn `bookOffset` from the library
+window's. A `zIndex` in `style`
+or in `readerProps.style` sets the level of both windows: a number, or an expression such as
+`var(--layer)`, `calc()` or `inherit`, which is worked out on the window it was given to and
+the number it comes to used for both. The window in front is always drawn over the other, one
+or two above the higher of the two levels given (held within the levels browsers keep apart).
+
+<Example name="stacked" />
+
+**A container that is a stacking context.** A book window inside an element that is a stacking
+context of its own (a `z-index` on a positioned element, a transform, `isolation: isolate`,
+`will-change`) that does not hold the library window is drawn over or under the library with
+that element, whatever its own level. `Books` then sets the library window's level against that
+element's (its `z-index` where that applies, 0 where it does not): one above it (or the same,
+when the element comes earlier in the document) while the library is in front, one below it (or
+the same, when the element comes later) while the book is. The caller's `zIndex` on the library
+does not apply then. When no level is above or below that element's (it is at the highest level
+and later in the document), or the library would have to go below 0 (where it would go under
+the backgrounds around it), the book window is rendered beside the library window, in its
+parent, instead. Because computed style cannot tell every stacking
+context (one kept by a finished animation, `content-visibility`, `transform-style:
+preserve-3d`), the order is also measured after each render, where the two windows overlap.
+If the window behind is drawn in front, the library window's level is searched for, from 0 up,
+until the right one is. If no level does it (the library window is in a stacking context of
+its own, for example), the book window is rendered beside the library window. The order is
+measured where both windows are seen; when they are out of view or clipped there, it is
+measured again once what is seen of them changes (a scroll that brings them into view).
+Otherwise both checks run when `Books` renders; a style that changes later without a render
+is caught at the next one.
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `books` | `BooksBook[]` | The library; nine books by default, eight of them invented. A book's `kind` says which row lists it and its `pages` how many pages its window turns through. |
+| `defaultView` | `BooksView` | The segment selected at first, `"library"` by default. |
+| `defaultSection`, `onSectionChange` | `BooksSection`, function | The sidebar row selected at first, `"all"` by default, and a report of each choice: a section, or a collection's `id`. |
+| `defaultSort` | `BooksSort` | The order of the covers at first, `"recent"` by default. |
+| `defaultOpenBook`, `onOpenBookChange` | `string`, function | The `id` of a book whose window is open at first, as in the screenshots, and a report of each book that is opened, or `null` when its window closes. |
+| `bookOffset` | `{ x: number; y: number }` | Where the book window's box is drawn, from the library window's corner, its own margin and transform allowed for; 96 and 48 by default. |
+| `readerProps` | `Partial<BooksReaderProps>` | Further props for the book window: its `width` and `height` (786 by 785 by default), `style`, the hosting props. Its callbacks (`onPageChange`, `onBookmarksChange`, `onLibrary`, `onClose`, the pointer-down and focus captures) are called after the app's own. The app keeps each book's page and bookmarks, so it does not take `page`, `defaultPage`, `bookmarks` or `defaultBookmarks`. |
+| `windowsContainer` | `HTMLElement` | The element the book window is rendered into; the library window's offset parent by default. It need not be positioned. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled`, `controlsProps` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | A press with the primary button, or a double click, on the toolbar row, not on a control in it. |
+| `width`, `height` | `number \| string` | The frame; 1184 by 784 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`BooksReader` is the book window on its own: it takes a `book`, the page as `page` or
+`defaultPage` with `onPageChange`, the bookmarked pages as `bookmarks` or `defaultBookmarks`
+with `onBookmarksChange`, `onLibrary` for its Library button, and the same hosting
+props. `app.ts` exports it with the descriptor a desktop page reads, as `booksApp` and as
+`app`: `id`, `name`, `component`, `defaultSize` (1184 by 784), `minSize` (760 by 420),
+`resizable` and `menus`, the menu titles after the Apple menu.
+
+The collections, the sort order, the open book, the page each book was left on and each
+book's bookmarks live in the
+component's state for as long as it is mounted; nothing is stored and nothing is fetched.
+
+## Accessibility
+
+- The library window is a `region` named "Books"; the book window is a `region` named by the
+  book's title, which its title bar shows.
+- The toolbar is a `toolbar` named "Books toolbar" and one tab stop: the arrow keys move
+  between the sidebar button, the three segments and the search field. The segments are
+  toggle buttons in a `group` named "View"; the search field is a `searchbox`.
+- The sidebar is a `tree` named "Library": one tab stop, the arrow keys move the selection
+  and typing selects by name. The add button is a button named "New Collection".
+- Each grid of covers is a `region` with a list in it, named by its heading or, without one,
+  after the row that is chosen ("All Books covers"). A cover is a button named with the title
+  and the author; its placeholder is hidden from assistive technology.
+- A row or a search without books is announced through a `status`.
+- In the book window the five buttons of the bar are a `group` named "Book controls", each
+  named with `aria-label`. The page is an image named "Page 2 of 3". The thumbnails are
+  buttons named "Page 1", "Page 2" and so on in a `group` named "Pages", and the current one
+  has `aria-current="page"`; when an arrow key turns the page from a thumbnail, the keyboard
+  follows to the new one. When a book is opened the keyboard moves to the thumbnail of its
+  page, so the arrow keys turn the pages at once; when the book window is closed while it
+  holds the keyboard, the keyboard returns to the book's cover. A book that is open at first
+  (`defaultOpenBook`) does not take the keyboard from the page.
+- The two page buttons at the page's edges are shown while the pointer is over the page or
+  while one of them has the keyboard; they are always there for assistive technology.
+- A window that is not key shows no focus ring, and the current page's badge is grey there.
+- Not provided: the Command-key shortcuts of the app's menus, and a way to move the book
+  window from the keyboard.
+
+## Fidelity
+
+The two reference screenshots are full-screen captures: the desktop, the menu bar, the Dock,
+the library window behind and inactive, and a book window in front and key.
+`books.visual.json` compares the parts of them that are the app's chrome, at the windows' own
+places in the captures:
+
+- **The library window**, 1184 by 784 pt, rendered inactive. Masked: the part of it that the
+  book window and its shadow cover; the cover, whole; and the three visible corners, where
+  the capture shows the desktop.
+- **The bar of the book window**, its full width by 37 pt, rendered key. Masked: its two top
+  corners.
+- **Two page-number badges**, the current one and the next: the 15 pt square inside each
+  disc, with nothing masked, and the discs' edges as pixels read at the same points of the
+  capture.
+
+Every artwork region is masked whole or left out of the crops in every comparison, because
+none of it is reproduced: the cover; the page of the book window with the bands above and
+below it, which Books fills from the page's own picture; and the page thumbnails. The page
+area is all of the book window under its bar, so a crop of the whole window would be masked
+beyond the harness's limit of three quarters; the comparisons take what is around the
+pictures instead. The desktop picture, the menu bar and the Dock are outside every crop.
+
+Each crop is compared twice: once as it is, with the text in the fallback font and the
+stand-in glyphs, and once under a name with `-layout-` in it, with the text and the stand-ins
+masked too and the threshold at 0.05, to score the drawing alone.
+
+`book-badges-light` and `book-badges-dark` check pixels instead of a crop: the rim and the
+first and last point of the fill of the first two badges, on the row through their middles,
+and with them the size of the strip of thumbnails.
+
+Scores from `npm run visual -- books/` (Chromium on Linux, fallback font), share of pixels
+that differ and mean colour distance out of 255:
+
+| Comparison | 1x | 2x |
+| --- | --- | --- |
+| `library-light` | 0.75%, 0.65 | 0.67%, 0.61 |
+| `library-layout-light` | 0.15%, 0.07 | 0.00%, 0.02 |
+| `library-dark` | 1.16%, 1.42 | 0.94%, 1.37 |
+| `library-layout-dark` | 0.26%, 0.58 | 0.08%, 0.53 |
+| `book-bar-light` | 3.12%, 3.04 | 2.70%, 3.13 |
+| `book-bar-layout-light` | 0.31%, 0.71 | 0.51%, 0.90 |
+| `book-bar-dark` | 2.52%, 8.74 | 2.33%, 8.83 |
+| `book-bar-layout-dark` | 0.13%, 7.19 | 0.30%, 7.31 |
+| `book-badge-current-light` | 12.00%, 6.36 | 7.89%, 7.82 |
+| `book-badge-current-layout-light` | 0.00%, 1.00 | 0.00%, 1.00 |
+| `book-badge-current-dark` | 12.00%, 6.15 | 7.89%, 7.67 |
+| `book-badge-current-layout-dark` | 0.00%, 0.33 | 0.00%, 0.33 |
+| `book-badge-other-light` | 13.78%, 12.55 | 9.00%, 11.67 |
+| `book-badge-other-layout-light` | 0.00%, 0.00 | 0.00%, 0.00 |
+| `book-badge-other-dark` | 12.00%, 11.09 | 8.89%, 10.38 |
+| `book-badge-other-layout-dark` | 0.00%, 0.00 | 0.00%, 0.00 |
+
+The budgets in `books.visual.json` are set just above these. A badge's crop is 15 pt square,
+so its numeral in the stand-in face is a large share of it: the `-layout-` comparisons, which
+mask the numeral, score the fill. The mean distance of the two dark comparisons of the book
+window's bar is the tint of the capture's bar, described under Dark Aqua surfaces below.
+
+Measured in the screenshots and reproduced: the 1184 by 784 pt frame; the 38 pt toolbar row
+with the 39 pt sidebar button, the 383 pt segmented control in the middle and the 158 pt
+search field 8 pt from the edge; the 220 pt sidebar with its two headers, six rows in a 24 pt
+pitch, 18 pt icons and the add button; the divider and the pane; Sort By; the place and the
+size of the cover, 145.5 by 190 pt, 42 pt from the divider and 35 pt under the toolbar; the
+book window's 786 by 785 pt and 1024 by 785 pt frames, its 37 pt bar with the places of its
+five glyphs and its title; the 512 by 135 pt strip of thumbnails (184 by 135 pt for the
+current page, 164 by 120 pt for the others) and the 25 pt badges 4 pt from their corners; the
+half-point edge and the 3 pt shadow of a thumbnail, which fall on the page around the strip
+and, from the raised current thumbnail, on its neighbour, and not from one thumbnail on the
+next.
+
+What differs, and why:
+
+- **Artwork.** Covers, pages and thumbnails are placeholders, as said above. The six sidebar
+  icons are stand-in glyphs on a flat orange square; Books' have a gradient and a soft shadow.
+  The glyphs of the two bars are stand-ins on the measured boxes.
+- **Text.** Set in the fallback font off Apple devices. The numerals of the badges are a
+  serif face in Books; the system's serif stands in.
+- **The add button.** The library's round-rect button, as wide as it is high, with the add
+  image at 10 pt: Books' own, as measured for the button's inactive look.
+- **The chevrons.** Sort By and the bookmarks button end in the pull-down button's own
+  chevron, which is heavier and darker than the thin grey one in the capture, and a point
+  and a half further from the bookmark.
+- **Dark Aqua surfaces.** The inactive toolbar and sidebar are the library's `#2d2d2d` and
+  `#2c2d2f` where the capture reads `#2b2d2f` and `#2c2e30`. The book window's bar is the
+  system's title bar material, `#404142` to `#343435`, where this capture reads `#38393a` to
+  `#2d2f2f`: its shadow row is darker by about as much (`#242526` for `#2a2a2a`), so the
+  whole bar is tinted in the capture, as dark bars are by what is behind the window, and the
+  demo does not give the bar a colour of its own. In Aqua the bar is the material exactly.
+- **Not in a screenshot (provisional):** the library window when it is key; every sidebar
+  row but All Books with one book; a second cover, so the pitch of the grid; Authors and
+  Categories; a collection; the Sort By menu; the two stores, whose shelves are placeholder
+  cards; an empty row; the book window when it is inactive; a page other than the first;
+  the page buttons; the menus of the book window; and every size other than the captured
+  ones. The grey badge of the current page in a window that is not key is inferred.
+- **Not built:** the stores themselves, reading a book's text, notes and highlights, search
+  inside a book, the reading themes and text size, the two-page spread and scrolling views,
+  audiobook playback, renaming and deleting collections, dragging books into them, the
+  app's menus and Preferences, and moving or resizing the book window on its own.

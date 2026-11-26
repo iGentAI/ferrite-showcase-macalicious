@@ -1,0 +1,267 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "revealed-light",
+      "description": "The revealed bars of the full-screen Photos window where the bar is empty, Aqua: the title bar 22 pt down, its edge and the shadow it casts on the content. The menu bar above it is the screen's and shows the desktop picture through its material, so its 22 pt are masked.",
+      "example": "visual-revealed",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 350,
+          "height": 22
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 0.95,
+        "2x": 0.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Full-Screen-App.png",
+        "crop": {
+          "x": 1800,
+          "y": 0,
+          "width": 700,
+          "height": 200
+        }
+      }
+    },
+    {
+      "name": "revealed-dark",
+      "description": "The revealed bars of the full-screen Photos window where the bar is empty, Dark Aqua. The menu bar's 22 pt are masked, as in revealed-light. The capture's bar is tinted by the desktop picture.",
+      "example": "visual-revealed",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 350,
+          "height": 22
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 1.6,
+        "2x": 1.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Full-Screen-App.png",
+        "crop": {
+          "x": 1800,
+          "y": 0,
+          "width": 700,
+          "height": 200
+        }
+      }
+    },
+    {
+      "name": "top-light",
+      "description": "The menu bar hidden: the bar of the active Split View tile at the very top of the screen, where it is empty, and 12 pt of the page under it, Aqua. No toolbar item or text is in the crop.",
+      "example": "visual-top",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 0.6,
+        "2x": 0.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Split-Screen-Apps.png",
+        "crop": {
+          "x": 1740,
+          "y": 0,
+          "width": 300,
+          "height": 100
+        }
+      }
+    },
+    {
+      "name": "top-dark",
+      "description": "The menu bar hidden: the bar of the active Split View tile at the very top of the screen, Dark Aqua. The capture's bar is tinted by the page under it, which the mean colour difference shows.",
+      "example": "visual-top",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 5.15,
+        "2x": 5.05
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Split-Screen-Apps.png",
+        "crop": {
+          "x": 1740,
+          "y": 0,
+          "width": 300,
+          "height": 100
+        }
+      }
+    },
+    {
+      "name": "hidden-light",
+      "description": "A window whose title bar hides with the menu bar, pointer away: the content reaches the top of the screen, Aqua. No screenshot shows it.",
+      "example": "visual-hidden",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 120
+        },
+        "pixels": [
+          {
+            "x": 120,
+            "y": 1,
+            "color": "#ffffff",
+            "note": "content at the top edge: --mac-color-control-background; the bars are above the screen (catalog: the menu bar and toolbar auto-hide)"
+          },
+          {
+            "x": 120,
+            "y": 41,
+            "color": "#ffffff",
+            "note": "content where the revealed title bar would be"
+          },
+          {
+            "x": 30,
+            "y": 19,
+            "color": "#ffffff",
+            "note": "no window control is on screen"
+          }
+        ]
+      }
+    },
+    {
+      "name": "hidden-dark",
+      "description": "A window whose title bar hides with the menu bar, pointer away, Dark Aqua.",
+      "example": "visual-hidden",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 120
+        },
+        "pixels": [
+          {
+            "x": 120,
+            "y": 1,
+            "color": "#1e1e1e",
+            "note": "content at the top edge: --mac-color-control-background"
+          },
+          {
+            "x": 120,
+            "y": 41,
+            "color": "#1e1e1e",
+            "note": "content where the revealed title bar would be"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pointer-reveal-light",
+      "description": "The same window with the pointer moved to the top edge: the menu bar slot and the title bar are down, over the content, Aqua.",
+      "example": "visual-hidden",
+      "appearance": "light",
+      "actions": [
+        {
+          "hover": ".mac-full-screen-window-edge"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 120
+        },
+        "pixels": [
+          {
+            "x": 120,
+            "y": 11,
+            "color": "#808080",
+            "note": "the example's grey stand-in for the menu bar, in its 22 pt slot (measured height, Full-Screen-App @ 1000,40,1,4)"
+          },
+          {
+            "x": 120,
+            "y": 41,
+            "color": "#d9d9d9",
+            "tolerance": 3,
+            "note": "middle of the 38 pt title bar, 22 pt down: --mac-material-titlebar, #e5e5e5 to #cdcdcd (measured @ 1000,44,1,76)"
+          },
+          {
+            "x": 120,
+            "y": 60.25,
+            "color": "#bdbdbd",
+            "tolerance": 6,
+            "scale": 2,
+            "note": "first row of the bars' shadow on white content, measured #bdbdbd @ 2000,120"
+          },
+          {
+            "x": 120,
+            "y": 64.75,
+            "color": "#dcdcdc",
+            "tolerance": 6,
+            "scale": 2,
+            "note": "the shadow 4.75 pt down, measured #dcdcdc @ 2000,129"
+          },
+          {
+            "x": 120,
+            "y": 100,
+            "color": "#ffffff",
+            "note": "content below the shadow: --mac-color-control-background"
+          }
+        ]
+      }
+    },
+    {
+      "name": "keyboard-reveal-dark",
+      "description": "The same window after Tab moved keyboard focus to the first window control: the bars are down, Dark Aqua.",
+      "example": "visual-hidden",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 240,
+          "height": 120
+        },
+        "pixels": [
+          {
+            "x": 120,
+            "y": 11,
+            "color": "#808080",
+            "note": "the example's grey stand-in for the menu bar, in its 22 pt slot"
+          },
+          {
+            "x": 120,
+            "y": 41,
+            "color": "#3a3b3c",
+            "tolerance": 3,
+            "note": "middle of the 38 pt title bar, 22 pt down: --mac-material-titlebar, #404142 to #343435"
+          },
+          {
+            "x": 120,
+            "y": 100,
+            "color": "#1e1e1e",
+            "note": "content below the shadow: --mac-color-control-background"
+          }
+        ]
+      }
+    }
+  ]
+}

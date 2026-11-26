@@ -1,0 +1,206 @@
+---
+title: Combo Box
+description: A text field with a button that opens a list of suggested values. Any text can be typed; choosing an item fills the field.
+order: 33
+---
+
+<Example name="basic" both />
+
+The AppKit control is `NSComboBox`: a text field joined to a button, with a list that opens
+under the field. It is built on Base UI's
+[Autocomplete](https://base-ui.com/react/components/autocomplete), which supplies the combo
+box semantics, the keyboard handling and the positioning of the list. The value is the text in
+the field: an item is a suggestion, not a selection, and text that is not in the list is as
+valid as text that is. The bezel is the [text field](/components/text-field)'s and the open
+list is the library's [menu](/components/menu) surface with [menu item](/components/menu-item)
+rows.
+
+## Usage
+
+```tsx
+import { ComboBox, ComboBoxItem, ComboBoxSeparator } from "macalicious/combo-box";
+import "macalicious/menu.css";
+import "macalicious/menu-item.css";
+import "macalicious/text-field.css";
+import "macalicious/combo-box.css";
+
+<ComboBox aria-label="Font size" defaultValue="12" style={{ width: 80 }}>
+  <ComboBoxItem>9</ComboBoxItem>
+  <ComboBoxItem>12</ComboBoxItem>
+  <ComboBoxSeparator />
+  <ComboBoxItem value="288">Poster</ComboBoxItem>
+</ComboBox>
+```
+
+Or copy the source into your project: `npx macalicious add combo-box`.
+
+- `value`, `defaultValue` and `onValueChange` hold the text; `open`, `defaultOpen` and
+  `onOpenChange` the list. `className`, `style` and `ref` go to the root element, which draws
+  the bezel; `inputRef` reaches the `<input>`; every other prop, `id`, `aria-label` and
+  `placeholder` included, goes to the `<input>`. The control is 160 pt wide unless `style`
+  sets its width.
+- Choosing a `ComboBoxItem` puts its `value` in the field. Without `value` its children are
+  used, when they are a string or a number.
+- `mode` says what typing and the arrow keys do. The default, `"inline"`, is AppKit's: the
+  list always shows every item, opens only with the button or Down Arrow, and moving through
+  it puts the highlighted item in the field. Return or a click keeps it; Escape or Tab brings
+  the typed text back. `"none"` leaves the field alone until an item is chosen.
+- For a list that follows the text, pass the items as data and render each with a function:
+  with `mode="list"` the list opens while typing and shows only the items that contain the
+  text; `"both"` also fills the field. AppKit's combo box does not do this.
+
+<Example name="filtering" />
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[combo boxes](https://web.archive.org/web/20200503142537/https://developer.apple.com/design/human-interface-guidelines/macos/fields-and-labels/combo-boxes/):
+
+- Show a meaningful default value from the list in the field, not an empty field.
+- Introduce the control with a label in title case that ends with a colon.
+- Keep the list to relevant choices, and no item wider than the field: a longer one is cut
+  off in the field.
+- A typed value is not added to the list. Add it yourself if people expect to find it there
+  again.
+- A combo box holds one value at a time; make that clear where people might expect to choose
+  several.
+
+<Example name="labelled" />
+
+## Variants and states
+
+Focus and the pressed button are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look | Status |
+| --- | --- | --- | --- |
+| Normal | – | Text field bezel; the button is a piece of the accent bezel with a white chevron (white at 85% in Dark Aqua) | button, divider and chevron measured (Go to Folder); the field's edge without the ring is the text field's |
+| Focused | the field has the keyboard | 3.5 pt focus ring around the field and the button | measured (Go to Folder) |
+| Button pressed | `:active` on the button | The button's gradient darkened to 88% | provisional |
+| List open | button, Down Arrow, `open` | Button as pressed; the list is a menu 3 pt under the control, at least as wide as it, its rows lined up with the field's text | provisional |
+| Disabled | `disabled` | Field at half strength, the button a standard bezel at half opacity, chevron and text dimmed | measured (Date & Time) |
+| Read-only | `readOnly` | As enabled; the text can be selected, not changed, and choosing from the list does nothing | provisional |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | The button is a standard bezel with a dark chevron (light in Dark Aqua); no focus ring | provisional |
+
+The window state is not a prop: see [Building a window](/building-a-window). The list is
+rendered in a portal and counts as a key window of its own.
+
+## Sizes
+
+<Example name="sizes" both />
+
+| `size` | Height | Button | Text | List text | Status |
+| --- | --- | --- | --- | --- | --- |
+| `regular` | 20 pt | 17.5 pt | 13 pt | 13 pt | measured |
+| `small` | 17 pt | 15.5 pt | 11 pt | 12 pt | provisional |
+| `mini` | 14 pt | 13.5 pt | 9 pt | 11 pt | provisional |
+
+The element's box is the control's outer edge. The focus ring and the button's 1 pt shadow
+are drawn outside it.
+
+## API
+
+<PropsTable name="ComboBoxProps" />
+
+`ComboBoxItem`:
+
+<PropsTable name="ComboBoxItemProps" />
+
+`ComboBoxSeparator`:
+
+<PropsTable name="ComboBoxSeparatorProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-size` | root, list | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-disabled` | root, input, button | present or absent | Set by Base UI for `disabled`. |
+| `data-readonly` | root, input, button | present or absent | Set by Base UI for `readOnly`. |
+| `data-popup-open` | root, input, button | present or absent | Set by Base UI while the list is open. |
+| `data-highlighted` | item | present or absent | Set by Base UI on the item under the pointer or the arrow keys. |
+| `data-force` | input | `focus`, `pressed` | Documentation and visual tests only: pins the focus ring or the pressed button. |
+
+| CSS variable | Values | Description |
+| --- | --- | --- |
+| `--mac-menu-min-width` | a length | Minimum width of the list, when it should be wider than the control. Set it on an ancestor of the list: the page, or the `container`. |
+
+Classes: `.mac-combo-box` on the root, next to the text field's `.mac-text-field`;
+`.mac-combo-box-button`; `.mac-combo-box-menu` on the list, next to `.mac-menu`; and
+`.mac-combo-box-item` on an item, next to `.mac-menu-item`. The input has the text field's
+`.mac-text-field-input`.
+
+## Accessibility
+
+- The field is a native `<input>` with the `combobox` role, `aria-expanded`,
+  `aria-controls` and `aria-autocomplete` (the value of `mode`); the list is a `listbox` of
+  `option` elements. The highlighted item is announced through `aria-activedescendant`, and
+  the keyboard focus stays in the field.
+- Keys: typing edits the field; Down Arrow opens the list; the arrows move through it; Return
+  puts the highlighted item in the field; Escape closes the list and brings the typed text
+  back; Tab does the same and moves to the next control.
+- The control has no visible label of its own. Name the input with a visible label
+  (`<Label render={<label htmlFor={id} />}>`), a Base UI `Field.Label`, or `aria-label`. A
+  placeholder is a hint, not a name.
+- The button is not in the tab order, as in AppKit: the field's Down Arrow does what it does.
+  It is a real `<button>` for the pointer and for assistive technology, named by
+  `buttonLabel`; translate that string with the rest of the interface.
+- `disabled` uses the real attribute on the input and on the button, so the control leaves the
+  tab order. Use `readOnly` when the text should stay selectable.
+- The focus ring shows whenever the field has the keyboard, for pointer focus too, as in
+  AppKit, and only in the key window.
+- In forced-colours mode the field's edge and the button's edge and chevron use `ButtonText`,
+  a disabled control `GrayText`, the ring `Highlight` and the highlighted row `Highlight` and
+  `HighlightText`.
+
+## Visual comparison
+
+`npm run visual -- combo-box` compares two controls of the reference screenshots in both
+appearances: the focused combo box of Finder's Go to Folder dialog and the disabled one of
+System Preferences › Date & Time. Share of pixels that differ at 2x, in Chromium on Linux with
+the fallback font:
+
+| Comparison (reference crop, 2x pixels) | Aqua, whole crop | Aqua, text masked | Dark Aqua, whole crop | Dark Aqua, text masked |
+| --- | --- | --- | --- | --- |
+| `go-to-folder` (Go to Folder `148,202,786,50`) | 4.85% | 0.06% | 4.93% | 0.03% |
+| `date-and-time` (Date & Time `704,290,560,50`) | 11.32% | 0.01% | 10.72% | 0.00% |
+
+The masked comparisons use a threshold of 0.05 and gate the drawing; each has a budget
+0.05 percentage points above its score. What remains in the whole-crop scores is the text: it
+is set in the fallback font instead of San Francisco, part of the text in the Go to Folder
+field is a grey completion that an `<input>` cannot show, and the Date & Time field is nearly
+full of text. At 1x the masked scores are 14.80% and 10.11% (Go to Folder) and 17.24% and
+0.88% (Date & Time): there is no 1x reference, so the 2x screenshot is averaged down, and a
+half-point hairline that the browser must draw as a full pixel cannot match its averaged
+counterpart ([Fidelity limits](/fidelity)).
+
+Measured from those crops: the 20 pt height, the 17.5 pt button with its gradient, edges,
+highlight and shadow (the shared accent bezel), the divider, the chevron's shape and position,
+the focus ring with its 3.25 pt and 6.25 pt outer corners, the half point by which Dark Aqua
+draws the field inside the frame, and the whole disabled look.
+
+States no screenshot shows are checked pixel by pixel against the spec's values, with real
+input (the `expect` comparisons of `combo-box.visual.json`):
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| At rest | The field's edge and fill; the button's gradient at three heights, its top and outer edges, the divider and the chevron | Measured; the field's edge without the ring is the text field's |
+| Focus, after a click | The ring beyond the field and beyond the button, where it ends, and one pixel that is page at the button's 6.25 pt corner | Measured (Go to Folder) |
+| Button held down | The gradient's middle stop at 88% | Gradient measured; the darkening inferred |
+| Window not key | Standard bezel on the button, chevron in the text colour, no ring after a click | Standard bezel measured; that the button falls back to it inferred |
+| List open, second row under the pointer | The menu surface, the highlighted row from the control's leading edge to its trailing edge, the button drawn pressed | Menu and menu item tokens; that the list is a menu, its width and its place inferred |
+
+These checks hold the component to the spec; where the spec infers a value, they do not show
+that Catalina looks that way.
+
+Provisional, because no screenshot shows them: the open list altogether (AppKit's is a plain
+list with square corners, drawn here as the library's menu, 3 pt under the control), the
+pressed button, the look in a window that is not key, the small and mini sizes (the regular
+drawing with the text field's heights and a scaled chevron), and the placeholder. The third
+reference, Connect to Server, shows the same focused control with an insertion point and is
+not compared. Known differences from the measurements: under the focus ring the button's fill
+and edges are up to ten levels redder than Catalina's (the ring is one translucent band over
+the whole control); the ring's corner at the button is a circular arc where Catalina's has a
+straight run; and in Dark Aqua the divider runs the full height of the button, half a point
+beyond the field's edge at each end. AppKit can complete the typed text from the list
+(`completes`); this component does not.

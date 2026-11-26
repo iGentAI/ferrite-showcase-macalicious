@@ -1,0 +1,538 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "gain-light",
+      "description": "The first row of the watchlist, Dow Jones, a gain with a full session, Aqua. Whole crop.",
+      "example": "visual-gain-light",
+      "appearance": "light",
+      "budget": { "1x": 0.13, "2x": 0.105 },
+      "deltaBudget": { "1x": 12.4, "2x": 12.0 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Stocks.png",
+        "crop": { "x": 114, "y": 328, "width": 656, "height": 96 }
+      }
+    },
+    {
+      "name": "gain-light-masked",
+      "description": "As gain-light with the symbol, the name, the price and the text of the badge masked, which are set in the fallback font off Apple platforms: scores the badge, the hairline and the sparkline. The sparkline is not masked: its series is the line of the screenshot, traced, so what is left along the line is the error of the tracing.",
+      "example": "visual-gain-light",
+      "appearance": "light",
+      "masks": [
+        { "x": 10, "y": 6, "width": 180, "height": 37 },
+        { "x": 250, "y": 9, "width": 68, "height": 15 },
+        { "x": 264, "y": 29.5, "width": 50, "height": 10.5 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.039, "2x": 0.011 },
+      "deltaBudget": { "1x": 2.2, "2x": 1.0 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Stocks.png",
+        "crop": { "x": 114, "y": 328, "width": 656, "height": 96 }
+      }
+    },
+    {
+      "name": "gain-dark",
+      "description": "The first row of the watchlist, Dow Jones, a gain 44% of the way through the session, Dark Aqua. Whole crop.",
+      "example": "visual-gain-dark",
+      "appearance": "dark",
+      "budget": { "1x": 0.138, "2x": 0.108 },
+      "deltaBudget": { "1x": 12.0, "2x": 11.9 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Stocks.png",
+        "crop": { "x": 114, "y": 328, "width": 656, "height": 96 }
+      }
+    },
+    {
+      "name": "gain-dark-masked",
+      "description": "As gain-dark with the symbol, the name, the price and the text of the badge masked, which are set in the fallback font off Apple platforms: scores the badge, the hairline and the sparkline. The sparkline is not masked: its series is the line of the screenshot, traced, so what is left along the line is the error of the tracing.",
+      "example": "visual-gain-dark",
+      "appearance": "dark",
+      "masks": [
+        { "x": 10, "y": 6, "width": 180, "height": 37 },
+        { "x": 250, "y": 9, "width": 68, "height": 15 },
+        { "x": 264, "y": 29.5, "width": 50, "height": 10.5 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.035, "2x": 0.009 },
+      "deltaBudget": { "1x": 1.55, "2x": 0.45 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Stocks.png",
+        "crop": { "x": 114, "y": 328, "width": 656, "height": 96 }
+      }
+    },
+    {
+      "name": "loss-light",
+      "description": "The sixth row of the watchlist, DIS, a loss with a full session, Aqua. Whole crop.",
+      "example": "visual-loss-light",
+      "appearance": "light",
+      "budget": { "1x": 0.082, "2x": 0.056 },
+      "deltaBudget": { "1x": 6.8, "2x": 5.8 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Stocks.png",
+        "crop": { "x": 114, "y": 810, "width": 656, "height": 96 }
+      }
+    },
+    {
+      "name": "loss-light-masked",
+      "description": "As loss-light with the symbol, the name, the price and the text of the badge masked, which are set in the fallback font off Apple platforms: scores the badge, the hairline and the sparkline. The sparkline is not masked: its series is the line of the screenshot, traced, so what is left along the line is the error of the tracing.",
+      "example": "visual-loss-light",
+      "appearance": "light",
+      "masks": [
+        { "x": 10, "y": 6, "width": 180, "height": 37 },
+        { "x": 250, "y": 9, "width": 68, "height": 15 },
+        { "x": 264, "y": 29.5, "width": 50, "height": 10.5 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.049, "2x": 0.0144 },
+      "deltaBudget": { "1x": 2.7, "2x": 1.02 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Stocks.png",
+        "crop": { "x": 114, "y": 810, "width": 656, "height": 96 }
+      }
+    },
+    {
+      "name": "loss-dark",
+      "description": "The seventh row of the watchlist, GE, a loss 44% of the way through the session, Dark Aqua. Whole crop.",
+      "example": "visual-loss-dark",
+      "appearance": "dark",
+      "budget": { "1x": 0.067, "2x": 0.044 },
+      "deltaBudget": { "1x": 5.1, "2x": 3.9 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Stocks.png",
+        "crop": { "x": 114, "y": 906, "width": 656, "height": 96 }
+      }
+    },
+    {
+      "name": "loss-dark-masked",
+      "description": "As loss-dark with the symbol, the name, the price and the text of the badge masked, which are set in the fallback font off Apple platforms: scores the badge, the hairline and the sparkline. The sparkline is not masked: its series is the line of the screenshot, traced, so what is left along the line is the error of the tracing.",
+      "example": "visual-loss-dark",
+      "appearance": "dark",
+      "masks": [
+        { "x": 10, "y": 6, "width": 180, "height": 37 },
+        { "x": 250, "y": 9, "width": 68, "height": 15 },
+        { "x": 264, "y": 29.5, "width": 50, "height": 10.5 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.024, "2x": 0.0092 },
+      "deltaBudget": { "1x": 0.7, "2x": 0.56 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Stocks.png",
+        "crop": { "x": 114, "y": 906, "width": 656, "height": 96 }
+      }
+    },
+    {
+      "name": "states-light",
+      "description": "What no screenshot shows, Aqua: a selected row, an unselected one, and the two badge colours on rows without a sparkline.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 330, "height": 97 },
+        "pixels": [
+          {
+            "x": 200,
+            "y": 5,
+            "color": "#f2f2f3",
+            "note": "selected row: the fill of the selected Business News cell (spec: States, selected, inferred)"
+          },
+          {
+            "x": 200,
+            "y": 53,
+            "color": "#e7e8e9",
+            "note": "unselected row: the sidebar shows through (spec: Colours, row background, measured)"
+          },
+          {
+            "x": 266,
+            "y": 35,
+            "color": "#35c759",
+            "note": "gain badge, left of its text (spec: Colours, badge gain, measured)"
+          },
+          {
+            "x": 266,
+            "y": 83,
+            "color": "#ff3b30",
+            "note": "loss badge as a button, left of its text (spec: Colours, badge loss, measured)"
+          },
+          {
+            "x": 6,
+            "y": 24,
+            "color": "#f2f2f3",
+            "note": "no ring at the leading edge of a selected row that does not have the focus"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-dark",
+      "description": "What no screenshot shows, Dark Aqua: a selected row, an unselected one, and the two badge colours on rows without a sparkline.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 330, "height": 97 },
+        "pixels": [
+          {
+            "x": 200,
+            "y": 5,
+            "color": "#575858",
+            "note": "selected row: the fill of the selected Business News cell (spec: States, selected, inferred)"
+          },
+          {
+            "x": 200,
+            "y": 53,
+            "color": "#2c2d2f",
+            "note": "unselected row: the sidebar shows through (spec: Colours, row background, measured)"
+          },
+          {
+            "x": 266,
+            "y": 35,
+            "color": "#35c759",
+            "note": "gain badge, left of its text: the same green as in Aqua (spec: Colours, badge gain, measured)"
+          },
+          {
+            "x": 266,
+            "y": 83,
+            "color": "#ff3b30",
+            "note": "loss badge as a button, left of its text: the same red as in Aqua (spec: Colours, badge loss, measured)"
+          },
+          {
+            "x": 6,
+            "y": 24,
+            "color": "#575858",
+            "note": "no ring at the leading edge of a selected row that does not have the focus"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-quote-light",
+      "description": "A ticker without a quote, Aqua: the badge is grey, and the row has no sparkline.",
+      "example": "visual-no-quote",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 330, "height": 49 },
+        "pixels": [
+          {
+            "x": 266,
+            "y": 35,
+            "color": "#8e8e93",
+            "note": "badge, left of its text: the system grey (spec: States, no data, inferred; the spec gives no value, so the token is provisional)"
+          },
+          {
+            "x": 220,
+            "y": 26,
+            "color": "#e7e8e9",
+            "note": "where the sparkline would be: the sidebar shows through"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-quote-dark",
+      "description": "A ticker without a quote, Dark Aqua: the badge is grey, and the row has no sparkline.",
+      "example": "visual-no-quote",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 330, "height": 49 },
+        "pixels": [
+          {
+            "x": 266,
+            "y": 35,
+            "color": "#98989d",
+            "note": "badge, left of its text: the system grey of Dark Aqua (spec: States, no data, inferred; provisional)"
+          },
+          {
+            "x": 220,
+            "y": 26,
+            "color": "#2c2d2f",
+            "note": "where the sparkline would be: the sidebar shows through"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-change-light",
+      "description": "A session without a change, Aqua: the sparkline's line and its previous close are grey, as the badge is.",
+      "example": "visual-no-change",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 330, "height": 49 },
+        "pixels": [
+          {
+            "x": 220.5,
+            "y": 26.5,
+            "color": "#8e8e93",
+            "tolerance": 2,
+            "note": "the session's line: the system grey (spec: States, no data, inferred; provisional)"
+          },
+          {
+            "x": 195.25,
+            "y": 19.5,
+            "color": "#a0a0a4",
+            "tolerance": 8,
+            "note": "the first dash of the previous close, 0.85 pt thick: the same grey, #8e8e93, over about three quarters of the pixel and the row behind the rest"
+          },
+          {
+            "x": 220.5,
+            "y": 44,
+            "color": "#e7e8e9",
+            "note": "under the sparkline's box: the sidebar"
+          },
+          { "x": 266, "y": 35, "color": "#8e8e93", "note": "the badge, left of its text" }
+        ]
+      }
+    },
+    {
+      "name": "no-change-dark",
+      "description": "A session without a change, Dark Aqua: the sparkline's line and its previous close are grey, as the badge is.",
+      "example": "visual-no-change",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 330, "height": 49 },
+        "pixels": [
+          {
+            "x": 220.5,
+            "y": 26.5,
+            "color": "#98989d",
+            "tolerance": 2,
+            "note": "the session's line: the system grey of Dark Aqua (provisional)"
+          },
+          {
+            "x": 195.25,
+            "y": 19.5,
+            "color": "#828286",
+            "tolerance": 8,
+            "note": "the first dash of the previous close: the same grey, #98989d, over about three quarters of the pixel and the row behind the rest"
+          },
+          {
+            "x": 220.5,
+            "y": 44,
+            "color": "#2c2d2f",
+            "note": "under the sparkline's box: the sidebar"
+          },
+          { "x": 266, "y": 35, "color": "#98989d", "note": "the badge, left of its text" }
+        ]
+      }
+    },
+    {
+      "name": "badge-pressed-light",
+      "description": "The badge button held down with the mouse, Aqua: 70% opaque over the row.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "press": "button.mac-stock-row-badge" }],
+      "expect": {
+        "size": { "width": 330, "height": 97 },
+        "pixels": [
+          {
+            "x": 266,
+            "y": 83,
+            "color": "#f86f68",
+            "tolerance": 3,
+            "note": "loss badge #ff3b30 at 70% over the sidebar #e7e8e9 (spec: States, badge pressed, inferred)"
+          },
+          {
+            "x": 266,
+            "y": 35,
+            "color": "#35c759",
+            "note": "the other row's badge is not pressed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "badge-pressed-dark",
+      "description": "The badge button held down with the mouse, Dark Aqua: 70% opaque over the row.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "press": "button.mac-stock-row-badge" }],
+      "expect": {
+        "size": { "width": 330, "height": 97 },
+        "pixels": [
+          {
+            "x": 266,
+            "y": 83,
+            "color": "#c03730",
+            "tolerance": 3,
+            "note": "loss badge #ff3b30 at 70% over the sidebar #2c2d2f (spec: States, badge pressed, inferred)"
+          },
+          {
+            "x": 266,
+            "y": 35,
+            "color": "#35c759",
+            "note": "the other row's badge is not pressed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the selected row's button, reached with Tab, Aqua: a 3 pt ring inside the row's edges.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 330, "height": 97 },
+        "pixels": [
+          {
+            "x": 1.5,
+            "y": 24,
+            "color": "#85aef5",
+            "tolerance": 4,
+            "note": "focus ring token rgb(24 106 246 / 0.5) over the selected fill #f2f2f3, 1.5 pt inside the leading edge"
+          },
+          {
+            "x": 200,
+            "y": 5,
+            "color": "#f2f2f3",
+            "note": "inside the ring the selected fill is unchanged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the selected row's button, reached with Tab, Dark Aqua: a 3 pt ring inside the row's edges.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 330, "height": 97 },
+        "pixels": [
+          {
+            "x": 1.5,
+            "y": 24,
+            "color": "#4180ac",
+            "tolerance": 4,
+            "note": "focus ring token rgb(43 168 255 / 0.5) over the selected fill #575858, 1.5 pt inside the leading edge"
+          },
+          {
+            "x": 200,
+            "y": 5,
+            "color": "#575858",
+            "note": "inside the ring the selected fill is unchanged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-inactive-light",
+      "description": "Tab in a window that is not key, Aqua: the row takes the focus without a ring.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 330, "height": 97 },
+        "pixels": [
+          {
+            "x": 1.5,
+            "y": 24,
+            "color": "#f2f2f3",
+            "note": "no ring: the selected fill reaches the leading edge (CONTRIBUTING, Window state; inferred)"
+          },
+          {
+            "x": 200,
+            "y": 5,
+            "color": "#f2f2f3",
+            "note": "the selected fill is unchanged in a window that is not key (spec: States, inactive window, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "button-alignment",
+      "description": "A plain row over a row that is a button, with the same two lines, each filled as tall as its line: the button's text stands where the plain row's does, 7.5 and 25.5 pt below the row's top. A native button centres its content, which would move the lines 3.85 pt down.",
+      "example": "visual-alignment",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 330, "height": 97 },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 6.5,
+            "color": "#ffffff",
+            "note": "plain row: above the symbol's line, which starts 7.5 pt down (spec: Layout, symbol baseline, measured)"
+          },
+          {
+            "x": 60,
+            "y": 8.5,
+            "color": "#ff00ff",
+            "note": "plain row: the top of the symbol's line"
+          },
+          {
+            "x": 60,
+            "y": 23,
+            "color": "#ff00ff",
+            "note": "plain row: the bottom of the symbol's line, which ends 24.5 pt down"
+          },
+          {
+            "x": 60,
+            "y": 39,
+            "color": "#00ffff",
+            "note": "plain row: the bottom of the name's line, which ends 40.5 pt down"
+          },
+          {
+            "x": 60,
+            "y": 42.5,
+            "color": "#ffffff",
+            "note": "plain row: below the name's line"
+          },
+          {
+            "x": 60,
+            "y": 54.5,
+            "color": "#ffffff",
+            "note": "button row, 48.2 pt further down: above the symbol's line"
+          },
+          {
+            "x": 60,
+            "y": 56.5,
+            "color": "#ff00ff",
+            "note": "button row: the top of the symbol's line, where the plain row has it"
+          },
+          {
+            "x": 60,
+            "y": 71,
+            "color": "#ff00ff",
+            "note": "button row: the bottom of the symbol's line"
+          },
+          {
+            "x": 60,
+            "y": 87,
+            "color": "#00ffff",
+            "note": "button row: the bottom of the name's line"
+          },
+          {
+            "x": 60,
+            "y": 90.5,
+            "color": "#ffffff",
+            "note": "button row: below the name's line"
+          }
+        ]
+      }
+    },
+    {
+      "name": "forced-colors-light",
+      "description": "Forced colours: the badge keeps an outline, one point wide in the system's text colour around the system's background. The colours are the browser's emulated system colours, not Catalina's.",
+      "example": "visual-states",
+      "appearance": "light",
+      "forcedColors": true,
+      "expect": {
+        "pixels": [
+          {
+            "x": 260,
+            "y": 35,
+            "color": "#000000",
+            "tolerance": 4,
+            "note": "leading edge of the gain badge: CanvasText"
+          },
+          {
+            "x": 266,
+            "y": 35,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "inside the gain badge: Canvas"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,391 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "pending": "No Catalina screenshot shows AppKit's round button (spec: round-button, not seen), so the bezel has no reference crop to compare with: its comparisons below are pixel checks against the values the spec infers from the help button. Only the destructive variant, which Contacts draws, is compared with a screenshot (contacts-remove-light).",
+  "comparisons": [
+    {
+      "name": "rest-light",
+      "description": "Regular, disabled, small and mini round buttons at rest, Aqua. Every value is inferred from the help button: no screenshot shows a round button.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "fill of the bezel (spec: help-button, Fill, measured; that the round button shares it is inferred)"
+          },
+          {
+            "x": 8.75,
+            "y": 18.5,
+            "color": "#c3c3c3",
+            "scale": 2,
+            "note": "side edge of the bezel over the page (spec: help-button, Edge, measured as #c3c3c3 over #ececec and #2b2b2b over #303031)"
+          },
+          {
+            "x": 18.5,
+            "y": 8.75,
+            "color": "#cacaca",
+            "scale": 2,
+            "note": "top edge (spec: help-button, Edge)"
+          },
+          {
+            "x": 18.5,
+            "y": 28.25,
+            "color": "#b0b0b0",
+            "scale": 2,
+            "note": "bottom edge: a 20 pt bezel in the 21 pt box (spec: Diameter, regular, inferred from the help button)"
+          },
+          {
+            "x": 44.5,
+            "y": 18.5,
+            "color": "#f6f6f6",
+            "note": "disabled fill: the bezel at half opacity over the page (spec: push-button, Fill, disabled; inferred for this control)"
+          },
+          {
+            "x": 83,
+            "y": 25.25,
+            "color": "#b0b0b0",
+            "scale": 2,
+            "note": "bottom edge of the small bezel: 17 pt in an 18 pt box (spec: Diameter, small, inferred)"
+          },
+          {
+            "x": 111.5,
+            "y": 22.25,
+            "color": "#b0b0b0",
+            "scale": 2,
+            "note": "bottom edge of the mini bezel: 14 pt in a 15 pt box (spec: Diameter, mini, inferred)"
+          },
+          {
+            "x": 78,
+            "y": 17,
+            "color": "#ffffff",
+            "note": "fill of the small bezel"
+          },
+          {
+            "x": 107.5,
+            "y": 15.5,
+            "color": "#ffffff",
+            "note": "fill of the mini bezel"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The regular button held down with the mouse, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "#round"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#f0f0f0",
+            "note": "pressed fill: the shared pressed bezel, --mac-bezel-fill-pressed, #f0f0f0 (spec: tokens.md, inferred). The help-button page of the spec, which the round button follows, infers a darker #e5e5e5; the two pages disagree and no screenshot settles it, so this pixel holds the component to the token sheet, not to that page"
+          },
+          {
+            "x": 44.5,
+            "y": 18.5,
+            "color": "#f6f6f6",
+            "note": "the disabled button does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the regular button, reached with Tab, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the page, measured on a text field (spec: focus-ring, sRGB); its circular shape is inferred"
+          },
+          {
+            "x": 18.5,
+            "y": 7,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "the ring is circular: the same band above the top of the bezel"
+          },
+          {
+            "x": 5.25,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the edge of the bezel (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 6.5,
+            "y": 6.5,
+            "color": "#ececec",
+            "note": "page at the corner of the box: the ring follows the circle"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-light",
+      "description": "The same after Tab in an inactive window, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          },
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "the bezel does not change in an inactive window (spec: help-button, States, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rest-dark",
+      "description": "Regular, disabled, small and mini round buttons at rest, Dark Aqua. Every value is inferred from the help button: no screenshot shows a round button.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#656565",
+            "note": "fill of the bezel (spec: help-button, Fill, measured; that the round button shares it is inferred)"
+          },
+          {
+            "x": 8.75,
+            "y": 18.5,
+            "color": "#2c2c2c",
+            "scale": 2,
+            "note": "side edge of the bezel over the page (spec: help-button, Edge, measured as #c3c3c3 over #ececec and #2b2b2b over #303031)"
+          },
+          {
+            "x": 18.5,
+            "y": 8.75,
+            "color": "#2e2e2e",
+            "scale": 2,
+            "note": "top edge (spec: help-button, Edge)"
+          },
+          {
+            "x": 18.5,
+            "y": 28.25,
+            "color": "#282828",
+            "scale": 2,
+            "note": "bottom edge: a 20 pt bezel in the 21 pt box (spec: Diameter, regular, inferred from the help button)"
+          },
+          {
+            "x": 44.5,
+            "y": 18.5,
+            "color": "#4c4c4c",
+            "note": "disabled fill: the bezel at half opacity over the page (spec: push-button, Fill, disabled; inferred for this control)"
+          },
+          {
+            "x": 83,
+            "y": 25.25,
+            "color": "#282828",
+            "scale": 2,
+            "note": "bottom edge of the small bezel: 17 pt in an 18 pt box (spec: Diameter, small, inferred)"
+          },
+          {
+            "x": 111.5,
+            "y": 22.25,
+            "color": "#282828",
+            "scale": 2,
+            "note": "bottom edge of the mini bezel: 14 pt in a 15 pt box (spec: Diameter, mini, inferred)"
+          },
+          {
+            "x": 78,
+            "y": 17,
+            "color": "#656565",
+            "note": "fill of the small bezel"
+          },
+          {
+            "x": 107.5,
+            "y": 15.5,
+            "color": "#656565",
+            "note": "fill of the mini bezel"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "The regular button held down with the mouse, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": "#round"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#7c7c7c",
+            "note": "pressed fill: the shared pressed bezel, white at 36% over #323232 (--mac-bezel-fill-pressed; spec: tokens.md, inferred). The help-button page of the spec, which the round button follows, infers 35%; the two pages disagree and no screenshot settles it, so this pixel holds the component to the token sheet, not to that page"
+          },
+          {
+            "x": 44.5,
+            "y": 18.5,
+            "color": "#4c4c4c",
+            "note": "the disabled button does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the regular button, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#2d6c99",
+            "tolerance": 6,
+            "note": "ring over the page, measured on a text field (spec: focus-ring, sRGB); its circular shape is inferred"
+          },
+          {
+            "x": 18.5,
+            "y": 7,
+            "color": "#2d6c99",
+            "tolerance": 6,
+            "note": "the ring is circular: the same band above the top of the bezel"
+          },
+          {
+            "x": 5.25,
+            "y": 18.5,
+            "color": "#323232",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the edge of the bezel (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 6.5,
+            "y": 6.5,
+            "color": "#323232",
+            "note": "page at the corner of the box: the ring follows the circle"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-dark",
+      "description": "The same after Tab in an inactive window, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 127,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#323232",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          },
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#656565",
+            "note": "the bezel does not change in an inactive window (spec: help-button, States, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "contacts-remove-light",
+      "description": "The destructive variant at the mini size: the remove button of a field on a Contacts card being edited, Aqua. No capture shows it in Dark Aqua.",
+      "example": "visual-contacts-remove",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.097,
+        "2x": 0.0205
+      },
+      "deltaBudget": {
+        "1x": 5.52,
+        "2x": 1.36
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Contacts.png",
+        "crop": {
+          "x": 920,
+          "y": 317,
+          "width": 50,
+          "height": 50
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+/*
+ * Column view (NSBrowser, Finder's column view), built from scroll views.
+ *
+ * Parts
+ *   .mac-column-view            the root: a horizontal scroll view, sized by the caller
+ *   .mac-column-view-columns    its scrolling element: the columns side by side
+ *   .mac-column-view-column     one column: a vertical scroll view
+ *   .mac-column-view-list       its scrolling element, the listbox
+ *   .mac-column-view-row        a row: 18 pt, of which the lower 17 pt take the selection
+ *   .mac-column-view-icon       the 16 pt icon slot, 7 pt from the column's edge
+ *   .mac-column-view-label      the name, cut with an ellipsis
+ *   .mac-column-view-divider    the 1 pt line after each column; drag it to resize
+ *   .mac-column-view-preview    the preview column: a vertical scroll view
+ *   .mac-column-view-panel      the tinted panel at the top of a preview column
+ *
+ * States
+ *   [aria-selected="true"]      on a row: grey (unemphasised) in the columns on the path, the
+ *                               accent with white text in the column that holds focus, in a
+ *                               key window
+ *   [data-children]             on a row: the item opens a column; draws the triangle
+ *   [data-force~="focus"]       on the root: pins the emphasised look (docs, comparisons)
+ *   :focus-visible              on a list: focus ring inside the edge of the whole view
+ *
+ * Hooks
+ *   --mac-column-view-background   the columns' background (default: the control background)
+ */
+.mac-column-view {
+  background: var(--mac-column-view-background, var(--mac-color-control-background));
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* One ring for the whole view, whichever column holds the keyboard. */
+.mac-column-view:where(:has(.mac-column-view-list:focus-visible)) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+.mac-column-view:where(:where([data-window-state="main"], [data-window-state="inactive"]) *) {
+  outline: none;
+}
+
+.mac-column-view-column > .mac-column-view-list {
+  outline: none;
+}
+
+.mac-column-view-columns {
+  display: flex;
+}
+
+.mac-column-view-column,
+.mac-column-view-preview {
+  flex: none;
+}
+
+/* The slot's first point stays clear: the selection is 17 pt in an 18 pt pitch. */
+.mac-column-view-row {
+  --_arrow: var(--mac-color-label-secondary);
+
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 18px;
+  padding-inline: 7px 2px;
+  border-block-start: 1px solid transparent;
+  background-clip: padding-box;
+}
+
+.mac-column-view-row:where([aria-selected="true"]) {
+  background-color: var(--mac-color-selected-content-background-unemphasized);
+}
+
+.mac-column-view-list:where(:focus, [data-force~="focus"] [tabindex="0"]):not(
+    :where([data-window-state="main"], [data-window-state="inactive"]) *
+  )
+  .mac-column-view-row:where([aria-selected="true"]) {
+  --_arrow: var(--mac-column-view-arrow-emphasized);
+
+  background-color: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-content-text);
+}
+
+.mac-column-view-icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-inline-end: 3px;
+}
+
+.mac-column-view-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*
+ * The triangle: 6 x 7 pt with corners rounded by 0.75 pt, centred in the 18 pt slot, 2 pt
+ * from the column's edge. The mask is the shape; the colour is the token.
+ */
+.mac-column-view-row:where([data-children])::after {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 7px;
+  margin-inline-start: 4px;
+  translate: 0 -0.5px;
+  background: var(--_arrow);
+  mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 14'%3E%3Cpath d='M1.5 1.77 10.11 7 1.5 12.23Z' stroke='%23000' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E")
+    center / 100% 100% no-repeat;
+}
+
+.mac-column-view-row:where([data-children]):dir(rtl)::after {
+  scale: -1 1;
+}
+
+/* The line, and 2 pt on each side of it to take hold of. */
+.mac-column-view-divider {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: 1px;
+  background: var(--mac-column-view-divider);
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.mac-column-view-divider::before {
+  content: "";
+  position: absolute;
+  inset: 0 -2px;
+}
+
+/* The line under the panel is 1 pt: faint in its upper half, full in its lower half. */
+.mac-column-view-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  background:
+    linear-gradient(transparent -11%, var(--mac-column-view-panel-line) 75%) bottom / 100% 1px
+    no-repeat,
+    var(--mac-column-view-panel-fill);
+  text-align: center;
+}
+
+@media (forced-colors: active) {
+  .mac-column-view-row {
+    --_arrow: CanvasText;
+  }
+
+  /* As specific as the focused selection above, and after it: the system colours win. */
+  .mac-column-view-list .mac-column-view-row:where([aria-selected="true"]) {
+    --_arrow: HighlightText;
+
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+
+  .mac-column-view-divider {
+    background: CanvasText;
+  }
+}

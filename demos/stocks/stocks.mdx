@@ -1,0 +1,358 @@
+---
+title: Stocks
+description: The Stocks app of macOS 10.15, an iPad app in a Mac window with the watchlist in its sidebar and the business news or a symbol's chart beside it, built from the library alone.
+layout: full
+order: 100
+---
+
+<Example name="basic" />
+
+Click a symbol for its chart and figures, a green or red badge to change what every badge
+shows, and Business News or the Back button to return to the stories. The search field filters
+the watchlist. Nothing is fetched: the symbols, names, prices and changes are the ones the
+reference screenshot shows, and everything it does not hold (the course of each session, the
+longer histories, the figures under the chart) is computed from the symbol, the same on every
+load. Where Stocks shows news photographs the demo shows an abstract placeholder, and the
+publishers are text where Stocks shows their logos. On the desktop served by the Macalicious
+Ferrite application the quotes, charts and news are real and the watchlist is the person's own
+(see [On the Ferrite desktop](#on-the-ferrite-desktop)).
+
+## What it shows
+
+The source is `demos/stocks/`: `stocks.tsx` is the app, `stocks-data.ts` the quotes, the
+stories and what is computed from them, `stocks-artwork.tsx` the two drawings, `stocks.css` the
+layout and `stocks.tokens.css` the app's own colours.
+
+- A [Window](/components/window) that holds a [Catalyst Chrome](/components/catalyst-chrome):
+  the 38 pt toolbar row with the [Window Controls](/components/window-controls), the centred
+  title, which names the window, and a [Toolbar](/components/toolbar) with two
+  [Toolbar Buttons](/components/toolbar-button), 39 pt wide, whose glyphs are the library's
+  [System Images](/components/system-image) `go-back` and `share`. The row is the window's
+  drag region.
+- The sidebar is the chrome's `CatalystSidebar`, 330 pt wide, holding a custom column, as the
+  component allows. In Stocks its divider is half a point of shade where News has a full point
+  of grey: the sidebar's `divider="shade"`.
+- The search field is the library's [Search Field](/components/search-field) in its `sidebar`
+  variant, given the metrics and colours of the iOS field through the field's variables
+  (`SEARCH` in `stocks.tsx`): 28 pt tall with 4 pt corners, a flat fill and no edge. It is
+  controlled, and `matchesQuery` keeps the quotes whose symbol or name contains the text.
+- The watchlist is a `StockList` of [Stock Rows](/components/stock-row): the row draws the
+  symbol, the name, the sparkline from `data` and `previousClose`, the price and the badge.
+  `onSelect` makes the row a button, and `selected` marks the symbol that is shown;
+  `onBadgeClick` makes the badge a button of its own, with `badgeLabel` saying what a click
+  will show. One piece of state, the badge mode, feeds every row.
+- The stories are in a [Card Grid](/components/card-grid) with two columns, named by the
+  heading above it. The story itself is the app's own element (`Story` in `stocks.tsx`): an
+  `article` with a picture, the publisher, the headline as a heading and the story's age, in
+  four layouts (`lead`, `beside`, `card`, `compact`) that one attribute chooses.
+- A symbol's view has a [Segmented Control](/components/segmented-control) for the chart's
+  range, the chart (an inline SVG drawn as the stock row draws its sparkline, in the stock
+  row's colours), and the figures as a description list.
+- The Share button opens a [Menu](/components/menu) of [Menu Items](/components/menu-item).
+- An [Empty State](/components/empty-state) takes the list's place when the search matches
+  nothing.
+- The type of the content is the chrome's (`--mac-catalyst-chrome-font-*`), with the feed's
+  own larger sizes in `stocks.css`.
+
+| Control | What it does |
+| --- | --- |
+| A row of the watchlist | Shows that symbol beside the sidebar: its price and change, the chart, eight figures and four stories, those about the symbol first. |
+| A badge | Changes what every badge shows: the change in price, the change in percent, then the market capitalisation. An index has no capitalisation and keeps its percentage. |
+| Business News | Shows the stories again. It is the lighter cell while they are shown. |
+| Back | The same, from the toolbar. Unavailable while the stories are shown, as captured. |
+| Share | A menu that copies the symbol, or the symbol and its price, to the clipboard. Unavailable while the stories are shown, as captured. |
+| Search | Filters the watchlist as you type; Escape empties it. The symbol that is shown stays shown. |
+| 1D to 2Y | The chart's range. The day is measured against the previous close, drawn dashed; a longer range against its first price. The range stays when another symbol is chosen. |
+
+`Stocks` takes a `market`: the quotes, how far the session has run, and the feed.
+`stocks-data.ts` exports the two markets of the reference screenshots. `lightMarket`, the
+default, is a finished session with Disney down and a lead story across the column;
+`darkMarket` is the next morning, less than half a session in, with General Electric down and
+a lead story that has its text beside the picture.
+
+## Hosting the window
+
+<Example name="hosted" />
+
+`Stocks` renders the library's `Window` as its root and passes every `Window` prop to it, so it
+does not assume it fills the page. Place it with `style`; a window manager gives it `state`,
+the size, and eight more props that the component hands to the window controls and to the
+toolbar row, which is this window's drag region. These are the props a
+[Managed Window](/components/managed-window)'s `render` form supplies, so the component can be
+spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { app } from "./app";
+
+<ManagedWindow
+  id={app.id}
+  title={app.name}
+  resizable={app.resizable}
+  minWidth={app.minSize.width}
+  minHeight={app.minSize.height}
+  defaultFrame={{ x: 80, y: 60, ...app.defaultSize }}
+  render={(props) => <app.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `market` | `StocksMarket` | The quotes and the feed; `lightMarket` by default. |
+| `history` | `(stock, range) => StockHistory \| undefined` | The prices and labels of a chart; computed by the demo when left out or `undefined`. |
+| `onSymbolChange`, `onRangeChange`, `onQueryChange` | functions | Called with the symbol shown (`undefined` for the news), the chart's range and the search field's text. |
+| `searchResults` | `StockSearchResult[] \| null` | Symbols found for the search, listed under the watchlist to be added. |
+| `onAddSymbol`, `onRemoveSymbol` | `(symbol: string) => void` | Add a found symbol; remove one (the Share menu's Remove from Watchlist, Edit > Delete, a row's menu and Edit mode's remove buttons). With `onRemoveSymbol` or `onMoveSymbol` the footer offers Edit. |
+| `onRefresh` | `() => void` | Asks for the quotes and the news again: View > Refresh. Dimmed without it. |
+| `keptView` | `StocksKeptView` | The last symbol, range and badge and whether the sidebar was hidden, shown until the person chooses otherwise. May arrive after the window opens. |
+| `onBadgeModeChange` | `(mode: BadgeMode) => void` | Called when a row's badge is clicked. |
+| `onSidebarShownChange` | `(shown: boolean) => void` | Called when View > Show Sidebar or Hide Sidebar is chosen. |
+| `alerts` | `StockAlert[]` | Price alerts, shown in their symbol's detail view; none by default. |
+| `onAddAlert`, `onRemoveAlert` | functions | With `onAddAlert` the detail view offers the alert form. |
+| `footer` | `ReactNode` | The line at the watchlist's foot; `"Sample data"` by default. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `CatalystChrome`: a press with the primary button, or a double click, on the toolbar row that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 1148 by 803 by default, as captured. |
+| `state` | `"key" \| "main" \| "inactive"` | The window's state. |
+| the rest | `WindowProps` | `fullScreen`, `style`, `className`, `ref`, pointer and focus events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `stocksApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (1148 by 803), `minSize` (700 by 420), `resizable` and
+`menus`, the menu titles after the Apple menu. The [Desktop](/demos/desktop) finds it there, so
+Stocks is in its Dock.
+
+### On the Ferrite desktop
+
+`component` is `DesktopStocks` (`stocks-desktop.tsx`). On the desktop that the
+`macalicious-desktop` Ferrite application serves, it asks the application's Stocks module
+(`ferrite-apps/desktop/src/apps/stocks`), which fetches market data through the application's
+declared egress from one provider behind a small interface (`provider.rs`). The provider is
+CNBC's public quote, chart, symbol and RSS services, which need no key, so live quotes are on
+and no secret is needed; a keyed provider (Finnhub or Polygon, say, with its key as a Ferrite
+secret) can replace it without a change to the window. These services are not a licensed data
+feed, promise no service and their terms were not checked for redistribution, so a deployment
+with real traffic should switch. Every provider call is bounded: it gives up after at most 5
+seconds, inside the 8-second API deadline, and refuses an answer over 1 MiB.
+
+- The watchlist is the person's own, kept on the server; it starts as the Dow, the S&P 500,
+  the Nasdaq Composite and Apple. Typing in the search field lists symbols to add, and the
+  Share menu removes the one shown.
+- Quotes refresh every minute. A page of quotes is one provider call for every symbol not
+  already kept, and each quote is kept for everyone for a minute; only one quotes call is on
+  its way at a time for the whole application, and a request that finds it on its way waits
+  for its quotes. A symbol the provider does not know is kept as unknown for the minute too.
+  So however many windows are open, a symbol costs the provider at most one call a minute. Charts are kept for two minutes (the day) or an hour, symbol searches for a
+  day and the news for ten minutes, for everyone. The sparklines are each symbol's day,
+  the detail chart is the chosen range (the week is five sessions; two years are cut from five),
+  and the figures are the provider's: open, high, low, volume, P/E, market cap and the 52-week
+  range.
+- Business News is the provider's Business News and Earnings feeds; a headline opens the story
+  in the window with what the feed says of it, and its button opens the whole story on its site,
+  in Safari. A symbol's view leads with the stories that name it or its company.
+- Price alerts: the detail view sets an alert above or below a price. The server checks it
+  against every quote it fetches for the person, and when Notification Center or the window
+  asks for the alerts, and it fires once.
+
+When the provider cannot be reached the window says so and keeps what it last showed; the server
+answers 502 and makes nothing up. On every other page the window is the demo described above
+and requests nothing.
+
+At other sizes the sidebar keeps its 330 pt, the 493 pt column stays centred in the pane and
+narrows once the pane is narrower than it, and both the watchlist and the pane scroll; the
+footer stays at the sidebar's foot.
+
+## Styling hooks
+
+The demo's measured lengths are custom properties in `stocks.tokens.css`, each tagged
+measured or provisional with the place it was read; `stocks.css` reads them with `var()`. Set
+one on the window or an ancestor to change that measure. The class names are listed at the
+head of `stocks.css`.
+
+| Property | Default | Controls |
+| --- | --- | --- |
+| `--mac-stocks-search-height` | `38.5px` | Search block: height |
+| `--mac-stocks-search-padding` | `5px 12.5px 0 12.25px` | Search block: padding |
+| `--mac-stocks-news-cell-height` | `49px` | Business News cell: height |
+| `--mac-stocks-news-cell-padding` | `7.4px 13.5px 0` | Business News cell: padding |
+| `--mac-stocks-news-cell-title-font-size` | `14px` | Business News title: font size |
+| `--mac-stocks-news-cell-title-line-height` | `17px` | Business News title: line height |
+| `--mac-stocks-news-cell-source-margin-top` | `2.3px` | "From News": margin top |
+| `--mac-stocks-news-cell-source-font-size` | `12px` | "From News": font size |
+| `--mac-stocks-news-cell-source-line-height` | `15px` | "From News": line height |
+| `--mac-stocks-news-glyph-margin-inline` | `1px 2px` | News mark: margin inline |
+| `--mac-stocks-news-glyph-vertical-align` | `-1px` | News mark: vertical align |
+| `--mac-stocks-footer-height` | `39px` | Footer: height |
+| `--mac-stocks-footer-padding` | `13.5px 12.5px 0` | Footer: padding |
+| `--mac-stocks-footer-font-size` | `10px` | Footer: font size |
+| `--mac-stocks-footer-line-height` | `12px` | Footer: line height |
+| `--mac-stocks-footer-letter-spacing` | `0.04em` | Footer: letter spacing |
+| `--mac-stocks-feed-width` | `493px` | News column: width |
+| `--mac-stocks-feed-inset` | `24px` | News column: least inset from the pane's sides |
+| `--mac-stocks-feed-centre-offset` | `245.5px` | News column: start, as half the pane less this |
+| `--mac-stocks-feed-padding` | `14.7px 0 24px` | News column: padding |
+| `--mac-stocks-title-margin-bottom` | `15.3px` | Large title: margin bottom |
+| `--mac-stocks-title-font-size` | `36px` | Large title: font size |
+| `--mac-stocks-title-line-height` | `43px` | Large title: line height |
+| `--mac-stocks-story-art-radius` | `3px` | Story picture: radius |
+| `--mac-stocks-story-publisher-margin-top` | `6.9px` | Publisher: margin top |
+| `--mac-stocks-story-publisher-font-size` | `11px` | Publisher: font size |
+| `--mac-stocks-story-publisher-line-height` | `13px` | Publisher: line height |
+| `--mac-stocks-story-publisher-letter-spacing` | `0.02em` | Publisher: letter spacing |
+| `--mac-stocks-story-headline-margin-top` | `8.8px` | Headline: margin top |
+| `--mac-stocks-story-headline-font-size` | `13px` | Headline: font size |
+| `--mac-stocks-story-headline-line-height` | `16.5px` | Headline: line height |
+| `--mac-stocks-story-summary-margin-top` | `4.5px` | Summary: margin top |
+| `--mac-stocks-story-summary-font-size` | `11.5px` | Summary: font size |
+| `--mac-stocks-story-summary-line-height` | `13.4px` | Summary: line height |
+| `--mac-stocks-story-age-margin-top` | `7.7px` | Age: margin top |
+| `--mac-stocks-story-age-font-size` | `11px` | Age: font size |
+| `--mac-stocks-story-age-line-height` | `13px` | Age: line height |
+| `--mac-stocks-story-lead-margin-bottom` | `16.1px` | Lead story: margin bottom |
+| `--mac-stocks-story-lead-publisher-margin-top` | `6.4px` | Lead story publisher: margin top |
+| `--mac-stocks-story-lead-headline-margin-top` | `9.8px` | Lead story headline: margin top |
+| `--mac-stocks-story-lead-headline-font-size` | `20.5px` | Lead story headline: font size |
+| `--mac-stocks-story-lead-headline-line-height` | `24px` | Lead story headline: line height |
+| `--mac-stocks-story-beside-column-gap` | `13px` | Lead beside its picture: column gap |
+| `--mac-stocks-story-beside-margin-bottom` | `16px` | Lead beside its picture: margin bottom |
+| `--mac-stocks-story-beside-publisher-margin-top` | `3.4px` | Lead beside its picture, publisher: margin top |
+| `--mac-stocks-story-beside-headline-margin-top` | `6px` | Lead beside its picture, headline: margin top |
+| `--mac-stocks-story-beside-age-padding-top` | `7.7px` | Lead beside its picture, age: padding top |
+| `--mac-stocks-story-compact-picture-width` | `104px` | Compact story picture: width |
+| `--mac-stocks-story-compact-column-gap` | `12px` | Compact story: column gap |
+| `--mac-stocks-heading-margin` | `24px 0 12px` | Detail view heading: margin |
+| `--mac-stocks-quote-price-margin` | `10px 0 14px` | Price: margin |
+| `--mac-stocks-quote-last-margin-inline-end` | `6px` | Last price: margin inline end |
+| `--mac-stocks-chart-margin-top` | `14px` | Chart: margin top |
+| `--mac-stocks-chart-plot-height` | `168px` | Chart plot: height |
+| `--mac-stocks-chart-scale-width` | `48px` | Chart scale column: width |
+| `--mac-stocks-chart-scale-inset-block` | `2px` | Chart scale: inset block |
+| `--mac-stocks-chart-scale-font-size` | `10px` | Chart scale: font size |
+| `--mac-stocks-chart-scale-line-height` | `12px` | Chart scale: line height |
+| `--mac-stocks-chart-times-padding-top` | `4px` | Chart times: padding top |
+| `--mac-stocks-chart-times-font-size` | `11px` | Chart times: font size |
+| `--mac-stocks-chart-times-line-height` | `13px` | Chart times: line height |
+| `--mac-stocks-figures-min-width` | `104px` | Figures: least column width |
+| `--mac-stocks-figures-column-gap` | `18px` | Figures: column gap |
+| `--mac-stocks-figures-margin-top` | `16px` | Figures: margin top |
+| `--mac-stocks-figure-gap` | `8px` | Figure: gap |
+| `--mac-stocks-figure-padding-block` | `6px` | Figure: padding block |
+| `--mac-stocks-results-padding` | `12px 12.5px` | Found symbols under the watchlist: padding (provisional) |
+| `--mac-stocks-results-title-margin-bottom` | `6px` | Found symbols' title: margin bottom (provisional) |
+| `--mac-stocks-result-padding-block` | `4px` | A found symbol or an alert: padding block (provisional) |
+| `--mac-stocks-alerts-margin-block` | `16px` | Price alerts: margin block (provisional) |
+| `--mac-stocks-alert-form-margin-top` | `8px` | The alert form: margin top (provisional) |
+| `--mac-stocks-alert-price-width` | `96px` | The alert form's price field: width (provisional) |
+
+Classes of the parts the Ferrite desktop adds: `.mac-stocks-story-link` (a headline's link),
+`.mac-stocks-results`, `.mac-stocks-results-title`, `.mac-stocks-result-list`,
+`.mac-stocks-result`, `.mac-stocks-result-text`, `.mac-stocks-result-symbol` and
+`.mac-stocks-result-name` (found symbols), and `.mac-stocks-alerts`, `.mac-stocks-alert-list`,
+`.mac-stocks-alert` (`[data-fired]` once it has fired), `.mac-stocks-alert-form` and
+`.mac-stocks-alert-price` (price alerts).
+
+## Accessibility
+
+- The window is a `region` named by its title, "Stocks". The toolbar is one tab stop; the
+  arrow keys move between Back and Share, which show only a glyph and are named with
+  `aria-label`. While they are unavailable they stay focusable and say so with
+  `aria-disabled`.
+- The sidebar is a `navigation` landmark named "Watchlist". Business News is a button with
+  `aria-current="page"` while the stories are shown; the mark before "News" is decorative.
+- The watchlist is a list named "Symbols". Each row is a button named by its symbol, its name,
+  the trend of its sparkline ("Trending up") and its price, with `aria-current` on the one
+  that is shown; Up and Down choose the row above or below, Home and End move between the rows,
+  and Return or Space chooses.
+  The badge is a second button in the tab order, named by what it says and what a click will
+  show: "+1.86, show percent change".
+- The search field is a `searchbox` named "Search". The list is not a live region: the number
+  of matches is not announced.
+- The pane's title is a heading, and each story an `article` whose headline is a heading one
+  level below. The pictures are hidden from assistive technology. Stories are not links: the
+  demo has no article to open.
+- The chart is an image named by what it shows: "AAPL, today: from 218.96 to 220.82, +0.85%".
+  Its scale and the labels under it are hidden, since the name carries the range's ends. The
+  figures are a description list.
+- The ranges are toggle buttons in a group named "Range".
+- A symbol that is down is red and one that is up green, in the rows and in the chart; the
+  sign of the change says the same in text. The change beside the price uses a darker green
+  and red than the badges, to keep its contrast as text on the pane.
+
+## Fidelity
+
+`stocks.visual.json` compares the demo with the two Stocks screenshots, the whole capture with
+the window's shadow in each appearance: once with only the pictures masked (`window-light`,
+`window-dark`), and once with the text and the stand-in glyphs masked as well
+(`window-layout-light`, `window-layout-dark`). The pictures are masked in all four: the
+captures have news photographs there and the demo a placeholder, and the comparison is of
+Catalina's chrome and layout, not of third-party pictures. The masks of the layout comparisons
+also cover the window's title and the two toolbar glyphs; the search field's glass and
+placeholder; the two lines of the Business News cell; in each row the symbol and name, the
+sparkline, the price and the text of the badge; the footer's text; the feed's title; and the
+text of every story. The frame and its shadow, the toolbar and its bezels, the sidebar's fills
+and lines, the badges and the divider are scored. The Dark Aqua comparisons render
+`darkMarket`.
+
+Scores from `npm run visual -- stocks/` (Chromium on Linux, fallback font), share of pixels
+that differ and mean colour distance out of 255:
+
+| Comparison | 1x | 2x |
+| --- | --- | --- |
+| `window-light` | 3.9%, 4.9 | 3.4%, 4.9 |
+| `window-layout-light` | 0.25%, 0.37 | 0.24%, 0.48 |
+| `window-dark` | 4.0%, 4.5 | 3.6%, 4.7 |
+| `window-layout-dark` | 0.24%, 0.47 | 0.13%, 0.61 |
+
+The budgets in `stocks.visual.json` are set just above these. What the whole-window scores
+hold beyond the layout scores is text: the fallback font, and the publishers' names where the
+capture has logos.
+
+Taken from the spec's measurements of the screenshots and laid out to them: the 1148 by 803 pt
+frame; the two 39 pt toolbar buttons 77.5 pt from the leading and 7.5 pt from the trailing
+edge; the 330 pt sidebar with the 305 by 28 pt search field 5 pt under the toolbar, the line
+at 76 pt, the Business News cell under it and the ten rows from 125.5 pt; the footer's line
+39 pt above the window's foot; the 493 pt column centred in the pane, its title's cap top at
+61.5 pt, the lead picture at 111 pt (493 by 277), the two-up pictures at 502 pt (234.5 by
+175.5, 24 pt apart) and the next row at 776 pt; and for the Dark Aqua feed the 299 by 224 pt
+lead picture with its text beside it and the rows of pictures from 351 and 625 pt. The colours
+that are the app's own are in `stocks.tokens.css`, each with the place it was measured.
+
+What differs, and why:
+
+- **Pictures.** The photographs belong to their publishers and are not reproduced, nor
+  imitated: every story shows the same abstract placeholder, a flat panel with the usual mark
+  for a picture, in greys that are the demo's own. The pictures' boxes are at the captures'
+  places and sizes, and they are masked in every comparison, so their place is held by the
+  text and the rows around them, not scored itself.
+- **Publishers.** Stocks shows each publisher's logo; the demo writes its name in small
+  capitals.
+- **"From News".** The cell shows Apple's logo before "News"; the demo draws a folded sheet.
+- **Footer.** The capture has the wordmark of the data's provider; the demo says "Sample
+  data", which is what it is.
+- **Sparklines and prices.** The prices and changes are the captures'. The sessions behind the
+  sparklines are computed, so each line has the capture's direction and end points but not its
+  course.
+- **Text.** Set in the fallback font off Apple devices. It is wider than San Francisco at the
+  bold weights, so a headline can break a word earlier than in the capture, and the stock
+  row cuts the longest company name with an ellipsis where the capture shows it whole.
+- **Headline sizes.** The spec gives 15.5 pt for the two-up headlines from their cap height.
+  At that size the capture's lines do not fit the column; 13 pt on the measured 16.5 pt pitch
+  does (the iOS headline style at 77%), and that is what the demo sets. The lead headline is
+  the spec's 20.5 pt on a 24 pt pitch.
+- **Toolbar in Dark Aqua.** The bar matches the capture to within two levels down its height:
+  the demo's column runs from `#3f4041` at the top to `#353637` at the bottom where the
+  capture's runs from `#3e3f41` to `#343537` (sampled in the `window-dark` comparison at 1x).
+  The six to eight levels of difference this page used to record are gone; the demo does not
+  restyle the bar.
+- **Row separators and the search field's edge.** The capture's hairlines fall across two
+  device pixel rows; the stock row draws them on one. The capture's field has a soft edge row
+  the flat fill does not have.
+- **Cut-off stories.** The Aqua capture shows only the first words of its last two stories and
+  the Dark Aqua capture only the pictures of its last two; the rest of those headlines, and
+  those two stories' publishers and ages, are the demo's.
+- **Not in a screenshot (provisional):** the whole view of a symbol (its head, the ranges, the
+  chart, the figures and its stories), the menu of the Share button, a selected or pressed
+  row, the list while it is filtered or empty, the window when it is not key and every size
+  other than the captured one.
+- **Not built in the demo:** a story's whole text (the reader holds what the feed gives), editing the watchlist, live or delayed quotes, the chart's
+  scrubbing, and the layout Stocks takes in a narrow window.

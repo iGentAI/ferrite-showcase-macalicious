@@ -1,0 +1,775 @@
+/*
+ * Reminders demo: the layout of the window and the application's own elements. Every control
+ * is a library component; this file places them and draws what only Reminders has.
+ *
+ * Parts
+ *   .mac-reminders               the window
+ *   .mac-reminders-split         the split view, filling it
+ *   .mac-reminders-sidebar-pane  the sidebar column
+ *   .mac-reminders-top           the sidebar's header, over its lists: window controls, search
+ *                                field, and the library's smart-list tiles
+ *   .mac-reminders-sidebar       the library sidebar, filling the column
+ *   .mac-reminders-disc          the 22 pt coloured disc of a list
+ *   .mac-reminders-group-glyph   the folder of a group of lists, in a disc's place
+ *   .mac-reminders-pane          the list column
+ *   .mac-reminders-header        New Reminder button, title and count
+ *   .mac-reminders-list          the list view
+ *   .mac-reminders-leading       the list view's leading accessory, around the circle
+ *   .mac-reminders-circle        a reminder's round checkmark
+ *   .mac-reminders-disclosure    the triangle of a reminder with sub-reminders
+ *   .mac-reminders-day           a heading of Scheduled
+ *   .mac-reminders-drop          what a drag over a row would do
+ *   .mac-reminders-text          a reminder's title
+ *   .mac-reminders-line          a prioritised reminder's marks and title, side by side
+ *   .mac-reminders-priority      the marks of its priority: !, !! or !!!
+ *   .mac-reminders-due           when it is due, under its title (the list view's detail line)
+ *   .mac-reminders-thumbnail     the first picture of a reminder that has any, under its title
+ *   .mac-reminders-picture       a real picture, in a thumbnail or the pop-up button
+ *   .mac-reminders-field         the field that edits it
+ *   .mac-reminders-origin        the list a reminder is from, in a smart list or a search
+ *   .mac-reminders-hidden        text for assistive technology only
+ *   .mac-reminders-alerts        the alerts of reminders that fell due, under the menu bar
+ *   .mac-reminders-tool-panels   the Spelling and Substitutions panels, over every window
+ *   .mac-reminders-lists-menu    the sidebar as the trigger of the lists' contextual menu
+ *   .mac-reminders-shared-accessory, .mac-reminders-owner
+ *                                a shared list's owner and count, after its name
+ *   .mac-reminders-share         the Share List popover: its title, people, form, Stop
+ *                                Sharing and error
+ *   .mac-reminders-list-info     a list's Info popover: name, colour swatches, Cancel and OK
+ *   .mac-reminders-swatch        one colour of it ([aria-pressed] the list's colour)
+ *
+ * States
+ *   [data-color]                 the list's colour: sets --_tint, which a smart-list tile
+ *                                is given as its tint
+ *   [data-completed]             on a circle and a title
+ *   [data-overdue]               on a due line whose day or minute has passed
+ */
+.mac-reminders [data-color="blue"],
+.mac-reminders-list-info [data-color="blue"] {
+  --_tint: var(--mac-color-system-blue);
+}
+
+.mac-reminders [data-color="red"],
+.mac-reminders-list-info [data-color="red"] {
+  --_tint: var(--mac-color-system-red);
+}
+
+.mac-reminders [data-color="orange"],
+.mac-reminders-list-info [data-color="orange"] {
+  --_tint: var(--mac-color-system-orange);
+}
+
+.mac-reminders [data-color="yellow"],
+.mac-reminders-list-info [data-color="yellow"] {
+  --_tint: var(--mac-color-system-yellow);
+}
+
+.mac-reminders [data-color="green"],
+.mac-reminders-list-info [data-color="green"] {
+  --_tint: var(--mac-reminders-green);
+}
+
+.mac-reminders [data-color="purple"],
+.mac-reminders-list-info [data-color="purple"] {
+  --_tint: var(--mac-color-system-purple);
+}
+
+.mac-reminders [data-color="brown"],
+.mac-reminders-list-info [data-color="brown"] {
+  --_tint: var(--mac-color-system-brown);
+}
+
+.mac-reminders [data-color="gray"],
+.mac-reminders-list-info [data-color="gray"] {
+  --_tint: var(--mac-reminders-gray);
+}
+
+.mac-reminders-split {
+  flex: 1 1 auto;
+}
+
+.mac-reminders-sidebar {
+  height: 100%;
+}
+
+/* The sidebar's header: 223 pt over the lists, which scroll under it. The tiles start 16.5 pt
+   under the 21 pt search field, at y 180 at 2x. */
+.mac-reminders-top {
+  position: relative;
+  display: grid;
+  flex: none;
+  gap: var(--mac-reminders-top-gap);
+  box-sizing: border-box;
+  height: var(--mac-reminders-top-height);
+  padding: var(--mac-reminders-top-padding);
+  align-content: start;
+}
+
+/* The window controls float over the header: the close button's centre is 19 pt in. */
+.mac-reminders-controls {
+  position: absolute;
+  inset-block-start: var(--mac-reminders-controls-inset);
+  inset-inline-start: var(--mac-reminders-controls-inset);
+}
+
+/* The field's edges are half a point inside the tiles'. Its height, 21 pt, is set through
+   the field's hook in reminders.tsx: y 105 to 146 at 2x in both captures. */
+.mac-reminders-search {
+  width: calc(100% - 2 * var(--mac-reminders-search-margin-inline));
+  margin-inline: var(--mac-reminders-search-margin-inline);
+}
+
+/* A list's row while reminders are dragged over it: ringed, as Mail rings a mailbox's.
+   [provisional: no capture shows a drag] */
+.mac-reminders :where([data-drop-edge="into"]),
+.mac-reminders :where([data-drop-target]) {
+  outline: var(--mac-reminders-swatch-ring) solid var(--mac-color-selected-content-background);
+  outline-offset: calc(-1 * var(--mac-reminders-swatch-ring));
+}
+
+.mac-reminders-disc {
+  display: flex;
+  flex: none;
+  width: var(--mac-reminders-disc-size);
+  height: var(--mac-reminders-disc-size);
+  border-radius: 50%;
+  background: var(--_tint);
+  color: var(--mac-reminders-glyph);
+}
+
+/* A group's row: a folder where a list has its disc. */
+.mac-reminders-group-glyph {
+  display: flex;
+  flex: none;
+  width: var(--mac-reminders-disc-size);
+  height: var(--mac-reminders-disc-size);
+  color: var(--mac-color-label-secondary);
+}
+
+/* A sidebar row with a list or group dragged to its edge: a line there. */
+.mac-reminders :where([data-drop-edge="before"]) {
+  box-shadow: inset 0 var(--mac-reminders-swatch-ring) var(--mac-color-selected-content-background);
+}
+
+.mac-reminders :where([data-drop-edge="after"]) {
+  box-shadow: inset 0 calc(-1 * var(--mac-reminders-swatch-ring))
+    var(--mac-color-selected-content-background);
+}
+
+/* List column */
+.mac-reminders-pane {
+  display: flex;
+  flex-direction: column;
+  background: var(--mac-color-control-background-tinted);
+}
+
+/* 94 pt over the first reminder: the button 7.5 pt from the top and the right, the title's
+   ink 17 pt from the left and the count's 18.5 pt from the right. */
+.mac-reminders-header {
+  position: relative;
+  display: flex;
+  flex: none;
+  gap: var(--mac-reminders-header-gap);
+  align-items: baseline;
+  box-sizing: border-box;
+  height: var(--mac-reminders-header-height);
+  padding: var(--mac-reminders-header-padding);
+  color: var(--_tint);
+}
+
+.mac-reminders-add {
+  position: absolute;
+  inset-block-start: var(--mac-reminders-add-inset);
+  inset-inline-end: var(--mac-reminders-add-inset);
+  width: var(--mac-reminders-add-width);
+}
+
+/* The plus sits 1.5 pt under the centre of the button's title box. */
+.mac-reminders-plus {
+  position: relative;
+  inset-block-start: var(--mac-reminders-plus-offset);
+}
+
+.mac-reminders-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  font:
+    800 var(--mac-reminders-title-font-size) / var(--mac-reminders-title-line-height)
+    var(--mac-font-family-system);
+  letter-spacing: var(--mac-reminders-title-letter-spacing);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-reminders-count {
+  flex: none;
+  font:
+    300 var(--mac-reminders-count-font-size) / var(--mac-reminders-count-line-height)
+    var(--mac-font-family-system);
+}
+
+.mac-reminders-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  background: none;
+}
+
+.mac-reminders-empty {
+  flex: 1 1 auto;
+}
+
+/* A sub-reminder stands one step further in, its circle with it. */
+.mac-reminders-list [role="option"]:has(> .mac-reminders-leading[data-depth="1"]) {
+  padding-inline-start: calc(var(--_inset) + var(--mac-reminders-sub-indent));
+}
+
+/* A parent's triangle, in the gutter before its circle. */
+.mac-reminders-leading {
+  position: relative;
+}
+
+.mac-reminders-disclosure {
+  position: absolute;
+  inset-inline-start: var(--mac-reminders-disclosure-inset);
+}
+
+/* A heading of Scheduled: the day, in the list's own row, which no one selects. */
+.mac-reminders-day {
+  grid-column: 1 / -1;
+  align-self: end;
+  margin-block: 0;
+  margin-inline-start: calc(var(--mac-reminders-day-inset) - var(--_inset));
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-headline);
+}
+
+/* A row with reminders dragged over it: ringed to take them in, a line at the edge to go beside
+   it. [provisional: no capture shows a drag] */
+.mac-reminders-list [role="option"]:has(> .mac-reminders-drop) {
+  position: relative;
+}
+
+.mac-reminders-drop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mac-reminders-drop:where([data-place="into"]) {
+  outline: var(--mac-reminders-swatch-ring) solid var(--mac-color-selected-content-background);
+  outline-offset: calc(-1 * var(--mac-reminders-swatch-ring));
+}
+
+.mac-reminders-drop:where([data-place="before"]) {
+  border-block-start: var(--mac-reminders-swatch-ring) solid
+    var(--mac-color-selected-content-background);
+}
+
+.mac-reminders-drop:where([data-place="after"]) {
+  border-block-end: var(--mac-reminders-swatch-ring) solid
+    var(--mac-color-selected-content-background);
+}
+
+/* 18 pt with a 1 pt ring, 17 pt from the edge: 1 pt right of and half a point above the
+   centre of the gutter, as in the list view's own Reminders comparison. */
+.mac-reminders-circle {
+  box-sizing: border-box;
+  width: var(--mac-reminders-circle-size);
+  height: var(--mac-reminders-circle-size);
+  margin: var(--mac-reminders-circle-margin);
+  border: 1px solid var(--mac-color-label-secondary);
+  border-radius: 50%;
+}
+
+/* Completed: the ring and a disc inside it in the list's colour. */
+.mac-reminders-circle:where([data-completed]) {
+  border-color: var(--_tint);
+  background: radial-gradient(
+    circle closest-side,
+    var(--_tint) var(--mac-reminders-circle-dot-radius),
+    transparent var(--mac-reminders-circle-dot-edge)
+  );
+}
+
+.mac-reminders-text {
+  grid-column: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mac-reminders-text:where([data-completed]) {
+  color: var(--mac-color-label-secondary);
+}
+
+/* A prioritised reminder: its marks in its list's colour, then its title. */
+.mac-reminders-line {
+  display: flex;
+  grid-column: 2;
+  gap: var(--mac-reminders-priority-gap);
+  align-items: baseline;
+  min-width: 0;
+}
+
+.mac-reminders-line > .mac-reminders-text {
+  min-width: 0;
+}
+
+.mac-reminders-priority {
+  flex: none;
+  color: var(--_tint);
+}
+
+/* When it is due, in the list view's detail line: red once its day or its minute has passed.
+   The circle and the info mark stay beside the title. */
+.mac-reminders-list .mac-reminders-due:where([data-overdue]) {
+  color: var(--mac-color-system-red);
+}
+
+.mac-reminders-leading:has(~ .mac-reminders-due),
+.mac-reminders-due ~ .mac-reminders-trailing {
+  grid-row: 1;
+}
+
+.mac-reminders-field {
+  grid-column: 2;
+  width: 100%;
+}
+
+.mac-reminders-trailing {
+  gap: var(--mac-reminders-trailing-gap);
+}
+
+/* A picture under the title: 43 x 28 pt, 5.5 pt below the title's line, in a 70 pt row whose
+   circle and info mark stay beside the title. */
+.mac-reminders-thumbnail {
+  display: grid;
+  grid-column: 2;
+  place-items: center;
+  width: var(--mac-reminders-thumbnail-width);
+  height: var(--mac-reminders-thumbnail-height);
+  margin-block: var(--mac-reminders-thumbnail-margin-block);
+  border-radius: var(--mac-reminders-thumbnail-radius);
+  background: var(--mac-color-label-quaternary);
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-reminders-picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+.mac-reminders-leading:has(~ .mac-reminders-thumbnail),
+.mac-reminders-thumbnail ~ .mac-reminders-trailing {
+  grid-row: 1;
+}
+
+.mac-reminders-origin {
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-reminders-lists-menu {
+  display: contents;
+}
+
+/* A shared list's owner, before its count. */
+.mac-reminders-shared-accessory {
+  display: inline-flex;
+  gap: var(--mac-reminders-shared-gap);
+  align-items: baseline;
+}
+
+.mac-reminders-owner {
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-subheadline);
+}
+
+/* Share List: the people on the list, then the field that adds one by account name. */
+.mac-reminders-share {
+  width: var(--mac-reminders-share-width);
+}
+
+.mac-reminders-share-title {
+  margin: 0 0 var(--mac-reminders-share-gap);
+  overflow: hidden;
+  color: var(--mac-color-text);
+  font: var(--mac-font-headline);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-reminders-share-people {
+  display: grid;
+  row-gap: var(--mac-reminders-share-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-reminders-share-person {
+  display: flex;
+  gap: var(--mac-reminders-share-gap);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mac-reminders-share-name {
+  display: grid;
+  min-width: 0;
+  color: var(--mac-color-text);
+  font: var(--mac-font-body);
+}
+
+.mac-reminders-share-line {
+  margin-block: var(--mac-reminders-share-gap);
+}
+
+.mac-reminders-share-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--mac-reminders-share-gap);
+  align-items: center;
+}
+
+.mac-reminders-share-hint {
+  grid-column: 1 / -1;
+}
+
+.mac-reminders-share-stop {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mac-reminders-share-error {
+  margin: var(--mac-reminders-share-gap) 0 0;
+  color: var(--mac-color-system-red);
+  font: var(--mac-font-subheadline);
+}
+
+/* A list's Info: its name and colour, with Cancel and OK. It takes the Share popover's width,
+   gaps and title. */
+.mac-reminders-list-info {
+  width: var(--mac-reminders-share-width);
+}
+
+.mac-reminders-list-info-form {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--mac-reminders-share-gap);
+  align-items: center;
+}
+
+.mac-reminders-list-info-wide {
+  grid-column: 1 / -1;
+}
+
+.mac-reminders-list-info .mac-reminders-share-error {
+  margin: 0;
+}
+
+.mac-reminders-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-reminders-swatch-gap);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.mac-reminders-swatch {
+  width: var(--mac-reminders-swatch-size);
+  height: var(--mac-reminders-swatch-size);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--_tint);
+  cursor: default;
+}
+
+.mac-reminders-swatch[aria-pressed="true"] {
+  outline: var(--mac-reminders-swatch-ring) solid var(--mac-color-label-secondary);
+  outline-offset: var(--mac-reminders-swatch-ring);
+}
+
+.mac-reminders-swatch:focus-visible {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+.mac-reminders-list-info-buttons {
+  display: flex;
+  gap: var(--mac-reminders-share-gap);
+  justify-content: flex-end;
+}
+
+/* The info mark: shown in the selected row, in the row under the pointer and while its
+   popover is open. Its ring's right edge is 18 pt from the list's edge. */
+.mac-reminders-info-mark {
+  display: flex;
+  margin-inline-end: var(--mac-reminders-info-mark-margin-inline-end);
+  color: var(--mac-color-system-blue);
+  opacity: 0;
+}
+
+.mac-reminders-list [role="option"]:where(:hover, [aria-selected="true"]) .mac-reminders-info-mark,
+.mac-reminders-info-mark:where([data-open]) {
+  opacity: 1;
+}
+
+/*
+ * Info popover: 290 pt wide. A 72.5 pt column of right-aligned labels, 11.5 pt, then the
+ * controls; the title, the notes and the separators are 14 pt from each side.
+ */
+.mac-reminders-info {
+  width: var(--mac-reminders-info-width);
+  padding-block-end: var(--mac-reminders-info-padding-block-end);
+}
+
+.mac-reminders-info-head {
+  display: flex;
+  gap: var(--mac-reminders-info-head-gap);
+  align-items: flex-start;
+  padding: var(--mac-reminders-info-head-padding);
+}
+
+.mac-reminders-info-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-block-start: var(--mac-reminders-info-title-margin-block-start);
+  overflow: hidden;
+  color: var(--mac-color-text);
+  font:
+    700 var(--mac-reminders-info-title-font-size) / var(--mac-reminders-info-title-line-height)
+    var(--mac-font-family-system);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-reminders-info-flag {
+  flex: none;
+  width: var(--mac-reminders-info-flag-width);
+}
+
+.mac-reminders-info-notes {
+  width: calc(100% - var(--mac-reminders-info-notes-inset));
+  margin: var(--mac-reminders-info-notes-margin);
+}
+
+.mac-reminders-info-line {
+  margin-inline: var(--mac-reminders-info-line-margin-inline);
+}
+
+.mac-reminders-info-row {
+  display: grid;
+  grid-template-columns: var(--mac-reminders-info-label-width) minmax(0, 1fr);
+  column-gap: var(--mac-reminders-info-row-column-gap);
+  align-items: baseline;
+  padding: var(--mac-reminders-info-row-padding);
+}
+
+.mac-reminders-info-row:where([data-row="remind"]) {
+  padding-block: var(--mac-reminders-info-remind-padding-block);
+}
+
+.mac-reminders-info-row:where([data-row="priority"]) {
+  padding-block: var(--mac-reminders-info-priority-padding-block);
+}
+
+.mac-reminders-info-row:where([data-row="repeat"], [data-row="end-repeat"]) {
+  padding-block: var(--mac-reminders-info-repeat-padding-block);
+}
+
+.mac-reminders-info-row:where([data-row="url"]) {
+  padding-block: var(--mac-reminders-info-url-padding-block-start) 0;
+}
+
+.mac-reminders-info-row:where([data-row="images"]) {
+  padding-block: var(--mac-reminders-info-images-padding-block-start) 0;
+}
+
+.mac-reminders-preferences-body {
+  margin: var(--mac-space-window-margin);
+}
+
+.mac-reminders-info-every {
+  display: flex;
+  align-items: baseline;
+  gap: var(--mac-reminders-info-end-gap);
+}
+
+.mac-reminders-info-every-number {
+  width: var(--mac-reminders-info-every-number-width);
+}
+
+.mac-reminders-info-weekdays {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-reminders-info-end-gap);
+}
+
+.mac-reminders-info-priority,
+.mac-reminders-info-repeat {
+  justify-self: start;
+}
+
+/* Reminders shows the priority's arrows only under the pointer (and, inferred, while it has
+   the keyboard focus or its menu is open); the capture shows "None" alone. The button's arrow
+   colour hook reads this value (reminders-info.tsx). The repeat's pop-up buttons follow it. */
+.mac-reminders-info-priority:where(:not(:hover, :focus-visible, [data-popup-open])),
+.mac-reminders-info-repeat:where(:not(:hover, :focus-visible, [data-popup-open])) {
+  --_resting-arrow: transparent;
+}
+
+/* The due day's and minute's fields, under their checkboxes, in line with their titles. */
+.mac-reminders-info-date {
+  margin: var(--mac-reminders-info-date-margin);
+}
+
+.mac-reminders-info-end {
+  display: grid;
+  row-gap: var(--mac-reminders-info-end-gap);
+  justify-items: start;
+}
+
+.mac-reminders-info-choices {
+  display: grid;
+  row-gap: var(--mac-reminders-info-choices-row-gap);
+  justify-items: start;
+}
+
+/* The label's ink sits 1 pt higher than the first checkbox's title. */
+.mac-reminders-info-lead {
+  position: relative;
+  inset-block-start: var(--mac-reminders-info-lead-offset);
+}
+
+.mac-reminders-info-hint {
+  margin: var(--mac-reminders-info-hint-margin);
+}
+
+.mac-reminders-info-url {
+  width: 100%;
+  margin-inline-start: var(--mac-reminders-info-url-margin-inline-start);
+}
+
+.mac-reminders-info-images {
+  display: grid;
+  row-gap: var(--mac-reminders-info-images-row-gap);
+  justify-items: start;
+}
+
+.mac-reminders-info-image {
+  width: var(--mac-reminders-info-image-width);
+  margin-inline-start: var(--mac-reminders-info-image-margin-inline-start);
+}
+
+.mac-reminders-info-add {
+  margin-inline-start: var(--mac-reminders-info-add-margin-inline-start);
+}
+
+.mac-reminders-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The panels of Edit's Spelling and Substitutions, over every window at the trailing edge. */
+.mac-reminders-tool-panels {
+  position: fixed;
+  z-index: 2147482000;
+  inset-block-start: var(--mac-reminders-tool-panels-top);
+  inset-inline-end: var(--mac-reminders-tool-panels-end);
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-reminders-alerts-gap);
+}
+
+.mac-reminders-tool-panels[data-hidden] {
+  display: none;
+}
+
+/* The alerts of reminders that fell due, shown only when the desktop is served by the
+   macalicious-desktop Ferrite application: stacked under the menu bar at the screen's
+   trailing edge, over every window, as Notification Center places alerts. */
+.mac-reminders-alerts {
+  position: fixed;
+  z-index: 2147483000;
+  inset-block-start: var(--mac-reminders-alerts-top);
+  inset-inline-end: var(--mac-reminders-alerts-end);
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-reminders-alerts-gap);
+}
+
+@media (forced-colors: active) {
+  .mac-reminders-disc {
+    border: 1px solid ButtonText;
+  }
+
+  .mac-reminders-circle:where([data-completed]) {
+    border-color: Highlight;
+    background: Highlight;
+  }
+}
+
+/* A list in a window of its own. */
+.mac-reminders-list-window-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.mac-reminders-list-window-head {
+  display: flex;
+  flex: none;
+  align-items: baseline;
+  gap: var(--mac-space-2);
+  padding: var(--mac-space-3) var(--mac-space-4);
+}
+
+.mac-reminders-list-window-rows {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.mac-reminders-list-window-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-reminders-list-window-row {
+  display: flex;
+  align-items: center;
+  padding-inline: var(--mac-space-4);
+  padding-block: var(--mac-space-1);
+  border-block-end: 1px solid var(--mac-color-separator);
+}
+
+.mac-reminders-list-window-row[data-depth="1"] {
+  padding-inline-start: calc(var(--mac-space-4) * 2);
+}
+
+.mac-reminders-list-window-circle {
+  flex: none;
+  padding: 0;
+  background: none;
+}
+
+.mac-reminders-list-window-field {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mac-reminders-list-window-new {
+  flex: none;
+  padding: var(--mac-space-2) var(--mac-space-4);
+}

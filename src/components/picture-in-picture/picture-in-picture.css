@@ -1,0 +1,208 @@
+/*
+ * Picture in Picture: a small video window that floats in a corner of the screen.
+ *
+ * Parts
+ *   .mac-picture-in-picture            the window: 4 pt corners, shadow, no border
+ *   .mac-picture-in-picture-video      holds the video, which fills and is clipped by it
+ *   .mac-picture-in-picture-controls   the scrim with the three buttons, shown under the
+ *                                      pointer and while focus is inside
+ *   .mac-picture-in-picture-button     a control; [data-kind="close" | "return" | "play"]
+ *   .mac-picture-in-picture-resize     the handle in the corner opposite the screen corner
+ *
+ * States, on the root
+ *   [data-corner="top-left" | "top-right" | "bottom-left" | "bottom-right"]
+ *   [data-playing]                     the play button shows the pause glyph
+ *   [data-dragging]                    while the pointer moves or resizes the window
+ *   :hover, :focus-within, [data-force~="hover"]   the controls are shown
+ *
+ * Hooks
+ *   --mac-picture-in-picture-inset     distance from the edges of the screen (20px)
+ *
+ * While the window follows the pointer --_drag holds its offset, and while it is resized
+ * --_resize its width: one of them is written per pointer move.
+ */
+.mac-picture-in-picture {
+  --_inset: var(--mac-picture-in-picture-inset, 20px);
+
+  position: absolute;
+  z-index: 1;
+  box-sizing: border-box;
+  width: var(--_resize, var(--_width));
+  aspect-ratio: var(--_ratio);
+  border-radius: 4px;
+  box-shadow: var(--mac-picture-in-picture-shadow);
+  color: var(--mac-picture-in-picture-glyph);
+  cursor: default;
+  touch-action: none;
+  translate: var(--_drag, none);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-picture-in-picture:where([data-corner^="top"]) {
+  top: var(--_inset);
+}
+
+.mac-picture-in-picture:where([data-corner^="bottom"]) {
+  bottom: var(--_inset);
+}
+
+.mac-picture-in-picture:where([data-corner$="left"]) {
+  left: var(--_inset);
+}
+
+.mac-picture-in-picture:where([data-corner$="right"]) {
+  right: var(--_inset);
+}
+
+.mac-picture-in-picture-video,
+.mac-picture-in-picture-controls {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.mac-picture-in-picture-video {
+  background: var(--mac-picture-in-picture-backdrop);
+}
+
+.mac-picture-in-picture-video > :where(*) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Hidden controls take no click, so a first touch shows them instead of closing the window;
+   they stay in the tab order, and focus shows them. The scrim itself never takes a press:
+   what is in the video beneath it (a link, a control) stays within reach, and only the
+   buttons do while they show. */
+.mac-picture-in-picture-controls {
+  display: grid;
+  place-items: center;
+  background: var(--mac-picture-in-picture-scrim);
+  opacity: 0;
+  transition: opacity 0.2s linear;
+  pointer-events: none;
+}
+
+.mac-picture-in-picture:where(:hover, :focus-within, [data-force~="hover"])
+  > .mac-picture-in-picture-controls {
+  opacity: 1;
+}
+
+.mac-picture-in-picture:where(:hover, :focus-within, [data-force~="hover"])
+  .mac-picture-in-picture-button {
+  pointer-events: auto;
+}
+
+.mac-picture-in-picture-button {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  outline: none;
+  cursor: default;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.mac-picture-in-picture-button:where(:not([data-kind="play"])) {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 28px;
+  height: 28px;
+}
+
+.mac-picture-in-picture-button:where([data-kind="return"]) {
+  right: 10px;
+  left: auto;
+}
+
+.mac-picture-in-picture-button:where(:hover, [data-force~="hover"]) {
+  background: var(--mac-picture-in-picture-button-hover);
+}
+
+.mac-picture-in-picture-button:where(:active, [data-force~="pressed"]) {
+  background: var(--mac-picture-in-picture-button-pressed);
+}
+
+.mac-picture-in-picture-button:where(:focus-visible, [data-force~="focus"]) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+}
+
+.mac-picture-in-picture-button:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  outline: none;
+}
+
+.mac-picture-in-picture-glyph {
+  width: 50%;
+  height: 50%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mac-picture-in-picture-button:where([data-kind="play"]) > .mac-picture-in-picture-glyph {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* The resize handle: the corner that is free to move, opposite the screen corner. */
+.mac-picture-in-picture-resize {
+  position: absolute;
+  inset: auto auto 0 0;
+  width: 10px;
+  height: 10px;
+  cursor: nesw-resize;
+}
+
+.mac-picture-in-picture:where([data-corner$="left"]) > .mac-picture-in-picture-resize {
+  right: 0;
+  left: auto;
+}
+
+.mac-picture-in-picture:where([data-corner^="bottom"]) > .mac-picture-in-picture-resize {
+  top: 0;
+  bottom: auto;
+}
+
+.mac-picture-in-picture:where([data-corner="top-left"], [data-corner="bottom-right"])
+  > .mac-picture-in-picture-resize {
+  cursor: nwse-resize;
+}
+
+/* The window has no border, and its shadow is gone in forced-colours mode: draw an edge, and
+   give the controls the system's colours. */
+@media (forced-colors: active) {
+  .mac-picture-in-picture {
+    border: 1px solid CanvasText;
+    color: ButtonText;
+  }
+
+  .mac-picture-in-picture-controls {
+    background: none;
+  }
+
+  .mac-picture-in-picture-button {
+    border: 1px solid ButtonText;
+    background: ButtonFace;
+  }
+
+  .mac-picture-in-picture-button:where(:focus-visible) {
+    outline: 2px solid Highlight;
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "noReference": {
+    "dark": "The Dark Aqua Contacts capture shows a card that is not being edited, and no other capture has the control."
+  },
+  "comparisons": [
+    {
+      "name": "contacts-light",
+      "description": "The Info / Picture control of a Contacts card being edited, Aqua. The titles are set in the fallback font off Apple platforms.",
+      "example": "visual-contacts",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.036,
+        "2x": 0.0375
+      },
+      "deltaBudget": {
+        "1x": 3,
+        "2x": 4.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Contacts.png",
+        "crop": {
+          "x": 1160,
+          "y": 236,
+          "width": 450,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "contacts-light-outline",
+      "description": "As contacts-light with the two titles masked, to score the drawing alone: the capsule outline, its hairline and colour, and the selected segment's fill.",
+      "example": "visual-contacts",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 39,
+          "y": 7,
+          "width": 40,
+          "height": 14
+        },
+        {
+          "x": 135,
+          "y": 7,
+          "width": 62,
+          "height": 14
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 1,
+        "2x": 0.1
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Contacts.png",
+        "crop": {
+          "x": 1160,
+          "y": 236,
+          "width": 450,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "provisional-dark",
+      "description": "Dark Aqua, which no capture shows: a pixel check that the provisional tokens are what is drawn, over the Contacts card's dark background.",
+      "example": "visual-contacts",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 225,
+          "height": 30
+        },
+        "pixels": [
+          {
+            "x": 2,
+            "y": 2,
+            "color": "#1e1f20",
+            "note": "The example's own background: the Contacts card in Dark Aqua (measured, apps/contacts.md)."
+          },
+          {
+            "x": 30,
+            "y": 12,
+            "color": "#303132",
+            "note": "Selected segment: --mac-capsule-segmented-control-fill-selected, white at 8% over #1e1f20 (inferred)."
+          },
+          {
+            "x": 200,
+            "y": 12,
+            "color": "#1e1f20",
+            "note": "The segment that is not selected has no fill (inferred from Aqua, where it is the card's white)."
+          },
+          {
+            "x": 112.5,
+            "y": 5.25,
+            "scale": 2,
+            "color": "#404141",
+            "note": "The hairline outline: --mac-capsule-segmented-control-border, white at 15% over #1e1f20 (inferred)."
+          }
+        ]
+      }
+    }
+  ]
+}

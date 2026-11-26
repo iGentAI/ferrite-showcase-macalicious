@@ -1,0 +1,198 @@
+/*
+ * Label (NSTextField configured as a label): static text in a system text style and colour.
+ *
+ * A label is a box, like the AppKit view: it is an inline-block, so `align` and `truncate` work
+ * and the line height below is the measured line pitch.
+ *
+ * Attributes
+ *   [data-text-style]                  font size, weight and line height
+ *   [data-color]                       system text colour
+ *   [data-align="center" | "end"]      text alignment inside the box
+ *   [data-disabled]                    title of a disabled control: tertiary label colour
+ *   [data-selectable]                  text can be selected and copied
+ *   [data-truncate]                    one line, ending with an ellipsis
+ *   a, :any-link                       a link: pointing hand, darker while pressed, focus ring
+ *   [data-window-state="main" | "inactive"] *
+ *                                      window that is not key: label colours do not change;
+ *                                      selected text is grey and a link has no focus ring
+ *   [data-force~="pressed" | "focus"]  static previews of transient link states
+ */
+.mac-label {
+  --_font: var(--mac-font-body);
+  --_tracking: var(--mac-tracking-regular);
+  --_color: var(--mac-color-label);
+
+  display: inline-block;
+  box-sizing: border-box;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  color: var(--_color);
+  font: var(--_font);
+  letter-spacing: var(--_tracking);
+  text-align: start;
+  text-decoration: none;
+  vertical-align: baseline;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  /* Catalina antialiases text in greyscale. */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Text styles. 13 / 16, 11 / 14 and 10 / 13 are the measured sizes and line pitches. */
+.mac-label:where([data-text-style="emphasized"]) {
+  --_font: var(--mac-font-body-emphasized);
+}
+
+/* Activity Monitor's statistics ("System:", "Threads:"): capitals 8.5 pt high, which is 12 pt
+   of SF Pro Text. No token exists for it; the line height is AppKit's for that size (15 pt)
+   and provisional, as no capture shows two lines of it. */
+.mac-label:where([data-text-style="callout"]) {
+  --_font: var(--mac-font-weight-regular) 12px / 15px var(--mac-font-family-system);
+}
+
+.mac-label:where([data-text-style="small"]) {
+  --_font: var(--mac-font-control-small);
+  --_tracking: var(--mac-tracking-small);
+}
+
+.mac-label:where([data-text-style="small-emphasized"]) {
+  --_font:
+    var(--mac-font-weight-bold) var(--mac-font-size-small) / var(--mac-line-height-small)
+    var(--mac-font-family-system);
+  --_tracking: var(--mac-tracking-small);
+}
+
+.mac-label:where([data-text-style="mini"]) {
+  --_font: var(--mac-font-label);
+  --_tracking: var(--mac-tracking-mini);
+}
+
+/* Screen Time's "48m": digits 19 pt high, about 27 pt of SF Pro Display. No token exists for
+   it; the line height is provisional. */
+.mac-label:where([data-text-style="large-value"]) {
+  --_font: var(--mac-font-weight-regular) 27px / 32px var(--mac-font-family-system);
+  --_tracking: normal;
+}
+
+.mac-label:where([data-text-style="headline"]) {
+  --_font: var(--mac-font-headline);
+}
+
+.mac-label:where([data-text-style="subheadline"]) {
+  --_font: var(--mac-font-subheadline);
+  --_tracking: var(--mac-tracking-small);
+}
+
+.mac-label:where([data-text-style="title-1"]) {
+  --_font: var(--mac-font-title-1);
+  --_tracking: normal;
+}
+
+.mac-label:where([data-text-style="title-2"]) {
+  --_font: var(--mac-font-title-2);
+  --_tracking: normal;
+}
+
+.mac-label:where([data-text-style="title-3"]) {
+  --_font: var(--mac-font-title-3);
+  --_tracking: normal;
+}
+
+.mac-label:where([data-text-style="large-title"]) {
+  --_font: var(--mac-font-large-title);
+  --_tracking: normal;
+}
+
+/* Colours */
+.mac-label:where([data-color="secondary"]) {
+  --_color: var(--mac-color-label-secondary);
+}
+
+.mac-label:where([data-color="tertiary"]) {
+  --_color: var(--mac-color-label-tertiary);
+}
+
+.mac-label:where([data-color="quaternary"]) {
+  --_color: var(--mac-color-label-quaternary);
+}
+
+.mac-label:where([data-color="text"]) {
+  --_color: var(--mac-color-text);
+}
+
+.mac-label:where([data-color="link"]) {
+  --_color: var(--mac-color-link);
+}
+
+/* Disabled wins over the colour: the title of a disabled control is always tertiary. */
+.mac-label:where([data-disabled]) {
+  --_color: var(--mac-color-label-tertiary);
+}
+
+/* Alignment */
+.mac-label:where([data-align="center"]) {
+  text-align: center;
+}
+
+.mac-label:where([data-align="end"]) {
+  text-align: end;
+}
+
+.mac-label:where([data-truncate]) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* An inline-block that clips takes its bottom edge as baseline; keep the text baseline. */
+  vertical-align: bottom;
+}
+
+/* Selectable text */
+.mac-label:where([data-selectable]) {
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.mac-label:where([data-selectable])::selection {
+  background: var(--mac-highlight);
+}
+
+.mac-label:where(
+  [data-selectable]:where([data-window-state="main"], [data-window-state="inactive"]) *
+)::selection {
+  background: var(--mac-color-selected-text-background-unemphasized);
+}
+
+/* Links: a label rendered as <a href>. The pressed look is provisional (no screenshot). */
+.mac-label:where(:any-link:not([data-disabled])) {
+  cursor: pointer;
+}
+
+.mac-label:where(:any-link:not([data-disabled])):where(:active, [data-force~="pressed"]) {
+  filter: brightness(0.85);
+}
+
+.mac-label:where(:focus-visible, [data-force~="focus"]) {
+  outline: none;
+}
+
+.mac-label:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  border-radius: var(--mac-radius-control-mini);
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-label:where([data-disabled]) {
+    color: GrayText;
+  }
+
+  .mac-label:where(:any-link) {
+    color: LinkText;
+  }
+}

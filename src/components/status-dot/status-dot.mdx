@@ -1,0 +1,99 @@
+---
+title: Status Dot
+description: A small coloured disc that reports whether a service or device is available, partially available or unavailable.
+---
+
+<Example name="basic" both />
+
+AppKit has no status control; applications show one of four system images in an image view
+(`NSImage.statusAvailableName`, `statusPartiallyAvailableName`, `statusUnavailableName`,
+`statusNoneName`). This component draws those images with CSS. The Network and Sharing panes
+of System Preferences use them next to each service.
+
+## Usage
+
+```tsx
+import { StatusDot } from "macalicious/status-dot";
+import "macalicious/status-dot.css";
+
+<span>
+  <StatusDot status="available" /> Connected
+</span>
+```
+
+Or copy the source into your project: `npx macalicious add status-dot`.
+
+## Guidelines
+
+- Use a status dot for the state of a service, a connection or a device: green for available,
+  on or connected; yellow for partially available; red for unavailable or not connected; grey
+  for off or unknown.
+- Never let the colour carry the state alone. Put the state in words beside the dot
+  (“Connected”, “File Sharing: On”).
+- In a list row, centre the dot on the row's text lines and leave about 6.5 pt before the
+  text. In a status line, centre it on the cap height of the text.
+- The dot is not a control. Do not make it clickable; put a button or a checkbox next to it.
+
+## Variants and states
+
+| Status | Look | Source |
+| --- | --- | --- |
+| `available` | Green disc, darker green half-point rim | Measured |
+| `unavailable` | Red disc, darker red rim | Measured |
+| `partially-available` | Yellow disc | Provisional: not in any screenshot |
+| `none` | Grey disc | Provisional: not in any screenshot |
+
+The dot is not interactive, so it has no hover, pressed, focus or disabled look, and it is
+drawn the same in a key and in an inactive window.
+
+## Sizes
+
+<Example name="sizes" both />
+
+| Size | Diameter | Where Catalina uses it |
+| --- | --- | --- |
+| `regular` | 10 pt (measured) | List rows, status lines |
+| `small` | 6 pt (measured) | The subtitle of a compact row (Printers & Scanners) |
+
+## API
+
+<PropsTable name="StatusDotProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-status` | `available`, `partially-available`, `unavailable`, `none` | Reflects `status`. |
+| `data-size` | `regular`, `small` | Reflects `size`. |
+
+The colours are the tokens `--mac-status-dot-<status>` and `--mac-status-dot-<status>-rim`,
+declared in `status-dot.tokens.css`.
+
+## Accessibility
+
+- Not focusable and not interactive.
+- By default the dot is decorative (`aria-hidden`) and the text beside it carries the state.
+- A dot that stands alone needs a name: pass `aria-label` (or `aria-labelledby`) and it
+  becomes an image (`role="img"`) with that name.
+- In forced-colours mode the dot keeps its colour, because the colour is all it is; the
+  state must still be in the text.
+
+## Visual comparison
+
+`visual-network-list` reproduces the status column of the Network pane's service list (a green
+dot on a selected row and a red dot on an unselected one) and `visual-printer-row` the small
+dot of a printer row. Results in Chromium on Linux:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Network list, Aqua | 0.58% of pixels differ | 1.48% |
+| Network list, Dark Aqua | 0.44% | 0.37% |
+| Printer row, Aqua | 0.25% | 0.00% |
+| Printer row, Dark Aqua | 0.00% | 0.00% |
+| Sharing status line, Aqua | 0.81% | 1.00% |
+| Sharing status line, Dark Aqua | 0.50% | 0.75% |
+
+`visual-sharing-status` reproduces the 10 pt dot before the status line of the Sharing pane.
+
+The pixels that differ are on the rim, where the browser and Core Graphics antialias a 10 pt
+circle differently. The 1x figures are measured against the 2x screenshot averaged in 2 by 2 blocks.
+
+Provisional, because no screenshot shows them: the yellow and grey dots.

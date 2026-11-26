@@ -1,0 +1,60 @@
+---
+title: Building an app
+description: From one window to an application on a desktop, and the application demos to read as worked examples.
+group: Overview
+order: 4
+---
+
+An application is windows, the controls in them, and something that manages which window is in
+front. The first two are covered by the component pages and by
+[Building a window](/building-a-window). This page covers how they go together.
+
+## The pieces
+
+- **Content** is built from the library's components, imported exactly as in
+  [Getting started](/installation). Lay it out with ordinary CSS (flexbox, grid) and the spacing
+  tokens; one CSS pixel is one AppKit point.
+- **Each window** carries `data-window-state`. With several windows on a page, keep the name
+  of the key window in one piece of state, as the second example in
+  [Building a window](/building-a-window#making-one-window-key) does, and call
+  `trackWindowActivation()` once so the whole page goes inactive with the browser window.
+- **Everything that should show through a material must be in the page.** Sidebars, menus,
+  the menu bar and the Dock blur what is behind them. A page can only blur its own content, so
+  a desktop picture or another window shows through a material only if it is rendered in the
+  same page ([Fidelity limits](/fidelity#vibrancy-and-materials)).
+- **Artwork is yours to supply.** No Apple application icons, symbols or desktop pictures are
+  included; the demos use original stand-in artwork.
+
+## The desktop shell
+
+Several applications share one screen through the desktop shell, a handful of components that
+are used together:
+
+- A [Window Manager](/components/window-manager) is the screen. It keeps the order of the
+  windows on it, which one is key, and the space the menu bar and the Dock take (`insets`).
+- A [Managed Window](/components/managed-window) is a window on that screen: the manager
+  moves, resizes, minimizes, zooms and focuses it. An application written as one component
+  with a `Window` as its root is hosted through its `render` form.
+- A [Menu Bar](/components/menu-bar) with its [Menu Bar Extras](/components/menu-bar-extra),
+  a [Dock](/components/dock) and a [Desktop](/components/desktop) with its icons are placed
+  inside the manager. `useWindowManager()` gives them the windows and the commands, so a
+  Dock can mark the running applications and a menu bar can follow the key window.
+
+The [Desktop demo](/demos/desktop) puts them together and runs every application demo below
+as a window. Its source, `demos/desktop/`, is the worked example of a shell: how an
+application is described and hosted, how the menu bar follows the front application, and how
+the appearance and the accent colour are switched for the whole page.
+
+## Application demos
+
+Each demo rebuilds one Catalina application from the library's components and is compared
+with its reference screenshot like a component. Read their source as worked examples of
+composition: a demo lives in `demos/<app>/` with its own page, components, styles and
+examples, and imports the library through the public paths, as your code does. [Demos](/demos)
+shows each one in Aqua and in Dark Aqua.
+
+<PageList group="Demos" empty="No demo pages have been built into this site." />
+
+## Next
+
+[Fidelity limits](/fidelity): what will and will not match the real thing.

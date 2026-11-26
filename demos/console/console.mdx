@@ -1,0 +1,193 @@
+---
+title: Console
+description: The Console window of macOS 10.15 with its icon-and-label toolbar, scope bar, sidebar of sources, a sortable message table in the fixed-pitch font and a detail pane, over an invented stream of log messages.
+layout: full
+order: 21
+---
+
+<Example name="basic" />
+
+Pick a source in the sidebar, click a heading to sort, type in the search field, switch the
+scope, select a row. The messages are invented: nothing is read from the machine the page runs
+on. A timer adds a message to the device's list every two seconds, the title counts the
+messages listed, and while Now is on the table stays at the newest one. The glyphs of Reload,
+Share and the sidebar button are the library's [System Images](/components/system-image); the
+other toolbar glyphs and the sidebar's are original stand-in drawings.
+
+## What it shows
+
+- A [Window](/components/window) with a unified [Title Bar](/components/title-bar): the
+  [Window Controls](/components/window-controls), the title and a
+  [Toolbar](/components/toolbar) in its icon-and-label mode, which gives the 68 pt chrome.
+- The toolbar: six [Toolbar Buttons](/components/toolbar-button), each in a
+  [Toolbar Labelled Item](/components/toolbar-labelled-item) that sets its label under it
+  and names it, with fixed spaces between the groups, and a flexible
+  [Toolbar Search Field](/components/toolbar-search-field) that takes the rest of the bar.
+  Share opens a [Menu](/components/menu) of [Menu Items](/components/menu-item).
+- A [Scope Bar](/components/scope-bar) under the title bar, on the toolbar surface: an
+  [Image Button](/components/image-button) that hides and shows the sidebar, and the two
+  scopes, All Messages and Errors and Faults.
+- A [Split View](/components/split-view) of the [Sidebar](/components/sidebar) and the
+  content; the sidebar's pane is collapsible, and its divider takes the line colour measured
+  beside it. The content is a second, vertical split view: the table over the detail pane.
+- The message list: a [Table View](/components/table-view) with the translucent
+  [Table Header](/components/table-header), which the rows show through as they scroll under
+  it, 21 pt alternating rows, four sortable headings
+  and multiple selection by message identifier, so the selection stays on its message while
+  the rows are sorted, filtered and added to. Only the rows in view are rendered: the default
+  list has 9,318. The headings are set where Console has them with the table header's two
+  hooks for its titles, and Now scrolls the table through its `viewportRef`.
+- The detail pane: the process name and the lines of metadata as [Labels](/components/label)
+  (`emphasized` and `small`; Details is a label drawn as a link and rendered as a button), a
+  [Separator](/components/separator), and the message in a read-only, fixed-pitch
+  [Text View](/components/text-view). With nothing selected it shows an
+  [Empty State](/components/empty-state).
+
+| Control | What it does |
+| --- | --- |
+| Now | A toggle. Turning it on selects the newest message listed and keeps the table scrolled to it as messages arrive; selecting a row, scrolling up with a wheel, or scrolling the newest message out of view by any other means (the scroll bar, a touch, the keyboard) turns it off. |
+| Activities | A toggle: lists only the messages that belong to an activity. |
+| Clear | Empties the list of the selected source; messages that arrive afterwards are listed. |
+| Reload | Lists the source's messages again, the cleared ones included. |
+| Info | A toggle: shows or hides the detail pane. |
+| Share | A menu of services; choosing one calls `onShare` with the selected message. Unavailable while no listed message is selected. |
+| Search | Lists the messages whose process name or text contains what is typed, in any letter case. |
+| Sidebar button | Hides or shows the sidebar. |
+| All Messages, Errors and Faults | Every message, or only those of the levels error and fault. |
+| A sidebar row | The device lists the stream; each report source lists its own entries. Every source keeps its own selection and is cleared and reloaded by itself. |
+| A heading | Sorts by that column, ascending first; Type orders by severity, and messages that compare equal stay in order of arrival. |
+| A row | Shows the message in the detail pane. |
+| Details | Unfolds the activity, thread and process identifiers under the metadata; Hide folds them away. |
+
+The title reads "Console (N messages)" for the number of rows listed, so it follows the
+source, the scope, Activities, the search, Clear and the stream. While a filter or Clear
+hides the selected message the detail pane is empty; the message is back when it is listed
+again; with several selected it counts them, and Copy puts them on the clipboard a line each.
+The line under the example stands for the service that Share hands a message to.
+
+## Hosting the window
+
+`Console` renders the library's `Window` as its root and passes every `Window` prop to it, so
+it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component hands to the window controls and
+the title bar. These are the props a [Managed Window](/components/managed-window)'s `render`
+form supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { consoleApp } from "./app";
+
+<ManagedWindow
+  id={consoleApp.id}
+  defaultFrame={{ x: 80, y: 60, ...consoleApp.defaultSize }}
+  minWidth={consoleApp.minSize.width}
+  minHeight={consoleApp.minSize.height}
+  render={(props) => <consoleApp.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `messages` | `ConsoleMessage[]` | The device's messages when the window opens, in order of arrival; the default is the list of the light screenshot. |
+| `reports` | a record of `ConsoleMessage[]` by report source | What each report source lists. |
+| `defaultSource`, `onSourceChange` | a source identifier and a function | The source selected at first (`"device"`), and a call with the source chosen. |
+| `defaultSelectedId` | `number` | The message selected at first, in the source selected at first. |
+| `streamInterval` | `number` | Milliseconds between two messages the device logs; 2000 by default, and 0 stops the stream. |
+| `defaultFollowing` | `boolean` | Whether Now is on at first; `true` by default. |
+| `material` | `"translucent" \| "opaque"` | The sidebar's surface: vibrant over a desktop, opaque on a plain page. |
+| `onShare` | `(message: ConsoleMessage, service: string) => void` | Called for a service chosen from Share. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 1000 by 500 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `consoleApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (1000 by 500), `minSize` (620 by 300), `resizable` and
+`menus`, the menu titles after the Apple menu.
+
+The list is a pure function of its state (`console-data.ts`): `listed` gives a source's
+messages less what Clear put away, `arrange` filters and sorts them, and `receive` adds the
+next message of the stream from a seed the state carries, so every run of the demo, and of
+its tests, shows the same messages.
+
+## Accessibility
+
+- The window is a `region` named by its title, which changes with the number of messages
+  listed. The toolbar is one tab stop; the arrow keys move between its buttons and the
+  search field.
+- A toolbar button shows only a glyph and is named by the label under it. Now, Activities
+  and Info are toggles and report their state with `aria-pressed`; it is also drawn in the
+  glyph's colour, which is not the only cue for a screen reader but is for the eye. Share is
+  marked unavailable while no listed message is selected and stays reachable.
+- The search field is a `searchbox` named "Search"; its clear button is named "Clear Search",
+  to tell it from the toolbar's Clear.
+- The sidebar button is named for what it will do, "Hide Sidebar" or "Show Sidebar". The
+  scopes are a `radiogroup` named "Show": one tab stop, and the arrow keys move the selection.
+- The sidebar is a `tree` named "Sources" with its rows in two groups. The arrow keys, Home
+  and End move the selection, and typing selects by name.
+- The table is a `grid` named "Messages" and one tab stop: the arrow keys, Page Up, Page
+  Down, Home and End move the selection, and typing selects by process name. Each heading is
+  a button, and its column reports the order with `aria-sort`. The dot of the Type column is
+  an image named by the level ("Error", "Fault", "Info", "Debug"); a default message has no
+  dot, as in Console.
+- The detail pane is a `region` named "Message details". Details is a button with
+  `aria-expanded`; the message is a read-only `textbox` named "Message", so its text can be
+  selected and copied.
+- The two dividers are focusable separators: the arrow keys resize the sidebar and the
+  detail pane, and Return collapses or restores the sidebar.
+- Messages arrive without an announcement: a live region that spoke every two seconds would
+  be noise. The title carries the count.
+
+## Fidelity
+
+`console.visual.json` compares the whole window with the Console screenshots in both
+appearances, each as captured and again with the text and the stand-in drawings masked. The
+dark screenshot lists 86 other messages and shows another message in its detail pane, so it
+has an example of its own. Scores from `npm run visual -- console/` in Chromium on Linux with
+the fallback fonts: the share of pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 5.49% | 6.28 | 4.66% | 6.75 |
+| `window-light-layout` (masked) | 0.55% | 0.69 | 0.02% | 0.52 |
+| `window-dark` | 5.78% | 7.14 | 4.96% | 7.57 |
+| `window-dark-layout` (masked) | 0.31% | 1.50 | 0.03% | 1.38 |
+
+Measured in the screenshots and reproduced: the 1000 by 500 pt frame; the 68 pt chrome with
+its six 44 pt buttons and the search field where the capture has them; the 23 pt scope bar,
+its fill and bottom rows, the pill and the insets of its scopes; the 180 pt sidebar with its
+selection and the line beside it; the header a point under the scope bar and its column
+widths (53, 173 and 63 pt); the 21 pt rows, scrolled to the last one, with the stripe
+starting 6 pt under the header; the text of a row 7 pt from its column's edge with its
+baseline 10 pt under the row's top; the 1 pt divider and the 272 pt detail pane with its
+20 pt margins, the three lines of text and the rule.
+
+What differs, and why:
+
+- **Text.** Set in the fallback fonts off Apple devices, which is nearly all of the unmasked
+  scores. Console sets its rows and the message in the 11 pt fixed-pitch system font, whose
+  characters are 6.8 pt wide; the fallback's are 6.6 pt, so a row shows two or three more
+  characters before its ellipsis than the capture does.
+- **Glyphs.** The toolbar and sidebar glyphs are Apple's; they are replaced by the library's
+  system images (Reload, Share, Info, the sidebar button) and by original drawings. The blue of the
+  Now and Info glyphs is the capture's.
+- **The header.** Console's header is translucent and the row scrolled under it shows
+  through, which the table view's translucent header reproduces: its fill is 95% opaque in
+  both captures. The masked comparison still leaves that row's text out, because it is set
+  in the fallback font.
+- **Dark Aqua chrome.** In the dark capture the title bar and the scope bar are tinted by
+  the desktop picture behind the window, from `#2e2f30` at the leading edge to `#3a3b3c`;
+  the demo draws the bar's colour at the window's middle everywhere, which is most of the
+  dark comparison's mean difference.
+- **The toolbar's gradient.** The unified title bar's fill ends about five levels darker than
+  the capture's at the bottom of the 68 pt chrome (`#cecece` for `#d3d3d3`): below what the
+  comparison counts as a differing pixel, and visible in the mean difference.
+- **The scope bar and the search field.** The bar is the library's small scope bar on the
+  toolbar surface, and the field its bright variant; both were measured on these captures.
+  The toggles are the library's tinted toggles. In Dark Aqua the mark inside the Now and Info
+  discs is a hole that shows the bezel, as captured, and white in Aqua.
+- **Not in a screenshot (provisional):** the dots of the Type column, the report sources'
+  entries and that they use the message table, what Activities lists, the Share menu, the
+  extra lines of Details, the empty detail pane, the inactive window's scope bar, and every
+  size other than the captured one.

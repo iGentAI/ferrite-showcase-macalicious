@@ -1,0 +1,213 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "eject-warning-light",
+      "description": "Finder's eject warning, the whole capture with its shadow, Aqua. Text included; the icon box is masked because the Finder icon is Apple's artwork and the example leaves it empty.",
+      "example": "visual-eject-warning",
+      "appearance": "light",
+      "masks": [{ "x": 29, "y": 33, "width": 32, "height": 33 }],
+      "budget": { "1x": 0.052, "2x": 0.041 },
+      "deltaBudget": { "1x": 5.4, "2x": 4.9 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Eject-Warning.png",
+        "crop": { "x": 0, "y": 0, "width": 764, "height": 202 }
+      }
+    },
+    {
+      "name": "eject-warning-light-panel",
+      "description": "As eject-warning-light with the title, the message and the button title masked as well, to score the panel alone (fill, corners, divider, shadow): text is set in the fallback font off Apple platforms.",
+      "example": "visual-eject-warning",
+      "appearance": "light",
+      "masks": [
+        { "x": 29, "y": 33, "width": 32, "height": 33 },
+        { "x": 70, "y": 27, "width": 214, "height": 13 },
+        { "x": 69, "y": 45, "width": 216, "height": 26 },
+        { "x": 300, "y": 44, "width": 56, "height": 11 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0007, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.56, "2x": 0.53 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Eject-Warning.png",
+        "crop": { "x": 0, "y": 0, "width": 764, "height": 202 }
+      }
+    },
+    {
+      "name": "eject-warning-dark",
+      "description": "Finder's eject warning, the whole capture with its shadow, Dark Aqua. Text included; the icon box is masked.",
+      "example": "visual-eject-warning-dark",
+      "appearance": "dark",
+      "masks": [{ "x": 29, "y": 33, "width": 32, "height": 33 }],
+      "budget": { "1x": 0.056, "2x": 0.044 },
+      "deltaBudget": { "1x": 6.3, "2x": 5.8 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Eject-Warning.png",
+        "crop": { "x": 0, "y": 0, "width": 764, "height": 202 }
+      }
+    },
+    {
+      "name": "eject-warning-dark-panel",
+      "description": "As eject-warning-dark with the text masked as well, to score the panel alone (fill, corners, divider, inner rim, outer line, shadow).",
+      "example": "visual-eject-warning-dark",
+      "appearance": "dark",
+      "masks": [
+        { "x": 29, "y": 33, "width": 32, "height": 33 },
+        { "x": 70, "y": 27, "width": 214, "height": 13 },
+        { "x": 69, "y": 45, "width": 216, "height": 26 },
+        { "x": 300, "y": 44, "width": 56, "height": 11 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0024, "2x": 0.0015 },
+      "deltaBudget": { "1x": 0.6, "2x": 0.58 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Eject-Warning.png",
+        "crop": { "x": 0, "y": 0, "width": 764, "height": 202 }
+      }
+    },
+    {
+      "name": "two-buttons-light",
+      "description": "Two buttons share the column, with a 1 pt line between them and the 1 pt divider before the column, Aqua. No screenshot shows two buttons: the split is inferred (spec: notification-alert, States). The line and the divider are black at 9.7% over the fill #ededed, measured on the vertical divider of the capture, 273 pt from the alert's edge; the fill is the background as captured.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 364, "height": 83 },
+        "pixels": [
+          { "x": 319, "y": 41.5, "color": "#d6d6d6", "note": "line between the buttons, inferred" },
+          { "x": 283.5, "y": 25, "color": "#d6d6d6", "note": "vertical divider, measured" },
+          { "x": 292, "y": 25, "color": "#ededed", "note": "first button: fill, measured" },
+          { "x": 292, "y": 58, "color": "#ededed", "note": "second button at rest" }
+        ]
+      }
+    },
+    {
+      "name": "two-buttons-dark",
+      "description": "Two buttons share the column, with a 1 pt line between them and the 1 pt divider before the column, Dark Aqua. The split is inferred; the line and the divider are white at 17.6% over the fill #383838, measured on the vertical divider of the capture.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 364, "height": 83 },
+        "pixels": [
+          { "x": 319, "y": 41.5, "color": "#5b5b5b", "note": "line between the buttons, inferred" },
+          { "x": 283.5, "y": 25, "color": "#5b5b5b", "note": "vertical divider, measured" },
+          { "x": 292, "y": 25, "color": "#383838", "note": "first button: fill, measured" },
+          { "x": 292, "y": 58, "color": "#383838", "note": "second button at rest" }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The first button held down with the mouse, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "press": ".mac-notification-alert-action" }],
+      "expect": {
+        "size": { "width": 364, "height": 83 },
+        "pixels": [
+          { "x": 292, "y": 25, "color": "#d5d5d5", "note": "black 10% over #ededed, inferred" },
+          { "x": 292, "y": 58, "color": "#ededed", "note": "the other button is unchanged" },
+          { "x": 150, "y": 68, "color": "#ededed", "note": "the text column is unchanged" }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "The first button held down with the mouse, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "press": ".mac-notification-alert-action" }],
+      "expect": {
+        "size": { "width": 364, "height": 83 },
+        "pixels": [
+          { "x": 292, "y": 25, "color": "#323232", "note": "black 10% over #383838, inferred" },
+          { "x": 292, "y": 58, "color": "#383838", "note": "the other button is unchanged" },
+          { "x": 150, "y": 68, "color": "#383838", "note": "the text column is unchanged" }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the first button, reached with Tab: the ring is drawn inside the button, Aqua. The ring is the focus ring token (blue accent at 50%) over the fill #ededed, in the 3 pt band inside the button's top edge. Inferred: no screenshot shows a focused notification button.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 364, "height": 83 },
+        "pixels": [
+          { "x": 319, "y": 11.5, "color": "#83acf2", "note": "ring over #ededed, inferred" },
+          { "x": 319, "y": 15, "color": "#ededed", "note": "fill just inside the 3 pt ring" },
+          { "x": 292, "y": 58, "color": "#ededed", "note": "the other button has no ring" }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the first button, reached with Tab: the ring is drawn inside the button, Dark Aqua. The ring is the focus ring token (blue accent at 50%) over the fill #383838. Inferred.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 364, "height": 83 },
+        "pixels": [
+          { "x": 319, "y": 11.5, "color": "#32709c", "note": "ring over #383838, inferred" },
+          { "x": 319, "y": 15, "color": "#383838", "note": "fill just inside the 3 pt ring" },
+          { "x": 292, "y": 58, "color": "#383838", "note": "the other button has no ring" }
+        ]
+      }
+    },
+    {
+      "name": "focus-inactive-light",
+      "description": "Keyboard focus on the first button while the page is in the background: no ring outside the key window (CONTRIBUTING, Window state), Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 364, "height": 83 },
+        "pixels": [
+          { "x": 319, "y": 11.5, "color": "#ededed", "note": "no ring: fill, inferred" },
+          { "x": 292, "y": 58, "color": "#ededed", "note": "second button: fill, measured" }
+        ]
+      }
+    },
+    {
+      "name": "focus-inactive-dark",
+      "description": "Keyboard focus on the first button while the page is in the background: no ring outside the key window (CONTRIBUTING, Window state), Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 364, "height": 83 },
+        "pixels": [
+          { "x": 319, "y": 11.5, "color": "#383838", "note": "no ring: fill, inferred" },
+          { "x": 292, "y": 58, "color": "#383838", "note": "second button: fill, measured" }
+        ]
+      }
+    },
+    {
+      "name": "material-light",
+      "description": "The translucent material over the window background, Aqua: --mac-material-notification (#f6f6f6 at 72%) over #ececec, computed from the tokens. The recipe is provisional (spec: Material recipe on screen): the captures record the alert opaque.",
+      "example": "visual-material",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 364, "height": 83 },
+        "pixels": [
+          { "x": 330, "y": 62, "color": "#f3f3f3", "note": "tint over the page, inferred" }
+        ]
+      }
+    },
+    {
+      "name": "material-dark",
+      "description": "The translucent material over the window background, Dark Aqua: --mac-material-notification (#282828 at 72%) over #323232, computed from the tokens. The recipe is provisional.",
+      "example": "visual-material",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 364, "height": 83 },
+        "pixels": [
+          { "x": 330, "y": 62, "color": "#2b2b2b", "note": "tint over the page, inferred" }
+        ]
+      }
+    }
+  ]
+}

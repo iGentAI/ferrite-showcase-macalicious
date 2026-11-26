@@ -1,0 +1,107 @@
+---
+title: Borderless Button
+description: A button without a bezel, drawn as its title alone in the text around it, for an action that belongs to a line of text such as Details or Show Less.
+---
+
+<Example name="basic" both />
+
+An `NSButton` whose `isBordered` is off draws no bezel: the title is the whole control. Mail
+uses one for "Details" in a message's header, in the link colour; Home uses one for
+"and 1 More" under its status lines, in the colour of the text over the wallpaper.
+`BorderlessButton` is Base UI's Button with no box of its own: it takes the font of the text
+it stands in and, unless `color` says otherwise, its colour.
+
+## Usage
+
+```tsx
+import { BorderlessButton } from "macalicious/borderless-button";
+import "macalicious/borderless-button.css";
+import { Label } from "macalicious/label";
+
+<Label>
+  3 recipients{" "}
+  <BorderlessButton color="link" aria-expanded={open} onClick={() => setOpen(!open)}>
+    {open ? "Hide" : "Details"}
+  </BorderlessButton>
+</Label>
+```
+
+Or copy the source into your project: `npx macalicious add borderless-button`.
+
+Put the button inside the text it belongs to, or in an element that sets the font: it has no
+text style of its own. A glyph next to the title goes inside the button, which centres its
+children on one line; set `gap` on the button for the distance between them.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for buttons (paraphrased; not verified):
+
+- Prefer a push button for the main actions of a window. A borderless button is for a minor
+  action inside content, where a bezel would outweigh the text beside it.
+- Give it a verb or a short phrase that says what happens: "Details", "Show Less".
+- Use the link colour only where the button reads as a link. To open a page or a place, use a
+  real link: a [Label](/components/label) rendered as `<a href>`.
+
+## Variants and states
+
+<Example name="states" both />
+
+| Variant or state | Look | Status |
+| --- | --- | --- |
+| `color="inherit"` | The colour of the surrounding text | as used by Home |
+| `color="link"` | The link colour token (`#0168da`, Dark Aqua `#429bff`) | the token is measured (see [Label](/components/label)); Mail draws its "Details" brighter, about `#0178fc` |
+| Pressed | No change | as Mail's and Home's: neither shows a pressed look, and no screenshot shows the button pressed |
+| Disabled | The tertiary label colour | provisional |
+| Keyboard focus | Focus ring, key window only. It follows the button's `border-radius` (2.5 pt; set another with `style`) | provisional |
+| Window not key | No change but for the focus ring | Mail's window is inactive in both captures and its "Details" keeps its colour |
+
+## Sizes
+
+None of its own: the button is as large as its title in the inherited font.
+
+## API
+
+<PropsTable name="BorderlessButtonProps" />
+
+The remaining props are those of Base UI's Button (`disabled`, `focusableWhenDisabled`,
+`render`, `onClick` and the attributes of a `<button>`) and go to the button.
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-color` | `inherit`, `link` | Reflects `color`. |
+| `data-disabled` | present or absent | Reflects `disabled`. |
+| `data-force` | `focus` | Documentation and visual tests only: pins a transient state. |
+
+Class: `.mac-borderless-button`.
+
+## Accessibility
+
+- A native `<button>`: in the tab order, activated with Space and Return, named by its title.
+- A button that shows and hides something says so with `aria-expanded`.
+- The title is the only sign that it is a control. Word it as an action, and do not rely on
+  the link colour alone.
+- With `color="inherit"` the contrast is that of the text it stands in.
+- In forced-colours mode the title uses `ButtonText`, or `LinkText` with `color="link"`, a
+  disabled button `GrayText`, and the focus ring `CanvasText`.
+
+## Visual comparison
+
+`npm run visual -- borderless-button` compares "Details" in the header of Mail's message with
+the Mail screenshots in both appearances (reference crop, 2x pixels: `1900,262,130,36` in
+Aqua, `1888,260,130,36` in Dark Aqua), once whole and once with the word masked. Share of
+pixels that differ and mean colour difference out of 255, in Chromium on Linux with the
+fallback font:
+
+| Comparison | Aqua 1x | Aqua 2x | Dark Aqua 1x | Dark Aqua 2x |
+| --- | --- | --- | --- | --- |
+| `mail-details`, whole crop | 19.57%, Δ 16.33 | 17.33%, Δ 17.52 | 20.77%, Δ 14.51 | 18.38%, Δ 15.24 |
+| `mail-details-box`, word masked, threshold 0.05 | 0.00%, Δ 1.17 | 0.07%, Δ 1.38 | 0.00%, Δ 0.43 | 0.00%, Δ 0.45 |
+
+The button is nothing but text, so the whole-crop figure is the fallback font, and the masked
+one only confirms that the button draws no box. Part of the colour difference is Mail's own:
+it draws the word in a brighter blue than the link colour token the button uses.
+
+Provisional, because no screenshot shows them: the disabled button and the focus ring. That
+the button looks the same under the pointer's press (no fill, and its ink keeps its colour),
+shows the focus ring from the keyboard and shows none in a window that is not key is checked
+in a real browser (`expect` comparisons).

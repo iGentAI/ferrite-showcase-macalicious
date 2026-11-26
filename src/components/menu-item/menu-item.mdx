@@ -1,0 +1,232 @@
+---
+title: Menu Item
+description: One row of a menu. Starts a command, shows and toggles a state with a checkmark, or heads a section; with key equivalents, images and separators.
+order: 61
+---
+
+<Example name="basic" />
+
+AppKit's `NSMenuItem`. The parts are built on the items of
+[Base UI's Menu](https://base-ui.com/react/components/menu) and are used inside a
+[`MenuPopup`](/components/menu), a [submenu](/components/submenu) or any other Base UI menu.
+
+| Part | AppKit | Built on |
+| --- | --- | --- |
+| `MenuItem` | an item with an action | Menu.Item |
+| `MenuCheckboxItem` | an item with a `state`: on, off or mixed | Menu.CheckboxItem |
+| `MenuRadioGroup`, `MenuRadioItem` | items of which one is on | Menu.RadioGroup, Menu.RadioItem |
+| `MenuSeparator` | `NSMenuItem.separator()` | Separator |
+| `MenuSection` | items under a section header | Menu.Group, Menu.GroupLabel |
+| `MenuItemLabel` | the content of a row, for a row built on another element | none |
+
+## Usage
+
+```tsx
+import { Menu, MenuPopup, MenuTrigger } from "macalicious/menu";
+import {
+  MenuCheckboxItem,
+  MenuItem,
+  MenuRadioGroup,
+  MenuRadioItem,
+  MenuSection,
+  MenuSeparator,
+} from "macalicious/menu-item";
+import "macalicious/menu.css";
+import "macalicious/menu-item.css";
+
+<Menu>
+  <MenuTrigger>View</MenuTrigger>
+  <MenuPopup>
+    <MenuRadioGroup value={view} onValueChange={setView}>
+      <MenuRadioItem value="icons" keyEquivalent="command+1">as Icons</MenuRadioItem>
+      <MenuRadioItem value="list" keyEquivalent="command+2">as List</MenuRadioItem>
+    </MenuRadioGroup>
+    <MenuSeparator />
+    <MenuCheckboxItem checked={pathBar} onCheckedChange={setPathBar}>Show Path Bar</MenuCheckboxItem>
+    <MenuItem disabled>Show Preview</MenuItem>
+    <MenuSection title="Sort By">
+      <MenuItem onClick={sortByName}>Name</MenuItem>
+    </MenuSection>
+  </MenuPopup>
+</Menu>
+```
+
+Or copy the source into your project: `npx macalicious add menu-item`.
+
+### Key equivalents
+
+`keyEquivalent` is written as modifier names in any order, then the key, joined with `+`:
+`"command+q"`, `"shift+command+q"`, `"option+command+escape"`, `"command+up"`. The item shows
+it in AppKit's glyphs and order (Control, Option, Shift, Command, then the key) and announces
+it through `aria-keyshortcuts`. There Command is announced as `Meta` on Apple platforms and as
+`Control` elsewhere, the key `onMenuKeyEquivalents` listens for; the server cannot know the
+platform, so the markup says `Meta` until the page has hydrated. The glyph stays ⌘. A key
+equivalent with Control and Command, such as `"control+command+q"`, cannot be typed where
+Command is the Control key: off Apple platforms the item shows it and has no
+`aria-keyshortcuts`. An item with `keyEquivalent` takes the attribute from it; one without
+keeps an `aria-keyshortcuts` of its own.
+
+An item only shows its key equivalent. The items of a closed menu are not in the document, so
+the code that owns the commands listens for the keys:
+
+```tsx
+import { onMenuKeyEquivalents } from "macalicious/lib/menu-key-commands";
+
+useEffect(
+  () => onMenuKeyEquivalents(window, { "command+n": newNote, "shift+command+f": find }),
+  [newNote, find],
+);
+```
+
+Command is the Meta key on Apple platforms and the Control key elsewhere. With Option held a
+Mac types another character (Option-P is π), so there the key is found from its position on
+the keyboard: by the user's keyboard layout where the browser can tell it
+(`navigator.keyboard`, in Chromium); elsewhere by the characters the keys have typed without
+a modifier since `onMenuKeyEquivalents` began to listen, and as on a US keyboard for a key
+not typed yet. Option dead keys (Option-E, Option-N) are found the same way. With Shift as
+well, a key equivalent may name the key or the character above it on a US keyboard:
+`shift+option+=` and `shift+option++` are the same keys.
+`matchesMenuKeyEquivalent(event, "command+n")` from the same module tests one event, and
+`parseMenuKeyEquivalent("command+n")` from `macalicious/lib/menu-key-equivalent` gives the
+glyphs. A browser keeps some shortcuts for
+itself (Command-Q, Command-W, Command-T): those cannot be taken over.
+
+### Rows on another primitive
+
+The classes select on attributes only, so a row can be any element that sets Base UI's item
+attributes, such as a Select or Combobox item: give it `className="mac-menu-item"` and put a
+`MenuItemLabel` inside. `data-highlighted` highlights it, `data-disabled` dims it, and
+`data-checked`, `data-selected` or `aria-checked="true"` gives it the checkmark.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines,
+[Menu Anatomy](https://web.archive.org/web/20200503171533/https://developer.apple.com/design/human-interface-guidelines/macos/menus/menu-anatomy/):
+
+- Use title-style capitalisation, and a verb or verb phrase for a command.
+- End a title with an ellipsis (…) when the command needs more input before it acts.
+- Show an on state with a checkmark and a state that holds for part of the selection with a
+  dash; do not use a checkmark for a command.
+- Dim an item that is not available; do not remove it.
+- Give the most used commands a key equivalent, and use the standard ones for standard commands.
+- Contextual and Dock menus do not show key equivalents.
+
+## Variants and states
+
+<Example name="states" both />
+
+| Kind or state | Look | Basis |
+| --- | --- | --- |
+| Normal | Title 21 pt from the menu's edge, baseline 14 pt below the row's top | Measured |
+| Highlighted | The accent's menu highlight from edge to edge, white text, glyphs and marks | Measured for all eight accents |
+| Disabled, section header | Black at 26% in Aqua, white at 33% in Dark Aqua | Measured, computed |
+| On | Checkmark 6 pt from the edge: 8.5 pt at 12 pt text, 9 pt at 13 pt | Measured (Print and Contacts menus); its size at 14 pt computed |
+| Mixed | A bar 8 pt wide and 1.5 pt high | Provisional |
+| Key equivalent | The key left-aligned in a column 18 pt from the edge, the modifiers right-aligned against it | Measured |
+| Image | 16 pt, 5 pt before the title; the row is 21 pt at every size | Measured (Go menu) at 14 pt; other sizes computed |
+| Separator | A 2 pt line in a 12 pt row, across the whole menu | Measured |
+| Indented | 11 pt a level | Catalog |
+
+A title is never truncated: a menu grows to its widest item.
+
+## Sizes
+
+An item takes its font and row height from the menu: see [Menu](/components/menu). The row is
+19 pt at the 14 pt menu font, 18 pt and 17 pt in the menus of regular and small pop-up
+buttons, and 21 pt with an image at every size: the image is 16 pt, with 2.5 pt above and
+below it.
+
+## Accent colour
+
+The highlight follows `data-accent`. Its eight colours are fitted to the highlighted item of
+the open application menu in the accent screenshots; a custom accent uses the shared menu
+selection formula.
+
+## API
+
+Each part takes the props of the Base UI part it is built on (`onClick`, `disabled`,
+`closeOnClick`, `label`, `render`; `checked`, `defaultChecked` and `onCheckedChange` on a
+checkbox item; `value` on a radio item) and these:
+
+<PropsTable name="MenuItemProps" />
+
+<PropsTable name="MenuCheckboxItemProps" />
+
+<PropsTable name="MenuRadioItemProps" />
+
+<PropsTable name="MenuSectionProps" />
+
+<PropsTable name="MenuItemLabelProps" />
+
+Unlike Base UI's, a checkbox or radio item closes the menu when it is chosen, as a Catalina
+menu does; `closeOnClick={false}` keeps it open.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-highlighted` | item | present or absent | Under the pointer or the keyboard. Set by Base UI. |
+| `data-disabled` | item | present or absent | The item is disabled. |
+| `data-checked`, `data-unchecked` | checkbox and radio item | present or absent | Set by Base UI. |
+| `data-mixed` | checkbox item | present or absent | Reflects `mixed`. |
+| `data-indentation` | item | `1` to `3`, or absent | Reflects `indentationLevel`. |
+| `data-popup-open` | parent item of a submenu | present or absent | Its submenu is open: it stays highlighted. |
+| `data-force` | item | `hover` | Pins the highlight in documentation and visual tests. |
+| `data-key-equivalents` | the menu, or any element around the items | `hidden` | Hides the key equivalents of the items inside, as contextual and Dock menus do; the items keep `aria-keyshortcuts`. |
+
+Classes: `.mac-menu-item`, with `.mac-menu-item-image`, `.mac-menu-item-title` and
+`.mac-menu-item-key` inside it; `.mac-menu-item-separator`; `.mac-menu-item-header`.
+
+## Accessibility
+
+- Items have the roles `menuitem`, `menuitemcheckbox` and `menuitemradio`, with `aria-checked`
+  (`mixed` for the mixed state). A section is a `group` named by its header. A separator has
+  `role="separator"`.
+- The key equivalent's glyphs are hidden from assistive technology; the shortcut is announced
+  from `aria-keyshortcuts`, except one with Control and Command off Apple platforms (see Key
+  equivalents).
+- **Disabled items.** In Catalina the arrow keys and type-select pass over an item that cannot
+  be chosen, and so they do here. Base UI would keep a disabled item in the keyboard order, so
+  a disabled item is rendered outside Base UI's list, with the same role and
+  `aria-disabled="true"`. It is in the accessibility tree and a screen reader's own navigation
+  reaches it, but it never takes the focus. `render` is applied to it, and then everything that
+  could activate the element is removed, whether the item or `render` supplied it: every event
+  handler, `tabIndex`, `contentEditable` and a link's `href`; a rendered `button`, `select`,
+  `textarea` or `input` is `disabled` (an `input` is a void element and cannot hold a row's
+  content, so only a `render` function that leaves the content out can return one). A component given
+  to `render` receives `aria-disabled` and `tabIndex={-1}` and has to honour them itself. Base
+  UI's `label`, `closeOnClick` and `nativeButton` have no meaning on a disabled item.
+- An item with an image only, without a title, needs an `aria-label`.
+- Under `forced-colors` the highlight uses the system highlight colours, and the marks and the
+  separator the system text colour.
+
+## Visual comparison
+
+`npm run visual -- menu-item` compares five menus with the screenshots
+(`menu-item.visual.json`). Scores at 2x, in Chromium on Linux with the fallback font;
+"drawing only" masks the text and halves the colour threshold:
+
+| Crop | Aqua, whole crop | Aqua, drawing only | Dark Aqua, whole crop | Dark Aqua, drawing only |
+| --- | --- | --- | --- | --- |
+| Finder menu: disabled items, key equivalents, separators, highlight | 6.58% | 0.40% | 7.07% | 1.64% |
+| Go menu: 21 pt rows with an image, key equivalents, a submenu parent | 12.43% | 4.79% | 12.53% | 1.63% |
+| Print presets menu: 13 pt rows, checkmark, highlight over a neutral backdrop | 9.36% | 0.40% | 9.84% | 0.24% |
+| Application menu in each of the eight accents | not scored | 0.27% to 0.36% | not scored | 0.90% |
+
+The mean Δ of the drawing is 2.9 to 6.4 of 255 in Aqua and 3.4 to 4.2 in Dark Aqua; most of
+it is the menu's fill (see [Menu](/components/menu)). The Go menu is the longest crop and the
+only one that reaches the island of the desktop picture, which the stand-in follows in bands;
+that is its larger drawing score in Aqua.
+
+What is not exact:
+
+- **Vibrancy.** Catalina's titles and highlight blend with what is behind the menu: titles
+  are navy over the sky and grey over a window, and the blue highlight moves by 34 levels
+  between the sky and a white window. Here both are fixed colours, the highlight fitted to
+  within 14 levels of each measured backdrop.
+- **Glyphs.** Off Apple platforms the modifier and key glyphs come from a fallback font and
+  differ in width.
+- **Images.** The Go menu's template images and the battery menu's application icons are
+  Apple's artwork and are not shipped; pass your own with `image`.
+
+Provisional: the mixed mark, indentation, and the highlight of a custom accent. The row of the
+fast user switching menu, with an avatar and a badge, is a custom view and is not a part of
+this component.

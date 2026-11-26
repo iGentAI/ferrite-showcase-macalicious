@@ -1,0 +1,104 @@
+---
+title: Terminal
+description: The Terminal of macOS 10.15, a real VT100 and xterm screen with a first version of a simulated shell that works on the person's files, with tabs, split panes, selection and Find.
+order: 60
+---
+
+<Example name="basic" />
+
+Type at the prompt. The screen is a real terminal emulation: what the shell writes goes through
+the same escape sequences a program on a Mac writes. The shell behind it is not a real one. It
+runs in the page, it starts no process, and the first lines of every session say so.
+
+## What it shows
+
+- A [Window](/components/window) with a [Title Bar](/components/title-bar) named as Terminal names
+  its windows, `folder — zsh — 80×24`, and a [Window Tab Bar](/components/window-tab-bar) once there
+  is more than one tab.
+- The emulation in `terminal-emulator.ts`, with no DOM and no React: cursor movement, the SGR text
+  styles, 256 colours and true colour, the alternate screen, scroll regions, line wrap that is
+  wrapped again when the width changes, 10,000 lines of scrollback, wide characters, DEC line
+  drawing, cursor shapes, and the replies to status reports.
+- The shell in `terminal-shell.ts`, a first version, which reads the terminal's keyboard bytes as a
+  real shell does: emacs line editing, history with the arrows and Control-R, Tab completion and
+  quotes. It runs plain commands, one or several on a line with `;`, `&&` and `||`.
+
+## The drive
+
+On the desktop of the `macalicious-desktop` Ferrite application, the shell works on the person's
+drive through the same client Finder uses (`demos/desktop/desktop-files.ts`), and the paths are the
+ones Finder shows. `mkdir`, `rmdir`, `touch`, `cp`, `mv` and `rm` change it; `rm` erases for real,
+not into the Trash, as on a Mac.
+
+Anywhere else, such as on this page, there is no drive: the folders are there, empty.
+
+## Commands
+
+| Commands | Do |
+| --- | --- |
+| `pwd`, `cd`, `ls`, `cat` | Read the drive. `ls` takes `-a`, `-A`, `-l`, `-1` and most of a Mac's other options; those the drive has nothing for, such as `-i`, are refused. `cat` takes files, pipes and what you type. |
+| `sed`, `tr`, `cut` | On files and pipes. `sed` takes `-n`, `-E`, `-e`, `-i`; line, `$` and pattern addresses with ranges and `!`; and `s`, `y`, `d`, `p`, `q`, `=`, `a`, `i`, `c`. As on a Mac, `-i` takes the ending of a backup, which may be `''`. |
+| `which`, `env` | Say what this shell has. `env` lists the exported variables, or runs a command with `NAME=value`s added. |
+| `echo`, `clear`, `history`, `help`, `exit` | Act on the shell. |
+
+Anything else answers `zsh: command not found`.
+
+## Menus and keys
+
+Terminal registers its Shell, Edit, View and Window items with the desktop's menu bar
+(`useDesktopAppMenu`). On a Mac the key equivalents are Terminal's.
+
+Off a Mac, Command reads as Control, which would take Control-C and Control-D from the shell. So
+there Control and a letter stay the shell's, except Control-V, which pastes, and Control-C while text
+is selected, which copies. Control-Shift and the letter is the menu's key for the letter. A menu
+item whose key on a Mac already has Shift is chosen from the menu there.
+
+New Remote Connection is dimmed with its reason. Paste asks the browser for the clipboard when it
+comes from the menu; where the browser refuses, the item is dimmed and the keyboard's Paste still
+works.
+
+## Hosting the window
+
+`app.ts` exports the descriptor a desktop page reads, as `terminalApp` and as `app`. It says
+`windows`, so Shell > New Window opens further windows of the desktop through `DesktopWindow`. A
+further window's tabs and shells belong to the first window's component: they stay while that window
+lives.
+
+## What is not here yet
+
+The session's first lines and `help` say this too. This first version has the screen, the line
+editor, the window and the commands above. These come back, a family per change:
+
+- The rest of the shell's grammar: command substitution, here-documents, `if`, `for`, `while`
+  and scripts. A line with one of these characters outside quotes is refused with a message and runs
+  nothing. Variables are here: `$NAME`, `${NAME}`, `$?`, `NAME=value`, `export` and `unset`; a value is
+  not split into words, as in zsh. So are `*`, `?` and `[...]`, on the drive's names when the command
+  runs; a pattern that matches nothing ends the line with `no matches found`, as in zsh.
+- `tee`, which needs a stream.
+- The rest of the text tools: `seq`.
+- The commands that reach the rest of the Mac: `open`, `pbcopy`, `pbpaste`, `say`, `node`,
+  `osascript`, `mdfind`, `defaults`, `top`, `ps`, `kill`, `date`, `id`, `uname`, `whoami`, `hostname`
+  and `man`.
+- The commands that say why they need a real computer, such as `sudo`, `ssh`, `brew`, `git` and
+  `vim`. Until then they answer `command not found` like any other unknown name.
+
+The screen does not report the mouse to a program, and Control-Z does nothing.
+
+## What is not built
+
+Saved sessions, profiles and Preferences, the Inspector, Export, Print, the context menus, dragging
+and Help are not built. Each comes up as its own row in the feature list at
+`ferrite-apps/desktop/features/terminal.md`.
+
+## Accessibility
+
+The keyboard goes to a text area named "Terminal input", placed at the cursor so that an input
+method opens there. The lines are a `log` named "Terminal output". The divider of a split pane is a
+`separator` moved with the arrow keys. Tab is the shell's key inside the screen, as in any terminal,
+so the keyboard leaves the screen by the menu bar's commands or a press elsewhere.
+
+## Fidelity
+
+The reference set holds no screenshot of Terminal, so nothing here is measured. Every colour in
+`terminal.tokens.css` is provisional, written from knowledge of the application on macOS 10.15, and
+`terminal.visual.json` holds pixel checks of those values, not comparisons with a capture.

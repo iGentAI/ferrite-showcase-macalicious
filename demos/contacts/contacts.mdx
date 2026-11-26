@@ -1,0 +1,539 @@
+---
+title: Contacts
+description: The Contacts window of macOS 10.15, with a sidebar of groups, a searchable list of names and a card that is shown with its buttons and label menus or edited in place, built from the library alone.
+layout: full
+order: 110
+---
+
+<Example name="basic" />
+
+Choose a group and a name, type in the search field, press Edit to change the card and Done
+to keep it, press the plus to add a card, and click a field's label on a finished card for its
+menu. Nothing is stored: the cards last as long as the page, and nothing is sent, called or
+opened. Six of the eight cards are invented, their email addresses are on reserved domains,
+and the glyphs of a card's actions are original stand-in drawings.
+
+## What it shows
+
+- A [Window](/components/window) without a title bar: the
+  [Window Controls](/components/window-controls) float over the sidebar, and the strip they
+  sit in and the one around the search field are the window's drag regions.
+- A [Split View](/components/split-view) of three panes with the measured divider colour.
+  The groups are 223 pt wide and the names 188 pt; both dividers can be dragged.
+- The groups are a [Sidebar](/components/sidebar) without icons: All Contacts, then a section
+  for each account. A group lists the cards of its account. The sidebar runs from the
+  window's top: the room for the window controls is a spacer of the demo's before the first
+  row, not padding on the sidebar.
+- The names are a [List View](/components/list-view) of 24 pt rows under a
+  [Search Field](/components/search-field) set to the captured 21 pt. A card is listed by the
+  name it is sorted by, in semibold: a person's last name, a company's own. A list with
+  nothing in it shows an [Empty State](/components/empty-state).
+- The card is a [Scroll View](/components/scroll-view) over a bar of three
+  [Push Buttons](/components/push-button): the plus, Edit or Done, and the share button, which
+  is the trigger of a [Share Menu](/components/share-menu). Done is the emphasised Push
+  Button. The plus, the share arrow, the mark of the user's own card and the silhouette of a
+  picture are the library's [System Images](/components/system-image) `add`, `share` and
+  `user`. The remove button of a field being edited is the destructive
+  [Round Button](/components/round-button) at its mini size.
+- A finished card has four [Round Buttons](/components/round-button) under the name: message,
+  call, video and mail. Each is available when its service is set up (the `services` prop) and
+  the card has a number or an address for it. A field's label is the trigger of a
+  [Menu](/components/menu) of [Menu Items](/components/menu-item): Send Email, Send Message,
+  Search with Spotlight. While the pointer is over a row its label sits in a capsule and a
+  round button for the field's first command appears at the row's end.
+- A card being edited has a [Text Field](/components/text-field) without a bezel for every
+  value, as wide as its text; a small [Pop Up Button](/components/pop-up-button) without a
+  bezel for every label, whose last item, Custom…, takes a label of the user's own; pop-up
+  buttons for the ringtone, the text tone and the messaging service; a round button that
+  removes a field; a small [Checkbox](/components/checkbox) that makes the card a company's;
+  and a [Segmented Control](/components/segmented-control) that switches between the fields
+  and the picture, where two [Radio Buttons](/components/radio-button) choose between the
+  monogram and a silhouette.
+- Every control is the library's as the library draws it. The demo gives a control a `size`
+  from its own props, a place, at most a `width`, the name's 18 pt to the two
+  [Text Fields](/components/text-field) a name is edited in, and the three custom properties their
+  components document as hooks: `--mac-sidebar-section-gap`, `--mac-split-view-divider-color`
+  and `--mac-search-field-height`. Where Contacts draws a control its own way, the demo keeps
+  the library's look; [Fidelity](#fidelity) lists each difference. The two columns of a card
+  are the demo's own grid and not the library's [Form](/components/form): a form's label is
+  text that names the control beside it, and here the label is itself a control.
+
+## How it behaves
+
+| Action | Effect |
+| --- | --- |
+| Press a group | Lists that account's cards. The card that was chosen stays shown while the list holds it; otherwise the first of the list is shown. A group without cards shows "No Cards" and "No Card Selected". |
+| Press a name, or move through the list with the arrow keys | Shows that card and makes it the chosen one, so it stays when the list changes again. An edit of the card that was shown ends, as with Done. |
+| Type in the search field | Lists the cards whose names, company, note or any field's value contain the text, whatever the case and the accents; the text is taken as typed, so a `.` or a `*` is that character. Clearing the field brings the list back. |
+| Press Edit | Makes every value a field. Each kind of field is followed by an empty one with the next free label; typing in it adds it to the card. The card stays listed while it is edited, also when a search no longer finds it. |
+| Press Done | Keeps what was typed and drops the fields left empty. A search that no longer finds the card is cleared, so the card stays shown. |
+| Choose in a label's pop-up menu | Changes the label; Custom… opens a field for a label of one's own, which Return keeps and Escape gives up. |
+| Press a remove button | Removes that field. |
+| Press the plus | Adds a card to the account that is shown (to iCloud from All Contacts), clears a search and opens the card with the first name focused. |
+| Click a label of a finished card | Opens its menu of commands. The demo performs none of them: it calls `onAction` with the command and the value. |
+| Double-click a name, or choose Card > Open in New Window (⌘I) | On a desktop, which gives the window `DesktopWindow`, opens each card selected in a window of its own. It is the same card: what is edited there shows in the list, and a card already open comes forward. Elsewhere neither does anything and the menu item is absent. |
+
+## How it is built
+
+The window is `Contacts` in `contacts.tsx`; the card pane is `ContactCard` in
+`contacts-card.tsx`; the cards and the pure functions over them (`sortContacts`, `inGroup`,
+`matches`, `tidy`, `nextLabel`, `labelOf`) are in `contacts-data.ts`, the six glyphs in
+`contacts-artwork.tsx`, the layout in `contacts.css` and the measured colours in
+`contacts.tokens.css`. What only the Ferrite desktop has is in `contacts-desktop.tsx` (its
+commands, sheets and picture choosers), `contacts-server.ts` (its requests),
+`contacts-vcard.ts` and `contacts-picture.ts`.
+
+**State, selection and filtering.** The window keeps the cards, the group, the search text,
+the chosen card's `id` and whether it is being edited. The list is derived on each render:
+the cards of the group that the search finds, in order, with the card being edited kept in
+whatever is typed. The card shown is the chosen one while the list holds it, and else the
+list's first; the chosen card starts as the card shown, so a window that opens in edit mode
+edits the card it shows.
+
+```tsx
+const [contacts, setContacts] = useState(defaultContacts);
+const [group, setGroup] = useState(defaultGroup);
+const [query, setQuery] = useState("");
+const [selected, setSelected] = useState<string | null>(/* the card shown at first */);
+const [editing, setEditing] = useState(defaultMode === "edit");
+
+const visible = useMemo(
+  () =>
+    sortContacts(
+      contacts.filter(
+        (contact) =>
+          inGroup(contact, group) &&
+          (matches(contact, query) || (editing && contact.id === selected)),
+      ),
+    ),
+  [contacts, group, query, editing, selected],
+);
+const current = visible.find((contact) => contact.id === selected) ?? visible[0] ?? null;
+```
+
+The List View is controlled by `current`, and a press on a name calls `choose`, which ends an
+edit of another card and makes the pressed card the chosen one:
+
+```tsx
+<ListView
+  count={visible.length}
+  rowHeight={24}
+  renderRow={renderRow}
+  getRowId={(index) => visible[index]?.id ?? index}
+  value={currentId === null ? [] : [currentId]}
+  onValueChange={(next) => {
+    if (typeof next[0] === "string") choose(next[0]);
+  }}
+/>
+```
+
+**Keeping edits.** While a card is edited every keystroke goes straight into the list of
+cards (`change` replaces the card by `id`), so the list's row follows the name as it is
+typed. Ending the edit only tidies the card: `tidy` trims its texts and drops the fields
+left empty. Choosing another name, another group, a search or the plus all go through
+`finish`; Done also clears a search that no longer finds the card:
+
+```tsx
+const finish = () => {
+  if (!editing) return;
+  setEditing(false);
+  if (currentId !== null)
+    setContacts((now) => now.map((contact) => (contact.id === currentId ? tidy(contact) : contact)));
+};
+
+const done = () => {
+  finish();
+  if (editing && current !== null && !matches(tidy(current), query)) setQuery("");
+};
+
+// Edit: the card shown becomes the chosen one, so it stays listed while it is edited.
+const edit = () => {
+  if (currentId === null) return;
+  setSelected(currentId);
+  setEditing(true);
+};
+```
+
+The card pane is keyed by the card's `id` (`<ContactCard key={currentId} … />`), so the
+state of one card's editor, such as which pane is shown, never carries over to another.
+
+**The field rows.** A card's phone numbers, addresses, web addresses and messaging names
+are four lists of `{ label, value }`. `FIELD_KINDS` says for each kind its name, its labels,
+its placeholder and its commands, and the card renders one group per kind from it. In a
+card being edited `EditGroup` shows the fields and, after the last one that holds
+something, an empty row with the next free label; typing in that row is what adds a field,
+and rows are keyed by position so the field keeps the focus when it does:
+
+```tsx
+const rows =
+  last?.value !== "" ? [...fields, { label: nextLabel(kind, fields), value: "" }] : fields;
+const set = (index: number, patch: Partial<ContactField>) => {
+  const row = rows[index];
+  if (!row) return;
+  if (index < fields.length)
+    onChange(fields.map((field, at) => (at === index ? { ...field, ...patch } : field)));
+  else onChange([...fields, { ...row, ...patch }]);
+};
+```
+
+Each row is a Round Button that removes the field, the label's Pop Up Button and a Text
+Field without a bezel that is as wide as its text.
+
+**The label menus.** A label is a control in both modes. In a card being edited it is a
+small Pop Up Button without a bezel whose value is the label; its last item, Custom…, swaps
+the button for a Text Field that takes a label of the user's own:
+
+```tsx
+<PopUpButton
+  size="small"
+  bordered={false}
+  aria-label={`${spec.name} label`}
+  value={label}
+  onValueChange={(next) => {
+    if (next === CUSTOM) setNaming(index);
+    else if (next != null) set(index, { label: next });
+  }}
+>
+  {labels.map((option) => (
+    <PopUpButtonItem key={option} value={option}>{option}</PopUpButtonItem>
+  ))}
+  <PopUpButtonSeparator />
+  <PopUpButtonItem value={CUSTOM}>Custom…</PopUpButtonItem>
+</PopUpButton>
+```
+
+On a finished card `ViewGroup` makes the label the trigger of a Menu with the commands of
+the field's kind. The demo performs none of them; each item reports the command and the
+value through `onAction`:
+
+```tsx
+<Menu>
+  <MenuTrigger className="mac-contacts-label">{labelOf(field)}</MenuTrigger>
+  <MenuPopup side="right" align="start">
+    {spec.actions.map(({ action, title }) => (
+      <MenuItem key={action} onClick={() => onAction?.(action, { contact, value: field.value })}>
+        {title}
+      </MenuItem>
+    ))}
+  </MenuPopup>
+</Menu>
+```
+
+## Hosting the window
+
+`Contacts` renders the library's `Window` as its root and passes every `Window` prop to it,
+so it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component takes out before the rest goes to
+the `Window`. These are the props a [Managed Window](/components/managed-window)'s `render`
+form supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { contactsApp } from "./app";
+
+<ManagedWindow
+  id={contactsApp.id}
+  defaultFrame={{ x: 80, y: 60, ...contactsApp.defaultSize }}
+  render={(props) => <contactsApp.component {...props} />}
+/>;
+```
+
+Contacts has no title bar, so its drag regions are the strip over the groups and the strip
+around the search field: a press there that is not on a control calls
+`onDragRegionPointerDown`, and a double click calls `onDragRegionDoubleClick`.
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `defaultContacts` | `Contact[]` | The cards at first, each with its own `id`; eight by default, the two of the screenshots among them. An empty list shows "No Cards". |
+| `defaultGroup` | `"all" \| "icloud" \| "mac"` | The group shown at first; `"all"` by default. |
+| `defaultContact` | `string` | The card shown at first; `"stephen-hackett"` by default, and the first of the starting group when that group does not hold it, which is then the chosen card. |
+| `defaultMode` | `"view" \| "edit"` | Whether the card is shown or being edited at first; `"view"` by default. |
+| `services` | `ContactService[]` | The services set up on the Mac, which the four buttons under a name need; all four by default, and none dims all four. |
+| `onContactChange` | `(id: string) => void` | Called with the card the user chooses in the list, not for a card the window shows by itself. |
+| `onAction` | `(action, { contact, value }) => void` | Called for a button under the name, a field's badge, a command of a label's menu and a service of the share menu. |
+| `material` | `"translucent" \| "opaque"` | The sidebar's surface: vibrant over a desktop (the default), or opaque on a plain page. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `controlsProps` | `WindowControlsProps` | Further props for the `WindowControls`; a `className` is added to the class that places them. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Called for the drag regions. |
+| `width`, `height` | `number \| string` | The frame; 938 by 438 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `contactsApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (938 by 438), `minSize` (780 by 320), `resizable` and
+`menus`, the menu titles after the Apple menu.
+
+A card (`Contact`) needs an `id`, an account and its two names, `first` and `last`, which are
+strings that may be blank (`""`); everything else may be missing. A card
+without names is listed and titled "No Name", or by its company when it has one; names that
+are only spaces count as none. A company's card names the person under the company. A field
+(`ContactField`) needs a `label` and a `value`, both strings: a blank label is shown and kept
+as "other", a field with a blank value is dropped when the card is done, and a ringtone, a
+text tone or a messaging
+service that the pop-up menu does not offer is added to that menu for the card.
+
+## On the desktop's Ferrite application
+
+On the desktop served by the `macalicious-desktop` Ferrite application
+(`ferrite-apps/desktop`, module `src/apps/contacts`), and only there, Contacts is the signed-in
+person's own address book. Everything in this section is switched on by
+`servedByDesktopApp()`; the window on this page, its examples and the visual comparisons have
+none of it.
+
+- **Groups, views and added fields.** Groups of the person's own (File > New Group, a drag of
+  names onto a group, Edit > Remove from Group, Rename Group and Delete Group, and the contextual
+  menus of a group and a name) are kept at `/api/contacts/groups`, as lists of card ids. The View
+  menu's Hide Groups, Card Only and List and Card are kept with the person's settings. Card > Add
+  Field adds a phonetic name, nickname, job title, department, address, related name, date or
+  social profile; these are kept with the card and written to its vCard. Show on Map searches for the
+  address in Maps.
+- **My Card.** A person who has saved no cards starts with only their own card, made from
+  their account: the first word of the full name as the first name, the rest as the last, and
+  the account name as the card's `user`. Saved cards without the person's own card get it. A
+  Guest User's card names no account. Before anyone signs in the window keeps its own cards.
+- **The desktop's people.** The pull-down button with the `action` image in the bar, after the
+  plus, holds the desktop's commands. Add Desktop User… asks for an account name in a
+  [Sheet](/components/sheet) and looks it up on the desktop (`GET
+  /api/contacts/users/<name>`); the new card takes the account's full name and its `user`. A
+  name no account has is said so in the sheet, and an account that already has a card shows
+  that card. A card with a `user` shows it as its "account" row, `martin@macalicious`, and
+  its message and mail buttons are available: a message goes to the account name and mail to
+  that address. `GET /api/contacts/people` answers the person's desktop users, without their
+  own card, sorted by full name: the address book Messages and Mail read.
+- **vCard files.** Import vCard… reads one or more `.vcf` files from the computer, and Import
+  vCard from Drive… one from the person's drive in the drive's Open panel; a file dropped on the
+  list of names is imported too. Export Card as vCard and Export All Cards as vCard download
+  the shown card or every card; Save Card to Drive… and Save All Cards to Drive… save them with
+  the drive's Save panel in a sheet. The files are vCard 3.0, or 2.1 when Preferences > vCard says so, in UTF-8 or the Windows Latin 1 Outlook reads, read and written in the browser
+  (`contacts-vcard.ts`): names, company, phones, email addresses, web addresses, messaging
+  names, the birthday, the note and the desktop account as
+  `X-MACALICIOUS-USER`. A label vCard has no type for is written in Apple's way, with an
+  `X-ABLabel`. Importing does not add a second card for a desktop user who already has one, nor
+  the person's own card. A `PHOTO` that is a JPEG or PNG comes in as the card's picture, and an
+  export writes each card's picture, unless Preferences > vCard says otherwise; a picture in any
+  other format is left out, and Contacts says so. Preferences > vCard also says whether notes are
+  written. Copy, Paste and a drag of names carry no pictures.
+- **Contacts archive.** File > Export > Contacts Archive… downloads every card, group, smart group
+  and picture as one file, and File > Import reads it back in place of what is there, after an
+  alert. The file is named `.abbu`, as a Mac's is, but it is one JSON document of this desktop's
+  own: a Mac's Contacts cannot read it, nor can this window read a Mac's archive.
+- **Preferences.** General also sets the address format, which lays out a card's addresses.
+  Template names the fields a new card starts with, and Phone formats ten-digit numbers where a
+  finished card shows them. All of these are kept with the person's settings.
+- **Cards in other applications.** The share menu and Card > Share My Card send a card as a `.vcf`
+  file to Mail, Messages or Notes. AirDrop is dimmed: it needs another machine. A name dragged out
+  of the list carries the card as vCard text and, in Chromium, as a `.vcf` for the computer.
+- **Cut, Copy and Paste.** Edit > Copy puts the card, or the names selected, on the clipboard as
+  vCard text, and Edit > Paste adds the cards it finds there as new ones. Edit > Cut copies and then
+  deletes the cards, and Undo Cut brings them back. A card with a picture still asks first, as
+  Delete Card does, since neither the vCard text nor Undo brings its picture back.
+- **Pictures.** In the Picture pane of a card being edited, Choose Picture… takes an image
+  from the computer and Choose from Drive… one from the drive, opening in Pictures, where Photo
+  Booth keeps its pictures. The browser crops the middle square, or the square a person framed
+  with Card > Edit Custom Image… or a double click on the picture, and draws it at most 256 by 256
+  pixels as a JPEG of at most 64 KiB (`contacts-picture.ts`). The server keeps it beside the
+  cards, one key per card, and checks that it is a JPEG or PNG `data:` URL under that size; the
+  card names its version in `image` and shows it in place of the monogram. Remove Picture
+  gives the monogram back.
+- **Smart groups.** New Smart Group… makes a group of the cards its rules choose: all or any of
+  up to 20 rules, each a field and a test, or whether the card is a desktop user. The groups are
+  listed under Smart Groups in the sidebar, kept in a document of their own
+  (`/api/contacts/smart-groups`). Edit Smart Group changes the rules, and Delete Smart Group
+  removes the one shown, after an alert.
+- **What the window remembers.** The group shown and the card chosen are kept with the person's
+  settings and come back when the window opens.
+- **While a card is edited.** Card > Discard Changes puts the card back as it was when the edit
+  began, or takes away a card just made; a picture chosen during the edit stays, since it is on
+  the server already.
+
+The cards are one document per person (`/api/contacts/cards`), saved after every change; the
+pictures are not in it, since the whole list is sent with every change under the gateway's
+256 KiB request limit. A save the desktop does not keep is said in an alert: when the cards were
+changed in another window or browser first, the change is made again on that version where it
+can be, and otherwise that version is kept and shown; any other failure is sent again whole with
+the next change. `ferrite-apps/desktop/e2e/contacts-journey.mjs` drives two people
+through all of this in a real browser.
+
+## Styling hooks
+
+The demo's measured lengths are custom properties in `contacts.tokens.css`, each tagged
+measured or provisional with the place it was read; `contacts.css` reads them with `var()`.
+Set one on the window or an ancestor to change that measure. The class names are listed at
+the head of `contacts.css`.
+
+| Property | Default | Controls |
+| --- | --- | --- |
+| `--mac-contacts-controls-room-height` | `17px` | Spacer before the first group: height |
+| `--mac-contacts-rule-gap` | `8px` | A smart group's rules: the gap between them and between a rule's controls |
+| `--mac-contacts-rule-field-width` | `120px` | A smart group's rule: width of its field pop-up |
+| `--mac-contacts-rule-test-width` | `140px` | A smart group's rule: width of its test pop-up |
+| `--mac-contacts-top-height` | `22px` | Strip over the groups: height |
+| `--mac-contacts-controls-inset-block-start` | `5px` | Window controls: inset block start |
+| `--mac-contacts-controls-inset-inline-start` | `8px` | Window controls: inset inline start |
+| `--mac-contacts-search-strip-height` | `54px` | Search strip: height |
+| `--mac-contacts-search-strip-padding` | `24.5px 18.5px 0 14.5px` | Search strip: padding |
+| `--mac-contacts-me-margin-inline-start` | `10px` | My-card mark: margin inline start |
+| `--mac-contacts-me-vertical-align` | `-1px` | My-card mark: vertical align |
+| `--mac-contacts-head-height` | `155px` | Head of a finished card: height |
+| `--mac-contacts-head-edit-height` | `141px` | Head of a card being edited: height |
+| `--mac-contacts-picture-inset-block-start` | `24px` | Picture: inset block start |
+| `--mac-contacts-picture-inset-inline-start` | `70px` | Picture: inset inline start |
+| `--mac-contacts-identity-inset-block-start` | `37.5px` | Name block: inset block start |
+| `--mac-contacts-identity-inset-inline` | `132.5px 35px` | Name block: inset inline |
+| `--mac-contacts-identity-edit-inset-block-start` | `19.5px` | Name block, editing: inset block start |
+| `--mac-contacts-identity-edit-inset-inline-start` | `130.5px` | Name block, editing: inset inline start |
+| `--mac-contacts-name-gap` | `3px` | Name: gap between its parts |
+| `--mac-contacts-name-font-size` | `18px` | Name: font size |
+| `--mac-contacts-name-line-height` | `22px` | Name: line height (and the height of its line while editing) |
+| `--mac-contacts-company-margin-block-start` | `2px` | Company field: margin block start |
+| `--mac-contacts-company-box-margin` | `6px 0 0 2.5px` | Company checkbox: margin |
+| `--mac-contacts-actions-inset-block-start` | `104.5px` | Action buttons: inset block start |
+| `--mac-contacts-actions-inset-inline-start` | `150.5px` | Action buttons: inset inline start |
+| `--mac-contacts-action-width` | `56px` | Action button with caption: width |
+| `--mac-contacts-caption-margin-block-start` | `5px` | Caption: margin block start |
+| `--mac-contacts-caption-font-size` | `11px` | Caption: font size |
+| `--mac-contacts-caption-line-height` | `13px` | Caption: line height |
+| `--mac-contacts-panes-inset-block-start` | `105.5px` | Info and Picture control: inset block start |
+| `--mac-contacts-panes-width` | `216px` | Info and Picture control: width |
+| `--mac-contacts-picture-pane-gap` | `24px` | Picture pane: gap |
+| `--mac-contacts-picture-pane-padding` | `12px 70px` | Picture pane: padding |
+| `--mac-contacts-fields-padding-inline` | `35px` | Fields: padding inline |
+| `--mac-contacts-group-padding-block` | `2px` | Field group: padding block |
+| `--mac-contacts-row-height` | `24px` | Field row: height |
+| `--mac-contacts-row-label-width` | `96px` | Label column of a finished card: width |
+| `--mac-contacts-row-column-gap` | `1.5px` | Field row: column gap |
+| `--mac-contacts-row-edit-label-width` | `90.5px` | Label column of a card being edited: width |
+| `--mac-contacts-row-edit-column-gap` | `5px` | Field row, editing: column gap |
+| `--mac-contacts-row-edit-padding-inline-start` | `0.5px` | Field row, editing: padding inline start |
+| `--mac-contacts-remove-room` | `15px` | Room the remove button takes in the label column |
+| `--mac-contacts-remove-inset-block-start` | `3.5px` | Remove button: inset block start |
+| `--mac-contacts-remove-inset-inline-start` | `-0.5px` | Remove button: inset inline start |
+| `--mac-contacts-choice-margin-inline-start` | `3px` | Pop-up value: margin inline start |
+| `--mac-contacts-label-edit-padding-inline-end` | `9.5px` | Fixed label, editing: padding inline end |
+| `--mac-contacts-label-height` | `15px` | Label: height |
+| `--mac-contacts-label-padding-inline` | `8px` | Label: padding inline |
+| `--mac-contacts-label-radius` | `7.5px` | Label capsule: radius |
+| `--mac-contacts-label-font-size` | `12px` | Label: font size |
+| `--mac-contacts-label-line-height` | `15px` | Label: line height |
+| `--mac-contacts-label-view-margin-block-end` | `1px` | Label, finished card: margin block end |
+| `--mac-contacts-label-view-padding-inline` | `8px 7px` | Label, finished card: padding inline |
+| `--mac-contacts-value-gap` | `6px` | Value: gap |
+| `--mac-contacts-value-view-padding-block-start` | `0.5px` | Value, finished card: padding block start |
+| `--mac-contacts-value-wrap-padding-block` | `4px` | Note value: padding block |
+| `--mac-contacts-badges-gap` | `6px` | Row buttons: gap |
+| `--mac-contacts-badges-margin-inline-end` | `-1px` | Row buttons: margin inline end |
+| `--mac-contacts-autosize-padding-inline` | `2px 3px` | Autosized field's sizing copy: padding inline |
+| `--mac-contacts-bar-height` | `51px` | Bar: height |
+| `--mac-contacts-bar-gap` | `9px` | Bar: gap |
+| `--mac-contacts-bar-padding` | `17px 35px 0` | Bar: padding |
+| `--mac-contacts-bar-edit-padding-block-start` | `16px` | Bar, editing: padding block start |
+| `--mac-contacts-panel-layer-z-index` | `800` | On the Ferrite desktop, the drive's Open panel layer: z-index |
+| `--mac-contacts-panel-layer-margin` | `16px` | On the Ferrite desktop, the room the Open panel keeps from the page's edges |
+
+## Accessibility
+
+- The window is a `region` named "Contacts". The groups are a `tree` named "Groups" and the
+  names a `listbox` named by the group; the arrow keys move the selection and typing selects
+  by name. The user's own card says so in its name ("Stephen Hackett, my card").
+- A finished card's name is a level 2 heading. The four buttons under it are a group named
+  "Actions"; each is named by its caption, and one that is not available is disabled.
+- A label that opens a menu is a button named by its text. Return, Space or Down Arrow opens
+  the menu, the arrow keys move in it and Escape closes it. The round button at the end of a
+  row is hidden until the row is under the pointer or holds the keyboard focus, so Tab shows
+  it; it is named by its command and the value ("Send Email stephen@example.com").
+- In a card being edited every field is named by its label and its kind ("work email"), every
+  label's pop-up button by the kind ("email label") and every remove button by what it
+  removes ("Remove work email"). The fields of one kind are a group named by the kind.
+- The plus is named "New Contact" and the share button "Share". An empty search is announced
+  through a `status` element.
+- On the Ferrite desktop the pull-down of the desktop's commands is named "Contacts commands",
+  the sheets are dialogs named by their titles ("Add a Desktop User", "New Smart Group"), a name
+  no account has is announced through an `alert`, and an import's result is an alert dialog. A
+  card's own picture is decorative, as the monogram is: the card's name is its heading.
+
+## Fidelity
+
+`contacts.visual.json` compares the window with the Contacts screenshots in both appearances,
+each as captured and again with the text and the stand-in drawings masked. The Aqua capture
+shows the card being edited with the label menu of the email field open, the Dark Aqua one
+the finished card with the action menu of the "work" label open; the comparisons open both
+menus with real clicks. Scores from `npm run visual -- contacts/` in Chromium on Linux with
+the fallback font: the share of pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` (sidebar masked) | 3.90% | 3.92 | 3.40% | 3.87 |
+| `window-light-layout` (masked) | 1.61% | 1.11 | 1.25% | 1.01 |
+| `window-dark` | 2.23% | 4.09 | 1.80% | 4.15 |
+| `window-dark-layout` (masked) | 0.77% | 2.26 | 0.56% | 2.19 |
+
+The masked rows count a pixel as differing at a colour distance of 0.05, half the default.
+
+The comparisons read no pixels after an action. Which card a click brings cannot be read
+from pixels, so `contacts.browser.test.tsx` drives the same window in Chromium, Firefox and
+WebKit, whichever are installed, with real
+input and reads names and values: the row selected and the card shown after a click on a
+contact and then on another, the names a search leaves in the list, and the finished card
+after Edit, typing in four fields and Done. Each of its cases loads the window anew.
+
+### Where the library's controls are not Contacts' own
+
+The demo does not restyle a library control: no padding, height, colour, radius or
+background of a control is set from outside, and no type but one: the two fields of a name
+being edited are given the name's 18 pt, as a [Text Field](/components/text-field) takes the
+font it is given (its `large-text` example is this name). Where Contacts draws a control its
+own way, the
+window therefore shows the library's. Each row is a departure from the captures.
+
+| Control | Contacts draws | The library's control draws |
+| --- | --- | --- |
+| Label of a field being edited | 12 pt text in the link blue, ending 107.5 pt from the card's edge, with blue arrows 6 pt wide 8 pt after it; a menu 95 pt wide. | A small Pop Up Button without a bezel: 11 pt text, in Contacts' blue through the button's two colour hooks, arrows too, the title ending 4 pt nearer the arrows. The demo sets the button at the end of the label column, so the arrows are where the capture has them. Its menu is as wide as its titles, 96 pt in the fallback font, and stands about 5 pt right of the captured one. |
+| The four buttons under the name | 24 pt discs. | Regular Round Buttons, 20 pt discs, centred where the captured ones are. The badge at the end of a row is the same button, and the captured badge is 20 pt. |
+| Done | A 59 pt bezel with a blue, semibold title. | The emphasised Push Button: the blue, semibold title, in a bezel as wide as the title and the button's 14 pt of padding on each side make it. |
+| Plus | A 34 pt bezel (33 pt in Dark Aqua). | A Push Button with the `add` System Image, 38 pt: the 11 pt image and the same padding. |
+| Names of the groups | Text 20 pt from the sidebar's edge. | A Sidebar row without an icon: text 18 pt from the edge. |
+| Info and Picture | A flat capsule with a grey selected half. | A Segmented Control: the push button's bezel, and the accent colour on the selected segment. |
+| Ringtone, text tone and service | Grey arrows 6 pt wide. | Pop Up Buttons without a bezel: arrows 7.5 pt wide in the colour of a control's text. |
+| List of names | The pane's colour, `#1e1f20` in Dark Aqua. | The List View's own background, `#1e1e1e` in Dark Aqua. |
+
+The glyphs of a card's actions (message, call, video, mail, a web address, a search) are
+the demo's own drawings, because the System Image set has none for them; in an available
+button they are in the link colour, which is set on the demo's element around the drawing
+and not on the button.
+
+### Other differences
+
+- The captures are regions of a desktop, and the sidebar in them is the vibrant material
+  over the desktop picture, which is not reproduced. The examples use the opaque sidebar. In
+  Aqua the picture tints the captured sidebar from beige to blue, so both Aqua rows leave out
+  the sidebar, a quarter of the window, and the line beside it: unmasked, the Aqua crop
+  scores 22.8% at 2x. In Dark Aqua the two surfaces are a few levels apart, which nothing
+  counts as a differing pixel; it is most of that row's mean difference. The window controls,
+  the groups and their selection are therefore compared in Dark Aqua only.
+- Most of the pixels that differ in `window-light-layout` at 2x are the Info and Picture
+  control and the open label menu (its place, its width and its rim); the rest are the
+  search field's outline, lighter than the captured one, the arrows of the pop-up
+  buttons beside the values, and the bar, with its wider plus button.
+- The capture's window has a lighter line along its top edge than along the other three
+  (`#707171` over `#5d5e5e` in Dark Aqua, where the sides are `#4b4c4d`): the two highlight
+  rows a title bar draws. The window has no title bar, so it draws them itself through the
+  Window's `topHighlight`. Of what still differs in `window-dark-layout` at 2x, most is the
+  four 20 pt discs, the action menu's width and rim and the bar.
+- In the Aqua capture the first phone field holds a selection and has the focus ring while
+  the menu is open. In a browser the focus is in the open menu, so the field has neither; the
+  masked comparison leaves that field out.
+- The menus are as wide as their titles in the font in use: with the fallback font the
+  action menu is 182 pt where the capture has 179.
+- The email address of the captured card is replaced by one on a reserved domain.
+- The name of a card being edited is two fields, first and last; the name's prefix, suffix,
+  nickname and the other fields of the Card menu are not included, and a card has no address,
+  related names or dates other than the birthday. A note is edited in a field of one line: a
+  finished card shows a note's lines, and editing the note joins them.
+- A finished card, a label's capsule and the badges in Aqua, and a card being edited in Dark
+  Aqua, have no reference screenshot; neither have the Picture pane, the Custom… field, the
+  share menu or the empty states. They are composed to Catalina's conventions and are
+  provisional, as the tags in `contacts.tokens.css` say.
+- Cards cannot be deleted, and the window here has no groups of its own and no pictures but
+  the monogram and the silhouette: the demo has no files. On the desktop served by Ferrite a
+  card can have a picture and the sidebar smart groups ([On the desktop's Ferrite
+  application](#on-the-desktops-ferrite-application)).

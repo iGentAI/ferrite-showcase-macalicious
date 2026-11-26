@@ -1,0 +1,211 @@
+/*
+ * Stocks watchlist row (a Mac Catalyst table cell: iOS metrics at 77%).
+ *
+ * 48.2 pt tall, no fill of its own, a hairline along the bottom. Symbol and name are in flow;
+ * sparkline, price and badge are pinned to the trailing edge. Offsets are from the row's
+ * top-left corner, measured in both Stocks screenshots; the docs page says where they depart
+ * from the spec's nominal values (pitch, badge corner, sparkline box).
+ *
+ * States
+ *   [data-direction="loss"]            red instead of green
+ *   [data-direction="none"]            grey: no quote, or no change (provisional)
+ *   [data-selected]                    lighter row (provisional)
+ *   main button, badge :active         selected fill; badge at 70% (provisional)
+ *   main button, badge :focus-visible  focus ring, in the key window only
+ *   [data-force~="pressed" | "focus"]  on the row: previews of the main button's states
+ */
+.mac-stock-row {
+  --_badge: var(--mac-stock-row-gain-badge);
+  --_line: var(--mac-stock-row-gain-line);
+  --_close: var(--mac-stock-row-gain-close);
+
+  position: relative;
+  height: 48.2px;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-stock-row:where([data-direction="loss"]) {
+  --_badge: var(--mac-stock-row-loss-badge);
+  --_line: var(--mac-stock-row-loss-line);
+  --_close: var(--mac-stock-row-loss-close);
+}
+
+.mac-stock-row:where([data-direction="none"]) {
+  --_badge: var(--mac-color-system-gray);
+  --_line: var(--mac-color-system-gray);
+  --_close: var(--mac-color-system-gray);
+}
+
+.mac-stock-row:where([data-selected]),
+.mac-stock-row-main:where(:enabled:active),
+.mac-stock-row:where([data-force~="pressed"]) > .mac-stock-row-main {
+  background: var(--mac-stock-row-selected-fill);
+}
+
+/* Hairline, from 12.3 pt in to the trailing edge. */
+.mac-stock-row::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 12.3px;
+  height: var(--mac-hairline);
+  background: var(--mac-stock-row-separator);
+  pointer-events: none;
+}
+
+/* The two parts that can be buttons. */
+.mac-stock-row-main,
+.mac-stock-row-badge {
+  box-sizing: border-box;
+  margin: 0;
+  border: 0;
+  cursor: inherit;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+/* Text starts 12.3 pt in and stops 4 pt before the sparkline (provisional: the longest name
+   shown ends 12.5 pt before it, uncut, and the fallback font sets it about 6 pt wider). A
+   column whose padding leaves exactly the two lines'
+   33 pt: a <button> centres what it holds, and must not move the text of a row that is one. */
+.mac-stock-row-main {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 7.5px 140px 7.7px 12.3px;
+  border-radius: 0;
+  background: none;
+  font: inherit;
+  text-align: start;
+}
+
+/* Symbol: 14 pt Medium, baseline at 21 pt. Name: 12.5 pt Regular, baseline at 37.5 pt. */
+.mac-stock-row-symbol,
+.mac-stock-row-name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-stock-row-symbol {
+  color: var(--mac-stock-row-symbol-text);
+  font: var(--mac-font-weight-medium) 14px / 17px var(--mac-font-family-system);
+}
+
+.mac-stock-row-name {
+  margin-top: 1px;
+  color: var(--mac-stock-row-name-text);
+  font: var(--mac-font-weight-regular) 12.5px / 15px var(--mac-font-family-system);
+}
+
+/* Sparkline: 54.67 x 26 pt (71 iOS points wide), from 13 to 39 pt down and 136 pt before the
+   trailing edge (L row y=839: dashes from 500.07 to 609.43; D @ 500,931; L @ 510,405). Whole
+   points down the row: a browser places an SVG on whole device pixels. */
+.mac-stock-row-sparkline {
+  position: absolute;
+  top: 13px;
+  right: 81.33px;
+  width: 54.67px;
+  height: 26px;
+  overflow: hidden;
+  fill: none;
+}
+
+.mac-stock-row-sparkline-line {
+  stroke: var(--_line);
+  stroke-width: 1.5px;
+  stroke-linejoin: round;
+}
+
+/* Previous close: 1.7 px thick in Aqua and 1.5 px in Dark Aqua (L col x=502: y=838..840),
+   3.85 pt from dash to dash. */
+.mac-stock-row-sparkline-close {
+  stroke: var(--_close);
+  stroke-width: 0.85px;
+  stroke-dasharray: 2.33 1.52;
+}
+
+.mac-stock-row-sparkline-fill-top,
+.mac-stock-row-sparkline-fill-bottom {
+  stop-color: var(--_line);
+  stop-opacity: 0;
+}
+
+.mac-stock-row-sparkline-fill-top {
+  stop-opacity: var(--mac-stock-row-fill-opacity);
+}
+
+/* Price: 13 pt Regular on the symbol's baseline, ending 12 pt before the trailing edge. */
+.mac-stock-row-price {
+  position: absolute;
+  top: 8.35px;
+  right: 12px;
+  color: var(--mac-stock-row-price-text);
+  font: var(--mac-font-weight-regular) 13px / 16px var(--mac-font-family-system);
+  white-space: nowrap;
+}
+
+/* Badge: 58.5 x 17.65 pt at 25.85 pt down, corners 3.08 pt (L @ 629,860,10,10); 11.5 pt
+   Semibold, right-aligned 4.5 pt inside, baseline 13.15 pt below the badge's top. */
+.mac-stock-row-badge {
+  position: absolute;
+  top: 25.85px;
+  right: 12px;
+  width: 58.5px;
+  height: 17.65px;
+  padding: 0 4px;
+  overflow: hidden;
+  border-radius: 3.08px;
+  background: var(--_badge);
+  color: var(--mac-stock-row-badge-text);
+  font: var(--mac-font-weight-semibold) 11.5px / 18.1px var(--mac-font-family-system);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.mac-stock-row-badge:where(:enabled:active) {
+  opacity: 0.7;
+}
+
+/* Keyboard focus ring; only in the key window, as in AppKit. The row's is drawn inside its
+   edges, the badge's around it. */
+:is(.mac-stock-row-main, .mac-stock-row-badge):where(
+  :focus-visible,
+  [data-force~="focus"] > .mac-stock-row-main
+):where(:not(:where([data-window-state="main"], [data-window-state="inactive"]) *)) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+.mac-stock-row-main:where(:focus-visible, [data-force~="focus"] > *) {
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+@media (forced-colors: active) {
+  .mac-stock-row {
+    --_line: CanvasText;
+    --_close: GrayText;
+  }
+
+  .mac-stock-row::after {
+    background: CanvasText;
+  }
+
+  .mac-stock-row:where([data-selected]) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+
+  .mac-stock-row-sparkline {
+    forced-color-adjust: none;
+  }
+
+  .mac-stock-row-badge {
+    border: 1px solid;
+    line-height: 16.1px;
+  }
+}

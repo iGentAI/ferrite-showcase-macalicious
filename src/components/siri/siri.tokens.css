@@ -1,0 +1,38 @@
+/*
+ * Siri window (reference/spec/components/siri.md). The window is dark and its cards are light
+ * in Aqua and in Dark Aqua alike, so no value here differs between the appearances. The chrome
+ * is the shared --mac-material-hud with --mac-material-filter; the window captures have no
+ * backdrop, so the colours of the lines are solved over the chrome as captured, #373737.
+ */
+:root {
+  /* [measured, computed] 1 pt line inside the edge, under the top strip and over the bottom
+     strip: #555555 on #373737, #585858 on #393939 */
+  --mac-siri-rim: rgb(255 255 255 / 0.155);
+  /* [measured] half-point line outside the edge */
+  --mac-siri-hairline: rgb(0 0 0 / 0.78);
+  /* [measured, computed] fit of the shadow's alpha in the window captures: 14% beside the
+     edge, 11% above it and 16% below, gone at 12 pt */
+  --mac-siri-shadow: 0 1px 11px rgb(0 0 0 / 0.3);
+  /* [measured, computed] disc of the close and help buttons: #434443 on #363736 */
+  --mac-siri-button: rgb(255 255 255 / 0.065);
+  /* [provisional] no capture shows a button pressed */
+  --mac-siri-button-pressed: rgb(255 255 255 / 0.16);
+  /* [measured, computed] their glyphs: #b3b3b3 on the disc */
+  --mac-siri-glyph: rgb(255 255 255 / 0.6);
+  /* [provisional] no capture shows the prompt */
+  --mac-siri-text: rgb(255 255 255 / 0.85);
+  /* [measured] card, clear of the desktop's tint */
+  --mac-siri-card-fill: #d6d6d6;
+  /* [measured, computed] header band: #cacece on #d2d6d6 */
+  --mac-siri-card-header: rgb(0 0 0 / 0.04);
+  /* [measured, computed] text on the card: #222222 on #d6d6d6, #171c18 on #cbe1de */
+  --mac-siri-card-text: rgb(0 0 0 / 0.85);
+  /* [measured, computed] secondary text: #577870 on #d6f7ed */
+  --mac-siri-card-secondary: rgb(0 0 0 / 0.55);
+  /* [provisional] the orb and the waveform are the library's own drawing, not Siri's */
+  --mac-siri-orb-core: #ffffff;
+  --mac-siri-orb-blue: #4a90f0;
+  --mac-siri-orb-teal: #58e6cc;
+  --mac-siri-orb-pink: #f25c84;
+  --mac-siri-orb-glass: rgb(255 255 255 / 0.16);
+}

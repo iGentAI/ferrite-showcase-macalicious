@@ -1,0 +1,130 @@
+---
+title: Section Header
+description: The header of a group in a grouped collection or list, a bold title with an optional action at the trailing edge, plain in the content or pinned as a band while its group scrolls.
+---
+
+<Example name="basic" both />
+
+A collection view that is grouped (Finder with Use Groups, a search that sorts its results by
+kind) puts a header above each group: the group's title in bold and, where a group is cut
+short, an action such as "Show All (553)" at the other end. AppKit draws it as the section
+header of an `NSCollectionView`. Base UI has no such primitive; the bar is a `<div>`, the title
+a heading element, and the action is built on
+[Base UI's Button](https://base-ui.com/react/components/button).
+
+## Usage
+
+```tsx
+import { SectionHeader, SectionHeaderAction } from "macalicious/section-header";
+import "macalicious/section-header.css";
+
+<SectionHeader
+  titleId="documents"
+  accessory={<SectionHeaderAction onClick={showAll}>Show All (553)</SectionHeaderAction>}
+>
+  Documents
+</SectionHeader>
+<ul aria-labelledby="documents">…</ul>
+```
+
+Or copy the source into your project: `npx macalicious add section-header`.
+
+The header is as wide as its container, and its box includes its padding: 32 pt high with the
+rule of a plain header, 31 pt as a pinned band, whose separator is drawn under the box. Put it
+directly above the group it names, on the content's own background. To hold a header at the
+top of the scrolling view while its group passes under it, give it `variant="pinned"` and
+`position: sticky; top: 0`.
+
+This is not the header of a table's columns ([Table Header](/components/table-header)) and not
+the small grey heading of a [sidebar](/components/sidebar) section.
+
+## Guidelines
+
+- Name a group with a short noun in title-style capitalisation: "Folders", "PDF Documents".
+- Show an action only when it changes what the group shows. Say how many items it reveals:
+  "Show All (553)", then "Show Less".
+- Use headers only when the content is grouped by an attribute the person chose or would
+  expect. Do not use them to decorate a short list.
+
+These paraphrase Apple's Human Interface Guidelines for macOS and Finder's own behaviour; they
+are not verified against the archived guideline text.
+
+## Variants and states
+
+<Example name="variants" both />
+
+| `variant` | Drawn as | Use |
+| --- | --- | --- |
+| `plain` (default) | A hairline rule above the title, on the content's background | A header inside the scrolling content |
+| `pinned` | A grey band with a separator under it | The header held at the top of the view |
+
+`SectionHeaderAction` is secondary text without a bezel. Pressed, it takes the label colour;
+disabled, the tertiary label colour; with keyboard focus in the key window it has the focus
+ring. The bar itself has no states and looks the same in a window that is not key.
+
+## Sizes
+
+One size: a 31 pt bar, a 14 pt bold title 12 pt from the leading edge and an 11 pt action 15 pt
+from the trailing edge. Catalina shows no smaller or larger section header.
+
+## API
+
+<PropsTable name="SectionHeaderProps" />
+
+`SectionHeader` also accepts every prop of a `<div>`.
+
+<PropsTable name="SectionHeaderActionProps" />
+
+`SectionHeaderAction` accepts every prop of Base UI's Button: `disabled`,
+`focusableWhenDisabled`, `render` and the attributes of a `<button>`.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-variant` | `SectionHeader` | `plain`, `pinned` | How the bar is drawn. |
+| `data-disabled` | `SectionHeaderAction` | present | The action is disabled. |
+
+Parts: `.mac-section-header`, `.mac-section-header-title`, `.mac-section-header-accessory`,
+`.mac-section-header-action`.
+
+## Accessibility
+
+- The title is a heading element, `<h2>` by default. Choose `level` so that it fits the
+  outline of the page: one below the heading of the view the groups are in.
+- Give the title an id with `titleId` and point the group at it with `aria-labelledby`, so
+  that a list or grid is announced with its group's name. An `id` on the header itself would
+  name the group by everything in the bar, the action included.
+- The accessory is outside the heading: a screen reader reads "Documents", not "Documents Show
+  All (553)".
+- `SectionHeaderAction` is a button: focusable, pressed with Return or Space. For an action
+  that expands a group, set `aria-expanded`.
+- In forced-colours mode the rule and the band's separator are drawn in the system text colour.
+
+## Visual comparison
+
+`visual-finder-groups` reproduces the headers of Finder's grouped search results (Spotlight's
+"Show all in Finder"): the leading 300 pt of the pinned "Folders" band, and the leading and the
+trailing 300 pt of the plain "Documents" header with its action. Results in Chromium on Linux:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Pinned band, Aqua | 2.01% of pixels differ | 1.96% |
+| Pinned band, Aqua, title masked | 0.00% | 0.00% |
+| Pinned band, Dark Aqua | 1.87% | 1.89% |
+| Pinned band, Dark Aqua, title masked | 0.00% | 0.00% |
+| Plain header, title end, Aqua | 2.50% | 4.44% |
+| Plain header, title end, Aqua, title masked | 0.00% | 0.00% |
+| Plain header, title end, Dark Aqua | 2.54% | 4.31% |
+| Plain header, title end, Dark Aqua, title masked | 0.00% | 0.00% |
+| Plain header, action end, Aqua | 2.68% | 2.26% |
+| Plain header, action end, Aqua, action masked | 0.00% | 0.00% |
+| Plain header, action end, Dark Aqua | 3.12% | 2.72% |
+| Plain header, action end, Dark Aqua, action masked | 0.00% | 0.00% |
+
+The masked comparisons score the bar: its 31 pt height, the band's fill, the two hairlines
+under a pinned band and the rule above a plain header. The unmasked ones differ in the text,
+which is set in the fallback font off Apple platforms. The dark action-end comparison leaves
+out the last point of its crop, where the capture shows the window's edge.
+
+Measured: the bar's height, the fills and lines in both appearances, the title's size, weight
+and 12 pt inset, the action's size, colour and 15 pt inset. Provisional: the pressed and
+disabled colours of the action, which no capture shows.

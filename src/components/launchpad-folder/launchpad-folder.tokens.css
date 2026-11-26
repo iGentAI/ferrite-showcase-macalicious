@@ -1,0 +1,23 @@
+/*
+ * Launchpad folder colours (reference/spec/components/launchpad-folder.md). The folder is the
+ * same in Aqua and Dark Aqua; only what is behind it differs.
+ */
+:root {
+  /* [measured, computed] Solved from pairs of pixels on either side of the edge of the open
+     panel (Launchpad-Folder, twelve pairs in each capture, such as @ 290,700 over 260,700)
+     and of the closed tile (Launchpad @ 2744,1250 over 2736,1250): one white veil over the
+     Launchpad background reproduces all of them, rms 1.0 and 0.8 levels, with no saturation.
+     The spec's recipe (rgb 180 at 72% with saturation 1.8) was fitted against the bare
+     desktop picture instead, which a folder inside a Launchpad on a page is not over. */
+  --mac-launchpad-folder-fill: rgb(245 245 245 / 0.51);
+  /* [measured] mean of the panel in each capture, for reduced transparency */
+  --mac-launchpad-folder-fill-opaque: light-dark(#9d9e9d, #898f99);
+  /* [measured] title, Launchpad-Folder @ 1613,377 */
+  --mac-launchpad-folder-text: #ffffff;
+  /* [provisional] the open folder's own dimming over the Launchpad behind it. The captures'
+     backgrounds with and without a folder have the same mean brightness, so it is slight;
+     the spec's fit of this background is poor (rms 7 to 11 levels). */
+  --mac-launchpad-folder-scrim: rgb(0 0 0 / 0.08);
+  /* [provisional] the background as captured with a folder open, for reduced transparency */
+  --mac-launchpad-folder-scrim-opaque: light-dark(#274b6c, #122744);
+}

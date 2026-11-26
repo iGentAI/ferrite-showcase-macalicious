@@ -1,0 +1,44 @@
+/*
+ * Apple ID pane. Every control is a library component placed by form.tsx; this file draws the
+ * region to the right of the divider, which is one step darker than the column with the
+ * account, and places what is in the rows of the two lists.
+ *
+ *   .mac-system-preferences-apple-id-detail    the column of the selected page
+ *   .mac-system-preferences-apple-id-divider   the gap between two groups of pages, with its
+ *                                              line 15 pt from the left and 10 pt from the
+ *                                              right; [data-gap="wide"] is the 25 pt gap with
+ *                                              the line 12 pt down, the other 6 pt with the
+ *                                              line at its top
+ *   .mac-system-preferences-apple-id-empty     fills the column of a page that is not captured
+ *   .mac-system-preferences-apple-id-cell      a cell of the list of apps: its content in the
+ *                                              middle of the row; padding at its top moves
+ *                                              the content down by half as much
+ */
+.mac-system-preferences-apple-id-detail {
+  position: absolute;
+  inset: 0 0 0 193px;
+  background: var(--mac-color-group-background);
+}
+
+.mac-system-preferences-apple-id-divider {
+  box-sizing: border-box;
+  height: 6px;
+  padding-inline: 15px 10px;
+}
+
+.mac-system-preferences-apple-id-divider:where([data-gap="wide"]) {
+  height: 25px;
+  padding-block-start: 12px;
+}
+
+.mac-system-preferences-apple-id-empty {
+  position: absolute;
+  inset: 0 0 0 193px;
+}
+
+.mac-system-preferences-apple-id-cell {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 35px;
+}

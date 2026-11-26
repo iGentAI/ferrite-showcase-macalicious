@@ -1,0 +1,167 @@
+/*
+ * Page control: a row of dots, one per page, optionally between two arrows.
+ *
+ * Parts
+ *   .mac-page-control          the group
+ *   .mac-page-control-dots     the row of dots (one tab stop; arrow keys move within it)
+ *   .mac-page-control-dot      a button; its box is the hit target, the dot is its ::before
+ *   .mac-page-control-arrow    previous / next button, [data-direction]
+ *   .mac-page-control-arrow-glyph  its triangle (inline SVG)
+ *
+ * States
+ *   [data-variant="pager"]     12 pt opaque dots at a 36 pt pitch, 16 x 20 pt arrows
+ *   [data-variant="overlay"]   8 pt translucent white dots at a 20 pt pitch
+ *   [data-current]             the current page's dot
+ *   :active                    pressed
+ *   :focus-visible             keyboard focus ring
+ *   [aria-disabled], :disabled arrow at the first or last page; whole control disabled
+ *   [data-window-state="main" | "inactive"] *
+ *                              window that is not key: the pager's current dot loses its
+ *                              colour and there is no focus ring (CONTRIBUTING, Window state)
+ *   [data-force~="pressed" | "focus"]  static previews of transient states
+ */
+.mac-page-control {
+  --_dot: var(--mac-page-control-dot);
+  --_dot-pressed: var(--mac-page-control-dot-pressed);
+  --_current: var(--mac-page-control-dot-current);
+  --_current-pressed: var(--mac-page-control-dot-current-pressed);
+  --_size: 12px;
+  --_pitch: 36px;
+
+  display: inline-flex;
+  align-items: center;
+  /* 20 pt from an arrow to the nearest dot. */
+  gap: 20px;
+  vertical-align: middle;
+}
+
+.mac-page-control:where([data-variant="overlay"]) {
+  --_dot: var(--mac-page-control-overlay-dot);
+  --_dot-pressed: var(--mac-page-control-overlay-dot-pressed);
+  --_current: var(--mac-page-control-overlay-dot-current);
+  --_current-pressed: var(--mac-page-control-overlay-dot-current-pressed);
+  --_size: 8px;
+  --_pitch: 20px;
+  gap: 12px;
+}
+
+.mac-page-control-dots {
+  display: inline-flex;
+  /* The first and last hit targets reach half a gap beyond their dots; pull them back in so
+     that the control's box ends at the outer dots. */
+  margin-inline: calc((var(--_size) - var(--_pitch)) / 2);
+}
+
+.mac-page-control-dot,
+.mac-page-control-arrow {
+  display: grid;
+  flex: none;
+  place-items: center;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--_dot);
+  cursor: default;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-page-control-dot {
+  width: var(--_pitch);
+  height: 20px;
+}
+
+.mac-page-control-dot::before {
+  content: "";
+  box-sizing: border-box;
+  width: var(--_size);
+  height: var(--_size);
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.mac-page-control-arrow {
+  width: 16px;
+  height: 20px;
+}
+
+.mac-page-control-arrow-glyph {
+  display: block;
+  width: 16px;
+  height: 20px;
+  fill: currentColor;
+}
+
+/* The arrows point along the reading direction. */
+.mac-page-control-arrow:where(:dir(rtl)) .mac-page-control-arrow-glyph {
+  scale: -1 1;
+}
+
+.mac-page-control-dot:where([data-current]) {
+  color: var(--_current);
+}
+
+/* Pressed */
+.mac-page-control-dot:where(:active, [data-force~="pressed"]):where(:not(:disabled)),
+.mac-page-control-arrow:where(:active, [data-force~="pressed"]):where(
+  :not(:disabled, [aria-disabled="true"])
+) {
+  color: var(--_dot-pressed);
+}
+
+.mac-page-control-dot:where([data-current]):where(:active, [data-force~="pressed"]):where(
+  :not(:disabled)
+) {
+  color: var(--_current-pressed);
+}
+
+/* Window that is not key: the pager's current dot falls back to the colour of the others.
+   The overlay's dots are white in any window. */
+.mac-page-control:where([data-variant="pager"])
+.mac-page-control-dot:where([data-current]):where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  color: var(--_dot);
+}
+
+/* Disabled: an arrow at the first or last page, or the whole control. */
+.mac-page-control-arrow:where(:disabled, [aria-disabled="true"]),
+.mac-page-control-dot:where(:disabled) {
+  opacity: 0.3;
+}
+
+/* Keyboard focus ring; only in the key window. On a dot it hugs the dot, not the hit target. */
+.mac-page-control-dot:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+)::before,
+.mac-page-control-arrow:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: 1px;
+}
+
+@media (forced-colors: active) {
+  .mac-page-control-dot,
+  .mac-page-control-arrow {
+    color: ButtonText;
+  }
+
+  .mac-page-control-dot:where(:not([data-current]))::before {
+    border: 1px solid ButtonText;
+    background: none;
+  }
+
+  .mac-page-control-dot:where([data-current]) {
+    color: Highlight;
+  }
+
+  .mac-page-control-arrow:where(:disabled, [aria-disabled="true"]),
+  .mac-page-control-dot:where(:disabled) {
+    color: GrayText;
+    opacity: 1;
+  }
+}

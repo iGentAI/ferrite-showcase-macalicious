@@ -1,0 +1,228 @@
+/*
+ * Sticky note (the borderless note window of Stickies).
+ *
+ * A square-cornered rectangle in the note colour. The 12 pt title bar is a strip in a more
+ * saturated shade with three 8 pt widgets, shown only while the note is the key window; in any
+ * other note the band stays in the body colour, so the text never moves. The colours are the
+ * same in Aqua and Dark Aqua; Dark Aqua adds a 0.5 pt outline (sticky-note.tokens.css).
+ * States and parts are listed on the docs page, under API.
+ */
+.mac-sticky-note {
+  --_body: var(--mac-sticky-note-yellow);
+  --_strip: var(--mac-sticky-note-yellow-strip);
+  --_widget: var(--mac-sticky-note-yellow-widget);
+
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background: var(--_body);
+  box-shadow: var(--mac-sticky-note-shadow);
+  color: var(--mac-sticky-note-text);
+  font: var(--mac-sticky-note-font);
+}
+
+.mac-sticky-note:where([data-color="blue"]) {
+  --_body: var(--mac-sticky-note-blue);
+  --_strip: var(--mac-sticky-note-blue-strip);
+  --_widget: var(--mac-sticky-note-blue-widget);
+}
+
+.mac-sticky-note:where([data-color="green"]) {
+  --_body: var(--mac-sticky-note-green);
+  --_strip: var(--mac-sticky-note-green-strip);
+  --_widget: var(--mac-sticky-note-green-widget);
+}
+
+.mac-sticky-note:where([data-color="pink"]) {
+  --_body: var(--mac-sticky-note-pink);
+  --_strip: var(--mac-sticky-note-pink-strip);
+  --_widget: var(--mac-sticky-note-pink-widget);
+}
+
+.mac-sticky-note:where([data-color="purple"]) {
+  --_body: var(--mac-sticky-note-purple);
+  --_strip: var(--mac-sticky-note-purple-strip);
+  --_widget: var(--mac-sticky-note-purple-widget);
+}
+
+.mac-sticky-note:where([data-color="gray"]) {
+  --_body: var(--mac-sticky-note-gray);
+  --_strip: var(--mac-sticky-note-gray-strip);
+  --_widget: var(--mac-sticky-note-gray-widget);
+}
+
+/* Collapsed (provisional): the note is as tall as its strip, whatever height it was given; the
+   component clears a minimum height inline, which no class rule outranks. */
+.mac-sticky-note[data-collapsed] {
+  max-height: 12px;
+}
+
+.mac-sticky-note:where([data-collapsed]) > .mac-sticky-note-text {
+  display: none;
+}
+
+/* Translucent (provisional): Stickies lowers the alpha of the whole window. */
+.mac-sticky-note:where([data-translucent]) {
+  opacity: var(--mac-sticky-note-translucent-opacity);
+}
+
+/* Title bar: 12 pt. The widgets' boxes are 12 pt squares around 8 pt drawings: 10 pt of
+   padding puts the outer ones 12 pt from the edges. */
+.mac-sticky-note-title-bar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  box-sizing: border-box;
+  height: 12px;
+  padding: 0 10px;
+  background: var(--_strip);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-sticky-note-title-bar:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  background: none;
+}
+
+/* The title: the first line of the note in 9 pt, only while the note is collapsed. */
+.mac-sticky-note-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0 2px;
+  font-size: 9px;
+  line-height: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+.mac-sticky-note:where([data-collapsed]) .mac-sticky-note-title {
+  visibility: visible;
+}
+
+/* Widgets. ::before is the 8 pt shape in the widget colour, ::after the body-coloured centre
+   inside its 1 pt border. */
+.mac-sticky-note-widget {
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-sticky-note-widget:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  visibility: hidden;
+}
+
+.mac-sticky-note-widget::before,
+.mac-sticky-note-widget::after {
+  content: "";
+  position: absolute;
+}
+
+.mac-sticky-note-widget::before {
+  inset: 2px;
+  background: var(--_widget);
+}
+
+.mac-sticky-note-widget::after {
+  inset: 3px;
+  background: var(--_body);
+}
+
+/* Zoom box: a right triangle, a 1 pt line along the right and bottom edges and the diagonal.
+   Measured on rows y 611, 615, 620: the diagonal's outer edge is x + y = 7.35 pt and its inner
+   edge x + y = 8.65 pt, counted from the box's top-left corner. */
+.mac-sticky-note-widget:where([data-widget="zoom"])::before {
+  clip-path: polygon(7.35px 0, 100% 0, 100% 100%, 0 100%, 0 7.35px);
+}
+
+.mac-sticky-note-widget:where([data-widget="zoom"])::after {
+  inset: 2px;
+  clip-path: polygon(7px 1.65px, 7px 7px, 1.65px 7px);
+}
+
+/* Collapse box: a 1 pt bar 2.5 pt below the top (1.5 pt below the border). */
+.mac-sticky-note-widget:where([data-widget="collapse"])::after {
+  background: linear-gradient(var(--_body) 1.5px, transparent 1.5px 2.5px, var(--_body) 2.5px);
+}
+
+/* Hover and pressed (provisional): the border darkens, no glyph appears. */
+.mac-sticky-note-widget:where(:hover, [data-force~="hover"])::before {
+  filter: var(--mac-sticky-note-widget-hover);
+}
+
+.mac-sticky-note-widget:where(:active, [data-force~="pressed"])::before {
+  filter: var(--mac-sticky-note-widget-pressed);
+}
+
+/* Keyboard focus ring around the 8 pt drawing. Widgets exist only in the key note. */
+.mac-sticky-note-widget:where(:focus-visible, [data-force~="focus"]) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: -2px;
+}
+
+/* Text: Helvetica 12 on a 14 pt line; measured, the first baseline is 29 pt below the note's
+   top and the first ink 11.5 to 12 pt from the left edge. */
+.mac-sticky-note-text {
+  flex: 1;
+  box-sizing: border-box;
+  min-height: 0;
+  overflow: auto;
+  padding: 7px 11px 5px;
+  caret-color: currentColor;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  cursor: text;
+  outline: none;
+}
+
+/* Focus (provisional). Text that is edited shows its insertion point, as in Stickies; text
+   that is read-only has none, so it takes the focus ring, inside the note. */
+.mac-sticky-note-text:where([aria-readonly]):where(:focus-visible, [data-force~="focus"]) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(var(--mac-focus-ring-width) * -1);
+}
+
+@media (forced-colors: active) {
+  .mac-sticky-note {
+    --_body: Canvas;
+    --_strip: Canvas;
+    --_widget: ButtonText;
+
+    border: 1px solid CanvasText;
+    color: CanvasText;
+  }
+
+  .mac-sticky-note-title-bar {
+    border-bottom: 1px solid CanvasText;
+  }
+
+  .mac-sticky-note-widget::before,
+  .mac-sticky-note-widget::after {
+    forced-color-adjust: none;
+  }
+
+  .mac-sticky-note-widget:where(:focus-visible, [data-force~="focus"]) {
+    outline-color: Highlight;
+  }
+
+  .mac-sticky-note-text:where(:focus-visible, [data-force~="focus"]) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}

@@ -1,0 +1,327 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "title-bar-light",
+      "description": "The title bar of the Aqua capture, the whole 971 by 22 pt: the window's top corners, the bar's gradient with its two highlight rows and two bottom rows, the three window controls and the title. Nothing is masked. The title is set in the fallback font and names invented players, so its letters differ from the capture's. Everything under the bar, the 971 by 680 pt view at 0,22, is in no comparison: the captures show the application's three-dimensional scene there and the demo an abstract placeholder, and a comparison may leave at most 75% of its crop out of the score, while the view is 97% of the window.",
+      "example": "visual-window",
+      "appearance": "light",
+      "selector": "[data-crop='title-bar']",
+      "reference": {
+        "file": "10-15-Catalina-Light-Chess.png",
+        "crop": { "x": 112, "y": 76, "width": 1942, "height": 44 }
+      },
+      "budget": { "1x": 0.057, "2x": 0.0495 },
+      "deltaBudget": { "1x": 5.75, "2x": 5.85 }
+    },
+    {
+      "name": "title-bar-drawing-light",
+      "description": "The same 971 by 22 pt of the Aqua capture with the title masked, 232 by 16 pt at 370,4 (17% of the crop): the bar's drawing alone, at the stricter threshold. The view under the bar is not in the crop.",
+      "example": "visual-window",
+      "appearance": "light",
+      "selector": "[data-crop='title-bar']",
+      "threshold": 0.05,
+      "masks": [{ "x": 370, "y": 4, "width": 232, "height": 16 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Chess.png",
+        "crop": { "x": 112, "y": 76, "width": 1942, "height": 44 }
+      },
+      "budget": { "1x": 0.0035, "2x": 0.0026 },
+      "deltaBudget": { "1x": 0.8, "2x": 0.8 }
+    },
+    {
+      "name": "window-chrome-light",
+      "description": "The whole window in Aqua, 971 by 702 pt as captured, held by expected pixels: the title bar is 22 pt, its gradient, highlight rows and bottom rows have the colours measured in the Aqua capture, the three window controls stand at x 8, 28 and 48 pt, and the view begins directly under the bar. No pixel of the view is compared with the capture: the one pixel read there is the placeholder's own backdrop, to show where the bar ends.",
+      "example": "visual-window",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 971, "height": 702 },
+        "pixels": [
+          {
+            "x": 144.25,
+            "y": 0.25,
+            "color": "#f7f7f7",
+            "scale": 2,
+            "note": "first highlight row, measured in the Aqua capture at 400,76"
+          },
+          {
+            "x": 144.25,
+            "y": 0.75,
+            "color": "#ebebeb",
+            "scale": 2,
+            "note": "second highlight row, measured at 400,77"
+          },
+          {
+            "x": 144.25,
+            "y": 1.5,
+            "color": "#e4e4e4",
+            "note": "top of the gradient, measured at 400,78 and 400,79"
+          },
+          {
+            "x": 144.25,
+            "y": 11.25,
+            "color": "#d8d8d8",
+            "note": "middle of the gradient, measured at 400,98"
+          },
+          {
+            "x": 144.25,
+            "y": 20.75,
+            "color": "#cdcdcd",
+            "scale": 2,
+            "note": "bottom of the gradient, measured at 400,117"
+          },
+          {
+            "x": 144.25,
+            "y": 21.25,
+            "color": "#bebebe",
+            "scale": 2,
+            "note": "shadow row, measured at 400,118; the library's row is #bdbdbd"
+          },
+          {
+            "x": 144.25,
+            "y": 21.75,
+            "color": "#a8a8a8",
+            "scale": 2,
+            "note": "separator, measured at 400,119; the library's row is #a7a7a7"
+          },
+          {
+            "x": 144.25,
+            "y": 22.5,
+            "color": "#404040",
+            "note": "the view begins at 22 pt: the placeholder's backdrop, --mac-chess-backdrop (the capture has the top of the scene's gradient here, #999999, which is not reproduced)"
+          },
+          {
+            "x": 7.75,
+            "y": 11.25,
+            "color": "#d8d8d8",
+            "scale": 2,
+            "note": "bar fill up to the close button, which starts at 8 pt: measured at 127,98"
+          },
+          {
+            "x": 14,
+            "y": 11.25,
+            "color": "#ff6057",
+            "tolerance": 4,
+            "note": "close button, its centre: measured at 140,98, converted to sRGB"
+          },
+          {
+            "x": 20.25,
+            "y": 11.25,
+            "color": "#d8d8d8",
+            "scale": 2,
+            "note": "bar fill from 20 pt, where the close button ends: measured at 152,98"
+          },
+          {
+            "x": 27.75,
+            "y": 11.25,
+            "color": "#d8d8d8",
+            "scale": 2,
+            "note": "bar fill up to the minimize button at 28 pt: measured at 167,98"
+          },
+          {
+            "x": 34,
+            "y": 11.25,
+            "color": "#febd30",
+            "tolerance": 4,
+            "note": "minimize button, its centre: measured at 180,98, converted to sRGB"
+          },
+          {
+            "x": 40.25,
+            "y": 11.25,
+            "color": "#d9d9d9",
+            "scale": 2,
+            "note": "bar fill from 40 pt: measured at 192,98"
+          },
+          {
+            "x": 47.75,
+            "y": 11.25,
+            "color": "#d9d9d9",
+            "scale": 2,
+            "note": "bar fill up to the zoom button at 48 pt: measured at 207,98"
+          },
+          {
+            "x": 54,
+            "y": 11.25,
+            "color": "#29c941",
+            "tolerance": 4,
+            "note": "zoom button, its centre: measured at 220,98, converted to sRGB"
+          },
+          {
+            "x": 60.25,
+            "y": 11.25,
+            "color": "#d9d9d9",
+            "scale": 2,
+            "note": "bar fill from 60 pt: measured at 232,98"
+          }
+        ]
+      }
+    },
+    {
+      "name": "title-bar-dark",
+      "description": "The title bar of the Dark Aqua capture, the whole 971 by 22 pt, compared as in title-bar-light: nothing masked, the title in the fallback font. The mean colour difference is larger than in Aqua because the library's Dark Aqua title bar is three to five levels darker than this window's (see title-bar-drawing-dark). The view under the bar is in no comparison, for the reason given in title-bar-light.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "selector": "[data-crop='title-bar']",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Chess.png",
+        "crop": { "x": 112, "y": 76, "width": 1942, "height": 44 }
+      },
+      "budget": { "1x": 0.056, "2x": 0.0487 },
+      "deltaBudget": { "1x": 8.3, "2x": 8.25 }
+    },
+    {
+      "name": "title-bar-drawing-dark",
+      "description": "The same 971 by 22 pt of the Dark Aqua capture with the title masked, 232 by 16 pt at 370,4 (17% of the crop): the bar's drawing alone, at the stricter threshold. Few pixels differ visibly; the mean colour difference is the library's Dark Aqua title bar, measured in Finder (#404142 to #343435), under this window's (#434447 to #37383a). The view under the bar is not in the crop.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "selector": "[data-crop='title-bar']",
+      "threshold": 0.05,
+      "masks": [{ "x": 370, "y": 4, "width": 232, "height": 16 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Chess.png",
+        "crop": { "x": 112, "y": 76, "width": 1942, "height": 44 }
+      },
+      "budget": { "1x": 0.0025, "2x": 0.0014 },
+      "deltaBudget": { "1x": 3.95, "2x": 3.8 }
+    },
+    {
+      "name": "window-chrome-dark",
+      "description": "The whole window in Dark Aqua, 971 by 702 pt as captured, held by expected pixels as in window-chrome-light, to the colours measured in the Dark Aqua capture. The library's Dark Aqua title bar is the one measured in Finder, three to five levels darker and less blue than this window's, so these pixels allow that much. No pixel of the view is compared with the capture.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 971, "height": 702 },
+        "pixels": [
+          {
+            "x": 144.25,
+            "y": 0.25,
+            "color": "#86878a",
+            "scale": 2,
+            "tolerance": 6,
+            "note": "first highlight row, measured in the Dark Aqua capture at 400,76; the library's row, measured in Finder, composites to #838485 here"
+          },
+          {
+            "x": 144.25,
+            "y": 0.75,
+            "color": "#78797a",
+            "scale": 2,
+            "tolerance": 4,
+            "note": "second highlight row, measured at 400,77"
+          },
+          {
+            "x": 144.25,
+            "y": 1.5,
+            "color": "#434446",
+            "tolerance": 6,
+            "note": "top of the gradient, measured at 400,79; the library's bar starts at #404142"
+          },
+          {
+            "x": 144.25,
+            "y": 11.25,
+            "color": "#3d3e3f",
+            "tolerance": 6,
+            "note": "middle of the gradient, measured at 400,98"
+          },
+          {
+            "x": 144.25,
+            "y": 20.75,
+            "color": "#37383a",
+            "scale": 2,
+            "tolerance": 6,
+            "note": "bottom of the gradient, measured at 400,117; the library's bar ends at #343435"
+          },
+          {
+            "x": 144.25,
+            "y": 21.25,
+            "color": "#2c2e2e",
+            "scale": 2,
+            "tolerance": 4,
+            "note": "shadow row, measured at 400,118; the library's row is #2a2a2a"
+          },
+          {
+            "x": 144.25,
+            "y": 21.75,
+            "color": "#000000",
+            "scale": 2,
+            "note": "separator, measured at 400,119"
+          },
+          {
+            "x": 144.25,
+            "y": 22.5,
+            "color": "#404040",
+            "note": "the view begins at 22 pt: the placeholder's backdrop, --mac-chess-backdrop (the capture has the top of the scene's gradient here, #999999, which is not reproduced)"
+          },
+          {
+            "x": 7.75,
+            "y": 11.25,
+            "color": "#3c3e41",
+            "scale": 2,
+            "tolerance": 6,
+            "note": "bar fill up to the close button, which starts at 8 pt: measured at 127,98"
+          },
+          {
+            "x": 14,
+            "y": 11.25,
+            "color": "#ff5b51",
+            "tolerance": 4,
+            "note": "close button, its centre: measured at 140,98, converted to sRGB"
+          },
+          {
+            "x": 20.25,
+            "y": 11.25,
+            "color": "#3c3e41",
+            "scale": 2,
+            "tolerance": 6,
+            "note": "bar fill from 20 pt, where the close button ends: measured at 152,98"
+          },
+          {
+            "x": 27.75,
+            "y": 11.25,
+            "color": "#3c3e41",
+            "scale": 2,
+            "tolerance": 6,
+            "note": "bar fill up to the minimize button at 28 pt: measured at 167,98"
+          },
+          {
+            "x": 34,
+            "y": 11.25,
+            "color": "#e6bf2a",
+            "tolerance": 4,
+            "note": "minimize button, its centre: measured at 180,98, converted to sRGB"
+          },
+          {
+            "x": 40.25,
+            "y": 11.25,
+            "color": "#3d3e40",
+            "scale": 2,
+            "tolerance": 6,
+            "note": "bar fill from 40 pt: measured at 192,98"
+          },
+          {
+            "x": 47.75,
+            "y": 11.25,
+            "color": "#3d3e40",
+            "scale": 2,
+            "tolerance": 6,
+            "note": "bar fill up to the zoom button at 48 pt: measured at 207,98"
+          },
+          {
+            "x": 54,
+            "y": 11.25,
+            "color": "#53c22b",
+            "tolerance": 4,
+            "note": "zoom button, its centre: measured at 220,98, converted to sRGB"
+          },
+          {
+            "x": 60.25,
+            "y": 11.25,
+            "color": "#3c3e40",
+            "scale": 2,
+            "tolerance": 6,
+            "note": "bar fill from 60 pt: measured at 232,98"
+          }
+        ]
+      }
+    }
+  ]
+}

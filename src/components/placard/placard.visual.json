@@ -1,0 +1,131 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "pending": "No reference: the spec marks the placard as not seen in any of the 294 screenshots, and every value as inferred from the always-visible scroll bar. The checks below hold a placard, in a real browser, to those values.",
+  "comparisons": [
+    {
+      "name": "rest-light",
+      "description": "A regular and a small placard at rest, Aqua: the scroll bar track's fill #fafafa, hairlines of #e8e8e8 at the top, at the trailing edge and between two buttons, 15 pt and 11 pt high (spec: placard, Measurements, all inferred). The page is the window background.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 200, "height": 60 },
+        "pixels": [
+          { "x": 13, "y": 18, "color": "#fafafa", "note": "fill, inferred" },
+          { "x": 30, "y": 10.25, "color": "#e8e8e8", "scale": 2, "note": "top hairline, inferred" },
+          { "x": 60.25, "y": 18, "color": "#e8e8e8", "scale": 2, "note": "hairline between two" },
+          { "x": 129.75, "y": 18, "color": "#e8e8e8", "scale": 2, "note": "trailing hairline" },
+          { "x": 13, "y": 24.5, "color": "#fafafa", "note": "fill in the last half point of 15" },
+          { "x": 13, "y": 27, "color": "#ececec", "note": "page under the strip" },
+          { "x": 135, "y": 18, "color": "#ececec", "note": "page after the strip" },
+          { "x": 13, "y": 45.5, "color": "#fafafa", "note": "small: last half point of 11" },
+          { "x": 13, "y": 47.5, "color": "#ececec", "note": "small: page under the strip" }
+        ]
+      }
+    },
+    {
+      "name": "rest-dark",
+      "description": "A regular and a small placard at rest, Dark Aqua: fill #2b2b2b and hairlines of #3b3b3b (spec: placard, Measurements, all inferred).",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 200, "height": 60 },
+        "pixels": [
+          { "x": 13, "y": 18, "color": "#2b2b2b", "note": "fill, inferred" },
+          { "x": 30, "y": 10.25, "color": "#3b3b3b", "scale": 2, "note": "top hairline, inferred" },
+          { "x": 60.25, "y": 18, "color": "#3b3b3b", "scale": 2, "note": "hairline between two" },
+          { "x": 129.75, "y": 18, "color": "#3b3b3b", "scale": 2, "note": "trailing hairline" },
+          { "x": 13, "y": 24.5, "color": "#2b2b2b", "note": "fill in the last half point of 15" },
+          { "x": 13, "y": 27, "color": "#323232", "note": "page under the strip" },
+          { "x": 13, "y": 45.5, "color": "#2b2b2b", "note": "small: last half point of 11" },
+          { "x": 13, "y": 47.5, "color": "#323232", "note": "small: page under the strip" }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The first button held down with the mouse, Aqua: black at 10% over the fill. Inferred.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "press": ".mac-placard-button" }],
+      "expect": {
+        "size": { "width": 200, "height": 60 },
+        "pixels": [
+          { "x": 13, "y": 18, "color": "#e1e1e1", "note": "pressed fill, inferred" },
+          { "x": 120, "y": 18, "color": "#fafafa", "note": "the other button is unchanged" }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "The first button held down with the mouse, Dark Aqua: white at 10% over the fill. Inferred.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "press": ".mac-placard-button" }],
+      "expect": {
+        "size": { "width": 200, "height": 60 },
+        "pixels": [
+          { "x": 13, "y": 18, "color": "#404040", "note": "pressed fill, inferred" },
+          { "x": 120, "y": 18, "color": "#2b2b2b", "note": "the other button is unchanged" }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the first button, reached with Tab, Aqua: the ring is the focus ring token (blue accent at 50%) over the fill, in the 3 pt band inside the button. Inferred.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 200, "height": 60 },
+        "pixels": [
+          { "x": 11.5, "y": 18, "color": "#89b2f8", "note": "ring over the fill, inferred" },
+          { "x": 14.5, "y": 18, "color": "#fafafa", "note": "fill inside the ring" }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the first button, reached with Tab, Dark Aqua. Inferred.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 200, "height": 60 },
+        "pixels": [
+          { "x": 11.5, "y": 18, "color": "#2b6a95", "note": "ring over the fill, inferred" },
+          { "x": 14.5, "y": 18, "color": "#2b2b2b", "note": "fill inside the ring" }
+        ]
+      }
+    },
+    {
+      "name": "focus-inactive-light",
+      "description": "Keyboard focus on the first button in a window that is not key: no ring (CONTRIBUTING, Window state; inferred).",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 200, "height": 60 },
+        "pixels": [
+          { "x": 11.5, "y": 18, "color": "#fafafa", "note": "no ring: fill, inferred" },
+          { "x": 13, "y": 27, "color": "#ececec", "note": "page under the strip" }
+        ]
+      }
+    },
+    {
+      "name": "focus-inactive-dark",
+      "description": "Keyboard focus on the first button in a window that is not key, Dark Aqua: no ring, so both pixels are those of rest-dark (inferred).",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 200, "height": 60 },
+        "pixels": [
+          { "x": 11.5, "y": 18, "color": "#2b2b2b", "note": "no ring: fill, inferred" },
+          { "x": 13, "y": 27, "color": "#323232", "note": "page under the strip" }
+        ]
+      }
+    }
+  ]
+}

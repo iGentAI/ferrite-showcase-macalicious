@@ -1,0 +1,127 @@
+---
+title: Contextual Menu
+description: The menu of commands for what is under the pointer, opened by a secondary click, a Control-click or a long press.
+order: 63
+---
+
+<Example name="basic" />
+
+AppKit's contextual menu (`NSView.menu`, `NSMenu.popUpContextMenu`). The parts are built on
+[Base UI's Context Menu](https://base-ui.com/react/components/context-menu), which opens the
+menu at the pointer in place of the browser's own menu. The menu is a detached
+[`MenuPopup`](/components/menu) with [menu items](/components/menu-item).
+
+No screenshot of the reference library shows a contextual menu. Its look is that of a
+detached menu, which the screenshots do show; where it opens is inferred from AppKit.
+
+## Usage
+
+```tsx
+import {
+  ContextualMenu,
+  ContextualMenuPopup,
+  ContextualMenuTrigger,
+} from "macalicious/contextual-menu";
+import { MenuItem, MenuSeparator } from "macalicious/menu-item";
+import "macalicious/menu.css";
+import "macalicious/menu-item.css";
+import "macalicious/contextual-menu.css";
+
+<ContextualMenu>
+  <ContextualMenuTrigger render={<FileIcon file={file} />} />
+  <ContextualMenuPopup>
+    <MenuItem onClick={open}>Open</MenuItem>
+    <MenuItem onClick={getInfo}>Get Info</MenuItem>
+    <MenuSeparator />
+    <MenuItem onClick={moveToTrash}>Move to Trash</MenuItem>
+  </ContextualMenuPopup>
+</ContextualMenu>
+```
+
+Or copy the source into your project: `npx macalicious add contextual-menu menu-item`.
+
+`ContextualMenuTrigger` is the area the menu belongs to: a `<div>` around your content, or
+your content itself with `render`. A secondary click anywhere in it opens the menu with its
+top left corner 1 pt right of and below the pointer; near the edge of the window the menu
+moves to stay in view. The popup takes everything a `MenuPopup` takes, and the same items,
+submenus included.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines,
+[Contextual Menus](https://web.archive.org/web/20200503161507/https://developer.apple.com/design/human-interface-guidelines/macos/menus/contextual-menus/):
+
+- Offer only the commands that apply to the item under the pointer, the most used first.
+- Every command of a contextual menu must also be in the menu bar: people may never find the
+  contextual menu.
+- Keep it short, and use at most one level of submenus.
+- Do not show key equivalents in a contextual menu.
+- Leave out or dim the commands that are not available.
+
+## Variants and states
+
+| Part or state | Look | Basis |
+| --- | --- | --- |
+| Menu | A detached menu: four corners of 5 pt, rim, hairline and shadow, 4 pt above and below the rows | Measured in Dark Aqua on the action menu of Contacts; Aqua as [Menu](/components/menu) |
+| Items | 14 pt menu items in 19 pt rows, 21 pt from the edge | Measured (Contacts) |
+| Key equivalents | Not shown, in the menu and in its submenus; `keyEquivalent` still sets `aria-keyshortcuts` | Catalog (HIG) |
+| Position | Top left corner 1 pt right of and below the pointer | Provisional |
+| Closing | Fades out over 0.25 s after a choice, like any menu; at once with `prefers-reduced-motion` | Provisional |
+
+The menu in both appearances, drawn in place with the classes of the menu and its items. The
+live example at the top opens its menu in a portal, so it takes the appearance of the page:
+
+<Example name="appearances" both hideCode />
+
+## Sizes
+
+A contextual menu uses the 14 pt menu font. `size` on the popup gives it the font of a
+control, as for any [menu](/components/menu).
+
+## API
+
+`ContextualMenu` takes the props of Base UI's ContextMenu.Root (`open`, `defaultOpen`,
+`onOpenChange`, `disabled`, `loopFocus`) and `ContextualMenuTrigger` those of
+ContextMenu.Trigger. `ContextualMenuPopup` takes the props of
+[`MenuPopup`](/components/menu), with these defaults:
+
+<PropsTable name="ContextualMenuPopupProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-popup-open` | area | present or absent | The menu is open. Set by Base UI. |
+| `data-pressed` | area | present or absent | The area is being pressed. Set by Base UI. |
+
+Classes: `.mac-contextual-menu-trigger` (the area) and `.mac-contextual-menu` (the popup,
+which is also a `.mac-menu`).
+
+## Accessibility
+
+- The popup has `role="menu"`. It opens on a secondary click, on Control-click, on the
+  keyboard's menu key or Shift-F10 while the area or something in it has the focus, and on a
+  long press on a touch screen.
+- Up and Down Arrow move the highlight past disabled items, typing selects, Return or Space
+  chooses, and Escape closes the menu; focus returns to where it was.
+- An area that is not focusable cannot be reached from the keyboard. Offer the same commands
+  in a menu bar or a toolbar, as the guidelines ask.
+- The browser's own contextual menu is replaced inside the area only.
+
+## Visual comparison
+
+`npm run visual -- contextual-menu` opens the menu with a secondary click at a known point
+and compares it with the detached action menu of the Contacts screenshot, the closest thing
+to a contextual menu in the reference library, in Dark Aqua (`contextual-menu.visual.json`).
+Scores at 2x, in Chromium on Linux with the fallback font:
+
+| Crop | Dark Aqua, whole crop | Dark Aqua, drawing only |
+| --- | --- | --- |
+| Action menu, pixels that differ | 12.61% | 3.85% |
+| Action menu, mean Δ of 255 | 19.55 | 3.84 |
+
+"Drawing only" masks the titles and halves the colour threshold. What remains is the menu's
+fill and rim, and a strip of the Contacts window that shows beside the menu in the capture.
+
+No screenshot shows a detached 14 pt menu in Aqua. There the menu is checked as pixels: it
+must start 1 pt right of and below the pointer, be 179 by 65 pt for the same three items, and
+have the Aqua menu fill. Those values come from the tokens and from AppKit's behaviour, not
+from a screenshot.

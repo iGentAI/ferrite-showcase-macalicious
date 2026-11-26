@@ -1,0 +1,684 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "safari-light",
+      "description": "The tab bar of the key Safari window, Aqua: three tabs, the middle one selected, and the new-tab cell. Whole crop, titles included.",
+      "example": "visual-safari-light",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0152,
+        "2x": 0.02
+      },
+      "deltaBudget": {
+        "1x": 1.62,
+        "2x": 2.49
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13.png",
+        "crop": {
+          "x": 114,
+          "y": 152,
+          "width": 2644,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "safari-light-drawing",
+      "description": "As safari-light with the three titles masked (they are set in the fallback font off Apple platforms), to score the fills, the dividers, the bottom rows and the + glyph.",
+      "example": "visual-safari-light",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 196,
+          "y": 6,
+          "width": 52,
+          "height": 14
+        },
+        {
+          "x": 602,
+          "y": 6,
+          "width": 118,
+          "height": 14
+        },
+        {
+          "x": 1054,
+          "y": 6,
+          "width": 68,
+          "height": 14
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.43,
+        "2x": 0.56
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13.png",
+        "crop": {
+          "x": 114,
+          "y": 152,
+          "width": 2644,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "safari-dark",
+      "description": "The tab bar of the key Safari window, Dark Aqua: three tabs, the middle one selected, and the new-tab cell. Whole crop, titles included.",
+      "example": "visual-safari-dark",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.0174,
+        "2x": 0.0216
+      },
+      "deltaBudget": {
+        "1x": 2.03,
+        "2x": 2.79
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13.png",
+        "crop": {
+          "x": 114,
+          "y": 152,
+          "width": 2504,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "safari-dark-drawing",
+      "description": "As safari-dark with the three titles masked, to score the fills, the dividers, the bottom rows and the + glyph.",
+      "example": "visual-safari-dark",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 184,
+          "y": 6,
+          "width": 52,
+          "height": 14
+        },
+        {
+          "x": 566,
+          "y": 6,
+          "width": 118,
+          "height": 14
+        },
+        {
+          "x": 995,
+          "y": 6,
+          "width": 68,
+          "height": 14
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.43,
+        "2x": 0.43
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13.png",
+        "crop": {
+          "x": 114,
+          "y": 152,
+          "width": 2504,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "inactive-light",
+      "description": "The tab bar of the inactive Safari window behind the Picture in Picture video, Aqua: two tabs, the second selected. Whole crop, titles included.",
+      "example": "visual-inactive",
+      "appearance": "light",
+      "windowState": "inactive",
+      "budget": {
+        "1x": 0.0172,
+        "2x": 0.0337
+      },
+      "deltaBudget": {
+        "1x": 1.31,
+        "2x": 1.98
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Picture-in-Picture.png",
+        "crop": {
+          "x": 318,
+          "y": 180,
+          "width": 1880,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "inactive-light-drawing",
+      "description": "As inactive-light with the two titles masked, to score the flat fills, the divider and the bottom rows.",
+      "example": "visual-inactive",
+      "appearance": "light",
+      "windowState": "inactive",
+      "masks": [
+        {
+          "x": 190,
+          "y": 6,
+          "width": 246,
+          "height": 14
+        },
+        {
+          "x": 802,
+          "y": 6,
+          "width": 138,
+          "height": 14
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.13,
+        "2x": 0.1
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Picture-in-Picture.png",
+        "crop": {
+          "x": 318,
+          "y": 180,
+          "width": 1880,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "inactive-dark",
+      "description": "The tab bar of the inactive Safari window behind the Picture in Picture video, Dark Aqua: two tabs, the second selected. Whole crop, titles included.",
+      "example": "visual-inactive",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "budget": {
+        "1x": 0.02,
+        "2x": 0.0343
+      },
+      "deltaBudget": {
+        "1x": 1.39,
+        "2x": 2.12
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Picture-in-Picture.png",
+        "crop": {
+          "x": 346,
+          "y": 154,
+          "width": 1880,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "inactive-dark-drawing",
+      "description": "As inactive-dark with the two titles masked.",
+      "example": "visual-inactive",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "masks": [
+        {
+          "x": 190,
+          "y": 6,
+          "width": 246,
+          "height": 14
+        },
+        {
+          "x": 802,
+          "y": 6,
+          "width": 138,
+          "height": 14
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.13,
+        "2x": 0.12
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Picture-in-Picture.png",
+        "crop": {
+          "x": 346,
+          "y": 154,
+          "width": 1880,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "hover-light",
+      "description": "The pointer over a tab that is not selected, Aqua: its fill darkens; the selected tab is unchanged.",
+      "example": "visual-state-tabs",
+      "appearance": "light",
+      "actions": [
+        {
+          "hover": "#two"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 25
+        },
+        "pixels": [
+          {
+            "x": 195,
+            "y": 12,
+            "color": "#afafaf",
+            "tolerance": 3,
+            "note": "black at 7% over the measured tab fill at mid height (#bcbcbc); the darkening is inferred, no capture shows it"
+          },
+          {
+            "x": 8,
+            "y": 12,
+            "color": "#d1d1d1",
+            "tolerance": 2,
+            "note": "selected tab at mid height, measured (Light-Safari-v13 @ 1100,176)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "hover-dark",
+      "description": "The pointer over a tab that is not selected, Dark Aqua: its fill lightens.",
+      "example": "visual-state-tabs",
+      "appearance": "dark",
+      "actions": [
+        {
+          "hover": "#two"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 25
+        },
+        "pixels": [
+          {
+            "x": 195,
+            "y": 12,
+            "color": "#29292a",
+            "tolerance": 3,
+            "note": "white at 5% over the measured tab fill at mid height (#1d1e1f); inferred"
+          },
+          {
+            "x": 8,
+            "y": 12,
+            "color": "#363638",
+            "tolerance": 2,
+            "note": "selected tab at mid height, measured (Dark-Safari-v13 @ 1100,176)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the selected tab, reached with Tab, Aqua: a ring inside the cell.",
+      "example": "visual-state-tabs",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 25
+        },
+        "pixels": [
+          {
+            "x": 1.5,
+            "y": 12,
+            "color": "#759ee4",
+            "tolerance": 4,
+            "note": "the focus ring colour (spec: focus-ring) at 50% over the selected fill #d1d1d1; that the ring is drawn inside the cell is inferred"
+          },
+          {
+            "x": 5,
+            "y": 12,
+            "color": "#d1d1d1",
+            "tolerance": 2,
+            "note": "selected fill inside the 3 pt ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the selected tab, reached with Tab, Dark Aqua.",
+      "example": "visual-state-tabs",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 25
+        },
+        "pixels": [
+          {
+            "x": 1.5,
+            "y": 12,
+            "color": "#306f9c",
+            "tolerance": 4,
+            "note": "the dark focus ring colour at 50% over the selected fill #363638; inferred as above"
+          },
+          {
+            "x": 5,
+            "y": 12,
+            "color": "#363638",
+            "tolerance": 2,
+            "note": "selected fill inside the ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-inactive-light",
+      "description": "Keyboard focus on the selected tab in an inactive window, Aqua: no focus ring.",
+      "example": "visual-state-tabs",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 25
+        },
+        "pixels": [
+          {
+            "x": 1.5,
+            "y": 12,
+            "color": "#f6f6f6",
+            "note": "the selected tab of an inactive window, measured (Light-Safari-v13-Picture-in-Picture @ 1700,190), where the ring would be"
+          },
+          {
+            "x": 195,
+            "y": 12,
+            "color": "#dddddd",
+            "note": "the other tab of an inactive window, measured (@ 400,190)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-new-tab-light",
+      "description": "The new-tab button while the mouse is held down on it, Aqua: the + takes the selected title's colour.",
+      "example": "visual-state-tabs",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": ".mac-safari-tab-bar-new"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 25
+        },
+        "pixels": [
+          {
+            "x": 384,
+            "y": 12.5,
+            "color": "#1c1c1c",
+            "tolerance": 2,
+            "note": "horizontal stroke of the +: the measured selected-title colour; that a pressed + takes it is inferred"
+          },
+          {
+            "x": 378,
+            "y": 12.5,
+            "color": "#b5b5b5",
+            "tolerance": 3,
+            "note": "new-tab cell beside the glyph at mid height, measured (Light-Safari-v13 @ 2716,176)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-new-tab-dark",
+      "description": "The new-tab button while the mouse is held down on it, Dark Aqua.",
+      "example": "visual-state-tabs",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": ".mac-safari-tab-bar-new"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 25
+        },
+        "pixels": [
+          {
+            "x": 384,
+            "y": 12.5,
+            "color": "#ffffff",
+            "tolerance": 2,
+            "note": "horizontal stroke of the +: the measured selected-title colour; inferred as above"
+          },
+          {
+            "x": 378,
+            "y": 12.5,
+            "color": "#262727",
+            "tolerance": 3,
+            "note": "new-tab cell beside the glyph at mid height, measured (Dark-Safari-v13 @ 2576,176)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "forced-colors-light",
+      "description": "Forced colours: the selected tab is the system's highlight colour, the other tab the canvas, and the divider between them survives as canvas text. The colours are the browser's emulated system colours, not Catalina's.",
+      "example": "visual-state-tabs",
+      "appearance": "light",
+      "forcedColors": true,
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 25
+        },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 12,
+            "color": "#37336d",
+            "tolerance": 6,
+            "note": "selected tab: Highlight over Canvas; Chromium emulates Highlight as rgb(5 0 73) at 80%"
+          },
+          {
+            "x": 187.5,
+            "y": 12,
+            "color": "#000000",
+            "tolerance": 4,
+            "note": "the 1 pt divider: CanvasText"
+          },
+          {
+            "x": 250,
+            "y": 4,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "a tab that is not selected: Canvas"
+          },
+          {
+            "x": 250,
+            "y": 24.5,
+            "color": "#000000",
+            "tolerance": 4,
+            "note": "the bar's bottom border: CanvasText"
+          },
+          {
+            "x": 384,
+            "y": 12.5,
+            "color": "#000000",
+            "tolerance": 4,
+            "note": "horizontal stroke of the +: ButtonText, kept although it is drawn as a background"
+          },
+          {
+            "x": 378,
+            "y": 12.5,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "new-tab cell beside the +: Canvas"
+          }
+        ]
+      }
+    },
+    {
+      "name": "forced-colors-close-light",
+      "description": "Forced colours, the pointer over a tab that is not selected: the cross of its close button, which is drawn as two backgrounds, keeps a system colour.",
+      "example": "visual-state-closable",
+      "appearance": "light",
+      "forcedColors": true,
+      "actions": [
+        {
+          "hover": "#two"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 25
+        },
+        "pixels": [
+          {
+            "x": 200.5,
+            "y": 12.5,
+            "color": "#000000",
+            "tolerance": 4,
+            "note": "where the two strokes of the cross meet, 12 pt inside the tab (x 188) and from the top: ButtonText"
+          },
+          {
+            "x": 194.5,
+            "y": 12.5,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "inside the close button's square, beside the cross: Canvas"
+          }
+        ]
+      }
+    },
+    {
+      "name": "forced-colors-close-selected-light",
+      "description": "Forced colours, the pointer over the selected tab: the cross takes the highlighted text's colour, over the highlight.",
+      "example": "visual-state-closable",
+      "appearance": "light",
+      "forcedColors": true,
+      "actions": [
+        {
+          "hover": "#one"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 400,
+          "height": 25
+        },
+        "pixels": [
+          {
+            "x": 12.5,
+            "y": 12.5,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "where the two strokes of the cross meet, 12 pt from the tab's edge and top: HighlightText"
+          },
+          {
+            "x": 6.5,
+            "y": 12.5,
+            "color": "#37336d",
+            "tolerance": 6,
+            "note": "inside the close button's square, beside the cross: Highlight over Canvas, as in forced-colors-light"
+          }
+        ]
+      }
+    },
+    {
+      "name": "toolbar-light",
+      "description": "The new-tab cell on its own at the trailing end of the toolbar of a Safari window with one tab, Aqua: its fill, the edge at its top and leading sides, the + and the two rows under the bar, with the toolbar's surface beside and above it. The last point of the width, which the window's own edge covers, is masked.",
+      "example": "visual-toolbar",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 31,
+          "y": 0,
+          "width": 1,
+          "height": 30
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0264,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 1.42,
+        "2x": 1.27
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Favorites.png",
+        "crop": {
+          "x": 2696,
+          "y": 92,
+          "width": 64,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "toolbar-dark",
+      "description": "The new-tab cell on its own at the trailing end of the toolbar of a Safari window with one tab, Dark Aqua: its fill, the edge at its top and leading sides, the + and the two rows under the bar, with the toolbar's surface beside and above it. The last point of the width, which the window's own edge covers, is masked.",
+      "example": "visual-toolbar",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 31,
+          "y": 0,
+          "width": 1,
+          "height": 30
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 2.91,
+        "2x": 2.75
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Favorites.png",
+        "crop": {
+          "x": 2556,
+          "y": 92,
+          "width": 64,
+          "height": 60
+        }
+      }
+    }
+  ]
+}

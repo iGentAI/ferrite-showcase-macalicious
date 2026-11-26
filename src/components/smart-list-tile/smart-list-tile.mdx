@@ -1,0 +1,136 @@
+---
+title: Smart List Tile
+description: A smart list of Reminders as a tile in the sidebar, with a glyph in a coloured disc, a count and a name; the tile whose list is shown takes the list's colour.
+---
+
+<Example name="basic" both />
+
+Reminders in macOS 10.15 puts its four smart lists (Today, Scheduled, All and Flagged) over
+the sidebar's lists as a 2 x 2 grid of tiles. Each tile carries the list's glyph in a disc of
+the list's colour, the number of reminders in it and its name. AppKit has no class for it.
+`SmartListTile` is Base UI's Toggle: the tile whose list is shown is the pressed one.
+
+## Usage
+
+```tsx
+import { SmartListTile, SmartListTileGrid } from "macalicious/smart-list-tile";
+import "macalicious/smart-list-tile.css";
+
+<SmartListTileGrid aria-label="Smart Lists">
+  <SmartListTile
+    icon={<CalendarGlyph />}
+    count={today.length}
+    pressed={shown === "today"}
+    onPressedChange={(pressed) => pressed && setShown("today")}
+  >
+    Today
+  </SmartListTile>
+</SmartListTileGrid>
+```
+
+Or copy the source into your project: `npx macalicious add smart-list-tile`.
+
+The tiles choose what the window shows, so one of them at most is pressed, and none while a
+list of the sidebar under them is shown. Hold that in the application: give every tile
+`pressed` and set the shown list when `onPressedChange` reports `true`, as above; a click on
+the tile that is already shown then leaves it shown. `tint` is the list's colour, any CSS
+colour, and the system blue when left out. Draw the glyph with `currentColor` on a 24 pt grid.
+The library ships no glyphs: those of Reminders are Apple's artwork.
+
+## Guidelines
+
+The Human Interface Guidelines for macOS have no entry for this tile. Related is the entry on
+[sidebars](https://web.archive.org/web/20200504055746/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/sidebars/);
+the rest is how Reminders uses the tile in the screenshots (not verified against a published
+guideline):
+
+- A tile is a list the application computes, not one the user made. Lists of the user's own
+  are rows of the sidebar under the tiles.
+- Give each tile its own colour and glyph, and keep the name to one word.
+- Show the count also when it is zero.
+- Put the tiles in a sidebar, over its translucent material: the tile's fill is a tint of what
+  is behind it.
+
+## Variants and states
+
+<Example name="states" both />
+
+| Variant or state | Look | Status |
+| --- | --- | --- |
+| At rest, Aqua | Fill black at 10% (`#d0d0d0` over the capture's `#e7e7e6` sidebar), name and count in the secondary label colour, white glyph on a disc of the list's colour | measured |
+| At rest, Dark Aqua | Fill white at 9.5% (`#404142` over `#2c2d2e`) | measured |
+| Shown | The tile takes the list's colour; name, count and disc turn white, and the glyph takes the list's colour | provisional: no tile is the one shown in either capture |
+| Pressed | Fill black, or in Dark Aqua white, at 18% | provisional |
+| Disabled | `disabled`: the tile at half opacity | provisional |
+| Keyboard focus | Focus ring, key window only | provisional |
+| Window not key | No change but for the focus ring | provisional (inferred) |
+
+## Sizes
+
+One size. A tile is 59 pt high and as wide as its column: 120 pt in Reminders, whose sidebar
+is 280 pt wide with the grid 16 pt from each side. Corners are 6.5 pt. The disc is 24 pt, 8 pt
+from the top and the leading edge. The count is 20 pt bold, its ink ending 11 pt from the
+trailing edge; the name is 13 pt semibold, its ink starting 10 pt from the leading edge with
+the baseline 10.5 pt above the bottom. Tiles in a `SmartListTileGrid` stand 8 pt apart both
+ways, in two equal columns.
+
+## API
+
+<PropsTable name="SmartListTileProps" />
+
+The remaining props are those of Base UI's Toggle (`pressed`, `defaultPressed`,
+`onPressedChange`, `disabled`, `onClick` and the attributes of a `<button>`) and go to the
+tile.
+
+<PropsTable name="SmartListTileGridProps" />
+
+| Attribute or variable | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-pressed` | tile | present or absent | The tile's list is the one shown. |
+| `aria-pressed` | tile | `true`, `false` | The same, for assistive technology. |
+| `data-disabled` | tile | present or absent | Reflects `disabled`. |
+| `data-force` | tile | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+| `--mac-smart-list-tile-tint` | tile or an ancestor | a colour | The list's colour; `tint` sets it on one tile. |
+
+Classes: `.mac-smart-list-tile`, `.mac-smart-list-tile-disc`, `.mac-smart-list-tile-count`,
+`.mac-smart-list-tile-name` and `.mac-smart-list-tile-grid`.
+
+## Accessibility
+
+- A tile is a toggle button: `aria-pressed` says whether its list is the one shown, and Space
+  or Return presses it. Every tile is in the tab order.
+- The tile's accessible name is its name and its count, "Today 3". The glyph is hidden from
+  assistive technology. Give the tile an `aria-label` to say what is counted ("Today, 3
+  reminders").
+- A name that is cut with an ellipsis is still read in full.
+- `SmartListTileGrid` is a `group`; name it with `aria-label` or `aria-labelledby`.
+- The name and the count are the secondary label colour on the tile's tint, as captured
+  (`#686867` on `#d0d0d0`, `#a9a9aa` on `#404142`): about 3.6:1 in Aqua and 4.3:1 in Dark
+  Aqua. The count is large text, for which 3:1 is enough; the name is not, and is below the
+  4.5:1 that text of its size needs.
+- In forced-colours mode a tile is a bordered button and the tile that is shown is outlined in
+  the system's highlight colour.
+
+## Visual comparison
+
+`npm run visual -- smart-list-tile` compares the four tiles of the Reminders screenshots in
+both appearances (reference crop `128,240,528,284` in 2x pixels: the grid with 8 pt of the
+sidebar around it), once whole and once with the glyphs, the counts and the names masked.
+Share of pixels that differ and mean colour difference out of 255, in Chromium on Linux with
+the fallback font:
+
+| Comparison | Aqua 1x | Aqua 2x | Dark Aqua 1x | Dark Aqua 2x |
+| --- | --- | --- | --- | --- |
+| `tiles`, whole crop | 4.64%, Δ 4.43 | 3.81%, Δ 4.35 | 4.63%, Δ 4.12 | 3.81%, Δ 3.88 |
+| `tiles-drawing`, glyphs and text masked, threshold 0.05 | 0.78%, Δ 1.06 | 0.87%, Δ 1.08 | 0.33%, Δ 0.76 | 0.81%, Δ 0.69 |
+
+Measured: the tile's size, corner radius and fill, the grid's gaps, the disc's size, place and
+colours, and the size, weight, colour and place of the count and the name. What is left with
+the text masked is the tiles' corners, whose curvature in Reminders is continuous where a CSS
+radius is a circular arc, and the discs' edges. The sidebar behind the tiles is the colour
+measured beside them; in the captures it is a translucent material over the desktop picture.
+
+Provisional, because no screenshot shows them: the tile that is shown, the pressed tile, the
+disabled tile and the focus ring. The tile that is shown, a click that makes a tile the one
+shown, the pressed fill, the focus ring and its absence in a window that is not key are
+checked in a real browser with real input (`expect` comparisons).

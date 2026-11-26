@@ -1,0 +1,269 @@
+/*
+ * Safari tab bar: 24 pt of fill and two 0.5 pt rows. The bar paints the divider colour and the
+ * rows; the tabs and the new-tab cell paint their fills over it, 1 pt apart. The rows are one
+ * 1px strip whose gradient is sampled at each device pixel's centre.
+ */
+.mac-safari-tab-bar {
+  --_t: var(--mac-safari-tab-bar-divider-top);
+  --_b: var(--mac-safari-tab-bar-divider-bottom);
+  --_ri: var(--mac-safari-tab-bar-row-inner);
+  --_ro: var(--mac-safari-tab-bar-row-outer);
+
+  display: flex;
+  box-sizing: border-box;
+  height: var(--mac-safari-tab-bar-height);
+  padding-bottom: 1px;
+  background:
+    linear-gradient(var(--_ri) 25%, var(--_ro) 75%) bottom / 100% 1px no-repeat,
+    linear-gradient(var(--_t), var(--_b)) top / 100% calc(100% - 1px) no-repeat;
+  color: var(--mac-safari-tab-bar-title);
+  font: var(--mac-font-tab-bar);
+  letter-spacing: var(--mac-tracking-small);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-safari-tab-bar-list {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  gap: 1px;
+}
+
+/* A cell: --_t to --_b over its height, under a flat --_h while the pointer is over it. */
+.mac-safari-tab-bar-tab,
+.mac-safari-tab-bar-new {
+  --_h: transparent;
+
+  position: relative;
+  box-sizing: border-box;
+  margin: 0;
+  border: 0;
+  background: linear-gradient(var(--_h), var(--_h)), linear-gradient(var(--_t), var(--_b));
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-safari-tab-bar-tab {
+  --_t: var(--mac-safari-tab-bar-tab-top);
+  --_b: var(--mac-safari-tab-bar-tab-bottom);
+
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  /* Room for the close button on both sides, so the title stays centred in the tab. The
+     title's baseline is 16.5 pt below the top of the bar: half a point under the centre. */
+  padding: 1px 22px 0;
+  color: inherit;
+}
+
+.mac-safari-tab-bar-tab:where(:hover, [data-force~="hover"]):where(
+  :not([data-disabled], [data-active])
+) {
+  --_h: var(--mac-safari-tab-bar-hover);
+}
+
+.mac-safari-tab-bar-tab:where([data-active]) {
+  --_t: var(--mac-safari-tab-bar-selected-top);
+  --_b: var(--mac-safari-tab-bar-selected-bottom);
+  color: var(--mac-safari-tab-bar-title-selected);
+}
+
+.mac-safari-tab-bar-tab:where([data-disabled]) {
+  color: var(--mac-color-control-text-disabled);
+}
+
+.mac-safari-tab-bar-icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--mac-safari-tab-bar-icon-size);
+  height: var(--mac-safari-tab-bar-icon-size);
+  overflow: hidden;
+}
+
+.mac-safari-tab-bar-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Close button [provisional], shown while the pointer is over the tab. */
+.mac-safari-tab-bar-close {
+  --_x: transparent calc(50% - 0.5px), currentColor 0 calc(50% + 0.5px), transparent 0;
+  --_cross: var(--mac-safari-tab-bar-close-glyph-size);
+
+  position: absolute;
+  inset-block-start: 5px;
+  inset-inline-start: 5px;
+  width: var(--mac-safari-tab-bar-close-size);
+  height: var(--mac-safari-tab-bar-close-size);
+  border-radius: var(--mac-safari-tab-bar-close-radius);
+  background:
+    linear-gradient(45deg, var(--_x)) center / var(--_cross) var(--_cross) no-repeat,
+    linear-gradient(-45deg, var(--_x)) center / var(--_cross) var(--_cross) no-repeat;
+  color: var(--mac-safari-tab-bar-title);
+  opacity: 0;
+}
+
+.mac-safari-tab-bar-close:where(
+  .mac-safari-tab-bar-tab:where(:hover, [data-force~="hover"]):where(:not([data-disabled])) > *
+) {
+  opacity: 1;
+}
+
+.mac-safari-tab-bar-close:where(:hover) {
+  background-color: var(--mac-safari-tab-bar-close-fill-hover);
+}
+
+/* New-tab cell: 24 pt after a 1 pt divider, with an 11 pt + of 1 pt strokes, 6 pt from the
+   divider and 7 pt from the top. */
+.mac-safari-tab-bar-new {
+  --_t: var(--mac-safari-tab-bar-new-top);
+  --_b: var(--mac-safari-tab-bar-new-bottom);
+
+  flex: none;
+  width: var(--mac-safari-tab-bar-new-width);
+  margin-inline-start: 1px;
+  padding: 0;
+  color: var(--mac-safari-tab-bar-new-glyph);
+}
+
+.mac-safari-tab-bar-new::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 7px;
+  inset-inline-start: 6px;
+  width: var(--mac-safari-tab-bar-new-glyph-size);
+  height: var(--mac-safari-tab-bar-new-glyph-size);
+  background: currentColor;
+  clip-path: polygon(
+    5px 0,
+    6px 0,
+    6px 5px,
+    11px 5px,
+    11px 6px,
+    6px 6px,
+    6px 11px,
+    5px 11px,
+    5px 6px,
+    0 6px,
+    0 5px,
+    5px 5px
+  );
+}
+
+.mac-safari-tab-bar-new:where(:active, [data-force~="pressed"]) {
+  color: var(--mac-safari-tab-bar-title-selected);
+}
+
+/* The cell on its own, last in a title-hidden toolbar: 24 pt of fill beside a 1 pt edge and
+   under a half-point one, from 12 pt under the window's top to the bar's bottom rows, against
+   the window's edge (the toolbar's 8 pt of padding are taken back). */
+.mac-safari-tab-bar-new:where([data-standalone]) {
+  --_t: var(--mac-safari-tab-bar-standalone-top);
+  --_b: var(--mac-safari-tab-bar-standalone-bottom);
+  --_e: var(--mac-safari-tab-bar-standalone-edge);
+
+  width: 25px;
+  height: 25px;
+  margin: 4px -8px -7px 0;
+  background:
+    linear-gradient(color-mix(in srgb, var(--_e) 45%, transparent) 50%, var(--_e) 0) 0 0 / 100% 1px,
+    linear-gradient(var(--_e), var(--_e)) 0 0.5px / 1px 100%,
+    linear-gradient(var(--_t), var(--_b)) 1px 1px;
+  background-repeat: no-repeat;
+}
+
+.mac-safari-tab-bar-new:where([data-standalone])::after {
+  translate: 1px 1px;
+}
+
+/* Inactive window: the bar flattens and its titles dim. */
+.mac-safari-tab-bar:where([data-window-state="inactive"] *) {
+  --_t: var(--mac-safari-tab-bar-inactive-divider);
+  --_b: var(--mac-safari-tab-bar-inactive-divider);
+  --_ri: var(--mac-safari-tab-bar-inactive-row-inner);
+  --_ro: var(--mac-safari-tab-bar-inactive-row-outer);
+  color: var(--mac-safari-tab-bar-inactive-title);
+}
+
+.mac-safari-tab-bar-tab:where([data-window-state="inactive"] *) {
+  --_t: var(--mac-safari-tab-bar-inactive-tab);
+  --_b: var(--mac-safari-tab-bar-inactive-tab);
+  color: inherit;
+}
+
+.mac-safari-tab-bar-tab:where([data-active]):where([data-window-state="inactive"] *) {
+  --_t: var(--mac-safari-tab-bar-inactive-selected);
+  --_b: var(--mac-safari-tab-bar-inactive-selected);
+}
+
+.mac-safari-tab-bar-new:where([data-window-state="inactive"] *) {
+  --_t: var(--mac-safari-tab-bar-inactive-new);
+  --_b: var(--mac-safari-tab-bar-inactive-new);
+  color: inherit;
+}
+
+/* Keyboard focus ring, drawn inside the cell because the bar fills the window's width; only
+   in the key window. */
+.mac-safari-tab-bar-tab:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+),
+.mac-safari-tab-bar-new:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(0px - var(--mac-focus-ring-width));
+}
+
+@media (forced-colors: active) {
+  .mac-safari-tab-bar {
+    border-bottom: 1px solid CanvasText;
+    padding-bottom: 0;
+    background: CanvasText;
+  }
+
+  .mac-safari-tab-bar-tab,
+  .mac-safari-tab-bar-new {
+    background: Canvas;
+    color: ButtonText;
+  }
+
+  /* Highlight can be translucent: over the canvas, not the divider. */
+  .mac-safari-tab-bar-tab:where([data-active]) {
+    background: linear-gradient(Highlight, Highlight) Canvas;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  .mac-safari-tab-bar-tab:where([data-disabled]) {
+    color: GrayText;
+  }
+
+  /* The + and the close cross are backgrounds, which forced colours would replace with the
+     canvas: they keep a system colour instead. */
+  .mac-safari-tab-bar-new::after {
+    background: ButtonText;
+    forced-color-adjust: none;
+  }
+
+  .mac-safari-tab-bar-close {
+    color: ButtonText;
+    forced-color-adjust: none;
+  }
+
+  .mac-safari-tab-bar-tab:where([data-active]) > .mac-safari-tab-bar-close {
+    color: HighlightText;
+  }
+}

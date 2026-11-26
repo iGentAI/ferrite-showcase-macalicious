@@ -1,0 +1,157 @@
+/*
+ * The desktop demo's own colours.
+ */
+:root {
+  /* Activity Monitor's Dock graph: not measured, no reference screenshot shows it. */
+  --mac-desktop-shell-activity-tile: #1c1c1e;
+  --mac-desktop-shell-activity-off: #2f3a2f;
+  --mac-desktop-shell-activity-on: #34c759;
+
+  /* Split View: not measured, no reference screenshot shows it. */
+  --mac-desktop-shell-split-divider: #000000;
+  --mac-desktop-shell-split-fill: rgb(0 0 0 / 45%);
+  --mac-desktop-shell-split-blur: 20px;
+  --mac-desktop-shell-split-gap: 16px;
+  --mac-desktop-shell-split-radius: 8px;
+  --mac-desktop-shell-split-text: #ffffff;
+  --mac-desktop-shell-split-hover: rgb(255 255 255 / 15%);
+
+  --mac-desktop-shell-spotlight-picture-height: 180px;
+  --mac-desktop-shell-spotlight-edge: 8px;
+
+  /* The red count on a Dock tile: not measured, no reference screenshot shows one. */
+  --mac-desktop-shell-dock-badge-size: 20px;
+  --mac-desktop-shell-dock-badge-inset: 5px;
+  --mac-desktop-shell-dock-badge-fill: #ff3b30;
+  --mac-desktop-shell-dock-badge-text: #ffffff;
+
+  /* The character viewer: not measured, no reference screenshot shows it. */
+  --mac-desktop-characters-top: 30px;
+  --mac-desktop-characters-inset: 12px;
+  --mac-desktop-characters-width: 330px;
+  --mac-desktop-characters-height: 380px;
+  --mac-desktop-characters-gap: 8px;
+  --mac-desktop-characters-cell: 32px;
+  --mac-desktop-characters-glyph: 20px;
+
+  /* Start Dictation's panel: not measured, no reference screenshot shows it. */
+  --mac-desktop-dictation-width: 168px;
+  --mac-desktop-dictation-padding: 10px;
+  --mac-desktop-dictation-gap: 6px;
+  --mac-desktop-dictation-radius: 10px;
+  --mac-desktop-dictation-mic: 28px;
+  --mac-desktop-dictation-shade: rgb(0 0 0 / 0.3);
+  --mac-desktop-dictation-shadow:
+    0 8px 24px var(--mac-desktop-dictation-shade), 0 0 0 0.5px var(--mac-desktop-dictation-shade);
+
+  /* The colour under the desktop picture while it loads: an original drawing in two
+     gradients that follows the colours of the island photographs in art/ (themselves
+     original, generated, and not Apple's), a sky from the colours of column x=300 (Aqua) and
+     x=220 (Dark Aqua) of the Desktop screenshots down to the dark sea at the foot of the
+     screen, and in the top trailing corner the cloud of the Aqua picture and the darker sky
+     of the Dark Aqua one. */
+  --mac-desktop-shell-picture:
+    radial-gradient(
+      ellipse 75% 45% at 100% 0,
+      light-dark(#9cb4c8, #03183b) 0,
+      light-dark(rgb(156 180 200 / 0.2), rgb(3 24 59 / 0.75)) 30%,
+      light-dark(transparent, rgb(3 24 59 / 0.45)) 60%,
+      transparent 100%
+    ),
+    linear-gradient(
+      light-dark(#5f94c3, #27446f) 2px,
+      light-dark(#6ba2d3, #27446f) 14px,
+      light-dark(#75aedf, #26436c) 27px,
+      light-dark(#81b9ec, #26416a) 40px,
+      light-dark(#8abeee, #25426b) 52px,
+      light-dark(#81bded, #294771) 86px,
+      light-dark(#8dc6f3, #314e79) 125px,
+      light-dark(#93caf4, #3a5883) 151px,
+      light-dark(#a1d1f7, #47668f) 188px,
+      light-dark(#aed9f9, #4a6a92) 223px,
+      light-dark(#b9dffa, #5c7ba0) 255px,
+      light-dark(#c4e1f9, #6481a6) 283px,
+      light-dark(#7fa6c8, #3a5578) 45%,
+      light-dark(#35587e, #1c3050) 60%,
+      light-dark(#153a5d, #122644) 78%,
+      light-dark(#04203a, #0a1524) 92%
+    );
+  /* The library menu bar's height (`menu-bar.css`): Notification Center opens under it. */
+  --mac-desktop-shell-menu-bar-height: 22px;
+  /* Where banners and alerts come in: 8 pt under the menu bar and 8 pt from the trailing edge,
+     one 8 pt above the next, as the Notification Alert page gives it (inferred there: the
+     captures show an alert alone). */
+  --mac-desktop-shell-banners-top: 30px;
+  --mac-desktop-shell-banners-inset: 8px;
+  --mac-desktop-shell-banners-gap: 8px;
+  /* The banners' layer, in the page's body: over the desktop's windows and panels, under the
+     lock screen and login window (`--mac-desktop-login-layer`). */
+  --mac-desktop-shell-banners-layer: 99000;
+  /* The Notification Center glyph while Do Not Disturb is on. Not measured. */
+  --mac-desktop-shell-dnd-glyph-opacity: 0.5;
+  /* The rows of a Today widget: inset to the widget's title (31.5 pt, `today-widget.css`), and
+     the space between them. Not measured; the screenshots' widgets hold other apps' content. */
+  --mac-desktop-shell-today-list-padding: 8px 12px 10px 31.5px;
+  --mac-desktop-shell-today-list-gap: 6px;
+  /* [provisional] Siri's earlier answers: no reference screenshot shows them. */
+  --mac-desktop-shell-siri-earlier-height: 72px;
+  --mac-desktop-shell-recent-size: 96px;
+  --mac-desktop-shell-recent-icon: 64px;
+  --mac-desktop-shell-recent-gap: 4px;
+  /* [provisional] Today's Edit mode and its World Clock and Calculator widgets: no reference
+     screenshot shows them. */
+  --mac-desktop-shell-today-edit-button: 16px;
+  --mac-desktop-shell-today-clock-size: 44px;
+  --mac-desktop-shell-today-clock-day: #fff;
+  --mac-desktop-shell-today-clock-night: #1c1c1e;
+  --mac-desktop-shell-today-calculator-display: 22px;
+  --mac-desktop-shell-today-calculator-key: 28px;
+  /* The space between an alert's card in Notification Center and the row of its actions, and
+     between the actions. Not measured; the screenshots show no alert there. */
+  --mac-desktop-shell-center-actions-gap: 6px;
+  /* The sheet of the login window's Other… and Create Account… forms: its width, its corner
+     radius (an alert's) and the width of its labels. Not measured; Catalina's login window has
+     no account form, so these follow the alert. */
+  --mac-desktop-login-form-width: 380px;
+  --mac-desktop-login-form-radius: 10px;
+  --mac-desktop-login-label-width: 120px;
+  /* The lock screen and the login window over a signed-in desktop: above every layer of the
+     desktop's window manager, menus and Launchpad included. */
+  --mac-desktop-login-layer: 100000;
+  /* Around the Help menu's search field. Not measured. */
+  --mac-desktop-shell-help-search-padding: 2px 12px 6px;
+  /* The image of a drag between applications: above every layer of the desktop's windows, under
+     the lock screen. Not measured: no reference screenshot shows a drag. */
+  --mac-desktop-drag-layer: 99500;
+  --mac-desktop-drag-gap: 2px;
+  --mac-desktop-drag-width: 120px;
+  --mac-desktop-drag-opacity: 0.8;
+  --mac-desktop-drag-icon: 48px;
+  --mac-desktop-drag-name-padding: 0 5px;
+  --mac-desktop-drag-name-radius: 3px;
+  --mac-desktop-drag-name-size: 11px;
+  --mac-desktop-drag-count: 18px;
+  --mac-desktop-drag-count-padding: 5px;
+  --mac-desktop-drag-target-radius: 4px;
+  /* The desktop's View Options window and what it changes on the icons: not measured, no
+     reference screenshot shows them. */
+  --mac-desktop-shell-view-options-top: 40px;
+  --mac-desktop-shell-view-options-left: 40px;
+  --mac-desktop-shell-view-options-width: 260px;
+  --mac-desktop-shell-icon-text-leading: 1.33;
+  --mac-desktop-shell-icon-label-gap: 6px;
+  --mac-desktop-shell-item-info: #8ac6ff;
+  /* The name of an application over its grouped windows: not measured, no reference screenshot
+     shows it. */
+  --mac-desktop-shell-group-name-inset: 8px;
+  --mac-desktop-shell-group-name-padding: 4px 10px;
+  --mac-desktop-shell-group-name-radius: 8px;
+  /* The Spaces bar's button to remove a Space and the mark of a Space a window is over: not
+     measured, no reference screenshot shows them. */
+  --mac-desktop-shell-space-remove-size: 20px;
+  --mac-desktop-shell-space-remove-padding: 5px;
+  --mac-desktop-shell-space-remove-fill: rgb(60 60 60 / 0.9);
+  --mac-desktop-shell-space-remove-mark: #ffffff;
+  --mac-desktop-shell-space-drop: rgb(255 255 255 / 0.35);
+  --mac-desktop-shell-space-drop-radius: 4px;
+}

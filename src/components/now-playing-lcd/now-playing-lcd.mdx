@@ -1,0 +1,120 @@
+---
+title: Now Playing Lcd
+description: The now-playing display in the middle of a media player's playback bar, with an artwork well, the title and subtitle of the loaded item and a thin progress line.
+order: 91
+---
+
+<Example name="basic" both />
+
+The panel in the playback bar of Music and Podcasts, called the LCD since iTunes. Idle, it shows
+a mark in the middle; with an item loaded it shows two centred lines of text over a 3 pt
+progress line. It is custom chrome with no AppKit class of its own. The progress line is
+[Base UI's Progress](https://base-ui.com/react/components/progress), or
+[Base UI's Slider](https://base-ui.com/react/components/slider) when it can be dragged.
+
+## Usage
+
+```tsx
+import { NowPlayingLcd } from "macalicious/now-playing-lcd";
+import "macalicious/now-playing-lcd.css";
+
+<NowPlayingLcd
+  title="Morning Walk"
+  subtitle="The Placeholders — First Album"
+  artwork={<img src={cover} alt="Cover of First Album" />}
+  elapsed={62}
+  duration={215}
+/>
+```
+
+The display is as wide as its container and 45 pt high; in a playback bar that container is the
+`MediaAppChromeDisplay` of [Media App Chrome](/components/media-app-chrome). Without a `title`
+it is idle and shows its children, centred: pass a mark of your own. The library draws no
+logo.
+
+## Guidelines
+
+- Show what is playing: the title on the first line, and on the second the artist and album,
+  or the show and date, joined by an em dash.
+- Keep the display idle, not empty, when nothing is loaded: the placeholder in the artwork
+  well and a quiet mark in the middle.
+- Give artwork an `alt` text. The title beside it does not describe the picture.
+
+## Variants and states
+
+<Example name="idle" both />
+
+| `variant` | Border | Body in Dark Aqua | After an empty artwork well |
+| --- | --- | --- | --- |
+| `music` (default) | Lighter on top, darker along the bottom (measured) | Gradient (measured) | Nothing |
+| `podcasts` | One colour all round (measured) | Flat (measured) | A divider (measured in Aqua) |
+
+<Example name="seekable" both />
+
+| State | Look | Basis |
+| --- | --- | --- |
+| Idle | Placeholder glyph in the well, children in the body | Measured: Music in both appearances, Podcasts in Aqua |
+| Loaded | Title and subtitle, progress line along the bottom edge | Measured in Dark Aqua (Podcasts); the progress colours in Aqua are provisional |
+| Pointer over the display, or focus inside it | Elapsed and remaining time at either end; with `onSeek`, a knob on the line | Provisional: no screenshot shows it |
+| Keyboard focus on the knob | Focus ring around the whole display, in the key window only (a ring around the knob would be clipped by the panel) | Provisional |
+| Inactive window | Text and glyphs at half strength | Provisional |
+
+## Sizes
+
+There is no `size` prop. The panel is 45 pt high with a 44 pt artwork well (44.5 pt in the
+Music variant, as measured) and takes its container's width: 400 pt in Music's 1220 pt window
+and 351 pt in Podcasts' 1137 pt window, 40% of the bar in both.
+
+## API
+
+<PropsTable name="NowPlayingLcdProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-variant` | `music`, `podcasts` | Reflects `variant`. |
+| `data-state` | `idle`, `playing` | `playing` when a `title` is set. |
+| `data-empty` | present or absent, on `.mac-now-playing-lcd-artwork` | The well shows the placeholder. |
+| `data-remaining` | present, on the second `.mac-now-playing-lcd-time` | The remaining-time label. |
+
+## Accessibility
+
+- The root is a `group` named "Now Playing"; `aria-label` changes the name. The title and
+  subtitle are plain text inside it.
+- Without `onSeek` the progress line is a `progressbar` named "Playback position"
+  (`seekLabel` changes it) whose value text is the position and the length, for example
+  "1:02 of 3:35".
+- With `onSeek` it is a `slider` with the same name and value text, in the tab order. The Left
+  and Right arrow keys move one second, Page Up and Page Down fifteen, Home and End go to the
+  ends. `onSeekCommitted` reports where a drag or a key press ended.
+- The time labels are hidden from assistive technology: the value text carries the same
+  information.
+- The placeholder glyph is decorative. Artwork you pass needs its own text alternative.
+
+## Visual comparison
+
+`now-playing-lcd.visual.json` compares the idle display with Music in both appearances and with
+Podcasts in Aqua, and the loaded display with Podcasts in Dark Aqua, the one capture that shows
+an item loaded. Apple's logo and the Apple Podcasts mark are masked, and so is the show's
+artwork. The loaded display is scored twice: with its two lines of text, which are set in the
+fallback font off Apple platforms, and with the text masked, which scores the drawing alone.
+
+Scores from `npm run visual -- now-playing-lcd` in Chromium on Linux: the share of pixels that
+differ by more than the comparison's threshold, and the mean colour difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `music-idle-light` | Light-Music (1100, 80, 816, 100) | 7.13% | 1.59 | 0.64% | 0.25 |
+| `music-idle-dark` | Dark-Music (1100, 80, 816, 100) | 3.60% | 2.04 | 0.65% | 0.77 |
+| `podcasts-idle-light` | Light-Podcasts (1110, 80, 716, 100) | 7.47% | 2.34 | 0.00% | 0.00 |
+| `podcasts-playing-dark` | Dark-Podcasts (1110, 80, 716, 100) | 17.38% | 14.15 | 12.75% | 12.83 |
+| `podcasts-playing-dark-drawing` (masked) | Dark-Podcasts (1110, 80, 716, 100) | 3.81% | 1.90 | 0.00% | 0.05 |
+
+The 1x scores are higher because the half-point border cannot match its averaged counterpart.
+What remains at 2x in the Music comparisons is the placeholder glyph, an original drawing of
+two beamed notes in the measured box.
+
+Provisional, because no screenshot shows them: the progress colours in Aqua, the time labels
+and the scrubber knob, the Podcasts placeholder colour and corner in Dark Aqua, the divider
+after the Podcasts well in Dark Aqua, and the inactive-window look. Two pixel checks move
+keyboard focus to the knob, press Home or End, and hold the focus ring to its token on every
+side of the panel; no pixel check covers the hover state yet.

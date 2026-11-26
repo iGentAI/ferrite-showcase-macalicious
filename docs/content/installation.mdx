@@ -1,0 +1,207 @@
+---
+title: Getting started
+description: Install the package or copy component source into your project, import the styles, and render a first Catalina page.
+group: Overview
+order: 2
+---
+
+This page takes you from an empty React project to a page that looks like Catalina. There are
+two routes to the same components: install the package, or copy the source of the components
+you want. Pick one in step 1; everything after it is the same.
+
+## Requirements
+
+React 19 and a bundler that handles CSS imports (Vite, Next.js, Parcel, webpack). Browsers need
+`light-dark()` and relative colour syntax: Chrome and Edge 123+, Safari 17.5+, Firefox 128+.
+
+If your build tool down-levels modern CSS (Vite does when minifying), tell it these browsers
+are the target, or it will rewrite `light-dark()` into a fallback that only works on the whole
+page and breaks appearance switching on a subtree:
+
+```ts
+// vite.config.ts
+export default defineConfig({
+  build: { cssTarget: ["chrome123", "edge123", "firefox128", "safari17.5"] },
+});
+```
+
+## 1. Get the components
+
+### Route A: install the package
+
+The package is not on the npm registry yet: it is marked private until a licence is chosen.
+Until it is published, build it from a checkout of the repository and install the tarball:
+
+```bash
+# in the macalicious checkout
+npm install && npm run build && npm pack      # writes macalicious-<version>.tgz
+
+# in your project
+npm install ../macalicious/macalicious-<version>.tgz
+```
+
+Once it is published, that becomes `npm install macalicious`. Either way Base UI
+(`@base-ui/react`) is installed with it as a dependency.
+
+Import the stylesheet once, then components by name:
+
+```tsx
+import "macalicious/styles.css"; // tokens and every component
+
+import { PushButton } from "macalicious/push-button";
+```
+
+Every component has its own entry point (`macalicious/push-button`), so a bundler only includes
+what is imported. The root entry (`import { PushButton } from "macalicious"`) is tree-shakeable
+and gives the same result with a modern bundler.
+
+To ship less CSS, import the tokens and only the component stylesheets in use:
+
+```tsx
+import "macalicious/tokens.css";
+import "macalicious/push-button.css";
+```
+
+A component built from other components needs their stylesheets too, loaded before its own
+(a box titles itself with a label, so `label.css` comes before `box.css`). Each component page
+lists the stylesheets it needs in the order to import them; `styles.css` already has them in
+that order.
+
+The package's JavaScript never imports CSS itself. That keeps it usable in server components,
+Node test runners and any bundler, at the cost of one explicit stylesheet import.
+
+In a React Server Components framework (the Next.js App Router, for one) import a component
+from a server component as from anywhere else. A component that keeps state is marked
+`"use client"` in the package, as it is in the source, so the framework renders it as a client
+component; the others render on the server.
+
+### Route B: copy the source
+
+In the style of [shadcn/ui](https://ui.shadcn.com), a component can be copied into your project
+so that you own and edit it. The command comes with the package, so install it as in route A
+(as a development dependency is enough), then:
+
+```bash
+npx macalicious list
+npx macalicious add push-button            # into src/components/macalicious
+npx macalicious add push-button --dir app/ui/mac
+```
+
+`add` writes the component folder, the helper files it imports, the components it uses, the
+token stylesheets and the two theming helpers, keeping their relative layout so imports work
+unchanged:
+
+```text
+src/components/macalicious/
+  components/push-button/   index.ts, push-button.tsx, push-button.css, push-button.tokens.css
+  lib/                      cn.ts, control-size.ts, key-equivalent.ts, appearance.ts,
+                            window-activation.ts
+  styles/                   index.css, tokens/*.css, fallback-font.css
+```
+
+Where the rest of this guide imports a helper from `macalicious/lib/<name>`, import the copied
+file instead (`./components/macalicious/lib/<name>`).
+
+It prints the command that installs the npm dependencies (for the push button,
+`npm install "@base-ui/react@^1.8.0"`) and never
+overwrites a file you have changed unless given `--overwrite`. Copied components import their
+own stylesheet; import `styles/index.css` once for the tokens, and the component from its
+folder:
+
+```tsx
+import "./components/macalicious/styles/index.css";
+
+import { PushButton } from "./components/macalicious/components/push-button";
+```
+
+The registry behind the command is generated at build time (`dist/registry/*.json`) from each
+component's folder and import statements. Its items are modelled on shadcn's registry items
+(name, npm dependencies, registry dependencies, files with their content inline); they are read
+by `macalicious add` and have not been tested with the `shadcn` command itself.
+
+## 2. Set up the page
+
+In the file that starts your application, import the styles and, once, start mirroring the
+browser window's focus, so that controls lose their accent colour while the page is in the
+background, as they do in a Mac window that is not in front:
+
+```tsx
+// main.tsx
+import "macalicious/styles.css";
+import { trackWindowActivation } from "macalicious/lib/window-activation";
+import { createRoot } from "react-dom/client";
+import { App } from "./app";
+
+trackWindowActivation();
+
+createRoot(document.getElementById("root") as HTMLElement).render(<App />);
+```
+
+Base UI renders popups (menus, popovers, sheets) in a portal at the end of `<body>`. Give your
+application root its own stacking context so they always appear above it, and make the body a
+positioning context for backdrops on iOS:
+
+```css
+#root {
+  isolation: isolate;
+}
+
+body {
+  position: relative;
+}
+```
+
+Apple devices render San Francisco with no setup. For other platforms, add the
+metric-compatible fallback described in [Typography](/typography):
+
+```bash
+npm install @fontsource-variable/inter
+```
+
+```tsx
+import "macalicious/fallback-font.css";
+```
+
+## 3. Render a first page
+
+A Catalina surface is an element styled with tokens; the controls on it are components. This
+is a complete component file, shown live above its source. The dialog's background, corner
+radius, shadow, margins and fonts are all tokens, and the 12 pt between the buttons is the
+control gap token:
+
+<Example name="first-page" both />
+
+Things to notice, because every page you build follows them:
+
+- One CSS pixel is one AppKit point. A control's box is its alignment rectangle, so layout
+  distances are plain CSS gaps and paddings.
+- Nothing in the file mentions light or dark. The tokens resolve the appearance; the preview
+  above renders the same file under `data-appearance="light"` and `"dark"`.
+- The primary button is blue only while its window is key. Click outside the browser window
+  and it turns white, because `trackWindowActivation()` marked the page inactive.
+
+## 4. Choose an appearance and an accent
+
+The page follows the operating system by default. One attribute each, on `<html>` or on any
+element, forces an appearance and picks the accent colour:
+
+```html
+<html data-appearance="dark" data-accent="purple">
+```
+
+or from JavaScript, with the helpers that set the same attributes:
+
+```tsx
+import { setAccent, setAppearance } from "macalicious/lib/appearance";
+
+setAppearance("dark"); // "light", "dark" or "auto"
+setAccent("purple");
+```
+
+## Next
+
+- [Theming](/theming) explains appearance, accent and highlight colour and lists every token.
+- [Building a window](/building-a-window) turns the surface above into a proper window with
+  the three window states.
+- Each component's page (see the sidebar, or the list on the [Introduction](/)) has its props,
+  states and accessibility notes.

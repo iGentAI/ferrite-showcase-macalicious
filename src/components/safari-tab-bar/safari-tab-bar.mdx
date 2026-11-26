@@ -1,0 +1,165 @@
+---
+title: Safari Tab Bar
+description: Safari's bar of tabs under the toolbar, one per open page, with one tab selected, optional page icons and close buttons, and a new-tab button.
+order: 60
+---
+
+<Example name="basic" both />
+
+Safari's tab bar has the anatomy of AppKit's [Window Tab Bar](/components/window-tab-bar) and
+its own colours, title colours and new-tab cell. It is built on
+[Base UI's Tabs](https://base-ui.com/react/components/tabs): the bar is the Tabs root with its
+list inside, so it takes `value`, `defaultValue` and `onValueChange` and supplies the
+tab semantics and arrow keys. It renders no panels: the window's content shows the selected
+tab's page.
+
+## Usage
+
+```tsx
+import { SafariTab, SafariTabBar } from "macalicious/safari-tab-bar";
+import "macalicious/safari-tab-bar.css";
+
+<SafariTabBar aria-label="Tabs" value={tab} onValueChange={setTab} onNewTab={addTab}>
+  <SafariTab value="start">Start Page</SafariTab>
+  <SafariTab value="example" onClose={() => closeTab("example")}>Example Domain</SafariTab>
+</SafariTabBar>
+```
+
+Place it directly under the toolbar. The bar is as wide as its container and divides the
+width equally between the tabs.
+
+<Example name="closable" />
+
+`icon` puts a 16 pt page icon before the title, as Safari does when website icons in tabs are
+turned on:
+
+<Example name="icons" />
+
+A window with one tab shows no tab bar, and Safari then puts the new-tab cell in the toolbar.
+`SafariNewTabButton` is that cell on its own: make it the last item of a title-hidden
+[Toolbar](/components/toolbar) and it stands in the toolbar's lower corner, against the
+window's edge.
+
+<Example name="toolbar" />
+
+## Guidelines
+
+- Show the bar only when there are two or more tabs, unless the user asked to always see it.
+- Title a tab with the page's title, and let a long title be cut at the end.
+- Keep the new-tab button at the trailing end of the bar.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Selected tab | its value is the bar's value | Lighter fill and a darker title (white in Dark Aqua) |
+| Other tabs | – | Darker fill, dimmer title |
+| Under the pointer | `:hover` | A tab that is not selected darkens (lightens in Dark Aqua); a tab with `onClose` shows its close button at the leading edge (provisional) |
+| Keyboard focus | `:focus-visible` | Focus ring inside the cell, in the key window only (provisional) |
+| Disabled | `disabled` on a tab | Dimmed title (provisional) |
+| Inactive window | `data-window-state="inactive"` on an ancestor | Flat fills, dimmed titles |
+| New-tab button | `onNewTab` | A 24 pt cell with a + after a 1 pt divider; while pressed the + takes the selected title's colour (provisional) |
+| New-tab cell on its own | `SafariNewTabButton` in a toolbar | The same cell, 25 pt square with an edge at its top and leading sides, from 12 pt under the window's top edge to the bottom of the bar |
+| Forced colours | `forced-colors: active` | System colours; the dividers, the bottom border, the + and the close cross survive |
+
+Nothing in the bar animates, so there is nothing to reduce for `prefers-reduced-motion`.
+
+## Sizes
+
+One size: the bar is 25 pt high (24 pt of fill and two half-point rows) and as wide as its
+container. Tabs share the width equally; set a width on a tab with `style` to pin it.
+
+## API
+
+<PropsTable name="SafariTabBarProps" />
+
+<PropsTable name="SafariTabProps" />
+
+<PropsTable name="SafariNewTabButtonProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-active` | tab | present or absent | Set by Base UI on the selected tab. |
+| `data-disabled` | tab | present or absent | Set by Base UI. |
+| `data-force` | tab | `hover`, `focus` | Documentation and visual tests only. |
+| `data-standalone` | new-tab cell | present or absent | Set by `SafariNewTabButton`: the cell is on its own in a toolbar. |
+
+Parts: `.mac-safari-tab-bar-list`, `.mac-safari-tab-bar-tab`, `.mac-safari-tab-bar-icon`,
+`.mac-safari-tab-bar-title`, `.mac-safari-tab-bar-close` and `.mac-safari-tab-bar-new`.
+
+## Accessibility
+
+- A `tablist` of `tab`s; name it with `aria-label` or `aria-labelledby`. The bar renders no
+  `tabpanel`: if the page area should be announced as the tab's panel, give it
+  `role="tabpanel"` and `aria-labelledby` yourself, as the second example does.
+- One tab stop. The arrow keys move focus between tabs without selecting, so passing over a
+  tab does not load its page; Space or Return selects. `activateOnFocus` makes the arrow keys
+  select as they move.
+- A tab with `onClose` closes with Delete or Backspace while it has focus, and announces both
+  keys (`aria-keyshortcuts`). The close button under the pointer is a pointer affordance
+  only, hidden from assistive technology, because a button cannot sit inside a tab.
+- When a tab is removed while it has the keyboard focus, the next tab that is not disabled
+  takes the focus, or else the nearest one before it, so the arrow keys keep working in the
+  bar. Focus that the application has already put elsewhere is left where it is.
+- The new-tab button is a separate native button after the tab list, named "New Tab"
+  (`newTabLabel`). `SafariNewTabButton` is a native button with the same name (`aria-label`
+  renames it) and, in a `Toolbar`, one of the items the arrow keys move between.
+- An `icon` is decoration beside the title: give an image an empty `alt`, or `aria-hidden`.
+- Control-Tab, Command-T and Command-W are the application's to handle.
+
+## Visual comparison
+
+`safari-tab-bar.visual.json` compares the three tabs of the key Safari window, the middle one
+selected, with the new-tab cell, and the two tabs of the inactive Safari window behind the
+Picture in Picture video, each whole and with the titles masked, in both appearances; and the
+new-tab cell on its own in the toolbar of the window with one tab, in both appearances. Hover,
+the focus ring (and its absence in an inactive window), the pressed new-tab button and forced
+colours (the tabs, the dividers, the + and the cross of the close button on a selected and on
+an unselected tab) have no screenshot and are checked pixel by pixel after real input.
+
+Scores from `npm run visual -- safari-tab-bar` in Chromium on Linux with the fallback font: the
+share of pixels that differ by more than the comparison's threshold, and the mean colour
+difference out of 255. A masked comparison leaves out the fallback-font text.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `safari-light` | Light-Safari-v13 (114, 152, 2644, 50) | 1.38% | 1.47 | 1.82% | 2.26 |
+| `safari-light-drawing` (masked) | Light-Safari-v13 (114, 152, 2644, 50) | 0.00% | 0.32 | 0.00% | 0.45 |
+| `safari-dark` | Dark-Safari-v13 (114, 152, 2504, 50) | 1.58% | 1.84 | 1.96% | 2.53 |
+| `safari-dark-drawing` (masked) | Dark-Safari-v13 (114, 152, 2504, 50) | 0.00% | 0.32 | 0.00% | 0.33 |
+| `inactive-light` | Light-Safari-v13-Picture-in-Picture (318, 180, 1880, 50) | 1.56% | 1.19 | 3.06% | 1.79 |
+| `inactive-light-drawing` (masked) | Light-Safari-v13-Picture-in-Picture (318, 180, 1880, 50) | 0.00% | 0.03 | 0.00% | 0.00 |
+| `inactive-dark` | Dark-Safari-v13-Picture-in-Picture (346, 154, 1880, 50) | 1.82% | 1.26 | 3.12% | 1.92 |
+| `inactive-dark-drawing` (masked) | Dark-Safari-v13-Picture-in-Picture (346, 154, 1880, 50) | 0.00% | 0.02 | 0.00% | 0.02 |
+| `toolbar-light` | Light-Safari-v13-Favorites (2696, 92, 64, 60) | 2.58% | 1.29 | 0.00% | 1.14 |
+| `toolbar-dark` | Dark-Safari-v13-Favorites (2556, 92, 64, 60) | 0.00% | 2.79 | 0.00% | 2.62 |
+
+Measured, in the key window (Light- and Dark-Safari-v13, bar rows y 152 to 201): the 25 pt
+height; the tab fill (`#c0c0c0` to `#b8b8b8`, dark `#1f1f20` to `#1c1d1e`, column 300), the
+selected fill (`#d6d6d6` to `#cdcdcd`, dark `#38393b` to `#333436`, column 1100), the 1 pt
+dividers (`#b1b1b1` to `#a8a8a8`, dark `#5b5c5e` to `#575759`), the two bottom rows (`#bdbdbd`
+and `#a7a7a7`, dark `#292a2b` and `#000000`), the new-tab cell (24 pt after its divider,
+`#bababa` to `#b1b1b1`, dark `#272829` to `#242526`) and its 11 pt + of 1 pt strokes
+(`#626262`, dark `#949494`), both title colours and the title's baseline, 16.5 pt below the
+top of the bar. Measured in the inactive window (the Picture in Picture captures, columns 400,
+1700 and the divider): flat fills `#dddddd` and `#f6f6f6` (dark `#1e1f21` and `#2b2c2f`), the
+divider `#d2d2d2` (dark `#494a4d`), the rows `#e7e7e7` and `#cecece` (dark `#222326` and
+`#000000`) and the titles, black at 25% (white at 30%). Measured for the cell on its own (the
+Favorites captures, the last 25 pt of the window's width): the cell from 12 pt under the
+window's top edge to the bar's two bottom rows, its fill (`#c0c0c0` to `#b0b0b0`, dark
+`#242627` to `#202122`), the 1 pt edge at its leading side and the half-point one over it
+(`#b5b5b5` to `#a9a9a9` and `#b8b8b8`, dark `#56585a` to `#515254`; one colour here) and the
++, 7 pt from the cell's leading side and 8 pt from its top.
+
+The captures caught the tabs at unequal widths (445, 432 and 420 pt in Aqua); the component
+divides the width equally, so the comparison examples pin the captured widths. The window's
+edge covers the first and last half point of the bar; the examples clip it there.
+
+Provisional: the look under the pointer, the close button, the pressed new-tab button, the
+focus ring, the disabled title, the new-tab cell and + of an inactive window, which the
+video hides in both captures, and the cell on its own in an inactive window or in forced
+colours, where it loses its edge. Pinned tabs, the audio indicator in a tab, dragging tabs to
+reorder them or into a window of their own, and overflow when tabs no longer fit are not
+implemented.

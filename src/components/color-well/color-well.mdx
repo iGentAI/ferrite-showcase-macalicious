@@ -1,0 +1,176 @@
+---
+title: Color Well
+description: Shows a colour in a bezel and opens a colour chooser when clicked.
+order: 51
+---
+
+<Example name="basic" both />
+
+AppKit calls this control a *color well* (`NSColorWell`). Here it is a native
+`<input type="color">` drawn as the well, rendered through
+[Base UI's Input](https://base-ui.com/react/components/input), which supplies `onValueChange`,
+the `render` prop and the wiring to a Base UI Field (label, description, validity). Being a
+real input, it holds a value, takes part in forms and opens the browser's colour chooser on
+click, Space or Return.
+
+## Usage
+
+```tsx
+import { ColorWell } from "macalicious/color-well";
+import "macalicious/color-well.css";
+
+<ColorWell aria-label="Text colour" defaultValue="#000000" />
+<ColorWell aria-label="Fill" value={fill} onValueChange={setFill} />
+```
+
+The value is a colour as `#rrggbb`, the only form `<input type="color">` holds; a colour with
+alpha, or "no colour", is outside what this control can show. Or copy the source into your
+project: `npx macalicious add color-well`. See [Installation](/installation).
+
+<Example name="controlled" />
+
+### Opening the Colors panel
+
+The browser's chooser is not the macOS colour panel. `ColorPanelWell`, from
+[Color Panel](/components/color-panel), is this well with the library's Colors panel attached:
+it opens the panel under the well in place of the browser's chooser and draws the well active
+meanwhile.
+
+```tsx
+import { ColorPanelWell } from "macalicious/color-panel";
+
+<ColorPanelWell aria-label="Text colour" value={color} onValueChange={setColor} />
+```
+
+### A chooser of your own
+
+To open something else, cancel the click and say when the well is active:
+
+```tsx
+import { ColorWell } from "macalicious/color-well";
+
+<ColorWell
+  aria-label="Text colour"
+  value={color}
+  active={panelOpen}
+  onClick={(event) => {
+    event.preventDefault(); // keeps the browser's chooser closed
+    setPanelOpen(true);
+  }}
+/>
+```
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[color wells](https://web.archive.org/web/20200504154558/https://developer.apple.com/design/human-interface-guidelines/macos/selectors/color-wells/):
+
+- Use a colour well to let people adjust the colour of text, shapes, guides and other
+  elements on screen.
+- A clicked well darkens to confirm that it is active, and then opens the colour panel; after
+  a choice it shows the new colour. Here the well darkens while it is pressed and while
+  `active` is set, and a [`ColorPanelWell`](/components/color-panel) opens the panel.
+- In AppKit colours can be dragged from one well to another and from the colour panel to a
+  well. This component does not implement that: a native colour input has no drag source.
+
+## Variants and states
+
+Keyboard focus is transient, so this gallery pins it. In an application it appears on its own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | Light bezel with a hairline (a translucent bezel without one in Dark Aqua), a 1 pt frame, the colour |
+| Active | `:active`, `active`, and `:open` where the browser supports it | The bezel darkens (lightens in Dark Aqua) |
+| Keyboard focus | `:focus-visible` | Focus ring in the accent colour |
+| Disabled | `disabled` | The colour at half opacity |
+| Without a bezel | `bordered={false}` | The colour fills the frame |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No focus ring; the well has no accent-coloured part |
+
+<Example name="variants" />
+
+| Variant | Look | Status |
+| --- | --- | --- |
+| `standard` | Square corners, a 3 pt bezel, 44 x 23 pt | Provisional: no screenshot shows a standard well. The size and the bezel are the spec's inference from Interface Builder; the colours are the toolbar well's. |
+| `toolbar` | Rounded corners, a band of 1.5 pt at the sides and 0.5 pt above and below, 22 x 16 pt | Measured on the text colour well of TextEdit's format bar. |
+
+## Sizes
+
+A colour well has no control sizes: like `NSColorWell` it takes any frame. Each variant has
+its own default size, and `width` and `height` set with CSS stretch it; the bezel and the
+frame keep their widths. Adjacent toolbar wells are 3 pt apart.
+
+## API
+
+<PropsTable name="ColorWellProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-variant` | `standard`, `toolbar` | Reflects `variant`. |
+| `data-bordered` | present or absent | Present unless `bordered={false}`. |
+| `data-active` | present or absent | Reflects `active`. |
+| `data-disabled`, `data-focused`, `data-dirty`, `data-touched`, `data-valid`, `data-invalid`, `data-filled` | present or absent | Set by Base UI. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+The well is one element, `<input class="mac-color-well">`; the colour and its frame are the
+browser's swatch part (`::-webkit-color-swatch`, `::-moz-color-swatch`). It has no CSS
+variables for a consumer to set.
+
+## Accessibility
+
+- Renders a native `<input type="color">`. Tab reaches it; Space and Return open the chooser,
+  as a click does. A disabled well leaves the tab order.
+- It has no visible text, so it requires a name: wrap it in a `<label>`, point a label at its
+  `id`, or give it `aria-label` or `aria-labelledby`.
+- The value is exposed by the browser as the input's value. A screen reader reads it as a
+  colour code; if the name of the colour matters, say it in a description
+  (`aria-describedby`).
+- The active look is visual only. If you open a popover of your own from the well, give the
+  well `aria-haspopup` and `aria-expanded`.
+- In forced-colours mode the bezel is drawn with a system colour and the chosen colour is kept.
+
+## Visual comparison
+
+`npm run visual -- color-well` compares the toolbar well with the text colour well of
+TextEdit's format bar in both appearances (`color-well.visual.json`); it is black in Aqua and
+white in Dark Aqua, because TextEdit's text colour follows the appearance. That well is the
+only colour well in the reference screenshots. Its size, band, frame, hairline, fill gradient
+and shadow are measured there. Share of pixels that differ at a colour distance of 0.05, half
+the default, and the mean difference per channel out of 255, in Chromium on Linux:
+
+| Crop | Aqua, 2x | Dark Aqua, 2x | Aqua, 1x | Dark Aqua, 1x |
+| --- | --- | --- | --- | --- |
+| TextEdit format bar (`@ 643,124,58,44`) | 0.43%, Δ 0.61 | 0.31%, Δ 0.64 | 20.22%, Δ 14.35 | 19.28%, Δ 15.41 |
+
+The pixels that still differ at 2x are on the corners of the bezel and of the colour. The
+spec describes this well with square corners; the screenshot shows rounded ones, and the
+corners here are fitted to its pixels (4.25px outside, 1.75px on the colour). At 1x the
+scores are high for a reason particular to this control: the bezel's hairline is a real
+border, which a browser draws one device pixel wide at 1x, so the colour is 15 x 11 pixels
+where the averaged 2x screenshot has 16 x 12, and a black or white colour makes every pixel
+of that edge count ([Fidelity limits](/fidelity)).
+
+No screenshot shows a standard well, an active or a disabled well, one without a bezel,
+keyboard focus on a well or a well in a window that is not key. Those are checked in a real
+browser against values from the spec instead (the `expect` comparisons): the example is
+pressed with the mouse or focused with Tab, and chosen pixels must have the expected colour.
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| Standard well at rest | Hairline, 3 pt band, 1 pt frame and colour, in both appearances | Colours measured on the toolbar well; the geometry inferred |
+| Active | Bezel `#c9c9c9`, and white at 40.6% in Dark Aqua; the colour unchanged | Inferred |
+| Disabled | The colour at 50% over the bezel | Inferred |
+| Without a bezel | The colour reaches the corner of the frame | Documented by AppKit |
+| Keyboard focus | Ring colour in both appearances, and that the band ends 2.5 pt beyond the bezel | Measured on a text field's ring |
+| Main and inactive window | No focus ring, and the bezel unchanged; both appearances | Documented by AppKit |
+
+The missing ring in a main or inactive window is checked in Dark Aqua as well as in Aqua: the
+pixel where the ring would be holds the example's window background `#2f3032`, and the bezel
+beside it stays white at 23% over it.
+
+Not checked anywhere: Firefox and Safari. The well is drawn through the engines' own swatch
+parts, and the comparisons run in Chromium. In Chromium those parts do not follow the page's
+colour scheme, which is why the frame's colour is set on the input and inherited. The well
+stays dark while the browser's chooser is open only in a browser that supports the `:open`
+pseudo-class on inputs; elsewhere it darkens while pressed or while `active` is set.

@@ -1,0 +1,15 @@
+/*
+ * Alert values of its own (reference/spec/components/alert.md, apps/finder-dialogs.md).
+ */
+:root {
+  /* [provisional] the caution badge is Apple artwork; these colours are read off the badge of
+     Finder's Replace alert (Light-Finder-Copy-Replace @ 170,166,30,34) for a drawing of ours */
+  --mac-alert-badge-fill: linear-gradient(#ffd83a, #f5b400);
+  --mac-alert-badge-mark: #4a3600;
+  /* [measured, computed] the highlight along the top of the compact alert, which has no title
+     bar: the first and second pixel rows under the edge are #f8f8f8 and #f1f1f1 on #ececec
+     (Light-Finder-Copy-Replace @ 300,76), #7a7c7d and #6a6c6e on #303235 in the dark capture;
+     the alphas are what is left after the window's own rim */
+  --mac-alert-top-highlight: light-dark(rgb(255 255 255 / 0.56), rgb(255 255 255 / 0.2));
+  --mac-alert-top-highlight-fade: light-dark(rgb(255 255 255 / 0.26), rgb(255 255 255 / 0.1));
+}

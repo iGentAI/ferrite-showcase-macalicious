@@ -1,0 +1,30 @@
+/*
+ * Progress bar colours (reference/spec/components/progress-bar.md).
+ */
+:root {
+  /* [measured, computed] track: #d3d3d3 on #e3e3e3 and #dbdbdb on #ececec; #4b4f52 on #2e3235
+     (Time-Machine col 1250, Finder-Copy col 600) */
+  --mac-progress-bar-track: light-dark(rgb(0 0 0 / 0.07), rgb(255 255 255 / 0.14));
+  /* [measured, computed] hairline around the track: #b7b7b7 on #e3e3e3 and #bfbfbf on #ececec
+     in Aqua. Dark Aqua has none, so there the hairline is the track's own colour. */
+  --mac-progress-bar-track-border: light-dark(rgb(0 0 0 / 0.19), rgb(255 255 255 / 0.14));
+  /* [provisional] fill in a window that is not key; no screenshot shows one */
+  --mac-progress-bar-fill-inactive: light-dark(#9b9b9b, #6a6a6a);
+}
+
+/* The fill follows the accent colour, so these are declared where an accent can be set
+   (see tokens/accent.css). */
+:root,
+[data-accent] {
+  /* [measured, computed] blue: #3b88fd in Aqua (Time-Machine col 1000), #1869e6 in Dark Aqua
+     (Dark-Finder-Copy col 236). They are the middle stop of the Aqua accent bezel (#3d88fd,
+     two levels of red away) and the top stop of the Dark Aqua one. Other accents are derived
+     the same way and are not in any screenshot. */
+  --mac-progress-bar-fill: light-dark(var(--mac-accent-bezel-middle), var(--mac-accent-bezel-top));
+  /* [measured, computed] hairline around the fill: #3477dc in Aqua, the fill at 87%. Dark
+     Aqua has none, so there it is the fill's own colour. */
+  --mac-progress-bar-fill-border: light-dark(
+    color-mix(in srgb, var(--mac-accent-bezel-middle) 87%, black),
+    var(--mac-accent-bezel-top)
+  );
+}

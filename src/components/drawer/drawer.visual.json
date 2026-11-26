@@ -1,0 +1,123 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "pending": "No reference: the spec marks the drawer as not seen in any of the 294 screenshots (NSDrawer was deprecated in macOS 10.13), and every value as inferred. The checks below open and close a drawer in a real browser and hold it to those values.",
+  "comparisons": [
+    {
+      "name": "open-light",
+      "description": "An open drawer at the right edge, Aqua: the window background as its fill, from the window's edge to 120 pt out and from 30 pt under the window's top to 8 pt above its bottom (spec: drawer, Measurements, all inferred). The page is white.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 400, "height": 220 },
+        "pixels": [
+          { "x": 280, "y": 110, "color": "#ececec", "note": "fill: window background, inferred" },
+          { "x": 336, "y": 54, "color": "#ececec", "note": "fill inside the top right corner" },
+          { "x": 336, "y": 168, "color": "#ececec", "note": "fill inside the bottom right corner" },
+          { "x": 390, "y": 110, "color": "#ffffff", "note": "page beyond its shadow" },
+          { "x": 390, "y": 30, "color": "#ffffff", "note": "page above the drawer's top edge" }
+        ]
+      }
+    },
+    {
+      "name": "open-dark",
+      "description": "An open drawer at the right edge, Dark Aqua: the window background as its fill (spec: drawer, Measurements, all inferred). The page is black.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 400, "height": 220 },
+        "pixels": [
+          { "x": 280, "y": 110, "color": "#323232", "note": "fill: window background, inferred" },
+          { "x": 336, "y": 54, "color": "#323232", "note": "fill inside the top right corner" },
+          { "x": 336, "y": 168, "color": "#323232", "note": "fill inside the bottom right corner" },
+          { "x": 390, "y": 110, "color": "#000000", "note": "page beyond the drawer" }
+        ]
+      }
+    },
+    {
+      "name": "closed-light",
+      "description": "The same drawer after a click on its button: nothing is left beside the window, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "click": ".mac-drawer-trigger" }],
+      "expect": {
+        "size": { "width": 400, "height": 220 },
+        "pixels": [
+          { "x": 280, "y": 110, "color": "#ffffff", "note": "page where the drawer was, inferred" },
+          { "x": 336, "y": 110, "color": "#ffffff", "note": "page where its far edge was" }
+        ]
+      }
+    },
+    {
+      "name": "closed-dark",
+      "description": "The same drawer after a click on its button: nothing is left beside the window, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "click": ".mac-drawer-trigger" }],
+      "expect": {
+        "size": { "width": 400, "height": 220 },
+        "pixels": [
+          { "x": 280, "y": 110, "color": "#000000", "note": "page where the drawer was, inferred" },
+          { "x": 336, "y": 110, "color": "#000000", "note": "page where its far edge was" }
+        ]
+      }
+    },
+    {
+      "name": "keyboard-closed-light",
+      "description": "The drawer closed from the keyboard: Tab to its button, then Return, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }, { "key": "Enter" }],
+      "expect": {
+        "size": { "width": 400, "height": 220 },
+        "pixels": [
+          { "x": 280, "y": 110, "color": "#ffffff", "note": "page where the drawer was, inferred" },
+          { "x": 336, "y": 110, "color": "#ffffff", "note": "page where its far edge was" }
+        ]
+      }
+    },
+    {
+      "name": "reopened-dark",
+      "description": "The drawer closed and opened again with two clicks on its button, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "click": ".mac-drawer-trigger" }, { "click": ".mac-drawer-trigger" }],
+      "expect": {
+        "size": { "width": 400, "height": 220 },
+        "pixels": [
+          { "x": 280, "y": 110, "color": "#323232", "note": "fill: window background, inferred" },
+          { "x": 390, "y": 110, "color": "#000000", "note": "page beyond the drawer" }
+        ]
+      }
+    },
+    {
+      "name": "edges-light",
+      "description": "Open drawers at the left and bottom edges, Aqua: the left one is 100 pt wide, from x 60 to the window's edge; the bottom one is 60 pt high, under the window (spec: drawer, Variants, inferred).",
+      "example": "visual-edges",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 460, "height": 220 },
+        "pixels": [
+          { "x": 64, "y": 80, "color": "#ececec", "note": "left drawer fill, inferred" },
+          { "x": 20, "y": 80, "color": "#ffffff", "note": "page beyond the left drawer" },
+          { "x": 380, "y": 156, "color": "#ececec", "note": "bottom drawer, inside its far edge" },
+          { "x": 380, "y": 205, "color": "#ffffff", "note": "page beyond the bottom drawer" }
+        ]
+      }
+    },
+    {
+      "name": "edges-dark",
+      "description": "Open drawers at the left and bottom edges, Dark Aqua.",
+      "example": "visual-edges",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 460, "height": 220 },
+        "pixels": [
+          { "x": 64, "y": 80, "color": "#323232", "note": "left drawer fill, inferred" },
+          { "x": 20, "y": 80, "color": "#000000", "note": "page beyond the left drawer" },
+          { "x": 380, "y": 156, "color": "#323232", "note": "bottom drawer, inside its far edge" },
+          { "x": 380, "y": 205, "color": "#000000", "note": "page beyond the bottom drawer" }
+        ]
+      }
+    }
+  ]
+}

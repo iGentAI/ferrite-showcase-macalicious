@@ -1,0 +1,184 @@
+---
+title: System Image
+description: The standard template images of AppKit (add, remove, action, share, the view-mode glyphs and others), redrawn at the size Catalina uses and coloured by the control they are in.
+---
+
+<Example name="basic" both />
+
+AppKit ships a set of named images (`NSImage.Name`) that toolbars, gradient buttons and
+tables use everywhere: a plus, a minus, the action gear, the share arrow, the four view-mode
+glyphs. Most are template images, drawn in the text colour of the control they are in.
+`SystemImage` is that set as inline SVG. Base UI has no image primitive; this is an `<svg>`
+element and takes every `<svg>` prop.
+
+The drawings are original, made on the boxes measured in the reference screenshots. None is
+Apple's artwork.
+
+## Usage
+
+```tsx
+import { SystemImage } from "macalicious/system-image";
+import "macalicious/system-image.css";
+
+<ToolbarButton aria-label="Share">
+  <SystemImage name="share" />
+</ToolbarButton>
+```
+
+Or copy the source into your project: `npx macalicious add system-image`.
+
+<Example name="in-controls" both />
+
+## Guidelines
+
+- Use a system image only for the meaning AppKit gives it: the plus adds a row, the gear opens
+  an action menu, the share arrow opens the share menu. People know these from every Mac app.
+- Let the image take the control's colour. Do not colour a template image yourself; it then
+  no longer follows the disabled state, the appearance or a window that is not key.
+- Keep the image at its own size in a regular control. Use `scale` for a larger rendering
+  outside a control, not to fill a button.
+- A button that shows only an image needs a name: put `aria-label` on the button, not on the
+  image.
+
+## Variants and states
+
+<Example name="all" both />
+
+| `name` | AppKit name | Size, pt | Seen in |
+| --- | --- | --- | --- |
+| `add` | `NSAddTemplate` | 11 x 11 | Gradient buttons under a list |
+| `remove` | `NSRemoveTemplate` | 11 x 11 | Gradient buttons under a list |
+| `action` | `NSActionTemplate` | 13 x 13 | Action buttons (Network pane, Finder toolbar) |
+| `share` | `NSShareTemplate` | 11 x 15 | Share buttons (Console, Finder, Safari) |
+| `go-back` | `NSGoBackTemplate` | 7 x 12 | Back buttons (Finder, System Preferences) |
+| `go-forward` | `NSGoForwardTemplate` | 7 x 12 | Forward buttons |
+| `chevron-down` | none: the indicator of a toolbar pull-down button | 7 x 4.5 | Finder's Group and Action buttons |
+| `icon-view` | `NSIconViewTemplate` | 14 x 10 | Finder's view switcher |
+| `list-view` | `NSListViewTemplate` | 14 x 10 | Finder's view switcher |
+| `column-view` | `NSColumnViewTemplate` | 16 x 10 | Finder's view switcher |
+| `gallery-view` | `NSFlowViewTemplate` (Finder draws its own gallery glyph) | 14 x 10 | Finder's view switcher |
+| `tag` | none in 10.15 (`NSTouchBarTagIconTemplate` in the Touch Bar set) | 17 x 10 | Finder's Edit Tags button |
+| `rotate-left` | none in 10.15 (`NSTouchBarRotateLeftTemplate` in the Touch Bar set) | 16 x 16 | Rotate Left in Quick Look, its Markup bar and Finder's Preview pane |
+| `sidebar` | none in 10.15 (`NSTouchBarSidebarTemplate` in the Touch Bar set) | 15 x 11 | Sidebar buttons (Safari, Preview) |
+| `refresh` | `NSRefreshTemplate` | 11 x 13 | Console's Reload button |
+| `info` | `NSInfo` (drawn here as a template) | 15 x 15 | Info buttons (Font Book, Console) |
+| `info-outline` | none: the info mark of a row or a toolbar button drawn as a ring | 16 x 16 | Reminders' rows, Keychain Access's Info button |
+| `stop-progress` | `NSStopProgressFreestandingTemplate` | 14 x 14 | A search field's clear button, the stop button of a progress bar |
+| `add-circle` | none: the disc of an add button that stands on a sidebar | 16 x 16 | Reminders' Add List button |
+| `user` | `NSUser` | 13 x 13 | Users tables (Sharing pane, Finder's Get Info) |
+| `user-group` | `NSUserGroup` | 15 x 11 | Users tables |
+| `everyone` | `NSEveryone` | 15 x 11 | Users tables |
+
+An image has no states of its own. It is drawn in `currentColor`, so it is as dim as the
+title of a disabled control and changes with the appearance, the accent of a selected row and
+the window state exactly as the text beside it does. `user-group` and `everyone` draw the
+figures at the back at half the colour's strength, as the Users table does.
+
+`tag` and `rotate-left` are the only images that change with the appearance: in Aqua the tag
+and the page are outlines, in Dark Aqua they are filled, as the Finder and Quick Look captures
+show them. The tag's hole is a dot in Aqua and is cut out of the filled tag in Dark Aqua. Two
+tokens of the image's own, `--mac-system-image-body` and `--mac-system-image-dot`, carry
+this; the outline, the arrowhead and the arc are drawn the same way in both.
+
+## Sizes
+
+Every image has one size, the one in the table. `scale` multiplies it; `width`, `height` or a
+CSS size override it.
+
+## API
+
+<PropsTable name="SystemImageProps" />
+
+It also accepts every prop of an `<svg>` element. `SYSTEM_IMAGE_NAMES` is the list of names,
+and `SystemImageName` their type.
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-name` | a name from the table | Which image is drawn. |
+
+| Custom property | Description |
+| --- | --- |
+| `--mac-system-image-body` | Fill of the tag of `tag` and the page of `rotate-left` (`.mac-system-image-body`): transparent in Aqua, the image's colour in Dark Aqua. |
+| `--mac-system-image-dot` | Fill of the hole of `tag` (`.mac-system-image-dot`): the image's colour in Aqua, transparent in Dark Aqua. |
+
+## Accessibility
+
+- Without a name the image is decorative: `aria-hidden="true"`, and never focusable. The
+  control around it carries the name.
+- With `aria-label` or `aria-labelledby` it is exposed as an image (`role="img"`) with that
+  name. Use this only for an image that stands alone and means something, such as the group
+  glyph in a table cell without text.
+- In forced-colours mode the image takes the system text colour of its control, because it
+  has no colour of its own.
+
+## Visual comparison
+
+Every image is compared where the screenshots show it, without masks. Results in Chromium
+on Linux:
+
+| Comparison | Images | 2x | 1x |
+| --- | --- | --- | --- |
+| Language & Region list buttons, Aqua | `add`, `remove` | 0.00% of pixels differ | 0.00% |
+| Language & Region list buttons, Dark Aqua | `add`, `remove` | 0.00% | 0.00% |
+| Network pane action bar, Aqua | `add`, `remove`, `action`, `chevron-down` | 2.65% | 5.06% |
+| Network pane action bar, Dark Aqua | the same four | 2.61% | 4.44% |
+| Finder Back and Forward, Aqua | `go-back`, `go-forward` | 1.29% | 11.75% |
+| Finder Back and Forward, Dark Aqua | `go-back`, `go-forward` | 1.26% | 7.55% |
+| Safari toolbar, window not key, Aqua | `go-back`, `go-forward`, `sidebar` | 1.44% | 1.54% |
+| Safari toolbar, window not key, Dark Aqua | the same three | 1.43% | 1.54% |
+| Finder view switcher, Aqua | `icon-view`, `list-view`, `column-view`, `gallery-view` | 0.83% | 6.14% |
+| Finder view switcher, Dark Aqua | the same four | 3.42% | 7.96% |
+| Console Share glyph, Aqua | `share` | 3.24% | 3.40% |
+| Console Share glyph, Dark Aqua | `share` | 3.01% | 3.09% |
+| Console Reload glyph, Aqua | `refresh` | 4.32% | 7.72% |
+| Console Reload glyph, Dark Aqua | `refresh` | 4.32% | 7.72% |
+| Console Info glyph, Aqua | `info` | 0.69% | 0.28% |
+| Console Info glyph, Dark Aqua | `info` | 0.00% | 0.00% |
+| Reminders info mark, Aqua | `info-outline` | 0.00% | 4.90% |
+| Reminders info mark, Dark Aqua | `info-outline` | 0.00% | 1.31% |
+| Finder Edit Tags glyph, Aqua | `tag` | 4.68% | 5.78% |
+| Finder Edit Tags glyph, Dark Aqua | `tag` | 1.19% | 0.00% |
+| Quick Look Rotate Left glyph, Aqua | `rotate-left` | 3.75% | 7.06% |
+| Quick Look Rotate Left glyph, Dark Aqua | `rotate-left` | 2.94% | 2.06% |
+| Preview search field clear button, Aqua | `stop-progress` | 3.68% | 3.59% |
+| Preview search field clear button, Dark Aqua | `stop-progress` | 1.55% | 1.31% |
+| Reminders Add List disc, Aqua (colour distance 0.05) | `add-circle` | 1.62% | 3.09% |
+| Reminders Add List disc, Dark Aqua (colour distance 0.05) | `add-circle` | 1.54% | 3.70% |
+| Sharing Users table, Aqua | `user`, `user-group`, `everyone` | 6.29% | 10.04% |
+| Sharing Users table, Dark Aqua | `user`, `user-group`, `everyone` | 9.06% | 11.99% |
+
+The list-button, action-bar, Back and Forward, Safari and view-switcher comparisons place the
+images in the library's own gradient button, toolbar button and toolbar segmented control, at
+the crops those components are compared with. The Console, Preview and Sharing comparisons
+are 17 to 19 pt crops close around the glyph alone, so every pixel of a drawing's edge counts
+for much more than in a crop of a whole control: the scores say that the stand-ins have the
+measured size, position and weight, not that they are Apple's shapes.
+
+Console draws `info` in the accent colour, and the comparison gives the image that colour;
+no capture shows it as a grey template. Its letter is measured there: a 2 pt dot, a 2 pt stem
+with a 1 pt flag at its top left and a 4 pt foot. The letter is cut out of the disc and drawn
+again over the hole with the fill a [Toolbar Button](/components/toolbar-button) gives a mark
+(`--mac-toolbar-button-glyph-mark`), so in a tinted toggle that is on it shows white in Aqua,
+as Console's Info button does; outside a toolbar button the hole stays empty.
+
+`info-outline` is the same letter in a 16 pt ring with a 1 pt stroke, measured on the info
+mark at the end of a Reminders row: the ring at x 1580..1611 and y 964..995 of the Aqua
+capture, a 2 pt dot centred 4.5 pt down, a 2 pt stem from 6.5 to 12.5 pt down with a 1 pt
+flag at its top left and a 4 pt foot. Reminders draws it in the system blue
+(`--mac-color-system-blue`), and the comparison gives it that colour: the captures store it
+as #2f7cf6 and #3686f7, which their Display P3 profile turns into #027aff and #0584fd in
+sRGB. Keychain Access draws it in its toolbar button's grey.
+
+`tag` is measured on Finder's Edit Tags button, disabled in both Home captures: 17 x 10 pt of
+ink at x 1017..1050, y 138..157 of the Aqua capture, a 1 pt outline with a 45 degree point
+and a 2 pt hole centred 4 pt from the point. The Dark Aqua capture has the same tag filled,
+1 pt further left, so its crop starts 1 pt further left. The comparisons are 21 x 14 pt crops
+on the button's fill, in the grey of a disabled toolbar glyph (#acacac and #8f9192).
+
+`rotate-left` is measured on Quick Look's Rotate Left button: a 9 x 7 pt page with a 1 pt
+outline at the bottom left of the 16 pt box, an arrowhead 4.5 pt deep and 5 pt across at the
+top, pointing left, and a 1 pt arc from it round to the right edge and down to 11.5 pt. The
+gallery's Preview pane in the Gallery View captures shows the same glyph. The comparisons are
+20 x 17 pt crops on the button's fill, white in Aqua and #667080 in Dark Aqua, where the
+panel's material shows through; the Dark Aqua capture has the glyph 0.5 pt further left in
+its button, and its crop follows it.

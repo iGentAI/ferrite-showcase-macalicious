@@ -1,0 +1,19 @@
+/*
+ * Menu: the rim, which differs between Aqua and Dark Aqua in width as well as in colour
+ * (reference/spec/components/menu.md, Colours and fills). The material, the outer hairline
+ * and the shadow are shared tokens.
+ */
+:root,
+[data-appearance] {
+  /* [measured] inner light border: 0.5 pt in Aqua, 1 pt in Dark Aqua (Apple-Menu x=20) */
+  --mac-menu-rim-width: calc(0.5px + 0.5px * var(--mac-appearance-dark));
+}
+
+:root {
+  /* [measured, computed] alpha recovered from the composites over the menu fill */
+  --mac-menu-rim: light-dark(rgb(255 255 255 / 0.17), rgb(255 255 255 / 0.15));
+  /* [measured, computed] the menu bar's shadow line continues over the first row of pixels of
+     an attached menu in Aqua (#82a8c8 on the fill, Light-Apple-Menu @ 400,44); none in Dark
+     Aqua */
+  --mac-menu-attached-edge: light-dark(rgb(0 0 0 / 0.22), transparent);
+}

@@ -1,0 +1,615 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "provider-rows-light",
+      "description": "The left end of two provider rows of Internet Accounts, Aqua: a row is 54 pt tall between 2 pt dividers. No logo or text reaches the crop, so nothing is masked. The dividers are drawn by the example with the separator colour, as a list would.",
+      "example": "visual-provider-rows",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.21,
+        "2x": 0.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Internet-Accounts.png",
+        "crop": {
+          "x": 596,
+          "y": 700,
+          "width": 200,
+          "height": 160
+        }
+      }
+    },
+    {
+      "name": "provider-rows-dark",
+      "description": "The left end of two provider rows of Internet Accounts, Dark Aqua: a row is 54 pt tall between 2 pt dividers. No logo or text reaches the crop, so nothing is masked. The dividers are drawn by the example with the separator colour, as a list would.",
+      "example": "visual-provider-rows",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.11,
+        "2x": 0.12
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Internet-Accounts.png",
+        "crop": {
+          "x": 596,
+          "y": 700,
+          "width": 200,
+          "height": 160
+        }
+      }
+    },
+    {
+      "name": "pane-icon-light",
+      "description": "The General icon and its label in the System Preferences grid, Aqua. The icon is masked: the example draws a stand-in, not the artwork. What is scored is the label, set in the fallback font off Apple platforms.",
+      "example": "visual-pane-icon",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 9,
+          "y": 4,
+          "width": 39,
+          "height": 39
+        }
+      ],
+      "budget": {
+        "1x": 0.076,
+        "2x": 0.053
+      },
+      "deltaBudget": {
+        "1x": 4.85,
+        "2x": 3.79
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-0.png",
+        "crop": {
+          "x": 148,
+          "y": 406,
+          "width": 116,
+          "height": 154
+        }
+      }
+    },
+    {
+      "name": "pane-icon-light-frame",
+      "description": "As pane-icon-light with the label masked too: an image button draws nothing of its own, so the rest of the crop must be the plain background.",
+      "example": "visual-pane-icon",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 9,
+          "y": 4,
+          "width": 39,
+          "height": 39
+        },
+        {
+          "x": 2,
+          "y": 49,
+          "width": 54,
+          "height": 12
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.007,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.18,
+        "2x": 0.34
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-0.png",
+        "crop": {
+          "x": 148,
+          "y": 406,
+          "width": 116,
+          "height": 154
+        }
+      }
+    },
+    {
+      "name": "rest-light",
+      "description": "An enabled and a disabled image-only button, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 112,
+          "height": 58
+        },
+        "pixels": [
+          {
+            "x": 29,
+            "y": 29,
+            "color": "#6aa6d8",
+            "note": "the image, unchanged at rest (the fixture is a block of one colour)"
+          },
+          {
+            "x": 10.5,
+            "y": 29,
+            "color": "#ececec",
+            "note": "no background or border is drawn around the image (spec: image-button, Button background, measured)"
+          },
+          {
+            "x": 83,
+            "y": 29,
+            "color": "#abc9e2",
+            "tolerance": 3,
+            "note": "disabled: the image at half opacity over the page (spec: States, disabled, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The button held down with the mouse, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "#image"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 112,
+          "height": 58
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 20,
+            "color": "#4a7497",
+            "tolerance": 3,
+            "note": "the image darkened to 70% (spec: States, pressed: black at about 30%, inferred)"
+          },
+          {
+            "x": 83,
+            "y": 29,
+            "color": "#abc9e2",
+            "tolerance": 3,
+            "note": "the disabled button does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the button, reached with Tab, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 112,
+          "height": 58
+        },
+        "pixels": [
+          {
+            "x": 11.5,
+            "y": 29,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the page around the image bounds, measured on a text field (spec: focus-ring, sRGB; image-button, States, focused, inferred)"
+          },
+          {
+            "x": 9.25,
+            "y": 29,
+            "color": "#ececec",
+            "note": "page just outside the 3 pt ring"
+          },
+          {
+            "x": 29,
+            "y": 29,
+            "color": "#6aa6d8",
+            "note": "the image does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-light",
+      "description": "The same after Tab in an inactive window, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 112,
+          "height": 58
+        },
+        "pixels": [
+          {
+            "x": 11.5,
+            "y": 29,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          },
+          {
+            "x": 29,
+            "y": 29,
+            "color": "#6aa6d8",
+            "note": "the image does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "label-only-focus-light",
+      "description": "Keyboard focus on a button that has a label and no children, reached with Tab, Aqua: the ring surrounds the label.",
+      "example": "visual-label-only",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 184,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 48,
+            "y": 11.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the page above the label, whose box starts at y 13 (spec: focus-ring, sRGB; a label-only image button is not in the spec: inferred)"
+          },
+          {
+            "x": 48,
+            "y": 9.25,
+            "color": "#ececec",
+            "note": "page just outside the 3 pt ring"
+          },
+          {
+            "x": 136,
+            "y": 11.5,
+            "color": "#ececec",
+            "note": "the second button is not focused: no ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "label-only-empty-children-focus-light",
+      "description": "Keyboard focus on the second button, whose children render nothing, reached with two Tabs, Aqua: the empty image box takes no room and the ring surrounds the label.",
+      "example": "visual-label-only",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 2
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 184,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 136,
+            "y": 11.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the page above the label of the button with empty children, whose box starts at y 13 (spec: focus-ring, sRGB; a label-only image button is not in the spec: inferred)"
+          },
+          {
+            "x": 136,
+            "y": 9.25,
+            "color": "#ececec",
+            "note": "page just outside the 3 pt ring"
+          },
+          {
+            "x": 48,
+            "y": 11.5,
+            "color": "#ececec",
+            "note": "the first button is no longer focused"
+          }
+        ]
+      }
+    },
+    {
+      "name": "label-only-focus-dark",
+      "description": "Keyboard focus on a button that has a label and no children, reached with Tab, Dark Aqua: the ring surrounds the label.",
+      "example": "visual-label-only",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 184,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 48,
+            "y": 11.5,
+            "color": "#2d6c99",
+            "tolerance": 6,
+            "note": "ring over the page above the label, whose box starts at y 13 (spec: focus-ring, sRGB; a label-only image button is not in the spec: inferred)"
+          },
+          {
+            "x": 48,
+            "y": 9.25,
+            "color": "#323232",
+            "note": "page just outside the 3 pt ring"
+          },
+          {
+            "x": 136,
+            "y": 11.5,
+            "color": "#323232",
+            "note": "the second button is not focused: no ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "label-only-empty-children-focus-dark",
+      "description": "Keyboard focus on the second button, whose children render nothing, reached with two Tabs, Dark Aqua: the empty image box takes no room and the ring surrounds the label.",
+      "example": "visual-label-only",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 2
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 184,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 136,
+            "y": 11.5,
+            "color": "#2d6c99",
+            "tolerance": 6,
+            "note": "ring over the page above the label of the button with empty children, whose box starts at y 13 (spec: focus-ring, sRGB; a label-only image button is not in the spec: inferred)"
+          },
+          {
+            "x": 136,
+            "y": 9.25,
+            "color": "#323232",
+            "note": "page just outside the 3 pt ring"
+          },
+          {
+            "x": 48,
+            "y": 11.5,
+            "color": "#323232",
+            "note": "the first button is no longer focused"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pane-icon-dark",
+      "description": "The General icon and its label in the System Preferences grid, Dark Aqua. The icon is masked: the example draws a stand-in, not the artwork. What is scored is the label, set in the fallback font off Apple platforms.",
+      "example": "visual-pane-icon",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 9,
+          "y": 4,
+          "width": 39,
+          "height": 39
+        }
+      ],
+      "budget": {
+        "1x": 0.08,
+        "2x": 0.056
+      },
+      "deltaBudget": {
+        "1x": 5.21,
+        "2x": 3.88
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-0.png",
+        "crop": {
+          "x": 148,
+          "y": 406,
+          "width": 116,
+          "height": 154
+        }
+      }
+    },
+    {
+      "name": "pane-icon-dark-frame",
+      "description": "As pane-icon-dark with the label masked too: an image button draws nothing of its own, so the rest of the crop must be the plain background.",
+      "example": "visual-pane-icon",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 9,
+          "y": 4,
+          "width": 39,
+          "height": 39
+        },
+        {
+          "x": 2,
+          "y": 49,
+          "width": 54,
+          "height": 12
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.008,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.19,
+        "2x": 0.11
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-0.png",
+        "crop": {
+          "x": 148,
+          "y": 406,
+          "width": 116,
+          "height": 154
+        }
+      }
+    },
+    {
+      "name": "rest-dark",
+      "description": "An enabled and a disabled image-only button, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 112,
+          "height": 58
+        },
+        "pixels": [
+          {
+            "x": 29,
+            "y": 29,
+            "color": "#6aa6d8",
+            "note": "the image, unchanged at rest (the fixture is a block of one colour)"
+          },
+          {
+            "x": 10.5,
+            "y": 29,
+            "color": "#323232",
+            "note": "no background or border is drawn around the image (spec: image-button, Button background, measured)"
+          },
+          {
+            "x": 83,
+            "y": 29,
+            "color": "#4e6c85",
+            "tolerance": 3,
+            "note": "disabled: the image at half opacity over the page (spec: States, disabled, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "The button held down with the mouse, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": "#image"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 112,
+          "height": 58
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 20,
+            "color": "#4a7497",
+            "tolerance": 3,
+            "note": "the image darkened to 70% (spec: States, pressed: black at about 30%, inferred)"
+          },
+          {
+            "x": 83,
+            "y": 29,
+            "color": "#4e6c85",
+            "tolerance": 3,
+            "note": "the disabled button does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the button, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 112,
+          "height": 58
+        },
+        "pixels": [
+          {
+            "x": 11.5,
+            "y": 29,
+            "color": "#2d6c99",
+            "tolerance": 6,
+            "note": "ring over the page around the image bounds, measured on a text field (spec: focus-ring, sRGB; image-button, States, focused, inferred)"
+          },
+          {
+            "x": 9.25,
+            "y": 29,
+            "color": "#323232",
+            "note": "page just outside the 3 pt ring"
+          },
+          {
+            "x": 29,
+            "y": 29,
+            "color": "#6aa6d8",
+            "note": "the image does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-dark",
+      "description": "The same after Tab in an inactive window, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 112,
+          "height": 58
+        },
+        "pixels": [
+          {
+            "x": 11.5,
+            "y": 29,
+            "color": "#323232",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          },
+          {
+            "x": 29,
+            "y": 29,
+            "color": "#6aa6d8",
+            "note": "the image does not change"
+          }
+        ]
+      }
+    }
+  ]
+}

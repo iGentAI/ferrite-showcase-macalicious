@@ -1,0 +1,296 @@
+/*
+ * Window tab bar: 24 pt of fill and two 0.5 pt rows, drawn by each column (tab, divider,
+ * new-tab cell). Dividers are the list showing through the 1 pt gaps between tabs.
+ */
+.mac-window-tab-bar {
+  position: relative;
+  display: flex;
+  /* Never squeezed by a short window: the body gives way. */
+  flex: none;
+  box-sizing: border-box;
+  height: 25px;
+  color: var(--mac-window-tab-bar-title);
+  font: var(--mac-font-tab-bar);
+  letter-spacing: var(--mac-tracking-small);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* One column of the bar: --_t to --_b over the fill, --_i and --_o in the two rows. */
+.mac-window-tab-bar-list,
+.mac-window-tab-bar-tab,
+.mac-window-tab-bar-new,
+.mac-window-tab-bar-new::before {
+  background:
+    linear-gradient(var(--_i) 25%, var(--_o) 75%) bottom / 100% 1px no-repeat,
+    linear-gradient(var(--_t), var(--_b)) top / 100% calc(100% - 1px) no-repeat;
+}
+
+.mac-window-tab-bar-list {
+  --_t: var(--mac-window-tab-bar-divider-top);
+  --_b: var(--mac-window-tab-bar-divider-bottom);
+  --_i: var(--mac-window-tab-bar-divider-inner);
+  --_o: var(--mac-window-tab-bar-divider-outer);
+
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  gap: 1px;
+}
+
+.mac-window-tab-bar-tab,
+.mac-window-tab-bar-close,
+.mac-window-tab-bar-new {
+  margin: 0;
+  border: 0;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-window-tab-bar-tab {
+  --_t: var(--mac-window-tab-bar-tab-top);
+  --_b: var(--mac-window-tab-bar-tab-bottom);
+  --_i: var(--mac-window-tab-bar-tab-inner);
+  --_o: var(--mac-window-tab-bar-tab-outer);
+
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 0;
+  /* Room for the close button on both sides, so the title stays centred in the tab. */
+  padding: 0 22px 1px;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+/* Under the pointer [provisional]: halfway between a tab and the selected tab. */
+.mac-window-tab-bar-tab:where(:hover, [data-hover], [data-force~="hover"]):where(
+  :not([data-disabled])
+) {
+  --_t: color-mix(
+    in srgb,
+    var(--mac-window-tab-bar-tab-top),
+    var(--mac-window-tab-bar-selected-top)
+  );
+  --_b: color-mix(
+    in srgb,
+    var(--mac-window-tab-bar-tab-bottom),
+    var(--mac-window-tab-bar-selected-bottom)
+  );
+  --_i: color-mix(
+    in srgb,
+    var(--mac-window-tab-bar-tab-inner),
+    var(--mac-window-tab-bar-selected-inner)
+  );
+  --_o: color-mix(
+    in srgb,
+    var(--mac-window-tab-bar-tab-outer),
+    var(--mac-window-tab-bar-selected-outer)
+  );
+}
+
+.mac-window-tab-bar-tab:where([data-active]) {
+  --_t: var(--mac-window-tab-bar-selected-top);
+  --_b: var(--mac-window-tab-bar-selected-bottom);
+  --_i: var(--mac-window-tab-bar-selected-inner);
+  --_o: var(--mac-window-tab-bar-selected-outer);
+  color: var(--mac-window-tab-bar-title-selected);
+}
+
+.mac-window-tab-bar-tab:where([data-disabled]) {
+  color: var(--mac-color-control-text-disabled);
+}
+
+.mac-window-tab-bar-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The close buttons' layer, beside the tab list: WindowTab keeps each slot over its tab. */
+.mac-window-tab-bar-closers,
+.mac-window-tab-bar-close-slot {
+  position: absolute;
+  inset-block: 0;
+  pointer-events: none;
+}
+
+.mac-window-tab-bar-closers {
+  inset-inline: 0;
+}
+
+/* Close button [provisional], shown while the pointer is over the tab. */
+.mac-window-tab-bar-close {
+  position: absolute;
+  inset-block-start: 5px;
+  inset-inline-start: 6px;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border-radius: 3px;
+  background:
+    linear-gradient(
+      45deg,
+      transparent calc(50% - 0.5px),
+      currentColor calc(50% - 0.5px) calc(50% + 0.5px),
+      transparent calc(50% + 0.5px)
+    )
+    center / 8px 8px no-repeat,
+    linear-gradient(
+      -45deg,
+      transparent calc(50% - 0.5px),
+      currentColor calc(50% - 0.5px) calc(50% + 0.5px),
+      transparent calc(50% + 0.5px)
+    )
+    center / 8px 8px no-repeat;
+  color: var(--mac-window-tab-bar-close);
+  opacity: 0;
+  pointer-events: auto;
+}
+
+.mac-window-tab-bar-close:where(
+  :hover,
+  :focus-visible,
+  .mac-window-tab-bar-close-slot:where([data-hover], [data-force~="hover"]) > *
+) {
+  opacity: 1;
+}
+
+.mac-window-tab-bar-close:where(:hover) {
+  background-color: var(--mac-window-tab-bar-close-fill-hover);
+}
+
+/* New-tab cell: a 1 pt divider, then 23 pt with an 11 pt + of 1 pt strokes, 6 pt from the
+   divider and from the top. */
+.mac-window-tab-bar-new {
+  --_t: var(--mac-window-tab-bar-new-top);
+  --_b: var(--mac-window-tab-bar-new-bottom);
+  --_i: var(--mac-window-tab-bar-new-inner);
+  --_o: var(--mac-window-tab-bar-new-outer);
+
+  position: relative;
+  flex: none;
+  width: 24px;
+  padding: 0;
+  color: var(--mac-window-tab-bar-new-glyph);
+}
+
+.mac-window-tab-bar-new::before {
+  --_t: var(--mac-window-tab-bar-new-divider-top);
+  --_b: var(--mac-window-tab-bar-new-divider-bottom);
+  --_i: var(--mac-window-tab-bar-new-divider-inner);
+  --_o: var(--mac-window-tab-bar-new-divider-outer);
+
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 1px;
+}
+
+.mac-window-tab-bar-new::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 6px;
+  inset-inline-start: 7px;
+  width: 11px;
+  height: 11px;
+  background: currentColor;
+  clip-path: polygon(
+    5px 0,
+    6px 0,
+    6px 5px,
+    11px 5px,
+    11px 6px,
+    6px 6px,
+    6px 11px,
+    5px 11px,
+    5px 6px,
+    0 6px,
+    0 5px,
+    5px 5px
+  );
+}
+
+/* Pressed [provisional]: the + takes the title colour. */
+.mac-window-tab-bar-new:where(:active, [data-force~="pressed"]) {
+  color: var(--mac-window-tab-bar-title-selected);
+}
+
+/* Inactive window: the bar flattens and its titles dim. */
+.mac-window-tab-bar-list:where([data-window-state="inactive"] *),
+.mac-window-tab-bar-new:where([data-window-state="inactive"] *)::before {
+  --_t: var(--mac-window-tab-bar-inactive-divider);
+  --_b: var(--mac-window-tab-bar-inactive-divider);
+  --_i: var(--mac-window-tab-bar-inactive-inner);
+  --_o: var(--mac-window-tab-bar-inactive-outer);
+}
+
+.mac-window-tab-bar-tab:where([data-window-state="inactive"] *),
+.mac-window-tab-bar-new:where([data-window-state="inactive"] *) {
+  --_t: var(--mac-window-tab-bar-inactive-fill);
+  --_b: var(--mac-window-tab-bar-inactive-fill);
+  --_i: var(--mac-window-tab-bar-inactive-inner);
+  --_o: var(--mac-window-tab-bar-inactive-outer);
+  color: var(--mac-window-tab-bar-inactive-title);
+}
+
+.mac-window-tab-bar-tab:where([data-active]):where([data-window-state="inactive"] *) {
+  --_t: var(--mac-material-titlebar-inactive);
+  --_b: var(--mac-material-titlebar-inactive);
+}
+
+/* Keyboard focus ring, drawn inside the cell because the bar fills the window's width; only
+   in the key window. */
+.mac-window-tab-bar-close:where(:focus-visible):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+),
+.mac-window-tab-bar-tab:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+),
+.mac-window-tab-bar-new:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(0px - var(--mac-focus-ring-width));
+}
+
+@media (forced-colors: active) {
+  .mac-window-tab-bar {
+    border-bottom: 1px solid CanvasText;
+  }
+
+  .mac-window-tab-bar-list,
+  .mac-window-tab-bar-tab,
+  .mac-window-tab-bar-new,
+  .mac-window-tab-bar-new::before {
+    background: Canvas;
+  }
+
+  .mac-window-tab-bar-list,
+  .mac-window-tab-bar-new::before {
+    background: CanvasText;
+  }
+
+  .mac-window-tab-bar-tab:where([data-active]) {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  .mac-window-tab-bar-tab:where([data-disabled]) {
+    color: GrayText;
+  }
+
+  .mac-window-tab-bar-new {
+    color: ButtonText;
+  }
+}

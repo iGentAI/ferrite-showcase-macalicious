@@ -1,0 +1,161 @@
+---
+title: Toolbar Segmented Control
+description: A row of segments in the toolbar bezel, for a view switcher, a pair of related buttons or Back and Forward.
+order: 16
+---
+
+<Example name="basic" both />
+
+AppKit's `NSSegmentedControl` in the textured rounded style. With a toggle
+[toolbar button](/components/toolbar-button) it is one of the two toolbar controls that may
+show a lasting selection. It is built on
+[Base UI's Toggle Group](https://base-ui.com/react/components/toggle-group) and keeps its API,
+so the value is an array, also when one segment is selected.
+
+## Usage
+
+```tsx
+import { ToolbarSegment, ToolbarSegmentedControl } from "macalicious/toolbar-segmented-control";
+import "macalicious/toolbar-segmented-control.css";
+
+<ToolbarSegmentedControl aria-label="View" defaultValue={["columns"]} onValueChange={setView}>
+  <ToolbarSegment value="icons" aria-label="Icons">{/* glyph */}</ToolbarSegment>
+  <ToolbarSegment value="list" aria-label="List">{/* glyph */}</ToolbarSegment>
+  <ToolbarSegment value="columns" aria-label="Columns">{/* glyph */}</ToolbarSegment>
+</ToolbarSegmentedControl>
+```
+
+A momentary control keeps no selection; give each segment an `onClick`:
+
+```tsx
+import { ToolbarSegment, ToolbarSegmentedControl } from "macalicious/toolbar-segmented-control";
+
+<ToolbarSegmentedControl variant="navigation" tracking="momentary" aria-label="Navigation">
+  <ToolbarSegment aria-label="Back" onClick={back}>{/* glyph */}</ToolbarSegment>
+  <ToolbarSegment aria-label="Forward" onClick={forward} disabled>{/* glyph */}</ToolbarSegment>
+</ToolbarSegmentedControl>
+```
+
+## Guidelines
+
+Not verified: this section paraphrases Apple's Human Interface Guidelines and was not checked
+against Apple's text.
+
+- Use a segmented control for closely related choices or commands: view modes, zoom out and
+  in, back and forward.
+- Segments hold either glyphs or text, never a mix within one control, and should be equal in
+  width.
+- The control is one toolbar item: 8 pt to its neighbours.
+
+## Variants and states
+
+<Example name="variants" both />
+
+| Variant | Look | Seen in |
+| --- | --- | --- |
+| `joined` (default) | One bezel divided by 1 pt dividers | Finder's view switcher |
+| `separated` | A bezel per segment; the bezels touch | Preview's zoom buttons |
+| `navigation` | A bezel per segment, touching | Back and Forward |
+
+| Tracking | Behaviour |
+| --- | --- |
+| `select-one` (default) | A selected segment stays selected: clicking it again does not deselect it, so one segment is always selected once one is. Start it with a `defaultValue` or `value` that names a segment |
+| `select-any` | Each segment toggles on its own |
+| `momentary` | Segments are plain buttons |
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Selected segment | its value is in `value` | The on bezel of a toolbar button; the dividers on both its sides disappear |
+| Pressed | `:active` | provisional |
+| Disabled | `disabled` on the control or a segment | Dimmed glyph |
+| Keyboard focus | `:focus-visible` | Focus ring on the segment, in the key window only (provisional) |
+| Main window | `data-window-state="main"` on an ancestor | As in the key window, selection included (measured: Finder behind Quick Look), without the focus ring |
+| Inactive window | `data-window-state="inactive"` on an ancestor | Flat outlined bezel, grey glyphs. A selected segment of a joined control is a flat grey fill inside the outline (`#e3e3e3` on the bar's `#f6f6f6`; Dark Aqua `#535557` on `#2b2d2f`) with its title as dim as the others (measured: the Books toolbar). In the separated and navigation styles it is the key window's fill at half strength (provisional) |
+
+## Sizes
+
+One size: the control is 22 pt high, as every toolbar control in the screenshots. A segment is
+as wide as its content plus padding, and at least 25 pt (27 pt for the first and 29 pt for the
+last of a joined control, whose outer ends carry the rounded corners). Set `style={{ width }}`
+on a segment for an exact width.
+
+## API
+
+<PropsTable name="ToolbarSegmentedControlProps" />
+
+<PropsTable name="ToolbarSegmentProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-variant` | control | `joined`, `separated`, `navigation` | Reflects `variant`. |
+| `data-tracking` | control | `select-one`, `select-any`, `momentary` | Reflects `tracking`. |
+| `data-pressed` | segment | present or absent | Set by Base UI on a selected segment. |
+| `data-disabled` | control, segment | present or absent | Set by Base UI. |
+| `data-force` | segment | `pressed`, `focus` | Documentation and visual tests only. |
+
+## Accessibility
+
+- The control is a group: give it an `aria-label`. Every segment that shows only a glyph needs
+  one too.
+- Selecting segments are toggle buttons with `aria-pressed`, as Base UI's Toggle Group renders
+  them; momentary segments are plain buttons. AppKit exposes a select-one control as a radio
+  group; the toggle-button form is the one a toolbar's arrow-key navigation can include.
+- On its own the control is one tab stop with arrow keys between segments. In a
+  [Toolbar](/components/toolbar) its segments take part in the toolbar's navigation.
+- Space and Return select or activate the focused segment.
+
+## Visual comparison
+
+`toolbar-segmented-control.visual.json` compares the Finder view switcher with its third segment
+selected, whole and with the glyphs masked (the bezel alone), and the Back and Forward pair, in
+both appearances (Finder Network); the same switcher in a main window that is not key, with
+its fourth segment selected (Finder behind Quick Look); and Preview's separated zoom pair. The
+scores are in the table below. The glyphs are original stand-ins.
+
+The selected segment looks the same in a main window as in a key one. Its fill, read 1 pt and
+17 pt under its top edge, is `#6d6d6d` and `#676767` in Aqua in both captures (Finder Network
+at 590,128 and 590,160; Finder Quick Look at 666,310 and 666,342), and `#c5c6c7` and
+`#c1c2c3` against `#c5c6c8` and `#c1c2c4` in Dark Aqua (520,128 and 520,160; 712,252 and
+712,284). The `main-*-bezel`
+comparisons score the whole bezel against the main-window capture. Toolbar buttons and window
+tabs follow the same rule by analogy; no capture shows either in a main window that is not
+key [provisional]. The dark Preview and Finder
+windows differ from each other by up to ten levels because Catalina tints a dark window with
+the desktop picture; the tokens sit between them.
+
+Scores from `npm run visual -- toolbar-segmented-control` in Chromium on Linux with the fallback font: the share of
+pixels that differ by more than the comparison's threshold, and the mean colour difference out
+of 255. A masked comparison leaves out stand-in artwork and fallback-font text.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `view-switcher-light` | Light-Finder-Network (448, 122, 228, 52) | 6.14% | 4.98 | 0.83% | 1.41 |
+| `view-switcher-light-bezel` (masked) | Light-Finder-Network (448, 122, 228, 52) | 11.23% | 5.97 | 0.05% | 0.88 |
+| `view-switcher-dark` | Dark-Finder-Network (382, 122, 228, 52) | 7.96% | 8.81 | 3.42% | 5.51 |
+| `view-switcher-dark-bezel` (masked) | Dark-Finder-Network (382, 122, 228, 52) | 7.37% | 5.95 | 0.02% | 1.23 |
+| `navigation-light` | Light-Finder-Network (124, 122, 110, 52) | 11.75% | 5.70 | 1.29% | 1.56 |
+| `navigation-dark` | Dark-Finder-Network (124, 122, 110, 52) | 7.55% | 7.50 | 1.26% | 5.04 |
+| `main-light` | Light-Finder-Quick-Look (476, 304, 228, 52) | 6.82% | 5.38 | 0.92% | 1.50 |
+| `main-light-bezel` (masked) | Light-Finder-Quick-Look (476, 304, 228, 52) | 12.15% | 6.52 | 0.39% | 1.00 |
+| `main-dark` | Dark-Finder-Quick-Look (520, 246, 228, 52) | 7.52% | 8.87 | 3.47% | 5.76 |
+| `main-dark-bezel` (masked) | Dark-Finder-Quick-Look (520, 246, 228, 52) | 6.31% | 6.09 | 0.23% | 1.63 |
+| `separated-light` | Light-Preview (212, 122, 160, 52) | 13.46% | 11.64 | 5.41% | 5.27 |
+| `separated-light-bezel` (masked) | Light-Preview (212, 122, 160, 52) | 14.63% | 7.13 | 0.22% | 1.17 |
+| `separated-dark` | Dark-Preview (212, 122, 160, 52) | 12.69% | 14.65 | 4.69% | 9.15 |
+| `separated-dark-bezel` (masked) | Dark-Preview (212, 122, 160, 52) | 9.19% | 9.53 | 0.33% | 5.43 |
+| `books-inactive-light-bezel` (masked, inactive window) | Light-Books (921, 103, 786, 66) | 0.05% | 1.24 | 0.00% | 0.30 |
+| `books-inactive-dark-bezel` (masked, inactive window) | Dark-Books (921, 103, 786, 66) | 5.57% | 2.07 | 0.00% | 0.71 |
+
+Measured: the 110 pt switcher with its 27 pt pitch, the dividers, the selected fill and its
+extent over the trailing divider, the pair's touching borders in Aqua and 1 pt gap in Dark
+Aqua, and Preview's zoom pair: fills of 39 and 37 pt whose hairline borders touch at
+mid-height (columns 294 and 295 of row 150 in the Preview captures). The spec's 3 pt gap for
+the separated style was read on a row that crosses the rounded corners and is not used.
+Provisional: pressed, keyboard focus, a disabled selected segment and a selected segment of
+the separated and navigation styles in an inactive window (the fill at half strength). The
+selected segment of a joined control in an inactive window was provisional in the same way
+until the Books captures were measured: a flat grey fill inside the outline.
+
+The outer ends are built at 4 pt on the border's outer edge, as on the toolbar button, where the
+spec carries over the button's fitted 4.25 pt without fitting this control; the toolbar button
+page gives the rendered comparison behind that choice.

@@ -1,0 +1,63 @@
+/*
+ * Find My as the desktop's Ferrite application serves it (find-my-desktop.tsx): what it adds to
+ * the demo's layout (find-my.css) over the real map (../maps/maps-tiles.css): the note under the
+ * People list for someone with no friends yet, and the card of the selected device or person.
+ *
+ * Parts
+ *   .mac-find-my-people                 the People list while it holds only the person
+ *   .mac-find-my-sharing                "Sign in to share your location", or "No Friends"
+ *   .mac-find-my-device-card            the selected device or person: name, last seen, actions
+ *   .mac-find-my-device-name, -actions  its title and its two buttons
+ *
+ * Every length is a token of find-my.tokens.css; literal here, as structure: zeros, the flex
+ * factors and the z-index.
+ */
+
+.mac-find-my-map .mac-find-my-marker-disc {
+  pointer-events: auto;
+}
+
+.mac-find-my-column > .mac-find-my-people {
+  flex: none;
+  height: var(--mac-find-my-people-height);
+}
+
+.mac-find-my-column > .mac-find-my-sharing {
+  flex: 1 1 0;
+  min-height: 0;
+  padding: var(--mac-find-my-panel-padding);
+}
+
+.mac-find-my-sharing > p {
+  margin: 0 0 var(--mac-find-my-panel-gap);
+}
+
+.mac-find-my-map > .mac-find-my-device-card {
+  position: absolute;
+  z-index: 1;
+  top: var(--mac-find-my-card-top);
+  left: var(--mac-find-my-note-left);
+  box-sizing: border-box;
+  width: var(--mac-find-my-card-width);
+  padding: var(--mac-find-my-panel-padding);
+  border-radius: var(--mac-find-my-card-radius);
+  background: var(--mac-find-my-note-plate);
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+}
+
+.mac-find-my-device-card > p {
+  margin: 0 0 var(--mac-find-my-panel-gap);
+}
+
+.mac-find-my-device-name {
+  margin: 0 0 var(--mac-find-my-panel-gap);
+  font: var(--mac-font-headline);
+}
+
+.mac-find-my-device-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-find-my-panel-gap);
+  margin-block-end: var(--mac-find-my-panel-gap);
+}

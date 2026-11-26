@@ -1,0 +1,224 @@
+---
+title: Slider
+description: A track with a thumb that is dragged to pick a value in a range, with or without tick marks.
+order: 40
+---
+
+<Example name="basic" both />
+
+AppKit calls this control a *slider* (`NSSlider`, linear type). It is built on
+[Base UI's Slider](https://base-ui.com/react/components/slider) and assembled from its parts
+(Root, Control, Track, Indicator, Thumb), which supply the `<input type="range">` semantics,
+keyboard handling, dragging, form submission and right-to-left support. `Slider` is that
+assembly as one component, because a Catalina slider is always put together the same way; it
+holds one value.
+
+## Usage
+
+```tsx
+import { Slider } from "macalicious/slider";
+import "macalicious/slider.css";
+
+<Slider aria-label="Volume" value={volume} onValueChange={setVolume} />
+<Slider aria-label="Tracking speed" tickMarks={10} tickMarkValuesOnly max={9} defaultValue={3} />
+```
+
+Or copy the source into your project: `npx macalicious add slider`. See
+[Installation](/installation).
+
+A slider is as long as the space it is given, like a block element; set a `width` on it or on
+its container. Its height is fixed: 15 pt, or 20 pt with tick marks.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for sliders, as the measured spec summarises them.
+Not verified: this text was not checked against Apple's page.
+
+- Without tick marks the thumb is round and the track is filled with colour from the minimum
+  to the thumb. With tick marks the thumb points at them and the track is not tinted.
+- Give a slider an introductory label, in title-style capitalisation and ending in a colon,
+  and consider icons or labels at the minimum and the maximum. Labelling only those two tick
+  marks is usually enough.
+- Use tick marks when people choose among distinct stops, and let the value snap to them
+  (`tickMarkValuesOnly`) when nothing in between makes sense.
+- Never reverse the direction: the minimum is on the leading side, or at the bottom.
+- Give live feedback while the thumb is dragged where that is cheap (`onValueChange`), and
+  act on release where it is not (`onValueCommitted`).
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | Round white knob (light grey in Dark Aqua); track filled with the accent colour up to it |
+| Tick marks | `tickMarks` | Pointed thumb, marks beyond the track, no fill |
+| Pressed | while the thumb is held or dragged | The thumb darkens (lightens in Dark Aqua) |
+| Keyboard focus | `:focus-visible` on the thumb's input | Focus ring in the accent colour, following the thumb's shape |
+| Disabled | `disabled` | The whole control at half opacity; the filled part drawn as unfilled track |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No accent: the filled part is drawn as unfilled track; no focus ring |
+
+The window state is not a prop: see [Building a window](/building-a-window).
+
+### Tick marks
+
+`tickMarks` is the number of marks, spread evenly so that the first and the last are under the
+thumb's centre at the minimum and the maximum. `tickMarkPosition="above"` puts them on the
+other side and turns the thumb round.
+
+<Example name="tick-marks" both />
+
+### Vertical
+
+`orientation="vertical"` turns the slider on its end, the minimum at the bottom. It takes the
+height of its container, or its own. Tick marks are on the trailing side unless
+`tickMarkPosition="leading"`.
+
+<Example name="vertical" both />
+
+## Sizes
+
+<Example name="sizes" both />
+
+| Size | Round knob | Pointed thumb | Tick marks | Height, without and with marks | Source |
+| --- | --- | --- | --- | --- | --- |
+| `regular` | 15 pt | 15 x 17 pt | 1 x 4 pt, 8.5 pt from the track | 15 pt, 20 pt | measured |
+| `small` | 11 pt | 11 x 12 pt | 1 x 3 pt, 4.5 pt from the track | 11 pt, 14 pt | pointed thumb and marks measured (Trackpad); round knob provisional |
+| `mini` | 9 pt | 9 x 10 pt | 1 x 3 pt, 3.5 pt from the track | 9 pt, 12 pt | provisional |
+
+The track is 3 pt thick in every size. The element's box runs from the top of the thumb to
+the bottom of the tick marks and is as long as the track; the thumb's hairline and shadow, and
+the focus ring, are drawn outside it, so leave 3 pt around a slider.
+
+## Accent colour
+
+The filled part of the track follows the accent colour: set `data-accent` on any ancestor. See
+[Theming](/theming). It is the colour the checkboxes of System Preferences › General are
+filled with, which is what the Displays pane shows for blue. No screenshot shows a slider in
+another accent, so the other seven are inferred from the checkboxes.
+
+<Example name="accents" both />
+
+## API
+
+<PropsTable name="SliderProps" />
+
+Props not listed go to the root element. `aria-label`, `aria-labelledby`, `aria-describedby`,
+`aria-valuetext`, `getAriaValueText` and `inputRef` are handed to the thumb, whose input is the
+element with the `slider` role; `aria-labelledby` is also given to the root. The range variant of
+Base UI's slider (several thumbs) is not offered: AppKit has none.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-size` | root | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-tick-marks` | root | `below`, `above`, `trailing`, `leading`, or absent | Reflects `tickMarkPosition` when there are tick marks. |
+| `data-orientation` | every part | `horizontal`, `vertical` | Set by Base UI. |
+| `data-disabled` | every part | present or absent | Set by Base UI. |
+| `data-dragging` | every part | present or absent | Set by Base UI while the thumb is dragged. |
+| `data-force` | root | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+The parts carry the classes `mac-slider-control`, `mac-slider-track`, `mac-slider-fill` (Base
+UI's Indicator), `mac-slider-thumb`, `mac-slider-ticks` and `mac-slider-tick`. The slider has no
+CSS variables meant for consumers.
+
+How it is drawn, for anyone who changes the stylesheet:
+
+- The control is padded by half a thumb at each end, and the thumb's centre moves along the
+  track inside that padding, so the thumb stops flush with the ends of the visible track,
+  which a pseudo-element draws half a thumb longer on each side.
+- Base UI centres the thumb with a translation; the component replaces it with margins, so
+  that the browser lays the thumb out on device pixels, as AppKit draws it.
+- The pointed thumb is two masked layers: its fill, and behind it the same outline 0.5 pt
+  further out for the hairline (3 pt further out, in the focus colour, when focused). The
+  shapes are SVG mask images rather than clip-paths because a mask is laid out on device
+  pixels with its box. In points, the regular thumb has top corners of radius 2, straight
+  sides, an arc of radius 4.5 into a taper of 43 degrees that would leave the side 8.85 pt
+  down, and a sharp tip 17 pt down; the small one has corners of 1.5, an arc of 3 from
+  5.9 pt and its tip at 12.05 pt. They are original drawings fitted to the screenshots.
+- Tick marks on the other side, and a vertical slider's pointed thumb, are the same drawing
+  mirrored or turned, so their hairline and shadow are lit from the wrong side. No screenshot
+  shows either.
+
+## Accessibility
+
+- The thumb holds a native `<input type="range">`, visually hidden, which is what assistive
+  technology and the keyboard reach. Arrow keys change the value by `step`; Page Up, Page Down
+  and Shift with an arrow by `largeStep`; Home and End go to the ends.
+- A slider needs an accessible name: `aria-label` or `aria-labelledby`. Every example on this
+  page has one. Use `getAriaValueText` when the number alone does not say enough.
+- Pressing the track moves the thumb there. A drag is followed by Base UI's own listeners,
+  added only for the duration of the drag.
+- A disabled slider's input is disabled and leaves the tab order.
+- Tick marks are decoration (`aria-hidden`); label the stops with text if they mean something.
+- In forced-colours mode the track, the fill, the tick marks and the thumb are drawn with
+  system colours.
+
+## Visual comparison
+
+Five examples reproduce sliders in the reference screenshots and are compared with them in
+both appearances by `npm run visual` (`slider.visual.json`). No crop holds text, and a pixel
+counts as differing at a colour distance of 0.05, half the default. Share of pixels that
+differ, and mean Δ out of 255, in Chromium:
+
+| Crop (`System-Preferences-<pane>.png`, px) | Aqua 2x | Aqua 1x | Dark Aqua 2x | Dark Aqua 1x |
+| --- | --- | --- | --- | --- |
+| Displays, Brightness: round knob, filled track (848, 380, 496 x 52) | 0.07% (Δ 0.33) | 0.43% (Δ 0.25) | 0.21% (Δ 0.15) | 0.78% (Δ 0.39) |
+| Sound, Balance: regular, 5 marks (628, 936, 384 x 56) | 0.01% (Δ 0.09) | 1.28% (Δ 0.45) | 0.05% (Δ 0.08) | 1.26% (Δ 0.64) |
+| Trackpad, Click and Tracking speed: small, 3 and 10 marks (220, 674, 528 x 40) | 0.02% (Δ 0.37) | 1.95% (Δ 0.82) | 0.03% (Δ 0.14) | 1.89% (Δ 0.95) |
+| Dock, Size: regular, 2 marks (636, 190, 422 x 54) | 0.01% (Δ 0.08) | 7.69% (Δ 2.14) | 0.05% (Δ 0.06) | 7.72% (Δ 1.73) |
+| Dock, Magnification: thumb at the maximum (636, 286, 422 x 54) | 0.01% (Δ 0.08) | 7.62% (Δ 2.11) | 0.05% (Δ 0.06) | 7.69% (Δ 1.72) |
+| Mouse, Tracking speed: regular, 10 marks (290, 690, 306 x 54) | 0.01% (Δ 0.34) | 2.37% (Δ 0.87) | 0.06% (Δ 0.14) | 2.13% (Δ 0.95) |
+
+Each comparison has a 2x budget 0.05 percentage points above its score. What remains at 2x is
+antialiasing on the thumb's edge; the round knob in Dark Aqua scores highest because the
+browser fills the first and last rows of a disc a little less than Catalina does. The second
+Trackpad thumb is the case of a thumb between two device pixels (its centre is at x=607.67):
+it matches because the thumb is laid out, not translated. At 1x there is no reference, so the
+2x screenshot is averaged down, and the Dock sliders sit on a half point, which the browser
+must round at 1x ([Fidelity limits](/fidelity)).
+
+Measured, in sRGB:
+
+| Part | Aqua | Dark Aqua | Where |
+| --- | --- | --- | --- |
+| Track, 3 pt, ends of radius 1.5 | `#b8b8b8` on `#ececec`, `#b1b1b1` on `#e3e3e3`: black at 22% | `#4c4d4e` on `#2f3031`, `#525253` on `#363637`: white at 14% | Sound col 700; Displays col 1300 |
+| Filled track | `#3b88fd` | `#1869e6` | Displays col 900. The shared token it uses is `#3d88fd` in Aqua. |
+| Tick marks | `#9a9a9a` on `#ececec`, `#949494` on `#e3e3e3`: black at 35% | `#636465`, `#686869`: white at 25% | Sound row 980; Trackpad row 705 |
+| Thumb fill | `#ffffff` | `#cccccc` (`#cbcbcb` on Sound); first row `#d2d2d2` round, `#d5d5d5` pointed | Displays, Sound |
+| Round knob hairline | `#c3c3c3` top, `#a9a9a9` bottom on `#e3e3e3`: black at 14% to 26% | `#313132` top, `#2b2b2c` bottom on `#363637`: black at 9% to 20% | Displays col 1232 (light), col 1223 (dark) |
+| Pointed thumb hairline | `#c7c7c7` top, `#c0c0c0` sides, `#b4b4b4` on the taper, on `#ececec` | `#2b2c2c`, `#292a2b`, `#282929` on `#2f3031` | Sound, x 820 to 859, y 942 to 985 |
+| Shadow under the knob | `#cbcbcb` then `#dbdbdb` on `#e3e3e3` | `#313131` then `#343435` on `#363637` | Displays col 1232 (light), col 1223 (dark), y 421 and 422 |
+| First and last tick | centred half a thumb from the ends of the track | the same | Sound: track x 636 to 1003, ticks at 650 and 988 |
+
+The measured spec gives the pointed thumb a height of 16.25 pt with a taper of 45 degrees from
+8.75 pt; fitted to the pixels, the taper is 43 degrees and the tip is 17 pt down (the regular
+thumb's fill narrows by 0.93 px per row from y=963.7 to its tip at y=980 in the Sound capture).
+With the spec's path and the same colours the Sound crop scores 0.39% in Aqua and 0.36% in
+Dark Aqua and fails its budget; with the fitted one it scores 0.01% and 0.05%.
+
+No screenshot shows a slider being dragged, keyboard focus on one, a disabled one, one in a
+window that is not key, a vertical one, tick marks on the other side, the small round knob, the
+mini size or an accent other than blue. Those are checked in a real browser against values
+from the spec and the tokens instead (the `expect` comparisons of `slider.visual.json`):
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| At rest, both appearances | Fill, track, thumb and tick colours over the window background | Measured |
+| Pressed | Thumb fill `#f0f0f0`, `#e0e0e0` in Dark Aqua, while the mouse is held down on it; the value does not move | Inferred |
+| Keyboard focus | Ring colour around the round knob and around the pointed thumb, and where the band ends | Ring measured on a text field; that it follows the thumb's shape inferred |
+| Disabled | Track and knob at half opacity, no fill | Inferred |
+| Main and inactive window | The filled part is drawn as unfilled track; no focus ring | Inferred |
+| Purple, graphite and green accents | Fill colour, each in both appearances | Measured on the checkboxes of General; inferred for the slider |
+| Vertical, small and mini | Fill below the knob, the pointed thumb's direction, the first tick mark, knob sizes | Inferred |
+
+Pressed, keyboard focus on both thumbs, the main and inactive window, the three accents and
+the vertical fixture are checked in Dark Aqua as well as in Aqua. The dark values are computed
+from the same tokens over the window background `#323232`: an unfilled track of `#4f4f4f`
+(white at 14%), tick marks of `#656565` (white at 25%) and the ring at `#2f6d99`.
+
+These checks hold the component to the spec; where the spec infers a value, they do not show
+that Catalina looks that way. Not checked anywhere: tick marks above or on the leading side,
+the mini pointed thumb, and the round knob's hairline in the small and mini sizes.

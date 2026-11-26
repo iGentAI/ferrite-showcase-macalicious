@@ -1,0 +1,220 @@
+# Curated core tokens: source for `tools/build.py tokens`.
+#
+# One token per line:  css-name | light | dark | tag | evidence | note
+# - Colours are STORED pixel values (see CONVENTIONS.md); the build step adds the sRGB value for CSS.
+# - `=` in the dark column means "same as light".
+# - Names follow the scaffold's token layer (src/styles/tokens/*.css). The build step marks each name
+#   as existing there or as a proposed new name.
+# - Evidence names the component spec that holds the pixel citations, plus one direct citation where
+#   the lead re-sampled the value. Filenames omit the common prefix `10-15-Catalina-` and `.png`.
+
+## color.css | Text and label colours
+--mac-color-label | rgba(0,0,0,0.85) | rgba(255,255,255,0.85) | [C] | components/label.md; composites #242424 on #ececec (Light-System-Preferences-General @ 720,424 region), #dfdfdf on #2f3031 | labelColor; measured composites #232323/#242424/#262626 on #e3e3e3/#ececec/#ffffff
+--mac-color-label-secondary | rgba(0,0,0,0.50) | rgba(255,255,255,0.55) | [C] | components/label.md; composites #767676 on #ececec, #a1a2a2 on #2f3031 | secondaryLabelColor
+--mac-color-label-tertiary | rgba(0,0,0,0.25) | rgba(255,255,255,0.25) | [C] | components/label.md; composites #a9a9a9 on #e3e3e3, #686868 on #363637 | tertiaryLabelColor; also disabled control text
+--mac-color-label-quaternary | rgba(0,0,0,0.10) | rgba(255,255,255,0.10) | [D] | HIG Color, quaternaryLabelColor; alpha from the AppKit catalog, not observed as text | same alpha as the separator
+--mac-color-text | #000000 | #ffffff | [M] | components/label.md, components/text-view.md | textColor (document text)
+--mac-color-text-background | #ffffff | #1e1e1e | [M] | components/text-view.md; Light-Text-Edit @ 600,600; Dark-TextEdit @ 600,600 | textBackgroundColor; desktop-tinted dark samples run #1d1e1f..#1e1f21
+--mac-color-text-placeholder | rgba(0,0,0,0.25) | rgba(255,255,255,0.25) | [D] | components/text-field.md; toolbar search placeholder measured #aaacab / #8d8d8e (components/toolbar-search-field.md) | placeholderTextColor
+--mac-color-link | #276ad3 | #589cf8 | [M] | components/label.md; Light-Finder-Gallery-View @ 2410,448,125,19 | linkColor
+--mac-color-control-text | rgba(0,0,0,0.85) | rgba(255,255,255,0.85) | [C] | components/push-button.md; composites #262626 on #ffffff, #e8e8e8 on the dark bezel | controlTextColor
+--mac-color-control-text-disabled | rgba(0,0,0,0.25) | rgba(255,255,255,0.25) | [C] | components/push-button.md; composites #b8b8b8 on #f6f6f6, #777778 on #4a4a4b | disabledControlTextColor
+--mac-color-control-text-on-accent | #ffffff | rgba(255,255,255,0.85) | [M] | components/default-button.md; dark composite #e0e9f9 over #2c66d2 | alternateSelectedControlTextColor; dark glyphs and titles on accent fills are NOT pure white
+--mac-color-window-frame-text | rgba(0,0,0,0.62) | rgba(255,255,255,0.64) | [C] | components/title-bar.md; composites #555555 on #e1e1e1 (unified bar), #474747 on plain 22 pt bars; dark #b9babb on #3d3e3f | windowFrameTextColor; window title
+--mac-color-window-frame-text-inactive | #b9b9b9 | #606163 | [I] | components/title-bar.md | title of an inactive window; no clean inactive title was sampled
+--mac-color-header-text | #161616 | #ffffff | [M] | components/table-header.md; Light-Activity-Monitor @ 281,210 | headerTextColor
+--mac-color-selected-menu-item-text | #ffffff | #ffffff | [M] | components/menu-item.md; Theme-Light-Blue @ 138,66 | selectedMenuItemTextColor
+
+## color.css | Window, content and control backgrounds
+--mac-color-window-background | #ececec | #323232 | [M] | components/window.md; Theme-Light-Blue @ 2200,500; Theme-Dark-Graphite @ 2200,500 | windowBackgroundColor. Dark value is the UNTINTED one (graphite accent); see the next token
+--mac-color-window-background-tinted | #ececec | #303032 | [M] | components/accent-colors.md; Theme-Dark-Blue @ 2200,500 | dark windows pick up the wallpaper ("desktop tinting"); observed #2f3031..#323437 depending on what is behind the window
+--mac-color-control-background | #ffffff | #1e1e1e | [M] | components/table-view.md; Light-Activity-Monitor @ 540,320 | controlBackgroundColor (tables, lists, browsers); tinted dark samples #1d1e1f..#1e2022
+--mac-color-content-background-alternate | #f4f5f5 | rgba(255,255,255,0.05) | [C] | components/table-view.md; Light-Activity-Monitor @ 540,290; dark composite #292a2b over #1e1f21 at Dark-Activity-Monitor @ 540,290 | alternatingContentBackgroundColors[1]; the dark value is an alpha so that it also sits correctly on the untinted #1e1e1e
+--mac-color-group-background | rgba(0,0,0,0.04) | rgba(255,255,255,0.035) | [C] | components/box.md; composites #e3e3e3 on #ececec, #363637 on #2f3031 | NSBox fill and the lower band of System Preferences
+--mac-color-under-page-background | #ececec | #303132 | [M] | components/web-view.md, apps/preview.md | underPageBackgroundColor as seen behind the Preview page
+--mac-color-control | #ffffff | rgba(255,255,255,0.25) | [M] | components/push-button.md; dark composites #646465 on the window, #686869 on a box | controlColor: bezel fill
+--mac-color-control-disabled | rgba(255,255,255,0.50) | rgba(255,255,255,0.125) | [C] | components/push-button.md; composites #f6f6f6 on #ececec, #4a4a4b on #2f3031 | disabled bezel fill
+--mac-color-text-field-background | #ffffff | rgba(255,255,255,0.05) | [C] | components/text-field.md; dark composite #393a3b..#3a3b3b | text field fill inside a window
+
+## color.css | Lines
+--mac-color-separator | rgba(0,0,0,0.10) | rgba(255,255,255,0.10) | [C] | components/separator.md; composites #d5d5d5 on #ececec, #434445 on #2f3031 | separatorColor
+--mac-color-grid | #e6e6e6 | #343537 | [M] | components/list-view.md; Light-Reminders @ 1500,330; Dark-Reminders @ 1500,330 | gridColor / list row separators
+--mac-color-split-divider | #d5d5d5 | #000000 | [M] | components/split-view.md; Light-Console @ 900,530; Dark-Console @ 900,530 | thin split view divider between opaque panes; beside a vibrant sidebar the light divider is #cfd0d0
+--mac-color-box-border | rgba(0,0,0,0.06) | rgba(255,255,255,0.15) | [C] | components/box.md; composites #dedede (top edge #d3d3d3 = 0.10), dark #4e4f50 | NSBox border
+--mac-color-field-border | rgba(0,0,0,0.25) | rgba(255,255,255,0.12) | [C] | components/text-field.md; composites #b1b1b1 on #ececec; dark top #474849, bottom #636465 (0.25) | text field hairline
+--mac-color-list-border | #c5c5c5 | #565656 | [M] | components/bordered-list.md | border of bordered scrolling lists
+
+## color.css | Selection
+--mac-color-selected-content-background | #2466d9 | #1f5bc9 | [M] | components/table-view.md; Light-Activity-Monitor @ 540,250; Dark-Activity-Monitor @ 540,470 | selectedContentBackgroundColor for the blue accent (= AppKit #0063e1 / #0058d0 in sRGB). Other accents are not shown in a table or list anywhere, so they are inferred: derive them from the accent with an offset fitted to this blue pair (the library uses an oklch offset). Do not use "pop-up cap 75% stop darkened 10%": for blue that gives #196ae6, 24 levels of red away from the measured #0164e1
+--mac-color-selected-content-background-unemphasized | #dcdcdc | #464646 | [M] | components/table-view.md; Light-Keychain-Access @ 900,430; Dark-Keychain-Access @ 900,430 | unemphasizedSelectedContentBackgroundColor
+--mac-color-selected-content-text | #ffffff | #ffffff | [M] | components/table-view.md | text on an emphasized selection
+--mac-color-sidebar-selection | rgba(0,0,0,0.14) | rgba(255,255,255,0.17) | [C] | components/sidebar.md; composites #c7c8c8 on #e7e8e8, #505153 on #2c2d2f | grey source-list selection (sidebar not first responder)
+--mac-color-sidebar-selection-emphasized | #2f71de | #2d74e3 | [M] | components/sidebar.md; Light-Disk-Utility @ 600,650; Dark-Disk-Utility @ 600,650 | accent selection in a focused sidebar (blue); it is the accent blended with the sidebar material
+--mac-color-selected-text-background-unemphasized | #dcdcdc | #464646 | [D] | HIG Color, unemphasizedSelectedTextBackgroundColor; not shown | inactive text selection
+--mac-color-find-highlight | #ffff00 | #b9d553 | [D] light, [M] dark | HIG Color, findHighlightColor (yellow in the catalogue; no capture shows a match in Aqua); Dark-Preview-Search @ 2034,586, the match on a PDF page (apps/preview.md) | find indicator
+
+## color.css | Window controls
+--mac-color-window-close | #ed6a5e | #ed655a | [M] | components/window-controls.md; Light-Finder-Network @ 140,98; Dark-Finder-Network @ 138,98 | light ring #d25448 (0.5 pt), dark has no ring
+--mac-color-window-minimize | #f6be4f | #e1c04c | [M] | components/window-controls.md; Light-Finder-Network @ 177,98; Dark-Finder-Network @ 179,98 | light ring #d8a344
+--mac-color-window-zoom | #62c555 | #72be47 | [M] | components/window-controls.md; Light-Finder-Network @ 220,98; Dark-Finder-Network @ 220,98 | light ring #56a943
+--mac-color-window-control-disabled | #d1d1d1 | #5f6061 | [M] | components/window-controls.md; Light-System-Preferences-General @ 219,114; Dark-System-Preferences-General @ 230,114 | disabled button in a key window; light ring #b0b1b1
+--mac-color-window-control-inactive | #dedede | #4b4b4e | [M] | components/window-controls.md; Light-Safari-v13-Picture-in-Picture @ 354,140 | all three buttons in an inactive window; light ring #d5d4d4
+--mac-color-window-control-graphite | #8f8f94 | #a3a3a3 | [M] | components/window-controls.md; Theme-Light-Graphite @ 1016,362; Theme-Dark-Graphite @ 1016,362 | close and minimize with the graphite accent; light ring #727276
+
+## color.css | Fixed system palette (documented values, already sRGB)
+--mac-color-system-blue | #007aff | #0a84ff | [D] | HIG Color, System Colors table | already sRGB value
+--mac-color-system-brown | #a2845e | #ac8e68 | [D] | HIG Color, System Colors table | already sRGB value
+--mac-color-system-gray | #8e8e93 | #98989d | [D] | HIG Color, System Colors table | already sRGB value
+--mac-color-system-green | #28cd41 | #32d74b | [D] | HIG Color, System Colors table | already sRGB value
+--mac-color-system-indigo | #5856d6 | #5e5ce6 | [D] | HIG Color, System Colors table | already sRGB value
+--mac-color-system-orange | #ff9500 | #ff9f0a | [D] | HIG Color, System Colors table | already sRGB value
+--mac-color-system-pink | #ff2d55 | #ff375f | [D] | HIG Color, System Colors table | already sRGB value
+--mac-color-system-purple | #af52de | #bf5af2 | [D] | HIG Color, System Colors table | already sRGB value
+--mac-color-system-red | #ff3b30 | #ff453a | [D] | HIG Color, System Colors table | already sRGB value
+--mac-color-system-teal | #5ac8fa | #64d2ff | [D] | HIG Color, System Colors table (R 90 G 200 B 250 / R 100 G 210 B 255) | already sRGB value; the scaffold currently has #55bef0 / #5ac8f5
+--mac-color-system-yellow | #ffcc00 | #ffd60a | [D] | HIG Color, System Colors table | already sRGB value
+
+## accent.css | Accent inputs (the pure accent = the swatch in System Preferences > General)
+--mac-accent-light[blue] | #2f7cf7 | = | [M] | components/accent-colors.md; Theme-Light-Blue @ 1484,617 | data-accent="blue"; goes to --mac-accent-light
+--mac-accent-light[purple] | #8b4592 | = | [M] | Theme-Light-Purple @ 1532,617 |
+--mac-accent-light[pink] | #e55d9d | = | [M] | Theme-Light-Pink @ 1580,617 |
+--mac-accent-light[red] | #cf4645 | = | [M] | Theme-Light-Red @ 1628,617 |
+--mac-accent-light[orange] | #e8873a | = | [M] | Theme-Light-Orange @ 1676,617 |
+--mac-accent-light[yellow] | #f2b94b | = | [M] | Theme-Light-Yellow @ 1724,617 |
+--mac-accent-light[green] | #78b657 | = | [M] | Theme-Light-Green @ 1772,617 |
+--mac-accent-light[graphite] | #989898 | = | [M] | Theme-Light-Graphite @ 1820,617 |
+--mac-accent-dark[blue] | #2f7cf7 | = | [M] | Theme-Dark-Blue @ 1484,617 | the swatch does not change in dark; AppKit's dark catalog blue #0a84ff is not what the picker or its ring shows
+--mac-accent-dark[purple] | #9b57a3 | = | [M] | Theme-Dark-Purple @ 1532,617 | differs from light
+--mac-accent-dark[pink] | #e55e9c | = | [M] | Theme-Dark-Pink @ 1580,617 |
+--mac-accent-dark[red] | #ed5f5e | = | [M] | Theme-Dark-Red @ 1628,617 | differs from light
+--mac-accent-dark[orange] | #e8873a | = | [M] | Theme-Dark-Orange @ 1676,617 |
+--mac-accent-dark[yellow] | #f3b94b | = | [M] | Theme-Dark-Yellow @ 1724,617 |
+--mac-accent-dark[green] | #78b756 | = | [M] | Theme-Dark-Green @ 1772,617 |
+--mac-accent-dark[graphite] | #8c8c8c | = | [M] | Theme-Dark-Graphite @ 1820,617 | differs from light
+
+## accent.css | Highlight colour presets (selected text background; the chip in the Highlight color pop-up)
+--mac-highlight-light[blue] | #bad7fb | = | [M] | components/highlight-color.md; Theme-Light-Blue @ 1510,680 | selectedTextBackgroundColor; also measured on real selected text (Light-Contacts @ 1126,344 #b9d7fb)
+--mac-highlight-light[purple] | #dbc7dd | = | [M] | Theme-Light-Purple @ 1510,680 |
+--mac-highlight-light[pink] | #f5cde1 | = | [M] | Theme-Light-Pink @ 1510,680 |
+--mac-highlight-light[red] | #eec5c6 | = | [M] | Theme-Light-Red @ 1510,680 |
+--mac-highlight-light[orange] | #f7dabf | = | [M] | Theme-Light-Orange @ 1510,680 |
+--mac-highlight-light[yellow] | #fbe9c3 | = | [M] | Theme-Light-Yellow @ 1510,680 |
+--mac-highlight-light[green] | #d5e9ca | = | [M] | Theme-Light-Green @ 1510,680 |
+--mac-highlight-light[graphite] | #e0e0e0 | = | [M] | Theme-Light-Graphite @ 1510,680 |
+--mac-highlight-dark[blue] | #476388 | = | [M] | Theme-Dark-Blue @ 1510,680 |
+--mac-highlight-dark[purple] | #6c586e | = | [M] | Theme-Dark-Purple @ 1510,680 |
+--mac-highlight-dark[pink] | #81596d | = | [M] | Theme-Dark-Pink @ 1510,680 |
+--mac-highlight-dark[red] | #845a59 | = | [M] | Theme-Dark-Red @ 1510,680 |
+--mac-highlight-dark[orange] | #83664b | = | [M] | Theme-Dark-Orange @ 1510,680 |
+--mac-highlight-dark[yellow] | #877550 | = | [M] | Theme-Dark-Yellow @ 1510,680 |
+--mac-highlight-dark[green] | #627556 | = | [M] | Theme-Dark-Green @ 1510,680 |
+--mac-highlight-dark[graphite] | #686868 | = | [M] | Theme-Dark-Graphite @ 1510,680 |
+
+## accent.css | Derived accent tokens (blue shown; every accent is in the matrix below the core tables)
+--mac-accent-control-fill | #4d89f5 | #2c66d3 | [M] | components/accent-colors.md; Theme-Light-Blue @ 1480,1326; Theme-Dark-Blue @ 1480,1326 | NEW. Checkbox and radio "on" fill: flat in light; in dark the 50% row of the bezel gradient
+--mac-accent-bezel-top | #77a6f4 | #2e6bde | [M] | components/default-button.md, components/pop-up-button.md; Theme-Light-Blue @ 1750,662; Theme-Dark-Blue col x=1750 | first stop of the accent bezel gradient (default button, pop-up cap, selected tab)
+--mac-accent-bezel-bottom | #286ef6 | #2960c6 | [M] | Theme-Light-Blue @ 1750,699; Theme-Dark-Blue @ 1750,699 | last stop. Light is five stops: 0% #77a6f4, 25% #669bf5, 50% #4e8af5, 75% #3579f6, 100% #286ef6
+--mac-accent-bezel-highlight | none | #6998e8 | [M] | Theme-Dark-Blue @ 1750,662 | NEW. Dark only: 0.5 pt top highlight row, followed by a second row #3874df. Equivalent alpha form that reproduces the composite for every accent (token-layer thread's fit): white at 0.263 over a 0.05 row (graphite 0.216)
+--mac-accent-bezel-edge-top | #5b93f3 | #29292a | [M] | Theme-Light-Blue @ 1750,661; Theme-Dark-Blue @ 1750,661 | light: accent-coloured hairline; dark: the neutral dark control outline, not accent-coloured (equivalent alpha form: black at 0.146 top, 0.19 side, 0.27 bottom over the window)
+--mac-accent-bezel-edge-side | #3d7df5 | #272728 | [M] | Theme-Light-Blue @ 1776,680 | NEW
+--mac-accent-bezel-edge-bottom | #2165f6 | #232325 | [M] | Theme-Light-Blue @ 1750,700; Theme-Dark-Blue @ 1750,700 |
+--mac-accent-bezel-pressed-top | #6892d7 | #295fc3 | [I] | no pressed control is captured; each stop multiplied by 0.88 (the factor measured between normal and "on" toolbar buttons is of this order) |
+--mac-accent-bezel-pressed-bottom | #2361d8 | #2454ae | [I] | as above |
+--mac-accent-menu-selection | rgba(47,124,247,0.85) | rgba(47,124,247,0.88) | [C] | components/menu-item.md; composites #3f7ee7 (Theme-Light-Blue @ 95,70) and #2c6dd5 (Theme-Dark-Blue @ 95,70) over the menu material | NEW. Highlighted menu item and open menu-bar title: the accent drawn through the vibrant menu, so the composite shifts with the wallpaper (#4a87ed Morning, #2f6ed8 Evening)
+--mac-focus-ring-color | rgba(47,124,247,0.5) | rgba(75,168,248,0.5) | [C] | components/focus-ring.md; composites #89abeb on #ececec (Light-Finder-Go-To-Folder), #3e6c94 on #2f3032 | keyboardFocusIndicatorColor: a flat band, not a blur
+
+## typography.css | Text styles (San Francisco; sizes computed from cap heights, see CONVENTIONS.md)
+--mac-font-size-regular | 13px | = | [C] | components/label.md, components/push-button.md | systemFontSize; cap height 18 px at 2x
+--mac-font-size-small | 11px | = | [C] | components/label.md | smallSystemFontSize
+--mac-font-size-mini | 9px | = | [D] | AppKit NSFont.systemFontSize(for: .mini); the mini label style measured in panes is 10 pt (components/label.md) | miniSystemFontSize
+--mac-line-height-regular | 16px | = | [M] | components/label.md; alert message line pitch 16 pt (components/alert.md) |
+--mac-line-height-small | 14px | = | [M] | components/label.md; small text line pitch 14 pt in panes and notifications |
+--mac-line-height-mini | 13px | = | [C] | components/label.md (10 pt text, 13 pt line) | the scaffold has 11px
+--mac-font-body | 400 13px/16px | = | [C] | components/label.md |
+--mac-font-body-emphasized | 700 13px/16px | = | [C] | components/label.md, components/alert.md | emphasized text is Bold in Catalina (stem 3-4 px at 2x), not Semibold
+--mac-font-label | 400 10px/13px | = | [C] | components/label.md | labelFont
+--mac-font-menu | 400 14px/19px | = | [M] | components/menu-item.md; Light-Apple-Menu @ 400,52,1,38 (19 pt rows) | menuFont; row height = font size + 5
+--mac-font-menu-bar | 400 14px/22px | = | [C] | components/menu-bar.md | menuBarFont; the application menu title is 700
+--mac-font-window-title | 400 13px/16px | = | [C] | components/title-bar.md | titleBarFont; baseline 16 pt below the window top in a 22 pt bar
+--mac-font-window-title-small | 400 11px/14px | = | [C] | components/title-bar.md | NEW. utility panel title (16 pt title strip)
+--mac-font-tooltip | 400 11px/14px | = | [D] | AppKit toolTipsFont; no tooltip is shown in the screenshots |
+--mac-font-alert-title | 700 13px/16px | = | [M] | components/alert.md | NSAlert messageText
+--mac-font-alert-message | 400 11px/14px | = | [C] | components/alert.md | NSAlert informativeText
+--mac-font-headline | 700 13px/16px | = | [C] | components/label.md |
+--mac-font-subheadline | 400 11px/14px | = | [C] | components/label.md |
+--mac-font-sidebar-header | 600 11px/14px | = | [C] | components/sidebar.md; Light-Applications @ 133,208,1,16 | NEW. source list section header; weight judged from stem width
+--mac-font-table-header | 400 11px/14px | = | [C] | components/table-header.md | NEW
+--mac-font-toolbar-label | 400 11px/14px | = | [C] | components/toolbar-labelled-item.md, components/preferences-toolbar.md | NEW. label under a toolbar item
+--mac-font-tab-bar | 400 11px/14px | = | [C] | components/window-tab-bar.md | NEW. window tab titles
+--mac-font-icon-label | 400 12px/14px | = | [C] | components/icon-view.md; apps/system-preferences.md | NEW. Finder icon and preference pane labels (desktop icon labels are 700 12px with a shadow)
+--mac-font-title-1 | 400 22px/26px | = | [I] | not an Apple-published value: AppKit has no public text styles in 10.15; the size is the scaffold's choice and is not measured. Use the per-app measured sizes in the blueprints for large text |
+--mac-font-title-2 | 400 17px/22px | = | [I] | as above |
+--mac-font-title-3 | 400 15px/20px | = | [I] | as above |
+--mac-font-large-title | 400 26px/32px | = | [I] | as above; large display text measured per app (Spotlight query about 27 pt Light, Notification Center date about 34 pt Thin) |
+--mac-tracking-regular | -0.08px | = | [D] | Apple design resources tracking table for SF Pro Text 13 pt (via components/label.md) | apply only when the fallback font is in use; `normal` on Apple platforms
+--mac-tracking-small | 0.06px | = | [D] | as above, 11 pt |
+--mac-tracking-mini | 0.12px | = | [D] | as above, 10 pt |
+
+## metrics.css | Spacing, radii, lines
+--mac-hairline | 0.5px | = | [M] | every control border is one device pixel at 2x | 
+--mac-space-control-gap | 12px | = | [C] | components/push-button.md, components/dialog.md; visible gap 13 pt [M] | NEW. gap between the alignment rectangles of two push buttons; the visible bezel edges are 13 pt apart because each bezel is inset 0.5 pt. Alerts: 14 (15 visible); small controls: 8 (9 visible)
+--mac-space-window-margin | 20px | = | [C] | components/dialog.md; visible distance 20.5 pt [M] | window edge to a control's alignment rectangle; the visible bezel edge is 20.5 pt from the window edge
+--mac-space-label-gap | 8px | = | [M] | components/text-field.md, components/pop-up-button.md | form label to control: 7.5 to 9.5 measured depending on the control's edge
+--mac-space-form-row | 30px | = | [M] | components/preferences-window.md | NEW. row pitch of a label+control form (20 pt control + 10)
+--mac-space-checkbox-row | 22px | = | [M] | components/checkbox.md | NEW. pitch of stacked checkboxes or radio buttons (20 in app preferences)
+--mac-space-section | 20px | = | [M] | components/separator.md, components/preferences-window.md | NEW. space above and below a separator between form sections
+--mac-radius-control-regular | 3.5px | = | [I] | components/push-button.md; the measurement is a fit to Light-Finder-Go-To-Folder @ 569,284,14,14 and Light-System-Preferences-Bluetooth @ 1149,856,14,14 | ADOPTED VALUE: an implementation choice (product decision, 2026-10-02), not a measurement. Measured [C]: 3.75 pt on the OUTER edge of the 0.5 pt border, by least-squares fit (rms 1.5 levels at 3.75, 2.3 at 4, 2.7 at 3.5); AppKit's nominal 4 is not what is drawn. The token is 3.5px because the token layer's owner reports that, as a CSS border-radius rendered in Chromium and compared with the eight push-button bezel crops at 2x (titles masked, threshold 0.05), the summed mismatch is 0.28 points at 3.5px, 0.39 at 3.625px, 0.98 at 3.75px and 1.61 at 4px (recorded in src/styles/tokens/metrics.css; not re-run for this sheet). Why the two figures differ is discussed under "Control radius" in the introduction. Apply the radius to the border box, not to the fill or the alignment rectangle
+--mac-radius-control-small | 3.5px | = | [I] | components/push-button.md; the measurement is a fit to Light-System-Preferences-Date-and-Time @ 941,892,14,14 | ADOPTED VALUE, as for regular: an implementation choice, not a measurement. Measured [C]: 3.75 pt, same definition as regular, fitted separately (rms 1.9 levels at 3.75, 2.8 at 4, 3.0 at 3.5). The token layer's owner reports 3.5px best on the small crops too (dark: 0.06% against 0.33% at 3.75px; src/styles/tokens/metrics.css, not re-run for this sheet)
+--mac-radius-control-mini | 2.5px | = | [I] | no screenshot shows a mini rounded bezel, so no corner could be measured | ADOPTED VALUE: the token layer's provisional 2.5px, an implementation choice. Nothing here is measured. This sheet proposed 3px until 2026-10-02; that was also inferred and had no pixel basis, so neither figure has evidence over the other and the sheet now follows the token layer. The buttons batch reports that its mini pixel checks read only fill and edge pixels and cannot tell 2.5px from 3.5px. The measured regular and small bezels share one radius, so a smaller mini radius is itself an assumption
+--mac-radius-checkbox | 3px | = | [C] | components/checkbox.md; fit to Light-System-Preferences-Network @ 830,548,12,12 | NEW. Outer edge of the border. Fitted with tools/corner_fit.py on 2026-10-02: best 3 (rms 2.3 levels; 3.6 at 2.75, 3.8 at 3.25), which confirms the earlier grid reading
+--mac-radius-text-field | 0px | = | [M] | components/text-field.md | NEW. Catalina text fields are square. Search fields are rounded and were fitted on 2026-10-02: toolbar 4.25, the Automator field 4.25, the Music sidebar field 3.75 (4 / 2.5 / 3.5 before the fits; see components/toolbar-search-field.md and components/search-field.md)
+--mac-radius-window | 5px | = | [I] | components/window.md; fits to Light-Finder-Network @ 111,75,14,14 and @ 111,1485,14,14 | Edge of the opaque frame. One value for all four corners, which is a choice and not a measurement: the grid readings [M] are 5 at the top and at the bottom; fitting the alpha channel with tools/corner_fit.py on 2026-10-02 gives [C] 5 at the top (the 0.5 pt rim outside the frame fits 5.5) and [C] 5.125 at the bottom (rim 5.625) in light, and 5 to 5.25 at the top in dark. The fits are coarse, model-dependent estimates (rms 4.6 to 5.6 levels of alpha in light, 13 in dark): the tool assumes a flat background and the shadow outside the corner is not flat. Tagged [C] and called confirmed until 2026-10-03. All four corners are rounded in Catalina (windows without a bottom bar keep rounded bottom corners)
+--mac-radius-menu | 5px | = | [M] | components/menu.md; Dark-Apple-Menu @ 17,546,16,16 | measured 5 to 5.5; top corners are square when the menu hangs from the menu bar
+--mac-radius-popover | 5px | = | [M] | components/popover.md |
+--mac-radius-group | 4px | = | [C] dark; [I] light | components/box.md; fit to Light-System-Preferences-Sound @ 150,210,14,14 and Dark-System-Preferences-Sound @ 150,210,14,14 | NSBox, outer edge of the border. One value for both appearances: 4 is the dark fit, and in light it is the fit of 3.875 rounded up by an eighth of a point, a rounded value and not a measurement (tagged [C] for both until 2026-10-03). Least-squares fit over all four corners: 3.875 in light (rms 0.48 to 0.88 levels), 4 in dark (rms 0.46 to 0.52); 2.5 gives rms 2.2 to 5.6. CORRECTED on 2026-10-02: this row said 2.5px [M], a misread corner grid, and the token layer adopted 2.5px from it, so the token layer should take 4px. The indicators-and-containers batch reached the same result from the built box (no differing pixel at 4px in its four 2x corner comparisons against about 0.25% at 2.5px; its figures, not re-run for this sheet)
+--mac-radius-notification | 6px | = | [M] | components/notification-alert.md | NEW
+--mac-radius-sheet | 0px | = | [M] | components/sheet.md | NEW. sheets are square on all four corners
+--mac-focus-ring-width | 3px | = | [M] | components/focus-ring.md | 2.5 pt outside the control edge plus the 0.5 pt border it overlaps
+--mac-focus-ring-offset | 0px | = | [M] | components/focus-ring.md | the ring starts on the control's border; its outer radius is fitted [C] at 6.75 around the 4.25 pt toolbar search field and 3.25 around a square control; for other rounded controls it is taken as the control radius + 2.5, an inferred rule [I] generalised from that one fit
+
+## controls.css | Control sizes and the standard bezel
+--mac-control-height-regular | 21px | = | [M] | components/push-button.md | alignment height; visible bezel 20 pt + 1 pt of shadow below
+--mac-control-height-small | 18px | = | [M] | components/push-button.md | visible bezel 17 pt
+--mac-control-height-mini | 15px | = | [I] | components/push-button.md (mini push button not shown; a 14 pt mini segmented control is measured) | visible bezel 14 pt
+--mac-control-padding-regular | 14px | = | [M] | components/push-button.md | title ink to bezel edge 13.5 to 15.5; Finder and alert buttons are padded wider by a minimum width (69 / 83 pt)
+--mac-control-padding-small | 9px | = | [M] | components/push-button.md | 7.5 to 9 measured on the leading side
+--mac-bezel-border-top | rgba(0,0,0,0.153) | rgba(0,0,0,0.083) | [C] | components/push-button.md; composites #c8c8c8 on #ececec; dark #2c2c2d |
+--mac-bezel-border-side | rgba(0,0,0,0.184) | rgba(0,0,0,0.125) | [C] | composites #c1c1c1; dark #2a2a2b |
+--mac-bezel-border-bottom | rgba(0,0,0,0.263) | rgba(0,0,0,0.21) | [C] | composites #aeaeae; dark #262627 |
+--mac-bezel-highlight | none | inset 0 0.5px 0 rgba(255,255,255,0.167), inset 0 1px 0 rgba(255,255,255,0.04) | [C] | components/push-button.md; dark highlight rows #838383, #6a6a6a measure white 0.20 and 0.04 over the fill | the two inset layers overlap on the first row, so the first layer is 0.167: 1-(1-0.167)(1-0.04) = 0.20
+--mac-bezel-shadow | 0 0 0 0.5px rgba(0,0,0,0.022), 0 0.5px 0 rgba(0,0,0,0.063), 0 1px 0 rgba(0,0,0,0.038) | 0 0 0 0.5px rgba(0,0,0,0.02), 0 0.5px 0 rgba(0,0,0,0.043), 0 1px 0 rgba(0,0,0,0.04) | [C] | components/push-button.md; shadow rows #d0d0d0, #e3e3e3 under the bezel on #ececec measure black 0.118 and 0.039; dark 0.10 and 0.04 | layers overlap, so each alpha is chosen for the stack to composite to the measured rows: light row 1 = 1-(1-0.022)(1-0.063)(1-0.038) = 0.118. The light stack is the one the library uses and its visual harness matches the Go to Folder bezels with it (reported by the token-layer thread, not re-run here); the dark stack is computed the same way
+--mac-bezel-fill-pressed | #f0f0f0 | rgba(255,255,255,0.36) | [I] | no pressed non-default button is captured; in Catalina a pressed push button takes the accent bezel with a white title (components/push-button.md) | The one value to build with for the pressed fill of the non-accent rounded bezels: help, round and disclosure buttons. Inferred: no screenshot shows any of them pressed. Until 2026-10-03 the component pages inferred otherwise: components/help-button.md gave about #e5e5e5 in light and white at 0.35 in dark, and components/disclosure-button.md gave "fill darkens about 10%" with no figure for either appearance; no pixel evidence favours any of these figures, and the component pages now follow this row, which is the value the library builds
+
+## elevation.css | Shadows (fitted to measured alpha falloff; see components/window-shadow.md for the falloff tables)
+--mac-shadow-window | 0 0 0 0.5px rgba(0,0,0,0.19), 0 18px 40px rgba(0,0,0,0.40) | 0 0 0 0.5px rgba(0,0,0,0.95), 0 18px 40px rgba(0,0,0,0.70) | [C] | components/window-shadow.md; key-window captures have shadow margins L56 T38 R56 B74 pt | dark windows also need an inner 1 pt light rim: inset 0 0 0 1px rgba(255,255,255,0.20)
+--mac-shadow-window-inactive | 0 0 0 0.5px rgba(0,0,0,0.19), 0 8px 24px rgba(0,0,0,0.26) | 0 0 0 0.5px rgba(0,0,0,0.87), 0 8px 24px rgba(0,0,0,0.46) | [C] | components/window-shadow.md (differenced against the Desktop captures) |
+--mac-shadow-panel | 0 0 0 0.5px rgba(0,0,0,0.19), 0 4px 16px rgba(0,0,0,0.26) | 0 0 0 0.5px rgba(0,0,0,0.85), 0 4px 16px rgba(0,0,0,0.30) | [C] | components/window-shadow.md | NEW. utility panels
+--mac-shadow-menu | 0 0 0 0.5px rgba(0,0,0,0.15), 0 3px 14px rgba(0,0,0,0.31) | 0 0 0 0.5px rgba(0,0,0,0.80), 0 3px 14px rgba(0,0,0,0.31) | [C] | components/menu.md | dark menus also have an inner rim: inset 0 0 0 1px rgba(255,255,255,0.15)
+--mac-shadow-popover | 0 0 0 0.5px rgba(0,0,0,0.19), 0 4px 16px rgba(0,0,0,0.26) | 0 0 0 0.5px rgba(0,0,0,0.85), 0 4px 16px rgba(0,0,0,0.30) | [C] | components/popover.md |
+--mac-shadow-sheet | 0 5px 18px rgba(0,0,0,0.30) | = | [C] | components/sheet.md; samples over white: black 0.19 at 0.5 pt, 0.125 at 4 pt, 0.065 at 9 pt, 0.03 at 14 pt | clipped above the attachment line
+--mac-shadow-notification | 0 0 0 0.5px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.18), 0 4px 16px rgba(0,0,0,0.26) | 0 0 0 0.5px rgba(0,0,0,0.75), 0 1px 12px rgba(0,0,0,0.30) | [C] | components/notification-alert.md | NEW
+--mac-shadow-tooltip | 0 0 0 0.5px rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.20) | = | [I] | no tooltip is shown in the screenshots |
+
+## materials.css | Materials (tint over a blurred, saturated backdrop; fitted where a clean backdrop exists)
+--mac-material-menu | rgba(234,234,234,0.70) | rgba(62,63,64,0.70) | [C] | components/menu.md, components/material.md | filter blur(22px) saturate(1.8) light, saturate(2.2) dark
+--mac-material-menu-opaque | #f0f0f0 | #343536 | [M] | components/menu.md; Light-Contacts @ 1106,390,1,42; Dark-Contacts @ 1156,435,1,42 | menu over a neutral window
+--mac-material-menu-bar | rgba(255,255,255,0.67) | rgba(30,28,34,0.78) | [C] | components/menu-bar.md | NEW. filter blur(20px) saturate(1.7 / 1.8); the blur radius is [I]. Over the default wallpaper the bar measures #c5e0f1 / #1b2237
+--mac-material-sidebar | rgba(232,232,232,0.78) | rgba(42,42,42,0.72) | [I] | components/sidebar.md, components/material.md | low-confidence fit: window captures show a flat sidebar, so only two wallpaper composites constrain it
+--mac-material-sidebar-opaque | #e7e8e8 | #2c2d2f | [M] | components/sidebar.md; Light-Finder-Home @ 130,600; Dark-Finder-Home @ 130,600 | sidebar as captured in window screenshots; inactive light window: #f6f6f6
+--mac-material-titlebar | linear-gradient(#e5e5e5, #cdcdcd) | linear-gradient(#404142, #343435) | [M] | components/title-bar.md | opaque in every capture; unified 55 pt bar stops 0/20/40/60/80/100%: #e5e5e5 #e1e1e1 #dbdbdb #d6d6d6 #d1d1d1 #cdcdcd; dark #404142 #3c3e3f #3b3c3d #38393a #363738 #343435
+--mac-material-titlebar-inactive | #f6f6f6 | #2d2d2d | [M] | components/title-bar.md | NEW. flat fill of an inactive window's title bar
+--mac-material-popover | rgba(242,242,242,0.86) | rgba(40,40,40,0.82) | [I] | components/popover.md, components/material.md | alpha and blur are inferred; the tint is chosen so that the material composites to the measured opaque fill over a neutral window
+--mac-material-popover-opaque | #f2f2f2 | #282828 | [M] | components/popover.md; Light-Maps @ 700,700; Dark-Maps @ 700,700; Light-Reminders @ 1900,440; Dark-Reminders @ 1900,440; Light-Calendar @ 2380,900 | NEW. popover body as captured in Maps, Reminders and Calendar; use as the fallback. Dark popovers add a 1 pt inner rim #535353
+--mac-material-sheet | rgba(236,236,236,0.72) | rgba(40,40,40,0.75) | [C] | components/sheet.md; composites #edeeee over white, #c4d5e6 over sky, #2d2d30 over a dark document | filter blur(30px) saturate(1.2)
+--mac-material-hud | rgba(30,30,30,0.70) | = | [I] | components/hud-window.md, components/app-switcher.md | app switcher panel measures #e5e5e3 (light) / #45484b (dark) over its backdrop
+--mac-material-dock | rgba(255,255,255,0.27) | rgba(60,60,60,0.25) | [C] | components/dock.md | NEW. light fitted; dark is [I]. filter blur(20px) saturate(1.7). Over the default wallpaper the shelf measures #456689 / #152137
+--mac-material-notification-center | rgba(238,244,246,0.47) | rgba(58,58,56,0.42) | [C] | components/notification-center.md | NEW. filter blur(25px) saturate(1.7) / blur(30px) saturate(1.6)
+--mac-material-spotlight | rgba(224,222,218,0.65) | #2b2c2d | [C] | components/spotlight.md | NEW. dark was captured without a backdrop, so only its base colour is known
+--mac-material-notification | rgba(246,246,246,0.72) | rgba(40,40,40,0.72) | [I] | components/notification-alert.md; captured opaque #ededed / #383838 | NEW
+--mac-material-under-window | rgba(230,230,230,0.70) | rgba(30,30,30,0.70) | [I] | not isolated in any screenshot |
+--mac-material-filter | blur(30px) saturate(180%) | = | [I] | components/material.md; fitted radii range from 20 to 30 px by surface |

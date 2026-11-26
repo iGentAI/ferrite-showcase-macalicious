@@ -1,0 +1,43 @@
+/*
+ * Search field values that no shared token holds. Placeholder, text, focus ring and the
+ * standard field's fill (--mac-color-text-field-background) are shared.
+ */
+:root {
+  /* [provisional] Edges of the standard field, which no screenshot shows: the text field's
+     (black at 25%; in Dark Aqua white at 12%, 9% and 25%). */
+  --mac-search-field-border-top: light-dark(rgb(0 0 0 / 0.25), rgb(255 255 255 / 0.12));
+  --mac-search-field-border-side: light-dark(rgb(0 0 0 / 0.25), rgb(255 255 255 / 0.09));
+  --mac-search-field-border-bottom: light-dark(rgb(0 0 0 / 0.25), rgb(255 255 255 / 0.25));
+
+  /* [measured, computed] Sidebar field. Fill: #d2d3d3 on #e8e9e9 (Music @ 400,226) and #cfcfcf
+     on #e4e4e4 (Automator @ 640,236), black at 9%; Dark Aqua #3b3c3f on #2c2d30 and #3e3f41
+     on #2f3032, white at 7%. */
+  --mac-search-field-sidebar-fill: light-dark(rgb(0 0 0 / 0.09), rgb(255 255 255 / 0.07));
+  /* [measured, computed] Sidebar field edges. Aqua: #c1c2c2 on #e8e9e9 on every side, black
+     at 17% (Music @ 400,203 and 133,226). Dark Aqua: #4a4b4d, #434548 and #68696c on #2c2d30,
+     white at 14%, 11% and 28% (Music @ 400,203; 133,226; 400,248). */
+  --mac-search-field-sidebar-border-top: light-dark(rgb(0 0 0 / 0.17), rgb(255 255 255 / 0.14));
+  --mac-search-field-sidebar-border-side: light-dark(rgb(0 0 0 / 0.17), rgb(255 255 255 / 0.11));
+  --mac-search-field-sidebar-border-bottom: light-dark(rgb(0 0 0 / 0.17), rgb(255 255 255 / 0.28));
+  /* [measured, computed] Shading inside the edge, Dark Aqua only: three device pixel rows
+     under the top edge, #37383c, #38393c and #39393d on the fill #3b3c3f (Music @ 400,204..206;
+     the layers stack to black at 6.5%, 5% and 3%), and one row above the bottom edge at white
+     7% (#48494e, @ 400,247). Aqua has none. */
+  --mac-search-field-inner-shadow:
+    inset 0 0.5px 0 light-dark(transparent, rgb(0 0 0 / 0.016)),
+    inset 0 1px 0 light-dark(transparent, rgb(0 0 0 / 0.02)),
+    inset 0 1.5px 0 light-dark(transparent, rgb(0 0 0 / 0.03)),
+    inset 0 -0.5px 0 light-dark(transparent, rgb(255 255 255 / 0.07));
+  /* [measured, computed] Magnifying glass: #3a3c3b at the centre of the stroke on #d2d3d3
+     (Music @ 146,226), white in Dark Aqua (@ 146,226). */
+  --mac-search-field-glyph: light-dark(rgb(0 0 0 / 0.74), #ffffff);
+  /* [provisional] Cancel button disc; no in-content field shows it. The values are those of
+     the toolbar search field's (Finder search). */
+  --mac-search-field-clear: light-dark(#7b7b7b, #b9b9ba);
+  /* [measured] Store field, on the App Store's sidebar (Mac-App-Store, both captures): fill
+     @ 400,200; the 1 pt edge and the placeholder, one colour, @ 400,174 and 313,200; the
+     glass @ 272,200. */
+  --mac-search-field-store-fill: light-dark(#e3e5e5, #454649);
+  --mac-search-field-store-border: light-dark(#aaacac, #68696c);
+  --mac-search-field-store-glyph: light-dark(#646666, #a3a4a7);
+}

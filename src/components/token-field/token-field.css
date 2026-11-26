@@ -1,0 +1,222 @@
+/*
+ * Token field (NSTokenField).
+ *
+ * The root is the field: ::before draws the text field bezel, ::after the focus ring. Tokens
+ * and the input flow inside it like words and wrap to further lines. A token is selected
+ * while it has the focus, so the selected look is :focus and needs no state.
+ *
+ * States
+ *   [data-bordered]                    absent: no bezel and no padding (Mail's header)
+ *   [data-token-style="squared" | "plain-squared" | "none"]
+ *   [data-disabled]                    dimmed tokens and text
+ *   :focus-within                      focus ring on the bezel, key window only
+ *   .mac-token-field-token:focus       selected token: emphasised selection
+ *   [data-window-state="main" | "inactive"] *
+ *                                      window that is not key: no ring, grey selection
+ *   [data-force~="focus"]              static preview of the focus ring, read from the input
+ */
+.mac-token-field {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  box-sizing: border-box;
+  width: 240px;
+  min-width: 0;
+  max-width: 100%;
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  cursor: text;
+}
+
+/* Bezel: 22 pt high around one line of 19 pt tokens. */
+.mac-token-field:where([data-bordered]) {
+  padding: 1.5px 2px;
+}
+
+.mac-token-field:where([data-bordered])::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  box-sizing: border-box;
+  border: var(--mac-hairline) solid;
+  border-color: var(--mac-color-field-border) var(--mac-token-field-border-side)
+    var(--mac-token-field-border-bottom);
+  background: var(--mac-color-text-field-background) padding-box;
+  box-shadow: var(--mac-token-field-inner-shadow);
+  pointer-events: none;
+}
+
+/* The list box takes no box of its own: tokens and input wrap together. */
+.mac-token-field-tokens {
+  display: contents;
+}
+
+/* Token: 19 pt high, corner 2 pt, text 4.5 pt from its edges, baseline 14 pt below its top. */
+.mac-token-field-token {
+  --_fill: var(--mac-token-field-token-fill);
+
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  box-sizing: border-box;
+  max-width: 100%;
+  height: 19px;
+  padding: 0 4.5px;
+  border-radius: 2px;
+  background: var(--_fill);
+  color: var(--mac-color-label);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+}
+
+.mac-token-field-token-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Chevron: 6 x 3.5 pt, 5.5 pt after the text, 4 pt before the token's edge, 8 pt below its
+   top. The stroke is 1.5 pt with a mitred point and round ends. */
+.mac-token-field-token-menu {
+  flex: none;
+  align-self: stretch;
+  box-sizing: content-box;
+  width: 6.25px;
+  margin-inline-end: -4.5px;
+  padding: 7.5px 4.25px 0 5px;
+}
+
+.mac-token-field-token-menu > svg {
+  display: block;
+  width: 6.25px;
+  height: 3.65px;
+  overflow: visible;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: miter;
+}
+
+/* Hover (provisional): the fill darkens slightly. */
+.mac-token-field-token:where(:hover, [data-force~="hover"]) {
+  background: linear-gradient(var(--mac-color-separator), var(--mac-color-separator)), var(--_fill);
+}
+
+/* Token styles */
+.mac-token-field:where([data-token-style="squared"], [data-token-style="plain-squared"])
+.mac-token-field-token {
+  border-radius: 0;
+}
+
+.mac-token-field:where([data-token-style="plain-squared"], [data-token-style="none"])
+  .mac-token-field-token {
+  --_fill: transparent;
+}
+
+.mac-token-field:where([data-token-style="none"]) .mac-token-field-token {
+  padding: 0;
+  border-radius: 0;
+}
+
+.mac-token-field:where([data-token-style="none"]) .mac-token-field-token-text::after {
+  content: ",";
+}
+
+/* Selected token (provisional): emphasised selection in the key window, grey outside it. */
+.mac-token-field-token:where(:focus, [data-force~="focus"]) {
+  background: var(--mac-color-selected-content-background-unemphasized);
+}
+
+.mac-token-field-token:where(:focus, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-content-text);
+}
+
+/* The text being typed, after the last token. */
+.mac-token-field-input {
+  flex: 1 1 40px;
+  box-sizing: border-box;
+  width: 40px;
+  min-width: 40px;
+  height: 19px;
+  margin: 0;
+  padding: 0 1.5px;
+  border: 0;
+  background: none;
+  color: inherit;
+  caret-color: var(--mac-color-text);
+  font: inherit;
+  letter-spacing: inherit;
+  appearance: none;
+  outline: none;
+}
+
+.mac-token-field-input::placeholder {
+  color: var(--mac-color-text-placeholder);
+  opacity: 1;
+  -webkit-text-fill-color: currentcolor;
+}
+
+.mac-token-field-input::selection {
+  background: var(--mac-highlight);
+}
+
+.mac-token-field-input:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+)::selection {
+  background: var(--mac-color-selected-text-background-unemphasized);
+}
+
+/* Disabled (provisional) */
+.mac-token-field:where([data-disabled]) {
+  color: var(--mac-color-control-text-disabled);
+  cursor: default;
+}
+
+.mac-token-field:where([data-disabled]) .mac-token-field-token {
+  opacity: 0.5;
+}
+
+.mac-token-field-input:where(:disabled) {
+  opacity: 1;
+  -webkit-text-fill-color: currentcolor;
+}
+
+/* Focus ring, as on the text field: a 3.5 pt band from 2.5 pt outside the edge to 1 pt
+   inside it. Only a field with a bezel draws it. */
+.mac-token-field:where([data-bordered]):where(:focus-within, :has(> [data-force~="focus"])):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+)::after {
+  content: "";
+  position: absolute;
+  inset: calc(var(--mac-hairline) - var(--mac-focus-ring-width) - var(--mac-focus-ring-offset));
+  border: calc(var(--mac-focus-ring-width) + var(--mac-hairline)) solid var(--mac-focus-ring-color);
+  border-radius: calc(var(--mac-focus-ring-width) - var(--mac-hairline));
+  pointer-events: none;
+}
+
+@media (forced-colors: active) {
+  .mac-token-field:where([data-bordered])::before {
+    border-color: FieldText;
+  }
+
+  .mac-token-field-token {
+    border: 1px solid ButtonText;
+  }
+
+  .mac-token-field-token:where(:focus) {
+    background: Highlight;
+    color: HighlightText;
+  }
+}

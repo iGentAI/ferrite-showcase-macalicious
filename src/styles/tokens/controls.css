@@ -1,0 +1,121 @@
+/*
+ * Control sizes (NSControl.ControlSize: regular, small, mini) and the shared control bezel.
+ *
+ * A control's CSS box is its AppKit alignment rectangle, so Auto Layout distances (12 pt between
+ * buttons, 20 pt window margins) carry over as plain CSS gaps. The visible bezel is drawn inside
+ * that box, inset by one hairline on every side: the hairline above and beside the bezel holds
+ * its faint outer halo, the one below holds its drop shadow.
+ *
+ * Measured on the regular push buttons of Light-Finder-Go-To-Folder, Dark-Finder-Go-to-Folder and
+ * Light-System-Preferences-Security-and-Privacy (2x captures, ICC-converted to sRGB), and in
+ * agreement with reference/spec/components/push-button.md:
+ *
+ *   alignment box 21 pt high; bezel 20 pt high including a 0.5 pt border
+ *   light  fill #ffffff; border black at 15.3% (top) / 18.4% (sides) / 26.3% (bottom)
+ *   dark   fill white at 25%; border black at 8.3% / 12.5% / 21%; top inner highlight white
+ *          at 20% on the first device pixel row and 4% on the second
+ *   halo   black at 2.2% one device pixel outside the border
+ *   shadow black at about 12% on the first device pixel row below, 4% on the second
+ *   disabled  whole bezel at 50% opacity, text at 25% label colour
+ *
+ * The shadow and highlight tokens stack: a row's measured strength is the composite of every
+ * layer that covers it, so the individual alphas below are smaller than the measured ones
+ * (0.167 over 0.04 gives the 20% highlight row; 0.022, 0.063 and 0.038 give the 12% shadow row
+ * in Aqua, and 0.02, 0.043 and 0.04 the 10% row in Dark Aqua).
+ */
+:root {
+  /* Size ramp: alignment heights. The visible bezel is 1 pt shorter (20, 17, 14). */
+  --mac-control-height-regular: 21px; /* [measured] */
+  --mac-control-height-small: 18px; /* [measured] System-Preferences-Apple-ID, Copy-Replace */
+  --mac-control-height-mini: 15px; /* [provisional] no mini push button is shown */
+  /* Title inset from the alignment box edge. Title ink sits 13.5 to 15.5 pt from the bezel
+     edge at intrinsic width (AppKit: 14 pt each side); dialog buttons are wider because of a
+     minimum width, not more padding. */
+  --mac-control-padding-regular: 14px; /* [measured] */
+  --mac-control-padding-small: 9px; /* [measured] 7.5 to 9 pt on the leading side */
+  --mac-control-padding-mini: 7px; /* [provisional] */
+
+  /* Inset of the visible bezel inside the alignment box, and its border [measured] */
+  --mac-bezel-inset: var(--mac-hairline);
+  --mac-bezel-border-width: var(--mac-hairline);
+
+  /*
+   * A bezel is painted in three parts so that translucent fills and borders never overlap:
+   *   fill     an <image>, clipped to the padding box
+   *   border   three solid colours (top, sides, bottom) on the hairline border
+   *   under    an <image> painted under the border, for bezels whose border is itself a
+   *            gradient (the light accent bezel); `none` otherwise
+   */
+
+  /* Standard (unemphasised) bezel [measured, computed] from composites on #ececec / #2f3031 */
+  --mac-bezel-fill: linear-gradient(var(--mac-color-control), var(--mac-color-control));
+  --mac-bezel-under: none;
+  --mac-bezel-border-top: light-dark(rgb(0 0 0 / 0.153), rgb(0 0 0 / 0.083));
+  --mac-bezel-border-side: light-dark(rgb(0 0 0 / 0.184), rgb(0 0 0 / 0.125));
+  --mac-bezel-border-bottom: light-dark(rgb(0 0 0 / 0.263), rgb(0 0 0 / 0.21));
+  --mac-bezel-highlight:
+    inset 0 0.5px 0 light-dark(transparent, rgb(255 255 255 / 0.167)),
+    inset 0 1px 0 light-dark(transparent, rgb(255 255 255 / 0.04));
+  --mac-bezel-shadow:
+    0 0 0 0.5px light-dark(rgb(0 0 0 / 0.022), rgb(0 0 0 / 0.02)),
+    0 0.5px 0 0 light-dark(rgb(0 0 0 / 0.063), rgb(0 0 0 / 0.043)),
+    0 1px 0 0 light-dark(rgb(0 0 0 / 0.038), rgb(0 0 0 / 0.04));
+
+  /* Standard bezel while pressed, for a control that does not highlight with the accent
+     [provisional]: no pressed non-default button is captured. A pressed push button takes the
+     accent bezel instead. */
+  --mac-bezel-fill-pressed: linear-gradient(
+    light-dark(#f0f0f0, rgb(255 255 255 / 0.36)),
+    light-dark(#f0f0f0, rgb(255 255 255 / 0.36))
+  );
+
+  /*
+   * Accent (emphasised) bezel. Its fill, hairline gradient and top highlight depend on the
+   * accent colour and are declared in accent.css (--mac-bezel-accent-fill, -fill-pressed,
+   * -under, -highlight). Only the neutral borders are here.
+   * Light: the border is a gradient of the accent, painted under a transparent border.
+   * Dark: the border is translucent black, like the standard bezel but stronger: #29292a,
+   * #272728 and #232325 on #303032 [measured, computed].
+   */
+  --mac-bezel-accent-border-top: light-dark(transparent, rgb(0 0 0 / 0.146));
+  --mac-bezel-accent-border-side: light-dark(transparent, rgb(0 0 0 / 0.19));
+  --mac-bezel-accent-border-bottom: light-dark(transparent, rgb(0 0 0 / 0.27));
+
+  /* Disabled bezel: the whole bezel at half opacity [measured, computed] #f6f6f6 on #ececec,
+     #4a4a4b on #2f3031. --mac-color-control-disabled is the same fill for a bezel drawn
+     without an opacity group. */
+  --mac-bezel-opacity-disabled: 0.5;
+
+  /*
+   * Small-square bezel (NSBezelStyle smallSquare): the square-cornered cells under a list, with
+   * a plus and a minus (the gradient button), and any control that joins such a bar. Read from
+   * System-Preferences-Language-and-Region, light and dark, column x=210 and row y=913
+   * (reference/spec/components/gradient-button.md).
+   */
+  /* [measured] the 19 pt fill: almost flat in Aqua (#f9f9f9 at the top, #f7f7f7 in the middle,
+     #f3f3f3 at the bottom), flat in Dark Aqua */
+  --mac-bezel-square-fill: linear-gradient(
+    to bottom,
+    light-dark(#f9f9f9, #3c3c3c),
+    light-dark(#f8f8f8, #3c3c3c) 40%,
+    light-dark(#f7f7f7, #3c3c3c) 60%,
+    light-dark(#f6f6f6, #3c3c3c) 80%,
+    light-dark(#f5f5f5, #3c3c3c) 96%,
+    light-dark(#f3f3f3, #3c3c3c)
+  );
+  /* [measured] the 1 pt outer border, and the line between two cells */
+  --mac-bezel-square-border: light-dark(#b4b4b4, #7f7f7f);
+  --mac-bezel-square-separator: light-dark(#b7b7b7, #7f7f7f);
+  /* [provisional] pressed, on, or with its menu open: no screenshot shows it */
+  --mac-bezel-square-fill-pressed: light-dark(#d9d9d9, #5a5a5a);
+
+  /*
+   * Controls drawn without a bezel (an image button, a disclosure triangle). Neither state is
+   * in a screenshot; both values are the spec's inference from AppKit.
+   */
+  /* [provisional] disabled: the whole control at half opacity */
+  --mac-control-opacity-disabled: 0.5;
+  /* [provisional] pressed: AppKit composites the image with black at about 30%; used as
+     filter: brightness(var(--mac-image-brightness-pressed)) */
+  --mac-image-brightness-pressed: 0.7;
+}

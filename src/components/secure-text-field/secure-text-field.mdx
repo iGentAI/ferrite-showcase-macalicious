@@ -1,0 +1,101 @@
+---
+title: Secure Text Field
+description: A text field for passwords that shows a bullet for every character and warns when Caps Lock is on. No visual reference exists in the screenshots.
+order: 32
+---
+
+<Example name="basic" both />
+
+The AppKit control is `NSSecureTextField`, a text field that hides what is typed.
+`SecureTextField` is a [Text Field](/components/text-field) whose input has `type="password"`;
+it takes the same props and looks the same.
+
+**No visual reference.** None of the 294 reference screenshots shows a standard secure text
+field (the only password fields shown belong to the login window, a different control). It is
+built from Apple's documented behaviour and the measured text field, and everything specific
+to it is provisional.
+
+## Usage
+
+```tsx
+import { SecureTextField } from "macalicious/secure-text-field";
+import "macalicious/text-field.css";
+import "macalicious/secure-text-field.css";
+
+<SecureTextField aria-label="Password" autoComplete="current-password" />
+<SecureTextField value={password} onValueChange={setPassword} placeholder="Required" />
+```
+
+Or copy the source into your project: `npx macalicious add secure-text-field`.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for text fields:
+
+- Use a secure text field whenever you ask for sensitive data such as a password.
+- The field obscures its content; do not show the content anywhere else, for example in an
+  expansion tooltip.
+- In an authentication dialog, stack Name and Password with right-aligned labels.
+
+<Example name="sign-in" />
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Bullets | `echo="bullets"` (default) | One bullet per character, 1 pt apart, in the text colour |
+| Nothing echoed | `echo="none"` | Typed text is invisible; the insertion point still moves |
+| Placeholder, focused, disabled, window not key | as on the text field | As on the text field |
+| Caps Lock on | Caps Lock is on while the field has the keyboard | A 13 pt outlined arrow at the trailing edge |
+
+The bullets are the browser's own for a password input; their size differs slightly between
+engines.
+
+## Sizes
+
+`size` is `regular` (20 pt), `small` (17 pt) or `mini` (14 pt), as on the text field. The
+`bezel` prop works too.
+
+## API
+
+<PropsTable name="SecureTextFieldProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-echo` | input | `bullets`, `none` | Reflects `echo`. |
+| `data-bezel`, `data-size`, `data-disabled` | root | as on the text field | Reflect the text field props. |
+
+Classes: `.mac-secure-text-field` (on the text field's root, next to `.mac-text-field`) and
+`.mac-secure-text-field-caps-lock`.
+
+## Accessibility
+
+- The control is a native `<input type="password">`: assistive technology announces it as a
+  password field and does not read its content, and password managers recognise it. Set
+  `autoComplete` to `current-password` or `new-password`.
+- Name it like a text field: a visible label, a Base UI `Field.Label` or `aria-label`.
+- The Caps Lock indicator is an image named by `capsLockLabel`. The browser reports the Caps
+  Lock state only with a key event, so the indicator appears from the first key pressed in the
+  field.
+- `echo="none"` only hides the bullets from view; the field stays a password input.
+
+## Visual comparison
+
+No comparison with a screenshot of the control is possible: it is not in the reference set, which
+`secure-text-field.visual.json` records as pending. Its bezel is compared with the plain text
+field of System Preferences > Sharing in both appearances, because AppKit draws the two with the
+same cell; the screenshot's text is masked, so the score is of the bezel alone. The spec's
+inventory lists the secure text field as present only in the login-window form, a translucent
+capsule measured in
+`10-15-Catalina-Light-Fast-User-Switching.png` and its dark twin (the
+[Login Window](/components/login-window) page compares it). None of the System Preferences
+panes that deal with passwords (Users & Groups, Security & Privacy) shows a password field:
+they offer a Change Password… button, and the sheet it opens is not captured.
+`npm run visual -- secure-text-field`
+also checks pixels against the values the spec infers from the text field: each hairline of
+the bezel, the focus ring after a click, and that a typed character leaves the rest of the
+fill untouched. All of them pass in both appearances at 1x and 2x.
+
+Provisional: the bullet spacing, the Caps Lock indicator's artwork and position, `echo="none"`.

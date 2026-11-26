@@ -1,0 +1,190 @@
+/*
+ * Message bubble (the transcript of Messages).
+ *
+ * A bubble is a rounded rectangle, 12 pt at the corners, so one line of text gives a 24 pt
+ * capsule. The tail is a separate curved shape at the bottom corner on the writer's side,
+ * drawn in ::after with a clip path and reaching 4.7 pt beyond the bubble. Sent bubbles carry
+ * a faint vertical gradient; received ones are flat grey. Nothing changes with the window
+ * state: the reference window is not key and the bubbles keep their colour. Sides are logical:
+ * right to left, sent bubbles and their tails are on the left.
+ *
+ * States
+ *   [data-direction="sent" | "received"]   side, fill and text colour
+ *   [data-service="sms"]                   green instead of blue on a sent bubble (provisional)
+ *   [data-tail]                            the tail is drawn
+ *   [data-sending]                         half opacity until the message is delivered
+ *                                          (provisional)
+ *
+ * Consumer variable
+ *   --mac-message-bubble-max-width         widest bubble, as a share of the transcript inside
+ *                                          its margins (61.6%)
+ */
+.mac-message-bubble-transcript {
+  box-sizing: border-box;
+  background: var(--mac-message-bubble-transcript-background);
+}
+
+/* Measured in the 459 pt transcript: bubbles keep 17 pt to either edge (17.15 pt in the
+   screenshot, which a browser snaps to the device pixel; a tail reaches 4.7 pt into that
+   margin) and the first header line starts 10 pt below the top. */
+.mac-message-bubble-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px 17px 8px;
+}
+
+/* Header: 11 pt semibold on a 14 pt pitch, centred; the bubble under it starts 4 pt below. */
+.mac-message-bubble-header,
+.mac-message-bubble-status {
+  color: var(--mac-message-bubble-status-text);
+  font:
+    var(--mac-font-weight-semibold) var(--mac-font-size-small) / var(--mac-line-height-small)
+    var(--mac-font-family-system);
+  letter-spacing: var(--mac-tracking-small);
+  cursor: default;
+}
+
+.mac-message-bubble-header {
+  align-self: center;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+/* A header further down the transcript, between two runs (provisional). */
+.mac-message-bubble-header:where(:not(:first-child)) {
+  margin-top: 12px;
+}
+
+.mac-message-bubble-header-title {
+  display: block;
+}
+
+/* Status: 3 pt under its bubble, ending at the tip of the tail; the next bubble follows 4 pt
+   below, which makes the measured 21 pt from one bubble to the next. */
+.mac-message-bubble-status {
+  align-self: flex-end;
+  margin: 3px 0 4px;
+  margin-inline-end: -4.7px;
+}
+
+/* The bubble. Text is 13 pt on a 16 pt pitch with its cap top 7.5 pt below the bubble's top:
+   4 pt of padding. The padding beside the text is measured from the ink: 9.6 pt on the tail
+   side and 9.4 pt on the other in a received bubble, 8.7 pt at the leading edge of a sent
+   one. The corner is nominally 12 pt and is drawn with 11.7px, which matches the rows of the
+   screenshot's corners better (Light-Messages @ 1644,296,34,24). */
+.mac-message-bubble {
+  --_fill: var(--mac-message-bubble-received-fill);
+  --_fill-end: var(--mac-message-bubble-received-fill);
+
+  position: relative;
+  box-sizing: border-box;
+  max-width: var(--mac-message-bubble-max-width, 61.6%);
+  padding-block: 4px;
+  padding-inline: 9.6px 9.4px;
+  border-radius: 11.7px;
+  background: linear-gradient(var(--_fill), var(--_fill-end));
+  color: var(--mac-message-bubble-received-text);
+  font: var(--mac-font-body);
+  letter-spacing: var(--mac-tracking-regular);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+/* Bubbles that follow one another: 1 pt within a run, 8 pt where the writer changes
+   (provisional; the screenshots show one bubble from each writer with a status between). */
+.mac-message-bubble + .mac-message-bubble {
+  margin-top: 1px;
+}
+
+.mac-message-bubble:where([data-direction="sent"])
+  + .mac-message-bubble:where([data-direction="received"]),
+.mac-message-bubble:where([data-direction="received"])
+  + .mac-message-bubble:where([data-direction="sent"]) {
+  margin-top: 8px;
+}
+
+.mac-message-bubble:where([data-direction="sent"]) {
+  --_fill: var(--mac-message-bubble-imessage-fill-top);
+  --_fill-end: var(--mac-message-bubble-imessage-fill-bottom);
+
+  align-self: flex-end;
+  padding-inline: 8.7px 10.3px;
+  color: var(--mac-message-bubble-sent-text);
+}
+
+.mac-message-bubble:where([data-direction="sent"][data-service="sms"]) {
+  --_fill: var(--mac-message-bubble-sms-fill-top);
+  --_fill-end: var(--mac-message-bubble-sms-fill-bottom);
+}
+
+.mac-message-bubble:where([data-sending]) {
+  opacity: 0.5;
+}
+
+/* The writer's name, for assistive technology only. */
+.mac-message-bubble-sender {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Tail: a 12 x 15 pt box whose middle column is the bubble's edge. The path was fitted to the
+   sent bubble row by row (Light-Messages @ 2140,356,50,22): the edge steps out by 0.15 pt
+   10.3 pt above the bottom, turns outward over the last 6.5 pt and ends in a point 4.7 pt
+   out, 0.1 pt above the bottom; the underside leaves the point level and rises under the
+   bubble's round corner. It is drawn for the right side and mirrored for the left one: the
+   leading side left to right, the trailing side right to left. */
+.mac-message-bubble:where([data-tail])::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: -6px;
+  bottom: 0;
+  width: 12px;
+  height: 15px;
+  background: var(--_fill-end);
+  clip-path: path("M1 1H6V4.7H6.15V8.5C6.15 11.8 8 14.1 10.7 14.9C6.8 14.9 4.1 14.51 1 12.06Z");
+}
+
+.mac-message-bubble:where([data-tail][data-direction="received"])::after {
+  inset-inline: -6px auto;
+  transform: scaleX(-1);
+}
+
+.mac-message-bubble:where([data-tail]:dir(rtl))::after {
+  transform: scaleX(-1);
+}
+
+.mac-message-bubble:where([data-tail][data-direction="received"]:dir(rtl))::after {
+  transform: none;
+}
+
+@media (forced-colors: active) {
+  .mac-message-bubble {
+    --_fill-end: CanvasText;
+
+    border: 1px solid CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .mac-message-bubble:where([data-direction="sent"]) {
+    --_fill-end: Highlight;
+
+    border-color: Highlight;
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .mac-message-bubble:where([data-tail])::after {
+    forced-color-adjust: none;
+  }
+
+  .mac-message-bubble-header,
+  .mac-message-bubble-status {
+    color: CanvasText;
+  }
+}

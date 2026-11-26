@@ -1,0 +1,17 @@
+/*
+ * Ruler colours (reference/spec/components/ruler.md), measured in TextEdit:
+ * 10-15-Catalina-Light-Text-Edit.png and 10-15-Catalina-Dark-TextEdit.png, same coordinates.
+ * The numbers are the shared label colour, which gives the measured #242424 and #dfdfdf.
+ */
+:root {
+  /* [measured] fill @ 400,180 */
+  --mac-ruler-fill: light-dark(#f0f0f0, #2c2e31);
+  /* [measured] rule and ticks @ 400,202 and 140,204 */
+  --mac-ruler-rule: light-dark(#b5b5b5, #606164);
+  /* [measured] bottom border @ 400,234 */
+  --mac-ruler-border: light-dark(#d9d9d9, #404245);
+  /* [measured, computed] markers: #787878 on the fill is black at 50%, #a0a0a2 is white at
+     55% (@ 268,190). Where the first-line and head indent overlap at the origin the same
+     alphas give the measured #3c3c3c and #d4d5d5 (@ 122,195). */
+  --mac-ruler-marker: light-dark(rgb(0 0 0 / 0.5), rgb(255 255 255 / 0.55));
+}

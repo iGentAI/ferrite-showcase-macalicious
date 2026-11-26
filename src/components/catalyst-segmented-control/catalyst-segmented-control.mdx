@@ -1,0 +1,140 @@
+---
+title: Catalyst Segmented Control
+description: The segmented control of a Mac Catalyst app, a grey track whose selected segment is a raised pill, as the People and Devices switch of Find My.
+---
+
+<Example name="basic" both />
+
+An iPad app that runs on the Mac keeps UIKit's segmented control: a grey track 24.5 pt tall
+with titles of equal width, the selected one on a raised pill. Find My's sidebar switches
+between People and Devices with it. It is a radio group, built on Base UI's RadioGroup and
+Radio. AppKit's own control, with its bezel and its accent-coloured selection, is the
+[Segmented Control](/components/segmented-control); the map types that Find My floats over its
+map are the `MapTypeControl` of [Map Controls](/components/map-controls), the same control at
+22.25 pt over a map.
+
+## Usage
+
+```tsx
+import { CatalystSegment, CatalystSegmentedControl } from "macalicious/catalyst-segmented-control";
+import "macalicious/catalyst-segmented-control.css";
+
+<CatalystSegmentedControl
+  aria-label="List"
+  value={list}
+  onValueChange={(value) => setList(value as string)}
+>
+  <CatalystSegment value="people">People</CatalystSegment>
+  <CatalystSegment value="devices">Devices</CatalystSegment>
+</CatalystSegmentedControl>
+```
+
+Or copy the source into your project: `npx macalicious add catalyst-segmented-control`. See
+[Installation](/installation).
+
+The control is as wide as its titles need, or as wide as you make it; the segments share the
+width equally and a title that does not fit ends in an ellipsis. `value`, `defaultValue`,
+`onValueChange`, `disabled` and `name` are Base UI's.
+
+<Example name="segments" both />
+
+## Guidelines
+
+The macOS Human Interface Guidelines describe AppKit's segmented control, not this one (not
+verified against a source for Catalyst). What the captured app does:
+
+- Use it in the content of a Catalyst app, for a choice between a few views of the same
+  place. In a toolbar, a Catalyst app uses the toolbar's own segmented control (Home).
+- Keep titles short, one or two words, and of similar length: every segment is as wide as the
+  others.
+- One segment is always selected.
+
+## Variants and states
+
+One variant. Keyboard focus is transient, so this gallery pins it.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look | Basis |
+| --- | --- | --- | --- |
+| Normal | – | Track: grey at 12% (`#e8e7e5` on Find My's sidebar), Dark Aqua grey at 24% (`#343438`) | measured |
+| Selected segment | `value`, a click, the arrow keys | A pill 21.5 pt tall, white, Dark Aqua `#6b6b72`, 2 pt from the segment's leading edge, 2.25 pt from its trailing edge; in Aqua a soft shadow that the track clips | measured; the shadow fitted |
+| Titles | – | 10.5 pt Medium, black, Dark Aqua `#e9eaea`, centred | measured; the weight from the stems |
+| Between two unselected segments | three segments or more | A hairline, 6 pt short of the track at both ends | measured on the map types of the same captures |
+| Disabled | `disabled` on the control or on a segment | Title at 30% | provisional |
+| Keyboard focus | `:focus-visible` | Focus ring inside the segment, since the track clips | provisional |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No focus ring; nothing else changes | measured: the Dark Aqua capture's window is not key |
+
+## Sizes
+
+One size: 24.5 pt tall. The width is the layout's (246.5 pt in Find My's 261 pt sidebar).
+
+## API
+
+<PropsTable name="CatalystSegmentedControlProps" />
+
+The remaining props are those of Base UI's `RadioGroup` and go to the root `<div>` with `ref`.
+
+<PropsTable name="CatalystSegmentProps" />
+
+The remaining props are those of Base UI's `Radio.Root` (`value`, `disabled` and the rest) and
+go to the radio, a `<span>`, with `ref`.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-checked` | segment | present or absent | Set by Base UI on the selected segment; draws the pill. |
+| `data-disabled` | control, segment | present or absent | Set by Base UI. |
+| `data-force` | segment | `focus` | Documentation and visual tests only: pins the focus ring. |
+
+Classes: `.mac-catalyst-segmented-control` (the track), `.mac-catalyst-segmented-control-slot`
+(a segment's share of the track), `.mac-catalyst-segmented-control-segment` (the radio).
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-catalyst-segmented-control-track` | grey at 12%, 24% in Dark Aqua | The track. |
+| `--mac-catalyst-segmented-control-pill` | `#ffffff`, `#6b6b72` in Dark Aqua | The selected segment. |
+| `--mac-catalyst-segmented-control-pill-shadow` | two soft shadows in Aqua, none in Dark Aqua | The pill's shadow. |
+| `--mac-catalyst-segmented-control-text` | `#000000`, `#e9eaea` in Dark Aqua | Titles. |
+| `--mac-catalyst-segmented-control-height` | `24.5px` | The track's height. The pill is the height less both block insets. |
+| `--mac-catalyst-segmented-control-pill-inset-block`, `-pill-inset-start`, `-pill-inset-end` | `1.5px`, `2px`, `2.25px` | The pill's distance from its segment's edges. |
+| `--mac-catalyst-segmented-control-font-size` | `10.5px` | The titles' size. |
+| `--mac-catalyst-segmented-control-radius`, `-pill-radius` | `7px`, `5.5px` | The corner radii of the track and the pill. |
+| `--mac-catalyst-segmented-control-divider-inset` | `6px` | How far the hairline between two unselected segments stops short of the track. |
+
+## Accessibility
+
+- The control is a `radiogroup` and each segment a `radio`. Give the control an `aria-label`
+  (or `aria-labelledby`): its titles alone do not say what is being chosen.
+- It is one tab stop. The arrow keys move the selection and the focus together, and pass over
+  a disabled segment.
+- The focus ring is drawn only in a key window. In forced-colours mode the track has a border
+  and the selected segment the system's highlight colours.
+
+## Visual comparison
+
+`npm run visual -- catalyst-segmented-control` compares the People and Devices switch with the
+two Find My captures: 260 x 40 pt of the sidebar with the track, the pill and its shadow
+(`114,136,520,80`; Dark Aqua `70,112,520,80`, a window that is not key). Share of pixels that
+differ, in Chromium on Linux with the fallback font:
+
+| Comparison | Aqua 2x | Aqua 1x | Dark Aqua 2x | Dark Aqua 1x |
+| --- | --- | --- | --- | --- |
+| Titles masked, strict (a pixel differs at a colour distance of 0.05) | 0.11% | 0.33% | 0.17% | 1.70% |
+| Nothing masked | 3.11% | 3.36% | 2.78% | 4.19% |
+
+The budgets in `catalyst-segmented-control.visual.json` are these scores, measured in a
+visual run, rounded up.
+
+Measured: the track's and the pill's size, place and colours, the titles' size, colour and
+place. Fitted: the pill's shadow, to the three sides of the Aqua capture where the track shows
+it. Inferred: the 7 pt and 5.5 pt corner radii (UIKit's, scaled as Catalyst scales an iPad
+app); the comparison agrees with them. The second row of the table is the titles in the
+fallback font instead of San Francisco. At 1x the track's and the pill's edges lie on half
+pixels.
+
+No screenshot shows another segment selected, a third segment, a disabled segment or the focus
+ring. Those are checked in a real browser (the `expect` comparisons): a click moves the pill,
+and Tab puts the focus ring inside the selected segment in a key window and none in another.
+
+Not built: the pill sliding from one segment to the next, which UIKit animates; here the
+selection changes at once.

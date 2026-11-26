@@ -1,0 +1,191 @@
+---
+title: Favorites Bar
+description: Safari's Favorites bar, a line of bookmarks and bookmark folders under the toolbar. No Catalina screenshot shows it, so every measure on this page is inferred.
+---
+
+<Example name="basic" both />
+
+Safari's Favorites bar sits between the toolbar and the tab bar: a title opens a page, a
+folder opens a menu of pages. It is built on
+[Base UI's Toolbar](https://base-ui.com/react/components/toolbar).
+
+**This component is inferred, not measured.** All fourteen Safari captures in the reference
+set were taken with the Favorites bar hidden, so there is no pixel to read. The sizes and
+colours here are the ones the spec derives from the surfaces next to the bar (the end of the
+toolbar gradient, the title bar's separator, the text of the Smart Search field); see
+[Visual comparison](#visual-comparison).
+
+## Usage
+
+```tsx
+import {
+  FavoritesBar,
+  FavoritesBarFolder,
+  FavoritesBarItem,
+  FavoritesBarOverflow,
+} from "macalicious/favorites-bar";
+import "macalicious/favorites-bar.css";
+
+<FavoritesBar aria-label="Favorites">
+  <FavoritesBarItem href="https://example.com/">Example</FavoritesBarItem>
+  <FavoritesBarItem onClick={openReference}>Reference</FavoritesBarItem>
+  <FavoritesBarFolder onClick={showNews}>News</FavoritesBarFolder>
+</FavoritesBar>
+```
+
+Or copy the source into your project: `npx macalicious add favorites-bar`.
+
+A `FavoritesBarItem` with an `href` is a link; without one it is a button. Place the bar
+directly under the window's toolbar; it fills the width it is given.
+
+### Folders and menus
+
+A `FavoritesBarFolder` is the button only: the library has no menu of its own here. Attach one
+by rendering the menu's trigger as the folder, which is how Base UI composes a toolbar button
+with a menu:
+
+```tsx
+<Menu.Root>
+  <FavoritesBarFolder render={<Menu.Trigger />}>News</FavoritesBarFolder>
+  <Menu.Portal>…</Menu.Portal>
+</Menu.Root>
+```
+
+The folder keeps its pressed look while its menu is open (Base UI sets `data-popup-open` on
+the trigger).
+
+### Items that do not fit
+
+<Example name="overflow" both />
+
+An item that does not fit is cut off whole, never in the middle of its title. Pass a
+`FavoritesBarOverflow` as the bar's `overflow` for the double chevron at the trailing end, and
+attach a menu to it as to a folder. The bar measures nothing in script:
+
+- The items wrap, and the bar shows the first row only.
+- The overflow button appears only while there is a second row, through a scroll-driven
+  animation (Chrome and Edge 116, Safari 26). In a browser without those it is always shown.
+- The bar cannot tell your code which items are cut off. List every favourite in the overflow
+  menu, or measure in your application (one shared `ResizeObserver`) and list the rest.
+- When the keyboard moves focus to a cut-off item, its row scrolls into the bar, so the
+  focused item is always visible.
+
+## Guidelines
+
+The macOS Human Interface Guidelines have no page for a favorites bar; it is Safari's own
+view. From how Safari uses it:
+
+- Keep titles short: the bar is one line, and what does not fit goes to the overflow menu.
+- Use a folder, not a long row, for a set of related pages.
+- The first nine items are also reached with Command-Option-1 to 9 in Safari. The component
+  does not bind keys; an application that wants them binds them itself.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+<Example name="icons" both />
+
+| Variant or state | How it is triggered | Look (all provisional) |
+| --- | --- | --- |
+| Bookmark | `FavoritesBarItem` | 12 pt title, 8 pt of padding, 4 pt from its neighbour |
+| Folder | `FavoritesBarFolder` | The same, followed by a small chevron |
+| With icon | `icon` | A 16 pt box before the title |
+| Overflow | `overflow={<FavoritesBarOverflow />}` | A double chevron at the trailing end |
+| Under the pointer | `:hover` | A 19 pt pill with 4 pt corners |
+| Pressed, or menu open | `:active`, `data-popup-open` | A darker pill (lighter in Dark Aqua) |
+| Keyboard focus | `:focus-visible` | Focus ring around the pill, in the key window only |
+| Disabled | `disabled` | Dimmed title, no pill |
+| Inactive window | `data-window-state="inactive"` on an ancestor | The bar takes the flat inactive title bar colour and lighter separator rows; titles dim |
+| Main window | `data-window-state="main"` on an ancestor | As in the key window, without the focus ring |
+
+## Sizes
+
+The bar has no `size` prop. It is 25 pt high, 24 pt of fill and a 1 pt separator, the same
+module as the tab bar, and as wide as its container.
+
+## API
+
+<PropsTable name="FavoritesBarProps" />
+
+<PropsTable name="FavoritesBarItemProps" />
+
+<PropsTable name="FavoritesBarFolderProps" />
+
+<PropsTable name="FavoritesBarOverflowProps" />
+
+The bar takes the props of Base UI's Toolbar root (`disabled`, `loopFocus`); items take those
+of its button (`disabled`, `focusableWhenDisabled`, `render`), and a link those of an `<a>`.
+`className`, `style`, `ref` and other attributes go to each part's own element.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-disabled` | bar, item | present or absent | Set by Base UI for `disabled`. |
+| `data-popup-open` | folder, overflow | present or absent | Set by Base UI's menu trigger while the menu is open. |
+| `data-orientation` | bar, item | `horizontal` | Set by Base UI. |
+| `data-force` | item | `hover`, `pressed`, `focus` | Documentation and visual tests only. |
+
+The component has no CSS variables for a consumer to set.
+
+## Accessibility
+
+- The bar has `role="toolbar"`: give it an `aria-label`. It is one tab stop; the Left and
+  Right arrow keys move between its items and wrap at the ends.
+- A bookmark is a link, or a button when it has no `href`; Return activates either and Space a
+  button. A folder and the overflow button are buttons with `aria-haspopup="menu"`; a menu
+  attached through `render` adds `aria-expanded` and opens from the keyboard.
+- A disabled item stays focusable and is announced as disabled (`aria-disabled`), as in Base
+  UI's toolbar. A disabled item with an `href` is rendered as a button, since a link cannot be
+  disabled.
+- Icons are hidden from assistive technology. An item with an icon and no title, and the
+  overflow button, need an `aria-label`.
+- Items that are cut off stay in the keyboard order and scroll into view when focused. Offer
+  them in the overflow menu as well, for people who use a pointer.
+- The focus ring is drawn in the key window only. In forced-colours mode the separator is a
+  border and the pill takes the system's highlight colours.
+
+## Visual comparison
+
+There is no reference to compare with. The reference inventory lists the Favorites bar as not
+seen: every Safari capture has it hidden, in both appearances. The rules for
+`<name>.visual.json` allow `noReference` for one appearance only and require `pending` for a
+folder with no screenshot at all, so `favorites-bar.visual.json` carries `pending`, with the
+reason, and `npm run lint` lists the folder under “Visual comparisons pending” without
+failing. That marker cannot be removed until a capture of the bar exists.
+
+In place of a comparison, `npm run visual -- favorites-bar` puts the bar into each state with
+real input and reads pixels, 17 checks at both scales, all passing in Chromium on Linux:
+
+| Check | Input | What is read |
+| --- | --- | --- |
+| `rest-light`, `rest-dark` | none | Fill, the two separator rows, the folder's chevron |
+| `hover-light`, `hover-dark` | pointer over a bookmark | The pill, its 19 pt height, the 4 pt gap |
+| `pressed-light`, `pressed-dark` | mouse held on a folder | The pressed pill |
+| `focus-ring-light`, `focus-ring-dark` | Tab | The focus ring and its outer edge |
+| `window-inactive-light`, `window-inactive-dark` | Tab, in an inactive window | Flat fill, lighter rows, no ring |
+| `window-main-light`, `window-main-dark` | Tab, in a main window | Active fill, no ring |
+| `disabled-light`, `disabled-dark` | pointer over a disabled item | No pill |
+| `overflow-light`, `overflow-dark` | none | The third of three items is cut off whole; a bar that fits draws no overflow button; the chevrons' colour |
+| `forced-colors-light` | pointer over a bookmark, forced colours | Highlight pill, canvas bar, border, chevron |
+
+These checks prove that the component draws what the spec infers, not that Catalina looked
+like this. The harness captures with animations off, which also switches off the scroll-driven
+animation that shows the overflow button, so that behaviour, the cutting off of items and the
+scrolling of a focused item are tested in a real browser by
+`favorites-bar.browser.test.tsx` instead.
+
+Every value is provisional:
+
+| Value | Aqua | Dark Aqua | Derived from |
+| --- | --- | --- | --- |
+| Height | 25 pt | 25 pt | The tab bar's module |
+| Fill | `#d0d0d0` | `#343536` | The end of the toolbar gradient |
+| Separator rows | `#bdbdbd`, `#a7a7a7` | `#2a2a2a`, `#000000` | The title bar's separator |
+| Title | 12 pt, `#4c4c4c` | 12 pt, white at 85% | The Smart Search field's text |
+| Pill | 19 pt, 4 pt corners | the same | The spec's inference |
+| Pressed pill | black at 10% | white at 10% | The spec's inference |
+| Pill under the pointer | black at 6% | white at 6% | The library's own inference; the spec gives no colour |
+| Inactive rows | `#e7e7e7`, `#cecece` | `#222326`, `#000000` | Measured under Safari's inactive tab bar (Picture-in-Picture captures @ 700,228 and @ 700,202); inferred for this bar |
+| Chevrons, icon box, focus ring inset | | | The library's own inference |
+
+Text is San Francisco only on Apple devices.

@@ -1,0 +1,117 @@
+/*
+ * Box (NSBox).
+ *
+ * Parts
+ *   .mac-box           the group: title and surface stacked
+ *   .mac-box-title     13 pt title outside the surface, 12 pt in from its leading edge
+ *   .mac-box-content   the surface: tinted fill, hairline border with a stronger top edge and
+ *                      a softer line inside it, corners of --mac-radius-group
+ *
+ * States
+ *   [data-variant="content"]            opaque well, 1 pt border, square corners
+ *   [data-variant="well"]               opaque well in its own colours, 1 pt border, rounded
+ *   [data-edges="horizontal"]           top and bottom edge only, no corners
+ *   [data-edges="leading"]              leading edge only
+ *   [data-title-position="below"]       title under the surface
+ *
+ * A box does not react to the window state.
+ *
+ * Hooks
+ *   --mac-box-padding   padding of the surface (default 0)
+ */
+.mac-box {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.mac-box:where([data-title-position="below"]) {
+  flex-direction: column-reverse;
+}
+
+/* The title's baseline is 3 pt above the surface: a 16 pt line leaves 3.5 pt under it. */
+.mac-box-title {
+  flex: none;
+  margin-block: 0 -0.5px;
+  padding-inline: 11px;
+}
+
+.mac-box:where([data-title-position="below"]) .mac-box-title {
+  margin-block: 2px 0;
+}
+
+.mac-box-content {
+  flex: 1 1 auto;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--mac-box-padding, 0);
+  border: var(--mac-hairline) solid var(--mac-color-box-border);
+  border-top-color: var(--mac-box-border-top);
+  border-radius: var(--mac-radius-group);
+  /* The fill stops at the border: both are translucent and must not add up. */
+  background: var(--mac-color-group-background) padding-box;
+  box-shadow: inset 0 0 0 var(--mac-hairline) var(--mac-box-border-inner);
+}
+
+.mac-box:where([data-edges="horizontal"]) .mac-box-content {
+  border-inline-width: 0;
+  border-radius: 0;
+  box-shadow:
+    inset 0 var(--mac-hairline) 0 var(--mac-box-border-inner),
+    inset 0 calc(-1 * var(--mac-hairline)) 0 var(--mac-box-border-inner);
+}
+
+.mac-box:where([data-edges="leading"]) .mac-box-content {
+  border-block-width: 0;
+  border-inline-end-width: 0;
+  border-radius: 0;
+  box-shadow: inset var(--mac-hairline) 0 0 var(--mac-box-border-inner);
+}
+
+.mac-box:where([data-edges="leading"]) .mac-box-content:where(:dir(rtl)) {
+  box-shadow: inset calc(-1 * var(--mac-hairline)) 0 0 var(--mac-box-border-inner);
+}
+
+/* Content well and rounded well: one opaque 1 pt line on the drawn edges, no inner line. */
+.mac-box:where([data-variant="content"], [data-variant="well"]) .mac-box-content {
+  border-style: solid;
+  border-color: var(--mac-box-content-border);
+  border-radius: 0;
+  background: var(--mac-box-content-fill);
+  box-shadow: none;
+}
+
+.mac-box:where([data-variant="content"], [data-variant="well"]):where([data-edges="all"])
+  .mac-box-content {
+  border-width: 1px;
+}
+
+.mac-box:where([data-variant="content"], [data-variant="well"]):where([data-edges="horizontal"])
+  .mac-box-content {
+  border-block-width: 1px;
+}
+
+.mac-box:where([data-variant="content"], [data-variant="well"]):where([data-edges="leading"])
+  .mac-box-content {
+  border-inline-start-width: 1px;
+}
+
+/* Rounded well: its own border and fill, and where all four edges are drawn its own corners:
+   4.5 pt is the radius that fits both captures of Activity Monitor's summary (4 and 5 pt
+   leave at least twice as many pixels different at 2x). */
+.mac-box:where([data-variant="well"]) .mac-box-content {
+  border-color: var(--mac-box-well-border);
+  background: var(--mac-box-well-fill);
+}
+
+.mac-box:where([data-variant="well"]):where([data-edges="all"]) .mac-box-content {
+  border-radius: 4.5px;
+}
+
+@media (forced-colors: active) {
+  .mac-box-content {
+    border-color: CanvasText;
+    box-shadow: none;
+  }
+}

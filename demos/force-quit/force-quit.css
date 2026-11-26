@@ -1,0 +1,131 @@
+/*
+ * Force Quit Applications: the layout of the window's body. Every control is the library's;
+ * the distances are measured in 10-15-Catalina-Light-Force-Quit.png and its dark twin (2x:
+ * two pixels are one point; the window is the crop x=112 y=76, 338 x 307 pt).
+ *
+ * Parts
+ *   .mac-force-quit-body          the body: a column with the window's 20 pt side margins
+ *   .mac-force-quit-instruction   the two 13 pt lines above the list
+ *   .mac-force-quit-list          the bordered list, 298 x 168 pt at the captured size
+ *   .mac-force-quit-row           one application: 16 pt icon 3 pt from the frame, then its name
+ *   .mac-force-quit-rows          the listbox inside the frame
+ *   .mac-force-quit-icon          the placeholder for the application's icon
+ *   .mac-force-quit-status        "(not responding)" after a name
+ *   .mac-force-quit-footer        the hint beside the default button
+ *   .mac-force-quit-hint          the two 10 pt lines, on a 13 pt pitch
+ *   .mac-force-quit-button        the default button, 91 pt between its visible edges
+ */
+.mac-force-quit-body {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 0 var(--mac-space-window-margin);
+  overflow: hidden;
+}
+
+/* Capitals of the first line start at y=166, 45 pt under the window's top edge; the lines are
+   16 pt apart (y=166 and y=198). The list starts 60 pt under the title bar. */
+.mac-force-quit-instruction {
+  display: block;
+  flex: none;
+  margin-block: var(--mac-force-quit-instruction-margin-top)
+    var(--mac-force-quit-instruction-margin-bottom);
+}
+
+/* The frame: x=152..747, y=240..575. It takes the height the window leaves. */
+.mac-force-quit-list {
+  flex: 1 1 auto;
+  min-height: var(--mac-force-quit-list-min-height);
+}
+
+/* An AppKit table view draws no focus ring: its emphasised selection shows that it has the
+   keyboard focus, and the captures show none around the list. An empty list has no selection
+   to emphasise and keeps the library's ring. */
+.mac-force-quit-list .mac-force-quit-rows:where(:has([aria-selected="true"])) {
+  outline: none;
+}
+
+/* The rows are 22 pt apart: the names stand on y=269, 313 and 357 (baselines of "Mail",
+   "Safari" and "Finder"), 15 pt under each row's top edge, and the selection of the first row
+   ends at y=283, 21 pt under the frame's border. So the first row begins under that border,
+   and a row's content is centred in its upper 21 pt.
+   The icon is at x=160..191 and the name starts at x=209 beside a frame whose inside starts
+   at x=154: 3 pt, 16 pt, then 8 pt to the text, of which 6.5 are the library's. */
+.mac-force-quit-list .mac-force-quit-row {
+  padding-block-end: var(--mac-force-quit-row-padding-bottom);
+  padding-inline-start: var(--mac-force-quit-row-padding-start);
+}
+
+.mac-force-quit-list .mac-force-quit-row:where(:first-child) {
+  margin-block-start: var(--mac-force-quit-row-first-margin-top);
+}
+
+/* The row's icon, or without one a placeholder: a plain rounded square in a neutral label colour.
+   The captured icons are centred a point under the middle of the row's upper 21 pt (Safari's
+   disc spans y=293..321 in the row that starts at y=284). */
+.mac-force-quit-icon {
+  position: relative;
+  inset-block-start: var(--mac-force-quit-icon-offset-top);
+  display: block;
+  box-sizing: border-box;
+  width: var(--mac-force-quit-icon-size);
+  height: var(--mac-force-quit-icon-size);
+  margin-inline-end: var(--mac-force-quit-icon-margin-end);
+  border-radius: var(--mac-force-quit-icon-radius);
+  background: var(--mac-color-label-tertiary);
+}
+
+.mac-force-quit-icon:has(> *) {
+  background: none;
+}
+
+.mac-force-quit-status {
+  color: var(--mac-color-system-red);
+}
+
+/* On the emphasised selection the note takes the row's white, as the name does. The
+   condition is the one the bordered list documents for its emphasised selection. */
+.mac-force-quit-rows:where(:focus-within):not(
+    :where([data-window-state="main"], [data-window-state="inactive"]) *
+  )
+  :where([aria-selected="true"])
+  .mac-force-quit-status {
+  color: inherit;
+}
+
+/* The hint is the 10 pt label font on its 13 pt line (capitals 7.5 pt high at y=609..623 and
+   y=635..649, where the instruction's are 9.5): its first capitals are 16.5 pt under the
+   list, which ends at y=575. The bezel of the button is at x=565..746, y=609..648, so its box
+   starts 16 pt under the list, and the window ends 20 pt under the button's box. */
+.mac-force-quit-footer {
+  display: flex;
+  flex: none;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-block: var(--mac-force-quit-footer-margin-top) var(--mac-force-quit-footer-margin-bottom);
+}
+
+.mac-force-quit-hint {
+  display: block;
+  flex: 1 1 0;
+  min-width: 0;
+  margin-block: 0;
+  margin-inline-end: var(--mac-force-quit-hint-margin-end);
+}
+
+.mac-force-quit-button {
+  flex: none;
+  width: var(--mac-force-quit-button-width);
+  margin-block-start: var(--mac-force-quit-button-margin-top);
+}
+
+@media (forced-colors: active) {
+  .mac-force-quit-icon {
+    border: 1px solid CanvasText;
+    background: none;
+  }
+
+  .mac-force-quit-status {
+    color: inherit;
+  }
+}

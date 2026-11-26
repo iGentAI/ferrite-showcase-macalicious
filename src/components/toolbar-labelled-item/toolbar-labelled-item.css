@@ -1,0 +1,92 @@
+/*
+ * Toolbar item with a label below (NSToolbarItem.label).
+ *
+ * A column: the control, then the label, sharing a centre line. The item is as wide as the
+ * wider of the two. The label's baseline sits 13 pt under the control (measured in Console;
+ * Disk Utility has 14).
+ *
+ * The toolbar's display mode decides what shows; the item reads it from the nearest ancestor
+ * that carries data-display-mode:
+ *   icon-and-label   control and label
+ *   icon-only        control only; the label still names the control (the default when the
+ *                    item is not in a toolbar that says otherwise is to show both)
+ *   label-only       label only; a single control covers the label invisibly and takes the
+ *                    click; a control with several segments stays as it is, with its label
+ *                    [provisional]
+ *
+ * States
+ *   [data-disabled], or a disabled control inside   dimmed label
+ *   [data-window-state="inactive"] *                dimmed label [provisional]
+ */
+.mac-toolbar-labelled-item {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.mac-toolbar-labelled-item-label {
+  color: var(--mac-toolbar-labelled-item-text);
+  font: var(--mac-font-toolbar-label);
+  letter-spacing: var(--mac-tracking-small);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-toolbar-labelled-item:where([data-disabled], :has(> [data-disabled]))
+  > .mac-toolbar-labelled-item-label,
+.mac-toolbar-labelled-item:where([data-window-state="inactive"] *)
+  > .mac-toolbar-labelled-item-label {
+  color: var(--mac-toolbar-labelled-item-text-disabled);
+}
+
+.mac-toolbar-labelled-item:where([data-display-mode="icon-only"] *)
+  > .mac-toolbar-labelled-item-label {
+  display: none;
+}
+
+/* Label only: a single control stays the hit target and the focus stop, drawn as its label. A
+   group of controls (a segmented control) has no one label to stand for it and stays visible. */
+.mac-toolbar-labelled-item:where([data-display-mode="label-only"] *):where(
+  :not(:has(> :where([role="group"], [role="toolbar"], [role="radiogroup"])))
+) {
+  justify-content: center;
+  min-height: 22px;
+  border-radius: var(--mac-radius-control-regular);
+}
+
+.mac-toolbar-labelled-item:where([data-display-mode="label-only"] *)
+  > :where(
+    :not(.mac-toolbar-labelled-item-label, [role="group"], [role="toolbar"], [role="radiogroup"])
+  ) {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  min-width: 0;
+  height: auto;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.mac-toolbar-labelled-item:where([data-display-mode="label-only"] *):where(
+  :has(:focus-visible):not(:has(> :where([role="group"], [role="toolbar"], [role="radiogroup"])))
+):where(:not(:where([data-window-state="main"], [data-window-state="inactive"]) *)) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-toolbar-labelled-item-label {
+    color: CanvasText;
+  }
+
+  .mac-toolbar-labelled-item:where([data-disabled], :has(> [data-disabled]))
+    > .mac-toolbar-labelled-item-label {
+    color: GrayText;
+  }
+}

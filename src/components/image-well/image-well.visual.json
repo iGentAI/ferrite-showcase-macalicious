@@ -1,0 +1,305 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "empty-light",
+      "description": "An empty well, and one pinned as a drop target (the runner cannot perform a drag, so that one uses data-force). Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 120, "height": 64 },
+        "pixels": [
+          {
+            "x": 9,
+            "y": 32,
+            "color": "#ffffff",
+            "note": "the 2 pt ring (spec: Ring, measured)"
+          },
+          {
+            "x": 32,
+            "y": 32,
+            "color": "#e3e3e3",
+            "note": "the recess alone, black at 4% over #ececec (alpha measured: #dadada over #e3e3e3); that an empty well shows only the recess is inferred (spec: States, empty)"
+          },
+          {
+            "x": 7.75,
+            "y": 32,
+            "color": "#dddddd",
+            "scale": 2,
+            "note": "hairline outside the ring, black at 6.2% over #ececec (alpha measured: #d5d5d5 over #e3e3e3)"
+          },
+          {
+            "x": 65,
+            "y": 32,
+            "color": "#027aff",
+            "note": "drop target: the blue accent over the ring (spec: States, drag target highlight, inferred)"
+          },
+          {
+            "x": 88,
+            "y": 32,
+            "color": "#e3e3e3",
+            "note": "the recess of the drop target is unchanged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty-dark",
+      "description": "An empty well and a drop target, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 120, "height": 64 },
+        "pixels": [
+          {
+            "x": 9,
+            "y": 32,
+            "color": "#717273",
+            "note": "the ring, white at 31.8% over #2f3032 (alpha measured: #767677 over #363637)"
+          },
+          {
+            "x": 32,
+            "y": 32,
+            "color": "#37383a",
+            "note": "the recess, white at 4% over #2f3032 (alpha measured: #3e3e3f over #363637)"
+          },
+          {
+            "x": 65,
+            "y": 32,
+            "color": "#027aff",
+            "note": "drop target: the blue accent (inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "drop-target-purple-inactive",
+      "description": "The drop target with the purple accent in an inactive window: the highlight follows the accent and stays, because a drag from another application arrives while this window is not key. Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "accent": "purple",
+      "windowState": "inactive",
+      "expect": {
+        "size": { "width": 120, "height": 64 },
+        "pixels": [
+          {
+            "x": 65,
+            "y": 32,
+            "color": "#963d96",
+            "note": "the purple accent (accent table, measured swatch); that the highlight takes it is inferred"
+          }
+        ]
+      }
+    },
+    {
+      "name": "drop-target-purple-inactive-dark",
+      "description": "The drop target with the purple accent in an inactive window, Dark Aqua: the highlight follows the accent and stays.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "accent": "purple",
+      "windowState": "inactive",
+      "expect": {
+        "size": { "width": 120, "height": 64 },
+        "pixels": [
+          {
+            "x": 65,
+            "y": 32,
+            "color": "#a650a7",
+            "note": "the purple accent of Dark Aqua (accent table, measured swatch of Theme-Dark-Purple); that the highlight takes it is inferred"
+          },
+          {
+            "x": 88,
+            "y": 32,
+            "color": "#37383a",
+            "note": "the recess of the drop target is unchanged: white at 4% over #2f3032 (alpha measured: #3e3e3f over #363637)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "The selection ring: keyboard focus on the first well, reached with Tab. Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 120, "height": 64 },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 32,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the window background, measured on the Go to Folder field (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 6.25,
+            "y": 32,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "the band is flat and reaches 2.5 pt beyond the well's edge at x 8"
+          },
+          {
+            "x": 4.75,
+            "y": 32,
+            "color": "#ececec",
+            "note": "window background just outside the ring (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 9.25,
+            "y": 32,
+            "color": "#ffffff",
+            "note": "the well's own ring beside it is unchanged"
+          },
+          {
+            "x": 61.5,
+            "y": 32,
+            "color": "#ececec",
+            "note": "the second well is not focused"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "The selection ring, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 120, "height": 64 },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 32,
+            "color": "#2d6c99",
+            "tolerance": 4,
+            "note": "ring over the #2f3032 window background, measured in Automator (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 4.75,
+            "y": 32,
+            "color": "#2f3032",
+            "note": "window background just outside the ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-focus-ring-main",
+      "description": "Focused with Tab in a main window that is not key: no ring. Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "main",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 120, "height": 64 },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 32,
+            "color": "#ececec",
+            "note": "window background where the ring would be: AppKit removes the ring when the window is not key (spec: focus-ring, States, documented)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-focus-ring-inactive",
+      "description": "Focused with Tab in an inactive window: no ring. Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 120, "height": 64 },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 32,
+            "color": "#ececec",
+            "note": "window background where the ring would be (spec: focus-ring, States, documented)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-focus-ring-main-dark",
+      "description": "Focused with Tab in a main window that is not key: no ring. Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "main",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 120, "height": 64 },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 32,
+            "color": "#2f3032",
+            "note": "the example's window background where the ring would be: AppKit removes the ring when the window is not key (spec: focus-ring, States, documented)"
+          },
+          {
+            "x": 9,
+            "y": 32,
+            "color": "#717273",
+            "note": "the well's own ring is unchanged: white at 31.8% over #2f3032 (alpha measured: #767677 over #363637)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-focus-ring-inactive-dark",
+      "description": "Focused with Tab in an inactive window: no ring. Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 120, "height": 64 },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 32,
+            "color": "#2f3032",
+            "note": "the example's window background where the ring would be (spec: focus-ring, States, documented)"
+          },
+          {
+            "x": 9,
+            "y": 32,
+            "color": "#717273",
+            "note": "the well's own ring is unchanged: white at 31.8% over #2f3032 (alpha measured: #767677 over #363637)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "desktop-picture-light",
+      "description": "The desktop picture well of Desktop & Screen Saver, Aqua. The 119 x 74 pt picture is masked: the screenshot shows Apple's wallpaper there, the example an original drawing. The ring, the recess and its shadow are scored.",
+      "example": "visual-desktop-picture",
+      "appearance": "light",
+      "masks": [{ "x": 14.5, "y": 14, "width": 119, "height": 74 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.017, "2x": 0.0007 },
+      "deltaBudget": { "1x": 1.6, "2x": 0.58 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Desktop-and-Screen-Saver.png",
+        "crop": { "x": 201, "y": 250, "width": 300, "height": 200 }
+      }
+    },
+    {
+      "name": "desktop-picture-dark",
+      "description": "The desktop picture well of Desktop & Screen Saver, Dark Aqua, with the picture masked as in desktop-picture-light.",
+      "example": "visual-desktop-picture",
+      "appearance": "dark",
+      "masks": [{ "x": 14.5, "y": 14, "width": 119, "height": 74 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.006, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.9, "2x": 0.67 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Desktop-and-Screen-Saver.png",
+        "crop": { "x": 201, "y": 250, "width": 300, "height": 200 }
+      }
+    }
+  ]
+}

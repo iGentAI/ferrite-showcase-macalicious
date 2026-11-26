@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "pending": "No reference: the spec marks the help tag as not seen in any of the 294 screenshots, and every value as documented or inferred. The checks below hold an open tooltip to those values.",
+  "comparisons": [
+    {
+      "name": "open-light",
+      "description": "An open help tag: fill, hairline border and square corner as the spec infers them, Aqua.",
+      "example": "visual-open",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 200,
+          "height": 60
+        },
+        "pixels": [
+          {
+            "x": 10,
+            "y": 25,
+            "color": "#f2f2f2",
+            "tolerance": 1,
+            "note": "fill, in the 4 pt left padding (spec: tooltip, Fill, inferred #f2f2f2-class)"
+          },
+          {
+            "x": 8.25,
+            "y": 25,
+            "color": "#c2c2c2",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "border, black at 20% over the fill (spec: Border, inferred)"
+          },
+          {
+            "x": 8.75,
+            "y": 16.75,
+            "color": "#f2f2f2",
+            "scale": 2,
+            "tolerance": 1,
+            "note": "fill right inside the top left corner: the corner is square (spec: Corner radius 0, inferred)"
+          },
+          {
+            "x": 190,
+            "y": 5,
+            "color": "#ececec",
+            "note": "page, away from the tooltip and its shadow"
+          }
+        ]
+      }
+    },
+    {
+      "name": "open-dark",
+      "description": "An open help tag: fill, hairline border and square corner as the spec infers them, Dark Aqua.",
+      "example": "visual-open",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 200,
+          "height": 60
+        },
+        "pixels": [
+          {
+            "x": 10,
+            "y": 25,
+            "color": "#2a2a2a",
+            "tolerance": 1,
+            "note": "fill (spec: tooltip, Fill, inferred #2a2a2a-class)"
+          },
+          {
+            "x": 8.25,
+            "y": 25,
+            "color": "#555555",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "border, white at 20% over the fill (spec: Border, inferred)"
+          },
+          {
+            "x": 8.75,
+            "y": 16.75,
+            "color": "#2a2a2a",
+            "scale": 2,
+            "tolerance": 1,
+            "note": "fill right inside the top left corner: the corner is square"
+          },
+          {
+            "x": 190,
+            "y": 5,
+            "color": "#323232",
+            "note": "page, away from the tooltip and its shadow"
+          }
+        ]
+      }
+    }
+  ]
+}

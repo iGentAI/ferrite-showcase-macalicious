@@ -1,0 +1,490 @@
+/*
+ * TextEdit: what the app adds to the library's controls. The window, title bar, toolbar
+ * controls, ruler, text views, sheets and panels are the library's and are not restyled here;
+ * their documented hooks (the toolbar's gap and padding, the text view's font, the Save
+ * panel's browser height) and the measured boxes of the format bar's controls are set where
+ * the app renders them.
+ *
+ * Parts
+ *   .mac-textedit               the document's window
+ *   .mac-textedit-format-bar    the format bar, a toolbar in the unified title bar
+ *   .mac-textedit-ruler         the ruler under it
+ *   .mac-textedit-body          the window's body, which the text view fills
+ *   .mac-textedit-menu-area     what takes a secondary click on the text: no box of its own
+ *   .mac-textedit-text          the rich text view; its children are the paragraphs
+ *   .mac-textedit-disjoint-caret   an insertion point beyond the browser's own, after typing over a disjoint selection
+ *   .mac-textedit-view          the text view, rich or plain
+ *   [data-wrap] on the body     Format > Wrap to Page: the ruler and text view are a page on a grey
+ *                               ground, and scroll together; --mac-textedit-page-margin is set with it
+ *   .mac-textedit-panel-layer   where the Open panel stands, centred over the page
+ *   .mac-textedit-open-panel    TextEdit's own Open panel in it (any panel in it takes the pointer)
+ *   .mac-textedit-floating-layer   where the Fonts and Colors panels float, top right
+ *   .mac-textedit-floating-panel   one of those panels
+ *   .mac-textedit-preview       a file's preview column in the panels' browser
+ *   .mac-textedit-preview-page  the page drawn in it: the document's first lines
+ *   .mac-textedit-preview-name, -detail, -heading, -row, -tags
+ *                               the file's name, kind and dates under the page
+ *   .mac-textedit-print-page    the page of the Print sheet's preview
+ *   .mac-textedit-print-options the two checkboxes of TextEdit's pane in the Print sheet
+ *   .mac-textedit-print-note    what the browser's print dialog still has to be told
+ *   .mac-textedit-properties    the fields of the Document Properties panel
+ *   .mac-textedit-title         a document's title, which takes a click
+ *   .mac-textedit-title-form    the popover that click opens
+ *   .mac-textedit-styles        the list of the Styles sheet
+ *   .mac-textedit-completions   Edit > Complete's list, of .mac-textedit-completion rows
+ *   .mac-textedit-versions      Browse All Versions: the list of .mac-textedit-versions-list beside two
+ *                               .mac-textedit-version panes, each a .mac-textedit-version-page of text
+ *                               ([data-plain] for plain text) or a .mac-textedit-version-note
+ *
+ * States
+ *   [data-list] on a paragraph            a list item: disc, hyphen, decimal or alpha
+ *   [data-contained] on the panel layer   the layer fills the element it was put in, not
+ *                                         the viewport
+ *
+ * Hooks (set by the app from the ruler's markers)
+ *   --mac-textedit-first-indent   the first line's indent, relative to the head indent
+ *   --mac-textedit-head-indent    the paragraphs' leading indent
+ *   --mac-textedit-tail-indent    the paragraphs' trailing indent
+ */
+.mac-textedit-menu-area {
+  display: contents;
+}
+
+.mac-textedit-versions {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--mac-space-control-gap);
+  block-size: 320px;
+}
+
+.mac-textedit-versions-list {
+  block-size: 100%;
+  min-block-size: 0;
+}
+
+.mac-textedit-version {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-block-size: 0;
+}
+
+.mac-textedit-version-page {
+  flex: 1;
+  min-block-size: 0;
+  overflow: auto;
+  padding: 8px;
+  font:
+    12px / 1.3 Helvetica,
+    Arial,
+    sans-serif;
+  overflow-wrap: anywhere;
+  color: var(--mac-textedit-page-ink);
+  background: var(--mac-textedit-page);
+}
+
+.mac-textedit-version-page:where([data-plain]) {
+  font:
+    11px / 1.3 Menlo,
+    Monaco,
+    Consolas,
+    monospace;
+  white-space: pre-wrap;
+}
+
+.mac-textedit-version-note {
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-textedit-ruler {
+  flex: none;
+}
+
+.mac-textedit-body:where([data-wrap]) {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  background: var(--mac-color-window-background);
+}
+
+.mac-textedit-body:where([data-wrap]) .mac-textedit-ruler {
+  inline-size: var(--mac-textedit-page-width);
+  margin-inline: auto;
+}
+
+.mac-textedit-body:where([data-wrap]) .mac-textedit-view {
+  box-sizing: border-box;
+  inline-size: var(--mac-textedit-page-width);
+  flex: 1 0 auto;
+  block-size: 0;
+  margin-inline: auto;
+  padding-inline: var(--mac-textedit-page-margin);
+  background: var(--mac-color-control-background);
+}
+
+/* The ranges of a disjoint selection the browser's one range does not hold, drawn as ::selection is. */
+::highlight(mac-textedit-disjoint) {
+  background-color: var(--mac-highlight);
+}
+
+:where([data-window-state="main"], [data-window-state="inactive"])
+  ::highlight(mac-textedit-disjoint) {
+  background-color: var(--mac-color-selected-text-background-unemphasized);
+}
+
+.mac-textedit-body {
+  position: relative;
+}
+
+.mac-textedit-disjoint-caret {
+  position: absolute;
+  inline-size: 1px;
+  background: currentcolor;
+  pointer-events: none;
+  animation: mac-textedit-disjoint-blink 1s step-end infinite;
+}
+
+@keyframes mac-textedit-disjoint-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* The paragraphs follow the ruler's three indents. */
+/* Only the ruler's menu trigger: the ruler keeps its place in the window's column. */
+.mac-textedit-ruler-area {
+  display: contents;
+}
+
+.mac-textedit-text > * {
+  margin-block: 0;
+  margin-inline: var(--mac-textedit-head-indent, 0) var(--mac-textedit-tail-indent, 0);
+  text-indent: var(--mac-textedit-first-indent, 0);
+}
+
+/* A table is as wide as the text; its cells share that width and hold paragraphs of the view's. */
+.mac-textedit-text table {
+  --mac-textedit-cell-border: 1px;
+
+  inline-size: calc(
+    100% -
+    var(--mac-textedit-head-indent, 0px) -
+    var(--mac-textedit-tail-indent, 0px)
+  );
+  border-collapse: collapse;
+  table-layout: fixed;
+  text-indent: 0;
+}
+
+/* A table with every column's width set is as wide as they are, not as wide as the text. */
+.mac-textedit-text table:has(colgroup):not(:has(> colgroup > col:not([width]))) {
+  inline-size: min-content;
+}
+
+.mac-textedit-text td {
+  padding: var(--mac-textedit-cell-padding);
+  border: var(--mac-textedit-cell-border) solid currentcolor;
+  vertical-align: top;
+  counter-reset: list-item;
+}
+
+.mac-textedit-text td > :where(:not([data-list])) {
+  counter-reset: list-item;
+}
+
+/* Each table sets its own: its cells take it wherever they sit, and a table in a cell has its own. */
+.mac-textedit-text table[data-border="0"] {
+  --mac-textedit-cell-border: 0px;
+}
+
+.mac-textedit-text table[data-border="2"] {
+  --mac-textedit-cell-border: 2px;
+}
+
+.mac-textedit-text table[data-border="3"] {
+  --mac-textedit-cell-border: 3px;
+}
+
+/* A list item hangs its marker in a 28 pt indent, and numbering starts again after any
+   paragraph that is not in the list. */
+.mac-textedit-text :where([data-list]) {
+  display: list-item;
+  margin-inline-start: calc(var(--mac-textedit-head-indent, 0px) + 28px);
+  text-indent: 0;
+  list-style: disc outside;
+}
+
+.mac-textedit-text :where([data-list="hyphen"]) {
+  list-style-type: "\2013\00a0\00a0";
+}
+
+/* Where the path menu opens from: the menu is placed at the pointer, so it takes no room. */
+.mac-textedit-path-anchor {
+  position: absolute;
+  inline-size: 0;
+  block-size: 0;
+}
+
+/* A picture fits the text's width; an attachment reads as one token with the file's name. */
+.mac-textedit-text img {
+  max-inline-size: 100%;
+  block-size: auto;
+  vertical-align: text-bottom;
+}
+
+.mac-textedit-text a {
+  color: var(--mac-color-link);
+  text-decoration: underline;
+}
+
+.mac-textedit-text a[href^="drive:"] {
+  padding-inline: 4px;
+  border: 1px solid var(--mac-color-separator);
+  border-radius: 4px;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.mac-textedit-text :where([data-list="decimal"]) {
+  list-style-type: decimal;
+}
+
+.mac-textedit-text :where([data-list="alpha"]) {
+  list-style-type: lower-alpha;
+}
+
+.mac-textedit-text :where([data-list="circle"]) {
+  list-style-type: circle;
+}
+
+.mac-textedit-text :where([data-list="square"]) {
+  list-style-type: square;
+}
+
+.mac-textedit-text :where([data-list="alphaupper"]) {
+  list-style-type: upper-alpha;
+}
+
+.mac-textedit-text :where([data-list="roman"]) {
+  list-style-type: lower-roman;
+}
+
+.mac-textedit-text :where([data-list="romanupper"]) {
+  list-style-type: upper-roman;
+}
+
+.mac-textedit-text > :where(:not([data-list])) {
+  counter-reset: list-item;
+}
+
+/* The Open panel is a window of its own, in front of the document and under any menu. */
+.mac-textedit-panel-layer {
+  position: fixed;
+  z-index: 800;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  pointer-events: none;
+}
+
+.mac-textedit-panel-layer:where([data-contained]) {
+  position: absolute;
+}
+
+/* Every panel the layer holds takes the pointer: TextEdit's own Open panel and the drive's (with its failure alert),
+   which takes no class of TextEdit's. */
+.mac-textedit-panel-layer > * {
+  max-width: calc(100% - 16px);
+  max-height: calc(100% - 16px);
+  pointer-events: auto;
+}
+
+/* The Fonts and Colors panels float at the top right of the page, in front of the document,
+   the Fonts panel above the Colors panel. */
+.mac-textedit-floating-layer {
+  position: fixed;
+  z-index: 790;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 30px 12px 12px;
+  overflow: auto;
+  pointer-events: none;
+}
+
+.mac-textedit-floating-layer:where([data-contained]) {
+  position: absolute;
+}
+
+.mac-textedit-floating-panel {
+  flex: none;
+  pointer-events: auto;
+}
+
+/* A document's title takes a click; the press still moves the window. */
+.mac-textedit-title {
+  cursor: default;
+}
+
+.mac-textedit-title-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-space-control-gap);
+  padding: var(--mac-space-control-gap);
+}
+
+/* The Styles sheet's list: each style drawn in itself. */
+.mac-textedit-styles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-block-size: 200px;
+  overflow: auto;
+}
+
+/* Edit > Complete's list, at the insertion point, as a menu is drawn. */
+.mac-textedit-completions {
+  position: fixed;
+  z-index: 800;
+  min-inline-size: 120px;
+  padding-block: 4px;
+  border-radius: 5px;
+  background: var(--mac-color-control-background);
+  box-shadow: 0 0 0 var(--mac-hairline) var(--mac-color-separator);
+  color: var(--mac-color-label);
+  font: var(--mac-font-control-regular);
+}
+
+.mac-textedit-completion {
+  padding-inline: 12px;
+}
+
+.mac-textedit-completion:where([data-selected]) {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-content-text);
+}
+
+/* A file's preview: the page, then the name and what kind of file it is. */
+.mac-textedit-preview {
+  gap: 4px;
+  align-items: stretch;
+  padding: 20px 20px 0;
+  color: var(--mac-color-label);
+  text-align: start;
+}
+
+.mac-textedit-preview-page {
+  box-sizing: border-box;
+  flex: none;
+  width: 100%;
+  height: 254px;
+  overflow: hidden;
+  padding: 4px 7px;
+  border: 1px solid var(--mac-color-separator);
+  background: var(--mac-color-control-background);
+  color: var(--mac-color-text);
+  font:
+    12px / 14px Helvetica,
+    Arial,
+    sans-serif;
+  text-align: start;
+  white-space: pre-wrap;
+}
+
+.mac-textedit-preview-page:where([data-format="plain"]) {
+  font: 400 11px / 14px var(--mac-font-family-monospace);
+}
+
+.mac-textedit-preview-name {
+  margin-block-start: 22px;
+  font: 700 17px / 22px var(--mac-font-family-system);
+}
+
+.mac-textedit-preview-heading {
+  margin-block-start: 16px;
+}
+
+.mac-textedit-preview-detail,
+.mac-textedit-preview-tags,
+.mac-textedit-preview-row {
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-control-small);
+}
+
+.mac-textedit-preview-tags {
+  color: var(--mac-color-label-tertiary);
+}
+
+.mac-textedit-preview-row {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  height: 20px;
+}
+
+.mac-textedit-preview-row > :where(:last-child) {
+  color: var(--mac-color-label);
+}
+
+.mac-textedit-preview-row + .mac-textedit-preview-row {
+  box-shadow: inset 0 var(--mac-hairline) 0 var(--mac-color-separator);
+}
+
+/* The printed page, drawn for a sheet 301 pt long: a US Letter page at 38%, so its 1 inch
+   margins are 27 pt and 12 pt text is 5 pt on a 6 pt line. The header and the footer stand
+   in the margins. */
+.mac-textedit-print-page {
+  position: relative;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 26px 29px;
+  color: var(--mac-textedit-page-ink);
+  font:
+    5px / 6px Helvetica,
+    Arial,
+    sans-serif;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.mac-textedit-print-page:where([data-plain]) {
+  font-family: var(--mac-font-family-monospace);
+}
+
+.mac-textedit-print-header,
+.mac-textedit-print-footer {
+  position: absolute;
+  inset-inline: 29px;
+  text-align: center;
+}
+
+.mac-textedit-print-header {
+  inset-block-start: 12px;
+}
+
+.mac-textedit-print-footer {
+  inset-block-end: 12px;
+}
+
+.mac-textedit-print-note {
+  margin: 0;
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.mac-textedit-properties {
+  padding: var(--mac-space-window-margin);
+}
+
+.mac-textedit-print-options {
+  display: grid;
+  gap: 6px;
+  width: 186px;
+  white-space: nowrap;
+}

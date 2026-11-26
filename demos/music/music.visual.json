@@ -1,0 +1,173 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "window-light",
+      "description": "The whole Music window, Aqua: Albums selected, one album, nothing loaded, volume at its maximum. Whole crop except the 168 pt album cover, which is generated artwork and masked: the sidebar icons and the audio-output glyph are stand-in drawings, the display's idle mark (Apple's logo) is absent, the album's title and artist are invented, and the text is set in the fallback font.",
+      "example": "visual-window",
+      "appearance": "light",
+      "masks": [{ "x": 260, "y": 95, "width": 168, "height": 168 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Music.png",
+        "crop": { "x": 112, "y": 76, "width": 2440, "height": 1440 }
+      },
+      "budget": { "1x": 0.0086, "2x": 0.0067 },
+      "deltaBudget": { "1x": 1.1, "2x": 1 }
+    },
+    {
+      "name": "window-light-layout",
+      "description": "As window-light with the stand-in artwork and the text masked (the display's idle mark, the audio-output glyph, the whole 168 pt album cover, which is generated artwork, the album's two lines of text, the search field's placeholder and, in the sidebar's list, the headers, the labels and the stand-in icons; the masks are 2 pt taller than the text), to score the frame, the sidebar surface with the place, height and colour of the selected row, the window controls, the search field, the playback bar with its transport glyphs, display, volume slider and trailing buttons, the divider, the pane and the album cell's edge and shadow.",
+      "example": "visual-window",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 706, "y": 10, "width": 30, "height": 32 },
+        { "x": 1060, "y": 19, "width": 20, "height": 19 },
+        { "x": 260, "y": 95, "width": 168, "height": 168 },
+        { "x": 258, "y": 266, "width": 240, "height": 34 },
+        { "x": 30, "y": 66, "width": 60, "height": 18 },
+        { "x": 7, "y": 102.5, "width": 80, "height": 14 },
+        { "x": 17, "y": 118, "width": 80, "height": 24 },
+        { "x": 17, "y": 142, "width": 80, "height": 24 },
+        { "x": 17, "y": 166, "width": 72, "height": 24 },
+        { "x": 7, "y": 204.5, "width": 55, "height": 14 },
+        { "x": 17, "y": 220, "width": 135, "height": 24 },
+        { "x": 17, "y": 244, "width": 76, "height": 24 },
+        { "x": 17, "y": 268, "width": 80, "height": 24 },
+        { "x": 17, "y": 292, "width": 74, "height": 24 },
+        { "x": 7, "y": 330.5, "width": 45, "height": 14 },
+        { "x": 17, "y": 346, "width": 105, "height": 24 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Music.png",
+        "crop": { "x": 112, "y": 76, "width": 2440, "height": 1440 }
+      },
+      "budget": { "1x": 0.0097, "2x": 0.0013 },
+      "deltaBudget": { "1x": 0.6, "2x": 0.5 }
+    },
+    {
+      "name": "window-dark",
+      "description": "The whole Music window, Dark Aqua: Albums selected, one album, nothing loaded. Whole crop except the album cover, generated artwork and masked as in window-light: stand-in sidebar icons and audio-output glyph, no idle mark in the display, invented album text, text in the fallback font.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "masks": [{ "x": 260, "y": 95, "width": 168, "height": 168 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Music.png",
+        "crop": { "x": 112, "y": 76, "width": 2440, "height": 1440 }
+      },
+      "budget": { "1x": 0.009, "2x": 0.0075 },
+      "deltaBudget": { "1x": 1, "2x": 0.9 }
+    },
+    {
+      "name": "window-dark-layout",
+      "description": "As window-dark with the same regions masked as window-light-layout.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 706, "y": 10, "width": 30, "height": 32 },
+        { "x": 1060, "y": 19, "width": 20, "height": 19 },
+        { "x": 260, "y": 95, "width": 168, "height": 168 },
+        { "x": 258, "y": 266, "width": 240, "height": 34 },
+        { "x": 30, "y": 66, "width": 60, "height": 18 },
+        { "x": 7, "y": 102.5, "width": 80, "height": 14 },
+        { "x": 17, "y": 118, "width": 80, "height": 24 },
+        { "x": 17, "y": 142, "width": 80, "height": 24 },
+        { "x": 17, "y": 166, "width": 72, "height": 24 },
+        { "x": 7, "y": 204.5, "width": 55, "height": 14 },
+        { "x": 17, "y": 220, "width": 135, "height": 24 },
+        { "x": 17, "y": 244, "width": 76, "height": 24 },
+        { "x": 17, "y": 268, "width": 80, "height": 24 },
+        { "x": 17, "y": 292, "width": 74, "height": 24 },
+        { "x": 7, "y": 330.5, "width": 45, "height": 14 },
+        { "x": 17, "y": 346, "width": 105, "height": 24 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Music.png",
+        "crop": { "x": 112, "y": 76, "width": 2440, "height": 1440 }
+      },
+      "budget": { "1x": 0.0103, "2x": 0.0027 },
+      "deltaBudget": { "1x": 0.55, "2x": 0.45 }
+    },
+    {
+      "name": "preferences-light",
+      "description": "The whole frame of Music's Preferences on the General pane, Aqua: title bar, centred toolbar, the form, both separators and the footer with help, Cancel and OK. Whole crop: the toolbar icons are stand-in drawings and the text is set in the fallback font.",
+      "example": "visual-preferences",
+      "appearance": "light",
+      "reference": {
+        "file": "10-15-Catalina-Light-Music-Preferences.png",
+        "crop": { "x": 112, "y": 76, "width": 1066, "height": 584 }
+      },
+      "budget": { "1x": 0.0562, "2x": 0.0423 },
+      "deltaBudget": { "1x": 5.7, "2x": 5.1 }
+    },
+    {
+      "name": "preferences-light-layout",
+      "description": "As preferences-light with the stand-in toolbar icons and all text masked (the title, the toolbar labels, the form's labels and titles, the pop-up button's title, the button titles and the help glyph), to score the frame, the selected toolbar item, the columns, the checkboxes, the List Size pop-up button's bezel, cap and arrows, the separators and the buttons' bezels.",
+      "example": "visual-preferences",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 134, "y": 24, "width": 34, "height": 35 },
+        { "x": 186, "y": 24, "width": 34, "height": 35 },
+        { "x": 234, "y": 24, "width": 34, "height": 35 },
+        { "x": 290, "y": 24, "width": 34, "height": 35 },
+        { "x": 354, "y": 24, "width": 34, "height": 35 },
+        { "x": 188, "y": 171, "width": 52, "height": 15 },
+        { "x": 236, "y": 3, "width": 60, "height": 16 },
+        { "x": 126, "y": 59, "width": 280, "height": 15 },
+        { "x": 80, "y": 98, "width": 92, "height": 128 },
+        { "x": 196, "y": 98, "width": 150, "height": 128 },
+        { "x": 372, "y": 253, "width": 48, "height": 16 },
+        { "x": 462, "y": 253, "width": 32, "height": 16 },
+        { "x": 25, "y": 254, "width": 11, "height": 15 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Music-Preferences.png",
+        "crop": { "x": 112, "y": 76, "width": 1066, "height": 584 }
+      },
+      "budget": { "1x": 0.0132, "2x": 0.0007 },
+      "deltaBudget": { "1x": 1, "2x": 0.5 }
+    },
+    {
+      "name": "preferences-dark",
+      "description": "The whole frame of Music's Preferences on the General pane, Dark Aqua. Whole crop: stand-in toolbar icons, text in the fallback font.",
+      "example": "visual-preferences",
+      "appearance": "dark",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Music-Preferences.png",
+        "crop": { "x": 112, "y": 76, "width": 1066, "height": 584 }
+      },
+      "budget": { "1x": 0.0627, "2x": 0.0424 },
+      "deltaBudget": { "1x": 7.4, "2x": 6.7 }
+    },
+    {
+      "name": "preferences-dark-layout",
+      "description": "As preferences-dark with the same regions masked as preferences-light-layout.",
+      "example": "visual-preferences",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 134, "y": 24, "width": 34, "height": 35 },
+        { "x": 186, "y": 24, "width": 34, "height": 35 },
+        { "x": 234, "y": 24, "width": 34, "height": 35 },
+        { "x": 290, "y": 24, "width": 34, "height": 35 },
+        { "x": 354, "y": 24, "width": 34, "height": 35 },
+        { "x": 188, "y": 171, "width": 52, "height": 15 },
+        { "x": 236, "y": 3, "width": 60, "height": 16 },
+        { "x": 126, "y": 59, "width": 280, "height": 15 },
+        { "x": 80, "y": 98, "width": 92, "height": 128 },
+        { "x": 196, "y": 98, "width": 150, "height": 128 },
+        { "x": 372, "y": 253, "width": 48, "height": 16 },
+        { "x": 462, "y": 253, "width": 32, "height": 16 },
+        { "x": 25, "y": 254, "width": 11, "height": 15 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Music-Preferences.png",
+        "crop": { "x": 112, "y": 76, "width": 1066, "height": 584 }
+      },
+      "budget": { "1x": 0.0093, "2x": 0.0009 },
+      "deltaBudget": { "1x": 2.5, "2x": 2 }
+    }
+  ]
+}

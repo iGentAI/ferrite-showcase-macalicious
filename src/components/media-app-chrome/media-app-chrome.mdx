@@ -1,0 +1,200 @@
+---
+title: Media App Chrome
+description: The window layout of Catalina's media players, Music and Podcasts, with a full-height sidebar and a playback bar of transport buttons, a now-playing display and a volume slider.
+order: 90
+---
+
+<Example name="basic" both />
+
+Music and Podcasts, the apps that replaced iTunes in Catalina, have no title bar. The sidebar
+runs the height of the window and holds the window controls and a search field; a 55 pt
+playback bar sits over the content pane only. This component is that layout and the bar's own
+controls. It is custom chrome, so there is no single AppKit class behind it: the bar is built on
+[Base UI's Toolbar](https://base-ui.com/react/components/toolbar) and the volume control on
+[Base UI's Slider](https://base-ui.com/react/components/slider). It plays nothing; you supply
+the state.
+
+## Usage
+
+```tsx
+import {
+  MediaAppChrome,
+  MediaAppChromeBar,
+  MediaAppChromeButton,
+  MediaAppChromeControls,
+  MediaAppChromeDisplay,
+  MediaAppChromePane,
+  MediaAppChromeSidebar,
+  MediaAppChromeTransport,
+  MediaAppChromeVolume,
+} from "macalicious/media-app-chrome";
+import { NowPlayingLcd } from "macalicious/now-playing-lcd";
+import { SearchField } from "macalicious/search-field";
+import { Sidebar } from "macalicious/sidebar";
+import { Window } from "macalicious/window";
+import { WindowControls } from "macalicious/window-controls";
+import "macalicious/media-app-chrome.css";
+
+<Window width={1220} height={720} aria-label="Music">
+  <MediaAppChrome>
+    <MediaAppChromeSidebar controls={<WindowControls />} search={<SearchField variant="sidebar" />}>
+      <Sidebar aria-label="Library">{/* sections and items */}</Sidebar>
+    </MediaAppChromeSidebar>
+    <MediaAppChromeBar aria-label="Playback controls">
+      <MediaAppChromeTransport>
+        <MediaAppChromeButton glyph="previous" aria-label="Previous" />
+        <MediaAppChromeButton glyph="play" aria-label="Play" />
+        <MediaAppChromeButton glyph="next" aria-label="Next" />
+      </MediaAppChromeTransport>
+      <MediaAppChromeDisplay>
+        <NowPlayingLcd />
+      </MediaAppChromeDisplay>
+      <MediaAppChromeControls>
+        <MediaAppChromeVolume defaultValue={100}>
+          <MediaAppChromeButton glyph="output" aria-label="Audio output" />
+        </MediaAppChromeVolume>
+        <MediaAppChromeButton glyph="lyrics" aria-label="Lyrics" />
+        <MediaAppChromeButton glyph="up-next" aria-label="Up Next" />
+      </MediaAppChromeControls>
+    </MediaAppChromeBar>
+    <MediaAppChromePane>{/* content */}</MediaAppChromePane>
+  </MediaAppChrome>
+</Window>
+```
+
+`MediaAppChrome` is the child of a [Window](/components/window), in place of a title bar and a
+body. Its three children place themselves: the sidebar column, the bar and the pane. Inside the
+bar, `MediaAppChromeTransport`, `MediaAppChromeDisplay` and `MediaAppChromeControls` are the
+three columns; the display takes 40% of the bar, as measured in both apps, and holds a
+[Now Playing Lcd](/components/now-playing-lcd). The sidebar's list is a
+[Sidebar](/components/sidebar); give it and `MediaAppChromeSidebar` the same `material`.
+`MediaAppChromeButton` registers with the bar's keyboard navigation, so it is used only inside
+a `MediaAppChromeBar`.
+
+The second layout of the media apps, the one of TV and Books, is a standard unified toolbar
+with a centred segmented control and a search field. It needs nothing from this component:
+build it from [Title Bar](/components/title-bar), [Toolbar](/components/toolbar),
+[Toolbar Segmented Control](/components/toolbar-segmented-control) and
+[Toolbar Search Field](/components/toolbar-search-field).
+
+## Guidelines
+
+- Use a sidebar for the top-level places of the app, grouped under short titles, and let the
+  selected row decide what the pane shows.
+- Keep the bar to playback: transport, the display of what is playing, volume and at most two
+  trailing buttons. Every one of them must also be a menu command.
+- Disable the previous and next buttons, rather than hiding them, when nothing is loaded.
+- Swap the play glyph for the pause glyph while something plays, and change the button's name
+  with it.
+
+## Variants and states
+
+<Example name="podcasts" both />
+
+| `variant` | Bar | Glyphs | Sidebar width in the app |
+| --- | --- | --- | --- |
+| `music` (default) | Vertical gradient, line under it (measured) | Grey transport, lighter trailing buttons (measured) | 220 pt |
+| `podcasts` | Flat, half a point lower (measured) | One strong colour for every button (measured) | 260 pt |
+
+<Example name="states" both />
+
+| State | Look | Basis |
+| --- | --- | --- |
+| Enabled, disabled button | Glyph colour, lighter when disabled | Measured: Music shows both; Podcasts shows both in Aqua, and its dark disabled colour is the Music value (provisional) |
+| Pressed | Glyph about 20% darker in Aqua, lighter in Dark Aqua | Provisional: no screenshot shows it |
+| Toggle that is on (`aria-pressed="true"`) | Glyph in the accent colour | Provisional |
+| Keyboard focus | Focus ring around the glyph or the volume knob, in the key window only | Provisional |
+| Volume below the maximum | Lighter track after the knob | Provisional: every capture has the volume at its maximum |
+| Inactive window | Flat bar and sidebar header, every glyph in the disabled colour | Surfaces measured on the inactive Books window; the glyphs are provisional |
+
+## Sizes
+
+There is no `size` prop. The bar is 55 pt high and its glyphs keep their measured boxes. The
+chrome fills the window; the sidebar column is `sidebarWidth` points wide (220 by default), and
+the display starts 27.7% into the bar and takes 40% of it, which reproduces both apps at their
+captured widths. The volume group floats between the display and the trailing buttons. In a
+bar too narrow for that (under about 600 pt with two trailing buttons) the side columns keep
+the width of their controls and the display gives way.
+
+## API
+
+<PropsTable name="MediaAppChromeProps" />
+
+<PropsTable name="MediaAppChromeSidebarProps" />
+
+<PropsTable name="MediaAppChromeBarProps" />
+
+<PropsTable name="MediaAppChromeButtonProps" />
+
+<PropsTable name="MediaAppChromeVolumeProps" />
+
+`MediaAppChromeTransport`, `MediaAppChromeDisplay`, `MediaAppChromeControls` and
+`MediaAppChromePane` take the props of a `div`.
+
+| Class | Part |
+| --- | --- |
+| `.mac-media-app-chrome` | The grid: sidebar column, then bar over pane. |
+| `.mac-media-app-chrome-sidebar`, `-header`, `-window-controls` | The column; its header on the sidebar material; the box that centres the window controls on the bar. |
+| `.mac-media-app-chrome-bar` | The 55 pt playback bar, a toolbar of three columns. |
+| `.mac-media-app-chrome-transport`, `-display`, `-controls` | The three columns. |
+| `.mac-media-app-chrome-button`, `-glyph` | A borderless glyph button and its drawing. |
+| `.mac-media-app-chrome-volume`, `-slider`, `-slider-control`, `-slider-track`, `-slider-level`, `-slider-knob` | The volume group and the parts of its slider. |
+| `.mac-media-app-chrome-pane` | The content under the bar. |
+
+| Attribute or variable | Values | Description |
+| --- | --- | --- |
+| `data-variant` | `music`, `podcasts` | On the root; reflects `variant`. |
+| `data-material` | `translucent`, `opaque` | On `.mac-media-app-chrome-header`; reflects the sidebar's `material`. |
+| `data-disabled` | present or absent | On a disabled button and on a disabled volume slider. |
+| `data-force` | `pressed`, `focus` | On a button: pins the state in documentation. |
+| `--mac-media-app-chrome-sidebar-width` | a length | Width of the sidebar column; set by `sidebarWidth`. |
+| `--mac-media-app-chrome-display-start` | a percentage | Where the display starts in the bar. Default 27.73% (Music) or 27.57% (Podcasts). |
+
+## Accessibility
+
+- The bar is a `toolbar`; give it an `aria-label`. Its buttons are one tab stop, and the Left
+  and Right arrow keys move between them. As in every Base UI toolbar, a disabled button can
+  still be reached, so that a screen reader finds it.
+- The transport buttons are a `group` named "Playback".
+- Every button shows only a glyph and needs an `aria-label`. When play becomes pause, change
+  the label too. For a toggle such as Lyrics, pass `aria-pressed`.
+- The volume is a `slider` named "Volume" (`aria-label` changes it). It is a tab stop of its
+  own, and the arrow keys, Page Up, Page Down, Home and End change its value.
+- A seekable now-playing display in the bar keeps its arrow keys in the same way.
+- The chrome does not bind Space to play and pause or Command-F to the search field, as the
+  apps do. Bind them where your app handles its menu commands.
+
+## Visual comparison
+
+`media-app-chrome.visual.json` compares the whole playback bar, from the first point of the
+pane to the window's right edge, with Music in both appearances, with Podcasts in Aqua (nothing
+loaded, skip buttons disabled) and with Podcasts in Dark Aqua (an episode loaded, 15 and 30 in
+the skip glyphs). Masked in each: the top point and the top right corner, which are the
+window's rim and rounded corner in the capture, and Apple's marks, the show's artwork and the
+text in the display. Two more comparisons render the Music bar in an inactive window and check
+pixels against the values of the inactive Books window, and two render the public examples at
+their own, narrower widths and check that the last trailing button is inside the window. Two
+render the states example in an inactive window and check that a toggle that is on has lost
+its accent colour, and one checks that a Sidebar row inside the chrome keeps its 18 pt inset.
+
+Scores from `npm run visual -- media-app-chrome` in Chromium on Linux: the share of pixels that
+differ at threshold 0.05, and the mean colour difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `music-bar-light` | Light-Music (554, 76, 1998, 110) | 5.90% | 2.01 | 1.07% | 0.92 |
+| `music-bar-dark` | Dark-Music (554, 76, 1998, 110) | 4.71% | 2.10 | 1.13% | 1.13 |
+| `podcasts-bar-light` | Light-Podcasts (634, 76, 1752, 110) | 4.96% | 2.74 | 1.67% | 1.63 |
+| `podcasts-bar-dark` | Dark-Podcasts (634, 76, 1752, 110) | 4.14% | 4.66 | 2.40% | 3.41 |
+
+What remains is the glyphs. They are original drawings in the measured boxes, not Apple's
+artwork: the audio-output glyph in particular is a different picture from the AirPlay mark, and
+the numbers in the skip glyphs are set in the fallback font off Apple platforms.
+
+Measured: the bar's height, gradient and separator, the divider after the sidebar, the
+position and width of the display, the boxes, spacing and colours of every glyph, the volume
+track and knob. Not compared with a screenshot: the sidebar column, whose rows are the
+[Sidebar](/components/sidebar) component's and whose icons are Apple's; its header places the
+window controls and the search field at the measured offsets. The sidebar divider is one
+colour, black at 20%, which is Music's; Podcasts' is slightly darker in Aqua. Not reproduced:
+the vibrancy of the sidebar over a desktop, unless the page has one behind the window.

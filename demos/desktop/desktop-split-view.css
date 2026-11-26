@@ -1,0 +1,96 @@
+/*
+ * Split View on the desktop.
+ *
+ * [data-split-view]   on the manager while a Split View shows: the menu bar and the Dock go, as they
+ *                     do for a window in full screen, until the pointer calls the menu bar.
+ */
+[data-split-view] .mac-desktop-shell-dock,
+[data-split-view] .mac-desktop-shell-menu-bar:not([data-revealed]) {
+  visibility: hidden;
+}
+
+[data-split-view] [data-window-id] > [data-edge] {
+  display: none;
+}
+
+.mac-desktop-shell-activity-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mac-desktop-shell-activity-tile {
+  fill: var(--mac-desktop-shell-activity-tile);
+}
+
+.mac-desktop-shell-activity-bar {
+  fill: var(--mac-desktop-shell-activity-off);
+}
+
+.mac-desktop-shell-activity-bar[data-lit] {
+  fill: var(--mac-desktop-shell-activity-on);
+}
+
+.mac-desktop-shell-launchpad-folder-name {
+  appearance: none;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  pointer-events: auto;
+}
+
+.mac-desktop-shell-split-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: calc(var(--mac-window-manager-layer-chrome) - 1);
+  background: var(--mac-desktop-shell-split-divider);
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.mac-desktop-shell-split-chooser {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: calc(var(--mac-window-manager-layer-chrome) - 1);
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  place-content: center;
+  gap: var(--mac-desktop-shell-split-gap);
+  width: 50%;
+  padding: var(--mac-desktop-shell-split-gap);
+  background: var(--mac-desktop-shell-split-fill);
+  backdrop-filter: blur(var(--mac-desktop-shell-split-blur));
+}
+
+.mac-desktop-shell-split-chooser[data-side="left"] {
+  left: 0;
+}
+
+.mac-desktop-shell-split-chooser[data-side="right"] {
+  right: 0;
+}
+
+.mac-desktop-shell-split-choice,
+.mac-desktop-shell-split-none {
+  appearance: none;
+  border: 0;
+  border-radius: var(--mac-desktop-shell-split-radius);
+  background: transparent;
+  color: var(--mac-desktop-shell-split-text);
+  font: inherit;
+}
+
+.mac-desktop-shell-split-choice:hover,
+.mac-desktop-shell-split-choice:focus-visible,
+.mac-desktop-shell-split-none:focus-visible {
+  outline: none;
+  background: var(--mac-desktop-shell-split-hover);
+}

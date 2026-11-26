@@ -1,0 +1,239 @@
+---
+title: Music
+description: The Music window of macOS 10.15 with its Preferences, a full-height sidebar, a playback bar with a simulated transport, an album grid, a song list and search, built from the library alone.
+layout: full
+order: 90
+---
+
+<Example name="basic" />
+
+Press play, drag the volume, pick a row in the sidebar, choose an album, type in the search
+field. Nothing is played: a clock advances the position one second per second, and the
+display, the transport buttons and the Up Next list follow it. The albums, artists and songs
+are invented for the demo, and every cover and icon is an original stand-in drawing.
+
+## What it shows
+
+- A [Window](/components/window) without a title bar, laid out by
+  [Media App Chrome](/components/media-app-chrome): the sidebar column runs the height of the
+  window and holds the [Window Controls](/components/window-controls) and a sidebar
+  [Search Field](/components/search-field); the 55 pt playback bar sits over the pane.
+- The playback bar: previous, play or pause and next (previous and next are disabled while
+  nothing is loaded, as in the screenshots), a [Now Playing Lcd](/components/now-playing-lcd)
+  whose progress line can be dragged, the volume slider, and the Lyrics and Up Next buttons,
+  which open a panel at the trailing edge of the pane.
+- A [Sidebar](/components/sidebar) of eight places in three groups. Albums and Recently Added
+  show a [Card Grid](/components/card-grid) of square album cells in a
+  [Scroll View](/components/scroll-view); Artists shows one titled grid per artist; Songs shows
+  a sortable [Table View](/components/table-view); the Apple Music and Store rows show an
+  [Empty State](/components/empty-state), because those services are not part of the demo.
+- Choosing an album opens its details under the grid: the cover, a
+  [Push Button](/components/push-button) that plays it and its songs in a table. A double
+  click on a cell plays the album; a double click or Return on a song plays from that song.
+- Search finds albums by title or artist and songs by title, artist or album, and shows both
+  lists; a search without matches shows "No Results".
+- Up Next is a [List View](/components/list-view) of the queue after the song that is loaded;
+  a double click on a row plays from there.
+
+## Preferences
+
+<Example name="preferences" />
+
+Music's preferences are the modal kind of the
+[Preferences Window](/components/preferences-window): a dialog without window controls, with a
+centred [Preferences Toolbar](/components/preferences-toolbar) of five panes, and a
+[Help Button](/components/help-button), Cancel and a [Default Button](/components/default-button)
+under each. Changes take effect when OK is chosen (or Return is pressed); Cancel and Escape
+drop them. In the demo four settings do something:
+
+| Setting | Effect |
+| --- | --- |
+| General, Show: iTunes Store | Shows or hides the Store group of the sidebar. |
+| General, Show: Songs list checkboxes | Adds a [Checkbox](/components/checkbox) column to the Songs list. |
+| General, List Size | A [Pop-Up Button](/components/pop-up-button): the rows of the song lists are 20, 24 or 28 pt high. |
+| General, Notifications: When song changes | Announces each new song through a `status` element, for screen readers. |
+
+The other checkboxes keep their state and change nothing. Only the General pane has a
+reference screenshot; the contents of the other four panes are plausible stand-ins.
+
+The Music window opens its preferences with Command-comma (Control-comma off Apple platforms)
+while the keyboard focus is in the window, and through the `preferencesOpen` prop, which is
+how a menu bar's Preferences command reaches it; the button under the first example stands for
+that command. While they are open the Music window is the main window (`data-window-state`
+is `main`, so its window controls are grey), its content is inert, and the preferences are
+rendered outside the window's element, over its middle, into its offset parent or the element
+given as `preferencesContainer`. For a host they still belong to the Music window: they take
+the `z-index` of its `style`, where they are in front of it because they come after it in the
+document, and the `onPointerDown` and `onPointerDownCapture` handlers given to the window hear
+presses on them too, so a window manager that raises a window on a press raises Music.
+
+## On the Ferrite desktop
+
+Served by the `macalicious-desktop` Ferrite application (`ferrite-apps/desktop`), the Dock's
+Music is `DesktopMusic` (`music-desktop.tsx`), a real player built from the same components.
+Every other build, this page included, shows the demo above.
+
+- **Your own songs.** Add to Library (Command-O, the button of an empty library, or a drop of
+  files on the window) takes MP3, AAC and M4A, FLAC, Ogg and Opus, and WAV files, whichever
+  the browser can play. The title, artist, album, genre, year, track number and cover are read
+  from the file's tags in the browser (`music-tags.ts`: ID3v1 and ID3v2, MP4 `ilst`, Vorbis
+  comments, WAV `INFO`), and its length from the browser's own decoder. The file goes to the
+  Music folder of the person's drive in pieces under the gateway's 256 KiB request limit; the
+  cover, made small in a canvas, is kept by the Music module under its SHA-256.
+- **Openly licensed music.** Internet Archive, Browse lists the most played netlabel releases
+  and searches the Archive, only among items under a Creative Commons licence or in the public
+  domain. An item shows its licence and lists its tracks, which play straight from archive.org
+  (MP3 where the browser plays it, else Ogg Vorbis, else FLAC) and can be added to the library.
+  The server checks the licence again before it lists an item's tracks or keeps one.
+- **Internet radio.** Radio lists stations from the free Radio Browser directory, most listened
+  first, by name or genre, only MP3 at https addresses. A station plays straight from its own
+  server, and Add keeps it in the library as a stream. These are not Apple's stations, so the row
+  sits under Internet Radio.
+- **Playback.** Play, pause, previous and next, Shuffle, Repeat (off, all, one), the volume,
+  seeking on the display's progress line, Up Next with Play Next and Play Later, and Space,
+  Command-Left and Command-Right in the window. The keyboard's and the system's media keys work
+  through the Media Session API, which also shows the song, artist, album and cover to the
+  operating system. Playback goes on while the views change and while the MiniPlayer (the
+  button after Up Next, or Shift-Command-M) is open; it stops when the window closes, as
+  quitting Music does.
+- **The library.** Albums, Artists, Songs, Genres, Composers and Recently Added; Loved Songs (the heart on each
+  row, or the row's menu), Recently Played and Top 25 Most Played; playlists, made from a
+  row's contextual menu (Add to Playlist, New Playlist), renamed and deleted in the playlist's
+  heading; Delete from Library; search of the library, with a button that searches the
+  Internet Archive for the same words.
+- **Song-change notifications.** With General, Notifications: When song changes, a
+  [Notification Banner](/components/notification-banner) appears at the top right of the
+  desktop for five seconds when a new song starts while Music is not the front application.
+- **The Dock's Music menu.** While its window is open, the tile's menu names the song loaded and
+  offers Play or Pause, Next and Previous.
+- **The Help menu.** Music Help opens Help Viewer on a search for Music, and Keyboard Shortcuts
+  lists the menus' key equivalents, read from the same commands they run.
+- **The Visualizer.** View > Visualizer chooses between two original drawings of the sound, and
+  the choice is kept with the person's settings.
+- **Playback preferences.** Preferences, Playback: Crossfade songs runs each song into the next
+  over 1 to 12 seconds on a second media element; Sound Enhancer brightens the highs, adds some
+  bass and widens the stereo image, from Low to High, through Web Audio; Sound Check measures each
+  song from its decoded sound once a page and brings it to the same level, within 12 dB and
+  without clipping. A file over 64 MB plays at its own level. They are kept on the server.
+- **The Audio output button.** Its menu lists the sound outputs the browser names, which it does
+  once the desktop may use the microphone, and the choice is kept by name with the person's
+  settings. In
+  a browser without `setSinkId` the button is dimmed, saying so.
+- **Share Song.** Copy Link and the desktop's Share rows give an Internet Archive song's page. A
+  song on the drive has no web address, so its rows are dimmed, saying so.
+
+What is kept on the server, per person: the library (songs, playlists, Loved) at
+`/api/music/library`, the playback (Up Next, the place in the song, Shuffle, Repeat, volume,
+Recently Played and play counts) at `/api/music/playback`, and the covers. The place in the song
+is saved at a pause, a seek and a change of song, and every 10 seconds while it plays; Music
+opened again shows the selected song at that place and resumes it from there once its sound has
+loaded, or from 0:00 when it had finished. The song files are the drive's. How seeking works: an uploaded song is read back from the drive in pieces and
+joined into one `Blob` before it plays, so a seek is answered from memory; an Internet Archive
+song is played from archive.org, which answers range requests, so the browser fetches only the
+part it seeks to. Limits: at most 500 songs and 100 playlists; an uploaded song plays once all
+of it has been read from the drive; there is no now-playing
+item in the menu bar or in Notification Center, because Catalina has neither.
+
+## Hosting the window
+
+`Music` renders the library's `Window` as its root and passes every `Window` prop to it, so it
+does not assume it fills the page. Place it with `style`; a window manager gives it `state`,
+the size, and eight more props that the component takes out before the rest goes to the
+`Window`. These are the props a [Managed Window](/components/managed-window)'s `render` form
+supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { musicApp } from "./app";
+
+<ManagedWindow
+  id={musicApp.id}
+  defaultFrame={{ x: 80, y: 60, ...musicApp.defaultSize }}
+  render={(props) => <musicApp.component {...props} />}
+/>;
+```
+
+Music has no title bar, so its drag region is the playback bar and the top of the sidebar: a
+press there that is not on a control calls `onDragRegionPointerDown`, and a double click calls
+`onDragRegionDoubleClick`.
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `albums` | `MusicAlbum[]` | The library; the default is eight invented albums. |
+| `defaultSection` | `MusicSection` | The sidebar row selected at first; `"albums"` by default. |
+| `onSectionChange` | `(section: MusicSection) => void` | Called with the row the user selects. |
+| `defaultVolume` | `number` | The volume at first, 0 to 100; 100 by default. |
+| `material` | `"translucent" \| "opaque"` | The sidebar's surface: vibrant over a desktop (the default), or opaque on a plain page. |
+| `defaultSettings` | `MusicSettings` | The settings the Preferences window starts with. |
+| `preferencesOpen`, `defaultPreferencesOpen`, `onPreferencesOpenChange` | `boolean`, `boolean`, `(open: boolean) => void` | The Preferences window, controlled or not. |
+| `preferencesContainer` | `HTMLElement` | The element the Preferences window is rendered into. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `controlsProps` | `WindowControlsProps` | Further props for the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Called for the drag region. |
+| `width`, `height` | `number \| string` | The frame; 1220 by 720 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `musicApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (1220 by 720), `minSize` (860 by 400), `resizable` and
+`menus`, the menu titles after the Apple menu. It also exports `MusicPreferences`, whose root
+is the `PreferencesWindow`.
+
+## Accessibility
+
+- The window is a `region` named "Music". The playback bar is a `toolbar` with one tab stop;
+  the volume and the progress line are sliders with tab stops of their own.
+- The play button's name changes with its glyph, "Play" or "Pause". Lyrics and Up Next are
+  toggle buttons (`aria-pressed`), and so is an album cell, whose details open below the grid.
+- The sidebar is a `tree`; the arrow keys move the selection and typing selects by name.
+- An empty search result is announced through a `status` element, and so is each new song
+  while the notifications preference is on.
+- Opening the preferences moves the keyboard focus to their toolbar, and closing them gives it
+  back. The Music window's content is inert meanwhile. As the Preferences Window page says,
+  the dialog does not contain the focus by itself: Tab can leave it for the rest of the page.
+- The demo does not bind Space to play and pause; that belongs to the application's menu
+  commands, which a menu bar supplies.
+
+## Fidelity
+
+`music.visual.json` compares the whole window with the Music screenshots and the Preferences
+window with the Music-Preferences screenshots, in both appearances, each as captured and again
+with the artwork and text masked. Scores from `npm run visual -- music/` in Chromium on Linux
+with the fallback font: the share of pixels that differ and the mean colour difference out of
+255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` (cover masked) | 0.66% | 0.84 | 0.52% | 0.76 |
+| `window-light-layout` (masked) | 0.46% | 0.31 | 0.07% | 0.23 |
+| `window-dark` (cover masked) | 0.70% | 0.70 | 0.58% | 0.63 |
+| `window-dark-layout` (masked) | 0.52% | 0.25 | 0.21% | 0.17 |
+| `preferences-light` | 4.44% | 4.35 | 3.26% | 3.68 |
+| `preferences-light-layout` (masked) | 0.89% | 0.50 | 0.02% | 0.21 |
+| `preferences-dark` | 4.49% | 5.70 | 3.27% | 5.00 |
+| `preferences-dark-layout` (masked) | 0.47% | 2.00 | 0.04% | 1.74 |
+
+The masked rows count a pixel as differing at a colour distance of 0.05, half the default.
+All four window rows mask the whole 168 pt album cover (at 260, 95 in the window): the cover
+is generated artwork, so none of its pixels are compared, only the cell's edge and shadow.
+What remains in the masked window comparisons is the library's own glyph drawings in the
+playback bar and, in Dark Aqua, the frame's top rim.
+
+- The album covers, the eight sidebar icons, the five Preferences toolbar icons and the
+  audio-output glyph are original stand-in drawings; Apple's and the record labels' artwork is
+  not reproduced. The now-playing display shows no idle mark where Music shows Apple's logo.
+- The albums, artists and songs are invented, so the album cell's text differs from the
+  capture's.
+- Music's source list is set with the [Sidebar](/components/sidebar)'s spacing properties:
+  rows that touch (a 24 pt pitch), 10 pt between sections, the label 5 pt after the icon and
+  the headers 2 pt lower. Music's list also begins 1.5 pt higher than Podcasts' in the same
+  [Media App Chrome](/components/media-app-chrome) (its first header's cap top at 103.5 pt
+  and its selected Albums row at 267 pt, where the chrome's list puts them at 105 and 268.5),
+  so the demo raises its first section by 1.5 pt.
+  The row labels keep the sidebar's measured colour, which is a little lighter than Music's.
+- An album cell that is chosen has no look of its own: the measured card has no selected
+  state, and Catalina shows none in the screenshots.
+- The Lyrics and Up Next panel, the album's details, the Artists and Songs views, the search
+  results and four of the five Preferences panes have no reference screenshot; they are
+  composed from library components to Catalina's conventions.
+- Playback is simulated and silent; the volume slider keeps its value and changes nothing.

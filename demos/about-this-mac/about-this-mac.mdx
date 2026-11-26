@@ -1,0 +1,152 @@
+---
+title: About This Mac
+description: The About This Mac window of macOS 10.15 with its five tabs in the title bar, the Overview of the reference screenshots, and Displays, Storage, Support and Service panes whose buttons and links report to the host.
+layout: full
+order: 25
+---
+
+<Example name="basic" />
+
+Choose a tab in the title bar, or press a button or a link in a pane: the window reports the
+command to its host and opens nothing itself. Overview is the pane of the reference
+screenshots. The other four panes are provisional: no screenshot shows them, so their layout
+and wording are stand-ins. The macOS badge, the display and the disk are plain stand-in shapes,
+and nothing is read from the machine the page runs on.
+
+## What it shows
+
+- The library's [About Window](/components/about-window) as the whole frame: a
+  [Window](/components/window) whose 38 pt [Title Bar](/components/title-bar) holds the
+  [Window Controls](/components/window-controls), with zoom disabled, and the tab control
+  centred on the window. The demo adds no chrome of its own; it gives the five tabs the widths
+  the capture measures and the panes their content.
+- **Overview**: the about window's own layout parts, with an [Image View](/components/image-view)
+  as the stand-in badge, the title, the version, the details as a list of bold labels and
+  values, two small [Push Buttons](/components/push-button) and the legal text with its link.
+  The facts are data (`info`): the dark capture shows a serial number where the light one
+  shows the label alone, and a fact that is empty leaves its line out.
+- **Displays**: a stand-in for each display over its name, size and graphics card, set with
+  [Labels](/components/label), and the Displays Preferences… button.
+- **Storage**: the startup disk with what is free of its capacity, a
+  [Level Indicator](/components/level-indicator) in its `storage` variant for the part in use,
+  the categories with their sizes, then what is in use and no category accounts for as
+  "Uncategorized", and the Manage… button.
+- **Support** and **Service**: headed groups of links. Each link is the library's
+  [Borderless Button](/components/borderless-button) in the link colour, because it reports
+  to the host and has no address.
+
+<Example name="storage" />
+
+About This Mac has no menus of its own: while it is open the menu bar keeps those of the
+application behind it, which is Finder in the captures.
+
+## Hosting the window
+
+`AboutThisMac` renders the library's `AboutWindow` as its root, whose root is a `Window`, and
+passes every `Window` prop to it, so it does not assume it fills the page. Place it with
+`style`; a window manager gives it `state` and eight more props, which the component hands to
+the window controls and answers from the title bar. These are the props a
+[Managed Window](/components/managed-window)'s `render` form supplies, so the component can be
+spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { aboutThisMacApp } from "./app";
+
+<ManagedWindow
+  id={aboutThisMacApp.id}
+  defaultFrame={{ x: 80, y: 60, ...aboutThisMacApp.defaultSize }}
+  resizable={aboutThisMacApp.resizable}
+  render={(props) => <aboutThisMacApp.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `tab`, `defaultTab`, `onTabChange` | `"overview" \| "displays" \| "storage" \| "support" \| "service"` and a function | The pane that is shown, controlled or not; `"overview"` at first. An id that names no tab shows Overview. |
+| `info` | `Partial<AboutThisMacInfo>` | The facts of the Overview pane; what is left out keeps the value of the light screenshot. |
+| `displays` | `AboutThisMacDisplay[]` | The displays of the Displays pane; one built-in display by default. |
+| `volume` | `AboutThisMacVolume` | The startup disk of the Storage pane, with sizes in bytes; the disk of the Storage Management screenshot by default. |
+| `onSystemReport`, `onSoftwareUpdate` | functions | The two buttons of the Overview pane. |
+| `onDisplaysPreferences`, `onManageStorage` | functions | The button of the Displays pane and of the Storage pane. |
+| `onLink` | `(id: string) => void` | A link of the Support or the Service pane, or `"license-agreement"` for the footer's. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`; zoom is disabled unless `zoomDisabled` is `false`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | A press or a double click on the title bar that is not on a tab or a control. |
+| `width`, `height` | `number \| string` | The frame; 586 by 353 by default, as captured. |
+| the rest | `WindowProps` | `state`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `aboutThisMacApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (586 by 353), `resizable` (`false`: the window has a fixed
+size) and `menus`, which are Finder's. The [Desktop](/demos/desktop) finds it there and
+launches the window from its Dock.
+
+The content is data (`about-this-mac-data.ts`): `defaultInfo` and `darkCaptureInfo` for the
+Overview, `defaultDisplays`, `defaultVolume`, and the sections of the Support and the Service
+pane. `formatSize()` writes a size as macOS does ("249.85 GB", "3.6 MB", "Zero KB"),
+`availability()` the line under the disk's name, and `uncategorizedSize()` gives what is in
+use beyond the categories.
+
+## Accessibility
+
+- The window is a `region` named "About This Mac": the bar shows tabs where a title would be.
+- The tab control is a `tablist` named "Sections" and one tab stop: the left and right arrow
+  keys move between the tabs and select as they move. Each tab is linked to its `tabpanel`,
+  and only the selected pane is in the document.
+- The title of the Overview pane is the window's `h1`. The details are a list; each row reads
+  as its label followed by its value. The badge, the display and the disk are decoration and
+  hidden from assistive technology.
+- The capacity bar is a `meter` named after the disk ("Macintosh SSD storage") whose value is
+  read as text: "54.04 GB used of 249.85 GB". The categories are a list named "Storage by
+  category", which ends with "Uncategorized" when the categories do not cover what is in use.
+- The links of the Support and the Service pane are buttons, each under an `h2` that names
+  its group. License Agreement in the footer is a link in the colour of the text around it, as
+  in Catalina, and is told apart by its wording and by the underline under the pointer.
+- Every button and link is in the tab order and shows the focus ring in the key window.
+
+## Fidelity
+
+`about-this-mac.visual.json` compares the window with the About This Mac screenshots in both
+appearances, each as captured and again as `-layout` with the text masked. The screenshots are
+full screens, so the crop ends at the window's frame: the shadow is not compared, the example
+paints a neutral matte behind the window, and every comparison masks the four corner squares
+(4 pt each), where the capture shows the desktop picture behind the rounded corners. The dark
+screenshot shows the serial number, so it has an example of its own. Scores from
+`npm run visual -- about-this-mac/` in Chromium on Linux with the fallback font: the share of
+pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 5.95% | 6.66 | 4.81% | 6.31 |
+| `window-light-layout` (masked) | 1.16% | 0.51 | 0.02% | 0.11 |
+| `window-dark` | 6.21% | 6.53 | 5.10% | 6.20 |
+| `window-dark-layout` (masked) | 0.73% | 0.74 | 0.01% | 0.34 |
+
+The masks of `window-light` and `window-dark` cover 11.6% of the crop (the badge and the
+corners) and those of the `-layout` pair 32.3%. A fifth comparison, `storage-light`, checks a
+pane no screenshot shows: after a click on the Storage tab it reads the fills of the selected
+and the deselected tab, the used and the free part of the capacity bar, and the pane's
+background.
+
+Measured in the screenshots and reproduced, all by the about window: the 586 by 353 pt frame,
+the 38 pt title bar, the tab control and the widths of its five tabs, the 153 pt picture 51 pt
+from the window's edge, the text column at 255 pt with every baseline, the two buttons and the
+legal text. At 1x the masked score is the hairlines of the tab control and the buttons, which
+a 1x screen cannot draw at half a point.
+
+What differs, and why:
+
+- **The macOS Catalina badge** is Apple's artwork and is not reproduced. A plain disc with a
+  pale rim stands in for it, in neutral token colours, and every comparison masks it.
+- **Text.** Set in the fallback font off Apple devices, which is nearly all of the unmasked
+  scores; the title is San Francisco's display cut at 26 pt, which the fallback font sets
+  wider.
+- **The dark window background.** The capture's is tinted by the desktop picture (`#303032`);
+  the comparison's example gives the window that value, and the title bar of the capture is up
+  to three levels lighter than the library's for the same reason.
+- **The capacity bar** of the Storage pane shows the part in use as one fill. Catalina's bar
+  has a segment in its own colour for each category; the library's level indicator has one
+  fill, so the categories are listed with their sizes instead.
+- **Not in a screenshot (provisional):** the Displays, Storage, Support and Service panes,
+  with their layout, their wording and the stand-ins for the display and the disk; the window
+  when it is not key; a pressed or focused tab.

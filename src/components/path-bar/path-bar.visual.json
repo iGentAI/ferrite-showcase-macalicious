@@ -1,0 +1,141 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "finder-search-empty-light",
+      "description": "The empty path bar at the bottom of the Finder Search window, Aqua: the two separator rows and the fill. The last point of the 25 pt bar is outside the crop (the window's edge highlight covers it). No text, so no masked variant.",
+      "example": "visual-finder-search",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.4, "2x": 0.3 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Search.png",
+        "crop": { "x": 442, "y": 1454, "width": 1560, "height": 48 }
+      }
+    },
+    {
+      "name": "finder-search-empty-dark",
+      "description": "The empty path bar at the bottom of the Finder Search window, Dark Aqua: the two separator rows and the fill. The last point of the 25 pt bar is outside the crop (the dark window's inner border covers it). No text, so no masked variant.",
+      "example": "visual-finder-search",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.4, "2x": 0.3 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Search.png",
+        "crop": { "x": 442, "y": 1418, "width": 1560, "height": 48 }
+      }
+    },
+    {
+      "name": "populated-light",
+      "description": "A path of three components, Aqua: where the icons and the chevrons fall, and that the last component draws no chevron. Every captured Finder path bar is empty, so these are pixel checks of the stated layout [provisional], not a comparison with a screenshot.",
+      "example": "visual-populated",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 300, "height": 25 },
+        "pixels": [
+          {
+            "x": 16,
+            "y": 13,
+            "color": "#808080",
+            "tolerance": 1,
+            "note": "first icon (stand-in square), 8 pt from the edge and centred in the 24 pt fill; layout of path-bar.css [provisional]: no reference screenshot shows a populated path bar"
+          },
+          {
+            "x": 77.75,
+            "y": 13.25,
+            "color": "#8e8e8e",
+            "tolerance": 1,
+            "scale": 2,
+            "note": "tip of the first chevron, 6 pt after the name, --mac-path-bar-chevron; layout of path-bar.css [provisional]: no reference screenshot shows a populated path bar"
+          },
+          {
+            "x": 81,
+            "y": 13,
+            "color": "#f0f0f0",
+            "tolerance": 1,
+            "note": "fill between the first chevron and the second component, --mac-path-bar-fill [measured]"
+          },
+          {
+            "x": 134.75,
+            "y": 13.25,
+            "color": "#8e8e8e",
+            "tolerance": 1,
+            "scale": 2,
+            "note": "tip of the second chevron; layout of path-bar.css [provisional]: no reference screenshot shows a populated path bar"
+          },
+          {
+            "x": 150,
+            "y": 13,
+            "color": "#808080",
+            "tolerance": 1,
+            "note": "icon of the last component, 6 pt after the second chevron; layout of path-bar.css [provisional]: no reference screenshot shows a populated path bar"
+          },
+          {
+            "x": 211.75,
+            "y": 13.25,
+            "color": "#f0f0f0",
+            "tolerance": 1,
+            "note": "no chevron after the last component: --mac-path-bar-fill [measured] where one would be"
+          }
+        ]
+      }
+    },
+    {
+      "name": "populated-dark",
+      "description": "A path of three components, Dark Aqua: where the icons and the chevrons fall, and that the last component draws no chevron. Every captured Finder path bar is empty, so these are pixel checks of the stated layout [provisional], not a comparison with a screenshot.",
+      "example": "visual-populated",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 300, "height": 25 },
+        "pixels": [
+          {
+            "x": 16,
+            "y": 13,
+            "color": "#808080",
+            "tolerance": 1,
+            "note": "first icon (stand-in square), 8 pt from the edge and centred in the 24 pt fill; layout of path-bar.css [provisional]: no reference screenshot shows a populated path bar"
+          },
+          {
+            "x": 77.75,
+            "y": 13.25,
+            "color": "#8e8e8e",
+            "tolerance": 1,
+            "scale": 2,
+            "note": "tip of the first chevron, 6 pt after the name, --mac-path-bar-chevron; layout of path-bar.css [provisional]: no reference screenshot shows a populated path bar"
+          },
+          {
+            "x": 81,
+            "y": 13,
+            "color": "#2b2c2f",
+            "tolerance": 1,
+            "note": "fill between the first chevron and the second component, --mac-path-bar-fill [measured]"
+          },
+          {
+            "x": 134.75,
+            "y": 13.25,
+            "color": "#8e8e8e",
+            "tolerance": 1,
+            "scale": 2,
+            "note": "tip of the second chevron; layout of path-bar.css [provisional]: no reference screenshot shows a populated path bar"
+          },
+          {
+            "x": 150,
+            "y": 13,
+            "color": "#808080",
+            "tolerance": 1,
+            "note": "icon of the last component, 6 pt after the second chevron; layout of path-bar.css [provisional]: no reference screenshot shows a populated path bar"
+          },
+          {
+            "x": 211.75,
+            "y": 13.25,
+            "color": "#2b2c2f",
+            "tolerance": 1,
+            "note": "no chevron after the last component: --mac-path-bar-fill [measured] where one would be"
+          }
+        ]
+      }
+    }
+  ]
+}

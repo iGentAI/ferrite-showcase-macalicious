@@ -1,0 +1,408 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "controls-light",
+      "description": "The leading end of the bar with the close and full-screen discs and the panel's top-left corner, Aqua. The backdrop behind the panel is a flat colour standing for the desktop picture.",
+      "example": "visual-controls",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0521,
+        "2x": 0.0046
+      },
+      "deltaBudget": {
+        "1x": 4.7,
+        "2x": 3.8
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Quick-Look.png",
+        "crop": {
+          "x": 1480,
+          "y": 90,
+          "width": 130,
+          "height": 76
+        }
+      }
+    },
+    {
+      "name": "actions-light",
+      "description": "The trailing end of the bar with its four buttons, Aqua. The three glyphs (Apple artwork, left out of the example) and the title of the text button (fallback font off Apple platforms) are masked, and so is the bar around the last button, where a window behind the panel shows through the material in the capture.",
+      "example": "visual-actions",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.024,
+        "2x": 0.023
+      },
+      "deltaBudget": {
+        "1x": 2.8,
+        "2x": 3.2
+      },
+      "masks": [
+        {
+          "x": 256,
+          "y": 0,
+          "width": 51,
+          "height": 9
+        },
+        {
+          "x": 256,
+          "y": 29,
+          "width": 51,
+          "height": 9
+        },
+        {
+          "x": 299,
+          "y": 0,
+          "width": 8,
+          "height": 38
+        },
+        {
+          "x": 24,
+          "y": 10,
+          "width": 20,
+          "height": 18
+        },
+        {
+          "x": 73,
+          "y": 10,
+          "width": 20,
+          "height": 18
+        },
+        {
+          "x": 120,
+          "y": 10,
+          "width": 121,
+          "height": 18
+        },
+        {
+          "x": 269,
+          "y": 10,
+          "width": 20,
+          "height": 18
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Quick-Look.png",
+        "crop": {
+          "x": 2650,
+          "y": 90,
+          "width": 614,
+          "height": 76
+        }
+      }
+    },
+    {
+      "name": "controls-dark",
+      "description": "The leading end of the bar with the close and full-screen discs and the panel's top-left corner, Dark Aqua. The backdrop behind the panel is a flat colour standing for the desktop picture.",
+      "example": "visual-controls",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.057,
+        "2x": 0.0103
+      },
+      "deltaBudget": {
+        "1x": 6.2,
+        "2x": 4.9
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Quick-Look.png",
+        "crop": {
+          "x": 964,
+          "y": 118,
+          "width": 130,
+          "height": 76
+        }
+      }
+    },
+    {
+      "name": "actions-dark",
+      "description": "The trailing end of the bar with its four buttons, Dark Aqua. The three glyphs (Apple artwork, left out of the example) and the title of the text button (fallback font off Apple platforms) are masked, and so is the bar around the last button, where a window behind the panel shows through the material in the capture.",
+      "example": "visual-actions",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0519,
+        "2x": 0.0475
+      },
+      "deltaBudget": {
+        "1x": 6.6,
+        "2x": 6.8
+      },
+      "masks": [
+        {
+          "x": 256,
+          "y": 0,
+          "width": 51,
+          "height": 9
+        },
+        {
+          "x": 256,
+          "y": 29,
+          "width": 51,
+          "height": 9
+        },
+        {
+          "x": 299,
+          "y": 0,
+          "width": 8,
+          "height": 38
+        },
+        {
+          "x": 24,
+          "y": 10,
+          "width": 20,
+          "height": 18
+        },
+        {
+          "x": 73,
+          "y": 10,
+          "width": 20,
+          "height": 18
+        },
+        {
+          "x": 120,
+          "y": 10,
+          "width": 121,
+          "height": 18
+        },
+        {
+          "x": 269,
+          "y": 10,
+          "width": 20,
+          "height": 18
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Quick-Look.png",
+        "crop": {
+          "x": 2556,
+          "y": 118,
+          "width": 614,
+          "height": 76
+        }
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "A pressed button of the bar, Aqua. No screenshot shows one.",
+      "example": "visual-actions",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": ".mac-quick-look-panel-button"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 307,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 18.5,
+            "color": "#e3e3e3",
+            "note": "first button, held down: --mac-quick-look-panel-button-pressed (inferred)"
+          },
+          {
+            "x": 70,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "second button, not pressed: fill (spec: quick-look-panel, Toolbar button fill, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "A pressed button of the bar, Dark Aqua. No screenshot shows one.",
+      "example": "visual-actions",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": ".mac-quick-look-panel-button"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 307,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 22,
+            "color": "#848a94",
+            "tolerance": 8,
+            "note": "first button, held down: white at 42% (--mac-quick-look-panel-button-pressed, inferred) over the bar #2a3546; computed. Not pressed it would be #6a727d"
+          },
+          {
+            "x": 70,
+            "y": 22,
+            "color": "#657080",
+            "tolerance": 5,
+            "note": "second button, not pressed: white at 30% (--mac-quick-look-panel-button) over the bar; computed from the tokens. The capture has #5f7183 to #656e85 there"
+          },
+          {
+            "x": 5,
+            "y": 22,
+            "color": "#2a3546",
+            "tolerance": 6,
+            "note": "the bar beside the buttons (spec: Title bar material, measured #2a3546 beside the buttons)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "long-title-light",
+      "description": "A name too long for the bar, Aqua: it is cut short between the discs and the actions and lies under neither. The example paints the title's box magenta and stands the panel on white. No screenshot shows a long name.",
+      "example": "visual-long-title",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 100,
+            "y": 19,
+            "color": "#ff00ff",
+            "note": "inside the title: the magenta the example paints behind it"
+          },
+          {
+            "x": 165.5,
+            "y": 19,
+            "color": "#ffffff",
+            "tolerance": 3,
+            "note": "the 12 pt gap between the title and the actions: the bar, which over white is white (--mac-quick-look-panel-material; computed)"
+          },
+          {
+            "x": 50,
+            "y": 19,
+            "color": "#ffffff",
+            "tolerance": 3,
+            "note": "the 12 pt gap between the discs and the title: the bar"
+          }
+        ]
+      }
+    },
+    {
+      "name": "long-title-dark",
+      "description": "A name too long for the bar, Dark Aqua: it is cut short between the discs and the actions and lies under neither. The example paints the title's box magenta and stands the panel on white. No screenshot shows a long name.",
+      "example": "visual-long-title",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 100,
+            "y": 19,
+            "color": "#ff00ff",
+            "note": "inside the title: the magenta the example paints behind it"
+          },
+          {
+            "x": 165.5,
+            "y": 19,
+            "color": "#b1b1b1",
+            "tolerance": 3,
+            "note": "the 12 pt gap between the title and the actions: the bar, which over white is rgb(70 70 70) at 42% over white (--mac-quick-look-panel-material; computed)"
+          },
+          {
+            "x": 50,
+            "y": 19,
+            "color": "#b1b1b1",
+            "tolerance": 3,
+            "note": "the 12 pt gap between the discs and the title: the bar"
+          }
+        ]
+      }
+    },
+    {
+      "name": "wide-tools-light",
+      "description": "Tools twice as wide as the panel, Aqua: they scroll between the close button and the actions and lie under neither. The example stands a magenta strip in for the tools and the panel on white. No screenshot shows tools that do not fit.",
+      "example": "visual-wide-tools",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 100,
+            "y": 19,
+            "color": "#ff00ff",
+            "note": "inside the tools: the magenta strip"
+          },
+          {
+            "x": 28,
+            "y": 19,
+            "color": "#ffffff",
+            "tolerance": 3,
+            "note": "between the close button and the tools: the bar, which over white is white (--mac-quick-look-panel-material; computed)"
+          },
+          {
+            "x": 167.5,
+            "y": 19,
+            "color": "#ffffff",
+            "tolerance": 3,
+            "note": "between the tools and the actions, past the 4 pt the tools may use for a focus ring: the bar"
+          },
+          {
+            "x": 180,
+            "y": 19,
+            "color": "#ffffff",
+            "tolerance": 3,
+            "note": "inside the action button, beside its title: its fill (spec: quick-look-panel, Toolbar button fill, measured), not the strip"
+          }
+        ]
+      }
+    },
+    {
+      "name": "wide-tools-dark",
+      "description": "Tools twice as wide as the panel, Dark Aqua: they scroll between the close button and the actions and lie under neither. The example stands a magenta strip in for the tools and the panel on white. No screenshot shows tools that do not fit.",
+      "example": "visual-wide-tools",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 100,
+            "y": 19,
+            "color": "#ff00ff",
+            "note": "inside the tools: the magenta strip"
+          },
+          {
+            "x": 28,
+            "y": 19,
+            "color": "#b1b1b1",
+            "tolerance": 3,
+            "note": "between the close button and the tools: the bar, rgb(70 70 70) at 42% over white (--mac-quick-look-panel-material; computed)"
+          },
+          {
+            "x": 167.5,
+            "y": 19,
+            "color": "#b1b1b1",
+            "tolerance": 3,
+            "note": "between the tools and the actions, past the 4 pt the tools may use for a focus ring: the bar"
+          },
+          {
+            "x": 180,
+            "y": 22,
+            "color": "#c9c9c9",
+            "tolerance": 4,
+            "note": "inside the action button, beside its title: white at 30% (--mac-quick-look-panel-button) over the bar #b1b1b1; computed. Not the strip"
+          }
+        ]
+      }
+    }
+  ]
+}

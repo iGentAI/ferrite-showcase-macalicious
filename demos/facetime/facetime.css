@@ -1,0 +1,381 @@
+/*
+ * FaceTime demo: where the sidebar and the camera preview lie in the window, where the
+ * controls over the list are, and the content of a call's row and of the call panel. The
+ * window, the window controls, the sidebar with its rows, the segmented control, the text
+ * field, the buttons, the image view and the HUD panel are the library's own; nothing of
+ * theirs is restyled here.
+ *
+ * Parts
+ *   .mac-facetime                    the window
+ *   .mac-facetime-body               the row of sidebar and camera preview, filling it
+ *   .mac-facetime-sidebar            the library sidebar, 262 pt
+ *   .mac-facetime-header             over the list: window controls, filter and field; the
+ *                                    window's drag region
+ *   .mac-facetime-controls           the window controls, floating over the sidebar
+ *   .mac-facetime-filter             the All / Missed segmented control
+ *   .mac-facetime-recipient          the recipient field
+ *   .mac-facetime-suggestions        the names a field offers
+ *   .mac-facetime-offers             those of the recipient field: a list under it, over the rows
+ *   .mac-facetime-row-buttons        a recent call's info and call buttons
+ *   .mac-facetime-call               the label of a row: a name over a detail line
+ *   .mac-facetime-call-name          the name; [data-missed] on a call that was not answered
+ *   .mac-facetime-call-detail        the kind of call and when it was
+ *   .mac-facetime-actions            under the list: the Audio and Video buttons
+ *   .mac-facetime-action             one of the two
+ *   .mac-facetime-camera             the camera preview, the rest of the window
+ *   .mac-facetime-picture            the image view that holds the placeholder picture
+ *   .mac-facetime-frame              the placeholder's drawing
+ *   .mac-facetime-placeholder-*      its five shapes
+ *   .mac-facetime-hud                the call panel, over the bottom of the preview
+ *   .mac-facetime-hud-content        its row: who is called, and the End button
+ *   .mac-facetime-hud-text           the two lines of text in it
+ *   .mac-facetime-hud-line           one of them
+ *   .mac-facetime-callee             the recipient's name in the panel
+ *   .mac-facetime-hud-people         under the panel's first row: who else rings, and its tools
+ *   .mac-facetime-hud-tools          Add Person, Live Photo and Full Screen
+ *   .mac-facetime-add                the field that adds a person, with the Contacts it offers
+ *   .mac-facetime-add-row            the field and its Add and Cancel buttons
+ *   .mac-facetime-add-field          the field
+ *   .mac-facetime-stage              during a call, the other people's pictures, filling the pane
+ *   .mac-facetime-tile               one person's picture
+ *   .mac-facetime-tile-name          whose it is, when there are several
+ *   .mac-facetime-self               during a call, the camera's own picture, in the corner
+ *   .mac-facetime-notice             a sentence over the top of the preview
+ *   .mac-facetime-status             announcements, for assistive technology only
+ */
+.mac-facetime-menu-area {
+  display: contents;
+}
+
+.mac-facetime-body {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* 262 pt, the window's whole height (measured: the picture starts at x 262). */
+.mac-facetime-sidebar {
+  flex: none;
+  width: 262px;
+}
+
+/* The list starts 86 pt under the window's top. */
+.mac-facetime-header {
+  position: relative;
+  flex: none;
+  height: 86px;
+}
+
+/* The window controls float over the sidebar where a title bar has them: 8 pt in, 5 pt down
+   (measured: discs at x 8, 28 and 48, y 5 to 17). */
+.mac-facetime-controls {
+  position: absolute;
+  inset-block-start: 5px;
+  inset-inline-start: 8px;
+}
+
+/* The control's fill is 134 by 19 pt at 64, 32 (measured); the library's bezel keeps half a
+   point of hairline and half a point of inset around its fill, so its box is 136 by 21 pt. */
+.mac-facetime-filter {
+  position: absolute;
+  inset-block-start: 31px;
+  inset-inline-start: 63px;
+}
+
+/* 239 by 20 pt at 11.5, 60.5 (measured). */
+.mac-facetime-recipient {
+  position: absolute;
+  inset-block-start: 60.5px;
+  inset-inline-start: 11.5px;
+}
+
+/* The names the field offers, one a line, each its own button. */
+.mac-facetime-suggestions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-inline-size: 0;
+  margin: 0;
+  padding: var(--mac-facetime-suggestions-padding);
+  border: 0;
+}
+
+.mac-facetime-offers {
+  position: absolute;
+  z-index: 1;
+  box-sizing: border-box;
+  inset-block-start: var(--mac-facetime-offers-top);
+  inset-inline-start: var(--mac-facetime-offers-start);
+  width: var(--mac-facetime-offers-width);
+  border-radius: var(--mac-facetime-offers-radius);
+  background: var(--mac-facetime-offers-fill);
+  box-shadow: var(--mac-facetime-offers-shadow);
+}
+
+.mac-facetime-row-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-facetime-row-buttons-gap);
+}
+
+/* A row's label: two lines, each cut with an ellipsis (provisional: no capture shows a row). */
+.mac-facetime-call {
+  display: grid;
+}
+
+.mac-facetime-call-name,
+.mac-facetime-call-detail {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* A call that was not answered has its name in red, as in FaceTime. */
+.mac-facetime-call-name:where([data-missed]) {
+  color: var(--mac-color-system-red);
+}
+
+/* On the selection the name takes the row's colour, which is chosen for that background. */
+:where([aria-selected="true"]) .mac-facetime-call-name:where([data-missed]) {
+  color: inherit;
+}
+
+.mac-facetime-call-detail {
+  font: var(--mac-font-control-small);
+  opacity: 0.6;
+}
+
+/* The two call buttons share the pane's width, 12 pt from its edges and from each other. */
+.mac-facetime-actions {
+  display: flex;
+  flex: none;
+  gap: var(--mac-space-control-gap);
+  padding: 12px;
+}
+
+.mac-facetime-action {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.mac-facetime-camera {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--mac-facetime-camera-backdrop);
+}
+
+/* A picture of the caller's fills the pane and is cropped to it, as a camera's is. */
+.mac-facetime-camera > :where(img, video, canvas, svg) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The image view is the size container of what it holds, so the drawing takes its size in
+   container units. */
+.mac-facetime-camera > .mac-facetime-picture {
+  display: grid;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  background: none;
+}
+
+.mac-facetime-frame {
+  display: block;
+  width: 100cqw;
+  height: 100cqh;
+}
+
+.mac-facetime-placeholder-field {
+  fill: var(--mac-facetime-placeholder-field);
+}
+
+.mac-facetime-placeholder-band {
+  fill: var(--mac-facetime-placeholder-band);
+}
+
+.mac-facetime-placeholder-disc {
+  fill: var(--mac-facetime-placeholder-disc);
+}
+
+.mac-facetime-placeholder-block {
+  fill: var(--mac-facetime-placeholder-block);
+}
+
+.mac-facetime-placeholder-wedge {
+  fill: var(--mac-facetime-placeholder-wedge);
+}
+
+/* The call panel: centred over the bottom of the preview, 24 pt above the window's edge and
+   never wider than the preview less 12 pt on each side (provisional: no capture shows a
+   call). */
+.mac-facetime-camera > .mac-facetime-hud {
+  position: absolute;
+  inset-block-end: 24px;
+  inset-inline: 12px;
+  width: fit-content;
+  max-width: calc(100% - 24px);
+  margin-inline: auto;
+}
+
+.mac-facetime-hud-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mac-facetime-hud-text {
+  display: grid;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mac-facetime-hud-line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-facetime-callee {
+  font: var(--mac-font-body-emphasized);
+}
+
+.mac-facetime-hud-people {
+  display: grid;
+  justify-items: start;
+  gap: var(--mac-facetime-hud-people-gap);
+  margin-block-start: var(--mac-facetime-hud-people-gap);
+}
+
+.mac-facetime-hud-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--mac-facetime-hud-people-gap);
+}
+
+.mac-facetime-add {
+  display: grid;
+  width: 100%;
+  gap: var(--mac-facetime-hud-people-gap);
+}
+
+.mac-facetime-add-row {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-facetime-hud-people-gap);
+}
+
+.mac-facetime-add-field {
+  flex: 1 1 var(--mac-facetime-add-field-width);
+  min-width: 0;
+}
+
+/* During a call the other people's pictures share the pane, one tile each. */
+.mac-facetime-stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--mac-facetime-tile-min), 1fr));
+  grid-auto-rows: 1fr;
+  gap: var(--mac-facetime-tile-gap);
+}
+
+.mac-facetime-stage > :where(video, div) {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: cover;
+  background: var(--mac-facetime-camera-backdrop);
+}
+
+.mac-facetime-tile {
+  position: relative;
+  overflow: hidden;
+}
+
+.mac-facetime-tile > video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* A browser that will not start a picture by itself: the button that starts it, over the tile. */
+.mac-facetime-tile > button {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+}
+
+/* Above the call panel, which covers the bottom of the pane. */
+.mac-facetime-tile-name {
+  position: absolute;
+  inset-block-end: var(--mac-facetime-tile-name-end);
+  inset-inline-start: var(--mac-facetime-tile-name-start);
+  max-width: calc(100% - 2 * var(--mac-facetime-tile-name-start));
+  padding: var(--mac-facetime-tile-name-padding);
+  overflow: hidden;
+  border-radius: var(--mac-facetime-tile-name-radius);
+  background: var(--mac-facetime-tile-name-fill);
+  color: var(--mac-facetime-tile-name-color);
+  font: var(--mac-font-control-small);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The camera's own picture, small, in the top corner. */
+.mac-facetime-self {
+  position: absolute;
+  inset-block-start: var(--mac-facetime-self-inset);
+  inset-inline-end: var(--mac-facetime-self-inset);
+  width: var(--mac-facetime-self-width);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--mac-facetime-self-radius);
+  box-shadow: var(--mac-facetime-self-shadow);
+}
+
+.mac-facetime-self > :where(img, video, canvas, svg) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* A row chosen with the selected one: the sidebar holds one selection, so the others are the demo's. */
+.mac-facetime-sidebar [data-chosen] {
+  background: var(--mac-facetime-row-chosen);
+}
+
+/* FaceTime > Preferences > Settings. */
+.mac-facetime-preferences-settings {
+  margin: var(--mac-facetime-preferences-margin);
+}
+
+.mac-facetime-camera > .mac-facetime-notice {
+  position: absolute;
+  inset-block-start: 24px;
+  inset-inline: 12px;
+  width: fit-content;
+  max-width: calc(100% - 24px);
+  margin-inline: auto;
+}
+
+/* A notice can be a sentence or two: it wraps rather than run past the window's edge. */
+.mac-facetime-notice .mac-facetime-hud-line {
+  white-space: normal;
+}
+
+.mac-facetime-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

@@ -1,0 +1,17 @@
+/*
+ * Column view: the colours no shared token holds (reference/spec/components/column-view.md).
+ * The column background is the shared control background and the triangle the secondary
+ * label colour; both match the measurements.
+ */
+:root {
+  /* [measured] line on the trailing edge of each column: Light-Finder-Network @ 851,600,
+     Dark-Finder-Network @ 786,600 */
+  --mac-column-view-divider: light-dark(#e6e6e6, #000000);
+  /* [measured] tinted panel of a preview column and the line under it:
+     Light-Finder-Network @ 900,500,1,31, Dark-Finder-Network @ 810,500,1,31 */
+  --mac-column-view-panel-fill: light-dark(#f5f5f5, #252628);
+  --mac-column-view-panel-line: light-dark(#f0f0f0, #404042);
+  /* [measured, computed] triangle of the emphasised row: #ffffff in Aqua; #dbe6f9 over the
+     #0058d0 selection in Dark Aqua is white at 86% (Dark-Finder-Network @ 770,204,12,1) */
+  --mac-column-view-arrow-emphasized: light-dark(#ffffff, rgb(255 255 255 / 0.86));
+}

@@ -1,0 +1,126 @@
+/*
+ * Colour well (NSColorWell): a native <input type="color"> drawn as the well. The input's box
+ * is the bezel from outline to outline; the browser's swatch is the colour, and its border is
+ * the 1 pt frame around it.
+ *
+ * States
+ *   [data-variant="toolbar"]            the rounded 22 x 16 pt well of a format bar
+ *   :not([data-bordered])              no bezel: the colour fills the frame
+ *   :active, :open, [data-active]      active: the bezel darkens
+ *   :focus-visible                     keyboard focus ring
+ *   [data-disabled]                    disabled: the colour at half opacity
+ *   [data-window-state="main" | "inactive"] *
+ *                                      window that is not key: no focus ring
+ *   [data-force~="pressed" | "focus"]  static previews of transient states (docs, visual tests)
+ */
+.mac-color-well {
+  --_radius: 0px;
+  --_frame: 1px;
+  --_frame-radius: 0px;
+  --_fill: var(--mac-color-well-fill);
+
+  flex: none;
+  box-sizing: border-box;
+  inline-size: 44px;
+  block-size: 23px;
+  margin: 0;
+  /* With the hairline, a 3 pt bezel [provisional]: the standard well is not in a screenshot. */
+  padding: 2.5px;
+  border: var(--mac-hairline) solid;
+  border-color: var(--mac-color-well-border-top) var(--mac-color-well-border-side)
+    var(--mac-color-well-border-bottom);
+  border-radius: var(--_radius);
+  background: var(--_fill) padding-box;
+  box-shadow: var(--mac-color-well-highlight), var(--mac-color-well-shadow);
+  /* The colour of the frame. It is set here and inherited by the swatch: the browser's swatch
+     part does not follow the page's colour scheme, so a token read there would always give
+     its Aqua value. */
+  color: var(--mac-color-well-frame);
+  vertical-align: middle;
+  cursor: default;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+/* The browser's parts: the swatch is the colour. One rule per engine, because a selector an
+   engine does not know invalidates its whole rule. */
+.mac-color-well::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.mac-color-well::-webkit-color-swatch {
+  border: var(--_frame) solid currentColor;
+  border-radius: var(--_frame-radius);
+}
+
+.mac-color-well::-moz-color-swatch {
+  border: var(--_frame) solid currentColor;
+  border-radius: var(--_frame-radius);
+}
+
+/* Toolbar well [measured]: a 1.5 pt band at the sides and 0.5 pt above and below. The corners
+   are fitted in the browser: 4.25px outside (nominally 4 pt), and 2.75px on the frame, which
+   leaves the colour a corner of 1.75px. */
+.mac-color-well:where([data-variant="toolbar"]) {
+  --_radius: 4.25px;
+  --_frame-radius: 2.75px;
+  inline-size: 22px;
+  block-size: 16px;
+  padding: 0.5px 1.5px;
+}
+
+/* Without a bezel the colour is the whole well. */
+.mac-color-well:where(:not([data-bordered])) {
+  --_frame: 0px;
+  padding: 0;
+  border-width: 0;
+  background: none;
+  box-shadow: none;
+}
+
+/* Active: pressed, the browser's chooser open, or `active`. */
+.mac-color-well:where(:active, :open, [data-active], [data-force~="pressed"]):where(
+  :not([data-disabled])
+) {
+  --_fill: var(--mac-color-well-fill-active);
+}
+
+/* Disabled [provisional] */
+.mac-color-well:where([data-disabled])::-webkit-color-swatch {
+  opacity: 0.5;
+}
+
+.mac-color-well:where([data-disabled])::-moz-color-swatch {
+  opacity: 0.5;
+}
+
+/* Keyboard focus ring; only in the key window. It starts on the bezel's border and reaches
+   2.5 pt beyond its edge. */
+.mac-color-well:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(var(--mac-focus-ring-offset) - var(--mac-hairline));
+}
+
+@media (forced-colors: active) {
+  .mac-color-well {
+    border-color: ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+
+  .mac-color-well:where([data-disabled]) {
+    border-color: GrayText;
+  }
+
+  /* The chosen colour is content: keep it. */
+  .mac-color-well::-webkit-color-swatch {
+    forced-color-adjust: none;
+  }
+
+  .mac-color-well::-moz-color-swatch {
+    forced-color-adjust: none;
+  }
+}

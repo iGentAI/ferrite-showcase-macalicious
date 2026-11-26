@@ -1,0 +1,189 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "music-idle-light",
+      "description": "Idle display in Music's playback bar, Aqua. The Apple logo in the middle of the body is masked: the library draws no logo.",
+      "example": "visual-music-idle",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [{ "x": 215, "y": 10, "width": 23, "height": 26 }],
+      "budget": { "1x": 0.077, "2x": 0.0069 },
+      "deltaBudget": { "1x": 1.9, "2x": 0.55 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Music.png",
+        "crop": { "x": 1100, "y": 80, "width": 816, "height": 100 }
+      }
+    },
+    {
+      "name": "music-idle-dark",
+      "description": "Idle display in Music's playback bar, Dark Aqua. The Apple logo in the middle of the body is masked: the library draws no logo.",
+      "example": "visual-music-idle",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [{ "x": 215, "y": 10, "width": 23, "height": 26 }],
+      "budget": { "1x": 0.041, "2x": 0.007 },
+      "deltaBudget": { "1x": 2.4, "2x": 1.1 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Music.png",
+        "crop": { "x": 1100, "y": 80, "width": 816, "height": 100 }
+      }
+    },
+    {
+      "name": "podcasts-idle-light",
+      "description": "Idle display in Podcasts' playback bar, Aqua. The Apple Podcasts mark in the well and the Apple logo in the body are masked: the library draws neither.",
+      "example": "visual-podcasts-idle",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 11, "y": 8, "width": 30, "height": 34 },
+        { "x": 190, "y": 10, "width": 22, "height": 26 }
+      ],
+      "budget": { "1x": 0.08, "2x": 0.0005 },
+      "deltaBudget": { "1x": 2.7, "2x": 0.3 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Podcasts.png",
+        "crop": { "x": 1110, "y": 80, "width": 716, "height": 100 }
+      }
+    },
+    {
+      "name": "podcasts-playing-dark",
+      "description": "Podcasts' display with an episode loaded, Dark Aqua: title, subtitle and progress line. The artwork well is masked: the capture shows the show's artwork.",
+      "example": "visual-podcasts-playing",
+      "appearance": "dark",
+      "masks": [{ "x": 4, "y": 3, "width": 44, "height": 44 }],
+      "budget": { "1x": 0.19, "2x": 0.14 },
+      "deltaBudget": { "1x": 15.5, "2x": 14 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Podcasts.png",
+        "crop": { "x": 1110, "y": 80, "width": 716, "height": 100 }
+      }
+    },
+    {
+      "name": "podcasts-playing-dark-drawing",
+      "description": "The same with the two lines of text masked as well, so that the panel, its border and the progress line are scored alone.",
+      "example": "visual-podcasts-playing",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 4, "y": 3, "width": 44, "height": 44 },
+        { "x": 98, "y": 9, "width": 206, "height": 14 },
+        { "x": 70, "y": 24, "width": 262, "height": 15 }
+      ],
+      "budget": { "1x": 0.043, "2x": 0.0005 },
+      "deltaBudget": { "1x": 2.2, "2x": 0.35 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Podcasts.png",
+        "crop": { "x": 1110, "y": 80, "width": 716, "height": 100 }
+      }
+    },
+    {
+      "name": "seek-focus-start-light",
+      "description": "A seekable display with keyboard focus on the knob, moved to the start with Home, Aqua: the focus ring is drawn around the whole panel, so it is complete at the leading end, where a ring around the knob would be clipped. No capture shows keyboard focus here.",
+      "example": "visual-seek-focus",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }, { "key": "Home" }],
+      "expect": {
+        "size": { "width": 363, "height": 57 },
+        "pixels": [
+          {
+            "x": 3.5,
+            "y": 28.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring at the leading edge: --mac-focus-ring-color (50% #186af6) over the window background #ececec, 3 pt wide, 1 pt off the panel"
+          },
+          {
+            "x": 359.5,
+            "y": 28.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring at the trailing edge, the same token"
+          },
+          {
+            "x": 180,
+            "y": 53.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring under the progress line, the same token"
+          },
+          {
+            "x": 180,
+            "y": 3.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring above the panel, the same token"
+          },
+          {
+            "x": 50.5,
+            "y": 46,
+            "color": "#232323",
+            "tolerance": 6,
+            "note": "Home moved the knob (--mac-color-label) to the start of the line, at the body's leading edge"
+          },
+          {
+            "x": 200,
+            "y": 49,
+            "color": "#d9d9d9",
+            "tolerance": 4,
+            "note": "nothing has elapsed: the line is the remaining colour (--mac-now-playing-lcd-remaining over the body, provisional)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "seek-focus-end-dark",
+      "description": "The same with the knob moved to the end with End, Dark Aqua: the ring is complete at the trailing end.",
+      "example": "visual-seek-focus",
+      "appearance": "dark",
+      "actions": [{ "tab": 1 }, { "key": "End" }],
+      "expect": {
+        "size": { "width": 363, "height": 57 },
+        "pixels": [
+          {
+            "x": 3.5,
+            "y": 28.5,
+            "color": "#2f6d99",
+            "tolerance": 4,
+            "note": "ring at the leading edge: --mac-focus-ring-color (50% #2ba8ff) over the window background #323232, 3 pt wide, 1 pt off the panel"
+          },
+          {
+            "x": 359.5,
+            "y": 28.5,
+            "color": "#2f6d99",
+            "tolerance": 4,
+            "note": "ring at the trailing edge, the same token"
+          },
+          {
+            "x": 180,
+            "y": 53.5,
+            "color": "#2f6d99",
+            "tolerance": 4,
+            "note": "ring under the progress line, the same token"
+          },
+          {
+            "x": 180,
+            "y": 3.5,
+            "color": "#2f6d99",
+            "tolerance": 4,
+            "note": "ring above the panel, the same token"
+          },
+          {
+            "x": 355.5,
+            "y": 46,
+            "color": "#e2e2e2",
+            "tolerance": 6,
+            "note": "End moved the knob (--mac-color-label) to the end of the line, at the body's trailing edge"
+          },
+          {
+            "x": 200,
+            "y": 49,
+            "color": "#bcbcbc",
+            "tolerance": 4,
+            "note": "everything has elapsed: the line is the elapsed colour (--mac-now-playing-lcd-elapsed, measured on Dark-Podcasts)"
+          }
+        ]
+      }
+    }
+  ]
+}

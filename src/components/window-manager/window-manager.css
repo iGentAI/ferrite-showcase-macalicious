@@ -1,0 +1,21 @@
+/*
+ * Window manager: the desktop element. The windows on it are styled by managed-window.
+ *
+ * Layers inside the manager, by z-index: ordinary windows from 1, panels above them, a
+ * full-screen window above 1000 while it is key. A menu bar and a Dock belong between: give them
+ * z-index: var(--mac-window-manager-layer-chrome).
+ *
+ * Set by the component from its insets prop, for a zoomed window:
+ *   --mac-window-manager-inset-top | -right | -bottom | -left
+ */
+.mac-window-manager {
+  --mac-window-manager-layer-chrome: 900;
+
+  position: relative;
+  isolation: isolate;
+  /*
+   * Clipped, not hidden: a hidden box can still be scrolled, and a browser scrolls it to bring
+   * a focused or clicked element that lies past an edge into view, which moves every window.
+   */
+  overflow: clip;
+}

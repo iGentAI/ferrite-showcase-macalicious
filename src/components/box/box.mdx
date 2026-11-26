@@ -1,0 +1,154 @@
+---
+title: Box
+description: A bordered, lightly tinted surface that groups related controls, with an optional title.
+---
+
+<Example name="basic" both />
+
+AppKit's `NSBox`. The same surface is what a [tab view](/components/tab-view) draws around its
+panes and what System Preferences uses for the recessed regions of its panes.
+
+## Usage
+
+```tsx
+import { Box } from "macalicious/box";
+import "macalicious/label.css"; // the title is a label; its stylesheet comes first
+import "macalicious/box.css";
+
+<Box title="Interface information">…</Box>
+<Box aria-label="Output devices">…</Box>
+```
+
+Or copy the source into your project: `npx macalicious add box`. The title is a
+[label](/components/label).
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for boxes:
+
+- Use a box to group closely related controls. Do not nest boxes: use space or a
+  [separator](/components/separator) inside one.
+- Give a title in sentence case, without a colon, when the grouping needs a name. A box next
+  to a label or under a tab strip usually does not need one.
+- Inset the box 20 pt from the window's edges (`var(--mac-space-window-margin)`), and start the
+  controls inside about 20 pt from its edges. Controls that apply to the whole window (help,
+  lock) go outside the box.
+
+## Variants and states
+
+<Example name="variants" both hideCode />
+
+| Variant | How it is triggered | Look |
+| --- | --- | --- |
+| Group | default | Window background darkened (Aqua) or lightened (Dark Aqua) by about 4%; hairline border, stronger along the top, with a softer line inside it; corners of `--mac-radius-group` |
+| Content well | `variant="content"` | Opaque fill (white in Aqua), 1 pt border, square corners |
+| Rounded well | `variant="well"` | Opaque fill (white in Aqua; `#38393b` in Dark Aqua, lighter than the window), 1 pt border (`#c6c6c6`; `#a6a6a6` in Dark Aqua), 4.5 pt corners: the summary in Activity Monitor's footer |
+| Band | `edges="horizontal"` | Top and bottom edge only, for a box that runs from one window edge to the other |
+| Detail region | `edges="leading"` | Leading edge only, for a region that fills the rest of a window |
+| Title above | `title` | 13 pt title, 12 pt in from the leading edge, baseline 3 pt above the surface |
+| Title below | `titlePosition="below"` | The same under the surface |
+
+The fill and the border are translucent, so a box composes correctly on any window background,
+including a window that is itself tinted. A box has no states: it is not interactive and looks
+the same in a key and in an inactive window.
+
+Measured: the group surface with all three edge settings, the title above, the content well
+and the rounded well, in both appearances. Provisional: the title below, which no screenshot
+shows, and the rounded well with `edges` other than `"all"` (it then keeps its colours and
+loses its corners, as the content well does).
+
+## Sizes
+
+A box is as wide as its container and as tall as its content. Set a width or height on the box
+itself; the surface fills it.
+
+## API
+
+<PropsTable name="BoxProps" />
+
+`className`, `style`, `ref` and other attributes go to the root element, which holds the title
+and the surface.
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-variant` | `group`, `content`, `well` | Reflects `variant`. |
+| `data-edges` | `all`, `horizontal`, `leading` | Reflects `edges`. |
+| `data-title-position` | `above`, `below` | Present when the box has a title. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-box-padding` | `0` | Padding of the surface. |
+| `--mac-box-well-border` | `#c6c6c6`, `#a6a6a6` in Dark Aqua | Line of the rounded well (`variant="well"`). The default is Activity Monitor's. Set it on a box whose application draws the line in another colour: Disk Utility's information table has `light-dark(#d1d1d1, #808080)`. |
+| `--mac-box-well-fill` | `#ffffff`, `#38393b` in Dark Aqua | Fill of the rounded well. |
+
+## Accessibility
+
+- The root has `role="group"` and is named by its title. Give an untitled box an `aria-label`
+  when the grouping means something; leave it unnamed when it is only visual.
+- A box is not focusable.
+- In forced-colours mode the border is drawn in the system text colour.
+
+## Visual comparison
+
+`visual-corner-top` and `visual-corner-bottom` reproduce two corners of the Sound pane's box
+on the window background; `visual-titled` reproduces the start of the titled box in Network
+Utility, whose window is itself tinted. The corner comparisons count a pixel as different at a
+colour distance of 0.02, a fifth of the default, because the border is so faint that the
+default counts no pixel at all, whatever is drawn. Results in Chromium on Linux with the
+fallback font:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Top corner, Aqua | 0.06% of pixels differ | 1.63% |
+| Top corner, Dark Aqua | 0.00% | 3.56% |
+| Bottom corner, Aqua | 0.00% | 0.00% |
+| Bottom corner, Dark Aqua | 0.00% | 3.56% |
+| Top corner in the Network pane, Aqua | 0.07% | 1.73% |
+| Top corner in the Network pane, Dark Aqua | 0.00% | 3.78% |
+| Band, top and bottom edge, both appearances | 0.00% | 0.00 to 5.00% |
+| Leading edge, both appearances | 0.00% | 0.00 to 2.50% |
+| Titled, Aqua | 3.97% | 4.73% |
+| Titled, Dark Aqua | 4.35% | 3.93% |
+
+These figures are with the shared token `--mac-radius-group` at 4 pt, the value the measured
+spec fits to these four corners (3.875 pt in Aqua, 4.0 pt in Dark Aqua). The token is not the
+box's own: while it was 2.5 pt the four Sound corners scored 0.25%, 0.38%, 0.13% and 0.33% at
+2x, and the budgets of the corner comparisons are set for 4 pt, so they fail at 2.5 pt. The
+1x figures are higher because the 1x reference is an average of the 2x capture and blurs the
+hairline over two rows.
+
+`visual-band-top` and `visual-band-bottom` reproduce the two edges of the band of the Sharing
+pane (`edges="horizontal"`) and `visual-leading-edge` the edge of the detail region of the
+Time Machine pane (`edges="leading"`), all at the same colour distance of 0.02.
+
+In the titled comparison the box and the position of the title match; what differs is the title
+text, set in the fallback font instead of San Francisco. The content well follows measured
+values but has no comparison of its own.
+
+`visual-well-corner-top` and `visual-well-corner-bottom` reproduce two corners of the summary
+box in Activity Monitor's footer (`variant="well"`) on the footer's background, at the default
+colour distance: the border is opaque and 1 pt wide, so it needs no finer one. The top crop is
+14 by 28 pt, because the first statistic's text starts 13 pt from the box's edge. The radius
+is fitted to these crops: with 4.5 pt the four comparisons score as below, with 4 pt 0.45%,
+1.15%, 0.11% and 0.30% at 2x, and with 5 pt 0.77%, 1.79%, 0.23% and 0.52%. The 1x figures in
+Dark Aqua are higher for the reason given above for the hairline: the 1x reference is an
+average of the 2x capture.
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Rounded well, top corner, Aqua | 0.00% of pixels differ | 0.00% |
+| Rounded well, top corner, Dark Aqua | 0.45% | 2.04% |
+| Rounded well, bottom corner, Aqua | 0.00% | 0.00% |
+| Rounded well, bottom corner, Dark Aqua | 0.14% | 0.57% |
+| Rounded well with Disk Utility's line, top corner, Aqua | 0.26% | 0.00% |
+| Rounded well with Disk Utility's line, top corner, Dark Aqua | 1.08% | 1.02% |
+
+The rounded well is in two captures, and their lines differ. Activity Monitor's footer box
+has `#c6c6c6` in Aqua and `#a6a6a6` in Dark Aqua (row 1200 and column 1000 of both captures,
+measured again for this comparison); Disk Utility's information table has `#d1d1d1` and
+`#808080` (column 1700 from y 728 and row 760 from x 684). Disk Utility's line is the lighter
+one in Aqua and the darker one in Dark Aqua, so neither capture is the other seen over a
+different background: each application draws its own box. The fills agree (`#ffffff`, and
+`#38393b` against `#38393a`), and so does the shape. The component keeps Activity Monitor's
+line as its default and takes another through `--mac-box-well-border`;
+`visual-well-corner-disk-utility` sets Disk Utility's and reproduces the corner of its table.

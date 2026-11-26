@@ -1,0 +1,59 @@
+/*
+ * Mac Catalyst chrome, measured on News, Stocks, Home and Voice Memos in both appearances
+ * (spec: catalyst-chrome): what differs from an AppKit window's title bar material.
+ */
+:root {
+  /*
+   * Toolbar material while content runs under it [measured, computed], solved from the bar
+   * over white (News #e5e5e5..#cdcdcd; Dark #3f4041..#333435 over #1e1e1e) and black
+   * content (Voice Memos #bcbcbc..#a3a3a3; Dark #393a3c..#2e2f30).
+   */
+  --mac-catalyst-chrome-material-top: light-dark(rgb(224 224 224 / 0.84), rgb(71 72 73 / 0.8));
+  --mac-catalyst-chrome-material-bottom: light-dark(rgb(195 195 195 / 0.84), rgb(58 59 60 / 0.8));
+  /* Its two bottom rows, black over the material [measured, computed]: #949494, #807f7f over
+     black, #bebebe, #a6a6a6 over white; Dark #252626, #000000. */
+  --mac-catalyst-chrome-material-shadow-row: light-dark(rgb(0 0 0 / 0.09), rgb(0 0 0 / 0.2));
+  --mac-catalyst-chrome-material-separator: light-dark(rgb(0 0 0 / 0.155), #000000);
+
+  /* Sidebar [measured]: News @ 300,700; selection @ 300,230; divider @ 566,700, the half
+     point after it @ 568,700 (Dark @ 580, 582, 583). Dark divider: white at 16%, #4e4f51
+     over the fill, #6b6d6f over the selection [measured, computed]. */
+  --mac-catalyst-chrome-sidebar-fill: light-dark(#e7e8e9, #2c2d30);
+  --mac-catalyst-chrome-sidebar-selection: light-dark(#c7c8c9, #505154);
+  --mac-catalyst-chrome-sidebar-divider: light-dark(#a9a9a9, rgb(255 255 255 / 0.161));
+  --mac-catalyst-chrome-sidebar-edge: light-dark(rgb(0 0 0 / 0.2), #cecece);
+  --mac-catalyst-chrome-sidebar-edge-second: light-dark(transparent, #000000);
+  /* Stocks divider [measured, computed]: #dcdddd over #e7e8e9 (Stocks @ 771,170) */
+  --mac-catalyst-chrome-sidebar-shade: rgb(0 0 0 / 0.045);
+  /* Toolbar over the sidebar, Dark [measured, computed]: #36383a beside #3d3e40 (News
+     @ 412,88, 1112,88), black at 10% within a level per channel */
+  --mac-catalyst-chrome-bar-shade: light-dark(transparent, rgb(0 0 0 / 0.1));
+  /* [measured] row text @ 198,274; selected @ 197,221; group header @ 128,178 */
+  --mac-catalyst-chrome-sidebar-text: light-dark(#191919, #e8e8e8);
+  --mac-catalyst-chrome-sidebar-text-selected: light-dark(#101010, #efefef);
+  --mac-catalyst-chrome-sidebar-header: light-dark(#69696a, #adaeaf);
+
+  /* UIKit scroll indicator: Dark Aqua [measured] Dark-News col x=2612; Aqua [provisional] */
+  --mac-catalyst-chrome-scroll-indicator: light-dark(rgb(0 0 0 / 0.35), #0f0f0f);
+
+  /* Content type [computed]: iOS text styles at 77%, from cap heights in Home, Stocks and
+     News, for an app's content; the chrome uses none. */
+  --mac-catalyst-chrome-font-large-title: 700 26px / 31px var(--mac-font-family-system);
+  --mac-catalyst-chrome-font-title: 700 18.5px / 22px var(--mac-font-family-system);
+  --mac-catalyst-chrome-font-headline: 600 14px / 17px var(--mac-font-family-system);
+  --mac-catalyst-chrome-font-body: 400 13px / 17px var(--mac-font-family-system);
+  --mac-catalyst-chrome-font-subheadline: 600 12px / 15px var(--mac-font-family-system);
+  /* iOS system tints as rendered in the captures, in sRGB [measured] */
+  --mac-catalyst-chrome-tint-red: #ff3b30;
+  --mac-catalyst-chrome-tint-green: #35c759;
+  --mac-catalyst-chrome-tint-blue: #027aff;
+
+  /*
+   * Rows the content clears [measured]: the 38 pt toolbar row (News @ 2x rows 76..151); without
+   * it (Find My) a 22 pt strip with the controls 8 pt in (close x 8..20, y 5..17 pt,
+   * Light-Find-My @ 128..152, 86..110).
+   */
+  --mac-catalyst-chrome-bar-height: 38px;
+  --mac-catalyst-chrome-strip-height: 22px;
+  --mac-catalyst-chrome-strip-inset: 8px;
+}

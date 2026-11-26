@@ -1,0 +1,106 @@
+---
+title: Window Shadow
+description: The soft shadow and half-point outer hairline that Catalina's window server draws around windows, panels, menus, popovers and banners.
+order: 11
+---
+
+<Example name="basic" both />
+
+On a Mac the shadow is not part of the window: the window server draws it, sized by the
+window's level and by whether it is key. Here it is a rounded box with one `box-shadow`, taken
+from the elevation tokens, which were fitted to the alpha falloff of the transparent window
+captures. [Window](/components/window) is built on it; use it directly for a floating surface of
+your own.
+
+## Usage
+
+```tsx
+import { WindowShadow } from "macalicious/window-shadow";
+import "macalicious/window-shadow.css";
+
+<WindowShadow level="panel" style={{ width: 240, height: 120 }}>
+  A floating surface
+</WindowShadow>
+```
+
+The component draws the shadow, the outer hairline and the corner radius, and nothing else:
+give the surface its own background and clip.
+
+## Guidelines
+
+Not verified: this section paraphrases Apple's Human Interface Guidelines and was not checked
+against Apple's text.
+
+- The shadow signals layering. The key window casts the largest one, an inactive window a
+  smaller one, and transient surfaces (menus, popovers, utility panels) a small tight one.
+- The shadow takes no part in layout. Leave 48 pt at the sides, 31 pt above and 67 pt below a
+  key window if its shadow must not be clipped by a scrolling or `overflow: hidden` ancestor.
+- The change of shadow between key and inactive is a second cue beside the window controls'
+  colour; do not rely on it alone.
+
+## Variants and states
+
+<Example name="levels" both />
+
+| Level | Used by | Token |
+| --- | --- | --- |
+| `window` | Document and application windows, dialogs | `--mac-shadow-window`, or `--mac-shadow-window-inactive` in an inactive window |
+| `panel` | Utility panels | `--mac-shadow-panel` |
+| `menu` | Menus | `--mac-shadow-menu` |
+| `popover` | Popovers | `--mac-shadow-popover` |
+| `banner` | Notification banners | `--mac-shadow-notification` |
+| `none` | A full-screen window | no shadow; the radius stays |
+
+Only the `window` level changes with the window state: it follows `data-window-state="inactive"`
+on the element itself or on an ancestor. The other levels belong to surfaces that are key while
+they are open.
+
+## Sizes
+
+No sizes: the shadow surrounds whatever box the element has and takes no part in layout. The
+`level` prop chooses how large the shadow is.
+
+## API
+
+<PropsTable name="WindowShadowProps" />
+
+| Attribute or variable | Values | Description |
+| --- | --- | --- |
+| `data-level` | `window`, `panel`, `menu`, `popover`, `banner`, `none` | Reflects `level`. |
+| `--mac-window-shadow-radius` | a length | Corner radius of the surface. Default: `--mac-radius-window`, 5 pt. |
+
+## Accessibility
+
+The shadow adds no role, text or focus stop. In forced-colours mode shadows are not drawn, so
+the surface gets a system-colour outline instead and its edge survives.
+
+## Visual comparison
+
+`window-shadow.visual.json` compares the bottom edge and the side of a key window's shadow with
+the Finder Network capture, and the bottom edge of a utility panel's with the Help capture, in
+both appearances. The reference captures hold the shadow in their alpha channel; the comparison
+places it on a white matte. The scores are in the table below.
+
+Scores from `npm run visual -- window-shadow` in Chromium on Linux with the fallback font: the share of
+pixels that differ by more than the comparison's threshold, and the mean colour difference out
+of 255. A masked comparison leaves out stand-in artwork and fallback-font text.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `key-bottom-light` | Light-Finder-Network (400, 1498, 600, 148) | 0.00% | 0.52 | 0.00% | 1.12 |
+| `key-bottom-dark` | Dark-Finder-Network (400, 1494, 600, 148) | 0.00% | 0.48 | 0.00% | 1.13 |
+| `key-side-light` | Light-Finder-Network (0, 600, 112, 300) | 0.00% | 0.50 | 0.00% | 1.11 |
+| `key-side-dark` | Dark-Finder-Network (0, 600, 112, 300) | 0.00% | 0.59 | 0.00% | 1.15 |
+| `panel-bottom-light` | Light-Help (400, 1482, 600, 54) | 0.00% | 0.69 | 0.00% | 1.17 |
+| `panel-bottom-dark` | Dark-Help (400, 1482, 600, 54) | 0.00% | 0.72 | 0.00% | 1.02 |
+
+What is and is not exact:
+
+- The key, panel and banner shadows are fitted to captures with a root-mean-square error of
+  0.002 to 0.004 in alpha. The inactive shadow is recovered by differencing a window over the
+  desktop against the bare desktop.
+- A CSS shadow is one Gaussian per layer; the window server's falloff is close to, but not
+  exactly, that. The difference is under one 8-bit level.
+- The hairline is half a point: at 1x it becomes a whole pixel at the same alpha.
+- No screenshot shows the menu, popover or banner levels changing with window state; they do
+  not change here.

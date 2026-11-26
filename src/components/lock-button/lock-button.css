@@ -1,0 +1,133 @@
+/*
+ * Authorization lock (SFAuthorizationView): a padlock followed by one line of status text.
+ *
+ * Measured in System-Preferences-Date-and-Time: the padlock is 22 x 27.5 pt, the text starts
+ * 14 pt after it in the secondary label colour, and its baseline is 22 pt below the top of the
+ * padlock. The whole box, padlock and text, is the click target.
+ *
+ * States
+ *   [data-state="locked"]              closed lock
+ *   [data-state="authenticating"]      the shackle moves while the application asks for a
+ *                                      password (still, with reduced motion)
+ *   [data-state="unlocked"]            the shackle is raised out of the body
+ *   [data-size="small"]                13 pt padlock alone; the text is visually hidden
+ *   :active                            pressed: the padlock darkens
+ *   :focus-visible                     keyboard focus ring, only in the key window
+ *   [data-disabled]                    set by Base UI for `disabled`: half opacity
+ *   [data-force~="pressed" | "focus"]  static previews of transient states (docs, visual tests)
+ */
+.mac-lock-button {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 14px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--mac-radius-control-regular);
+  background: none;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-body);
+  text-align: start;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-lock-button-icon {
+  display: block;
+  flex: none;
+  overflow: visible;
+}
+
+.mac-lock-button-shackle {
+  transition: transform 0.15s ease-out;
+}
+
+.mac-lock-button-text {
+  /* Puts the baseline 22 pt below the top of the padlock (Date-and-Time: caps y 1066 to 1084
+     against the padlock's y 1041 to 1095). */
+  padding-bottom: 1.5px;
+}
+
+/* Unlocked: the shackle rises until its short leg is clear of the body */
+.mac-lock-button:where([data-state="unlocked"]) .mac-lock-button-shackle {
+  transform: translateY(-4.5px);
+}
+
+/* Authenticating */
+.mac-lock-button:where([data-state="authenticating"]) .mac-lock-button-shackle {
+  animation: mac-lock-button-authenticating 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes mac-lock-button-authenticating {
+  to {
+    transform: translateY(-2.5px);
+  }
+}
+
+/* Small: the padlock alone, 13 x 16 pt (Finder-Get-Info); the text stays for screen readers */
+.mac-lock-button:where([data-size="small"]) {
+  gap: 0;
+}
+
+.mac-lock-button:where([data-size="small"]) .mac-lock-button-icon {
+  width: 13px;
+  height: 16px;
+}
+
+.mac-lock-button:where([data-size="small"]) .mac-lock-button-text {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Pressed */
+.mac-lock-button:where(:active, [data-force~="pressed"]):where(:not([data-disabled]))
+.mac-lock-button-icon {
+  filter: brightness(var(--mac-image-brightness-pressed));
+}
+
+/* Disabled */
+.mac-lock-button:where([data-disabled]) {
+  opacity: var(--mac-control-opacity-disabled);
+}
+
+/* Keyboard focus ring; only in the key window, as in AppKit. */
+.mac-lock-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-lock-button-shackle {
+    transition: none;
+  }
+
+  .mac-lock-button:where([data-state="authenticating"]) .mac-lock-button-shackle {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-lock-button {
+    color: ButtonText;
+  }
+
+  .mac-lock-button:where([data-disabled]) {
+    color: GrayText;
+    opacity: 1;
+  }
+}

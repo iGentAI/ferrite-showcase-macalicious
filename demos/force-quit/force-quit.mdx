@@ -1,0 +1,155 @@
+---
+title: Force Quit Applications
+description: The Force Quit Applications window of macOS 10.15 with its bordered list of running applications, the default button that reads Force Quit or Relaunch, and the sheet that asks before an application is quit.
+layout: full
+order: 27
+---
+
+<Example name="basic" />
+
+Select an application and choose Force Quit, press Return, or double-click a row. The window
+asks in a sheet first; Force Quit takes the application out of the list and selects its
+neighbour, Cancel and Escape keep it. Finder is relaunched instead and stays. Nothing is quit on
+the machine the page runs on: the applications are data. Their icons are Apple artwork, so the
+demo shows a plain rounded square in their place.
+
+## What it shows
+
+- A [Window](/components/window) with the plain 22 pt [Title Bar](/components/title-bar) and
+  its [Window Controls](/components/window-controls): close and zoom are available and
+  minimize is not, as captured.
+- Two [Label](/components/label)s: the instruction in the 13 pt body style above the list, and
+  the hint in the 10 pt `mini` style beside the button.
+- The applications: a [Bordered List](/components/bordered-list), the library's listbox in a
+  1 pt frame, on a [Scroll View](/components/scroll-view). One row is always selected, and the
+  selection is emphasised in the accent colour while the list has the keyboard focus in the key
+  window. Arrow keys, Home, End and typing a name move the selection; those are the list's own.
+  A bordered list was chosen over a [Table View](/components/table-view) because the captured
+  list is one column of options with no header, which is what a listbox is, and because the
+  bordered list brings the captured frame with it; a table view is a grid of cells without a
+  frame of its own.
+- An application that has stopped responding has "(not responding)" after its name in the
+  system red, or in the row's white on the emphasised selection.
+- The [Default Button](/components/default-button), which Return activates from anywhere in
+  the window. It reads "Relaunch" while an application that relaunches is selected, and is
+  unavailable when no application runs.
+- The confirmation: a [Sheet](/components/sheet) that hangs from the title bar, with a Cancel
+  [Push Button](/components/push-button) and a default button named after what it does. While
+  it is open the window is main, not key: its controls turn grey, its own button loses the
+  accent, its selection is not emphasised and nothing in it takes input. When the sheet goes,
+  the keyboard focus is back in the list.
+
+## Hosting the window
+
+`ForceQuit` renders the library's `Window` as its root and passes every `Window` prop to it, so
+it does not assume it fills the page. Place it with `style`; a window manager gives it `state`,
+the size, and eight more props that the component hands to the window controls and the title
+bar. These are the props a [Managed Window](/components/managed-window)'s `render` form
+supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { forceQuitApp } from "./app";
+
+<ManagedWindow
+  id={forceQuitApp.id}
+  defaultFrame={{ x: 80, y: 60, ...forceQuitApp.defaultSize }}
+  resizable={forceQuitApp.resizable}
+  render={(props) => <forceQuitApp.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `applications` | `ForceQuitApplication[]` | The running applications, controlled: the window shows this list and asks for a change through `onApplicationsChange`. |
+| `defaultApplications` | `ForceQuitApplication[]` | The applications running at first, uncontrolled; Mail, Safari and Finder by default, as captured. |
+| `defaultSelectedId` | `string` | The application selected at first. Without it, or when it names no application, the first one is. |
+| `onForceQuit` | `(application) => void` | Called once a force quit or a relaunch has been confirmed. |
+| `onApplicationsChange` | `(applications) => void` | Called with the list that is left when a confirmed force quit removes an application. A relaunch does not call it. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. `minimizeDisabled` is `true` unless a host says otherwise. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 338 by 307 by default, as captured. |
+| the rest | `WindowProps` | `state`, `style`, `className`, `ref`, pointer events and so on. |
+
+An application is `{ id, name, notResponding?, relaunches? }`. The selection is kept by `id`:
+an id that names no application, at first or after the list changed, stands for the first one,
+and the button, Return and the sheet all act on that same application. If a controlled list
+drops the application a sheet is asking about, the sheet closes and nothing is quit.
+
+`app.ts` exports the descriptor a desktop page reads, as `forceQuitApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (338 by 307), `resizable` (`false`) and `menus`. The window
+belongs to the system and has no menus of its own, so `menus` are Finder's, the front
+application of the capture. The [Desktop](/demos/desktop) finds the descriptor there.
+
+The rules are plain functions in `force-quit-data.ts`: `resolveSelection()` gives the selected
+application, `buttonTitle()` the button's title, `confirmationFor()` the sheet's wording, and
+`forceQuit()` the list and the selection that are left.
+
+## Accessibility
+
+- The window is a `region` named by its title.
+- The list is a `listbox` named "Applications" and one tab stop. Each application is an
+  `option` named by its name, with "(not responding)" as part of the name, and reports whether
+  it is selected. The placeholder icons are decorative and hidden from assistive technology.
+- The arrow keys, Home and End move the selection, typing selects by name, and Return asks
+  about the selected application, as a double click does.
+- The button is a `button` named "Force Quit" or "Relaunch"; with an empty list it is disabled.
+- The confirmation is a modal `dialog` named by its question and described by the line under
+  it. It holds the keyboard focus; Return chooses its default button and Escape cancels. While
+  it is open the window's content is `inert`, and afterwards the focus returns to the list.
+- The emphasised selection is the list's focus indicator, as in AppKit: the list draws no focus
+  ring while it holds a selection, and the library's ring when it is empty.
+
+## Fidelity
+
+`force-quit.visual.json` compares the whole window with the Force Quit screenshots in both
+appearances, each as captured and again with the text and the placeholder icons masked. The
+selected row is emphasised only while the list has the keyboard focus, so each comparison
+reaches that state with a real click on the row. Scores from `npm run visual -- force-quit/` in
+Chromium on Linux with the fallback font: the share of pixels that differ and the mean colour
+difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 5.62% | 5.43 | 4.98% | 6.03 |
+| `window-light-layout` (masked) | 0.54% | 0.28 | 0.03% | 0.13 |
+| `window-dark` | 5.71% | 8.07 | 5.12% | 8.54 |
+| `window-dark-layout` (masked) | 0.30% | 3.38 | 0.04% | 3.24 |
+
+The masks cover 22% of the crop: the title, the instruction, the icons and names of the three
+rows, the hint and the button's title. A fifth comparison, `confirmation-light`, checks a state
+no screenshot shows: the window after a click on Force Quit, by the colours of four pixels (the
+accent bezel of the sheet's default button, the plain bezel of the window's own button, the
+unemphasised selection, and a grey window control).
+
+Measured in the screenshots and reproduced: the 338 by 307 pt frame and the 22 pt title bar;
+the instruction 20 pt from the window's edge with its capitals 45 pt under the top and its
+lines 16 pt apart; the 298 by 168 pt list, 20 pt from both sides and 82 pt under the top, with
+its 1 pt border; rows 22 pt apart with the names 15 pt under each row's top, the first row
+beginning under the border so that its selection is 21 pt high; a 16 pt icon 3 pt inside the
+frame and the name 27.5 pt inside it; the hint in 10 pt text on a 13 pt pitch, its capitals
+16.5 pt under the list; and the button, 91 pt between its visible edges, 20.5 pt from the
+window's right edge and 16.5 pt under the list.
+
+What differs, and why:
+
+- **Text.** Set in the fallback font off Apple devices, which is nearly all of the unmasked
+  scores.
+- **The application icons** are Apple artwork. Each is replaced by an abstract placeholder, a
+  plain 16 pt rounded square in a neutral label colour; it is not a drawing of the icon. The
+  placeholders are masked in the two layout comparisons.
+- **The dark window's tint.** In the dark capture the desktop picture tints the window
+  background (`#303437`) and the list (`#1e2225`). The demo uses the library's untinted
+  tokens (`#323232`, `#1d1e1f`) and adds no colour of its own, so the dark layout comparison
+  carries about 3 levels a channel in its mean Δ while its mismatch stays at 0.04%.
+- **Two values of the blueprint** (`reference/spec/apps/force-quit.md`) were measured again and
+  differ: the rows are 22 pt apart, not 21 (the names stand on y=269, 313 and 357 of the
+  capture; only the first row's visible part is 21 pt), and the hint is 10 pt text, not 11 (its
+  capitals are 7.5 pt high where the instruction's 13 pt capitals are 9.5, and its first line
+  is 182 pt wide).
+- **Not in a screenshot (provisional):** the confirmation, its wording, its 420 pt width and
+  the choice of a sheet; "Relaunch" and the application that stays; "(not responding)" and its
+  colours; the list when it does not have the keyboard focus, when it is empty and when it is
+  long enough to scroll; the window when it is not key; and every size other than the captured
+  one.

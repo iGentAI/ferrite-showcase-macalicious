@@ -1,0 +1,834 @@
+/*
+ * The desktop demo: a window manager that holds the desktop, the menu bar, the windows of the
+ * demo applications and the Dock.
+ *
+ * .mac-desktop-shell             the window manager; give it a size
+ * .mac-desktop-shell-desktop     the desktop picture and Finder's icons, behind the windows
+ * .mac-desktop-shell-picture     the desktop picture: its day photograph, and over it the dusk
+ *                                one, shown in Dark Aqua
+ * .mac-desktop-shell-menu-bar    the menu bar, fixed to the top edge above the windows; [data-revealed] while a
+ *                                full-screen window covers it and the pointer has brought it in
+ * .mac-desktop-shell-menu-bar-edge  the strip along the top edge that brings it in over a full-screen window
+ * .mac-desktop-shell-menu-reason   a dimmed row of a menu that says why the item before it, or its group, is dimmed
+ * .mac-desktop-shell-menu-why      the visually hidden part of a dimmed item that carries its group's reason, which
+ *                                 the group's reason row shows (desktop-menus.tsx, DimmedInGroup)
+ * .mac-desktop-shell-dock-badge  the red count on a Dock tile
+ * .mac-desktop-shell-spotlight   the layer Spotlight is on: over the windows, under the menu bar
+ * .mac-desktop-shell-spotlight-picture, -words  a file's own picture or words in its preview
+ * .mac-desktop-shell-siri        where Siri's window is: the top right corner, under the menu bar
+ * .mac-desktop-shell-banners     where notification banners and alerts come in: the top trailing
+ *                                corner, under the menu bar, newest first
+ * .mac-desktop-shell-today-list  the rows of a Today widget (Calendar, Reminders, Stocks)
+ * .mac-desktop-shell-today-row   one of them, a button that opens what it names
+ * .mac-desktop-shell-center-alert an alert in Notification Center, with the row of its actions
+ *                                (.mac-desktop-shell-center-actions) under its card
+ * .mac-desktop-shell-general     the body of the General preferences window
+ * .mac-desktop-drag              the drag image of a drag between applications (desktop-drag.ts)
+ * [data-desktop-drop]            what a drop would land on: "accept" is outlined
+ * .mac-desktop-shell-row         one labelled row of it
+ * .mac-desktop-login             the login window, lock screen and their panels, when the page
+ *                                signs people in (desktop-accounts.tsx); fills the page
+ * .mac-desktop-login-behind      the signed-in desktop; [data-covered] while a screen covers it
+ * .mac-desktop-login-cover       the lock screen or login window over a signed-in desktop
+ * .mac-desktop-login-panel       a panel centred over the login picture
+ * .mac-desktop-login-form        Other… and Create Account…: labelled fields on a sheet
+ */
+.mac-desktop-shell {
+  /* The Dock sizes its tiles to the desktop's width. */
+  container-type: inline-size;
+  width: 100%;
+  min-height: 320px;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+}
+
+.mac-desktop-shell-desktop {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+}
+
+/* What the desktop's View Options choose, for the disks, the person's items and the stacks. A stack's measured pile
+   scales as one. */
+.mac-desktop-shell-desktop[data-view-options] .mac-desktop-stack-pile {
+  zoom: var(--mac-desktop-shell-icon-scale);
+}
+
+.mac-desktop-shell-desktop[data-view-options] > .mac-desktop-icon {
+  --mac-desktop-icon-size: var(--mac-desktop-shell-icon-size);
+
+  width: var(--mac-desktop-shell-cell-width);
+  min-height: var(--mac-desktop-shell-cell-height);
+  font-size: var(--mac-desktop-shell-icon-text);
+  line-height: var(--mac-desktop-shell-icon-text-leading);
+}
+
+.mac-desktop-shell-desktop[data-view-options] > .mac-desktop-icon .mac-desktop-icon-image > * {
+  width: 100%;
+  height: 100%;
+}
+
+/* With item info, a long name stops at two lines of its own and the info keeps the line under it. */
+.mac-desktop-shell-desktop[data-item-info]
+  > .mac-desktop-icon[data-drive-item]
+  .mac-desktop-icon-label {
+  display: block;
+  overflow: visible;
+}
+
+.mac-desktop-shell-desktop[data-item-info]
+  > .mac-desktop-icon[data-drive-item]
+  .mac-desktop-icon-text {
+  display: block;
+}
+
+.mac-desktop-shell-item-name {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.mac-desktop-shell-desktop[data-item-info] .mac-desktop-shell-item-info {
+  display: block;
+}
+
+.mac-desktop-shell-desktop[data-label-position="right"] > .mac-desktop-icon {
+  flex-direction: row;
+  gap: var(--mac-desktop-shell-icon-label-gap);
+  text-align: start;
+}
+
+.mac-desktop-shell-desktop[data-label-position="right"]
+  > .mac-desktop-icon
+  .mac-desktop-icon-label {
+  flex: 1;
+  max-width: none;
+  margin-top: 0;
+}
+
+.mac-desktop-shell-item-info {
+  color: var(--mac-desktop-shell-item-info);
+  font-weight: var(--mac-font-weight-regular);
+}
+
+[data-selected] .mac-desktop-shell-item-info {
+  color: inherit;
+}
+
+/* Over the windows, as Finder's own panel floats. */
+.mac-desktop-shell-view-options {
+  position: absolute;
+  z-index: calc(var(--mac-window-manager-layer-chrome) - 60);
+  top: var(--mac-desktop-shell-view-options-top);
+  left: var(--mac-desktop-shell-view-options-left);
+  width: var(--mac-desktop-shell-view-options-width);
+}
+
+.mac-desktop-shell-picture {
+  position: relative;
+}
+
+.mac-desktop-shell-picture > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The appearance number is 0 in Aqua and 1 in Dark Aqua: the dusk picture fades in over the
+   day one when the appearance changes. */
+.mac-desktop-shell-picture-night {
+  opacity: var(--mac-appearance-dark);
+  transition: opacity 0.6s ease;
+}
+
+/* The reference desktop of the visual comparisons shows the stand-in drawing, not the
+   generated photographs: the translucent bar, menu and Dock are compared over it. */
+.mac-desktop-shell-reference .mac-desktop-shell-picture {
+  display: none;
+}
+
+/* Launchpad being edited: every application jiggles, as a Mac's do. */
+.mac-desktop-shell-launchpad-jiggle {
+  animation: mac-desktop-shell-launchpad-jiggle 0.14s ease-in-out infinite alternate;
+}
+
+@keyframes mac-desktop-shell-launchpad-jiggle {
+  from {
+    transform: rotate(-1.5deg);
+  }
+  to {
+    transform: rotate(1.5deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-desktop-shell-picture-night {
+    transition: none;
+  }
+
+  .mac-desktop-shell-launchpad-jiggle {
+    animation: none;
+  }
+}
+
+.mac-desktop-shell-dock-badge {
+  z-index: 1;
+  box-sizing: border-box;
+  align-self: start;
+  justify-self: end;
+  min-width: var(--mac-desktop-shell-dock-badge-size);
+  height: var(--mac-desktop-shell-dock-badge-size);
+  padding: 0 var(--mac-desktop-shell-dock-badge-inset);
+  border-radius: var(--mac-desktop-shell-dock-badge-size);
+  background: var(--mac-desktop-shell-dock-badge-fill);
+  color: var(--mac-desktop-shell-dock-badge-text);
+  font: var(--mac-font-control-small);
+  line-height: var(--mac-desktop-shell-dock-badge-size);
+  text-align: center;
+  pointer-events: none;
+}
+
+.mac-desktop-shell-menu-bar {
+  position: absolute;
+  z-index: var(--mac-window-manager-layer-chrome);
+  inset: 0 0 auto;
+}
+
+/* A key full-screen window is above every layer of the manager (over 1000: the window manager's store) and covers the
+   menu bar. A strip along the top edge takes the pointer there and brings the menu bar in over the window, as a Mac
+   does; it takes no pointer while the bar is in. */
+.mac-desktop-shell-menu-bar:where([data-revealed]),
+.mac-desktop-shell-menu-bar-edge {
+  z-index: calc(var(--mac-window-manager-layer-chrome) + 1200);
+}
+
+.mac-desktop-shell-menu-bar-edge {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+}
+
+.mac-desktop-shell-menu-bar-edge:where([data-revealed]) {
+  pointer-events: none;
+}
+
+/* Read by assistive technology as the item's description; the reason row of its group shows it. */
+.mac-desktop-shell-menu-why {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Over every window and panel, under the menu bar and the Dock. A press on the layer itself,
+   beside Spotlight's window, closes it. */
+.mac-desktop-shell-spotlight {
+  position: absolute;
+  z-index: calc(var(--mac-window-manager-layer-chrome) - 50);
+  inset: 0;
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  padding-top: 132px;
+}
+
+/* A file's own picture or words in the preview. */
+.mac-desktop-shell-spotlight-frame {
+  position: relative;
+}
+
+/* The window's bottom edge: results are what it resizes. */
+.mac-desktop-shell-spotlight-resize {
+  position: absolute;
+  right: 0;
+  bottom: calc(var(--mac-desktop-shell-spotlight-edge) / -2);
+  left: 0;
+  height: var(--mac-desktop-shell-spotlight-edge);
+  cursor: ns-resize;
+  touch-action: none;
+}
+
+:not([data-expanded]) + .mac-desktop-shell-spotlight-resize {
+  display: none;
+}
+
+.mac-desktop-shell-spotlight-picture {
+  max-width: 100%;
+  max-height: var(--mac-desktop-shell-spotlight-picture-height);
+  object-fit: contain;
+}
+
+.mac-desktop-shell-spotlight-words {
+  max-height: var(--mac-desktop-shell-spotlight-picture-height);
+  margin: 0;
+  overflow: hidden;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-control-small);
+  text-align: start;
+  white-space: pre-wrap;
+}
+
+.mac-desktop-shell-spotlight-preview {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 32px 24px;
+  font-size: 17px;
+}
+
+.mac-desktop-shell-spotlight-preview > span {
+  width: 96px;
+  height: 96px;
+}
+
+/* A data result's lines under its title: its start, its detail and the application it opens. */
+.mac-desktop-shell-spotlight-preview > p {
+  margin: 0;
+  font-size: var(--mac-font-size-regular);
+  color: var(--mac-color-label-secondary);
+  text-align: center;
+}
+
+/* Notification Center: under the menu bar, at the trailing edge, over every window and over the
+   Dock, whose end it covers, so that its footer can be pressed. The panel fills the layer's height
+   and draws its own width; a press on the layer beside it closes it. */
+.mac-desktop-shell-notification-center {
+  position: absolute;
+  z-index: calc(var(--mac-window-manager-layer-chrome) + 10);
+  inset: var(--mac-desktop-shell-menu-bar-height) 0 0 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mac-desktop-shell-siri {
+  position: absolute;
+  z-index: calc(var(--mac-window-manager-layer-chrome) - 50);
+  top: 30px;
+  right: 8px;
+}
+
+/* Banners and alerts: rendered into the page's body over everything, under the menu bar's
+   height, at the window's trailing edge, which the served desktop fills. The layer takes no
+   presses itself, only its notifications do. */
+.mac-desktop-shell-banners {
+  position: fixed;
+  z-index: var(--mac-desktop-shell-banners-layer);
+  top: var(--mac-desktop-shell-banners-top);
+  right: var(--mac-desktop-shell-banners-inset);
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-desktop-shell-banners-gap);
+  pointer-events: none;
+}
+
+.mac-desktop-shell-banners > * {
+  pointer-events: auto;
+}
+
+/* Calendar's own alerts, while its window shows them, hold the corner above every layer here:
+   banners come in beside them, past the 344 px of a NotificationAlert, where they can be pressed. */
+body:has([data-event-alert]) .mac-desktop-shell-banners {
+  right: calc(var(--mac-calendar-alerts-end) + 344px + var(--mac-desktop-shell-banners-gap));
+}
+
+/* With Do Not Disturb on, the Notification Center glyph of the menu bar is dimmed. */
+.mac-desktop-shell-menu-bar [data-dnd] svg {
+  opacity: var(--mac-desktop-shell-dnd-glyph-opacity);
+}
+
+/*
+ * General's Automatically hide and show the menu bar (setting-effects.ts): hidden, it leaves its
+ * bottom 2 pt on screen, which the pointer finds, and comes back while it or one of its menus is in
+ * use, as on a Mac.
+ */
+/* A hidden application's windows go at once (desktop-hidden.ts): no minimize animation. */
+.mac-desktop-shell [data-mac-hidden] > :not([data-edge]) {
+  transition: none;
+}
+
+/* A window minimized into its application's tile: its picture over the corner of the tile. */
+.mac-desktop-shell-tile-minimized {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 55%;
+  height: 55%;
+  pointer-events: none;
+}
+
+:root[data-mac-hide-menu-bar] .mac-desktop-shell-menu-bar {
+  transform: translateY(calc(2px - 100%));
+  transition: transform 0.2s;
+}
+
+:root[data-mac-hide-menu-bar] .mac-desktop-shell-menu-bar:is(:hover, :focus-within) {
+  transform: none;
+}
+
+/* The menu bar's menus that System Preferences' panes show and hide (setting-effects.ts). */
+:root[data-mac-no-battery-extra] .mac-desktop-shell-menu-bar [aria-label="Battery"],
+:root[data-mac-no-time-machine-extra] .mac-desktop-shell-menu-bar [aria-label="Time Machine"],
+:root[data-mac-no-wifi-extra] .mac-desktop-shell-menu-bar [aria-label="Wi-Fi"] {
+  display: none;
+}
+
+/* Siri's Enable Ask Siri and Show Siri in menu bar (setting-effects.ts). */
+:root[data-mac-siri-off] .mac-desktop-shell-menu-bar [aria-label="Siri"],
+:root[data-mac-siri-no-extra] .mac-desktop-shell-menu-bar [aria-label="Siri"] {
+  display: none;
+}
+
+.mac-desktop-shell-today-list {
+  display: grid;
+  margin: 0;
+  padding: var(--mac-desktop-shell-today-list-padding);
+  gap: var(--mac-desktop-shell-today-list-gap);
+  list-style: none;
+}
+
+.mac-desktop-shell-today-list > li {
+  display: block;
+}
+
+.mac-desktop-shell-today-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: baseline;
+  inline-size: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  gap: var(--mac-desktop-shell-today-list-gap);
+}
+
+.mac-desktop-shell-today-title {
+  overflow: hidden;
+  min-inline-size: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-desktop-shell-today-detail,
+.mac-desktop-shell-today-empty {
+  color: var(--mac-color-label-secondary);
+  font-size: var(--mac-font-size-small);
+}
+
+.mac-desktop-shell-today-empty {
+  margin: 0;
+  padding: var(--mac-desktop-shell-today-list-padding);
+}
+
+.mac-desktop-shell-today-tomorrow {
+  font: var(--mac-font-headline);
+}
+
+/* Today while it is edited: the cards take no presses, and the whole of each is a handle. */
+.mac-desktop-shell-today-edit-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  gap: var(--mac-desktop-shell-today-list-gap);
+}
+
+.mac-desktop-shell-today-edit-row {
+  position: relative;
+  cursor: grab;
+  touch-action: none;
+}
+
+.mac-desktop-shell-today-edit-row[data-dragging] {
+  opacity: 0.7;
+}
+
+.mac-desktop-shell-today-edit-row:has(:focus-visible) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+}
+
+.mac-desktop-shell-today-edit-button {
+  position: relative;
+  flex: none;
+  inline-size: var(--mac-desktop-shell-today-edit-button);
+  block-size: var(--mac-desktop-shell-today-edit-button);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--mac-desktop-shell-today-clock-day);
+  background: var(--mac-color-system-green);
+}
+
+.mac-desktop-shell-today-edit-button[data-action="remove"] {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: var(--mac-desktop-shell-today-list-gap);
+  inset-inline-end: var(--mac-desktop-shell-today-list-gap);
+  background: var(--mac-color-system-red);
+}
+
+.mac-desktop-shell-today-edit-button::before,
+.mac-desktop-shell-today-edit-button[data-action="add"]::after {
+  position: absolute;
+  inset: calc(50% - var(--mac-hairline)) 20%;
+  background: currentColor;
+  content: "";
+}
+
+.mac-desktop-shell-today-edit-button[data-action="add"]::after {
+  inset: 20% calc(50% - var(--mac-hairline));
+}
+
+.mac-desktop-shell-today-available {
+  display: grid;
+  box-sizing: border-box;
+  inline-size: var(--mac-notification-center-width, 344px);
+  align-content: start;
+  padding: var(--mac-desktop-shell-today-list-padding);
+  background: var(--mac-material-notification-center);
+  backdrop-filter: var(--mac-material-filter-notification-center);
+  gap: var(--mac-desktop-shell-today-list-gap);
+}
+
+.mac-desktop-shell-today-available-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--mac-desktop-shell-today-list-gap);
+}
+
+.mac-desktop-shell-today-available-row[data-disabled] {
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-desktop-shell-today-clocks {
+  display: grid;
+  margin: 0;
+  padding: var(--mac-desktop-shell-today-list-padding);
+  grid-template-columns: repeat(4, 1fr);
+  list-style: none;
+  text-align: center;
+  gap: var(--mac-desktop-shell-today-list-gap);
+  padding-inline-start: var(--mac-desktop-shell-today-list-gap);
+}
+
+.mac-desktop-shell-today-clocks > li {
+  display: grid;
+  justify-items: center;
+  min-inline-size: 0;
+}
+
+.mac-desktop-shell-today-clock {
+  inline-size: var(--mac-desktop-shell-today-clock-size);
+  fill: var(--mac-desktop-shell-today-clock-day);
+  stroke: var(--mac-desktop-shell-today-clock-night);
+}
+
+.mac-desktop-shell-today-clock[data-night] {
+  fill: var(--mac-desktop-shell-today-clock-night);
+  stroke: var(--mac-desktop-shell-today-clock-day);
+}
+
+.mac-desktop-shell-today-clock circle {
+  stroke: none;
+}
+
+.mac-desktop-shell-today-clock-city {
+  overflow: hidden;
+  max-inline-size: 100%;
+  font-size: var(--mac-font-size-small);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-desktop-shell-today-cities {
+  display: grid;
+  gap: var(--mac-desktop-shell-today-list-gap);
+  padding: var(--mac-desktop-shell-today-list-padding);
+  justify-items: stretch;
+}
+
+.mac-desktop-shell-today-city {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mac-desktop-shell-today-list-gap);
+}
+
+.mac-desktop-shell-banner-reply {
+  display: grid;
+  gap: var(--mac-desktop-shell-banners-gap);
+  margin-block-start: var(--mac-desktop-shell-banners-gap);
+}
+
+.mac-desktop-shell-siri-lead {
+  margin: 0;
+  padding-inline: var(--mac-desktop-shell-today-list-gap);
+  font-size: calc(var(--mac-font-size-regular) * 2);
+  font-weight: var(--mac-font-weight-medium);
+}
+
+.mac-desktop-shell-siri-detail {
+  margin: 0;
+  padding-inline: var(--mac-desktop-shell-today-list-gap);
+}
+
+.mac-desktop-shell-today-calculator {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--mac-hairline);
+  padding: var(--mac-desktop-shell-today-list-gap);
+}
+
+.mac-desktop-shell-today-calculator-display {
+  overflow: hidden;
+  grid-column: 1 / -1;
+  font-size: var(--mac-desktop-shell-today-calculator-display);
+  text-align: end;
+  padding-inline: var(--mac-desktop-shell-today-list-gap);
+  white-space: nowrap;
+}
+
+.mac-desktop-shell-today-calculator button {
+  block-size: var(--mac-desktop-shell-today-calculator-key);
+  padding: 0;
+  border: 0;
+  background: var(--mac-color-separator);
+  color: inherit;
+  font: inherit;
+}
+
+.mac-desktop-shell-today-calculator button:active {
+  background: var(--mac-color-label-tertiary);
+}
+
+.mac-desktop-shell-today-calculator button[data-wide] {
+  grid-column: span 2;
+}
+
+.mac-desktop-shell-today-calculator button[data-operator] {
+  background: var(--mac-color-system-orange);
+}
+
+.mac-desktop-shell-center-alert {
+  display: grid;
+  gap: var(--mac-desktop-shell-center-actions-gap);
+}
+
+.mac-desktop-shell-center-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--mac-desktop-shell-center-actions-gap);
+}
+
+.mac-desktop-shell-center-failed {
+  flex: 1;
+  font: var(--mac-font-control-small);
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-desktop-shell-today-change {
+  font-variant-numeric: tabular-nums;
+}
+
+.mac-desktop-shell-today-change[data-direction="up"] {
+  color: var(--mac-color-system-green);
+}
+
+.mac-desktop-shell-today-change[data-direction="down"] {
+  color: var(--mac-color-system-red);
+}
+
+.mac-desktop-shell-siri-list {
+  margin: 0;
+  padding: 10px 18px 14px;
+  list-style: none;
+  line-height: 22px;
+}
+
+.mac-desktop-shell-siri-earlier {
+  overflow-y: auto;
+  max-block-size: var(--mac-desktop-shell-siri-earlier-height);
+  margin: 0;
+  padding: var(--mac-desktop-shell-today-list-gap);
+  color: var(--mac-color-label-secondary);
+  font-size: var(--mac-font-size-small);
+  list-style: none;
+}
+
+.mac-desktop-shell-general {
+  display: grid;
+  align-content: start;
+  gap: var(--mac-space-control-gap);
+  padding: var(--mac-space-window-margin);
+}
+
+.mac-desktop-shell-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.mac-desktop-shell-row > :first-child {
+  justify-self: end;
+}
+
+.mac-desktop-login {
+  block-size: 100%;
+}
+
+/* The person's desktop behind the lock screen or the switching login window: kept as it was,
+   hidden and out of reach (inert) until it shows again. */
+.mac-desktop-login-behind {
+  block-size: 100%;
+}
+
+.mac-desktop-login-behind[data-covered] {
+  visibility: hidden;
+}
+
+.mac-desktop-login-cover {
+  position: fixed;
+  z-index: var(--mac-desktop-login-layer);
+  inset: 0;
+}
+
+.mac-desktop-login-panel {
+  display: grid;
+  place-items: center;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+}
+
+.mac-desktop-login-form {
+  display: grid;
+  gap: var(--mac-space-control-gap);
+  inline-size: var(--mac-desktop-login-form-width);
+  padding: var(--mac-space-window-margin);
+  border-radius: var(--mac-desktop-login-form-radius);
+  backdrop-filter: var(--mac-material-filter-sheet);
+  background: var(--mac-material-sheet);
+}
+
+.mac-desktop-login-title {
+  margin: 0;
+  font: var(--mac-font-alert-message);
+  text-align: center;
+}
+
+.mac-desktop-login-row {
+  display: grid;
+  grid-template-columns: var(--mac-desktop-login-label-width) 1fr;
+  align-items: center;
+  gap: var(--mac-space-control-gap);
+}
+
+.mac-desktop-login-row > label {
+  justify-self: end;
+}
+
+.mac-desktop-login-hint {
+  min-block-size: 1lh;
+  margin: 0;
+  text-align: center;
+}
+
+.mac-desktop-login-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--mac-space-control-gap);
+}
+
+/* The Help menu's search field. */
+.mac-desktop-shell-help-search {
+  padding: var(--mac-desktop-shell-help-search-padding);
+}
+
+/* A drag between applications (desktop-drag.ts). A frame's own content would swallow the pointer. */
+[data-desktop-dragging] {
+  user-select: none;
+}
+
+[data-desktop-dragging] iframe {
+  pointer-events: none;
+}
+
+[data-desktop-drop="accept"] {
+  outline: 2px solid var(--mac-color-selected-content-background);
+  outline-offset: -2px;
+  border-radius: var(--mac-desktop-drag-target-radius);
+}
+
+/* A Mac outlines nothing for a drop on the desktop itself. */
+.mac-desktop-shell-desktop[data-desktop-drop="accept"] {
+  outline: none;
+}
+
+.mac-desktop-drag {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--mac-desktop-drag-layer);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--mac-desktop-drag-gap);
+  max-inline-size: var(--mac-desktop-drag-width);
+  opacity: var(--mac-desktop-drag-opacity);
+  pointer-events: none;
+}
+
+.mac-desktop-drag-icon {
+  display: block;
+  inline-size: var(--mac-desktop-drag-icon);
+  block-size: var(--mac-desktop-drag-icon);
+}
+
+.mac-desktop-drag-icon > * {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.mac-desktop-drag-name {
+  overflow: hidden;
+  max-inline-size: 100%;
+  padding: var(--mac-desktop-drag-name-padding);
+  border-radius: var(--mac-desktop-drag-name-radius);
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-content-text);
+  font-size: var(--mac-desktop-drag-name-size);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-desktop-drag-count {
+  position: absolute;
+  inset-block-start: calc(var(--mac-desktop-drag-count) / -3);
+  inset-inline-end: calc(var(--mac-desktop-drag-count) / -3);
+  min-inline-size: var(--mac-desktop-drag-count);
+  block-size: var(--mac-desktop-drag-count);
+  padding-inline: var(--mac-desktop-drag-count-padding);
+  border-radius: calc(var(--mac-desktop-drag-count) / 2);
+  background: var(--mac-color-system-red);
+  color: var(--mac-color-selected-content-text);
+  font-size: var(--mac-desktop-drag-name-size);
+  line-height: var(--mac-desktop-drag-count);
+  text-align: center;
+}
+
+/* The account's menu bar title (desktop-menus.tsx, userCell): a block, so its name can end in an
+   ellipsis. Here rather than inline, so the menu bar can still leave it out on a narrow screen. */
+.mac-desktop-shell-user-cell:not([data-overflow]) {
+  display: block;
+}

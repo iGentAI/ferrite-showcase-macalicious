@@ -1,0 +1,155 @@
+---
+title: Store Pill Button
+description: The App Store's offer button, a capsule titled Get, a price, Open or Update, with an optional caption under it.
+---
+
+<Example name="basic" both />
+
+The capsule at the trailing edge of every app lockup in the App Store. It is not an AppKit
+control: the store draws it itself, in its own colours, and its light grey fill stays light in
+Dark Aqua. It is built on [Base UI's Button](https://base-ui.com/react/components/button),
+which supplies the button semantics, keyboard handling, the `disabled` and
+`focusableWhenDisabled` behaviour, and the `render` prop.
+
+## Usage
+
+```tsx
+import { StorePillButton } from "macalicious/store-pill-button";
+import "macalicious/store-pill-button.css";
+
+<StorePillButton onClick={get}>Get</StorePillButton>
+<StorePillButton caption="In-App Purchases" onClick={buy}>$14.99</StorePillButton>
+```
+
+Or copy the source into your project: `npx macalicious add store-pill-button`. See
+[Installation](/installation).
+
+Write a word in ordinary case (`Get`, `Open`): the button shows it in capitals, as the store
+does, and a screen reader still reads a word. A price is shown as written.
+
+## Guidelines
+
+The Human Interface Guidelines have no page for this control. What the store itself does:
+
+- Title it with the offer: `Get` for a free app, the formatted price for a paid one, `Open` or
+  `Update` for an app the person already has.
+- Put one at the trailing edge of a row, centred on the row's icon, and let the row's text end
+  before it. The [card grid](/components/card-grid)'s lockup takes it as its `accessory`.
+- Keep the caption to one short line (`In-App Purchases`): it is 6.5 pt and no wider than the
+  capsule.
+- For the purchase sequence, switch to the filled variant to confirm (`Install`, `Buy App`),
+  then show progress, then `Open`.
+
+<Example name="purchase" />
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Tinted | default | Light grey capsule (`#f2f2f7` in both appearances), blue title in 12 pt Bold |
+| Filled | `variant="filled"` | The capsule takes the title's blue; white title |
+| Caption | `caption` | One 6.5 pt grey line centred under the capsule, outside its box |
+| Downloading | `progress` | A 21 pt ring, 2 pt wide, filled clockwise in the blue, around a 6 pt stop square |
+| Hover | – | No change: the store has no hover treatment |
+| Pressed | `:active` | The whole control at half opacity |
+| Keyboard focus | `:focus-visible` | Focus ring in the accent colour, following the capsule |
+| Disabled | `disabled` | Title, or ring, at 35% |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | Grey replaces the blue; no focus ring |
+
+Measured: the tinted capsule with a word and with a price, and the caption, in both
+appearances. Provisional, because no screenshot shows them: the filled variant, the progress
+ring and its colours, the pressed and disabled looks, the focus ring on this control, and
+the look in a window that is not key, which applies the library's rule for accent colours to
+the store's blue. The blue is the store's own (`#027aff`, `#0884ff` in Dark Aqua) and does
+not follow `data-accent`; set `--mac-store-pill-button-tint` to change it.
+
+The window state is not a prop: a window component sets `data-window-state` on itself, and
+`trackWindowActivation()` from `macalicious/lib/window-activation` mirrors the browser
+window's focus onto the page.
+
+## Sizes
+
+One size: 66 x 21 pt, which holds every title in the screenshots, six-character prices
+included. A longer title widens the capsule and keeps 10 pt at each end (the spec infers
+about 12; 10 keeps a six-character price at 66 pt in the wider fallback font). The element's
+box is the capsule; the caption hangs below it and takes no space, so a row centres the
+capsule and must leave 14 pt under it for a caption.
+
+## API
+
+<PropsTable name="StorePillButtonProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-variant` | `tinted`, `filled` | Reflects `variant`. |
+| `data-progress` | present or absent | Present while `progress` is set. |
+| `data-disabled` | present or absent | Set by Base UI while the button is disabled. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-store-pill-button-tint` | `#027aff`, `#0884ff` in Dark Aqua | The title's colour, and the fill of the filled variant and of the progress ring. |
+| `--mac-store-pill-button-fill` | `#f2f2f7` | The capsule's fill. |
+
+The title is rendered inside a `<span class="mac-store-pill-button-label">`, the caption in a
+`<span class="mac-store-pill-button-caption">` and the ring in a
+`<span class="mac-store-pill-button-ring">`.
+
+## Accessibility
+
+- Renders a native `<button>`. Space and Return activate it; Tab reaches it.
+- The title is the button's name. In a list of apps every button would be named "Get", so
+  name each with its app: `aria-label="Get, Tile Garden"`.
+- The caption is not part of the name: it is hidden from the name computation and referenced
+  with `aria-describedby`, so it is announced as the button's description. An
+  `aria-describedby` of your own is kept and the caption added to it.
+- While `progress` is set the title is hidden from view only: title the button with what a
+  click does then (`Stop`). The ring is decorative; announce progress yourself, for example
+  with a live region, as the purchase example does.
+- A disabled button leaves the tab order. Use `focusableWhenDisabled` for a button that
+  disables itself while its action runs, so focus is not lost.
+- The blue title on the grey capsule has a contrast of 3.6 to 1, which is the store's own and
+  below the 4.5 to 1 of WCAG AA for text of this size; the caption is 6.5 pt. Set
+  `--mac-store-pill-button-tint` to a darker blue where that matters.
+- A browser that enforces a minimum font size draws the caption larger than 6.5 pt.
+- In forced-colours mode the capsule gets a border in the system text colour.
+
+## Visual comparison
+
+`visual-get` and `visual-price` reproduce two offer buttons of the App Store's lockup list,
+`GET` with its caption and `$14.99`, and are compared with the captures in both appearances by
+`npm run visual` (`store-pill-button.visual.json`). Share of pixels that differ, in Chromium
+on Linux with the fallback font:
+
+| Crop | Aqua, whole crop | Aqua, capsule only | Dark Aqua, whole crop | Dark Aqua, capsule only |
+| --- | --- | --- | --- | --- |
+| GET with caption, 2x | 5.88% | 0.00% | 6.03% | 0.80% |
+| GET with caption, 1x | 5.56% | 0.00% | 6.47% | 1.51% |
+| Price, 2x | 7.46% | 0.03% | 7.61% | 1.06% |
+| Price, 1x | 8.60% | 0.05% | 9.31% | 2.01% |
+
+"Capsule only" masks the title and the caption and counts a pixel as differing at a colour
+distance of 0.05, half the default. What remains in the whole-crop scores is the text, set in
+the fallback font instead of San Francisco. In Dark Aqua the capsule-only scores are the
+antialiasing of the capsule's round ends, where the light fill meets the dark page: Chromium
+covers the outermost pixel of each end a little less than the capture does. In Aqua the same
+pixels differ by too little to count.
+
+No screenshot shows the other states. They are checked in a real browser against values from
+the spec instead (the `expect` comparisons): the example is pressed with the mouse or focused
+with Tab, and chosen pixels must have the expected colour.
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| At rest | The fill, that it starts at the box's edge with no border, and the filled variant's blue | Fill and blue measured; that the confirmation step is filled, inferred |
+| Pressed | Either variant at half opacity over the page, the other untouched | Inferred |
+| Keyboard focus | Ring colour beside and above the capsule, that it ends 2.5 pt out and follows the round end | Ring measured on a text field; that this control shows it, inferred |
+| Inactive and main window | No focus ring; the filled variant turns grey | Provisional: the library's rule, no screenshot |
+
+Not checked by pixels: the progress ring, the disabled look and the title's position, which
+the whole-crop comparisons gate only loosely.

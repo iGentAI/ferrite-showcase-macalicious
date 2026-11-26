@@ -1,0 +1,43 @@
+/*
+ * Toolbar (NSToolbar).
+ *
+ * A flex row with no background: the title bar it sits in is the surface. The 22 pt controls
+ * start 3 pt under the title strip (8 pt under the window's top edge when the title is hidden)
+ * and end 8 pt above the bottom edge of the chrome, which gives the measured 55 pt and 38 pt
+ * bars. In icon-and-label mode the labels add 13 pt and the bar measures 68 pt (Console).
+ *
+ * States
+ *   [data-display-mode="icon-only" | "icon-and-label" | "label-only"]   read by labelled items
+ *   [data-title-bar="title-hidden"] *    the controls are centred on the 38 pt row
+ *
+ * Hooks
+ *   --mac-toolbar-gap             space between items (default 8px)
+ *   --mac-toolbar-padding-top     space above the controls (default 3px; Disk Utility has 4px)
+ */
+.mac-toolbar {
+  display: flex;
+  gap: var(--mac-toolbar-gap, 8px);
+  align-items: flex-start;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--mac-toolbar-padding-top, 3px) 8px 8px;
+}
+
+.mac-toolbar:where([data-title-bar="title-hidden"] *) {
+  padding-block-start: var(--mac-toolbar-padding-top, 8px);
+}
+
+/* The label's line ends 3 pt under its baseline, which is 8 pt above the chrome's edge. */
+.mac-toolbar:where([data-display-mode="icon-and-label"]) {
+  padding-block-end: 5px;
+}
+
+.mac-toolbar-space {
+  flex: none;
+  align-self: stretch;
+}
+
+.mac-toolbar-space:where([data-flexible]) {
+  flex: 1 1 0;
+  min-width: 0;
+}

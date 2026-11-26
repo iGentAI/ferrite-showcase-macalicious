@@ -1,0 +1,206 @@
+/*
+ * Open panel (NSOpenPanel).
+ *
+ * The frame is the window component. Inside it, top to bottom: a 42 pt toolbar and its 1 pt
+ * line, which is translucent and lies over the first point of what follows; the sidebar and
+ * the browser side by side; an optional accessory; and a 41 pt bottom bar under a 1 pt line. The toolbar is the toolbar component laid out in three columns, so
+ * that the location button is centred on the panel whatever stands beside it.
+ *
+ * Measured on the 914 x 615 pt panel: controls 11 pt from the sides; Back and Forward 24.5 pt
+ * each; the view and New Folder buttons 44 pt; the location button 207 pt; the search field
+ * 275.5 pt; the sidebar 155 pt; the band over the browser 23 pt and two device pixels; the
+ * buttons of the bottom bar 10.5 pt from its edges, Cancel and Open 77 pt wide (78 pt boxes:
+ * a push button's bezel is drawn half a point inside its box).
+ *
+ * States
+ *   [data-window-state="inactive"] *    flat toolbar [provisional]
+ *
+ * Hooks
+ *   --mac-open-panel-button-min-width   least width of Cancel and the default button (78px)
+ */
+.mac-open-panel-browser {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.mac-open-panel-toolbar {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  flex: none;
+  grid-template-columns: minmax(max-content, 1fr) auto minmax(0, 1fr);
+  column-gap: 8px;
+  align-items: center;
+  height: 43px;
+  /* The line is translucent and lies over the first point of the sidebar and the browser. */
+  margin-block-end: -1px;
+  padding: 0 11px;
+  border-block-end: 1px solid var(--mac-open-panel-toolbar-line);
+  background: var(--mac-open-panel-toolbar) padding-box;
+}
+
+.mac-open-panel-toolbar:where([data-window-state="inactive"] *) {
+  background: var(--mac-open-panel-toolbar-inactive) padding-box;
+}
+
+.mac-open-panel-toolbar-leading {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.mac-open-panel-history {
+  padding: 0;
+}
+
+.mac-open-panel-forward > :where(svg) {
+  transform: scaleX(-1);
+}
+
+/* The view button shows the view's glyph and one arrow; its name is in the menu and names
+   the button for assistive technology. */
+.mac-open-panel-view {
+  gap: 4px;
+  width: 44px;
+  padding: 0;
+}
+
+.mac-open-panel-view .mac-open-panel-view-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.mac-open-panel-new-folder {
+  width: 44px;
+  /* 6 pt after the view button, not the toolbar's 8. */
+  margin-inline-start: -2px;
+  padding: 0;
+}
+
+.mac-open-panel-location {
+  gap: 6px;
+  justify-content: space-between;
+  width: 207px;
+  max-width: 100%;
+  padding: 0 5px 0 7px;
+}
+
+.mac-open-panel-pop-up-title {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The search field starts 66.5 pt after the location button and takes the rest: 275.5 pt in
+   the 914 pt panel, 218.5 pt in the 799 pt one. The most it grows to is [provisional]. */
+.mac-open-panel-search {
+  justify-self: end;
+  box-sizing: border-box;
+  width: calc(100% - 58.5px);
+  max-width: 320px;
+}
+
+.mac-open-panel-split {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.mac-open-panel-main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  background: var(--mac-color-control-background);
+}
+
+/* The band: the point under the toolbar's line, 23 pt of fill, then two device-pixel rows. */
+.mac-open-panel-header {
+  display: flex;
+  flex: none;
+  align-items: center;
+  box-sizing: border-box;
+  height: 25px;
+  padding: 1px 10.5px 1px;
+  background:
+    linear-gradient(
+      to top,
+      var(--mac-open-panel-header-edge) 0 var(--mac-hairline),
+      var(--mac-open-panel-header-line) var(--mac-hairline) calc(2 * var(--mac-hairline)),
+      transparent calc(2 * var(--mac-hairline))
+    ),
+    var(--mac-open-panel-header);
+  color: var(--mac-open-panel-header-text);
+  font: var(--mac-font-headline);
+  font-weight: 600;
+  letter-spacing: var(--mac-tracking-regular);
+  white-space: nowrap;
+}
+
+/* The browser fills what is left; a grid, so that the view stretches to it. */
+.mac-open-panel-files {
+  display: grid;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.mac-open-panel-accessory {
+  flex: none;
+  box-sizing: border-box;
+  padding: 12px var(--mac-space-window-margin);
+  border-block-start: 1px solid var(--mac-open-panel-bar-line);
+}
+
+.mac-open-panel-bar {
+  display: flex;
+  flex: none;
+  gap: 8px;
+  align-items: center;
+  box-sizing: content-box;
+  height: 41px;
+  padding: 0 10px;
+  border-block-start: 1px solid var(--mac-open-panel-bar-line);
+  background: var(--mac-open-panel-bar);
+}
+
+.mac-open-panel-bar-leading {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-inline-end: auto;
+}
+
+.mac-open-panel-button {
+  min-width: var(--mac-open-panel-button-min-width, 78px);
+}
+
+@media (forced-colors: active) {
+  .mac-open-panel-toolbar,
+  .mac-open-panel-bar,
+  .mac-open-panel-accessory {
+    border-color: CanvasText;
+    background: Canvas;
+  }
+
+  .mac-open-panel-toolbar {
+    margin-block-end: 0;
+  }
+
+  .mac-open-panel-header {
+    border-block-end: 1px solid CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+}

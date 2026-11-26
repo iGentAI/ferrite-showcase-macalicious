@@ -1,0 +1,175 @@
+/*
+ * Menu item (NSMenuItem): one row of a menu. The row is as high as the menu's line height
+ * (19 pt at 14 pt) and 21 pt with a 16 pt image.
+ *
+ *   |<- 21 ->Title ................ [modifiers][key 18 ]|
+ *   |<-6->v  Title                                      |   checkmark, in the left inset
+ *   |<- 21 ->[image 16]<-5->Title                       |
+ *
+ * The classes select on attributes only, so a row can be any element: Base UI's Select.Item
+ * and Combobox.Item set the same attributes as Menu.Item.
+ *
+ * States
+ *   [data-highlighted]                         under the pointer or the keyboard: accent fill
+ *   [data-popup-open]                          parent item of an open submenu: stays highlighted
+ *   [data-disabled]                            dimmed, never highlighted
+ *   [data-checked], [data-selected],
+ *   [aria-checked="true"]                      on: a checkmark in the left inset
+ *   [data-mixed], [aria-checked="mixed"]       mixed: a dash
+ *   [data-indentation="1" .. "3"]              NSMenuItem.indentationLevel, 11 pt a level
+ *   [data-force~="hover"]                      static preview of the highlight (docs)
+ *   [data-key-equivalents="hidden"]            on the menu: its items show no key equivalents
+ */
+.mac-menu-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0 21px;
+  color: var(--mac-menu-item-text);
+  white-space: nowrap;
+  cursor: default;
+  outline: none;
+}
+
+.mac-menu-item:where([data-indentation="1"]) {
+  padding-inline-start: 32px;
+}
+
+.mac-menu-item:where([data-indentation="2"]) {
+  padding-inline-start: 43px;
+}
+
+.mac-menu-item:where([data-indentation="3"]) {
+  padding-inline-start: 54px;
+}
+
+/* A title is never truncated: a menu is as wide as its widest item, as in AppKit. */
+.mac-menu-item-title {
+  flex: 1 0 auto;
+}
+
+/* 16 pt image, 2.5 pt above and below it: the row becomes 21 pt. */
+.mac-menu-item-image {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  margin-block: 2.5px;
+  margin-inline-end: 5px;
+}
+
+/* Key equivalent: the key is left-aligned in a column 18 pt from the menu's edge and the
+   modifiers are right-aligned against it, so that keys line up down the menu. The row's own
+   padding is taken back. */
+.mac-menu-item-key {
+  display: flex;
+  flex: none;
+  margin-inline: 20px -21px;
+}
+
+.mac-menu-item-key-modifiers {
+  padding-inline-end: 1px;
+}
+
+.mac-menu-item-key-character {
+  box-sizing: border-box;
+  min-width: 18px;
+  padding-inline-end: 4px;
+  white-space: nowrap;
+}
+
+/* A menu that does not show key equivalents (a contextual menu, a Dock menu) says so. */
+.mac-menu-item-key:where([data-key-equivalents="hidden"] *) {
+  display: none;
+}
+
+/* On and mixed marks, drawn in the left inset: 6 pt from the edge, 0.7 em square (9.8 pt at
+   14 pt, 9 pt at 13 pt, 8.5 pt at 12 pt). */
+.mac-menu-item:where(
+  [data-checked],
+  [data-selected],
+  [aria-checked="true"],
+  [data-mixed],
+  [aria-checked="mixed"]
+)::before {
+  content: "";
+  position: absolute;
+  inset-block-start: calc(50% - 0.35em);
+  inset-inline-start: 6px;
+  width: 0.7em;
+  height: 0.7em;
+  background: currentColor;
+  /* raw-color-ok: mask alpha */
+  mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8.5 8.5'%3E%3Cpath d='M.25 4 3.5 7.75 7.5.25' fill='none' stroke='%23000' stroke-width='1.5'/%3E%3C/svg%3E")
+    center / 100% 100% no-repeat;
+}
+
+/* Mixed: a bar 8 pt wide and 1.5 pt high. */
+.mac-menu-item:where([data-mixed], [aria-checked="mixed"])::before {
+  inset-block-start: calc(50% - 0.75px);
+  width: 8px;
+  height: 1.5px;
+  mask: none;
+}
+
+.mac-menu-item:where([data-highlighted], [data-popup-open], [data-force~="hover"]):where(
+  :not([data-disabled])
+) {
+  background: var(--mac-menu-item-highlight);
+  color: var(--mac-color-selected-menu-item-text);
+}
+
+.mac-menu-item:where([data-disabled]) {
+  color: var(--mac-menu-item-text-disabled);
+}
+
+/* Separator item: 12 pt, with a 2 pt line across the whole menu. */
+.mac-menu-item-separator {
+  height: 2px;
+  margin: 5px 0;
+  background: var(--mac-menu-item-separator);
+}
+
+/* Section header: the look of a disabled item. */
+.mac-menu-item-header {
+  padding: 0 21px;
+  color: var(--mac-menu-item-text-disabled);
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  .mac-menu-item:where([data-highlighted], [data-popup-open], [data-force~="hover"]):where(
+    :not([data-disabled])
+  ) {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  .mac-menu-item:where([data-disabled]),
+  .mac-menu-item-header {
+    color: GrayText;
+  }
+
+  .mac-menu-item-separator {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
+
+  /* The marks are painted backgrounds, which forced colours would replace with the canvas. */
+  .mac-menu-item::before {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
+
+  .mac-menu-item:where([data-highlighted], [data-popup-open], [data-force~="hover"])::before {
+    background: HighlightText;
+  }
+
+  .mac-menu-item:where([data-disabled])::before {
+    background: GrayText;
+  }
+}

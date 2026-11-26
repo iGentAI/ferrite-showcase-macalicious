@@ -1,0 +1,63 @@
+/*
+ * Avatar: a person's picture, initials or a silhouette in a disc. Measured on the row of "Me"
+ * in Find My's People list; values and evidence are in the spec (avatar) and on the docs page.
+ *
+ * Parts
+ *   .mac-avatar            the disc; --mac-avatar-size is its diameter (set by `size`)
+ *   .mac-avatar-image      the picture, cropped to the disc
+ *   .mac-avatar-fallback   initials or the silhouette, shown without a loaded picture
+ *   .mac-avatar-glyph      the silhouette
+ */
+.mac-avatar {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  box-sizing: border-box;
+  width: var(--mac-avatar-size);
+  height: var(--mac-avatar-size);
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--mac-avatar-fill);
+  box-shadow: 0 0 0 var(--mac-hairline) var(--mac-avatar-rim);
+  color: var(--mac-avatar-glyph);
+  font: var(--mac-font-control-regular);
+  font-weight: var(--mac-font-weight-medium);
+  font-size: calc(var(--mac-avatar-size) * 0.4);
+  line-height: 1;
+  letter-spacing: normal;
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-avatar-image,
+.mac-avatar-fallback {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+}
+
+.mac-avatar-image {
+  object-fit: cover;
+}
+
+.mac-avatar-fallback {
+  display: grid;
+  place-items: center;
+}
+
+.mac-avatar-glyph {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: currentcolor;
+}
+
+@media (forced-colors: active) {
+  .mac-avatar {
+    border: 1px solid CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+}

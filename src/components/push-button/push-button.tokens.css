@@ -1,0 +1,19 @@
+/*
+ * Push button values that differ between Aqua and Dark Aqua and are not shared tokens. The
+ * bezel itself (fill, edges, highlight, shadow, accent gradient) is shared with every other
+ * bezelled control and lives in src/styles/tokens/controls.css and accent.css.
+ */
+:root {
+  /* [provisional] Fill while pressed in a window that is not key, where AppKit withholds the
+     accent highlight. No screenshot shows it. The step is the one the shared pressed bezel
+     (--mac-bezel-fill-pressed) uses, but the case is the push button's own: other bezels use
+     the shared value in the key window, this one only replaces the accent outside it. */
+  --mac-push-button-fill-pressed-not-key: linear-gradient(
+    light-dark(#f0f0f0, rgb(255 255 255 / 0.36)),
+    light-dark(#f0f0f0, rgb(255 255 255 / 0.36))
+  );
+  /* [measured] Aqua: the title of an emphasised button, Done under a Contacts card being
+     edited, 10-15-Catalina-Light-Contacts.png @ 1660,862: #4188f2 in the capture's Display P3,
+     sRGB #2687fa. [provisional] Dark Aqua: no capture shows it; the dark link colour. */
+  --mac-push-button-emphasized-title: light-dark(#2687fa, #429bff);
+}

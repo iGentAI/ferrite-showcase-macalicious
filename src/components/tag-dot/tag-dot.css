@@ -1,0 +1,130 @@
+/*
+ * Finder tag dot: a 12 pt disc with a 1 pt ring in a darker shade of its fill, or a flat 10 pt
+ * dot before a file name.
+ *
+ * States
+ *   [data-color="red" | "orange" | "yellow" | "green" | "blue" | "purple" | "gray"]
+ *   [data-color="none"]      tag without a colour: grey ring, faint fill
+ *   [data-color="all"]       "All Tags…": a second ring behind, 3 pt to the right
+ *   [data-size="small"]      flat 10 pt dot, no ring
+ *   [data-emphasized]        white ring on an emphasised selection; key window only
+ *
+ * .mac-tag-dot-group overlaps the dots of an item with several tags.
+ */
+.mac-tag-dot {
+  --_ring: var(--mac-tag-dot-none-ring);
+  --_fill: var(--mac-tag-dot-none-fill);
+  --_flat: var(--_fill);
+
+  position: relative;
+  display: inline-block;
+  flex: none;
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--_ring);
+  border-radius: 50%;
+  background: var(--_fill);
+  vertical-align: middle;
+}
+
+.mac-tag-dot:where([data-size="small"]) {
+  width: 10px;
+  height: 10px;
+  border: 0;
+  background: var(--_flat);
+}
+
+.mac-tag-dot:where([data-color="red"]) {
+  --_ring: var(--mac-tag-dot-red-ring);
+  --_fill: var(--mac-tag-dot-red-fill);
+}
+
+.mac-tag-dot:where([data-color="orange"]) {
+  --_ring: var(--mac-tag-dot-orange-ring);
+  --_fill: var(--mac-tag-dot-orange-fill);
+}
+
+.mac-tag-dot:where([data-color="yellow"]) {
+  --_ring: var(--mac-tag-dot-yellow-ring);
+  --_fill: var(--mac-tag-dot-yellow-fill);
+}
+
+.mac-tag-dot:where([data-color="green"]) {
+  --_ring: var(--mac-tag-dot-green-ring);
+  --_fill: var(--mac-tag-dot-green-fill);
+  --_flat: var(--mac-tag-dot-green-flat);
+}
+
+.mac-tag-dot:where([data-color="blue"]) {
+  --_ring: var(--mac-tag-dot-blue-ring);
+  --_fill: var(--mac-tag-dot-blue-fill);
+}
+
+.mac-tag-dot:where([data-color="purple"]) {
+  --_ring: var(--mac-tag-dot-purple-ring);
+  --_fill: var(--mac-tag-dot-purple-fill);
+}
+
+.mac-tag-dot:where([data-color="gray"]) {
+  --_ring: var(--mac-tag-dot-gray-ring);
+  --_fill: var(--mac-tag-dot-gray-fill);
+}
+
+/* A small dot without a colour keeps its ring: a flat dot of the sidebar tint would vanish. */
+.mac-tag-dot:where([data-color="none"], [data-color="all"]):where([data-size="small"]) {
+  border: 1px solid var(--_ring);
+  background: var(--_fill);
+}
+
+/* "All Tags…": the element is the front ring; the ring behind it is 3 pt to the right and
+   stops half a point short of the front one. The element is 3 pt wider than it looks. */
+.mac-tag-dot:where([data-color="all"]) {
+  --_ring: var(--mac-tag-dot-all-ring);
+  --_fill: var(--mac-tag-dot-all-fill);
+  margin-inline-end: 3px;
+}
+
+.mac-tag-dot:where([data-color="all"])::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  box-sizing: border-box;
+  border: inherit;
+  border-radius: inherit;
+  background: var(--_fill);
+  translate: 3px 0;
+  /* raw-color-ok: mask alpha, not a colour. The front disc's centre is 3 pt left of this one's. */
+  mask: radial-gradient(circle at 3px 50%, transparent 6.25px, #000 6.75px);
+}
+
+/* On an emphasised selection, in the key window only (CONTRIBUTING, Window state). */
+.mac-tag-dot:where([data-emphasized]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  box-shadow: 0 0 0 1px var(--mac-tag-dot-emphasized-ring);
+}
+
+/* Several tags on one item: each dot covers half of the one before it. */
+.mac-tag-dot-group {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.mac-tag-dot-group > .mac-tag-dot + .mac-tag-dot {
+  margin-inline-start: -6px;
+}
+
+.mac-tag-dot-group > .mac-tag-dot:where([data-size="small"]) + .mac-tag-dot {
+  margin-inline-start: -5px;
+}
+
+/* Forced colours replace backgrounds; the colour is the whole control, so keep it. The tag's
+   name must be in the text beside the dot. */
+@media (forced-colors: active) {
+  .mac-tag-dot {
+    forced-color-adjust: none;
+  }
+}

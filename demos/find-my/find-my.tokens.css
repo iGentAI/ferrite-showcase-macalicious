@@ -1,0 +1,108 @@
+/*
+ * Colours and sizes of Find My's own that no shared token holds. The measured ones are read from
+ * 10-15-Catalina-Light-Find-My.png and 10-15-Catalina-Dark-Find-My.png (sRGB; coordinates are
+ * image pixels). The colours of the placeholder drawings are the demo's own choice and come
+ * from no capture.
+ */
+:root {
+  /* [measured] The sidebar's fill: Light @ 620,800 and Dark @ 576,776. The capture's sidebar
+     is a translucent material; this is what it shows over the captures' backdrop. */
+  --mac-find-my-sidebar: light-dark(#f8f7f5, #1f2021);
+  /* [measured] The line between the sidebar and the map, one point: the mean of its two
+     half-point columns, Light @ 634,800 (#e0dfdc) and 635,800 (#e9e7e1), Dark @ 590,776
+     (#353637) and 591,776 (#323334). */
+  --mac-find-my-divider: light-dark(#e4e3de, #343536);
+  /* [measured] The map's land: Light @ 660,1470 and Dark @ 616,1446. */
+  --mac-find-my-land: light-dark(#f9f5ed, #2b2d2f);
+  /* [measured] The dot of the current location and its ring: Light @ 1510,820 and @ 1494,820;
+     Dark @ 1466,796 and @ 1450,796. */
+  --mac-find-my-location: light-dark(#027aff, #0f86ff);
+  --mac-find-my-location-ring: light-dark(#ffffff, #c7c7c7);
+
+  /* [provisional] The halo about the dot while the location is shared. */
+  --mac-find-my-halo: light-dark(rgb(2 122 255 / 0.16), rgb(15 134 255 / 0.22));
+
+  /* [provisional] The placeholder map's drawing: the bands, the disc, the stripe, the blocks
+     and the short bars. The demo's own neutral tints, not the captures' colours. */
+  --mac-find-my-band: light-dark(#ffffff, #3b3d40);
+  --mac-find-my-disc: light-dark(#e2e8dc, #323834);
+  --mac-find-my-stripe: light-dark(#d5e0e8, #2c343b);
+  --mac-find-my-block: light-dark(#ebe6dc, #36383a);
+  --mac-find-my-bar: light-dark(#c9c5bc, #5b5e62);
+  /* [provisional] The same drawing as a satellite view: darker ground in both appearances.
+     The hybrid view lays the bands and the bars over it. */
+  --mac-find-my-satellite-land: #454b45;
+  --mac-find-my-satellite-disc: #3a4a3c;
+  --mac-find-my-satellite-stripe: #33424c;
+  --mac-find-my-satellite-block: #595c58;
+  --mac-find-my-hybrid-band: rgb(255 255 255 / 0.55);
+  --mac-find-my-hybrid-bar: rgb(255 255 255 / 0.85);
+
+  /* [provisional] A device's marker on the map: its disc, its glyph and its ring, and the
+     halo that keeps a marker's name readable on the drawing. */
+  --mac-find-my-marker: light-dark(#ffffff, #67676a);
+  --mac-find-my-marker-glyph: light-dark(#4c4c4c, #f2f2f3);
+  --mac-find-my-marker-ring: light-dark(rgb(0 0 0 / 0.18), rgb(0 0 0 / 0.5));
+  --mac-find-my-marker-halo: light-dark(#f9f5ed, #2b2d2f);
+
+  /* [provisional] The plate behind the map's note. */
+  --mac-find-my-note-plate: light-dark(rgb(255 255 255 / 0.85), rgb(40 40 40 / 0.85));
+
+  /* Sizes, in points of the frame (1135 x 723 pt) of both captures, the same in both
+     appearances; find-my.css lists where each was read. */
+  /* [measured] the sidebar's column: the switch's track from x 7.5 to 254 and 15 pt under the
+     scroll area's top; the rule 14.5 pt under it; the row's disc a point right of the
+     gutter's middle; the second line 12 pt, half a point lower than set solid; "Share My
+     Location", its glyph from x 16.5 and its title 5.5 pt after it, a point above centre */
+  --mac-find-my-switch-margin-top: 15px;
+  --mac-find-my-switch-margin-right: 8px;
+  --mac-find-my-switch-margin-left: 7.5px;
+  --mac-find-my-rule-margin-top: 14.5px;
+  --mac-find-my-avatar-margin-start: 2px;
+  --mac-find-my-place-offset: 0.5px;
+  --mac-find-my-place-size: 12px;
+  --mac-find-my-share-gap: 5.5px;
+  --mac-find-my-share-padding-start: 16.5px;
+  --mac-find-my-share-padding-end: 8px;
+  --mac-find-my-share-title-offset: -1px;
+  /* [measured] over the map: Legal from x 278 with its baseline at y 678.75, 4 pt above the
+     map types; the map types 15 pt from the map's leading edge, the track's top 37 pt above
+     the window's bottom edge; the location button and the zoom pair at the capture's
+     distances from the map's trailing corner; the compass half a point right of the zoom
+     pair's middle */
+  --mac-find-my-legal-bottom: 42px;
+  --mac-find-my-legal-left: 16px;
+  --mac-find-my-legal-size: 7.5px;
+  --mac-find-my-legal-line-height: 10px;
+  --mac-find-my-types-bottom: 14.75px;
+  --mac-find-my-types-left: 15px;
+  --mac-find-my-controls-right: 18px;
+  --mac-find-my-controls-bottom: 15.5px;
+  --mac-find-my-compass-offset: 0.5px;
+  /* [provisional] the demo's own: the column's least height, a device's marker on the map
+     with its name and the halo that keeps it readable, and the note of the last action; no
+     capture shows a marker or a note */
+  --mac-find-my-column-min-height: 240px;
+  --mac-find-my-marker-size: 26px;
+  --mac-find-my-marker-glyph-size: 10px;
+  --mac-find-my-marker-selected-ring: 2px;
+  --mac-find-my-marker-name-top: 16px;
+  --mac-find-my-marker-name-size: 10px;
+  --mac-find-my-marker-name-line-height: 13px;
+  --mac-find-my-marker-halo-blur: 2px;
+  --mac-find-my-marker-halo-blur-wide: 3px;
+  --mac-find-my-note-top: 30px;
+  --mac-find-my-note-left: 14px;
+  --mac-find-my-note-padding-block: 2px;
+  --mac-find-my-note-padding-inline: 8px;
+  --mac-find-my-note-radius: 4px;
+  /* [provisional] the served window (find-my-desktop.css), the demo's own: the height of the
+     People list's one row and its rule, the note under it and the selected device's card,
+     their padding and gaps, and the card's place, width and corner */
+  --mac-find-my-people-height: 49px;
+  --mac-find-my-panel-padding: 12px;
+  --mac-find-my-panel-gap: 6px;
+  --mac-find-my-card-top: 56px;
+  --mac-find-my-card-width: 280px;
+  --mac-find-my-card-radius: 8px;
+}

@@ -1,0 +1,58 @@
+/*
+ * Menu bar extra (NSStatusItem): a cell at the trailing end of the menu bar. It is a menu bar
+ * title cell (menu-bar.css draws the disabled look and the highlighted text); this file adds
+ * the trailing group and what differs for an extra, its lighter highlight among it.
+ *
+ * States
+ *   .mac-menu-bar-extra[data-popup-open]   its menu is open: highlighted
+ *   .mac-menu-bar-extra[data-emphasized]   bold text
+ *   .mac-menu-bar-extra[data-active]       an extra without a menu while its panel shows
+ *   [data-force~="pressed"]                static preview of the highlight (docs)
+ *
+ * Hooks
+ *   --mac-menu-bar-extra-padding           space on each side of the content; 7 pt
+ */
+
+/* The group takes the room the titles leave. When there is none, the extras give way: they
+   are cut off from the leading side. */
+.mac-menu-bar-extra-group {
+  display: flex;
+  flex: 1 1 0;
+  justify-content: flex-end;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.mac-menu-bar-extra {
+  gap: 4px;
+  padding: 0 var(--mac-menu-bar-extra-padding, 7px);
+  /* Figures of equal width, so that the clock does not move its neighbours. */
+  font-variant-numeric: tabular-nums;
+}
+
+.mac-menu-bar-extra:where([data-emphasized]) {
+  font-weight: var(--mac-font-weight-bold);
+}
+
+.mac-menu-bar-extra:where(
+  [data-popup-open],
+  :focus-visible,
+  [data-active],
+  [data-force~="pressed"]
+):where(:not([data-disabled])) {
+  background: var(--mac-menu-bar-extra-highlight);
+  color: var(--mac-color-selected-menu-item-text);
+}
+
+@media (forced-colors: active) {
+  .mac-menu-bar-extra:where(
+    [data-popup-open],
+    :focus-visible,
+    [data-active],
+    [data-force~="pressed"]
+  ):where(:not([data-disabled])) {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+}

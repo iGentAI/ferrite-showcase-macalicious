@@ -1,0 +1,111 @@
+/*
+ * Preference pane icon: one pane of the System Preferences grid. It is an image button (see
+ * image-button.css for the pressed, focused and disabled looks) in a fixed column slot.
+ *
+ * Measured in System Preferences (both appearances): columns 82 pt apart, rows 91 pt apart;
+ * artwork about 37 pt in a 40 pt allocation; caption 12 pt on up to two lines 14 pt apart, its
+ * first capitals 9 pt under the allocation. The slot is 82 x 85 pt: 5 pt of clear space above
+ * and below, 40 pt of artwork, 7 pt, two caption lines. A caption of one line stays on the
+ * first line.
+ *
+ * Hooks
+ *   --mac-preference-pane-icon-gap     distance from the artwork's square to the caption, 7px
+ *
+ * Parts
+ *   .mac-preference-pane-icon-image    the 40 pt square the artwork is centred in
+ *   .mac-preference-pane-icon-grid     the grid; --_columns is set from its `columns` prop
+ *   .mac-preference-pane-icon-artwork  stand-in artwork: [data-shape="tile" | "circle"],
+ *                                      [data-tint]; --mac-preference-pane-icon-artwork-size
+ */
+.mac-preference-pane-icon {
+  justify-content: flex-start;
+  gap: var(--mac-preference-pane-icon-gap, 7px);
+  width: 82px;
+  min-height: 85px;
+  padding: 5px 2px;
+  /* a line break written in the title is kept; longer lines still wrap */
+  white-space: pre-line;
+}
+
+.mac-preference-pane-icon-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  white-space: normal;
+}
+
+.mac-preference-pane-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--_columns, 8), 82px);
+  grid-auto-rows: 85px;
+  row-gap: 6px;
+  align-items: start;
+  justify-content: start;
+}
+
+/* Stand-in artwork: a fill from the system colours under a soft top-to-bottom sheen. */
+.mac-preference-pane-icon-artwork {
+  --_fill: var(--mac-color-system-gray);
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--mac-preference-pane-icon-artwork-size, 37px);
+  height: var(--mac-preference-pane-icon-artwork-size, 37px);
+  border-radius: 22%;
+  background:
+    linear-gradient(
+      to bottom,
+      var(--mac-preference-pane-icon-artwork-sheen-top),
+      transparent 50%,
+      var(--mac-preference-pane-icon-artwork-sheen-bottom)
+    ),
+    var(--_fill);
+  box-shadow: inset 0 0 0 var(--mac-hairline) var(--mac-preference-pane-icon-artwork-edge);
+  color: var(--mac-preference-pane-icon-artwork-glyph);
+}
+
+.mac-preference-pane-icon-artwork:where([data-shape="circle"]) {
+  border-radius: 50%;
+}
+
+.mac-preference-pane-icon-artwork:where([data-tint="blue"]) {
+  --_fill: var(--mac-color-system-blue);
+}
+
+.mac-preference-pane-icon-artwork:where([data-tint="graphite"]) {
+  --_fill: var(--mac-preference-pane-icon-artwork-graphite);
+}
+
+.mac-preference-pane-icon-artwork:where([data-tint="green"]) {
+  --_fill: var(--mac-color-system-green);
+}
+
+.mac-preference-pane-icon-artwork:where([data-tint="orange"]) {
+  --_fill: var(--mac-color-system-orange);
+}
+
+.mac-preference-pane-icon-artwork:where([data-tint="purple"]) {
+  --_fill: var(--mac-color-system-purple);
+}
+
+.mac-preference-pane-icon-artwork:where([data-tint="red"]) {
+  --_fill: var(--mac-color-system-red);
+}
+
+.mac-preference-pane-icon-artwork:where([data-tint="white"]) {
+  --_fill: var(--mac-preference-pane-icon-artwork-white);
+  color: var(--mac-preference-pane-icon-artwork-glyph-on-white);
+}
+
+@media (forced-colors: active) {
+  .mac-preference-pane-icon-artwork {
+    border: 1px solid ButtonText;
+    background: ButtonFace;
+    box-shadow: none;
+    color: ButtonText;
+  }
+}

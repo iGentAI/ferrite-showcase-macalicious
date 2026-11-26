@@ -1,0 +1,18 @@
+/*
+ * Box colours (reference/spec/components/box.md) that are not shared tokens. The fill
+ * (--mac-color-group-background) and the side and bottom border (--mac-color-box-border) are.
+ */
+:root {
+  /* [measured, computed] top edge: #d4d4d4 on #ececec, #4d4e4f on #2f3031 (Sound col 300) */
+  --mac-box-border-top: light-dark(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.15));
+  /* [measured, computed] the softer line just inside the border, as painted over the fill:
+     #e1e1e1 on #e3e3e3, #404142 on #363637 (Sound row 500 x=153) */
+  --mac-box-border-inner: light-dark(rgb(0 0 0 / 0.01), rgb(255 255 255 / 0.05));
+  /* [measured] content well: Screen-Time row 400 and col 700 */
+  --mac-box-content-fill: light-dark(#ffffff, #1d1e1f);
+  --mac-box-content-border: light-dark(#c0c0c0, #555656);
+  /* [measured] rounded well: Activity-Monitor row 1200 x 371..373 and col 1000 y 1136..1138,
+     both appearances; the fill is lighter than the dark window (#303133), not darker */
+  --mac-box-well-fill: light-dark(#ffffff, #38393b);
+  --mac-box-well-border: light-dark(#c6c6c6, #a6a6a6);
+}

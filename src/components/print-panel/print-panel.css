@@ -1,0 +1,279 @@
+/*
+ * Print panel (NSPrintPanel): the content of the Print dialog. No background, frame or
+ * margin: the sheet or window around it supplies those.
+ *
+ * Measured on the Print sheet of TextEdit, 756 x 419 pt with 20 pt margins, so the panel is
+ * 716 x 379 pt. From its top-left corner:
+ *   preview   a 310 pt column. The page, 233 x 301 pt for US Letter, starts 39 pt from the
+ *             left; the two page controls (15 pt mini, 69 pt wide) start 11 pt under it.
+ *   form      the other 406 pt. Labels end 90.5 pt from its left edge, 9 pt before the
+ *             controls. Row tops: Printer 0, Presets 30, Copies 61.5, Pages 91.5 and 116.5,
+ *             Paper Size 140, Orientation 169, the pane pop-up 215, its pane 249.
+ *   bottom    a separator 10 pt under the taller column, the buttons 20 pt under it.
+ * [provisional] Copies and Pages are behind an open menu in both captures: only their labels
+ * are measured. The simple form is in no capture: it leaves out Paper Size, Orientation and
+ * the panes and draws the page at half its size, 716 x 229 pt, the 150 pt less that the spec
+ * infers.
+ *
+ * States: [data-detailed] on the root while the detailed form is shown. The controls are
+ * components of the library with states of their own; nothing here reacts to the window
+ * state.
+ *
+ * Rows and buttons are found by their order: the rows are Printer, Presets, Copies, Pages,
+ * Paper Size, Orientation, each a label and its controls; the bottom row ends with the
+ * details button, Cancel and Print. A consumer may size .mac-print-panel-pop-up (the four
+ * pop-up buttons) and .mac-print-panel-number (the three number fields).
+ */
+.mac-print-panel {
+  display: grid;
+  grid-template-columns: 310px minmax(406px, 1fr);
+  align-items: start;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  letter-spacing: var(--mac-tracking-regular);
+  cursor: default;
+}
+
+/* The page is centred on a square that holds it upright and on its side: 301 pt, 1 pt wider
+   than what its column leaves beside it, as measured. In the simple form the square is half
+   that and the page, which keeps its box, is drawn at half its size with what is on it. */
+.mac-print-panel-preview {
+  display: grid;
+  grid-template: 151px auto / minmax(0, 1fr);
+  row-gap: 11px;
+  justify-items: center;
+  width: 311px;
+}
+
+.mac-print-panel-page {
+  box-sizing: border-box;
+  place-self: center;
+  overflow: hidden;
+  background: var(--mac-print-panel-paper);
+  box-shadow: var(--mac-print-panel-paper-shadow);
+  color: var(--mac-color-text);
+  scale: 0.5;
+}
+
+.mac-print-panel:where([data-detailed]) > .mac-print-panel-preview {
+  grid-template-rows: 301px auto;
+}
+
+.mac-print-panel:where([data-detailed]) .mac-print-panel-page {
+  scale: none;
+}
+
+/* The page controls and the page number between them, in the small font: 9 pt in from the
+   page's left side and 10 pt from its right. */
+.mac-print-panel-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 214px;
+  margin-inline-end: 1px;
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+  white-space: nowrap;
+}
+
+/* A 33 pt segment, whatever its glyph. */
+.mac-print-panel-page-button {
+  width: 33px;
+  padding: 0;
+}
+
+/* A glyph: the orientation pictogram's box unless it is a page chevron, 6 x 9 pt, or the
+   pair of them in the outer segment of each control, 12 x 9 pt. */
+.mac-print-panel-glyph {
+  width: 28px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+}
+
+.mac-print-panel-page-button > .mac-print-panel-glyph {
+  width: 6px;
+  height: 9px;
+  stroke-width: 1.25px;
+}
+
+.mac-print-panel-navigation > :first-child > :first-child > .mac-print-panel-glyph,
+.mac-print-panel-navigation > :last-child > :last-child > .mac-print-panel-glyph {
+  width: 12px;
+}
+
+/* The forward buttons: the back buttons' chevrons, mirrored. */
+.mac-print-panel-navigation > :last-child .mac-print-panel-glyph {
+  scale: -1 1;
+}
+
+/* The form: a column of right-aligned labels and a column of controls. */
+.mac-print-panel-form {
+  display: grid;
+  grid-template-columns: minmax(90.5px, max-content) minmax(0, 1fr);
+  column-gap: 9px;
+  min-width: 0;
+}
+
+.mac-print-panel-row {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  align-items: center;
+  margin-block-start: 9px;
+}
+
+.mac-print-panel-row:where(:first-child) {
+  margin-block-start: 0;
+}
+
+/* The label */
+.mac-print-panel-row > :first-child {
+  text-align: end;
+  white-space: nowrap;
+}
+
+/* The controls */
+.mac-print-panel-row > :last-child {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+  align-items: center;
+  min-width: 0;
+}
+
+/* Printer and Presets: 239.5 pt. */
+.mac-print-panel-pop-up {
+  width: 239.5px;
+}
+
+/* [provisional] the width of a number field: none is visible in a capture */
+.mac-print-panel-number {
+  width: 40px;
+}
+
+/* Copies */
+.mac-print-panel-row:where(:nth-child(3)) {
+  margin-block-start: 10.5px;
+}
+
+/* Pages: All on the first line, beside the label; From with its two fields on the second,
+   25 pt lower. [provisional] */
+.mac-print-panel-row:where(:nth-child(4)) {
+  margin-block-start: 10px;
+}
+
+.mac-print-panel-row:where(:nth-child(4)) > :first-child {
+  align-self: start;
+}
+
+.mac-print-panel-row:where(:nth-child(4)) > :last-child {
+  display: grid;
+  grid-template: 16px 20px / repeat(4, max-content);
+  gap: 7px var(--mac-space-3);
+}
+
+/* The two radio buttons */
+.mac-print-panel-row:where(:nth-child(4)) > :last-child > :first-child {
+  grid-row: 1 / -1;
+  gap: 9px;
+  align-self: start;
+}
+
+.mac-print-panel-row:where(:nth-child(4)) > :last-child > :not(:first-child) {
+  grid-row: 2;
+}
+
+/* Paper Size: 178 pt, then the sheet's dimensions in the small font on the title's
+   baseline. */
+.mac-print-panel-row:where(:nth-child(5)) {
+  margin-block-start: 5.5px;
+}
+
+.mac-print-panel-row:where(:nth-child(5)) > :last-child {
+  gap: 9px;
+  align-items: baseline;
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+  white-space: nowrap;
+}
+
+.mac-print-panel-row:where(:nth-child(5)) .mac-print-panel-pop-up {
+  width: 178px;
+}
+
+/* Orientation */
+.mac-print-panel-row:where(:nth-child(6)) {
+  margin-block-start: 8px;
+}
+
+/* The pane pop-up button, 175 pt, centred in a line across the form that stops 1 pt before
+   the button's box. */
+.mac-print-panel-pane-bar {
+  display: flex;
+  grid-column: 1 / -1;
+  gap: 1px;
+  align-items: center;
+  margin-block-start: 8px;
+}
+
+.mac-print-panel-pane-bar::before,
+.mac-print-panel-pane-bar::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--mac-color-separator);
+}
+
+.mac-print-panel-pane-bar > .mac-print-panel-pop-up {
+  width: 175px;
+}
+
+/* A pane: the application's controls, centred as a block under the pop-up button. Every pane
+   is in the form, as a child without a class; all but the chosen one of the detailed form are
+   hidden. */
+.mac-print-panel-form > :where(:not([class], [hidden])) {
+  display: grid;
+  grid-column: 1 / -1;
+  justify-content: center;
+  margin-block-start: 13px;
+}
+
+/* The separator above the bottom row */
+.mac-print-panel > :nth-child(3) {
+  grid-column: 1 / -1;
+  margin-block: 10px var(--mac-space-section);
+}
+
+/* The bottom row: Help, PDF and the details button, then Cancel and Print at the trailing
+   edge, each at least 70 pt wide. */
+.mac-print-panel-actions {
+  display: flex;
+  grid-column: 1 / -1;
+  gap: var(--mac-space-control-gap);
+  align-items: center;
+}
+
+.mac-print-panel-actions > :nth-last-child(-n + 2) {
+  min-width: 70px;
+}
+
+.mac-print-panel-actions > :nth-last-child(2) {
+  margin-inline-start: auto;
+}
+
+/* The details button starts 8 pt after the button before it, not 12. */
+.mac-print-panel-actions > :nth-last-child(3) {
+  margin-inline-start: -4px;
+}
+
+/* Forced colours: the paper's shadow is not drawn, so an edge takes its place. */
+@media (forced-colors: active) {
+  .mac-print-panel-page {
+    border: 1px solid CanvasText;
+  }
+
+  .mac-print-panel-pane-bar::before,
+  .mac-print-panel-pane-bar::after {
+    background: CanvasText;
+  }
+}

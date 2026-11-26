@@ -1,0 +1,14 @@
+/*
+ * Print panel values of its own (reference/spec/components/print-panel.md), measured on the
+ * Print sheet of TextEdit, Light-Print and Dark-Print.
+ */
+:root {
+  /* [measured] the preview page: #ffffff in both appearances, the paper stays white in Dark
+     Aqua (Light-Print @ 500,600; Dark-Print @ 400,600) */
+  --mac-print-panel-paper: #ffffff;
+  /* [measured, computed] the page's shadow, fitted to the falloff under and beside the page:
+     black at 0.27 on the first row below it, 0.15 at 3 pt, 0.06 at 5 pt, none from 8 pt
+     (Light-Print col 500, y 846..862); 0.10 to 0.13 on the first pixel beside it and none
+     above it (row 600). The dark capture gives 0.28 below the page (Dark-Print col 400). */
+  --mac-print-panel-paper-shadow: 0 4px 4px rgb(0 0 0 / 0.26);
+}

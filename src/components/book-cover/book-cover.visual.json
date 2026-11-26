@@ -1,0 +1,226 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "corner-top-light",
+      "description": "Top-right corner of the cover in the Books library, Aqua, 20 x 17 pt: the square corner and the faint shadow above and beside it. The cover is white there. Nothing is masked.",
+      "example": "visual-corner-top",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": { "1x": 0.002, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.27, "2x": 0.28 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Books.png",
+        "crop": { "x": 927, "y": 224, "width": 40, "height": 34 }
+      }
+    },
+    {
+      "name": "corner-top-dark",
+      "description": "Top-right corner of the cover in the Books library, Dark Aqua. Nothing is masked.",
+      "example": "visual-corner-top",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": { "1x": 0.002, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.2, "2x": 0.18 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Books.png",
+        "crop": { "x": 927, "y": 224, "width": 40, "height": 34 }
+      }
+    },
+    {
+      "name": "corner-bottom-light",
+      "description": "Bottom-right corner of the cover in the Books library, Aqua, 20 x 20 pt: the shadow is deepest under the cover. Nothing is masked.",
+      "example": "visual-corner-bottom",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": { "1x": 0.002, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.41, "2x": 0.41 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Books.png",
+        "crop": { "x": 927, "y": 604, "width": 40, "height": 40 }
+      }
+    },
+    {
+      "name": "corner-bottom-dark",
+      "description": "Bottom-right corner of the cover in the Books library, Dark Aqua. Nothing is masked.",
+      "example": "visual-corner-bottom",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": { "1x": 0.002, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.25, "2x": 0.22 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Books.png",
+        "crop": { "x": 927, "y": 604, "width": 40, "height": 40 }
+      }
+    },
+    {
+      "name": "states-light",
+      "description": "What no screenshot shows, Aqua: a cover that is a button keeps the cell's size and the picture fills it.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 170, "height": 215 },
+        "pixels": [
+          {
+            "x": 11,
+            "y": 11,
+            "color": "#ff00ff",
+            "note": "the picture reaches the cell's top-left corner: no padding, no border"
+          },
+          {
+            "x": 154.5,
+            "y": 199,
+            "color": "#ff00ff",
+            "note": "and its bottom-right corner, 145.5 x 190 pt (spec: Geometry, cover, measured)"
+          },
+          {
+            "x": 165,
+            "y": 100,
+            "color": "#ffffff",
+            "note": "the page 9.5 pt beside the cover, beyond the shadow"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-dark",
+      "description": "What no screenshot shows, Dark Aqua: a cover that is a button keeps the cell's size and the picture fills it.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 170, "height": 215 },
+        "pixels": [
+          {
+            "x": 11,
+            "y": 11,
+            "color": "#ff00ff",
+            "note": "the picture reaches the cell's top-left corner"
+          },
+          { "x": 154.5, "y": 199, "color": "#ff00ff", "note": "and its bottom-right corner" },
+          {
+            "x": 165,
+            "y": 100,
+            "color": "#1e2022",
+            "note": "the page beside the cover, beyond the shadow"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "A cover that is a button, held down with the mouse, Aqua: dimmed by a tenth.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "press": "#cover" }],
+      "expect": {
+        "size": { "width": 170, "height": 215 },
+        "pixels": [
+          {
+            "x": 80,
+            "y": 100,
+            "color": "#e600e6",
+            "tolerance": 3,
+            "note": "the picture #ff00ff at 90% brightness (spec: States, pressed, inferred)"
+          },
+          { "x": 165, "y": 100, "color": "#ffffff", "note": "the page is not dimmed" }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "A cover that is a button, held down with the mouse, Dark Aqua: dimmed by a tenth.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "press": "#cover" }],
+      "expect": {
+        "size": { "width": 170, "height": 215 },
+        "pixels": [
+          {
+            "x": 80,
+            "y": 100,
+            "color": "#e600e6",
+            "tolerance": 3,
+            "note": "the picture #ff00ff at 90% brightness"
+          },
+          { "x": 165, "y": 100, "color": "#1e2022", "note": "the page is not dimmed" }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on a cover that is a button, reached with Tab, Aqua: a 3 pt ring around the cover.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 170, "height": 215 },
+        "pixels": [
+          {
+            "x": 8.5,
+            "y": 100,
+            "color": "#88b1f7",
+            "tolerance": 8,
+            "note": "focus ring token rgb(24 106 246 / 0.5) over the page and the cover's faint shadow, 1.5 pt outside the leading edge"
+          },
+          {
+            "x": 80,
+            "y": 100,
+            "color": "#ff00ff",
+            "note": "inside the ring the picture is unchanged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on a cover that is a button, reached with Tab, Dark Aqua: a 3 pt ring around the cover.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 170, "height": 215 },
+        "pixels": [
+          {
+            "x": 8.5,
+            "y": 100,
+            "color": "#246390",
+            "tolerance": 8,
+            "note": "focus ring token rgb(43 168 255 / 0.5) over the page and the cover's faint shadow, 1.5 pt outside the leading edge"
+          },
+          {
+            "x": 80,
+            "y": 100,
+            "color": "#ff00ff",
+            "note": "inside the ring the picture is unchanged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-inactive-light",
+      "description": "Tab in a window that is not key, Aqua: the cover takes the focus without a ring.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 170, "height": 215 },
+        "pixels": [
+          {
+            "x": 8.5,
+            "y": 100,
+            "color": "#f2f2f2",
+            "tolerance": 6,
+            "note": "no ring: only the cover's faint shadow on the white page (CONTRIBUTING, Window state)"
+          },
+          {
+            "x": 80,
+            "y": 100,
+            "color": "#ff00ff",
+            "note": "the picture is unchanged in a window that is not key"
+          }
+        ]
+      }
+    }
+  ]
+}

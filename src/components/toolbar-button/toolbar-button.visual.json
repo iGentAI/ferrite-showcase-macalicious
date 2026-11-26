@@ -1,0 +1,225 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "back-forward-light",
+      "description": "Back (enabled) and Forward (disabled) in the key Finder window, Aqua. The chevrons are drawn to the measured geometry, so nothing is masked.",
+      "example": "visual-back-forward",
+      "appearance": "light",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Network.png",
+        "crop": { "x": 124, "y": 122, "width": 110, "height": 52 }
+      },
+      "budget": { "1x": 0.156, "2x": 0.013 },
+      "deltaBudget": { "1x": 7.7, "2x": 2.4 }
+    },
+    {
+      "name": "back-forward-dark",
+      "description": "Back (enabled) and Forward (disabled) in the key Finder window, Dark Aqua.",
+      "example": "visual-back-forward",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Network.png",
+        "crop": { "x": 124, "y": 122, "width": 110, "height": 52 }
+      },
+      "budget": { "1x": 0.101, "2x": 0.0138 },
+      "deltaBudget": { "1x": 10.1, "2x": 6.9 }
+    },
+    {
+      "name": "inactive-light",
+      "description": "Back, Forward and the sidebar button in the inactive Safari window, Aqua. The sidebar glyph is a stand-in drawing and is masked.",
+      "example": "visual-inactive",
+      "appearance": "light",
+      "windowState": "inactive",
+      "threshold": 0.05,
+      "masks": [{ "x": 70, "y": 6, "width": 20, "height": 14 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Picture-in-Picture.png",
+        "crop": { "x": 466, "y": 116, "width": 180, "height": 52 }
+      },
+      "budget": { "1x": 0.141, "2x": 0.003 },
+      "deltaBudget": { "1x": 4.4, "2x": 0.8 }
+    },
+    {
+      "name": "inactive-dark",
+      "description": "Back, Forward and the sidebar button in the inactive Safari window, Dark Aqua. The sidebar glyph is masked.",
+      "example": "visual-inactive",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "threshold": 0.05,
+      "masks": [{ "x": 70, "y": 6, "width": 20, "height": 14 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Picture-in-Picture.png",
+        "crop": { "x": 494, "y": 90, "width": 180, "height": 52 }
+      },
+      "budget": { "1x": 0.078, "2x": 0.0032 },
+      "deltaBudget": { "1x": 4.1, "2x": 2.5 }
+    },
+    {
+      "name": "inactive-light-whole",
+      "description": "As inactive-light with nothing masked (Back, Forward and the sidebar button), so the stand-in sidebar glyph is scored too.",
+      "example": "visual-inactive",
+      "appearance": "light",
+      "windowState": "inactive",
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Picture-in-Picture.png",
+        "crop": { "x": 466, "y": 116, "width": 180, "height": 52 }
+      },
+      "budget": { "1x": 0.019, "2x": 0.015 },
+      "deltaBudget": { "1x": 4.3, "2x": 1.7 }
+    },
+    {
+      "name": "inactive-dark-whole",
+      "description": "As inactive-dark with nothing masked (Back, Forward and the sidebar button), so the stand-in sidebar glyph is scored too.",
+      "example": "visual-inactive",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Picture-in-Picture.png",
+        "crop": { "x": 494, "y": 90, "width": 180, "height": 52 }
+      },
+      "budget": { "1x": 0.019, "2x": 0.0148 },
+      "deltaBudget": { "1x": 4.1, "2x": 2.9 }
+    },
+    {
+      "name": "console-info-light",
+      "description": "The middle of Console's Info button, Aqua: a toggle that is on and shows it by its glyph (pressedStyle tint), the plain bezel's top and bottom edges and the tinted disc. Whole crop; the letter in the disc is a stand-in drawing.",
+      "example": "visual-console-info",
+      "appearance": "light",
+      "reference": {
+        "file": "10-15-Catalina-Light-Console.png",
+        "crop": { "x": 722, "y": 118, "width": 68, "height": 60 }
+      },
+      "budget": { "1x": 0.145, "2x": 0.0099 },
+      "deltaBudget": { "1x": 11.0, "2x": 4.6 }
+    },
+    {
+      "name": "console-info-light-disc",
+      "description": "As console-info-light with the letter masked, to score the bezel and the disc's place, size and tint.",
+      "example": "visual-console-info",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [{ "x": 14, "y": 9, "width": 6, "height": 11 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Console.png",
+        "crop": { "x": 722, "y": 118, "width": 68, "height": 60 }
+      },
+      "budget": { "1x": 0.169, "2x": 0.0071 },
+      "deltaBudget": { "1x": 9.4, "2x": 3.3 }
+    },
+    {
+      "name": "console-info-dark",
+      "description": "The middle of Console's Info button, Dark Aqua. Whole crop.",
+      "example": "visual-console-info",
+      "appearance": "dark",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Console.png",
+        "crop": { "x": 722, "y": 118, "width": 68, "height": 60 }
+      },
+      "budget": { "1x": 0.094, "2x": 0.0184 },
+      "deltaBudget": { "1x": 10.2, "2x": 7.0 }
+    },
+    {
+      "name": "console-info-dark-disc",
+      "description": "As console-info-dark with the letter masked.",
+      "example": "visual-console-info",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [{ "x": 14, "y": 9, "width": 6, "height": 11 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Console.png",
+        "crop": { "x": 722, "y": 118, "width": 68, "height": 60 }
+      },
+      "budget": { "1x": 0.113, "2x": 0.0005 },
+      "deltaBudget": { "1x": 8.8, "2x": 5.2 }
+    },
+    {
+      "name": "keychain-buttons-light",
+      "description": "The two toolbar buttons of Keychain Access, Aqua, laid out by their bezels (frame bezel) from 78 pt with the toolbar's 8 pt gap: the fills start half a point later, behind the hairline border. Whole crop; the two glyphs are stand-in drawings.",
+      "example": "visual-keychain-buttons",
+      "appearance": "light",
+      "reference": {
+        "file": "10-15-Catalina-Light-Keychain-Access.png",
+        "crop": { "x": 256, "y": 84, "width": 140, "height": 60 }
+      },
+      "budget": { "1x": 0.098, "2x": 0.0076 },
+      "deltaBudget": { "1x": 10.6, "2x": 4.8 }
+    },
+    {
+      "name": "keychain-buttons-light-bezels",
+      "description": "As keychain-buttons-light with the two glyphs masked, to score where the two bezels stand.",
+      "example": "visual-keychain-buttons",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 12, "y": 8, "width": 13, "height": 14 },
+        { "x": 43, "y": 7, "width": 17, "height": 16 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Keychain-Access.png",
+        "crop": { "x": 256, "y": 84, "width": 140, "height": 60 }
+      },
+      "budget": { "1x": 0.154, "2x": 0.0012 },
+      "deltaBudget": { "1x": 7.1, "2x": 4.0 }
+    },
+    {
+      "name": "keychain-buttons-dark",
+      "description": "The two toolbar buttons of Keychain Access, Dark Aqua, from the same layout: without a border the fills start at 78 and 110 pt. Whole crop.",
+      "example": "visual-keychain-buttons",
+      "appearance": "dark",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Keychain-Access.png",
+        "crop": { "x": 256, "y": 84, "width": 140, "height": 60 }
+      },
+      "budget": { "1x": 0.136, "2x": 0.0077 },
+      "deltaBudget": { "1x": 12.6, "2x": 6.1 }
+    },
+    {
+      "name": "keychain-buttons-dark-bezels",
+      "description": "As keychain-buttons-dark with the two glyphs masked.",
+      "example": "visual-keychain-buttons",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 12, "y": 8, "width": 13, "height": 14 },
+        { "x": 43, "y": 7, "width": 17, "height": 16 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Keychain-Access.png",
+        "crop": { "x": 256, "y": 84, "width": 140, "height": 60 }
+      },
+      "budget": { "1x": 0.085, "2x": 0.0031 },
+      "deltaBudget": { "1x": 7.3, "2x": 4.1 }
+    },
+    {
+      "name": "pressed-light",
+      "description": "A pressed toolbar button, Aqua: Safari's Share button while its menu is open, the upper 50 x 18 pt of the toolbar, above where the open menu's shadow darkens the capture. The bezel's darker fill inside the resting border, on the title bar's material. At 1x the bezel's half-point border and first rows lie on fractions of a pixel. The glyph is masked: it is a stand-in for Safari's.",
+      "example": "visual-pressed",
+      "appearance": "light",
+      "masks": [{ "x": 16, "y": 9, "width": 16, "height": 9 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0708, "2x": 0.001 },
+      "deltaBudget": { "1x": 3.5, "2x": 0.84 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Sharing.png",
+        "crop": { "x": 2274, "y": 37, "width": 100, "height": 36 }
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "A pressed toolbar button, Dark Aqua: Safari's Share button while its menu is open, the upper 50 x 18 pt of the toolbar. The bezel's lighter fill, without a border, on the title bar's material. The glyph is masked.",
+      "example": "visual-pressed",
+      "appearance": "dark",
+      "masks": [{ "x": 16, "y": 9, "width": 16, "height": 9 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0805, "2x": 0.0011 },
+      "deltaBudget": { "1x": 5.75, "2x": 0.96 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Sharing.png",
+        "crop": { "x": 2292, "y": 21, "width": 100, "height": 36 }
+      }
+    }
+  ]
+}

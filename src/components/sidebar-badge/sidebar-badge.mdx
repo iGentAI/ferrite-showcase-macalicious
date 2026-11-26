@@ -1,0 +1,112 @@
+---
+title: Sidebar Badge
+description: The count at the trailing edge of a sidebar or list row, as a filled pill or a plain number.
+---
+
+<Example name="basic" both />
+
+Catalina's own apps show a count in a source-list row in two ways: Mail uses a filled pill with
+the digits knocked out of it (an `NSButton` with the inline bezel style, used without an
+action), and Notes and Reminders use a plain right-aligned number.
+
+## Usage
+
+```tsx
+import { SidebarBadge } from "macalicious/sidebar-badge";
+import "macalicious/sidebar-badge.css";
+
+<li>
+  Drafts <SidebarBadge>1</SidebarBadge>
+</li>
+<li>
+  Reminders <SidebarBadge variant="plain">13</SidebarBadge>
+</li>
+```
+
+Or copy the source into your project: `npx macalicious add sidebar-badge`.
+
+## Guidelines
+
+- Use a badge for a count that matters at a glance: unread messages, drafts, items due. Leave
+  it out when the count is zero, unless zero is itself informative (Reminders shows it).
+- Put the badge at the trailing edge of the row, 12 pt from the edge of the sidebar and
+  centred on the row. The row's label truncates before it.
+- The badge is information, not a control: a click on it is a click on its row.
+- Use one variant throughout a sidebar.
+
+## Variants and states
+
+<Example name="states" both />
+
+| State | How it is triggered | Pill | Plain |
+| --- | --- | --- | --- |
+| Unselected row | default | Grey capsule, digits in the sidebar's colour | Grey number |
+| Selected row | `selected` | Label colour at about 60%, digits in the highlight's colour | Lighter grey number |
+| Emphasised selection | `selected emphasized` | White capsule, digits in the selection colour | White number |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | The unselected capsule takes the fill measured in Mail; an emphasised badge is drawn as a selected one | An emphasised number is drawn as a selected one |
+
+The row tells the badge about its selection through the two props; the badge does not look
+for a selected ancestor.
+
+**The knock-out.** In AppKit the digits are holes in the pill and show the sidebar through it.
+Here they are painted in the sidebar's opaque colour (`--mac-material-sidebar-opaque`). When
+the badge sits on another background, set `--mac-sidebar-badge-knockout` to that colour on the
+badge or on any ancestor.
+
+Measured: the pill's geometry and its colours on an unselected row in a window that is not key
+(Mail, whose window is inactive in both captures), and the plain number on an unselected row,
+on a grey selected row (Aqua) and on an accent selected row (Dark Aqua). Provisional: the pill
+on a selected and on an emphasised row, and the unselected pill in a key window, which no
+capture shows. Its Aqua fill there is the value the measured spec infers (`#8a8b8b`, the
+secondary label colour on the sidebar); the spec infers none for Dark Aqua, so the measured
+inactive value is used there too.
+
+## Sizes
+
+One size. The pill is 16 pt high and at least 24 pt wide, with fully rounded ends, and grows
+with the number of digits; its digits are 13 pt bold. The plain number is 13 pt regular.
+
+## API
+
+<PropsTable name="SidebarBadgeProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-variant` | `pill`, `plain` | Reflects `variant`. |
+| `data-selected` | present or absent | Reflects `selected`. |
+| `data-emphasized` | present or absent | Present when `selected` and `emphasized` are both set. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-sidebar-badge-knockout` | `var(--mac-material-sidebar-opaque)` | Colour of the pill's digits on an unselected row. |
+
+## Accessibility
+
+- The badge is plain text and is not focusable. Inside a row it becomes part of the row's
+  accessible name (“Drafts 1”).
+- A bare number is ambiguous. Prefer a row label that says what is counted, for example
+  `aria-label="Drafts, 1 item"` on the row.
+- In forced-colours mode the pill is drawn as an outlined capsule with system colours.
+
+## Visual comparison
+
+`visual-mail-drafts` reproduces the “1” pill on the Drafts row of Mail's sidebar. Results in
+Chromium on Linux with the fallback font:
+
+| Comparison | 2x, whole crop | 2x, digit masked, strict | 1x, whole crop |
+| --- | --- | --- | --- |
+| Aqua | 3.75% of pixels differ | 3.93% | 5.63% |
+| Dark Aqua | 3.71% | 3.88% | 5.47% |
+
+The masked comparison counts a pixel as different at half the usual colour distance
+(`threshold` 0.05). What differs there is the antialiasing along the rounded ends of the pill:
+the crop is only 32 by 20 pt, so its outline is a large share of it. The digit itself is set in
+the fallback font instead of San Francisco. Both comparisons run with the window inactive, as
+Mail's is in the captures; the pill in a key window is checked against the values in
+`sidebar-badge.tokens.css` only, because no screenshot shows it.
+
+`visual-notes-count-selected` and `visual-notes-count-emphasized` reproduce the plain count on
+the selected row of Notes: grey in Aqua (0.34% of the 2x pixels differ, 0.38% at 1x) and on the
+accent colour in Dark Aqua (4.18% and 3.27%, the outline of the digit in the fallback font).
+The plain counts of Reminders have no comparison of their own: they are the same text in the
+unselected colour, whose value is measured there.

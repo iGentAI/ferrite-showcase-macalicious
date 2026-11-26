@@ -1,0 +1,40 @@
+/*
+ * Notes: the colours of the app that no shared token holds, from
+ * reference/spec/apps/notes.md and the two Notes captures (10-15-Catalina-Light-Notes.png,
+ * 10-15-Catalina-Dark-Notes.png). Notes paints its own paper instead of the system's list and
+ * text backgrounds. The Aqua paper is a noise texture, a bitmap that is not reproduced: the
+ * tokens hold its mean colour.
+ */
+:root {
+  /* [provisional] Media > Photos…: no capture shows Notes' sheet. */
+  --mac-notes-photos-gap: 6px;
+  --mac-notes-photos-height: 300px;
+  --mac-notes-photos-border: light-dark(#d4d4d4, #4a4a4a);
+  /* [measured] note list: mean of the paper texture, Light-Notes @ 494,152,496,560; flat in
+     Dark-Notes @ 494,250,496,1 */
+  --mac-notes-list-background: light-dark(#fafaf8, #1e1f21);
+  /* [measured] editor: mean of the paper texture, Light-Notes @ 1000,1100,1100,300 and
+     Dark-Notes @ 1000,1300,1100,100 (the dark texture runs from #171717 to #2f2f2f) */
+  --mac-notes-editor-background: light-dark(#fafaf8, #282829);
+  /* [measured] selected note while the list does not have the focus: Light-Notes and
+     Dark-Notes @ 494,152,496,112 */
+  --mac-notes-selection: light-dark(#e1e1df, #343537);
+  /* [measured] divider beside the sidebar: Light-Notes and Dark-Notes @ 492,250 */
+  --mac-notes-divider: light-dark(#cecfcf, #000000);
+  /* [measured] divider beside the editor, fainter on the Aqua paper: Light-Notes and
+     Dark-Notes @ 990,900 */
+  --mac-notes-editor-divider: light-dark(#e6e6e6, #000000);
+  /* [measured] date line above a note: Light-Notes @ 1394,174,330,22 */
+  --mac-notes-date: light-dark(#909190, #98989d);
+  /* [measured] a note's title: Light-Notes @ 1040,221,890,74 */
+  --mac-notes-title: light-dark(#444545, #dfdfdf);
+  /* [provisional] the plus knocked out of the Add People glyph, a stand-in drawing: the
+     toolbar button's face */
+  --mac-notes-glyph-knockout: light-dark(#ffffff, #636466);
+  /* [provisional] a card in gallery view: the paper with a hairline; only a miniature of the
+     gallery is in the captures */
+  --mac-notes-card-border: light-dark(#dcdcda, #3a3b3d);
+  /* [measured] shadow under the screenshot embedded in the first note: Light-Notes
+     @ 1080,370,960,640 */
+  --mac-notes-attachment-shadow: light-dark(rgb(0 0 0 / 0.3), rgb(0 0 0 / 0.5));
+}

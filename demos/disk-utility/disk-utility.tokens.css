@@ -1,0 +1,110 @@
+/*
+ * Colours and sizes of Disk Utility's own that no shared token holds. Measured on
+ * 10-15-Catalina-Light-Disk-Utility.png and 10-15-Catalina-Dark-Disk-Utility.png, at the same
+ * pixels of both unless a line says otherwise.
+ */
+:root {
+  /* [measured] The detail pane: @ 1000,1000. */
+  --mac-disk-utility-pane: light-dark(#ececec, #303132);
+  /* [measured] The outline of the capacity box and the size in it: col 1700 y=285 and the
+     darkest ink in 1664,290,232,68. */
+  --mac-disk-utility-capacity: light-dark(#767676, #a2a2a3);
+  /* [measured] The value line under a legend label: the darkest ink in 690,598,150,32, the
+     same in both captures. On the Dark Aqua pane that is a contrast of about 2.7 to 1, so
+     the stylesheet replaces it with the label colour where more contrast is asked for. */
+  --mac-disk-utility-legend-value: #717171;
+  /* [measured] The legend's three 10 pt squares, row 570: Used at x=688..707, Other Volumes
+     at x=1096..1115, Free at x=1504..1523. Aqua draws each in one colour; Dark Aqua gives each
+     a 1 pt outline. */
+  --mac-disk-utility-used: light-dark(#19adf8, #2e7095);
+  --mac-disk-utility-used-edge: light-dark(#19adf8, #1bacf7);
+  --mac-disk-utility-other: light-dark(#8f8f8f, #797979);
+  --mac-disk-utility-other-edge: light-dark(#8f8f8f, #acacac);
+  --mac-disk-utility-free: light-dark(#ffffff, #38393a);
+  --mac-disk-utility-free-edge: light-dark(#ffffff, #7c7c7d);
+  /* [measured] The line of the information table, the rules between its rows and its divider:
+     row 792 x=706..1269 and col 1290 y=750..956. */
+  --mac-disk-utility-rule: light-dark(#d1d1d1, #808080);
+  /* [provisional] Colours of the stand-in disk icon, which replaces Apple's artwork. */
+  --mac-disk-utility-icon-metal: light-dark(#c9ccd1, #9a9da3);
+  --mac-disk-utility-icon-color: #f5a623;
+  --mac-disk-utility-icon-base: light-dark(#e4e6e9, #c3c6cb);
+  --mac-disk-utility-icon-edge: light-dark(#8e9299, #5f6369);
+  --mac-disk-utility-icon-light: #5bd36a;
+  /* [measured] What the visual examples paint behind the window: the comparison's matte
+     behind the capture's transparent margin, which the harness composites over white. */
+  --mac-disk-utility-visual-matte: #ffffff;
+
+  /* Sizes, in points from the window's top-left corner of the same two captures (the chrome is
+     70 pt, so the pane starts at y=70). The same in both appearances. disk-utility.css says
+     where each lies. */
+  /* [measured] the detail pane's margins and the header: icon, name and lines, capacity box,
+     the first 112 pt; the icon's box at y=93, the name's baseline at 116.5 */
+  --mac-disk-utility-detail-padding-inline: 32px;
+  --mac-disk-utility-header-height: 112px;
+  --mac-disk-utility-icon-margin-top: 23px;
+  --mac-disk-utility-heading-padding-top: 23.5px;
+  --mac-disk-utility-heading-padding-start: 18px;
+  --mac-disk-utility-heading-padding-end: 12px;
+  /* [measured, computed] the bold name, from its cap height */
+  --mac-disk-utility-name-size: 24px;
+  --mac-disk-utility-name-line-height: 28px;
+  /* [measured] the grey lines under the name, baselines at 134.5 and 150.5: the first 13 pt,
+     the rest 11 pt */
+  --mac-disk-utility-line-size: 11px;
+  --mac-disk-utility-line-line-height: 15px;
+  --mac-disk-utility-line-first-size: 13px;
+  --mac-disk-utility-line-first-line-height: 17px;
+  --mac-disk-utility-line-first-margin-top: -0.5px;
+  --mac-disk-utility-line-first-margin-bottom: 0.85px;
+  /* [measured] the outlined capacity box, 120 x 39 pt at y=104.5 with corners of about 4 pt,
+     the size in it 19 pt (digits 13 pt high), and its 10 pt caption, the baseline 11.5 pt
+     under the box */
+  --mac-disk-utility-capacity-width: 120px;
+  --mac-disk-utility-capacity-padding-top: 34.5px;
+  --mac-disk-utility-capacity-box-height: 39px;
+  --mac-disk-utility-capacity-box-radius: 4px;
+  --mac-disk-utility-capacity-box-size: 19px;
+  --mac-disk-utility-capacity-box-line-height: 37px;
+  --mac-disk-utility-caption-margin-top: 1px;
+  --mac-disk-utility-caption-margin-inline: -20px;
+  --mac-disk-utility-caption-size: 10px;
+  --mac-disk-utility-caption-line-height: 13px;
+  /* [measured] the capacity bar and its legend, 118 pt between the rules: the bar 26 pt under
+     the first rule, 2 pt inside the column, ending 6 pt before its trailing edge; the legend's
+     10 pt squares at a 204 pt pitch, their labels and values 12 pt */
+  --mac-disk-utility-usage-height: 118px;
+  --mac-disk-utility-usage-padding-top: 26px;
+  --mac-disk-utility-usage-padding-start: 2px;
+  --mac-disk-utility-bar-inset-end: 6px;
+  --mac-disk-utility-legend-margin-top: 9.75px;
+  --mac-disk-utility-legend-entry-padding-start: 16.5px;
+  --mac-disk-utility-legend-square-top: 1.25px;
+  --mac-disk-utility-legend-square-size: 10px;
+  --mac-disk-utility-legend-square-radius: 2px;
+  --mac-disk-utility-legend-size: 12px;
+  --mac-disk-utility-legend-line-height: 15px;
+  --mac-disk-utility-legend-value-margin-top: 5px;
+  /* [measured] the information box, 24 pt under the second rule: inside its border 10 pt, a
+     column, the divider in a 20 pt gap, a column, 11 pt; the divider 10 pt short of the box's
+     top inner edge and 9.5 pt short of its bottom; rows of 31 pt, the first a point more and
+     the last two less, their text 19.5 pt under each rule */
+  --mac-disk-utility-facts-margin-top: 24px;
+  --mac-disk-utility-columns-gap: 20px;
+  --mac-disk-utility-columns-padding-start: 10px;
+  --mac-disk-utility-columns-padding-end: 11px;
+  --mac-disk-utility-divider-inset-top: 10px;
+  --mac-disk-utility-divider-inset-bottom: 9.5px;
+  --mac-disk-utility-divider-offset: 9.5px;
+  --mac-disk-utility-fact-gap: 8px;
+  --mac-disk-utility-fact-height: 31px;
+  --mac-disk-utility-fact-line-height: 30.5px;
+  --mac-disk-utility-fact-first-height: 32px;
+  --mac-disk-utility-fact-first-padding-top: 1px;
+  --mac-disk-utility-fact-last-height: 29px;
+  /* [provisional] First Aid's progress bar and report in the detail pane: no capture shows
+     them */
+  --mac-disk-utility-progress-margin-top: 12px;
+  --mac-disk-utility-log-height: 98px;
+  --mac-disk-utility-log-margin-top: 10px;
+}

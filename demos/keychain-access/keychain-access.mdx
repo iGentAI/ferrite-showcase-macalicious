@@ -1,0 +1,185 @@
+---
+title: Keychain Access
+description: The Keychain Access window of macOS 10.15 with its list of keychains over the list of categories, the summary of the selected item, and a sortable, searchable table of items, over invented keychains that hold no secret.
+layout: full
+order: 22
+---
+
+<Example name="basic" />
+
+Pick a keychain and a category, click a heading to sort, type in the search field and select
+a row. The keychains and their items are invented: nothing is read from a keychain of the
+machine the page runs on, and no item holds a secret, only a name, a kind and dates. The rows
+of the login keychain repeat the reference screenshots. "+" and the Info mark are the
+library's `add` and `info-outline` [System Image](/components/system-image); the icons are
+original stand-in drawings.
+
+## What it shows
+
+- A [Window](/components/window) whose [Title Bar](/components/title-bar) hides the title:
+  the [Window Controls](/components/window-controls) and a [Toolbar](/components/toolbar)
+  share one 38 pt row.
+- The toolbar: two [Toolbar Buttons](/components/toolbar-button), "+" and Info, and a
+  [Toolbar Search Field](/components/toolbar-search-field) at the trailing edge, which
+  filters the rows by name and kind. Info is unavailable while no listed item is selected.
+- A [Split View](/components/split-view) of the 174 pt left column and the items, and in
+  the left column a second, stacked split view of the two lists. Both dividers can be
+  dragged.
+- The two lists: each a [Table View](/components/table-view) of one column with 20 pt rows
+  of 12 pt text. The pane titles, "Keychains" and "Category", are the
+  [Table Header](/components/table-header) of that column with its title centred
+  (`headerAlign`). The default keychain's name is bold. A list's selection is emphasised
+  while the list has the keyboard focus in the key window, and grey otherwise.
+- The summary of the selected item: a 64 pt [Image View](/components/image-view), the name
+  in the [Label](/components/label)'s `emphasized` style and, in its `small` style, the lines
+  that suit the kind of item: kind and usage of a key, account and address of a password,
+  issuer and expiry of a certificate.
+- The item table: a table view with 18 pt alternating rows at the mini size (11 pt text), a
+  header whose every heading sorts, columns that can be resized, single selection and
+  type-select by name. Its header is not under a toolbar and has the line over it
+  (`headerProps` with `topBorder`), and its titles are set where Keychain Access has them
+  with the table header's two hooks. The Name cell holds a 16 pt image view and the name in
+  a `TableViewCellText` that is cut in its middle, so a long name loses its middle, as the
+  screenshots show it ("com.apple.ac…unt.cloudkit-token"), while the whole
+  name stays in the page for assistive technology.
+
+| Keychain | Items |
+| --- | --- |
+| login (the default keychain) | The 24 rows of the screenshots: a key pair and application passwords. Then 13 more: passwords, two secure notes, key pairs and a certificate with its key |
+| Local Items | Web form passwords, wireless network passwords and an application password |
+| System | Two certificates with their key pairs and a wireless network password |
+| System Roots | Eight root certificates |
+
+| Category | Lists |
+| --- | --- |
+| All Items | Every item of the selected keychain |
+| Passwords | Application, Internet, web form and wireless network passwords |
+| Secure Notes | Secure notes |
+| My Certificates | Certificates whose private key is in the keychain |
+| Keys | Public and private keys |
+| Certificates | Every certificate |
+
+The table lists the items of the selected keychain that are in the selected category and
+match the search, ordered by the column whose heading was clicked last; a second click on the
+same heading reverses the order. The selection is kept while a search, a keychain or a
+category hides the selected item: the summary is empty until the item is listed again.
+
+Two commands are the host's. Info, a double click on a row and Return call `onInspect` with
+the item: Keychain Access opens the item's window there. "+" calls `onAdd` with the selected
+keychain: Keychain Access asks for a new password item there, and a host that creates one
+passes it back in `items`. The line under the example stands for both.
+
+## Hosting the window
+
+`KeychainAccess` renders the library's `Window` as its root and passes every `Window` prop to
+it, so it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component hands to the window controls and
+the title bar. These are the props a [Managed Window](/components/managed-window)'s `render`
+form supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { keychainAccessApp } from "./app";
+
+<ManagedWindow
+  id={keychainAccessApp.id}
+  defaultFrame={{ x: 80, y: 60, ...keychainAccessApp.defaultSize }}
+  minWidth={keychainAccessApp.minSize.width}
+  minHeight={keychainAccessApp.minSize.height}
+  render={(props) => <keychainAccessApp.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `items` | `KeychainAccessItem[]` | The items of every keychain; the default is the list of the light screenshot and what the other keychains hold. |
+| `today` | `string` | The day the dates are counted from, as `YYYY-MM-DD`; `"2019-10-07"` by default, the day of the light screenshot. |
+| `defaultKeychain` | `string` | The `id` of the keychain selected at first; `"login"` by default. |
+| `defaultCategory` | `"all" \| "passwords" \| "secure-notes" \| "my-certificates" \| "keys" \| "certificates"` | The category selected at first; `"all"` by default. |
+| `defaultSelectedItemId` | `string` | The item selected at first. |
+| `onInspect` | `(item: KeychainAccessItem) => void` | Called for Info, a double click on a row and Return. |
+| `onAdd` | `(keychain: KeychainAccessKeychain) => void` | Called for "+", with the selected keychain. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 877 by 593 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `keychainAccessApp` and as `app`:
+`id`, `name`, `component`, `defaultSize` (877 by 593), `minSize` (560 by 320), `resizable` and
+`menus`, the menu titles after the Apple menu.
+
+The data and the logic are in `keychain-access-data.ts`, as pure functions: `arrange` chooses
+and orders the rows, `formatDate` writes a date relative to `today` ("Today, 2:57 PM",
+"Yesterday, 8:59 AM", "Sep 29, 2019 at 6:21:11 PM") without reading the clock or the time
+zone, and `describe` gives the lines of the summary. Every run of the demo, and of its tests,
+shows the same rows. The dark screenshot was taken a day after the light one:
+`darkCaptureItems` and `darkCaptureToday` are what differs.
+
+## Accessibility
+
+- The window is a `region` named "Keychain Access" with `aria-label`, because its title bar
+  shows no title. The toolbar is one tab stop; the arrow keys move between its two buttons
+  and the search field.
+- "+" and Info show only a glyph and are named with `aria-label`: "New Keychain Item" and
+  "Info". Info is marked unavailable (`aria-disabled`) while no listed item is selected and
+  stays reachable with the arrow keys.
+- Each list and the item table is a `grid` and one tab stop, named "Keychains", "Category"
+  and "Items": the arrow keys, Page Up, Page Down, Home and End move the selection, and typing
+  selects by name. In the item table Return hands the item to the host, each heading is a
+  button, and its column reports the order with `aria-sort`.
+- The two dividers are `separator`s named for what they resize; the arrow keys move a focused
+  divider.
+- The summary is a `group` named "Selected item"; its lines are a description list. It is not
+  a live region: the selected row is announced by its grid.
+- The icons are decorative and hidden from assistive technology; a row's kind is in its Kind
+  column, and the default keychain is marked by weight alone, as in Keychain Access.
+
+## Fidelity
+
+`keychain-access.visual.json` compares the whole window with the Keychain Access screenshots
+in both appearances, each as captured and again with the text and the stand-in drawings
+masked. In the light screenshot the list of keychains has the keyboard focus, which the
+comparison reaches with a click on the selected keychain; in the dark one the search field
+has it, reached with a click on the field, so all three selections are grey and the field
+shows its focus ring. Scores from `npm run visual -- keychain-access/` in Chromium on Linux
+with the fallback font: the share of pixels that differ and the mean colour difference out
+of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 10.57% | 11.37 | 7.91% | 9.95 |
+| `window-light-layout` (masked) | 0.56% | 0.63 | 0.03% | 0.55 |
+| `window-dark` | 10.90% | 11.64 | 8.26% | 9.99 |
+| `window-dark-layout` (masked) | 0.33% | 0.62 | 0.03% | 0.50 |
+
+Measured in the screenshots and reproduced: the 877 by 593 pt frame, the 38 pt toolbar with
+its two 24 pt buttons and the 186 pt search field where each capture has them (the buttons'
+fills sit half a point and a point and a half further left in Dark Aqua, whose bezels have no
+border: the toolbar buttons' `frame="bezel"` layout), the 174 pt left column and its divider, the two pane titles with the list of
+keychains ending 276.5 pt under the toolbar, the 20 pt rows with the icon 18 pt and the name
+41 pt from the window's edge, the 105 pt summary with its icon, name and lines, the line over
+the table's header, the five column widths, and the 18 pt striped rows with the icon 19 pt
+and the name 41 pt from the table's edge.
+
+What differs, and why:
+
+- **Text.** Set in the fallback font off Apple devices, which is most of the unmasked
+  scores. The lists are 12 pt, the summary's name 13 pt bold over 11 pt lines, and the table
+  and every heading 11 pt, each measured from the height of the capitals. The measured spec
+  gives 11 pt for the lists and the name; the capitals of both are taller than that.
+- **Icons and glyphs.** The keychain, category and item icons are Apple's colour artwork and
+  the toolbar glyphs are Apple's; the icons are replaced by original drawings, which are the
+  same in both appearances, and "+" and Info by the library's system images.
+- **Names without their middle.** The names are the table view's `TableViewCellText`, cut
+  in their middle: the first part of a long name is shortened and its last 17 characters
+  are kept. Keychain Access measures the text and keeps as much of both ends as
+  fits, so it shows a few characters more, and its ellipsis touches the kept ending; here a
+  gap of up to one character can stay after the ellipsis.
+- **The 1x scores of the masked comparisons.** The line over the Category title is half a
+  point off the point grid, as captured, and so cannot match the averaged reference at 1x; it
+  is exact at 2x.
+- **Not in a screenshot (provisional):** every keychain but login and every category but All
+  Items with their items, the rows after the twenty-fourth, what the ellipsis hides of the
+  captured names, the summary of an item that is not a key, the order of items without a
+  date, the window when it is not key, and every size other than the captured one.

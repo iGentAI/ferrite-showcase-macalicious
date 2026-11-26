@@ -1,0 +1,71 @@
+/*
+ * Borderless Button (NSButton with isBordered off): a title alone, in the surrounding text's
+ * font. The element's box is its text: no padding, no border, no fill.
+ *
+ * States
+ *   [data-color="link"]                the link colour in place of the inherited one
+ *   :active                            pressed: no change. Neither Mail's nor Home's shows one
+ *   [data-disabled]                    disabled: the tertiary label colour
+ *   :focus-visible, [data-force~="focus"]
+ *                                      focus ring, in the key window only; it follows the
+ *                                      button's border-radius, which `style` can set
+ *   :where([data-window-state="main"], [data-window-state="inactive"]) *
+ *                                      not the key window: no focus ring
+ */
+.mac-borderless-button {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--mac-radius-control-mini);
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: start;
+  cursor: default;
+  outline: none;
+  appearance: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-borderless-button:where([data-color="link"]) {
+  color: var(--mac-color-link);
+}
+
+.mac-borderless-button:where([data-disabled]) {
+  color: var(--mac-color-label-tertiary);
+}
+
+.mac-borderless-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-borderless-button {
+    color: ButtonText;
+  }
+
+  .mac-borderless-button:where([data-color="link"]) {
+    color: LinkText;
+  }
+
+  .mac-borderless-button:where([data-disabled]) {
+    color: GrayText;
+  }
+
+  .mac-borderless-button:where(:focus-visible, [data-force~="focus"]):where(
+    :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+  ) {
+    outline: 2px solid CanvasText;
+    outline-offset: 1px;
+  }
+}

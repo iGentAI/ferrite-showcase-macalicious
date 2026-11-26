@@ -1,0 +1,129 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "calendar-edge-light",
+      "description": "Right edge of the Calendar event popover with both corners, hairline, rim, separators and shadow, over the capture's transparent margin, Aqua. The masks cover Calendar's colour pop-up button, which is the event's content, and the two places beside the popover's corners where the shadow of the Calendar window falls into the crop. No text is in the crop.",
+      "example": "visual-calendar-light",
+      "appearance": "light",
+      "selector": "[data-crop='edge']",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 0, "y": 26, "width": 37, "height": 26 },
+        { "x": 0, "y": 0, "width": 12, "height": 14 },
+        { "x": 0, "y": 177, "width": 12, "height": 18 }
+      ],
+      "budget": { "1x": 0.0183, "2x": 0.0097 },
+      "deltaBudget": { "1x": 2.8, "2x": 2.6 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Calendar.png",
+        "crop": { "x": 2330, "y": 799, "width": 140, "height": 390 },
+        "matte": "#ffffff"
+      }
+    },
+    {
+      "name": "calendar-arrow-light",
+      "description": "The arrow of the Calendar event popover on its left edge, Aqua. The mask covers Calendar's red current-time line. No text is in the crop.",
+      "example": "visual-calendar-light",
+      "appearance": "light",
+      "selector": "[data-crop='arrow']",
+      "threshold": 0.05,
+      "masks": [{ "x": 0, "y": 22, "width": 20, "height": 2 }],
+      "budget": { "1x": 0.061, "2x": 0.0211 },
+      "deltaBudget": { "1x": 3.5, "2x": 2.5 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Calendar.png",
+        "crop": { "x": 1824, "y": 963, "width": 40, "height": 72 },
+        "matte": "#ffffff"
+      }
+    },
+    {
+      "name": "calendar-edge-dark",
+      "description": "Right edge of the Calendar event popover with both corners, outer line, rim, separators and shadow, over the capture's transparent margin, Dark Aqua. The mask covers Calendar's colour pop-up button. No text is in the crop.",
+      "example": "visual-calendar-dark",
+      "appearance": "dark",
+      "selector": "[data-crop='edge']",
+      "threshold": 0.05,
+      "masks": [{ "x": 0, "y": 27, "width": 36, "height": 26 }],
+      "budget": { "1x": 0.006, "2x": 0.0019 },
+      "deltaBudget": { "1x": 0.9, "2x": 1 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Calendar.png",
+        "crop": { "x": 2576, "y": 474, "width": 140, "height": 430 },
+        "matte": "#ffffff"
+      }
+    },
+    {
+      "name": "calendar-arrow-dark",
+      "description": "The arrow of the Calendar event popover on its left edge, Dark Aqua. No text is in the crop.",
+      "example": "visual-calendar-dark",
+      "appearance": "dark",
+      "selector": "[data-crop='arrow']",
+      "threshold": 0.05,
+      "budget": { "1x": 0.112, "2x": 0.0655 },
+      "deltaBudget": { "1x": 4.3, "2x": 3.5 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Calendar.png",
+        "crop": { "x": 2072, "y": 648, "width": 40, "height": 72 },
+        "matte": "#ffffff"
+      }
+    },
+    {
+      "name": "arrow-up-light",
+      "description": "A popover below its anchor, Aqua: the arrow is filled and the panel starts where the arrow ends. No screenshot shows this side. The page beside the tip is checked in Dark Aqua only: in Aqua the arrow's shadow there is as light as its fill.",
+      "example": "visual-arrow-up",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 120, "height": 80 },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 19,
+            "color": "#f2f2f2",
+            "tolerance": 3,
+            "note": "inside the arrow, 9 pt below its tip: the opaque popover fill (token, measured in Calendar)"
+          },
+          {
+            "x": 60,
+            "y": 45,
+            "color": "#f4f4f4",
+            "tolerance": 3,
+            "note": "the panel: the popover material over white, computed from the token"
+          }
+        ]
+      }
+    },
+    {
+      "name": "arrow-up-dark",
+      "description": "A popover below its anchor, Dark Aqua: the arrow is turned to point up, is filled, and the panel starts where the arrow ends. No screenshot shows this side.",
+      "example": "visual-arrow-up",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 120, "height": 80 },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 19,
+            "color": "#282828",
+            "tolerance": 3,
+            "note": "inside the arrow, 9 pt below its tip: the opaque popover fill (token, measured in Calendar)"
+          },
+          {
+            "x": 48,
+            "y": 12.5,
+            "color": "#1e1e1e",
+            "tolerance": 8,
+            "note": "the page 12 pt beside the tip, outside the arrow's side; inferred"
+          },
+          {
+            "x": 60,
+            "y": 45,
+            "color": "#262626",
+            "tolerance": 3,
+            "note": "the panel: the popover material over #1e1e1e, computed from the token"
+          }
+        ]
+      }
+    }
+  ]
+}

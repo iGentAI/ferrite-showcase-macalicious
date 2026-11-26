@@ -1,0 +1,79 @@
+/*
+ * Round-rect button (NSButton, round-rect bezel): an 18 pt high outlined button with no fill,
+ * a 1 pt outline, 4.25 pt corners and an 11 pt title in the control text colour.
+ *
+ * States
+ *   :active, [data-force~="pressed"]   pressed: a faint tint inside the outline
+ *   [data-window-state="inactive"] *   inactive window: fainter outline and content
+ *   [data-disabled]                    set by Base UI for `disabled`: fainter outline and title
+ *   :focus-visible, [data-force~="focus"]   keyboard focus ring, only in the key window
+ */
+.mac-round-rect-button {
+  display: inline-flex;
+  flex: none;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 18px;
+  height: 18px;
+  margin: 0;
+  padding: 0 7px;
+  border: 1px solid var(--mac-round-rect-button-border);
+  border-radius: 4.25px;
+  background: none;
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-small);
+  font-weight: var(--mac-font-weight-medium);
+  letter-spacing: var(--mac-tracking-small);
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  appearance: none;
+  outline: none;
+}
+
+.mac-round-rect-button:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  background: var(--mac-round-rect-button-fill-pressed);
+}
+
+/* Inactive window (measured on the add button under Books' Collections). */
+.mac-round-rect-button:where([data-window-state="inactive"] *) {
+  border-color: var(--mac-round-rect-button-border-inactive);
+  color: var(--mac-round-rect-button-text-inactive);
+}
+
+.mac-round-rect-button:where([data-disabled]) {
+  border-color: var(--mac-round-rect-button-border-disabled);
+  color: var(--mac-color-control-text-disabled);
+}
+
+.mac-round-rect-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-round-rect-button {
+    border-color: ButtonText;
+    color: ButtonText;
+  }
+
+  .mac-round-rect-button:where([data-disabled]) {
+    border-color: GrayText;
+    color: GrayText;
+  }
+
+  .mac-round-rect-button:where(:focus-visible, [data-force~="focus"]):where(
+    :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+  ) {
+    outline: 2px solid Highlight;
+  }
+}

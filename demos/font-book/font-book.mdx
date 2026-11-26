@@ -1,0 +1,242 @@
+---
+title: Font Book
+description: The Font Book app of macOS 10.15, with collections in a sidebar, the fonts of the chosen collection in an outline and a preview of the chosen font in four views at a size a combo box and a slider share, built from the library alone.
+layout: full
+order: 105
+---
+
+<Example name="basic" />
+
+Choose a collection in the sidebar and a family, or one of its styles, in the list; the preview
+follows. The toolbar changes the view of the preview, and the combo box and the slider beside
+it set the size. No font is included: each family is previewed in a stack of fonts the browser
+may have, which begins with the family's own name, so a Mac draws the real face and other
+platforms a stand-in of the same kind. Every glyph of the toolbar and the sidebar is an
+A reload brings back what is saved: the collections, the disabled fonts and the fonts you added.
+
+## What it shows
+
+- A [Window](/components/window) with a [Title Bar](/components/title-bar) in the `unified`
+  layout: the title strip with the [Window Controls](/components/window-controls) and, on the
+  same surface, a [Toolbar](/components/toolbar), 55 pt together. The bar is the window's drag
+  region. Its title is the collection and the number of fonts in it, and it names the window.
+- The toolbar: the four views as a
+  [Toolbar Segmented Control](/components/toolbar-segmented-control) of glyphs, two
+  [Toolbar Buttons](/components/toolbar-button) after a fixed space, and a
+  [Toolbar Search Field](/components/toolbar-search-field) that a flexible space keeps at the
+  trailing edge. Its magnifier is the field's search menu button, the trigger of a
+  [Menu](/components/menu) of radio [Menu Items](/components/menu-item) that says what the
+  field searches.
+- The body: a [Split View](/components/split-view) of three panes. The first two keep a width
+  of 200 pt that their dividers change; the preview takes the rest. The divider beside the
+  sidebar takes its measured colour through the split view's `--mac-split-view-divider-color`.
+- The collections: a [Sidebar](/components/sidebar) in the opaque material, with one row
+  outside any section and two sections. Font Book's rows are not the standard source list's,
+  so the demo sets the sidebar's own hooks (`--mac-sidebar-icon-size`,
+  `--mac-sidebar-section-gap`, `--mac-sidebar-header-inset`) instead of restyling it. Its
+  `footer` holds an [Image Button](/components/image-button), the plus.
+- The fonts: an [Outline View](/components/outline-view) with 18 pt rows and an indentation of
+  15.5 pt, as measured. A family is an item whose children are its styles; a font that is not
+  downloaded, or that was disabled, is a `dimmed` item. The outline is controlled: the demo
+  keeps the expanded families and the selection, and selects the list's first family when the
+  collection or the search no longer holds the selected font. The list opens scrolled to its
+  end, as in the screenshots: the demo names the last family in the outline's `revealedItem`
+  and the outline scrolls that row into view once, so the demo sets no scroll position itself.
+- The size: a [Label](/components/label), a [Combo Box](/components/combo-box) and a vertical
+  [Slider](/components/slider), all three on one number. The combo box suggests Font Book's
+  sizes and takes any other; the slider runs from 9 to 288 pt.
+- The preview: the font's name, then the view. Sample is a read-only rich
+  [Text View](/components/text-view) and Custom an editable plain one; Repertoire and Info
+  are a [Scroll View](/components/scroll-view) around a grid of characters and around a
+  description list of [Labels](/components/label). A list with no font shows an
+  [Empty State](/components/empty-state).
+- The data is in `font-book-data.ts`: the families with their styles, the stack each is
+  drawn with, and the collections as rules or lists of names. `fontStyle` reads a style's
+  weight, slant and width from its name ("Condensed Bold" is weight 700, condensed).
+
+| Control | What it does |
+| --- | --- |
+| A collection | Shows its fonts in the list and its name and count in the window's title. English and Fixed Width are rules (the families of the Latin script; the fixed-pitch ones); the five under Collection are the lists macOS sets up. |
+| The plus under the collections | Adds an empty collection, "New Collection", shows it, and edits its name in place. |
+| A collection you made | A double click or its context menu renames it; its context menu or Edit > Delete Collection deletes it after asking, and its fonts stay in the library. Fonts dragged onto it, or added from a font's context menu, go in it. The collections the demo sets up cannot be changed. |
+| Several fonts | Shift-click selects a range and Command-click adds one. The Sample and Repertoire views then show each, up to 24, Info each one's facts, and Custom sets its one text in each. Disable, Enable and the context menus act on all of them. |
+| A family | Previews its first style. Its triangle, or Right Arrow, shows its styles. |
+| A style | Previews that style: the family's stack with the style's weight, slant and width. |
+| Sample, Repertoire, Custom, Info | The view of the preview: sample lines in the family's script, the characters of its repertoire, a text you type, or a table of the font's facts. For a font you added, Repertoire and Info read the file's own `name`, `cmap`, `post` and `OS/2` tables (`font-book-tables.ts`), from a TrueType or OpenType file or a WOFF. A WOFF2's tables are Brotli-compressed and a page has no decoder for them, so Info says they are not readable. A font the desktop only names has no file, and Info says that too. |
+| Add Fonts | Opens the file chooser for font files (`.ttf`, `.otf`, `.woff`, `.woff2`). Each file the browser can load becomes a family, named after the file, in All Fonts; the first is selected. On the desktop the file is kept in Documents/Fonts on the person's drive and is loaded again when the window opens. With Validate fonts before installing on, a file that does not pass asks first: the sheet says what was found, a failed file starts unchecked, and one the browser refuses cannot be installed. |
+| User and Computer | Show once a font has been added: User holds what you added, Computer what the desktop came with. |
+| File > New Library | A row among the libraries, named in place. A font added while it is selected joins it. |
+| Language collections | One smart collection for each of the browser's languages that has fonts of its own: Japanese, Simplified Chinese, Traditional Chinese, Arabic. |
+| File > Restore Standard Fonts | Asks, moves the files of the fonts you added to Documents/Fonts (Removed), and turns every font on. |
+| View > Customize Toolbar | A sheet: click an item to add it, the arrow keys move one and Delete takes it out; the toolbar follows at once and the choice is kept. Which items a Mac offers is from memory, as no reference screenshot shows this sheet. |
+| Font Book > Preferences | Validate fonts before installing is kept among the person's values. The install location Computer, font activation and the alert about system font files need the system's font services, so they show dimmed and say why. |
+| A font not downloaded | Its context menu offers Download dimmed and says why: this desktop has no font server. |
+| A font file from Finder | Opening one offers it in its own face with Install Font; dropping one on the window adds it, and anything else is refused with the reason. An added font's row dragged to Finder or the desktop leaves a copy of its file there. |
+| Disable, Enable | Switches the selected family off or on again: its row is grey and says Off. It is unavailable for a font the system needs, such as Zapf Dingbats, and for one that is not downloaded. |
+| Search | Keeps the families of the collection that the text finds in the scope chosen from the field's menu. In Everything, as the field opens: a family whose name, one of whose font names ("Helvetica Neue Condensed Bold") or one of whose PostScript names contains the text. Escape clears it. |
+| The search field's magnifier | A menu of what the text is looked for in: Everything, Family (the family's name), Style (a style's name) or PostScript Name. The field says "Search" while it is empty, as captured, and names a narrower scope in that place. |
+| Size | A size from the list applies at once; a typed one with Return or when the field is left, brought into the slider's range. The slider and the field show the same size. |
+
+On the desktop the window also fills the menu bar. File has New Collection and Add Fonts; Edit has
+Undo to Select All (on the Custom view's text, and Select All on the font list otherwise), Disable
+or Enable, Remove, Delete Collection and Find > Search; View has the three views, Show Font Info,
+Fit, Bigger, Smaller, and Hide Collections and Hide Fonts. Remove takes a font out of the collection
+you made, and in All Fonts removes a font you added, sending its file to the Trash.
+
+A font is one style of a family, and the title counts fonts: the demo's 93 families have 281,
+the number in the capture's title.
+
+## Hosting the window
+
+<Example name="hosted" />
+
+`FontBook` renders the library's `Window` as its root and passes every `Window` prop to it, so
+it does not assume it fills the page. Place it with `style`; a window manager gives it `state`,
+the size, and eight more props that the component hands to the window controls and to the
+title bar, which with its toolbar is this window's drag region. These are the props a
+[Managed Window](/components/managed-window)'s `render` form supplies, so the component can be
+spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { app } from "./app";
+
+<ManagedWindow
+  id={app.id}
+  title={app.name}
+  resizable={app.resizable}
+  minWidth={app.minSize.width}
+  minHeight={app.minSize.height}
+  defaultFrame={{ x: 80, y: 60, ...app.defaultSize }}
+  render={(props) => <app.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press with the primary button, or a double click, on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 1017 by 603 by default, as captured. |
+| `state` | `"key" \| "main" \| "inactive"` | The window's state. |
+| the rest | `WindowProps` | `fullScreen`, `style`, `className`, `ref`, pointer and focus events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `fontBookApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (1017 by 603), `minSize` (640 by 320, at which the toolbar's
+items fit and the three panes keep their smallest widths), `resizable` and `menus`, the menu
+titles after the Apple menu.
+
+At other sizes the two lists keep their width, the preview takes the rest with the size
+control and the slider at its trailing edge, and the search field gives up width before the
+buttons do.
+
+## Accessibility
+
+- The window is a `region` named by its title, "All Fonts (281 Fonts)". The toolbar is one
+  tab stop; the arrow keys move between the four views, the two buttons, the search field's
+  menu button, named "Search in", and the search field. The menu's items are radio items, so
+  the scope that is searched is said as checked.
+- The views and the two buttons show only a glyph and are named with `aria-label`. The views
+  are toggle buttons in a group named "Preview". The second button's name says what it will
+  do and to which family: "Disable “Verdana”". While it is unavailable it stays reachable in
+  the toolbar and says so with `aria-disabled`.
+- The collections are a `tree` named "Collections" and one tab stop: the arrow keys move the
+  selection, and typing a name's first letters selects it. The two headers name their groups.
+  The plus under it is a button named "Add Collection".
+- The fonts are a `treegrid` named "Fonts" and one tab stop. A family's row has
+  `aria-expanded`; Right Arrow expands it, Left Arrow collapses it or goes to the family, and
+  typing selects by name. That a font is not downloaded is shown by its grey alone; a disabled
+  family also says "Off" in its row, and the Info view says both in words.
+- "Size:" names the combo box and the slider. The slider takes the arrow keys, Page Up and
+  Page Down, Home and End.
+- The font's name above the view is a heading. The Sample view is a read-only `textbox`
+  named "Sample", so its text can be selected and copied; the Custom view is a `textbox` named
+  "Custom text"; the Repertoire view is a `group` named "Repertoire"; the Info view is a
+  description list.
+- The two dividers of the split view are focusable separators named for what they resize.
+- The file input the Add Fonts button opens is hidden and named "Choose font files".
+- A grey family in the list is tone on tone by the library's design and low in contrast in
+  both appearances (see [Outline View](/components/outline-view)).
+
+## Fidelity
+
+`font-book.visual.json` compares the demo with the two Font Book screenshots, the whole
+capture with the window's shadow in each appearance: once as it is (`window-light`,
+`window-dark`), and once with the text and the stand-in glyphs masked (`window-layout-light`,
+`window-layout-dark`). The masks cover the window's title, the glyphs of the toolbar, the
+search field's magnifier and placeholder, the glyph and label of every sidebar row, the names
+in the font list, the size control's label and digits, the font's name and the six rows of
+the sample; the frame, the shadow, the bars and bezels, the panes and dividers, the selections,
+the disclosure triangles, the combo box and the slider are scored. Every comparison first
+clicks the selected row, which gives the font list the keyboard focus it has in the captures.
+
+Scores from `npm run visual -- font-book/` (Chromium on Linux, fallback font), share of pixels
+that differ and mean colour distance out of 255:
+
+| Comparison | 1x | 2x |
+| --- | --- | --- |
+| `window-light` | 8.0%, 11.2 | 7.1%, 11.4 |
+| `window-layout-light` | 0.30%, 0.63 | 0.01%, 0.65 |
+| `window-dark` | 7.9%, 10.2 | 7.1%, 10.4 |
+| `window-layout-dark` | 0.28%, 0.79 | 0.01%, 0.85 |
+
+The budgets in `font-book.visual.json` are set just above these. The whole-window scores are
+nearly all text and sample glyphs; with those masked the Aqua window differs in 0.01% of its
+pixels at 2x.
+
+Taken from the spec's measurements of the screenshots and laid out to them: the 1017 by 603 pt
+frame and its 55 pt bar; the 135 pt segmented control with its dividers at 35, 68 and 101 pt,
+the two 50 pt buttons from 205 pt (from 160 pt in Dark Aqua) and the 421 pt search field 8 pt
+from the trailing edge;
+the 200 pt sidebar with its first row 5 pt under the bar, 24 pt rows 26 pt apart, glyphs
+centred 29.5 pt from the edge and the plus 17.5 pt from the edge; the 200 pt font list with
+18 pt rows, scrolled to its end; the 51 pt combo box 10.5 pt from the window's edge and
+14.5 pt under the bar; the slider's track 28 pt from the edge, from 43 pt under the bar to
+20.5 pt above the bottom, with its thumb where 42 lies between 9 and 288; the font's name at
+20 pt with its baseline 65 pt under the bar; six sample rows 41.7 pt apart. The colours that
+are the app's own are in `font-book.tokens.css`, each with the place it was measured.
+
+What differs, and why:
+
+- **The sample.** Zapf Dingbats is not included, and neither is any other font. The six rows
+  are the Unicode dingbats (U+2701 and on) in whatever symbol font the system has: Zapf
+  Dingbats itself on a Mac, DejaVu Sans on the machine the scores are from, whose glyphs are
+  wider and drawn differently. Which glyphs stand in which row follows the code points, not
+  the capture. The rows are masked in the layout comparisons.
+- **Toolbar buttons in Dark Aqua.** The Dark Aqua capture has the two buttons 45 pt nearer the
+  segmented control (from 160 pt) than the Aqua capture (from 205 pt), with everything else in
+  the bar in the same place. The demo follows each capture: the space before the buttons is a
+  token of the app, `--mac-font-book-button-space`, that is 45 pt shorter in Dark Aqua. Which
+  of the two a real Font Book shows does not depend on the appearance; the captures were taken
+  with the toolbar in two states.
+- **Search field.** Font Book's magnifier has a small chevron beside it, for a menu of what to
+  search: it is the library's search menu button. No screenshot shows the menu open, so its
+  four scopes are the demo's own (provisional).
+- **Glyphs.** The plus and the Info view's disc are the library's
+  [System Images](/components/system-image) `add` and `info`. The other three view glyphs, the
+  checked box and the three sidebar glyphs (a
+  book with an F, a gear, two cards with an A) are original drawings to the measured sizes.
+  The Custom glyph's "Aa" is text in the system font. They are masked in the layout
+  comparisons.
+- **Slider.** The thumb is half a point lower than in the Aqua capture and half a point higher
+  than in the Dark Aqua one; the two captures differ by a point. In Dark Aqua the library's
+  thumb is `#cccccc` where this capture measures `#c6c7c7`.
+- **Sidebar.** The library's opaque sidebar material is one level lighter (`#e7e8e8`) than the
+  capture's (`#e6e7e7`), and the rows of the second section stand half a point higher.
+- **Text.** Set in the fallback font off Apple devices, so the longest names in the list are
+  cut a letter or two from where the screenshot cuts them.
+- **The count.** The title's 281 is the number of fonts in the capture. The demo reaches it by
+  counting styles: 93 families, the ones the capture shows and a selection of the others
+  macOS 10.15 ships, with 281 styles between them. The real list is longer and its count may
+  be of something else.
+- **Not in a screenshot (provisional):** the Repertoire, Custom and Info views; every
+  collection other than All Fonts and every font other than Zapf Dingbats; the sample text of
+  each script; the search; "Off" in a disabled family's row; an added collection or font; the
+  open list of the combo box; the window when it is not key and every size other than the
+  captured one. The Info view lists what the demo's data holds (the PostScript name is made
+  by rule from the family and the style, and "Drawn with" is the stack the preview uses),
+  not what Font Book reads from a font file.
+- **Not built:** installing, validating, exporting and removing fonts; downloading the grey
+  ones; dragging fonts into a collection, renaming or deleting a collection and editing a
+  smart collection's rule; the previews of several selected fonts at once; the User and
+  Computer libraries; and printing.

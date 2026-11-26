@@ -1,0 +1,715 @@
+/*
+ * Automator demo: the measures of the band above the library's lists, the layout of the body,
+ * the rows of the lists, the text of the description pane, the steps of a workflow and the
+ * lines of the log. The window, the toolbar and its items, the scopes, the search field, the
+ * outline, the tables, the split views, the capsule, the bottom bars and their buttons are the
+ * library's own.
+ *
+ * Parts
+ *   .mac-automator                     the window (the library's Window)
+ *   .mac-automator-toggle              the Library toolbar button: its glyph is tinted while on
+ *   .mac-automator-record              the Record toolbar button: its disc is red
+ *   .mac-automator-glyph               a toolbar or bottom bar glyph of Automator's own
+ *   .mac-automator-icon                the placeholder for a colour icon: a tinted rounded square
+ *   .mac-automator-body                the window's body, filled by the split view
+ *   .mac-automator-split               library | workflow and log
+ *   .mac-automator-column              one side of it: its content over its bottom bar
+ *   .mac-automator-stack               the split view of a side: lists over description,
+ *                                      workflow over log
+ *   .mac-automator-band                the 25 pt band of the switch and the search field
+ *   .mac-automator-scope               a scope of the switch: 11 pt bold, Automator's colours
+ *   .mac-automator-lists               outline | list
+ *   .mac-automator-list                an outline or a table that fills its pane
+ *   .mac-automator-row                 a row's content: icon, then name
+ *   .mac-automator-row-name            the name, cut with an ellipsis
+ *   .mac-automator-description         the description pane
+ *   .mac-automator-description-head    icon and title
+ *   .mac-automator-description-title   the title
+ *   .mac-automator-description-text    the sentence under it
+ *   .mac-automator-facts               Input, Result, Version: bold labels, right-aligned
+ *   .mac-automator-fact                one of them
+ *   .mac-automator-heading             a heading's title of the lower pane's table
+ *   .mac-automator-workflow            the workflow area
+ *   .mac-automator-steps-scroll        the scroll view of the steps
+ *   .mac-automator-steps               the list of steps
+ *   .mac-automator-step                a step: heading band over a line of text
+ *   .mac-automator-step-head           number, icon, name, mark, remove button; a drag starts here
+ *   .mac-automator-step-number         the step's number
+ *   .mac-automator-step-name           the action's name
+ *   .mac-automator-step-mark           a disc on a step that has run or is running
+ *   .mac-automator-step-remove         the button that takes the step out
+ *   .mac-automator-step-body           what the step takes and gives
+ *   .mac-automator-step-parts          a step's Results and Options buttons
+ *   .mac-automator-step-results        what its Results opens
+ *   .mac-automator-step-options        what its Options opens
+ *   .mac-automator-open-list           the saved workflows in File > Open's sheet
+ *   .mac-automator-lower               the pane under the workflow: a line, then the table
+ *   .mac-automator-library-bar         the bottom bar under the library
+ *   .mac-automator-gear                the gear pull-down button
+ *   .mac-automator-bar-button          a button of a bottom bar
+ *   .mac-automator-views               the two toggles under the workflow
+ *
+ * Parts of the window on the desktop's Ferrite application only (automator-desktop.tsx)
+ *   .mac-automator-document            the bar over the workflow: open, new, save, delete, the
+ *                                      status, the name and the type
+ *   .mac-automator-document-row        one line of it
+ *   .mac-automator-document-note       the sentence under it: workflows run when Run is pressed
+ *   .mac-automator-open                the Workflows pop-up button
+ *   .mac-automator-status              the line that says what a save or a load did
+ *   .mac-automator-field               a label and its control
+ *   .mac-automator-field-label         the label
+ *   .mac-automator-name-field          the name's text field
+ *   .mac-automator-step-summary        what a step's action does, over its settings
+ *   .mac-automator-settings            a step's settings: names, then controls
+ *   .mac-automator-setting-label       a setting's name
+ *   .mac-automator-setting-field       a text setting's field
+ *   .mac-automator-setting-choice      a choice's pop-up button
+ *   .mac-automator-setting-check       a checkbox setting
+ *   .mac-automator-code                the box of a code setting's text view
+ *   .mac-automator-log-failed          a row of the log or of the runs that failed
+ * States
+ *   [aria-pressed="true"]              on a toggle: the glyph is blue
+ *   [data-tint="red" | …]              on an icon: the category's system colour
+ *   [data-state="done" | "running" | "pending"]   on a step
+ *   [data-state="failed"]              on a step whose run failed there (served window)
+ *   [data-enabled="false"]             on a step that is switched off (served window)
+ *   [data-top]                         on a setting's name whose control is taller than a line
+ *   [data-window-state="inactive"] *   grey glyphs, flat bottom bar
+ *
+ * Every measured length and font size is a token in automator.tokens.css (--mac-automator-*).
+ * Literal here, as structure: zeros, the 100% sizes and the colour stops' percentages, the
+ * flex factors, the icon's 22% corner and the step mark's 50%, the 1 pt borders and lines (a
+ * step's outline and heading line, the line above the log, the line between its columns and
+ * the bars' separators drawn as 1 pt backgrounds, with the calc(100% - 1px) fills beside
+ * them), the z-index, and the forced-colours borders.
+ */
+
+/* The Library button and the toggle of a bottom bar show their glyph in Automator's blues
+   while they are on, in the key and the main window. */
+.mac-automator-toggle:where([aria-pressed="true"]:not([data-window-state="inactive"] *)) {
+  color: var(--mac-automator-toolbar-toggle-on);
+}
+
+.mac-automator-bar-button:where([aria-pressed="true"]:not([data-window-state="inactive"] *)) {
+  color: var(--mac-automator-bar-toggle-on);
+}
+
+/* Record's disc is red while the button can be used. */
+.mac-automator-record:where(:not([data-disabled], [data-window-state="inactive"] *)) {
+  color: var(--mac-automator-record);
+}
+
+.mac-automator-glyph {
+  display: block;
+  flex: none;
+}
+
+/* A placeholder icon: no drawing, only the colour of its category. */
+.mac-automator-icon {
+  display: block;
+  flex: none;
+  box-sizing: border-box;
+  border-radius: 22%;
+  background: var(--mac-color-system-gray);
+}
+
+.mac-automator-icon:where([data-tint="red"]) {
+  background: var(--mac-color-system-red);
+}
+
+.mac-automator-icon:where([data-tint="orange"]) {
+  background: var(--mac-color-system-orange);
+}
+
+.mac-automator-icon:where([data-tint="yellow"]) {
+  background: var(--mac-color-system-yellow);
+}
+
+.mac-automator-icon:where([data-tint="green"]) {
+  background: var(--mac-color-system-green);
+}
+
+.mac-automator-icon:where([data-tint="teal"]) {
+  background: var(--mac-color-system-teal);
+}
+
+.mac-automator-icon:where([data-tint="blue"]) {
+  background: var(--mac-color-system-blue);
+}
+
+.mac-automator-icon:where([data-tint="indigo"]) {
+  background: var(--mac-color-system-indigo);
+}
+
+.mac-automator-icon:where([data-tint="purple"]) {
+  background: var(--mac-color-system-purple);
+}
+
+.mac-automator-icon:where([data-tint="pink"]) {
+  background: var(--mac-color-system-pink);
+}
+
+.mac-automator-icon:where([data-tint="brown"]) {
+  background: var(--mac-color-system-brown);
+}
+
+/* The body takes what the title bar leaves, whatever its content asks for. */
+.mac-automator-body {
+  display: flex;
+  flex-basis: 0;
+  overflow: hidden;
+}
+
+.mac-automator-split {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+}
+
+/* Each side ends in a bottom bar of its own: the line between the sides runs down to the
+   window's edge, through the bars. */
+.mac-automator-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.mac-automator-stack {
+  flex: 1 1 0;
+}
+
+.mac-automator-lists,
+.mac-automator-list {
+  height: 100%;
+}
+
+/* Two classes: these replace the library bar's own height, insets, font and fill, whatever
+   the order of the stylesheets. The fill is drawn as the library draws its own: the colour
+   over the bar, and two device-pixel rows in its last point. The pill starts 6 pt from the
+   window's edge and 5 pt under the toolbar; the search field ends 8.5 pt before the line. */
+.mac-automator .mac-automator-band {
+  height: var(--mac-automator-band-height);
+  padding: var(--mac-automator-band-padding-top) var(--mac-automator-band-padding-right)
+    var(--mac-automator-band-padding-bottom) var(--mac-automator-band-padding-left);
+  background:
+    linear-gradient(
+      var(--mac-automator-band-separator-inner) 25%,
+      var(--mac-automator-band-separator-outer) 75%
+    )
+    bottom / 100% 1px no-repeat,
+    linear-gradient(var(--mac-automator-band-fill), var(--mac-automator-band-fill)) top / 100%
+    calc(100% - 1px) no-repeat;
+  font:
+    var(--mac-font-weight-bold) var(--mac-font-size-small) / var(--mac-line-height-small)
+    var(--mac-font-family-system);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+/* The scope that is on, in the key window: Automator's pill is darker than Finder's, on
+   which the library's is measured. In a window that is not key the library's grey applies. */
+.mac-automator
+.mac-automator-scope:where(
+  [data-checked]:not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  background: var(--mac-automator-scope-on-fill);
+  color: var(--mac-automator-scope-on-text);
+}
+
+.mac-automator .mac-automator-scope:where([data-unchecked]:not(:active)) {
+  color: var(--mac-automator-scope-off-text);
+}
+
+/* The field starts 4.5 pt after the box of "Variables", 154.5 pt from the window's edge, and
+   half a point above the middle of the band: 3.5 pt under the toolbar. */
+.mac-automator-search {
+  margin-block: var(--mac-automator-search-margin-top) var(--mac-automator-search-margin-bottom);
+  margin-inline-start: var(--mac-automator-search-margin-start);
+}
+
+/* A row of the outline or the list: a 16 pt icon in the 18 pt highlight, the name 5 pt after
+   it. The row's last point is the gap between two highlights. */
+.mac-automator-row {
+  display: flex;
+  gap: var(--mac-automator-row-gap);
+  align-items: center;
+  box-sizing: border-box;
+  height: var(--mac-automator-row-height);
+  min-width: 0;
+}
+
+.mac-automator-row-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Measured in both captures: the icon's box starts 12 pt from the window's edge and 9 pt
+   under the pane's line, the title 56 pt from the edge with its baseline 30 pt under the
+   line; the sentence starts 12 pt from the edge with its baseline 58 pt under the line. */
+.mac-automator-description {
+  box-sizing: border-box;
+  height: 100%;
+  padding: var(--mac-automator-description-padding-top)
+    var(--mac-automator-description-padding-inline) 0;
+  overflow: hidden;
+  background: var(--mac-color-control-background-tinted);
+  color: var(--mac-color-label);
+  cursor: default;
+}
+
+.mac-automator-description-head {
+  display: flex;
+  gap: var(--mac-automator-description-head-gap);
+  align-items: center;
+  height: var(--mac-automator-description-head-height);
+}
+
+.mac-automator-description-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: var(--mac-automator-description-title-margin-top) 0 0;
+  overflow: hidden;
+  font:
+    var(--mac-font-weight-bold) var(--mac-automator-description-title-size) /
+    var(--mac-automator-description-title-line-height) var(--mac-font-family-system);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mac-automator-description-text {
+  display: block;
+  margin: var(--mac-automator-description-text-margin-top) 0 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* The labels end 95 pt from the sentence's edge and the values start 4 pt after them, on a
+   16 pt pitch. */
+.mac-automator-facts {
+  display: grid;
+  grid-template-columns: var(--mac-automator-facts-label-width) minmax(0, 1fr);
+  column-gap: var(--mac-automator-facts-gap);
+  margin: var(--mac-automator-facts-margin-top) 0 0;
+  font: var(--mac-font-control-small);
+  line-height: var(--mac-automator-facts-line-height);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+.mac-automator-fact {
+  display: contents;
+}
+
+.mac-automator-fact > :where(dt) {
+  font-weight: var(--mac-font-weight-bold);
+  text-align: end;
+}
+
+.mac-automator-fact > :where(dd) {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* A heading of the lower pane's table: Automator sets its titles 4 pt from the column's
+   edge, a point before the library's header does. */
+.mac-automator-heading {
+  position: relative;
+  inset-inline-start: var(--mac-automator-heading-shift);
+}
+
+/* The steps' menu has an element of its own only to hear the secondary click. */
+.mac-automator-steps-area {
+  display: contents;
+}
+
+.mac-automator-workflow {
+  box-sizing: border-box;
+  height: 100%;
+  background: var(--mac-automator-workflow-background);
+}
+
+.mac-automator-workflow:focus {
+  outline: none;
+}
+
+.mac-automator-workflow:focus-visible,
+.mac-automator-workflow[data-dropping] {
+  outline: 2px solid var(--mac-accent);
+  outline-offset: -2px;
+}
+
+.mac-automator-steps-scroll {
+  height: 100%;
+}
+
+.mac-automator-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-automator-steps-gap);
+  margin: 0;
+  padding: var(--mac-automator-steps-padding-block) var(--mac-automator-steps-padding-inline);
+  list-style: none;
+}
+
+.mac-automator-step {
+  overflow: hidden;
+  border: 1px solid var(--mac-automator-step-border);
+  border-radius: var(--mac-radius-window);
+  background: var(--mac-automator-step-fill);
+}
+
+/* The selected steps are ringed, and a drag's place is a line in the gap beside a step. */
+.mac-automator-step:where([data-selected]) {
+  border-color: var(--mac-accent);
+  box-shadow: 0 0 0 1px var(--mac-accent);
+}
+
+.mac-automator-step:where([data-drop="before"]) {
+  box-shadow: 0 -3px 0 var(--mac-accent);
+}
+
+.mac-automator-step:where([data-drop="after"]) {
+  box-shadow: 0 3px 0 var(--mac-accent);
+}
+
+.mac-automator-open-list {
+  height: 160px;
+  margin-block-start: 8px;
+}
+
+.mac-automator-step-head {
+  display: flex;
+  gap: var(--mac-automator-step-head-gap);
+  align-items: center;
+  box-sizing: border-box;
+  height: var(--mac-automator-step-head-height);
+  padding: 0 var(--mac-automator-step-head-padding-right) 0
+    var(--mac-automator-step-head-padding-left);
+  border-bottom: 1px solid var(--mac-automator-step-border);
+  background: var(--mac-automator-step-head);
+}
+
+.mac-automator-step-number {
+  flex: none;
+  min-width: var(--mac-automator-step-number-min-width);
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-control-small);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+.mac-automator-step-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* A step that has run carries a green disc, the step that is running an orange one. */
+.mac-automator-step-mark {
+  flex: none;
+  width: var(--mac-automator-step-mark-size);
+  height: var(--mac-automator-step-mark-size);
+  border-radius: 50%;
+  background: var(--mac-color-system-green);
+}
+
+.mac-automator-step:where([data-state="running"]) .mac-automator-step-mark {
+  background: var(--mac-color-system-orange);
+}
+
+/* The arrow in the gap under a step whose output the next step takes. */
+.mac-automator-link {
+  position: relative;
+  height: 0;
+  margin-block-end: calc(var(--mac-automator-steps-gap) * -1);
+}
+
+.mac-automator-link-arrow {
+  position: absolute;
+  inset-block-start: calc(var(--mac-automator-steps-gap) * -1);
+  inset-inline-start: 50%;
+  width: 0;
+  height: 0;
+  transform: translateX(-50%);
+  border-block-start: var(--mac-automator-steps-gap) solid var(--mac-automator-step-border);
+  border-inline: var(--mac-automator-steps-gap) solid transparent;
+}
+
+.mac-automator-type {
+  display: flex;
+  flex-direction: column;
+}
+
+.mac-automator-type > :where(p) {
+  margin-block: 0;
+  margin-inline-start: var(--mac-automator-type-note-inset);
+}
+
+.mac-automator-toolbar-choice {
+  display: flex;
+  flex: 1;
+}
+
+.mac-automator-toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mac-automator-toolbar-area {
+  display: contents;
+}
+
+.mac-automator-step-results-table {
+  height: 120px;
+}
+
+.mac-automator-step-remove {
+  flex: none;
+}
+
+.mac-automator-step-body {
+  display: block;
+  margin: 0;
+  padding: var(--mac-automator-step-body-padding-top) var(--mac-automator-step-body-padding-right)
+    var(--mac-automator-step-body-padding-bottom) var(--mac-automator-step-body-padding-left);
+}
+
+/* Results and Options, and what each opens, under a step's settings. */
+.mac-automator-step-parts {
+  display: flex;
+  gap: var(--mac-automator-step-parts-gap);
+  margin-block-start: var(--mac-automator-step-parts-margin-top);
+}
+
+.mac-automator-step-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-automator-step-results-gap);
+  margin-block-start: var(--mac-automator-step-parts-margin-top);
+  max-block-size: 160px;
+  overflow-y: auto;
+}
+
+.mac-automator-step-options {
+  margin-block-start: var(--mac-automator-step-parts-margin-top);
+}
+
+/* The pane under the workflow: a line, then the table with its 24 pt header. The line
+   between the two columns runs down the rows, 100 pt before the pane's edge, where the
+   header has its separator. */
+.mac-automator-lower {
+  position: relative;
+  box-sizing: border-box;
+  height: 100%;
+  border-block-start: 1px solid var(--mac-automator-log-border);
+}
+
+.mac-automator-lower::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset-block: var(--mac-automator-log-header-height) 0;
+  inset-inline-end: var(--mac-automator-log-column-end);
+  width: 1px;
+  background: var(--mac-automator-log-grid);
+  pointer-events: none;
+}
+
+/* Two classes: the bar under the library is drawn as the library draws its bar, in the
+   colours measured there. An inactive window keeps the library's flat bar. */
+.mac-automator .mac-automator-library-bar:where(:not([data-window-state="inactive"] *)) {
+  background:
+    linear-gradient(
+      var(--mac-automator-library-bar-separator),
+      var(--mac-automator-library-bar-separator)
+    )
+    top / 100% 1px no-repeat,
+    linear-gradient(
+      to bottom,
+      var(--mac-automator-library-bar-top),
+      var(--mac-automator-library-bar-bottom)
+    )
+    bottom / 100% calc(100% - 1px) no-repeat;
+}
+
+.mac-automator-views {
+  display: flex;
+  align-items: center;
+}
+
+/* The served window (automator-desktop.tsx). Which sizes no capture shows: every one of these
+   is a provisional token. The bar over the workflow is drawn as a window's content: the
+   window's fill and the divider under it. */
+.mac-automator-document {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--mac-automator-document-row-gap);
+  padding: var(--mac-automator-document-padding-block) var(--mac-automator-document-padding-inline);
+  border-block-end: 1px solid var(--mac-automator-divider);
+  background: var(--mac-color-window-background);
+  color: var(--mac-color-label);
+}
+
+.mac-automator-document-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-automator-document-row-gap) var(--mac-automator-document-column-gap);
+  align-items: center;
+  min-width: 0;
+}
+
+.mac-automator-document-note {
+  margin: 0;
+}
+
+.mac-automator .mac-automator-open {
+  min-width: var(--mac-automator-open-min-width);
+}
+
+.mac-automator-status {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.mac-automator-field {
+  display: inline-flex;
+  gap: var(--mac-automator-field-gap);
+  align-items: center;
+  min-width: 0;
+}
+
+.mac-automator-field-label {
+  flex: none;
+}
+
+/* Two classes: these replace the text field's own width, whatever the order of the
+   stylesheets. */
+.mac-automator .mac-automator-name-field {
+  width: var(--mac-automator-name-field-width);
+}
+
+.mac-automator-step-summary {
+  margin: 0;
+}
+
+/* A step's settings: the names right-aligned in their column, the controls filling theirs. */
+.mac-automator-settings {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--mac-automator-settings-row-gap) var(--mac-automator-settings-column-gap);
+  align-items: center;
+  margin: var(--mac-automator-settings-margin-top) 0 0;
+}
+
+.mac-automator-setting-label:where([data-top]) {
+  align-self: start;
+}
+
+.mac-automator .mac-automator-setting-field {
+  width: 100%;
+}
+
+.mac-automator-setting-choice,
+.mac-automator-setting-check {
+  justify-self: start;
+}
+
+.mac-automator-code {
+  box-sizing: border-box;
+  height: var(--mac-automator-code-height);
+  overflow: hidden;
+  border: 1px solid var(--mac-automator-step-border);
+}
+
+/* A step switched off keeps its place and its settings; its name is dimmed. */
+.mac-automator-step:where([data-enabled="false"]) .mac-automator-step-name {
+  color: var(--mac-color-label-tertiary);
+}
+
+/* A step whose run failed there carries a red disc. */
+.mac-automator-step:where([data-state="failed"]) .mac-automator-step-mark {
+  background: var(--mac-color-system-red);
+}
+
+.mac-automator-log-failed {
+  color: var(--mac-color-system-red);
+}
+
+/* A library row that cannot be added, whose title says why. */
+.mac-automator-row:where([data-dimmed]) {
+  opacity: var(--mac-automator-row-dimmed-opacity);
+}
+
+/* The Open dialog an Ask for action shows during a run, over the whole page. */
+.mac-automator-panel-layer {
+  position: fixed;
+  z-index: 800;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  pointer-events: none;
+}
+
+.mac-automator-panel-layer > * {
+  pointer-events: auto;
+}
+
+/* View > Media Browser: it stays open while the workflow is worked on. */
+.mac-automator-media-panel {
+  position: absolute;
+  z-index: 5;
+  right: 20px;
+  bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 380px;
+  padding: 12px;
+  border: 1px solid var(--mac-automator-step-border);
+  border-radius: 6px;
+  background: var(--mac-color-window-background);
+}
+
+.mac-automator-media-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+@media (forced-colors: active) {
+  .mac-automator-toggle:where([aria-pressed="true"]),
+  .mac-automator-bar-button:where([aria-pressed="true"]) {
+    color: Highlight;
+  }
+
+  .mac-automator-record {
+    color: ButtonText;
+  }
+
+  .mac-automator-icon,
+  .mac-automator-step-mark {
+    border: 1px solid CanvasText;
+  }
+
+  .mac-automator .mac-automator-scope:where([data-checked]) {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .mac-automator-lower::after {
+    background: CanvasText;
+  }
+
+  .mac-automator-document {
+    border-block-end-color: CanvasText;
+  }
+
+  .mac-automator-code {
+    border-color: CanvasText;
+  }
+}

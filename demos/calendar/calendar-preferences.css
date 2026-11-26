@@ -1,0 +1,96 @@
+/*
+ * Calendar's preferences window: the layout of its panes. The window, the toolbar, the form,
+ * the pop-up buttons, the checkboxes, the separators and the help button are the library's
+ * own; this file sets positions and widths only.
+ *
+ * Measured on 10-15-Catalina-Light-Calendar-Preferences.png (frame 537 x 542 pt, distances
+ * from the frame's left edge): the labels end at 241.5 pt; the pop-up buttons' bezels run from
+ * 251 to 431, which is a box of 181 pt from 250.5; the rows are 30 pt apart; the separators
+ * and the checkboxes are inset 36 pt, 16 more than the pane's margin; a separator between rows
+ * has 20 pt above and below it, and the two checkboxes, 20 pt apart, have 16.
+ *
+ * A rule that changes what a library stylesheet declares (the form's columns and row gap, a
+ * separator's or a label's margin) is written under .mac-calendar-preferences, the window, so
+ * that it holds whatever order the stylesheets load in.
+ *
+ * Parts
+ *   .mac-calendar-preferences-form       the General pane's two columns
+ *   .mac-calendar-preferences-choice     a pop-up button of the control column
+ *   .mac-calendar-preferences-number     the narrow pop-up button of the hours shown
+ *   .mac-calendar-preferences-unit       the text after it
+ *   .mac-calendar-preferences-rule       a separator between rows of the form
+ *   .mac-calendar-preferences-line       a separator under the form
+ *   .mac-calendar-preferences-checks     the two calendars' checkboxes
+ *   .mac-calendar-preferences-alternate  the last row: a checkbox and its pop-up button
+ *   .mac-calendar-preferences-switch     that checkbox
+ *   .mac-calendar-preferences-list       the Advanced pane's checkboxes, 20 pt apart as well
+ *   .mac-calendar-preferences-note       the Accounts pane's text, centred
+ *
+ * Every measured length is a token in calendar.tokens.css (--mac-calendar-preferences-*),
+ * which calendar-preferences.tsx imports. Literal here, as structure: zeros and the control
+ * column's 1fr.
+ */
+.mac-calendar-preferences .mac-calendar-preferences-form {
+  grid-template-columns: var(--mac-calendar-preferences-label-column) 1fr;
+  row-gap: var(--mac-calendar-preferences-row-gap);
+  justify-content: stretch;
+  margin-inline: var(--mac-calendar-preferences-margin-inline);
+}
+
+.mac-calendar-preferences-choice {
+  width: var(--mac-calendar-preferences-choice-width);
+}
+
+.mac-calendar-preferences-number {
+  width: var(--mac-calendar-preferences-number-width);
+}
+
+/* The text starts 7 pt after the pop-up button, a point less than the row's gap. */
+.mac-calendar-preferences .mac-calendar-preferences-unit {
+  margin-inline-start: var(--mac-calendar-preferences-unit-margin-start);
+}
+
+/* 20 pt on each side of the line, of which 9 are the form's row gap. */
+.mac-calendar-preferences .mac-calendar-preferences-rule {
+  margin-block: var(--mac-calendar-preferences-rule-margin-block);
+}
+
+.mac-calendar-preferences .mac-calendar-preferences-line {
+  margin: var(--mac-calendar-preferences-line-margin-top)
+    var(--mac-calendar-preferences-margin-inline) 0;
+}
+
+.mac-calendar-preferences-checks,
+.mac-calendar-preferences-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-calendar-preferences-checks-gap);
+  align-items: flex-start;
+  margin-inline: var(--mac-calendar-preferences-margin-inline);
+}
+
+.mac-calendar-preferences-checks {
+  margin-block-start: var(--mac-calendar-preferences-checks-margin-block);
+}
+
+.mac-calendar-preferences .mac-calendar-preferences-checks + .mac-calendar-preferences-line {
+  margin-block-start: var(--mac-calendar-preferences-checks-margin-block);
+}
+
+/* The pop-up button starts 213 pt from the frame's left edge, whatever the width of the
+   checkbox's title, and the checkbox's box is 3 pt under the pop-up button's top edge. */
+.mac-calendar-preferences-alternate {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: var(--mac-calendar-preferences-alternate-width);
+  margin-inline-start: var(--mac-calendar-preferences-margin-inline);
+}
+
+.mac-calendar-preferences-switch {
+  margin-block-start: var(--mac-calendar-preferences-switch-margin-top);
+}
+
+.mac-calendar-preferences-note {
+  text-align: center;
+}

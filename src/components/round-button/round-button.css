@@ -1,0 +1,143 @@
+/*
+ * Round button (NSButton, circular bezel). Also the bezel of the help button.
+ *
+ * The element's box is the AppKit alignment rectangle; the visible bezel is the ::before
+ * pseudo-element, inset by one hairline, drawn with the shared bezel tokens of
+ * tokens/controls.css: the push button's edge, fill, highlight and shadow rows on a circle.
+ * The pressed fill is the shared one of a bezel that does not take the accent
+ * (--mac-bezel-fill-pressed, provisional).
+ *
+ * States
+ *   [data-size="small" | "mini"]       control size
+ *   [data-variant="destructive"]       a flat red disc, white content (Contacts' remove button)
+ *   :active                            pressed: the bezel's fill darkens (lightens in Dark Aqua),
+ *                                      the destructive disc darkens in both appearances; a round
+ *                                      button never takes the accent
+ *   :focus-visible                     keyboard focus ring, only in the key window
+ *   [data-disabled]                    set by Base UI for `disabled`
+ *   [data-force~="pressed" | "focus"]  static previews of transient states (docs, visual tests)
+ *
+ * It looks the same in a window that is not key, apart from the focus ring.
+ */
+.mac-round-button {
+  --_size: var(--mac-control-height-regular);
+  --_fill: var(--mac-bezel-fill);
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--_size);
+  height: var(--_size);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-round-button::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: var(--mac-bezel-inset);
+  box-sizing: border-box;
+  border: var(--mac-bezel-border-width) solid;
+  border-color: var(--mac-bezel-border-top) var(--mac-bezel-border-side)
+    var(--mac-bezel-border-bottom);
+  border-radius: 50%;
+  background: var(--_fill) padding-box;
+  box-shadow: var(--mac-bezel-highlight), var(--mac-bezel-shadow);
+  pointer-events: none;
+}
+
+/* Sizes */
+.mac-round-button:where([data-size="small"]) {
+  --_size: var(--mac-control-height-small);
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+.mac-round-button:where([data-size="mini"]) {
+  --_size: var(--mac-control-height-mini);
+  font: var(--mac-font-control-mini);
+  letter-spacing: var(--mac-tracking-mini);
+}
+
+/* Pressed */
+.mac-round-button:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  --_fill: var(--mac-bezel-fill-pressed);
+}
+
+/* Disabled */
+.mac-round-button:where([data-disabled]) {
+  color: var(--mac-color-control-text-disabled);
+}
+
+.mac-round-button:where([data-disabled])::before {
+  opacity: var(--mac-bezel-opacity-disabled);
+}
+
+/* Destructive: the disc fills the bezel's circle, flat, with no edge; the content is white,
+   also while disabled. Measured on Contacts' remove buttons in Aqua. */
+.mac-round-button:where([data-variant="destructive"]) {
+  --_fill: var(--mac-round-button-destructive-fill);
+  color: var(--mac-round-button-destructive-content);
+}
+
+.mac-round-button:where([data-variant="destructive"])::before {
+  border: 0;
+  background: var(--_fill);
+  box-shadow: none;
+}
+
+.mac-round-button:where([data-variant="destructive"]):where(:active, [data-force~="pressed"]):where(
+  :not([data-disabled])
+) {
+  --_fill: var(--mac-round-button-destructive-fill-pressed);
+}
+
+/* Keyboard focus ring; only in the key window, as in AppKit. The ring starts on the bezel's
+   border and reaches 2.5 pt beyond its edge. */
+.mac-round-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(
+    var(--mac-focus-ring-offset) -
+    var(--mac-bezel-inset) -
+    var(--mac-bezel-border-width)
+  );
+}
+
+@media (forced-colors: active) {
+  .mac-round-button::before {
+    border-color: ButtonText;
+  }
+
+  /* The destructive disc has no edge of its own: it gets one here, before the disabled rule,
+     so that a disabled destructive button takes the grey edge like any other. */
+  .mac-round-button:where([data-variant="destructive"])::before {
+    border: 1px solid ButtonText;
+  }
+
+  .mac-round-button:where([data-disabled])::before {
+    border-color: GrayText;
+    opacity: 1;
+  }
+}

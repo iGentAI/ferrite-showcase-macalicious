@@ -1,0 +1,857 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "callout-light",
+      "description": "12 pt statistic label in the summary box of Activity Monitor's footer (textStyle=callout), Aqua. The text is set in the fallback font off Apple platforms; its ink is the label colour (#262626 against #272727 in the capture).",
+      "example": "visual-callout",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.194,
+        "2x": 0.171
+      },
+      "deltaBudget": {
+        "1x": 20.6,
+        "2x": 23.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Activity-Monitor.png",
+        "crop": {
+          "x": 386,
+          "y": 1146,
+          "width": 140,
+          "height": 36
+        }
+      }
+    },
+    {
+      "name": "callout-light-text-masked",
+      "description": "As callout-light with the text masked, to score what is left without the fallback font.",
+      "example": "visual-callout",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.15,
+        "2x": 0.27
+      },
+      "masks": [
+        {
+          "x": 4,
+          "y": 4,
+          "width": 47,
+          "height": 13
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Activity-Monitor.png",
+        "crop": {
+          "x": 386,
+          "y": 1146,
+          "width": 140,
+          "height": 36
+        }
+      }
+    },
+    {
+      "name": "callout-dark",
+      "description": "12 pt statistic label in the summary box of Activity Monitor's footer (textStyle=callout), Dark Aqua.",
+      "example": "visual-callout",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.188,
+        "2x": 0.166
+      },
+      "deltaBudget": {
+        "1x": 17.2,
+        "2x": 18.9
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Activity-Monitor.png",
+        "crop": {
+          "x": 386,
+          "y": 1146,
+          "width": 140,
+          "height": 36
+        }
+      }
+    },
+    {
+      "name": "callout-dark-text-masked",
+      "description": "As callout-dark with the text masked, to score what is left without the fallback font.",
+      "example": "visual-callout",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.15,
+        "2x": 0.16
+      },
+      "masks": [
+        {
+          "x": 4,
+          "y": 4,
+          "width": 47,
+          "height": 13
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Activity-Monitor.png",
+        "crop": {
+          "x": 386,
+          "y": 1146,
+          "width": 140,
+          "height": 36
+        }
+      }
+    },
+    {
+      "name": "network-status-light",
+      "description": "Form label, bold value and two lines of small text in System Preferences > Network, Aqua.",
+      "example": "visual-network-status",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.159,
+        "2x": 0.098
+      },
+      "deltaBudget": {
+        "1x": 13.87,
+        "2x": 10.12
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Network.png",
+        "crop": {
+          "x": 700,
+          "y": 300,
+          "width": 380,
+          "height": 110
+        }
+      }
+    },
+    {
+      "name": "network-status-light-text-masked",
+      "description": "As network-status-light with every run of text masked, to score what is left without the fallback font.",
+      "example": "visual-network-status",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.3,
+        "2x": 0.63
+      },
+      "masks": [
+        {
+          "x": 15,
+          "y": 5,
+          "width": 44,
+          "height": 13
+        },
+        {
+          "x": 64,
+          "y": 5,
+          "width": 72,
+          "height": 13
+        },
+        {
+          "x": 64,
+          "y": 27,
+          "width": 114,
+          "height": 12
+        },
+        {
+          "x": 64,
+          "y": 41,
+          "width": 119,
+          "height": 12
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Network.png",
+        "crop": {
+          "x": 700,
+          "y": 300,
+          "width": 380,
+          "height": 110
+        }
+      }
+    },
+    {
+      "name": "network-status-dark",
+      "description": "Form label, bold value and two lines of small text in System Preferences > Network, Dark Aqua.",
+      "example": "visual-network-status",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.152,
+        "2x": 0.103
+      },
+      "deltaBudget": {
+        "1x": 13.28,
+        "2x": 9.93
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Network.png",
+        "crop": {
+          "x": 700,
+          "y": 300,
+          "width": 380,
+          "height": 110
+        }
+      }
+    },
+    {
+      "name": "network-status-dark-text-masked",
+      "description": "As network-status-dark with every run of text masked, to score what is left without the fallback font.",
+      "example": "visual-network-status",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.4,
+        "2x": 0.46
+      },
+      "masks": [
+        {
+          "x": 15,
+          "y": 5,
+          "width": 44,
+          "height": 13
+        },
+        {
+          "x": 64,
+          "y": 5,
+          "width": 72,
+          "height": 13
+        },
+        {
+          "x": 64,
+          "y": 27,
+          "width": 114,
+          "height": 12
+        },
+        {
+          "x": 64,
+          "y": 41,
+          "width": 119,
+          "height": 12
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Network.png",
+        "crop": {
+          "x": 700,
+          "y": 300,
+          "width": 380,
+          "height": 110
+        }
+      }
+    },
+    {
+      "name": "mini-text-light",
+      "description": "Three lines of 10 pt text in the opaque text colour (Network), Aqua.",
+      "example": "visual-mini-text",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.232,
+        "2x": 0.19
+      },
+      "deltaBudget": {
+        "1x": 20.55,
+        "2x": 25.5
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Network.png",
+        "crop": {
+          "x": 860,
+          "y": 704,
+          "width": 460,
+          "height": 96
+        }
+      }
+    },
+    {
+      "name": "mini-text-light-text-masked",
+      "description": "As mini-text-light with every run of text masked, to score what is left without the fallback font.",
+      "example": "visual-mini-text",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.3,
+        "2x": 0.64
+      },
+      "masks": [
+        {
+          "x": 2,
+          "y": 5,
+          "width": 226,
+          "height": 13
+        },
+        {
+          "x": 2,
+          "y": 18,
+          "width": 225,
+          "height": 13
+        },
+        {
+          "x": 2,
+          "y": 31,
+          "width": 142,
+          "height": 13
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Network.png",
+        "crop": {
+          "x": 860,
+          "y": 704,
+          "width": 460,
+          "height": 96
+        }
+      }
+    },
+    {
+      "name": "mini-text-dark",
+      "description": "Three lines of 10 pt text in the opaque text colour (Network), Dark Aqua.",
+      "example": "visual-mini-text",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.238,
+        "2x": 0.203
+      },
+      "deltaBudget": {
+        "1x": 20.61,
+        "2x": 24.77
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Network.png",
+        "crop": {
+          "x": 860,
+          "y": 704,
+          "width": 460,
+          "height": 96
+        }
+      }
+    },
+    {
+      "name": "mini-text-dark-text-masked",
+      "description": "As mini-text-dark with every run of text masked, to score what is left without the fallback font.",
+      "example": "visual-mini-text",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.38,
+        "2x": 0.44
+      },
+      "masks": [
+        {
+          "x": 2,
+          "y": 5,
+          "width": 226,
+          "height": 13
+        },
+        {
+          "x": 2,
+          "y": 18,
+          "width": 226,
+          "height": 13
+        },
+        {
+          "x": 2,
+          "y": 31,
+          "width": 142,
+          "height": 13
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Network.png",
+        "crop": {
+          "x": 860,
+          "y": 704,
+          "width": 460,
+          "height": 96
+        }
+      }
+    },
+    {
+      "name": "notifications-hint-light",
+      "description": "13 pt label and 11 pt secondary hint, two lines each (Notifications), Aqua.",
+      "example": "visual-notifications-hint",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.243,
+        "2x": 0.204
+      },
+      "deltaBudget": {
+        "1x": 19.8,
+        "2x": 21.62
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Notifications.png",
+        "crop": {
+          "x": 666,
+          "y": 326,
+          "width": 420,
+          "height": 140
+        }
+      }
+    },
+    {
+      "name": "notifications-hint-light-text-masked",
+      "description": "As notifications-hint-light with every run of text masked, to score what is left without the fallback font.",
+      "example": "visual-notifications-hint",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.3,
+        "2x": 0.3
+      },
+      "masks": [
+        {
+          "x": 2,
+          "y": 5,
+          "width": 157,
+          "height": 13
+        },
+        {
+          "x": 3,
+          "y": 21,
+          "width": 117,
+          "height": 13
+        },
+        {
+          "x": 2,
+          "y": 44,
+          "width": 198,
+          "height": 12
+        },
+        {
+          "x": 2,
+          "y": 58,
+          "width": 188,
+          "height": 12
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Notifications.png",
+        "crop": {
+          "x": 666,
+          "y": 326,
+          "width": 420,
+          "height": 140
+        }
+      }
+    },
+    {
+      "name": "notifications-hint-dark",
+      "description": "13 pt label and 11 pt secondary hint, two lines each (Notifications), Dark Aqua.",
+      "example": "visual-notifications-hint",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.25,
+        "2x": 0.211
+      },
+      "deltaBudget": {
+        "1x": 19.65,
+        "2x": 21.07
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Notifications.png",
+        "crop": {
+          "x": 666,
+          "y": 326,
+          "width": 420,
+          "height": 140
+        }
+      }
+    },
+    {
+      "name": "notifications-hint-dark-text-masked",
+      "description": "As notifications-hint-dark with every run of text masked, to score what is left without the fallback font.",
+      "example": "visual-notifications-hint",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.3,
+        "2x": 0.3
+      },
+      "masks": [
+        {
+          "x": 2,
+          "y": 5,
+          "width": 157,
+          "height": 13
+        },
+        {
+          "x": 3,
+          "y": 21,
+          "width": 117,
+          "height": 13
+        },
+        {
+          "x": 2,
+          "y": 44,
+          "width": 198,
+          "height": 12
+        },
+        {
+          "x": 2,
+          "y": 58,
+          "width": 188,
+          "height": 12
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Notifications.png",
+        "crop": {
+          "x": 666,
+          "y": 326,
+          "width": 420,
+          "height": 140
+        }
+      }
+    },
+    {
+      "name": "printer-details-light",
+      "description": "11 pt bold tertiary form labels with 11 pt values (Printers & Scanners), Aqua.",
+      "example": "visual-printer-details",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.12,
+        "2x": 0.091
+      },
+      "deltaBudget": {
+        "1x": 10.4,
+        "2x": 8.55
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Printers-and-Scanners.png",
+        "crop": {
+          "x": 720,
+          "y": 450,
+          "width": 220,
+          "height": 130
+        }
+      }
+    },
+    {
+      "name": "printer-details-light-text-masked",
+      "description": "As printer-details-light with every run of text masked, to score what is left without the fallback font.",
+      "example": "visual-printer-details",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 1.45,
+        "2x": 1.16
+      },
+      "masks": [
+        {
+          "x": 6,
+          "y": 5,
+          "width": 53,
+          "height": 12
+        },
+        {
+          "x": 66,
+          "y": 5,
+          "width": 35,
+          "height": 12
+        },
+        {
+          "x": 29,
+          "y": 27,
+          "width": 30,
+          "height": 13
+        },
+        {
+          "x": 66,
+          "y": 27,
+          "width": 44,
+          "height": 13
+        },
+        {
+          "x": 18,
+          "y": 49,
+          "width": 41,
+          "height": 12
+        },
+        {
+          "x": 66,
+          "y": 49,
+          "width": 21,
+          "height": 12
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Printers-and-Scanners.png",
+        "crop": {
+          "x": 720,
+          "y": 450,
+          "width": 220,
+          "height": 130
+        }
+      }
+    },
+    {
+      "name": "printer-details-dark",
+      "description": "11 pt bold tertiary form labels with 11 pt values (Printers & Scanners), Dark Aqua.",
+      "example": "visual-printer-details",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.114,
+        "2x": 0.088
+      },
+      "deltaBudget": {
+        "1x": 8.81,
+        "2x": 6.83
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Printers-and-Scanners.png",
+        "crop": {
+          "x": 720,
+          "y": 450,
+          "width": 220,
+          "height": 130
+        }
+      }
+    },
+    {
+      "name": "printer-details-dark-text-masked",
+      "description": "As printer-details-dark with every run of text masked, to score what is left without the fallback font.",
+      "example": "visual-printer-details",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.33,
+        "2x": 0.41
+      },
+      "masks": [
+        {
+          "x": 6,
+          "y": 5,
+          "width": 53,
+          "height": 12
+        },
+        {
+          "x": 66,
+          "y": 5,
+          "width": 35,
+          "height": 12
+        },
+        {
+          "x": 29,
+          "y": 27,
+          "width": 30,
+          "height": 13
+        },
+        {
+          "x": 66,
+          "y": 27,
+          "width": 44,
+          "height": 13
+        },
+        {
+          "x": 18,
+          "y": 49,
+          "width": 41,
+          "height": 12
+        },
+        {
+          "x": 66,
+          "y": 49,
+          "width": 21,
+          "height": 12
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Printers-and-Scanners.png",
+        "crop": {
+          "x": 720,
+          "y": 450,
+          "width": 220,
+          "height": 130
+        }
+      }
+    },
+    {
+      "name": "software-update-light",
+      "description": "Centred bold title, three centred small lines and a link (Software Update), Aqua.",
+      "example": "visual-software-update",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.212,
+        "2x": 0.124
+      },
+      "deltaBudget": {
+        "1x": 17.95,
+        "2x": 12.54
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Software-Update.png",
+        "crop": {
+          "x": 160,
+          "y": 450,
+          "width": 300,
+          "height": 160
+        }
+      }
+    },
+    {
+      "name": "software-update-light-text-masked",
+      "description": "As software-update-light with every run of text masked, to score what is left without the fallback font.",
+      "example": "visual-software-update",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.3,
+        "2x": 0.3
+      },
+      "masks": [
+        {
+          "x": 16,
+          "y": 4,
+          "width": 112,
+          "height": 15
+        },
+        {
+          "x": 2,
+          "y": 23,
+          "width": 139,
+          "height": 12
+        },
+        {
+          "x": 13,
+          "y": 37,
+          "width": 118,
+          "height": 14
+        },
+        {
+          "x": 49,
+          "y": 52,
+          "width": 46,
+          "height": 13
+        },
+        {
+          "x": 49,
+          "y": 65,
+          "width": 46,
+          "height": 12
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Software-Update.png",
+        "crop": {
+          "x": 160,
+          "y": 450,
+          "width": 300,
+          "height": 160
+        }
+      }
+    },
+    {
+      "name": "software-update-dark",
+      "description": "Centred bold title, three centred small lines and a link (Software Update), Dark Aqua.",
+      "example": "visual-software-update",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.199,
+        "2x": 0.122
+      },
+      "deltaBudget": {
+        "1x": 16.32,
+        "2x": 11.64
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Software-Update.png",
+        "crop": {
+          "x": 160,
+          "y": 450,
+          "width": 300,
+          "height": 160
+        }
+      }
+    },
+    {
+      "name": "software-update-dark-text-masked",
+      "description": "As software-update-dark with every run of text masked, to score what is left without the fallback font.",
+      "example": "visual-software-update",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.3,
+        "2x": 0.3
+      },
+      "masks": [
+        {
+          "x": 16,
+          "y": 3,
+          "width": 112,
+          "height": 16
+        },
+        {
+          "x": 2,
+          "y": 23,
+          "width": 140,
+          "height": 12
+        },
+        {
+          "x": 13,
+          "y": 37,
+          "width": 118,
+          "height": 14
+        },
+        {
+          "x": 49,
+          "y": 51,
+          "width": 46,
+          "height": 14
+        },
+        {
+          "x": 49,
+          "y": 65,
+          "width": 46,
+          "height": 12
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Software-Update.png",
+        "crop": {
+          "x": 160,
+          "y": 450,
+          "width": 300,
+          "height": 160
+        }
+      }
+    }
+  ]
+}

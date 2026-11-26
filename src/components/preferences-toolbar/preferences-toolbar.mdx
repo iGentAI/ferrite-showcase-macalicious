@@ -1,0 +1,182 @@
+---
+title: Preferences Toolbar
+description: The pane switcher of a preferences window, a row of icons with labels in the title bar, one of them selected.
+---
+
+<Example name="basic" both />
+
+The toolbar of a Catalina preferences window is an `NSToolbar` whose items are selectable:
+each is a 32 pt icon above a label, the selected one has a darker background that runs down to
+the toolbar's bottom line, and choosing another swaps the pane below. It is built on
+[Base UI's Tabs](https://base-ui.com/react/components/tabs): the bar is the tab list, an item
+is a tab and a pane is a tab panel.
+
+## Usage
+
+[Preferences Window](/components/preferences-window) assembles the window, the title bar and
+the panes around this toolbar, and is what an application normally uses:
+
+```tsx
+import { PreferencesToolbar, PreferencesToolbarItem } from "macalicious/preferences-toolbar";
+import { PreferencesWindow, PreferencesWindowPane } from "macalicious/preferences-window";
+import "macalicious/styles.css";
+
+<PreferencesWindow
+  toolbar={
+    <PreferencesToolbar aria-label="Preferences">
+      <PreferencesToolbarItem value="general" icon={<GeneralIcon />}>General</PreferencesToolbarItem>
+      <PreferencesToolbarItem value="accounts" icon={<AccountsIcon />}>Accounts</PreferencesToolbarItem>
+    </PreferencesToolbar>
+  }
+>
+  <PreferencesWindowPane value="general">…</PreferencesWindowPane>
+  <PreferencesWindowPane value="accounts">…</PreferencesWindowPane>
+</PreferencesWindow>
+```
+
+To put the toolbar in a window you assemble yourself, wrap the bar and its panes in
+`PreferencesToolbarRoot`, which links items to panes, and place the bar in a unified
+[Title Bar](/components/title-bar), whose surface it shares. Give the root the window with
+`render`, so that no extra element sits between the window and its bars:
+
+```tsx
+import {
+  PreferencesToolbar,
+  PreferencesToolbarItem,
+  PreferencesToolbarPanel,
+  PreferencesToolbarRoot,
+} from "macalicious/preferences-toolbar";
+import { TitleBar } from "macalicious/title-bar";
+import { Window, WindowBody } from "macalicious/window";
+
+<PreferencesToolbarRoot defaultValue="general" render={<Window width={480} />}>
+  <TitleBar variant="unified" title="General">
+    <PreferencesToolbar aria-label="Preferences">
+      <PreferencesToolbarItem value="general" icon={<GeneralIcon />}>General</PreferencesToolbarItem>
+      <PreferencesToolbarItem value="advanced" icon={<AdvancedIcon />}>Advanced</PreferencesToolbarItem>
+    </PreferencesToolbar>
+  </TitleBar>
+  <WindowBody>
+    <PreferencesToolbarPanel value="general">…</PreferencesToolbarPanel>
+    <PreferencesToolbarPanel value="advanced">…</PreferencesToolbarPanel>
+  </WindowBody>
+</PreferencesToolbarRoot>
+```
+
+Icons are yours to supply, as 32 pt artwork. Catalina's pane icons are Apple's and are not part
+of the library; the examples use stand-in shapes.
+
+## Guidelines
+
+From the Human Interface Guidelines for macOS,
+[Preferences](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/app-architecture/preferences/):
+
+- The toolbar of a preferences window is always visible and cannot be customised. It exists to
+  move between groups of settings that are always available, so do not add commands to it.
+- Show which pane is visible: the selected item keeps its selected appearance.
+- Set the window's title to the name of the visible pane.
+- Offer preferences through a menu item (Command-comma), not through a toolbar item in the
+  application's main window.
+
+## Variants and states
+
+<Example name="alignment" both />
+
+| Prop | Values | Source |
+| --- | --- | --- |
+| `alignment` | `leading` (default): items packed from the left edge. `center`: items centred as a group | Measured: leading in Mail, Calendar, Safari and Podcasts; centred in Music and TV |
+
+<Example name="states" both />
+
+| State | Look | Source |
+| --- | --- | --- |
+| Unselected | Icon and label on the bar | Measured (Mail, Music) |
+| Selected | Black at 10% (Dark Aqua: white at 10%) behind the item, from the title strip to the bottom line, top corners 4 pt | Measured (Mail, Music) |
+| Pressed | Icon and label a quarter darker until release | Provisional: no screenshot |
+| Keyboard focus | Focus ring drawn inside the item | Provisional: no screenshot |
+| Disabled | Icon and label at 35% | Provisional: no screenshot |
+| Inactive window | Icon and label at 50%, selection background kept | Provisional: no screenshot |
+
+There is no hover state: macOS toolbars have none.
+
+## Sizes
+
+One size. The bar is 56 pt high, which with the 22 pt title strip gives the measured 78 pt of
+title bar and toolbar. An item is as wide as its label, or its icon if that is wider, plus
+4.75 pt on each side; the items touch, so two labels are 9.5 pt apart. A preferences window is
+sized to fit its toolbar, so the bar never wraps or overflows.
+
+## API
+
+### PreferencesToolbarRoot
+
+<PropsTable name="PreferencesToolbarRootProps" />
+
+### PreferencesToolbar
+
+<PropsTable name="PreferencesToolbarProps" />
+
+### PreferencesToolbarItem
+
+<PropsTable name="PreferencesToolbarItemProps" />
+
+### PreferencesToolbarPanel
+
+<PropsTable name="PreferencesToolbarPanelProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-alignment` | bar | `leading`, `center` | Reflects `alignment`. |
+| `data-active` | item | present | The selected item (Base UI). |
+| `data-disabled` | item | present | A disabled item (Base UI). |
+
+Classes: `.mac-preferences-toolbar-root`, `.mac-preferences-toolbar`,
+`.mac-preferences-toolbar-item`, `.mac-preferences-toolbar-item-icon`,
+`.mac-preferences-toolbar-item-label` and `.mac-preferences-toolbar-panel`.
+
+## Accessibility
+
+- The bar is a `tablist`, each item a `tab` with `aria-selected`, each pane a `tabpanel`
+  labelled by its item. Give the bar an `aria-label`.
+- The bar is one tab stop. Left and Right Arrow move between the items, wrapping round; Home
+  and End go to the first and the last. As in AppKit, moving focus does not select: Space or
+  Return selects the focused item. Set `activateOnFocus` to select with the arrow keys.
+- The label names the item; the icon is hidden from assistive technology. An item always needs
+  a label.
+- A disabled item cannot be selected.
+- In forced-colours mode the selected item uses the system highlight colours.
+
+## Visual comparison
+
+`preferences-toolbar.visual.json` compares the title bar and toolbar of Mail's preferences
+(eight items, packed from the left) and of Music's (five items, centred, no window controls)
+with the reference screenshots in both appearances. The pane icons are Apple artwork: the
+examples draw none and every comparison masks them. Item widths in the two examples are set to
+the measured ones, because labels are set in the fallback font off Apple platforms.
+
+Scores from `npm run visual -- preferences-toolbar` in Chromium on Linux with the fallback
+font: the share of pixels that differ by more than the comparison's threshold, and the mean
+colour difference out of 255. A masked comparison also leaves out the labels and the title.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `mail-light` | Light-Mail-Preferences (112, 76, 1100, 156) | 6.31% | 5.76 | 3.94% | 4.04 |
+| `mail-light-chrome` (masked) | Light-Mail-Preferences (112, 76, 1100, 156) | 0.13% | 0.66 | 0.09% | 0.67 |
+| `mail-dark` | Dark-Mail-Preferences (112, 76, 1100, 156) | 6.17% | 7.32 | 3.69% | 5.68 |
+| `mail-dark-chrome` (masked) | Dark-Mail-Preferences (112, 76, 1100, 156) | 0.11% | 2.98 | 0.06% | 2.93 |
+| `music-light` | Light-Music-Preferences (112, 76, 1066, 156) | 3.52% | 3.55 | 2.15% | 2.43 |
+| `music-light-chrome` (masked) | Light-Music-Preferences (112, 76, 1066, 156) | 0.00% | 0.58 | 0.01% | 0.63 |
+| `music-dark` | Dark-Music-Preferences (112, 76, 1066, 156) | 3.47% | 4.59 | 2.04% | 3.48 |
+| `music-dark-chrome` (masked) | Dark-Music-Preferences (112, 76, 1066, 156) | 0.03% | 2.01 | 0.04% | 1.98 |
+
+The dark comparisons' mean difference is the shared title bar material, which is two to three
+levels darker than these two captures.
+
+Pixel checks without a reference: a click selects the second item and moves the selection
+background (`select-by-click-*`); Arrow Right then Space selects from the keyboard, with the
+focus ring inside the item (`keyboard-select-*`); the selection background stays in an
+inactive window (`inactive-*`).
+
+Measured: the bar's height, the item's inset, padding and label position, the selection
+background and its corners, the label colours. Provisional: the pressed, focused, disabled and
+inactive looks.

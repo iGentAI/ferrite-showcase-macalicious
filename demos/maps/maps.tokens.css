@@ -1,0 +1,239 @@
+/*
+ * Colours of Maps' own that no shared token holds. The measured ones are read from
+ * 10-15-Catalina-Light-Maps.png and 10-15-Catalina-Dark-Maps.png (sRGB). The colours of the
+ * placeholder drawings are the demo's own choice and come from no capture.
+ */
+:root {
+  /* [measured] The map's land: both captures, Light @ 1960,1424 and Dark @ 1640,204. */
+  --mac-maps-land: light-dark(#f9f5ed, #2b2d2f);
+
+  /* [measured] A place card's title, section headings and values: Light @ 457,167 (the
+     ink of "Apple Park") and Dark the same 38 px lower. */
+  --mac-maps-card-heading: light-dark(#3f3f3f, #ffffff);
+  /* [measured] The links of a place card: Light @ 567,652 and Dark the same 38 px lower. */
+  --mac-maps-link: light-dark(#027aff, #18a1d9);
+
+  /* [measured] The temperature beside the weather's mark: Light @ 2038,262. No Dark Aqua
+     capture shows the weather; its value there is inferred. */
+  --mac-maps-temperature: light-dark(#4c4c4c, #e0e0e0);
+  /* [measured] The air quality capsule and its title: Light @ 2000,300 and the black of its
+     letters @ 2020,302; shown in Aqua only, the same in Dark Aqua by inference. */
+  --mac-maps-air-quality: #53d768;
+  --mac-maps-air-quality-text: #000000;
+  /* [provisional] The plate behind the weather. Aqua is measured and computed: #ecebea over
+     the land #f9f5ed (Light @ 2040,250) is #e9e9e9 at 83%. No Dark Aqua capture shows the
+     weather; that half is inferred. */
+  --mac-maps-weather-plate: light-dark(rgb(233 233 233 / 0.83), rgb(70 70 70 / 0.83));
+
+  /* [provisional] The placeholder map's drawing: the bands, the disc, the stripe, the block
+     and its raised side. The demo's own neutral tints, not the captures' colours. */
+  --mac-maps-band: light-dark(#ffffff, #3b3d40);
+  --mac-maps-disc: light-dark(#e2e8dc, #323834);
+  --mac-maps-stripe: light-dark(#d5e0e8, #2c343b);
+  --mac-maps-block: light-dark(#ebe6dc, #36383a);
+  --mac-maps-block-side: light-dark(#cfc9bd, #1d1e20);
+  /* [provisional] The same drawing as a satellite view: darker ground in both appearances. */
+  --mac-maps-satellite-land: #454b45;
+  --mac-maps-satellite-band: #6a6f6a;
+  --mac-maps-satellite-disc: #3a4a3c;
+  --mac-maps-satellite-stripe: #33424c;
+  --mac-maps-satellite-block: #595c58;
+  /* [provisional] The two lines of the transit view and the ring of their station. */
+  --mac-maps-transit-a: light-dark(#d9534f, #e06b66);
+  --mac-maps-transit-b: light-dark(#3f7fd1, #5b97e3);
+  --mac-maps-station: light-dark(#ffffff, #1e1f20);
+  /* [provisional] A stretch of slow traffic, a route and the dot of the current location. */
+  --mac-maps-traffic: light-dark(#e8a33d, #d9953a);
+  --mac-maps-route: light-dark(#3478f6, #4a90ff);
+  --mac-maps-location: light-dark(#3478f6, #4a90ff);
+  --mac-maps-location-ring: light-dark(#ffffff, #f2f2f2);
+
+  /* [provisional] The placeholder pin: its ball, its stem and its ground mark, and the halo
+     that keeps its label readable on the drawing. */
+  --mac-maps-pin-ball: light-dark(#e2483d, #e9574c);
+  --mac-maps-pin-stem: light-dark(#8e9094, #a3a5a9);
+  --mac-maps-pin-ground: light-dark(rgb(0 0 0 / 0.18), rgb(0 0 0 / 0.4));
+  --mac-maps-pin-halo: light-dark(#f9f5ed, #2b2d2f);
+
+  /* [provisional] The weather's placeholder mark. */
+  --mac-maps-weather-glyph: light-dark(#b9bcc2, #8b8e93);
+
+  /* [provisional] A placeholder photograph: its panel and the mark on it. */
+  --mac-maps-photo-panel: light-dark(#d4d6d9, #46484b);
+  --mac-maps-photo-mark: light-dark(#b4b7bc, #5d6064);
+
+  /* [provisional] The three stand-in icons of the Share menus. */
+  --mac-maps-service-0: light-dark(#6aa6f0, #5b97e3);
+  --mac-maps-service-1: light-dark(#6fcf7c, #5fbd6c);
+  --mac-maps-service-2: light-dark(#f0c95a, #dcb84f);
+
+  /* [provisional] The scale legend's bar and the plate behind the map's notes. */
+  --mac-maps-note-plate: light-dark(rgb(255 255 255 / 0.85), rgb(40 40 40 / 0.85));
+
+  /* Lengths, in points from the window's top-left corner of 10-15-Catalina-Light-Maps.png and
+     10-15-Catalina-Dark-Maps.png (see the head of maps.css). */
+
+  /* [measured] The toolbar's items: Directions x 78..168, the location button x 248..286,
+     the search field x 294..690, Share x 698..738; the map types 16 pt after Share, twice
+     the toolbar's gap. */
+  --mac-maps-directions-width: 90px;
+  --mac-maps-locate-width: 38px;
+  --mac-maps-search-width: 396px;
+  --mac-maps-share-width: 40px;
+  --mac-maps-map-type-margin-inline-start: 8px;
+  /* [provisional] The narrowest the search field gets in a short window: the demo's choice. */
+  --mac-maps-search-min-width: 80px;
+
+  /* [provisional] The placeholder pin: the drawing's 28 x 42 pt box, hung so that the stem's
+     foot (14, 38) is on the place; the 14 pt box of its ball, the place card's anchor, 1 pt
+     under the top and 7 pt in; the focus ring's corner; the label 44 pt under the top, 10 pt
+     bold on 13 pt lines. */
+  --mac-maps-pin-width: 28px;
+  --mac-maps-pin-height: 42px;
+  --mac-maps-pin-foot-x: 14px;
+  --mac-maps-pin-foot-y: 38px;
+  --mac-maps-pin-radius: 6px;
+  --mac-maps-pin-head-top: 1px;
+  --mac-maps-pin-head-left: 7px;
+  --mac-maps-pin-head-size: 14px;
+  --mac-maps-pin-label-top: 44px;
+  --mac-maps-pin-label-font-size: 10px;
+  --mac-maps-pin-label-line-height: 13px;
+  --mac-maps-pin-label-letter-spacing: 0.04em;
+  /* [provisional] The blur of the halo that keeps the label readable on the drawing: two
+     shadows of 2 pt and one of 3 pt. */
+  --mac-maps-pin-halo-blur: 2px;
+  --mac-maps-pin-halo-outer-blur: 3px;
+
+  /* [provisional] The note of the last search and the scale legend at the map's top leading
+     corner: their place, the gap between them, the note's padding and corner, and the
+     legend's 60 pt bar. */
+  --mac-maps-notes-top: 12px;
+  --mac-maps-notes-left: 14px;
+  --mac-maps-notes-gap: 6px;
+  --mac-maps-note-padding: 2px 8px;
+  --mac-maps-note-radius: 4px;
+  --mac-maps-scale-width: 60px;
+  --mac-maps-scale-padding: 0 4px 1px;
+  --mac-maps-scale-radius: 0 0 2px 2px;
+
+  /* [measured] The weather: a 54 x 40.5 pt plate, 10 pt under the bar and 10.5 pt from the
+     window's edge (x 935.5..989.5, y 73..113.5); the mark's box 2.25 pt down and 1.75 pt in;
+     the temperature's digits from 23.5 pt, 17 pt type on 20 pt lines; the air quality
+     capsule, 51 x 15.5 pt, 1.5 pt from the sides and 2 pt from the bottom, 10 pt bold. */
+  --mac-maps-weather-top: 10px;
+  --mac-maps-weather-right: 10.5px;
+  --mac-maps-weather-width: 54px;
+  --mac-maps-weather-height: 40.5px;
+  --mac-maps-weather-radius: 5px;
+  --mac-maps-weather-glyph-top: 2.25px;
+  --mac-maps-weather-glyph-left: 1.75px;
+  --mac-maps-temperature-left: 22.5px;
+  --mac-maps-temperature-font-size: 17px;
+  --mac-maps-temperature-line-height: 20px;
+  --mac-maps-air-quality-top: 23px;
+  --mac-maps-air-quality-left: 1.5px;
+  --mac-maps-air-quality-width: 51px;
+  --mac-maps-air-quality-height: 15.5px;
+  --mac-maps-air-quality-radius: 5px;
+  --mac-maps-air-quality-font-size: 10px;
+  --mac-maps-air-quality-line-height: 15.5px;
+
+  /* [measured] The map controls: the Show pull-down 13.5 pt from the left and the zoom pair
+     13.5 pt from the right, both 14 pt from the bottom; the compass half a point right of the
+     zoom pair's middle and 6.5 pt above it (half a point more than the group's gap). */
+  --mac-maps-controls-inset-inline: 13.5px;
+  --mac-maps-controls-inset-block-end: 14px;
+  --mac-maps-compass-offset-x: 0.5px;
+  --mac-maps-compass-margin-block-end: 0.5px;
+
+  /* [measured] The place card, in points from its top (see the comment over .mac-maps-card in
+     maps.css): 320 pt wide and at most 600 pt high, a 34 pt head whose buttons' bezels are
+     y 7.5..27.5, x 231..268.5 and 277.5..311.5; the contents 15 pt from each side. */
+  --mac-maps-card-width: 320px;
+  --mac-maps-card-max-height: 600px;
+  --mac-maps-card-head-height: 34px;
+  --mac-maps-card-head-gap: 8px;
+  --mac-maps-card-head-padding: 7px 8px 0 0;
+  --mac-maps-card-action-width: 38.5px;
+  --mac-maps-card-share-width: 35px;
+  --mac-maps-card-content-padding: 0 15px 2px;
+  /* [measured] The title's capitals from y 51.5 and the second line's from y 69.5. */
+  --mac-maps-card-title-margin-top: 11.75px;
+  --mac-maps-card-subtitle-margin-top: -0.75px;
+  /* [measured] The full-width buttons' bezels y 116..136 and y 340.5..360.5. */
+  --mac-maps-card-button-margin-top: 33.5px;
+  --mac-maps-card-call-margin-top: 29px;
+  /* [measured] The photos, 290 x 127 from y 153: 192 x 127, then two of 96 x 62.5, 2 pt
+     apart. */
+  --mac-maps-card-photos-row-height: 62.5px;
+  --mac-maps-card-photos-lead-width: 192px;
+  --mac-maps-card-photos-side-width: 96px;
+  --mac-maps-card-photos-gap: 2px;
+  --mac-maps-card-photos-margin-top: 16.5px;
+  /* [measured] The links: 15 pt lines; the photos' link, capitals from y 298, on a 16 pt
+     line. */
+  --mac-maps-card-link-line-height: 15px;
+  --mac-maps-card-photos-link-margin-top: 15px;
+  --mac-maps-card-photos-link-line-height: 16px;
+  /* [measured] The sections: heading capitals from y 386.5, 482.5 and 533.5, values at a
+     15 pt pitch from 17.5 under them, separators at y 471 and 522, the last row from
+     y 585.5. */
+  --mac-maps-card-line-margin-top: 10px;
+  --mac-maps-card-section-padding-top: 7.5px;
+  --mac-maps-card-section-first-margin-top: 22.5px;
+  --mac-maps-card-section-row-margin-top: 19px;
+  --mac-maps-card-heading-margin-bottom: 1.5px;
+  --mac-maps-card-row-link-line-height: 16px;
+  --mac-maps-card-value-line-height: 15px;
+
+  /* [provisional] The real map the desktop's Ferrite application serves (maps-tiles.css, the
+     demo's own choices; no capture shows it): the halo of the location's accuracy, the
+     location dot and its ring, and the place, padding and type of the OpenStreetMap
+     attribution. */
+  --mac-maps-location-halo: light-dark(rgb(52 120 246 / 0.15), rgb(74 144 255 / 0.22));
+  --mac-maps-location-dot-size: 14px;
+  --mac-maps-location-ring-width: 3px;
+  --mac-maps-attribution-inset: 6px;
+  --mac-maps-attribution-padding: 1px 6px;
+  --mac-maps-attribution-font-size: 10px;
+  --mac-maps-attribution-line-height: 14px;
+
+  /* [provisional] The served window's places sidebar (maps-desktop.css): its width, padding
+     and gaps, and the gap above a card's Add to Guide button. */
+  --mac-maps-panel-width: 260px;
+  --mac-maps-journey-step-padding: 5px 6px;
+  --mac-maps-journey-step-radius: 4px;
+  --mac-maps-journey-step-distance-size: 11px;
+  --mac-maps-route-width: 5px;
+  --mac-maps-route-end-width: 3px;
+  --mac-maps-panel-padding: 12px;
+  --mac-maps-panel-gap: 8px;
+  /* [provisional] The line a row dragged in the sidebar would land at: no capture shows it. */
+  --mac-maps-drop-line: 2px;
+  --mac-maps-card-guide-margin-top: 8px;
+
+  /* [provisional] The list under the served window's search field (maps-desktop.css): the room it
+     leaves below it for the credit and the map's controls, and the credit's height over them. */
+  --mac-maps-search-list-room-below: 64px;
+  --mac-maps-attribution-above-controls: 38px;
+  --mac-maps-search-list-padding: 4px;
+  --mac-maps-search-list-radius: 6px;
+  --mac-maps-search-row-padding: 3px 12px;
+  --mac-maps-search-row-detail-font-size: 11px;
+  --mac-maps-search-row-detail-opacity: 0.7;
+}
+
+/* Lengths that differ between the appearances follow the number --mac-appearance-dark, and
+   are declared where it is, so that a subtree that switches appearance recomputes them. */
+:root,
+[data-appearance] {
+  /* [measured] What each of the three map types is wider by in Dark Aqua: 80, 78 and 79 pt
+     in Aqua (row 132 of the Light capture, from x=1621), 81, 79 and 80 pt in Dark Aqua (row
+     114 of the Dark capture, from x=1616), where Share and the search field stand 3 pt
+     further left for it. */
+  --mac-maps-map-type-extra: calc(1px * var(--mac-appearance-dark));
+  /* [provisional] OpenStreetMap's tiles are drawn for a light page; in Dark Aqua the real map
+     dims them by a fifth. */
+  --mac-maps-tile-brightness: calc(1 - 0.2 * var(--mac-appearance-dark));
+}

@@ -1,0 +1,142 @@
+---
+title: Shelf Pager
+description: The two thin chevrons in the side margins of a store shelf or hero, as in TV and Podcasts, that page it sideways and dim at its ends.
+---
+
+<Example name="basic" both />
+
+A shelf in TV, Podcasts or the App Store shows a few cards of a longer row. Two angle
+brackets stand in the page's side margins, level with the middle of the row; clicking one
+turns the page, and the one with nothing further in its direction is dimmed. The apps draw
+them themselves. `ShelfPager` wraps what is paged and adds the two chevrons, each a Base UI
+`Button`; it turns no page by itself, because what a page is belongs to the content.
+
+## Usage
+
+```tsx
+import type { CSSProperties } from "react";
+import { ShelfPager } from "macalicious/shelf-pager";
+import "macalicious/shelf-pager.css";
+
+<ShelfPager
+  previousDisabled={atStart}
+  nextDisabled={atEnd}
+  onPrevious={() => page(-1)}
+  onNext={() => page(1)}
+>
+  <div style={{ margin: "0 26px" }}>
+    <CardGrid
+      title="What to Watch"
+      layout="shelf"
+      columns={4}
+      style={{ "--mac-card-grid-margin": "14px" } as CSSProperties}
+    >
+      {cards}
+    </CardGrid>
+  </div>
+</ShelfPager>
+```
+
+Or copy the source into your project: `npx macalicious add shelf-pager`. See
+[Installation](/installation).
+
+The chevrons stand in the pager's side margins, so the content needs margins of its own of
+at least 27 pt. A [Card Grid](/components/card-grid) shelf scrolls under its section's
+margins, so give the section a margin of 14 pt, which its cards' shadows need, and put the
+rest around it, as the snippet above does: without the two, cards scroll under the chevrons. Paging the shelf is a `scrollBy` on its list by the list's width; this
+example also follows the scroll position to disable the chevron at each end:
+
+<Example name="shelf" both />
+
+## Guidelines
+
+The Human Interface Guidelines have no page for the chevrons. What the apps do:
+
+- Page by what is in view: a click brings the next set of cards, not one card.
+- Dim the chevron at an end instead of removing it, so the row does not appear to move.
+- Keep the chevrons in the margins, never over the cards.
+- The chevrons are an extra: the row also scrolls with the trackpad and the keyboard.
+
+## Variants and states
+
+<Example name="states" both />
+
+| State | How it is triggered | Look | Status |
+| --- | --- | --- | --- |
+| Enabled | – | Stroke `#262626`, Dark Aqua `#dddede` | measured |
+| Disabled | `previousDisabled`, `nextDisabled` | Stroke `#d4d4d4`, Dark Aqua `#444647` | measured |
+| Hover | – | No change | provisional |
+| Pressed | `:active` | The chevron at 70% | provisional |
+| Keyboard focus | `:focus-visible` | Focus ring around the chevron's box | provisional |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No focus ring; nothing else changes | provisional |
+
+Right to left, the chevrons swap sides and point the other way: the leading one is at the
+right. That follows the CSS direction of the pager, whether it comes from a `dir` attribute or
+from a stylesheet.
+
+## Sizes
+
+One size. A chevron is two 1 pt strokes in a 13 x 29 pt box that meet at the middle of its
+outer edge. The box's outer edge is 13.5 pt from the pager's edge
+(`--mac-shelf-pager-inset`) and its middle is level with the pager's middle. Where the
+content is not centred on its row, as a Card Grid with a 48 pt header and 32 pt under its
+cards, move the chevrons with `--mac-shelf-pager-offset` (8 pt down in that case).
+
+## API
+
+<PropsTable name="ShelfPagerProps" />
+
+The remaining props are those of a `<div>` and go to the pager's root with `ref`.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-direction` | chevron | `previous`, `next` | Which chevron it is. |
+| `data-disabled` | chevron | present or absent | Set by Base UI for a disabled chevron, with `aria-disabled="true"`. |
+
+Classes: `.mac-shelf-pager` and `.mac-shelf-pager-chevron`.
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-shelf-pager-inset` | `13.5px` | Distance of a chevron's outer edge from the pager's edge. |
+| `--mac-shelf-pager-offset` | `0px` | Moves the chevrons down from the pager's middle. |
+| `--mac-shelf-pager-chevron` | `#262626`, `#dddede` in Dark Aqua | Stroke of an enabled chevron. |
+| `--mac-shelf-pager-chevron-disabled` | `#d4d4d4`, `#444647` in Dark Aqua | Stroke of a disabled chevron. |
+
+## Accessibility
+
+- Each chevron is a button named "Previous" or "Next"; say what is paged with
+  `previousLabel` and `nextLabel` ("More shows").
+- The leading chevron comes before the content in the tab order and the trailing one after
+  it. Return and Space activate a chevron.
+- A disabled chevron has `aria-disabled="true"` and does nothing, but stays in the tab
+  order: a page turn that reaches an end disables the chevron that has the focus, and the
+  focus must not be lost.
+- The chevrons are 13 pt wide, as in TV, which is a small target. They repeat what the
+  content does by itself: make sure the content can be scrolled without them.
+- The focus ring is drawn only in a key window. In forced-colours mode the chevrons are
+  drawn in the system's button text colour, a disabled one in its grey.
+
+## Visual comparison
+
+`npm run visual -- shelf-pager` compares a chevron in each state the captures show with TV's
+window margins, in both appearances: the hero's shelf in Aqua, the first shelf, paged once,
+in Dark Aqua. Each crop is 28 x 44 pt and ends 2 pt inside the window's edge, so it scores
+the distance from the edge as well as the drawing. Nothing is masked, and a pixel counts as
+differing at a colour distance of 0.05. Share of pixels that differ, in Chromium on Linux:
+
+| Comparison | Aqua 2x | Aqua 1x | Dark Aqua 2x | Dark Aqua 1x |
+| --- | --- | --- | --- | --- |
+| Trailing chevron, enabled (`2640,1134,56,88`; Dark Aqua `2640,364,56,88`) | 0.32% | 5.93% | 0.24% | 5.84% |
+| Leading chevron, disabled (`116,1134,56,88`; Dark Aqua `116,364,56,88`) | 0.00% | 2.44% | 0.00% | 2.27% |
+
+At 1x a 1 pt slanted stroke cannot match the average of its 2x rendering, which is what
+those columns show.
+
+Measured: the chevron's box, its strokes, where they meet, its distance from the window's
+edge and its two colours in each appearance. Provisional, because no screenshot shows them:
+the pressed look, the focus ring and the look in a window that is not key. They are checked
+in a real browser (the `expect` comparisons): Tab puts a ring around the leading chevron and
+then around a disabled trailing one, none in a window that is not key, and a chevron held
+down is at 70%. The shelf example is paged with a click: the leading chevron becomes enabled,
+the trailing one disabled at the end, and no card lies under either. Podcasts' disabled chevron is lighter in Aqua (`#e6e6e6`); set
+`--mac-shelf-pager-chevron-disabled` for it.

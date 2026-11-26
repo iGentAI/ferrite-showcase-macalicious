@@ -1,0 +1,164 @@
+---
+title: Menu
+description: A list of commands that opens from a control and stays open until one is chosen. The vibrant Catalina menu surface, attached under a bar or detached.
+order: 60
+---
+
+<Example name="basic" />
+
+AppKit's `NSMenu`. The parts are built on [Base UI's Menu](https://base-ui.com/react/components/menu),
+which supplies the roles, focus management, arrow-key navigation, type-select and dismissal.
+`MenuPopup` combines Base UI's portal, positioner and popup, because a Catalina menu is always
+assembled the same way. The rows are [menu items](/components/menu-item); a row that opens
+another menu is a [submenu](/components/submenu).
+
+## Usage
+
+```tsx
+import { Menu, MenuPopup, MenuTrigger } from "macalicious/menu";
+import { MenuItem, MenuSeparator } from "macalicious/menu-item";
+import { PushButton } from "macalicious/push-button";
+import "macalicious/push-button.css";
+import "macalicious/menu.css";
+import "macalicious/menu-item.css";
+
+<Menu>
+  <MenuTrigger render={<PushButton>Actions</PushButton>} />
+  <MenuPopup>
+    <MenuItem keyEquivalent="command+n" onClick={newFolder}>New Folder</MenuItem>
+    <MenuSeparator />
+    <MenuItem keyEquivalent="command+delete" onClick={moveToTrash}>Move to Trash</MenuItem>
+  </MenuPopup>
+</Menu>
+```
+
+Or copy the source into your project: `npx macalicious add menu menu-item`.
+
+`MenuTrigger` renders an unstyled `<button>`: a menu has no bezel of its own, so pass the
+control that opens it with `render`. The menu is in the document only while it is open, and is
+rendered in a portal on `<body>` unless `container` names another element.
+
+`MenuPopup` works under any Base UI menu root, so the same surface serves a menu bar, a
+contextual menu and a submenu. Its classes select on attributes only, so the surface can also
+be put on a popup that is not a menu: give a Base UI Select or Combobox popup
+`className="mac-menu"`, its positioner `className="mac-menu-positioner"`, and its items the
+classes of a [menu item](/components/menu-item).
+
+## Guidelines
+
+From the macOS Human Interface Guidelines,
+[Menu Anatomy](https://web.archive.org/web/20200503171533/https://developer.apple.com/design/human-interface-guidelines/macos/menus/menu-anatomy/):
+
+- A menu stays open until the user chooses an item, moves to another menu or clicks outside it.
+- Group related items and separate the groups with separators; put the most used items first.
+- Dim an item that is not available instead of removing it, so that the menu keeps its shape.
+- Menus are translucent; do not give one an opaque background of your own.
+- Keep a menu short enough to fit the screen; one that does not fit scrolls.
+
+## Variants and states
+
+<Example name="attachment" both />
+
+| Prop or state | Look | Basis |
+| --- | --- | --- |
+| detached (default) | Four corners of 5 pt, a rim all round, 4 pt of padding above and below the rows | Measured (Print and Contacts menus) |
+| `attached` | Square top corners, no rim along the top edge; in Aqua the bar's shadow line runs over the first row of pixels | Measured (Apple, Finder and Go menus) |
+| Material | The menu tint over a blurred, saturated copy of what is behind it; opaque under `prefers-reduced-transparency` | Measured, computed |
+| Rim | White at 17%, 0.5 pt in Aqua; white at 15%, 1 pt in Dark Aqua; it lies over a highlighted row | Measured |
+| Hairline and shadow | A 0.5 pt outline and one soft shadow, the same in both appearances | Measured, computed |
+| Opening | Appears at once | Provisional |
+| Closing | Fades out over 0.25 s after a choice | Provisional |
+| Window not key | Unchanged: an open menu is a window of its own and is key | Catalog |
+
+The blink of the chosen item before the menu closes and the scroll arrows of a menu taller
+than the screen are not reproduced: a tall menu scrolls with the wheel or the arrow keys.
+
+## Sizes
+
+<Example name="sizes" both />
+
+Without `size` a menu uses the 14 pt menu font with 19 pt rows, as menu bar and contextual
+menus do. The menu of a pop-up button takes the font of its control: `size="regular"` is 13 pt
+with 18 pt rows and `size="small"` 12 pt with 17 pt rows (both measured), `size="mini"` 11 pt
+with 16 pt rows (provisional). The row height is always the font size plus 5.
+
+A menu is as wide as its widest item. Set `--mac-menu-min-width` or a `width` on the popup for
+a minimum or fixed width, for example the width of the control that opens it.
+
+## API
+
+`Menu` takes the props of Base UI's Menu.Root (`open`, `defaultOpen`, `onOpenChange`, `modal`,
+`disabled`, `loopFocus`, `handle`) and `MenuTrigger` those of Menu.Trigger. `MenuPopup` takes
+the props of Menu.Popup and these:
+
+<PropsTable name="MenuPopupProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-attached` | popup | present or absent | Reflects `attached`. |
+| `data-size` | popup | `regular`, `small`, `mini`, or absent | Reflects `size`. |
+| `data-appearance` | positioner | `dark` or absent | Set for the menus of a Dock menu, through `MenuPopupContext`. |
+| `data-key-equivalents` | popup | `hidden` or absent | Set for the menus of a contextual or Dock menu, through `MenuPopupContext`. |
+| `data-open`, `data-closed` | popup | present or absent | Set by Base UI. |
+| `data-starting-style`, `data-ending-style` | popup | present or absent | Set by Base UI while it appears and fades. |
+| `data-side`, `data-align` | popup | a side, an alignment | Where the menu was placed. |
+| `data-popup-open` | trigger | present or absent | The trigger's menu is open. |
+
+| CSS variable | Description |
+| --- | --- |
+| `--mac-menu-min-width` | Minimum width of the menu, set on the popup. |
+| `--mac-menu-fade` | The transition a menu closes with, `opacity 0.25s`. With `prefers-reduced-motion` it is `none`, for the menu, its rim and the pointer of a Dock menu. |
+
+Classes: `.mac-menu` (the popup) and `.mac-menu-positioner`. The positioner draws the rim over
+the rows, so a popup of another primitive that uses the surface needs both.
+
+`MenuPopupContext` carries what a kind of menu decides for every menu opened from it
+(`appearance: "dark"`, `keyEquivalents: "hidden"`). A submenu is rendered in a portal of its
+own, so it cannot inherit these from its parent's element; `MenuPopup` reads them from the
+context instead. [Dock](/components/dock-menu) and [contextual](/components/contextual-menu)
+menus provide it; provide it around a menu's items to do the same in a menu of your own. Those
+two add their own choice to what a provider around them decided: a contextual menu inside a
+dark provider is dark, and so are its submenus.
+
+## Accessibility
+
+- The popup has `role="menu"`; the trigger has `aria-haspopup="menu"` and `aria-expanded`.
+  A trigger without visible text needs an `aria-label`.
+- Down Arrow, Return or Space on the trigger opens the menu. Up and Down move the highlight
+  and wrap, Home and End go to the first and last item, typing the start of a title selects
+  it, Return or Space chooses, and Escape closes the menu and returns focus to the trigger.
+- Disabled items and separators are passed over by the arrow keys and by type-select, as in
+  Catalina. See [Menu Item](/components/menu-item) for what that means for assistive technology.
+- While a menu opened by a click is open it is modal, as in AppKit: the page behind it does
+  not scroll or take clicks. `modal={false}` on `Menu` switches that off.
+- With `prefers-reduced-transparency` the material is opaque; under `forced-colors` the menu
+  has a solid border. The fade is an opacity change only, and with `prefers-reduced-motion` a
+  menu closes at once.
+
+## Visual comparison
+
+`npm run visual -- menu/` renders the Apple menu of the Apple-Menu screenshots, attached under
+the menu bar's lower edge with its first item highlighted, and compares it with the screenshots
+in both appearances (`menu.visual.json`). Scores at 2x, in Chromium on Linux with the fallback
+font:
+
+| Crop | Aqua, whole crop | Aqua, drawing only | Dark Aqua, whole crop | Dark Aqua, drawing only |
+| --- | --- | --- | --- | --- |
+| Apple menu, pixels that differ | 6.79% | 0.22% | 7.03% | 0.90% |
+| Apple menu, mean Δ of 255 | 13.12 | 4.91 | 11.47 | 3.38 |
+
+"Drawing only" masks the titles and key equivalents and counts a pixel as differing at a colour
+distance of 0.05, half the default. What remains in the whole-crop scores is the text, set in
+the fallback font instead of San Francisco.
+
+What is not exact:
+
+- **The desktop picture.** The menu is compared over a gradient of the sky's colours, a
+  stand-in for Apple's picture, which is not shipped.
+- **The material.** Most of the mean Δ of the drawing is the fill: over the Day sky the shared
+  menu material comes out about 10 levels redder and 6 levels less blue than the capture (4
+  levels off in Dark Aqua). The recipe is one blur, one saturation and one tint; AppKit's is
+  several layers ([Fidelity limits](/fidelity)).
+- **Vibrant text.** Over the sky Catalina draws titles navy; here they are black at 85%.
+
+Provisional: the mini size, the fade, and the opaque material under reduced transparency.

@@ -1,0 +1,191 @@
+/*
+ * Notification in the Notification Center list.
+ *
+ * States
+ *   :hover, :focus-within, [data-force~="hover"]   the clear button takes the icon's place
+ *   :active, [data-force~="pressed"]               the text, when it is a button, darkens
+ *   :focus-visible, [data-force~="focus"]          focus ring
+ *   :where([data-window-state="main"], [data-window-state="inactive"]) *
+ *                                                  no focus ring outside the key window
+ *
+ * The card's box is 322 pt wide (--mac-notification-banner-width); a title and one line of
+ * text make the measured 77 pt. The 1 px edge is drawn over the fill by ::after.
+ */
+.mac-notification-banner {
+  position: relative;
+  box-sizing: border-box;
+  inline-size: var(--mac-notification-banner-width, 322px);
+  padding-block: var(--mac-hairline);
+  overflow: hidden;
+  /* The spec gives 4 pt, read from a 6 pt crop; the corner as captured is matched by 7. */
+  border-radius: 7px;
+  background: var(--mac-notification-banner-fill);
+  color: var(--mac-notification-banner-body);
+  font: var(--mac-font-body);
+}
+
+.mac-notification-banner::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 var(--mac-hairline) var(--mac-notification-banner-edge);
+  content: "";
+  pointer-events: none;
+}
+
+/* The band is 26 pt with the card's edge: the edge is its first half point. */
+.mac-notification-banner-header {
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  block-size: calc(26px - var(--mac-hairline));
+  align-items: center;
+  padding-inline: 9px 15.5px;
+  background: var(--mac-notification-banner-header-fill);
+}
+
+.mac-notification-banner-icon {
+  display: flex;
+  flex: none;
+  inline-size: 14px;
+  block-size: 14px;
+  align-items: center;
+  justify-content: center;
+}
+
+.mac-notification-banner-app {
+  overflow: hidden;
+  flex: 1;
+  min-inline-size: 0;
+  margin-inline: 9px 8px;
+  color: var(--mac-notification-banner-app);
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.mac-notification-banner-time {
+  flex: none;
+  color: var(--mac-notification-banner-time);
+  font: var(--mac-font-control-small);
+}
+
+/* The clear button sits on the icon and replaces it under the pointer or with the focus. */
+.mac-notification-banner-clear {
+  position: absolute;
+  inset-block-start: calc(50% - 7px);
+  inset-inline-start: 9px;
+  inline-size: 14px;
+  block-size: 14px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  appearance: none;
+  background: none;
+  color: var(--mac-notification-banner-clear);
+  opacity: 0;
+}
+
+.mac-notification-banner-clear > :where(svg) {
+  display: block;
+  fill: currentColor;
+}
+
+.mac-notification-banner:where(:hover, :focus-within, [data-force~="hover"])
+  .mac-notification-banner-clear {
+  opacity: 1;
+}
+
+.mac-notification-banner:where(:hover, :focus-within, [data-force~="hover"])
+  .mac-notification-banner-icon:where(:has(+ .mac-notification-banner-clear)) {
+  opacity: 0;
+}
+
+.mac-notification-banner-content {
+  display: flex;
+  box-sizing: border-box;
+  inline-size: 100%;
+  align-items: flex-start;
+  padding: 6px 15.5px 12.5px 18px;
+  border: 0;
+  appearance: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  gap: 8px;
+  text-align: start;
+}
+
+.mac-notification-banner-content:where(button:active, button[data-force~="pressed"]) {
+  background: var(--mac-notification-banner-pressed);
+}
+
+.mac-notification-banner-text {
+  display: flex;
+  flex: 1;
+  min-inline-size: 0;
+  flex-direction: column;
+}
+
+.mac-notification-banner-title,
+.mac-notification-banner-subtitle {
+  overflow: hidden;
+  color: var(--mac-notification-banner-title);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-notification-banner-title {
+  font-weight: var(--mac-font-weight-bold);
+}
+
+/* Up to four lines of message. */
+.mac-notification-banner-body {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+}
+
+.mac-notification-banner-thumbnail {
+  display: flex;
+  overflow: hidden;
+  flex: none;
+  inline-size: 32px;
+  block-size: 32px;
+  align-items: center;
+  justify-content: center;
+}
+
+.mac-notification-banner-clear:where(:focus-visible, [data-force~="focus"]),
+.mac-notification-banner-content:where(:focus-visible, [data-force~="focus"]) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+.mac-notification-banner-clear:where(:focus-visible, [data-force~="focus"]) {
+  outline-offset: 0;
+}
+
+.mac-notification-banner-clear:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+),
+.mac-notification-banner-content:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  outline: none;
+}
+
+@media (forced-colors: active) {
+  .mac-notification-banner {
+    border: 1px solid CanvasText;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mac-notification-banner-clear,
+  .mac-notification-banner-icon {
+    transition: opacity 0.1s;
+  }
+}

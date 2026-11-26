@@ -1,0 +1,208 @@
+---
+title: App Store
+description: The App Store window of macOS 10.15, a full-height sidebar with search and eight sections beside a scrolling page of a hero, story cards and lists of apps with offer buttons, over an invented catalogue, stand-in icons and abstract placeholders for the store's artwork.
+layout: full
+order: 95
+---
+
+<Example name="basic" />
+
+Choose a section in the sidebar, type in the search field, press an offer button and confirm
+it, open a collection with See All, or sign in. The Discover page repeats the words of the
+reference screenshot; the other seven pages, their stories and their apps are invented.
+Nothing is bought, downloaded or sent: an offer button only runs through the store's sequence
+on a timer. The app icons, the sidebar's glyphs and the avatar are original stand-in drawings,
+and the hero's picture and the stories' round artworks are abstract placeholders: the toolkit
+reproduces Catalina's chrome, not the store's artwork.
+
+## What it shows
+
+- A [Window](/components/window) without a title bar, as the store has it: a
+  [Split View](/components/split-view) fills the frame, with a 220 pt sidebar pane, a fixed
+  divider in the measured colour (through `--mac-split-view-divider-color`) and the content
+  pane.
+- Over the sidebar's rows, the [Window Controls](/components/window-controls) and a
+  [Search Field](/components/search-field) in its `store` variant, the store's own 26 pt
+  field. This strip is the window's drag region, through the library's `windowDragRegion`
+  (`macalicious/lib/window-drag-region`).
+- The eight sections in a [Sidebar](/components/sidebar): 42 pt rows that touch, a 26 pt
+  glyph and an 18 pt label, set through the sidebar's documented variables
+  (`--mac-sidebar-row-height`, `-row-spacing`, `-icon-size`, `-label-gap`). The account button
+  under the rows is the sidebar's `footer`: an [Image Button](/components/image-button) in
+  its `row` layout, whose image is the avatar with the name beside it.
+- The page in a [Scroll View](/components/scroll-view). The hero of Discover and the story
+  cards of every section are the [Editorial Card](/components/editorial-card): its `hero`
+  variant with an abstract placeholder as its `artwork` and the text over it, and its
+  `panel` variant with a round placeholder. Neither is restyled: the hero keeps the component's
+  945 : 340 proportions and both keep its type and colours.
+- The page's sections are the [Card Grid](/components/card-grid): one grid whose two cards
+  are the story cards, then a grid per collection
+  with the `lockup` cards, a `separator`, and the store's header type through the grid's
+  variables. The columns are not fixed: `minCardWidth` gives three columns of lockups and two
+  story cards at the captured width, and fewer in a narrower window.
+- Every lockup's `accessory` is a [Store Pill Button](/components/store-pill-button): the
+  offer (`Get`, a price, `Update`), then the filled confirmation (`Install` or `Buy App`),
+  then the progress ring, then `Open`. The `In-App Purchases` line is its `caption`.
+- `See All` is a `CardGridAction` rendered as a button; the categories are lockup cards
+  rendered as buttons; an empty search is an [Empty State](/components/empty-state); Sign Out
+  on the account page is a [Push Button](/components/push-button).
+
+The drawings and the placeholders that stand for the artwork are the demo's own
+(`app-store-artwork.tsx`).
+
+| Section | Page |
+| --- | --- |
+| Discover | The hero, two story cards, and “Apps and Games We Love Right Now”: nine lockups, twelve after See All. As in the screenshot. |
+| Arcade, Create, Work, Play, Develop | A large title, two story cards and one collection of six apps. Invented. |
+| Categories | Thirteen categories, each a button that lists its apps by searching for its name. Invented. |
+| Updates | Three apps that wait for an update, with Update All, and three updated lately. Invented. |
+
+Typing in the search field replaces the page with the apps whose name, line or category
+contains the text, whatever its case; no sidebar row is selected meanwhile. Escape, the
+field's cancel button or a press on a row ends the search. An offer keeps its state wherever
+its app is listed. A confirmation is withdrawn when the keyboard focus leaves it, and a press
+on a download stops it. Sign In asks for nothing: it signs in to an invented account, whose
+page lists the apps got in this window and has Sign Out.
+
+## Hosting the window
+
+`AppStore` renders the library's `Window` as its root and passes every `Window` prop to it, so
+it does not assume it fills the page. Place it with `style`; a window manager gives it `state`,
+the size, and eight more props that the component hands to the window controls and to its drag
+region. These are the props a [Managed Window](/components/managed-window)'s `render` form
+supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { appStoreApp } from "./app";
+
+<ManagedWindow
+  id={appStoreApp.id}
+  defaultFrame={{ x: 80, y: 60, ...appStoreApp.defaultSize }}
+  minWidth={appStoreApp.minSize.width}
+  minHeight={appStoreApp.minSize.height}
+  render={(props) => <appStoreApp.component material="opaque" {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `section`, `defaultSection`, `onSectionChange` | `"discover" \| "arcade" \| "create" \| "work" \| "play" \| "develop" \| "categories" \| "updates"` and a function | The section shown, controlled or not; Discover by default. |
+| `defaultScrollTop` | `number` | Points the page is scrolled by when the window opens; 0 by default. The comparison uses 20, the space over the hero. |
+| `material` | `"translucent" \| "opaque"` | The sidebar's surface: the vibrant material (the default), or the same surface as captured over a neutral window. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | A press or a double click on the strip that holds the window controls and the search field, not on a control in it. |
+| `width`, `height` | `number \| string` | The frame; 1246 by 857 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `appStoreApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (1246 by 857), `minSize` (760 by 480), `resizable` and
+`menus`, the menu titles after the Apple menu (App Store, Edit, Store, Window, Help).
+
+The purchase sequence is a pure function of its state (`reduceOffers` in
+`app-store-data.ts`); the component adds one timer, which runs only while something downloads.
+
+## On the desktop's Ferrite application
+
+When the `macalicious-desktop` Ferrite application serves the desktop (`ferrite-apps/desktop`),
+the store sells the Macalicious apps of the server's catalogue. Get puts an app in the person's
+library (`/api/app-store/library`), and so in their Dock and Launchpad in every browser.
+
+- **Uninstall**: on the account page each app got has an Uninstall button; in Launchpad,
+  holding Option makes the apps got from the store jiggle with a delete badge, and pressing one
+  asks “Delete ‘Books’?” while Launchpad stays open (`app-store-launchpad.tsx`). Both take the
+  app out of the library, and so out of the Dock and Launchpad in every browser. When the server
+  does not keep the change, the account page or an alert says so, and the change is sent again
+  the next time the library is read.
+  Its data stays as well: Storage Management counts it, and the app finds it again when it is got
+  again. Apps that come with the desktop cannot be deleted, and an app that is open stays in the
+  Dock until it is quit, as on macOS. The badge's colours are the tokens
+  `--mac-app-store-delete-badge-*` (`app-store.tokens.css`); its size and the jiggle are in
+  `app-store-launchpad.css`. All are provisional: no screenshot shows them.
+
+## Accessibility
+
+- The window is a `region` named “App Store”. It has no title bar, so the name is an
+  `aria-label`.
+- The sections are a `tree` named “Sections” and one tab stop: the arrow keys, Home and End
+  move the selection, typing selects by name, and the page follows the selection. The glyphs
+  are decorative; each row is named by its label.
+- The search field is a `searchbox` named “Search”. Escape clears it.
+- The account button is named by its text, Sign In or the account's name; once signed in it
+  is a toggle whose `aria-pressed` says whether the account page is shown.
+- A page starts with a level 1 heading, which on Discover is hidden from view because the
+  store shows none there. The titles of the hero and of the story cards are level 2
+  headings (the Editorial Card's `headingLevel`); the two story cards are the items of a
+  list in a section named “Stories”; each collection is a `region` named by its level 2
+  header and holds a list.
+- Every offer button is named with its app (“Get, Cozy Corners”), and `In-App Purchases` is its
+  description. While an app downloads the button is named “Stop downloading” and the app; the
+  ring is decorative, so a live region says when a download starts and when the app is
+  installed.
+- `See All` is a button with `aria-expanded`. A category is a button named by the category
+  and its count. Update All is disabled while nothing waits for an update.
+- The content pane is not a tab stop of its own: Tab moves through its buttons, and the
+  browser scrolls the focused one into view.
+- Focus rings and the accent selection of the sidebar are drawn only while the window is key.
+- The artwork is hidden from assistive technology; the text beside it names what it shows.
+
+## Fidelity
+
+`app-store.visual.json` compares the whole window with the App Store screenshots in both
+appearances, twice each. Both comparisons mask the artwork: the hero (945 by 340 pt at 261, 0,
+its text included) and the round artwork of the two story cards (170 pt squares at 538, 390
+and 1020, 390). The store's pictures there are replaced by abstract placeholders that take
+nothing from them, so there is nothing to compare; how the library draws a hero and a story
+card is compared on the [Editorial Card](/components/editorial-card) page. The `-layout`
+comparison also masks the text and the stand-in icons and glyphs. The two
+screenshots show the same content, so one example serves both. Scores from
+`npm run visual -- app-store/` in Chromium on Linux with the fallback font: the share of
+pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` (artwork masked) | 7.10% | 7.31 | 6.48% | 7.45 |
+| `window-light-layout` (artwork, text, icons and glyphs masked) | 0.02% | 0.14 | 0.01% | 0.12 |
+| `window-dark` (artwork masked) | 7.33% | 7.47 | 6.52% | 7.39 |
+| `window-dark-layout` (artwork, text, icons and glyphs masked) | 0.32% | 0.30 | 0.05% | 0.05 |
+
+Measured in the screenshots and reproduced: the 1246 by 857 pt frame; the 220 pt sidebar with
+its colour, the divider and the content pane's colour; the window controls and the 180 by
+26 pt search field where the capture has them; the eight rows at a 42 pt pitch from 94 pt,
+their selection, glyph box and label; the account button's 40 pt avatar and its label; the
+945 pt content column and the place of the hero's bottom edge; the two 462 by 230 pt story
+cards with their fill, corners and type (as the Editorial Card draws them); the collection's line, its 19.5 pt header and 15 pt `See All`; the three 301 pt columns of
+lockups with their 50 pt icons, their lines and the 66 by 21 pt offer capsules; and the title
+“Banners of the Nine Rivers” on two lines, as the Card Grid's lockup sets a long title.
+
+What differs, and why:
+
+- **Artwork.** The hero's photograph and the two round artworks are the store's; abstract
+  placeholders stand in their place and their regions are masked in every comparison. The
+  app icons, the sidebar glyphs and the avatar are Apple's or the apps' own, and are replaced
+  by original drawings, which the unmasked comparisons score as they are.
+- **Text.** Set in the fallback font off Apple devices. The two story cards' titles and
+  sentences are the Editorial Card's 20.5 and 12 pt, where the store sets them at 24 and
+  13 pt (in San Francisco “Act Fast!” is 89 pt of ink in the capture and 76.5 pt here), so
+  the first card's sentence breaks after “reaction time” where the store breaks it after
+  “reaction”. The selected row's label is the
+  sidebar's own darker colour, where the store keeps the grey of the other rows.
+- **The collection's line** ends 2 pt before the content column does, with the list of
+  lockups: the card grid draws the line as wide as its list.
+- **The hero's top.** The capture shows the hero's lower 340 pt; its top is scrolled out of
+  the window, so its full height is unknown. The Editorial Card's hero is 340 pt high at this
+  width and places its text from its bottom edge, the edge the capture shows, so the
+  comparison scrolls by the 20 pt over the
+  hero: the bottom edge is where the capture has it, and the hero's top edge
+  lies on the window's top edge with its two 6 pt corners, where the capture's photograph
+  runs on above the window. The 20 pt over the hero are an estimate, and the hero's region is
+  masked, so none of this is scored here.
+- **Not in a screenshot (provisional):** every page other than Discover with its large
+  title, the search results, the account page, the confirmation, progress and `Open` steps of
+  an offer, the accent selection while the sidebar has the keyboard focus, the window when it
+  is not key, and every size other than the captured one.
+- **Not built:** the pages of a story and of an app (the hero, the story cards and the
+  lockups' titles are not links), the page See All opens in the store (here the collection
+  grows in place), the sheet that asks for an Apple ID (Sign In signs in at once), and the
+  store's menus beyond their titles.

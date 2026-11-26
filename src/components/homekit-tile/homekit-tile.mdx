@@ -1,0 +1,171 @@
+---
+title: HomeKit Tile
+description: The tile of the Home app for one accessory or one scene, opaque white when it is on and a translucent panel over the wallpaper when it is off.
+---
+
+<Example name="basic" both />
+
+Home shows every accessory as a square tile and every scene as a wide one, in grids over a
+wallpaper. A tile that is on is opaque white with black text and a glyph in colour; a tile that
+is off lets the wallpaper through, blurred and tinted, with its text and glyph in a tone of
+what is behind them. Home is an iPad app running through Mac Catalyst, so the tile's metrics
+are the iPad's scaled to 77%. AppKit has no class for it. `HomekitTile` is Base UI's Toggle
+for an accessory and its Button for a scene.
+
+## Usage
+
+```tsx
+import { HomekitTile, HomekitTileGrid } from "macalicious/homekit-tile";
+import "macalicious/homekit-tile.css";
+
+<h2 id="accessories">Favorite Accessories</h2>
+<HomekitTileGrid aria-labelledby="accessories">
+  <HomekitTile
+    room="Master"
+    name="Corner Light"
+    status={on ? "On" : "Off"}
+    icon={<BulbGlyph />}
+    active={on}
+    onActiveChange={setOn}
+  />
+</HomekitTileGrid>
+```
+
+Or copy the source into your project: `npx macalicious add homekit-tile`.
+
+An accessory tile toggles: `active` is its state and `onActiveChange` hears a click. The
+`status` line is text the application writes ("On", "72%", "Paused"); the tile does not derive
+it. Draw the glyph with `currentColor`: it takes `tint` on an active tile (yellow by default,
+the colour of a light that is on) and the text tone on an inactive one. The library ships no
+glyphs: Home's are Apple's artwork.
+
+A scene tile does not toggle by itself. Its `onClick` runs the scene, and the application sets
+`active` on the scene that is in effect, which the tile also reports as `aria-pressed`:
+
+<Example name="scenes" both />
+
+Put the tiles over a picture or a colour. The inactive tile blurs its backdrop with
+`backdrop-filter`; over a flat colour the blur does nothing and the tint alone remains.
+
+## Guidelines
+
+The Human Interface Guidelines for macOS have no entry for this tile. Related are those on
+[Mac Catalyst](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/ios/overview/mac-catalyst/)
+and
+[translucency](https://web.archive.org/web/20200504055746/https://developer.apple.com/design/human-interface-guidelines/macos/visual-design/translucency/);
+the rest is how Home uses the tile in the screenshots (not verified against a published
+guideline):
+
+- One tile is one accessory or one scene. Its lines are room, name and state, in that order,
+  each on one line.
+- Say the state in words on the last line. The white fill alone must not be the only sign
+  that something is on.
+- Keep tiles at their size and let the grid wrap; do not stretch them to fill a row.
+- Translucency needs something behind it. Do not put inactive tiles on a plain window
+  background.
+
+## Variants and states
+
+<Example name="states" both />
+
+| Variant or state | Look | Status |
+| --- | --- | --- |
+| Active | Fill `#ffffff`, name `#000000`, state `#86868b`, glyph in its tint; the same in both appearances | measured |
+| Inactive, Aqua | A light tint over the blurred backdrop (`#276a86` over the capture's wallpaper), text and glyph a darker tone of it | measured, solved against the wallpaper |
+| Inactive, Dark Aqua | A dark tint (`#023c54` there), text and glyph a lighter tone | measured, solved against the wallpaper |
+| Scene | 211 x 54 pt, glyph and one line centred vertically | measured |
+| Badge | 13 pt circle on the glyph's lower right | size and place measured; drawn without the half-point ring of the capture |
+| Blur radius | 20 pt | provisional: a still does not show it |
+| More contrast | White text and glyph on an inactive tile (`contrast="more"`, or the reader's system setting) | provisional: the library's own, not Home's |
+| Pressed | The tile shrinks to 95% | provisional (the iPad's behaviour) |
+| No response | `disabled`: the tile at half opacity | provisional |
+| Keyboard focus | Focus ring, key window only | provisional: Home in 10.15 has no keyboard focus |
+| Window not key | No change | provisional (inferred) |
+
+## Sizes
+
+Two sizes, set by `kind`. An accessory tile is 101.5 pt square, a scene tile 211 x 54 pt, the
+width of two accessory tiles and the gap between them; corners are 13 pt. Tiles in a
+`HomekitTileGrid` stand 7.5 pt apart both ways. The glyph has a 24.5 pt slot, 12 pt from an
+accessory tile's top and leading edges, 9.5 pt from a scene tile's leading edge. Accessory text
+is 12 pt bold on a 14.5 pt line, 12 pt from the leading edge, with the last baseline 11 pt above
+the bottom edge; a scene's title is 14 pt semibold, 44 pt from the leading edge.
+
+## API
+
+<PropsTable name="HomekitTileProps" />
+
+The remaining props are those of Base UI's Button (`disabled`, `focusableWhenDisabled`,
+`onClick` and the attributes of a `<button>`) and go to the tile.
+
+<PropsTable name="HomekitTileGridProps" />
+
+| Attribute or variable | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-kind` | tile | `accessory`, `scene` | Reflects `kind`. |
+| `data-active` | tile | present or absent | The accessory is on or the scene is active. |
+| `aria-pressed` | tile | `true`, `false` | The same, for assistive technology. |
+| `data-disabled` | tile | present or absent | Reflects `disabled`. |
+| `data-contrast` | tile | `more` or absent | Reflects `contrast`. |
+| `--mac-homekit-tile-tint` | tile or an ancestor | a colour | The glyph's colour on an active tile; `tint` sets it on one tile. |
+| `--mac-homekit-tile-fill` | any ancestor | a colour | Tint of an inactive tile. |
+| `--mac-homekit-tile-blur` | any ancestor | a length | Blur of the backdrop under an inactive tile. |
+| `--mac-homekit-tile-text`, `-status` | any ancestor | a colour | Text and glyph, and the state line, of an inactive tile. |
+| `--mac-homekit-tile-text-contrast`, `-status-contrast` | any ancestor | a colour | The same two when more contrast is asked for, by `contrast="more"` or by the reader's system. |
+
+Classes: `.mac-homekit-tile`, `.mac-homekit-tile-icon`, `.mac-homekit-tile-badge`,
+`.mac-homekit-tile-text`, `.mac-homekit-tile-room`, `.mac-homekit-tile-name`,
+`.mac-homekit-tile-status` and `.mac-homekit-tile-grid`.
+
+## Accessibility
+
+- An accessory tile is a toggle button: `aria-pressed` says whether the accessory is on, and
+  Space or Return toggles it. A scene tile is a button that does not toggle by itself, and
+  `aria-pressed` says whether its owner has set it active, so the white fill is not the only
+  sign of the scene in effect. Pass `aria-pressed` yourself to say otherwise.
+- The tile's accessible name is its lines in order, "Master Corner Light On". The glyph and
+  the badge are hidden from assistive technology, so put what a badge means into `status`.
+- A line that is cut with an ellipsis is still read in full.
+- `HomekitTileGrid` is a `group`; name it with `aria-labelledby` and the heading above it, or
+  with `aria-label`.
+- The text of an inactive tile is tone on tone by design: about 1.7:1 in Aqua and 4.8:1 in
+  Dark Aqua over the capture's wallpaper, and in Aqua far below the 4.5:1 that text of this
+  size needs. `contrast="more"` gives an inactive tile white text and glyph (6:1 and 12:1
+  there), and a reader whose system asks for more contrast (`prefers-contrast: more`) gets
+  that without the prop. Use it wherever the tiles must be read at a glance. For other
+  colours set `--mac-homekit-tile-text` and `--mac-homekit-tile-status`; while more contrast
+  is asked for the tile uses `--mac-homekit-tile-text-contrast` and
+  `--mac-homekit-tile-status-contrast` in their place, so set those for that case.
+- The pressed tile's change of size is not animated when the user asks for reduced motion.
+- In forced-colours mode a tile is a bordered button and an active tile uses the system's
+  highlight colours.
+
+## Visual comparison
+
+`npm run visual -- homekit-tile` compares four tiles of the Home screenshots in both
+appearances: an accessory and a scene, each on and off. The glyphs are masked everywhere,
+because the examples draw stand-ins. The wallpaper is a photograph: under the tiles that are
+off the examples draw a gradient between the colours measured at the tile's two sides, and
+behind the corners of the tiles that are on a flat colour. Share of pixels that differ at 2x,
+in Chromium on Linux with the fallback font:
+
+| Crop | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Accessory, on, 102 x 102 pt (`580,1044,204,204`) | 6.71% | 6.69% |
+| Accessory, on, text masked | 3.39% | 3.39% |
+| Accessory, off (`143,1044,204,204`) | 0.67% | 1.65% |
+| Accessory, off, text masked | 2.12% | 1.09% |
+| Scene, on, 212 x 55 pt (`1017,728,424,110`) | 5.02% | 5.02% |
+| Scene, on, text masked | 4.21% | 4.21% |
+| Scene, off (`143,728,424,110`) | 2.35% | 3.54% |
+| Scene, off, text masked | 1.45% | 1.20% |
+
+The masked rows use a stricter threshold (0.05 in place of 0.1), which is why one scores
+higher than the row above it. Measured: the tiles' sizes, corner radius, fills and tints, the
+glyph slot, the text's size, weight, colours and position. What remains with the text masked
+is the tile's outline: Home's corners have continuous curvature, a CSS radius of 13 pt is a
+circular arc within a pixel of it, and the wallpaper behind the corners is not flat.
+
+Provisional, because no screenshot shows them: the blur radius, the pressed tile, the tile
+that does not respond and the focus ring. Turning a tile on with a click and from the keyboard
+is checked in a real browser (`expect` comparisons). The badge is not compared.

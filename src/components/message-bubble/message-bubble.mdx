@@ -1,0 +1,169 @@
+---
+title: Message Bubble
+description: The bubbles of the Messages transcript, tinted at the trailing edge for sent messages and grey at the leading edge for received ones, with the tail, the centred header and the delivery status.
+---
+
+<Example name="basic" both />
+
+Messages shows a conversation as a column of bubbles: what you sent at the trailing edge,
+tinted blue for iMessage, and what you received at the leading edge, in grey. The last bubble
+of a run has a tail that points to its writer's side. AppKit has no public class for any of
+this and Base UI no primitive, so the parts are list items drawn in CSS:
+`MessageTranscript` is the list, `MessageBubble` one message, `MessageTranscriptHeader` the
+centred lines above a run and `MessageStatus` the small label under the last sent bubble.
+
+## Usage
+
+```tsx
+import {
+  MessageBubble,
+  MessageStatus,
+  MessageTranscript,
+  MessageTranscriptHeader,
+} from "macalicious/message-bubble";
+import "macalicious/message-bubble.css";
+
+<MessageTranscript aria-label="Conversation with Ada Appleseed">
+  <MessageTranscriptHeader title="iMessage with Ada Appleseed">Today, 3:26 PM</MessageTranscriptHeader>
+  <MessageBubble direction="sent" sender="You">
+    Can you believe another year has gone by?!
+  </MessageBubble>
+  <MessageStatus>Delivered</MessageStatus>
+  <MessageBubble sender="Ada">New macOS, who dis?</MessageBubble>
+</MessageTranscript>
+```
+
+Or copy the source into your project: `npx macalicious add message-bubble`.
+
+Put the items in reading order, oldest first. Which bubble has a tail is yours to say: Messages
+draws it on the last bubble of a run from one writer, so pass `tail={false}` to the ones
+before it. The transcript takes the width of its container and does not scroll by itself:
+give it a height and `overflow`, or put it in a [scroll view](/components/scroll-view).
+
+<Example name="conversation" both />
+
+## Guidelines
+
+The Human Interface Guidelines have no section for the transcript; these follow what Messages
+does:
+
+- Sent messages go to the trailing edge and received ones to the leading edge. Do not swap
+  the sides to tell two other people apart: put a name above the run instead.
+- Colour says which service carried a sent message, not who wrote it. Received bubbles are
+  grey whatever the service.
+- Give the tail to the last bubble of a run only, so that a run reads as one turn.
+- Keep the status under the last sent bubble and nowhere else; it describes that one message.
+- Do not put controls in a bubble. A bubble is text; an action belongs next to the transcript.
+
+## Variants and states
+
+<Example name="services" both />
+
+| Variant or state | Look | Status |
+| --- | --- | --- |
+| Sent, iMessage | Gradient `#4bb7fa` to `#44b3f9`, Dark Aqua `#057df6` to `#047bf3`; white text | measured |
+| Received | `#e5e5ea` with black text, Dark Aqua `#555555` with white text | measured |
+| Tail | A curved point 4.7 pt beyond the bottom corner on the writer's side | measured |
+| Header and status | 11 pt semibold `#8e8e93` in both appearances | measured |
+| Window not key | No change: the Messages window in the screenshots is not key | measured |
+| Sent, text message (`service="sms"`) | Gradient `#5fd76b` to `#59d365`, Dark Aqua `#32c84e` to `#30c44c` | provisional |
+| Sending (`sending`) | The bubble at half opacity, and `aria-busy`, until the message is delivered | provisional |
+| Without a tail | The same bubble, all four corners round | provisional |
+| Right to left (`dir="rtl"`) | The sides swap: sent at the left, received at the right, tails mirrored | provisional |
+| Bubbles in a run, and where the writer changes | 1 pt apart, and 8 pt apart | provisional |
+| A header further down the transcript | 12 pt below the bubble before it | provisional |
+
+A bubble has no hover, pressed, focused or disabled look: it is not a control. Two things
+Messages has are not built, because no screenshot shows them and the spec gives no values for
+them: a selected bubble, and the tapback badges at a bubble's corner.
+
+## Sizes
+
+One size. A bubble is 24 pt tall for one line of 13 pt text and grows by 16 pt a line; its
+corners are 12 pt in the screenshots and are drawn with 11.7px, which matches them better. It
+is as wide as its text plus about 19 pt, up to `--mac-message-bubble-max-width` of the
+transcript inside its margins (61.6% by default, which gives the 261.75 pt bubble of the
+459 pt reference transcript). Bubbles keep 17 pt to either edge of the transcript and the tail
+reaches 4.7 pt into that margin. The header's two lines are 14 pt apart and the first bubble
+starts 4 pt below them; a status sits 3 pt under its bubble and the next bubble 4 pt under the
+status, 21 pt from bubble to bubble.
+
+## API
+
+<PropsTable name="MessageBubbleProps" />
+
+<PropsTable name="MessageTranscriptProps" />
+
+<PropsTable name="MessageTranscriptHeaderProps" />
+
+<PropsTable name="MessageStatusProps" />
+
+All four parts are `<div>`s and take a `<div>`'s remaining props; the three items carry
+`role="listitem"`. All four accept Base UI's `render` prop.
+
+| Attribute or variable | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-direction` | bubble | `sent`, `received` | Reflects `direction`. |
+| `data-service` | bubble | `imessage`, `sms` | Reflects `service`; it colours a sent bubble only. |
+| `data-tail` | bubble | present or absent | Reflects `tail`. |
+| `data-sending` | bubble | present or absent | Reflects `sending`. |
+| `--mac-message-bubble-max-width` | transcript or any ancestor | a length or percentage | The widest a bubble gets. A percentage is of the transcript inside its 17 pt margins. |
+| `--mac-message-bubble-transcript-background` | any ancestor | a colour | Background of the transcript. |
+| `--mac-message-bubble-imessage-fill-top`, `--mac-message-bubble-imessage-fill-bottom` | any ancestor | colours | Gradient of a sent iMessage bubble. |
+| `--mac-message-bubble-sms-fill-top`, `--mac-message-bubble-sms-fill-bottom` | any ancestor | colours | Gradient of a sent text message. |
+| `--mac-message-bubble-received-fill` | any ancestor | a colour | Fill of a received bubble. |
+| `--mac-message-bubble-sent-text`, `--mac-message-bubble-received-text` | any ancestor | colours | Text of a sent and of a received bubble. |
+| `--mac-message-bubble-status-text` | any ancestor | a colour | Text of the header and the status. |
+
+Classes: `.mac-message-bubble-transcript`, `.mac-message-bubble-list` (the list inside it),
+`.mac-message-bubble-header`, `.mac-message-bubble-header-title`, `.mac-message-bubble`,
+`.mac-message-bubble-sender` and `.mac-message-bubble-status`.
+
+## Accessibility
+
+- The transcript is a `log`, so a message added while it is on screen is announced politely
+  without moving the focus. Name it with `aria-label`. Inside it is one list, and the header,
+  each bubble and the status are its items, read in order. They are `<div>`s with the list
+  roles and not `<ol>` and `<li>`, so that a page's own list styles do not reach them.
+- A bubble's side and colour are the only visible sign of who wrote it. Pass `sender` so that
+  a screen reader hears the writer before the text: it is in the item, not on screen.
+- The colours come from Messages: white on the light blue bubble has a contrast of about
+  2.2:1 in Aqua, below what WCAG asks of text. Set the fill tokens darker where that matters
+  more than the likeness.
+- Nothing in the transcript is focusable. When it scrolls, make the scrolling element
+  focusable (`tabIndex={0}`) so that it can be scrolled from the keyboard.
+- A status describes the bubble above it. To tie the two for assistive technology, give the
+  status an `id` and the bubble `aria-describedby`.
+- In forced-colours mode a bubble is drawn with an outline in the system's colours, sent
+  bubbles in the highlight colour, and the tail keeps its shape in the outline's colour.
+
+## Visual comparison
+
+`npm run visual -- message-bubble` compares the top of the transcript, with the header, the
+sent two-line bubble, Delivered and the received bubble, with the Messages screenshots in both
+appearances. The Messages window is not key in either. Share of pixels that differ at 2x, in
+Chromium on Linux with the fallback font:
+
+| Crop, 450 x 125 pt (Aqua `1300,230,900,250`, Dark Aqua `1312,222,900,250`) | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Bubbles with their text | 4.30% | 4.63% |
+| Bubbles, gradient and tails, text masked | 0.08% | 0.10% |
+
+The same comparisons at 1x score 5.46% and 5.88% with the text, 0.10% and 0.09% without.
+
+Measured: the bubbles' positions and sizes, the corners, the gradient, the outline of the tail
+(fitted row by row to the sent bubble and mirrored for the received one), the text's size,
+colour and baselines, and the positions of the header and the status. What is left without the
+text is the antialiasing of edges that fall between device pixels in the screenshot: the sent
+bubble's right edge is at 441.85 pt there, and a browser draws it at 442 pt. The first row
+scores five lines of text set in the fallback font instead of San Francisco. The fixture gives
+the received bubble its measured width, because the fallback font sets its text a little
+wider, and leaves a blank where the screenshot has the recipient's blurred name.
+
+Provisional, because no screenshot shows them: the green of a text message, a bubble without a
+tail, a bubble that is still being sent (the spec infers half opacity; an `expect` comparison
+checks it), the gaps between bubbles that follow one another without a status, a header further down
+the transcript, and the rule that scales the widest bubble with the transcript (one transcript
+width is shown). The first two are checked in a real browser against the tokens (`expect`
+comparisons), as are the forced-colours outline and the tails of a right-to-left transcript. The gradient is drawn per bubble; in Messages
+it runs over the whole transcript, which two bubbles cannot show.

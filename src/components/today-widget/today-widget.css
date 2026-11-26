@@ -1,0 +1,158 @@
+/*
+ * Today widget: a card of Notification Center's Today view, and the system blocks of that view
+ * (rows of switches, the date, the summary).
+ *
+ * The card's box is 322 pt wide (--mac-today-widget-width). Its 1 px edge is drawn over the
+ * fill by ::after, and the content starts inside it, so two 42.5 pt rows and their divider
+ * make the measured 87 pt.
+ */
+.mac-today-widget {
+  position: relative;
+  box-sizing: border-box;
+  inline-size: var(--mac-today-widget-width, 322px);
+  padding-block: var(--mac-hairline);
+  overflow: hidden;
+  /* The spec gives 4 pt, read from a 6 pt crop; the corner as captured is matched by 7. */
+  border-radius: 7px;
+  background: var(--mac-today-widget-fill);
+  color: var(--mac-today-widget-text);
+  font: var(--mac-font-body);
+}
+
+.mac-today-widget::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 var(--mac-hairline) var(--mac-today-widget-edge);
+  content: "";
+  pointer-events: none;
+}
+
+/* The band is 26 pt with the card's edge: the edge is its first half point. */
+.mac-today-widget-header {
+  display: flex;
+  box-sizing: border-box;
+  block-size: calc(26px - var(--mac-hairline));
+  align-items: center;
+  padding-inline: 9px 12px;
+  background: var(--mac-today-widget-header-fill);
+  color: var(--mac-today-widget-title);
+}
+
+.mac-today-widget-icon {
+  display: flex;
+  flex: none;
+  inline-size: 14px;
+  block-size: 14px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The title starts 31.5 pt from the card's edge, with or without an icon. */
+.mac-today-widget-title {
+  overflow: hidden;
+  min-inline-size: 0;
+  margin-inline-start: 22.5px;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.mac-today-widget-icon + .mac-today-widget-title {
+  margin-inline-start: 8.5px;
+}
+
+.mac-today-widget-row {
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  block-size: 42.5px;
+  align-items: center;
+  padding-inline: 8px calc(10px - var(--mac-hairline));
+  margin-inline: var(--mac-hairline);
+  color: var(--mac-today-widget-row-label);
+  font: var(--mac-font-body);
+  font-weight: var(--mac-font-weight-semibold);
+}
+
+.mac-today-widget-row + .mac-today-widget-row {
+  margin-block-start: 1px;
+}
+
+/* The divider starts at the label, 31 pt from the card's edge. */
+.mac-today-widget-row + .mac-today-widget-row::before {
+  position: absolute;
+  inset-block: -1px auto;
+  inset-inline: calc(31px - var(--mac-hairline)) 0;
+  block-size: 1px;
+  background: var(--mac-today-widget-divider);
+  content: "";
+}
+
+.mac-today-widget-row-icon {
+  display: flex;
+  flex: none;
+  inline-size: 16px;
+  block-size: 16px;
+  align-items: center;
+  justify-content: center;
+}
+
+.mac-today-widget-row-label {
+  overflow: hidden;
+  flex: 1;
+  min-inline-size: 0;
+  margin-inline: calc(7px - var(--mac-hairline)) 8px;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Date: about 34 pt thin on a 38 pt line, 34 pt in from where a card would start. */
+.mac-today-widget-date {
+  display: flex;
+  box-sizing: border-box;
+  inline-size: var(--mac-today-widget-width, 322px);
+  flex-direction: column;
+  padding: 40px 12px 0 34px;
+  color: var(--mac-today-widget-date);
+  font: var(--mac-font-large-title);
+  font-size: 34px;
+  font-weight: 200;
+  line-height: 38px;
+}
+
+.mac-today-widget-summary {
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  inline-size: var(--mac-today-widget-width, 322px);
+  flex-direction: column;
+  padding: 28px 12px 29px 35px;
+  color: var(--mac-today-widget-summary);
+  font: var(--mac-font-body);
+  font-size: 12px;
+  line-height: 15px;
+  gap: 15px;
+}
+
+.mac-today-widget-summary > :where(p) {
+  margin: 0;
+}
+
+.mac-today-widget-summary-icon {
+  position: absolute;
+  display: flex;
+  inset-block-start: 26px;
+  inset-inline-start: 5.5px;
+  inline-size: 23px;
+  block-size: 18px;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (forced-colors: active) {
+  .mac-today-widget {
+    border: 1px solid CanvasText;
+  }
+}

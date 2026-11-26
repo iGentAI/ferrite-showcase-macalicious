@@ -1,0 +1,20 @@
+/*
+ * Stepper colours that no shared token holds. The bezel itself is the shared control bezel
+ * (src/styles/tokens/controls.css): the stepper's fill, three hairlines, halo and shadow
+ * read the same on Notifications @ 954,544,30,49 as the push button's.
+ */
+:root {
+  /* [measured, computed] Chevrons: #404040 on the white fill is black at 75%; #e8e8e8 on the
+     #686869 fill is white at 85% (Notifications @ 968,557, light and dark) */
+  --mac-stepper-glyph: light-dark(rgb(0 0 0 / 0.75), rgb(255 255 255 / 0.85));
+  /* [measured, computed] Chevrons of a disabled stepper: #909191 on the #f1f1f1 fill is black
+     at 40%; #7b7b7c on the #4f4f50 fill is white at 25% (Date and Time @ 652,405) */
+  --mac-stepper-glyph-disabled: light-dark(rgb(0 0 0 / 0.4), rgb(255 255 255 / 0.25));
+  /* [provisional] Layer over a half while it is pressed in a window that is not key, where
+     AppKit withholds the accent: it takes the fill to the shared pressed bezel
+     (--mac-bezel-fill-pressed: #f0f0f0, white at 36%). No screenshot shows it. */
+  --mac-stepper-fill-pressed-not-key: linear-gradient(
+    light-dark(rgb(0 0 0 / 0.059), rgb(255 255 255 / 0.147)),
+    light-dark(rgb(0 0 0 / 0.059), rgb(255 255 255 / 0.147))
+  );
+}

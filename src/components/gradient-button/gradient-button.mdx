@@ -1,0 +1,164 @@
+---
+title: Gradient Button
+description: A square-cornered icon button that sits under a list and adds, removes or acts on its rows.
+order: 13
+---
+
+<Example name="basic" both />
+
+AppKit calls this control a *gradient button* (`NSButton` with the small-square bezel style).
+The name is historical: in Catalina the fill is almost flat. It is built on
+[Base UI's Button](https://base-ui.com/react/components/button). Three parts:
+
+| Part | Use |
+| --- | --- |
+| `GradientButton` | One cell with a glyph. |
+| `GradientButtonGroup` | A row of cells that share their borders. |
+| `GradientButtonFiller` | The empty cell that continues the bar to the edge of the list above. |
+
+## Usage
+
+```tsx
+import {
+  GradientButton,
+  GradientButtonFiller,
+  GradientButtonGroup,
+} from "macalicious/gradient-button";
+import "macalicious/gradient-button.css";
+
+<GradientButtonGroup aria-label="Edit accounts">
+  <GradientButton glyph="add" aria-label="Add an account" onClick={add} />
+  <GradientButton glyph="remove" aria-label="Remove the account" disabled={!selection} />
+  <GradientButtonFiller />
+</GradientButtonGroup>
+```
+
+`glyph` draws one of the three standard images: `add`, `remove` or `action` (a gear with a
+chevron). For any other image pass an 11 to 14 pt icon that uses `currentColor` as children.
+Or copy the source into your project: `npx macalicious add gradient-button`. See
+[Installation](/installation).
+
+### Under a list
+
+The bar is attached to the bottom of its list with no gap: its top border is the list's bottom
+border. Give the group `display: flex` and the list's width, and end it with a filler.
+
+<Example name="under-a-list" />
+
+### Toggle and menu buttons
+
+A gradient button can stay on, or open a menu. For a toggle, hold the state yourself and pass
+it as `aria-pressed`. For a menu, pass the button to the trigger's `render` prop:
+`<Menu.Trigger render={<GradientButton glyph="action" aria-label="Actions" />} />`; it is drawn
+pressed while the menu is open.
+
+<Example name="toggle-button" />
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for gradient buttons:
+
+- A gradient button starts an immediate action that belongs to a view, typically adding or
+  removing rows of the table directly above it.
+- It contains an icon, not text, and needs no introducing label.
+- Put it in or directly under its view, never in a toolbar or status bar. Order the buttons
+  add, remove, then action.
+
+A pair of add and remove buttons that is not attached to a list uses a rounded segmented
+control in Catalina instead.
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | Near-flat light fill (flat dark grey in Dark Aqua), 1 pt border, glyph at 85% |
+| Pressed | `:active` | Darker flat fill in Aqua, lighter in Dark Aqua |
+| On | `aria-pressed="true"`, or its menu is open | As pressed |
+| Keyboard focus | `:focus-visible` | Focus ring over the cell's border |
+| Disabled | `disabled` | The glyph at 25%; the fill does not change |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | Unchanged, but no focus ring |
+| Network bar | `variant="network"` on the group | The bar as the Network pane draws it: in Dark Aqua a fill of `#4e4f50` to `#48494a`, a `#808080` top line, `#636465` bottom and outer borders and `#8a8b8c` between cells; in Aqua within two levels of the standard bar |
+
+## Sizes
+
+One size: 21 pt high (19 pt of fill between two 1 pt borders), and at least 25 pt wide, which
+leaves the 23 pt of fill measured in the Language & Region pane. The cells of Internet
+Accounts have 24 pt of fill: give each button `width: 26px` (the fill plus its two borders).
+An 11 pt glyph cannot be centred in an even width on whole points. The browser centres it on
+the half point; AppKit keeps to whole points, and in Internet Accounts the spare point is
+after the plus and before the minus. One point more than the default 4 pt of padding on that
+side (`padding-inline-end: 5px` or `padding-inline-start: 5px`) reproduces it. The example
+`visual-wide-cells` does so and is compared with that pane.
+
+## API
+
+<PropsTable name="GradientButtonProps" />
+
+<PropsTable name="GradientButtonGroupProps" />
+
+<PropsTable name="GradientButtonFillerProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-disabled` | present or absent | Set by Base UI while the button is disabled. |
+| `aria-pressed` | `true`, `false` | A toggle's state; `true` is drawn as on. |
+| `data-popup-open` | present or absent | Set by a menu trigger while its menu is open; drawn as on. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+| `data-variant` | `standard`, `network` | On the group: reflects its `variant`. |
+
+## Accessibility
+
+- Each button is a native `<button>`. Space and Return activate it; Tab moves from one button
+  to the next.
+- A button has no title, so it needs an `aria-label` that says what it does to what ("Remove
+  the selected account"), not the name of its glyph.
+- The group has `role="group"`; name it with `aria-label` when the buttons need a common
+  description. The filler is hidden from assistive technology.
+- Deleting with the Delete key in the list above should do what the remove button does.
+- In forced-colours mode the borders are drawn with system colours.
+
+## Visual comparison
+
+The example `visual-list-buttons` reproduces the add and remove buttons under the Preferred
+languages list of the Language & Region pane (add enabled, remove disabled, then the filler)
+and is compared with the screenshots in both appearances by `npm run visual`
+(`gradient-button.visual.json`). Share of pixels that differ at 2x at half the default colour
+distance, in Chromium on Linux:
+
+| Crop, 57 x 29 pt | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Add, remove and filler | 0.00% | 0.00% |
+| Internet Accounts, 59 x 29 pt: add and remove with 24 pt fills, both disabled | 0.00% | 0.00% |
+| Network, 90 x 29 pt: add, remove, action; gear and chevron masked | 0.00% | not compared |
+| Network, nothing masked | 2.65% | not compared |
+
+The height, the cell widths, the borders, the fill, the plus and minus glyphs and their enabled
+and disabled colours are measured. The gear and chevron of the `action` glyph are **substitute
+artwork**: drawn for this library on the measured ink boxes (a 13 pt gear, a 7 x 4.5 pt
+chevron, 2 pt from the left of a 28 pt fill), so the last row scores that drawing against
+Apple's, and the row above it shows that the cell around the glyph matches.
+
+The standard bar is not compared with the Network pane in Dark Aqua. There the screenshot
+draws this bar lighter than
+the one in Language & Region that the component's colours are measured from (fill `#4d4e4f`
+to `#48494a` against a flat `#3c3c3c`, cell borders `#8a8b8c` against `#7f7f7f`). The flat
+`#3c3c3c` bar is the
+one in four Dark Aqua captures (Language & Region, Internet Accounts, Sharing, and Users &
+Groups); the lighter bar is in Network alone, why is not established, and it is the group's
+opt-in `network` variant. That variant is compared with the Network pane in both appearances
+(`network-bar-dark`, `network-bar-light`, gear and chevron masked): 0.26% of pixels differ at
+2x in Dark Aqua (mean Δ 0.26) and 0.00% in Aqua (mean Δ 0.15); at 1x 1.35% and 1.05%.
+
+No screenshot shows a gradient button pressed, on or focused; those looks are the spec's
+inference and provisional. They are checked in a real browser against the spec's values (the
+`expect` comparisons): the borders, fill and glyph colours at rest, the pressed fill under a
+real mouse press, the fill of a button that is on, the focus ring after a real Tab, and that
+the ring is absent in an inactive window. The pull-down behaviour is checked the same way: the
+example `visual-pull-down` makes the action button the trigger of a Base UI menu, a real click
+opens the menu, and the trigger must then be drawn as pressed. That an open pull-down looks
+pressed is this library's reading of AppKit; no screenshot shows one open.

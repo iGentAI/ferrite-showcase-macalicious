@@ -1,0 +1,703 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "extras-light",
+      "description": "The menu bar extras of the desktop, none open, Aqua: nine cells of the measured widths packed against the trailing edge of the bar.",
+      "example": "visual-extras",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.158,
+        "2x": 0.139
+      },
+      "deltaBudget": {
+        "1x": 20.0,
+        "2x": 21.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Desktop.png",
+        "crop": {
+          "x": 2500,
+          "y": 0,
+          "width": 860,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "extras-light-drawing",
+      "description": "As extras-light with the images, the clock and the user name masked, to score the drawing alone: text is set in the fallback font off Apple platforms and the images are stand-ins.",
+      "example": "visual-extras",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 15,
+          "y": 3,
+          "width": 392,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 3.6,
+        "2x": 3.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Desktop.png",
+        "crop": {
+          "x": 2500,
+          "y": 0,
+          "width": 860,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "battery-open-light",
+      "description": "The battery extra after a click, Aqua: its 36 pt cell highlighted from edge to edge and as high as the bar, between the neighbouring cells.",
+      "example": "visual-battery-open",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "[data-testid=battery]"
+        }
+      ],
+      "budget": {
+        "1x": 0.124,
+        "2x": 0.115
+      },
+      "deltaBudget": {
+        "1x": 15.4,
+        "2x": 15.4
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Menu-Bar-Battery.png",
+        "crop": {
+          "x": 2700,
+          "y": 0,
+          "width": 116,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "battery-open-light-drawing",
+      "description": "As battery-open-light with the battery image and the ends of the neighbouring images masked, to score the drawing alone: text is set in the fallback font off Apple platforms and the images are stand-ins.",
+      "example": "visual-battery-open",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "[data-testid=battery]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 0,
+          "y": 4,
+          "width": 4,
+          "height": 14
+        },
+        {
+          "x": 17,
+          "y": 4,
+          "width": 24,
+          "height": 14
+        },
+        {
+          "x": 56,
+          "y": 5,
+          "width": 2,
+          "height": 11
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0303,
+        "2x": 0.0405
+      },
+      "deltaBudget": {
+        "1x": 5.1,
+        "2x": 5.1
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Menu-Bar-Battery.png",
+        "crop": {
+          "x": 2700,
+          "y": 0,
+          "width": 116,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "extras-dark",
+      "description": "The menu bar extras of the desktop, none open, Dark Aqua: nine cells of the measured widths packed against the trailing edge of the bar.",
+      "example": "visual-extras",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.17,
+        "2x": 0.151
+      },
+      "deltaBudget": {
+        "1x": 22.4,
+        "2x": 23.7
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Desktop.png",
+        "crop": {
+          "x": 2500,
+          "y": 0,
+          "width": 860,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "extras-dark-drawing",
+      "description": "As extras-dark with the images, the clock and the user name masked, to score the drawing alone: text is set in the fallback font off Apple platforms and the images are stand-ins.",
+      "example": "visual-extras",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 15,
+          "y": 3,
+          "width": 392,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 1.8,
+        "2x": 1.9
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Desktop.png",
+        "crop": {
+          "x": 2500,
+          "y": 0,
+          "width": 860,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "battery-open-dark",
+      "description": "The battery extra after a click, Dark Aqua: its 36 pt cell highlighted from edge to edge and as high as the bar, between the neighbouring cells.",
+      "example": "visual-battery-open",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "[data-testid=battery]"
+        }
+      ],
+      "budget": {
+        "1x": 0.178,
+        "2x": 0.164
+      },
+      "deltaBudget": {
+        "1x": 25.0,
+        "2x": 25.1
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Menu-Bar-Battery.png",
+        "crop": {
+          "x": 2716,
+          "y": 0,
+          "width": 116,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "battery-open-dark-drawing",
+      "description": "As battery-open-dark with the battery image and the ends of the neighbouring images masked, to score the drawing alone: text is set in the fallback font off Apple platforms and the images are stand-ins.",
+      "example": "visual-battery-open",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "[data-testid=battery]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 0,
+          "y": 4,
+          "width": 4,
+          "height": 14
+        },
+        {
+          "x": 17,
+          "y": 4,
+          "width": 24,
+          "height": 14
+        },
+        {
+          "x": 56,
+          "y": 5,
+          "width": 2,
+          "height": 11
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0075,
+        "2x": 0.0103
+      },
+      "deltaBudget": {
+        "1x": 2.8,
+        "2x": 2.9
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Menu-Bar-Battery.png",
+        "crop": {
+          "x": 2716,
+          "y": 0,
+          "width": 116,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "time-machine-menu-light",
+      "description": "The Time Machine status menu open under its extra, Aqua: the highlighted 40 pt cell, and the 262 pt menu attached under the bar at the cell's leading edge with two disabled items and Enter Time Machine highlighted.",
+      "example": "visual-time-machine-menu",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "[data-testid=time-machine]"
+        },
+        {
+          "hover": "[data-testid=enter]"
+        }
+      ],
+      "budget": {
+        "1x": 0.116,
+        "2x": 0.113
+      },
+      "deltaBudget": {
+        "1x": 14.1,
+        "2x": 15.4
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Time-Machine-Menu.png",
+        "crop": {
+          "x": 2508,
+          "y": 0,
+          "width": 544,
+          "height": 308
+        }
+      }
+    },
+    {
+      "name": "time-machine-menu-light-drawing",
+      "description": "As time-machine-menu-light with the images, the neighbouring extras and the titles masked, to score the drawing alone: text is set in the fallback font off Apple platforms and the images are stand-ins.",
+      "example": "visual-time-machine-menu",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "[data-testid=time-machine]"
+        },
+        {
+          "hover": "[data-testid=enter]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 15,
+          "y": 3,
+          "width": 20,
+          "height": 17
+        },
+        {
+          "x": 45,
+          "y": 3,
+          "width": 227,
+          "height": 17
+        },
+        {
+          "x": 24,
+          "y": 27,
+          "width": 235,
+          "height": 17
+        },
+        {
+          "x": 24,
+          "y": 46,
+          "width": 235,
+          "height": 17
+        },
+        {
+          "x": 24,
+          "y": 77,
+          "width": 235,
+          "height": 17
+        },
+        {
+          "x": 24,
+          "y": 96,
+          "width": 235,
+          "height": 17
+        },
+        {
+          "x": 24,
+          "y": 127,
+          "width": 235,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0039,
+        "2x": 0.0028
+      },
+      "deltaBudget": {
+        "1x": 4.6,
+        "2x": 4.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Time-Machine-Menu.png",
+        "crop": {
+          "x": 2508,
+          "y": 0,
+          "width": 544,
+          "height": 308
+        }
+      }
+    },
+    {
+      "name": "user-menu-light",
+      "description": "The fast user switching menu open under the user name, Aqua: the highlighted 64 pt cell, and the 235 pt menu attached under the bar at the cell's trailing edge, with two 34 pt user rows (the first highlighted), separators and two items.",
+      "example": "visual-user-menu",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "[data-testid=user]"
+        },
+        {
+          "hover": "[data-testid=other]"
+        }
+      ],
+      "budget": {
+        "1x": 0.13,
+        "2x": 0.122
+      },
+      "deltaBudget": {
+        "1x": 17.0,
+        "2x": 18.0
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Fast-User-Switching-Menu.png",
+        "crop": {
+          "x": 2656,
+          "y": 0,
+          "width": 490,
+          "height": 330
+        }
+      }
+    },
+    {
+      "name": "user-menu-light-drawing",
+      "description": "As user-menu-light with the neighbouring extras, the user name, the pictures and the titles masked, to score the drawing alone: text is set in the fallback font off Apple platforms and the images are stand-ins.",
+      "example": "visual-user-menu",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "[data-testid=user]"
+        },
+        {
+          "hover": "[data-testid=other]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 0,
+          "y": 3,
+          "width": 176,
+          "height": 17
+        },
+        {
+          "x": 181,
+          "y": 3,
+          "width": 54,
+          "height": 17
+        },
+        {
+          "x": 24,
+          "y": 27,
+          "width": 208,
+          "height": 32
+        },
+        {
+          "x": 8,
+          "y": 61,
+          "width": 224,
+          "height": 32
+        },
+        {
+          "x": 24,
+          "y": 107,
+          "width": 208,
+          "height": 17
+        },
+        {
+          "x": 24,
+          "y": 138,
+          "width": 208,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0093,
+        "2x": 0.0095
+      },
+      "deltaBudget": {
+        "1x": 4.4,
+        "2x": 4.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Fast-User-Switching-Menu.png",
+        "crop": {
+          "x": 2656,
+          "y": 0,
+          "width": 490,
+          "height": 330
+        }
+      }
+    },
+    {
+      "name": "time-machine-menu-dark",
+      "description": "The Time Machine status menu in Dark Aqua, held to pixels of the Time-Machine-Menu screenshot: the open cell, the menu's edges and the highlighted row. The whole crop is not compared in Dark Aqua: over this dark part of the picture the shared menu material is about 16 levels lighter than the capture, which no budget of the tight tier holds.",
+      "example": "visual-time-machine-menu",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "[data-testid=time-machine]"
+        },
+        {
+          "hover": "[data-testid=enter]"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 272,
+          "height": 154
+        },
+        "pixels": [
+          {
+            "x": 8,
+            "y": 3,
+            "color": "#0463ce",
+            "tolerance": 3,
+            "note": "the open extra's highlight (measured, 10-15-Catalina-Dark-Time-Machine-Menu.png, crop 2524,0 @ 16,6)"
+          },
+          {
+            "x": 2,
+            "y": 10,
+            "color": "#181d2f",
+            "tolerance": 3,
+            "note": "the bar before the cell, which starts at x 5 (measured @ 4,20)"
+          },
+          {
+            "x": 10,
+            "y": 96.5,
+            "color": "#0967d5",
+            "tolerance": 6,
+            "note": "top of the highlighted row, Enter Time Machine, which starts at y 95: the dark menu highlight measured on the Contacts action menu (menu-item spec); this capture reads #0764d1"
+          },
+          {
+            "x": 10,
+            "y": 112.5,
+            "color": "#0967d5",
+            "tolerance": 6,
+            "note": "bottom of the same row, which ends at y 114"
+          },
+          {
+            "x": 2.5,
+            "y": 80,
+            "color": "#0a2143",
+            "tolerance": 4,
+            "note": "the picture left of the menu, which starts at x 5 (measured @ 5,160)"
+          },
+          {
+            "x": 269.5,
+            "y": 80,
+            "color": "#051c3b",
+            "tolerance": 3,
+            "note": "the picture right of the menu, which is 262 pt wide and ends at x 267 (measured @ 539,160)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "user-menu-dark",
+      "description": "The fast user switching menu in Dark Aqua, held to pixels of the Fast-User-Switching-Menu screenshot: the open cell, the menu's edges and the highlighted 34 pt user row. The whole crop is not compared in Dark Aqua: over this dark part of the picture the shared menu material is about 16 levels lighter than the capture, which no budget of the tight tier holds.",
+      "example": "visual-user-menu",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "[data-testid=user]"
+        },
+        {
+          "hover": "[data-testid=other]"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 245,
+          "height": 165
+        },
+        "pixels": [
+          {
+            "x": 178,
+            "y": 3,
+            "color": "#0463ce",
+            "tolerance": 3,
+            "note": "the open extra's highlight (measured, 10-15-Catalina-Dark-Fast-User-Switching-Menu.png, crop 2656,0 @ 356,6)"
+          },
+          {
+            "x": 243,
+            "y": 10,
+            "color": "#151d29",
+            "tolerance": 6,
+            "note": "the bar after the cell, which ends at x 240 (measured @ 486,20)"
+          },
+          {
+            "x": 10,
+            "y": 27.5,
+            "color": "#0967d5",
+            "tolerance": 6,
+            "note": "top of the highlighted user row, which starts at y 26: the dark menu highlight measured on the Contacts action menu (menu-item spec); this capture reads #0863ce"
+          },
+          {
+            "x": 10,
+            "y": 58.5,
+            "color": "#0967d5",
+            "tolerance": 6,
+            "note": "bottom of the same row, 34 pt high, which ends at y 60"
+          },
+          {
+            "x": 2.5,
+            "y": 80,
+            "color": "#0b2243",
+            "tolerance": 5,
+            "note": "the picture left of the menu, which is 235 pt wide and starts at x 5 (measured @ 5,160)"
+          },
+          {
+            "x": 242.5,
+            "y": 80,
+            "color": "#041b3b",
+            "tolerance": 3,
+            "note": "the picture right of the menu, whose trailing edge is the cell's at x 240 (measured @ 485,160)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "hover-switch-light",
+      "description": "Real input: with the user menu open, the pointer moves to the battery extra, which opens its menu and takes the highlight. Captures the battery cell.",
+      "example": "visual-extras",
+      "appearance": "light",
+      "selector": "[data-testid=battery]",
+      "actions": [
+        {
+          "click": "[data-testid=user]"
+        },
+        {
+          "hover": "[data-testid=battery]"
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 2,
+            "y": 3,
+            "color": "#3b8ff6",
+            "tolerance": 5,
+            "note": "highlight of an open extra (measured #3b8ff6 on the open battery extra, Menu-Bar-Battery @ 2725,3; menu-bar-extra.md, Highlight fill)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-menu-light",
+      "description": "Real input: a click on the Spotlight extra, which has no menu; the fixture does not set active, so the cell shows the bar and no highlight.",
+      "example": "visual-extras",
+      "appearance": "light",
+      "selector": "[data-testid=spotlight]",
+      "actions": [
+        {
+          "click": "[data-testid=spotlight]"
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 2,
+            "y": 3,
+            "color": "#dde8f0",
+            "tolerance": 5,
+            "note": "bar material over the picture stand-in at this cell (measured bar composite at x 3100: #dde8f0)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "hover-switch-dark",
+      "description": "Real input: with the user menu open, the pointer moves to the battery extra, which opens its menu and takes the highlight. Captures the battery cell.",
+      "example": "visual-extras",
+      "appearance": "dark",
+      "selector": "[data-testid=battery]",
+      "actions": [
+        {
+          "click": "[data-testid=user]"
+        },
+        {
+          "hover": "[data-testid=battery]"
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 2,
+            "y": 3,
+            "color": "#0066cd",
+            "tolerance": 5,
+            "note": "highlight of an open extra (measured #0066cd on the open battery extra, Menu-Bar-Battery @ 2725,3; menu-bar-extra.md, Highlight fill)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-menu-dark",
+      "description": "Real input: a click on the Spotlight extra, which has no menu; the fixture does not set active, so the cell shows the bar and no highlight.",
+      "example": "visual-extras",
+      "appearance": "dark",
+      "selector": "[data-testid=spotlight]",
+      "actions": [
+        {
+          "click": "[data-testid=spotlight]"
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 2,
+            "y": 3,
+            "color": "#181c2a",
+            "tolerance": 5,
+            "note": "bar material over the picture stand-in at this cell (measured bar composite at x 3100: #181c2a)"
+          }
+        ]
+      }
+    }
+  ]
+}

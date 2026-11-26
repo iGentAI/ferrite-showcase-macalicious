@@ -1,0 +1,289 @@
+/*
+ * Time Machine browser. Layout (pt): the front window is centred, 57 below the middle; the
+ * arrows are 21 beside it, the buttons 23 under it, the timeline on the trailing 80.
+ *
+ * The stack is a perspective view: window i lies i * 83.5 behind the front one, seen from
+ * 1000 away, with the vanishing point 286.5 above the window's top edge. That gives the
+ * measured steps (22, 19, 16.5, 14 ...) and widths. A window is as tall as the strip that
+ * shows above the next.
+ *
+ * Buttons, ticks and labels are added to the picture (plus-lighter), as measured: nothing
+ * between the root and them may open a stacking context.
+ *
+ * States: -button[data-disabled], -button[data-step], -tick[aria-selected], -tick[data-mark],
+ * -layer[data-empty] (no backup behind it), [data-force~="pressed" | "focus"].
+ */
+.mac-time-machine-browser {
+  --_ring: var(--mac-focus-ring-color);
+
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  box-sizing: border-box;
+  block-size: 100%;
+  padding-block-start: 114px;
+  background: var(--mac-time-machine-browser-backdrop);
+  color: var(--mac-time-machine-browser-control-text);
+  font: var(--mac-font-body);
+  grid-template: 1fr auto 1fr / 1fr auto 1fr;
+}
+
+.mac-time-machine-browser-window {
+  position: relative;
+  z-index: 0;
+  grid-area: 2 / 2;
+}
+
+.mac-time-machine-browser-stack {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  perspective: 1000px;
+  perspective-origin: 50% -286.5px;
+  pointer-events: none;
+}
+
+.mac-time-machine-browser-layer {
+  position: absolute;
+  overflow: hidden;
+  box-sizing: border-box;
+  block-size: calc(23.92px / (0.9165 + 0.0835 * var(--_i)));
+  border-radius: var(--mac-radius-window) var(--mac-radius-window) 0 0;
+  background: var(--mac-material-titlebar) 0 0 / 100% 55px;
+  box-shadow: inset 0 1px var(--mac-time-machine-browser-layer-edge);
+  color: var(--mac-color-window-frame-text);
+  font: var(--mac-font-window-title);
+  inset: 0 0 auto;
+  line-height: 22px;
+  opacity: calc(1.1 - 0.11 * var(--_i));
+  text-align: center;
+  transform: translateZ(calc(var(--_i) * -83.5px));
+  white-space: nowrap;
+}
+
+/* The three window controls, and the veil. */
+.mac-time-machine-browser-layer::before,
+.mac-time-machine-browser-layer::after {
+  position: absolute;
+  content: "";
+}
+
+.mac-time-machine-browser-layer::before {
+  border-radius: 50%;
+  background: var(--mac-color-window-close);
+  block-size: 12px;
+  box-shadow:
+    20px 0 var(--mac-color-window-control-disabled),
+    40px 0 var(--mac-color-window-control-disabled);
+  inline-size: 12px;
+  inset: 5px auto auto 8px;
+}
+
+.mac-time-machine-browser-layer::after {
+  background: var(--mac-time-machine-browser-layer-shade);
+  inset: 0;
+  opacity: calc(0.04 + 0.05 * var(--_i));
+}
+
+.mac-time-machine-browser-layer:where([data-empty]) {
+  background: var(--mac-time-machine-browser-layer-empty);
+  opacity: 1;
+}
+
+.mac-time-machine-browser-layer:where([data-empty])::before,
+.mac-time-machine-browser-layer:where([data-empty])::after {
+  content: none;
+}
+
+.mac-time-machine-browser-steps {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  inline-size: 34px;
+  margin-inline-start: 21px;
+  grid-area: 2 / 3;
+}
+
+.mac-time-machine-browser-date {
+  block-size: 38px;
+  color: var(--mac-time-machine-browser-date);
+  line-height: 37px;
+  white-space: nowrap;
+}
+
+/* 3 pt to the leading side of the middle, as measured. */
+.mac-time-machine-browser-actions {
+  display: flex;
+  align-self: start;
+  justify-self: center;
+  margin: 23px 6px 0 0;
+  gap: 38px;
+  grid-area: 3 / 1 / auto / -1;
+}
+
+.mac-time-machine-browser-button {
+  position: relative;
+  display: flex;
+  flex: none;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  block-size: 29px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  appearance: none;
+  background: none;
+  color: inherit;
+  cursor: default;
+  font: inherit;
+  inline-size: 94px;
+  outline: none;
+}
+
+.mac-time-machine-browser-button:where([data-step]) {
+  block-size: 34px;
+  inline-size: 34px;
+}
+
+.mac-time-machine-browser-button::before {
+  position: absolute;
+  border-radius: inherit;
+  background: var(--mac-time-machine-browser-control);
+  box-shadow: inset 0 var(--mac-hairline) var(--mac-time-machine-browser-control-edge);
+  content: "";
+  inset: 0;
+  mix-blend-mode: plus-lighter;
+}
+
+.mac-time-machine-browser-button:where(:active, [data-force~="pressed"])::before {
+  background: var(--mac-time-machine-browser-control-pressed);
+}
+
+.mac-time-machine-browser-button:where([data-disabled]) {
+  color: var(--mac-time-machine-browser-control-text-disabled);
+}
+
+.mac-time-machine-browser-button:where([data-disabled])::before {
+  background: var(--mac-time-machine-browser-control);
+  opacity: 0.6;
+}
+
+.mac-time-machine-browser-button:where(:focus-visible, [data-force~="focus"]),
+.mac-time-machine-browser-timeline:where(:focus-visible, [data-force~="focus"]) {
+  outline: var(--mac-focus-ring-width) solid var(--_ring);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+/* No ring in a window that is not key. */
+.mac-time-machine-browser:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  --_ring: transparent;
+}
+
+/* Over the face, which is positioned and would be painted last. */
+.mac-time-machine-browser-label {
+  position: relative;
+}
+
+/* The backups from the bottom up, and dim ticks in the room above them. More backups than fit
+   scroll, without a scroller; the names of the days need the width. */
+.mac-time-machine-browser-timeline {
+  position: absolute;
+  display: flex;
+  overflow: hidden auto;
+  flex-direction: column;
+  color: var(--mac-time-machine-browser-tick);
+  font-size: 11px;
+  inline-size: 140px;
+  inset: 30px 0 30px auto;
+  line-height: 16px;
+  outline: none;
+  outline-offset: -3px;
+  scrollbar-width: none;
+  text-align: end;
+  white-space: nowrap;
+}
+
+.mac-time-machine-browser-timeline::before {
+  flex: 1;
+  background:
+    repeating-linear-gradient(
+      to top,
+      transparent 0 7px,
+      var(--mac-time-machine-browser-tick-dim) 0 9px,
+      transparent 0 16px
+    )
+    100% / 16px no-repeat;
+  content: "";
+  mix-blend-mode: plus-lighter;
+}
+
+.mac-time-machine-browser-tick {
+  position: relative;
+  flex: none;
+  block-size: 16px;
+}
+
+.mac-time-machine-browser-tick:where([data-mark]) {
+  block-size: 32px;
+}
+
+.mac-time-machine-browser-tick::after,
+.mac-time-machine-browser-mark::after {
+  position: absolute;
+  background: currentColor;
+  block-size: 2px;
+  content: "";
+  inline-size: 16px;
+  inset: auto 0 7px auto;
+  mix-blend-mode: plus-lighter;
+}
+
+.mac-time-machine-browser-tick:where([aria-selected="true"])::after {
+  background: var(--mac-time-machine-browser-tick-selected);
+  box-shadow: 0 0 1px var(--mac-time-machine-browser-tick-selected);
+  mix-blend-mode: normal;
+}
+
+/* A day mark: its name and a tick 36 by 3, in the slot above the backup's. */
+.mac-time-machine-browser-mark,
+.mac-time-machine-browser-caption {
+  position: absolute;
+  inset: -0.5px 0 auto auto;
+  mix-blend-mode: plus-lighter;
+  padding-inline-end: 45.5px;
+}
+
+.mac-time-machine-browser-mark::after {
+  block-size: 3px;
+  inline-size: 36px;
+  inset-block-end: 5.5px;
+  mix-blend-mode: normal;
+}
+
+/* A point larger than the day marks: 17 px of cap height against 16. */
+.mac-time-machine-browser-caption {
+  font-size: 12px;
+  inset: auto 0 -0.25px auto;
+  padding-inline-end: 25.5px;
+}
+
+@media (forced-colors: active) {
+  .mac-time-machine-browser-button,
+  .mac-time-machine-browser-layer {
+    border: 1px solid ButtonText;
+  }
+
+  .mac-time-machine-browser-tick::after,
+  .mac-time-machine-browser-mark,
+  .mac-time-machine-browser-caption {
+    mix-blend-mode: normal;
+  }
+
+  .mac-time-machine-browser-tick:where([aria-selected="true"])::after {
+    background: Highlight;
+    block-size: 4px;
+  }
+}

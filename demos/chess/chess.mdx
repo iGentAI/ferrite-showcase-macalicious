@@ -1,0 +1,347 @@
+---
+title: Chess
+description: The Chess window of macOS 10.15, a titled window whose whole content is the board, with an abstract flat board in place of the application's three-dimensional scene that still plays by the complete rules of chess, for two people at one board, by pointer or keyboard.
+layout: full
+order: 86
+---
+
+<Example name="basic" />
+
+Click a piece of the side to move, then one of the squares it marks; or move through the
+board with the arrow keys and pick up and put down with Return or the space bar. The title
+follows the game as the application's does: `(New Game)`, then `(White to Move)` or
+`(Black to Move)`, and at the end who won, or `(Draw)`.
+
+**There is no computer opponent.** Both sides are moved by whoever is at the window, whatever
+the second name in the title says. And **the board here is flat**: Chess draws a wooden board
+and turned pieces in three dimensions, and this window shows a flat board with flat pieces of
+its own. With `boardView="3d"`, which is what the desktop shows on graphics hardware unless Preferences say Flat, the
+same squares lie in perspective and a canvas draws turned pieces of original shapes, with no
+artwork of the application's. A drag on the frame or the backdrop moves the camera. A
+preference takes moves and commands by voice, through the browser's speech recognizer.
+
+## What it shows
+
+- A [Window](/components/window) with a plain 22 pt [Title Bar](/components/title-bar): the
+  [Window Controls](/components/window-controls) and a centred title, no proxy icon and no
+  toolbar. This is all of Catalina's chrome that the window has, and it is what the visual
+  comparison scores.
+- The view under the bar is the application's own content, so it is the demo's own markup:
+  a labelled grid of 64 squares in `chess.css`, with the pieces drawn in `chess-artwork.tsx`.
+  It is dark in Aqua and in Dark Aqua alike, as the application's view is, so it carries
+  `data-appearance="dark"` and the label and the two buttons on it are drawn in Dark Aqua.
+- Under the board, a [Label](/components/label) says how the game stands ("Check. Black to
+  move."), a [Push Button](/components/push-button) claims a draw when the side to move may,
+  and another starts a new game. In the application New Game is a command of the Game menu in
+  the menu bar; the window itself has no controls.
+- A pawn that reaches the far side asks what it should become in a [Sheet](/components/sheet)
+  that hangs from the title bar: four choices as the sheet's buttons, Queen the
+  [Default Button](/components/default-button) that Return activates, and Cancel to take the
+  move back. While the sheet waits the window is main, not key, its view is inert and its
+  close button is disabled.
+
+What a square shows, besides its piece:
+
+| Mark | Means |
+| --- | --- |
+| Green | The piece on it is picked up. |
+| A dot | The picked piece can move here. |
+| A ring around a piece | The picked piece can take it. An empty square with a ring is a capture en passant. |
+| Yellow | The last move left this square or arrived on it. |
+| Red | The king on it is in check. |
+
+| Key | Where | Does |
+| --- | --- | --- |
+| Arrow keys | on the board | Move to the next square; the edge of the board stops them |
+| Home, End | on the board | The first and the last square of the rank |
+| Return, Space | on a square | Pick up the piece, put it down on a marked square, or put it back |
+| Escape | on the board | Put the picked piece back |
+| Tab | anywhere | Between the board, which is one tab stop, Claim Draw while it is enabled, and New Game |
+
+## Source walkthrough
+
+The demo is six files in `demos/chess/`.
+
+**`chess-game.ts`** is the rules, as pure functions over plain objects; it knows nothing of
+React. A game is a position (the 64 squares, the side to move, the castling rights, the en
+passant square and two move counters) with the moves that led to it. `legalMoves(game, from)`
+lists what a piece may do, `play(game, from, to, promotion)` returns the game after a move or
+`null` for an illegal one, and `gameStatus(game)` says whether the game goes on, is won or is
+drawn. No function changes its argument.
+
+A move is legal when the piece moves that way and the mover's king is not attacked
+afterwards, which one filter says for every rule at once: a pinned piece, a king that would
+step into check, a check that must be answered, and a capture en passant that would uncover
+an attack along the rank.
+
+```ts
+for (const move of candidates(position, from)) {
+  const next = apply(position, move);
+  const king = kingOf(next.board, turn);
+  if (king < 0 || !attacked(next.board, king, next.turn)) found.push(move);
+}
+```
+
+The rules it implements: the moves and captures of all six pieces; the pawn's double step,
+its capture en passant on the next move only, and its promotion to a queen, rook, bishop or
+knight; castling on either side, which needs a king and a rook that have not moved, empty
+squares between them, and a king that is not in check and neither passes over nor lands on
+an attacked square; check, checkmate and stalemate; and the draws. Four end the game by
+themselves: stalemate, a dead position (below), seventy-five moves by each side without a
+capture or a pawn move, and the fifth occurrence of a position. Two are draws only when the
+side to move claims them: the third occurrence of a position and fifty moves by each side
+without a capture or a pawn move. `drawClaim(game)` names the claim the side to move has, if
+any, and `claimDraw(game)` returns the game drawn by it; the window's Claim Draw button is
+enabled while there is one, and the status line adds "White may claim a draw." A claim is made
+in the position on the board, for either rule: claiming on a move that would bring a repetition
+about, or that would complete the fifty moves, is not offered.
+
+The dead positions recognised, and only these: the kings alone; a king and one bishop or
+knight against a king; kings with bishops that all stand on squares of one colour; and a
+board locked by pawns, where only kings and pawns remain, every pawn is blocked by an enemy
+pawn straight in front of it, no capture is possible, and neither king can reach a pawn it
+may take without stepping onto a square an enemy pawn attacks (for example
+`4k3/8/8/p1p1p1p1/PpPpPpPp/1P1P1P1P/8/4K3 w - - 0 1`). Other dead positions, such as a
+bishop shut in behind locked pawns, are not recognised, and such a game goes on until
+seventy-five moves or a repetition ends it.
+
+`parseFen` and `toFen` read and write a position in Forsyth-Edwards Notation, so a game can
+open anywhere; `parseFen` refuses more than six fields and an en passant square the side to
+move cannot take on (the sixth rank for White, the third for Black):
+
+```tsx
+import { Chess } from "./chess";
+import { parseFen } from "./chess-game";
+
+<Chess defaultGame={parseFen("7k/4P3/8/8/8/8/8/4K3 w - - 0 1")} />;
+```
+
+The module's tests count the positions reachable from five standard test positions to three
+half-moves and compare them with the published numbers (8,902 from the starting position,
+97,862 from the position known as Kiwipete), which exercises castling, en passant, promotion
+and pins together.
+
+**`chess.tsx`** is the window. Its state is the game, the square of the piece that is picked
+up, the one square that is the board's tab stop, and the sentence last announced; everything
+drawn is derived from them. The title is one line:
+
+```tsx
+<TitleBar
+  title={<span className="mac-chess-title">{`${white} - ${black}   (${gameTitle(game)})`}</span>}
+  controls={<WindowControls onClose={onClose} onMinimize={onMinimize} onZoom={onZoom} />}
+/>
+```
+
+The board is a `grid` of eight `row`s of eight `gridcell`s. A cell is named after its square
+and what stands on it, and a click, Return and the space bar all end in the same function:
+
+```tsx
+<div
+  role="gridcell"
+  tabIndex={square === cursor ? 0 : -1}
+  aria-label={describeSquare(game, square)} // "e2, white pawn"
+  aria-selected={square === selected}
+  data-square={square}
+  onClick={() => activate(square)}
+>
+  {piece ? <ChessPieceShape kind={piece.kind} side={piece.side} /> : null}
+</div>
+```
+
+`activate` picks the piece up, puts it back, moves it, opens the promotion sheet, or says
+why nothing happens. Whatever it does it also says, in a polite `status` region: "White pawn
+on e2 picked up. It can move to e3, e4.", then "White pawn e2 to e4. Black to move."
+
+**`chess-artwork.tsx`** draws the six pieces as flat silhouettes on a 40 unit square, each
+twice: a thick outline in one colour and the fill in the other, so that a white piece shows
+on a light square and a black one on a dark square. **`chess.css`** lays the view out: the
+board is the largest square that fits the room above the bar, measured with container units,
+so it follows the window's size. **`chess.tokens.css`** holds the demo's colours; only the
+backdrop is measured, the flat `#404040` of the scene's floor. **`app.ts`** is the
+descriptor the [Desktop](/demos/desktop) reads.
+
+## Hosting the window
+
+`Chess` renders the library's `Window` as its root and passes every `Window` prop to it, so
+it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component hands to the window controls and
+the title bar. These are the props a [Managed Window](/components/managed-window)'s `render`
+form supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { chessApp } from "./app";
+
+<ManagedWindow
+  id={chessApp.id}
+  defaultFrame={{ x: 80, y: 60, ...chessApp.defaultSize }}
+  minWidth={chessApp.minSize.width}
+  minHeight={chessApp.minSize.height}
+  render={(props) => <chessApp.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `white`, `black` | `string` | The two names in the title; "Player One" and "Player Two" by default. The capture's first name is a person's and is not repeated. |
+| `defaultGame` | `ChessGame` | The game the window opens with; the starting position by default. Read when the window opens. New Game always starts from the starting position. |
+| `onMove` | function | Called after every move with the move, which carries the state of the game after it, and the game. |
+| `onNewGame` | function | Called when the New Game button starts a game. |
+| `onClaimDraw` | function | Called when the Claim Draw button draws the game, with the game after it. |
+| `game` | `ChessGame` | The game, when the owner holds it: the window shows it, and a move, New Game and Claim Draw are only reported for the owner to apply. |
+| `notice` | `string` | A sentence the status bar shows instead of how the game stands. |
+| `refuse` | function | Asked before a move, a draw or a new game: a sentence saying why it is refused, or `undefined`. |
+| `actions` | `ReactNode` | Further buttons for the bar, before Claim Draw. |
+| `newGameLabel`, `newGameDisabled` | `string`, `boolean` | The New Game button's title ("New Game" by default) and whether it is disabled. |
+| `onNewGameRequest` | function | Called instead of starting a game when New Game is clicked, for an owner that asks first. |
+| `sheets` | function | Further sheets, given the title bar they hang from. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 971 by 702 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer and key events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `chessApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (971 by 702), `minSize` (420 by 480), `resizable` and
+`menus`, the menu titles after the Apple menu: Chess, Game, Edit, Moves, View, Window, Help.
+
+On the desktop served by its Ferrite application (`ferrite-apps/desktop`), the app's
+component is `ChessLive` (`chess-live.tsx`). With `?game=<id>` in the page's address it plays
+that open board, which any browser naming it can join. Otherwise it plays the signed-in
+person's own games (`chess-account.tsx`): New Game… asks whether to play the computer, at one
+of four levels, or another account by its account name, who gets an invitation with Accept
+and Decline; Games… lists the person's games and the invitations waiting for them; Back and
+Forward step through the moves; Resign gives a game up. The server is the only record of
+every game: a move is shown once the server has it, only the two players can read or move in
+a game, and the other player's moves reach the window through the person's own live stream.
+The window opens on the newest game still being played, or on a fresh board. Moving a white
+piece starts a standard game against the computer at the selected strength. Regular games use Reckless 0.9.0 compiled to WebAssembly. Opening Chess loads and caches
+the engine; its worker stays ready between moves and searches for up to half a second at the
+strongest setting. In the opening it can choose among closely scored replies. The variants use their own rules and search. Moves > Show Hint gives you a clue about the position. Choose
+Show Suggested Move to see the squares. Only the Ferrite desktop enables the computer
+opponent (`VITE_MACALICIOUS_API=1`). On this site and anywhere else
+the window is the plain `Chess` and nothing is fetched.
+
+## Accessibility
+
+- The window is a `region` named by its title, so the state of the game is part of its name.
+- The board is a `grid` named "Chessboard" with eight rows of eight cells, the eighth rank
+  first, as it is seen. Each cell is named for its square and its piece, "e2, white pawn",
+  or for the square alone when it is empty; the picked piece's cell is `aria-selected`. The
+  rank digits and file letters beside the board are decoration and are hidden, since every
+  cell says its own name.
+- The board is one tab stop. The arrow keys, Home and End move within it; Return and the
+  space bar pick up and put down; Escape puts the piece back. Everything the pointer does the
+  keys do: there is no dragging.
+- Every move is announced by a polite `status` region in words, with the result: "White
+  queen d1 to h5. Check. Black to move.", "Black castles queenside. White to move.",
+  "Checkmate. Black wins." Picking a piece up announces where it can go, and a refused move
+  says so ("White pawn on e2 cannot move to e5."). The visible line under the board says how
+  the game stands and is not a live region, so nothing is read twice.
+- The marks on the squares are not the only carrier of what they mean: the squares a piece
+  can reach are in the announcement, a check is in the status line and the announcement, and
+  the result is in the title too.
+- The keyboard focus ring is the system ring over a dark band with a light line inside, so
+  that it shows on a square of either shade; like every focus ring it is drawn only in a key
+  window. In forced colours the squares keep an edge, the pieces take the system's text and
+  background colours, and the marks become outlines.
+- The promotion sheet is a modal `dialog` named by its question. Its buttons are in the tab
+  order, Return makes a queen, Escape cancels, and the focus returns to the board.
+- Each side's pieces have an outline in the other side's colour, so a piece is told from its
+  square by shape and edge, not by one colour. Nothing moves or animates.
+
+## Fidelity
+
+**What is compared, and what is masked.** The two captures show the same window, 971 by
+702 pt, in Aqua and in Dark Aqua. Everything under the title bar, the region at 0,22 of 971 by
+680 pt, is the application's three-dimensional scene in the captures and the demo's own board
+here. **That region is left out of every comparison**: scoring a flat board
+against a rendered one would say nothing of the chrome, and no budget was set to let it pass.
+
+The harness lets a comparison leave at most 75% of its crop out of the score, and the view is
+97% of the window, so the view cannot be masked out of a crop of the whole window. The
+comparisons therefore crop the chrome instead, which leaves the view out altogether:
+
+- **`title-bar-light`, `title-bar-dark`**: the whole title bar, 971 by 22 pt, against each
+  capture, nothing masked: the window's top corners, the bar's gradient with its two
+  highlight rows and two bottom rows, the three window controls and the title.
+- **`title-bar-drawing-light`, `title-bar-drawing-dark`**: the same crop with the title
+  masked (232 by 16 pt at 370,4, which is 17% of the crop) at the stricter threshold of
+  0.05, so that the bar's drawing is scored without the fallback font.
+- **`window-chrome-light`, `window-chrome-dark`**: the whole window at the captured size,
+  held by expected pixels instead of a score. They check that the window is 971 by 702 pt;
+  the bar's two highlight rows, its gradient at the top, the middle and the bottom, its
+  shadow row and its separator, each against the colour measured in that capture; the three
+  window controls at x 8, 28 and 48 pt, by the bar's fill on either side of each and the
+  control's colour at its centre; and that the view begins at 22 pt. The one pixel read in
+  the view is the placeholder's own backdrop, to show where the bar ends; it is not compared
+  with the capture.
+
+Scores from `npm run visual -- chess/` in Chromium on Linux with the fallback font: the share
+of pixels that differ by more than the threshold, and the mean colour difference out of 255.
+
+| Comparison | Scores | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `title-bar-light` | the whole bar, title included | 5.55% | 5.57 | 4.88% | 5.66 |
+| `title-bar-drawing-light` | the bar with the title masked | 0.28% | 0.66 | 0.21% | 0.68 |
+| `title-bar-dark` | the whole bar, title included | 5.45% | 8.11 | 4.80% | 8.06 |
+| `title-bar-drawing-dark` | the bar with the title masked | 0.20% | 3.79 | 0.09% | 3.66 |
+
+The expected-pixel checks pass or fail and have no score: 6 pixels at 1x and 17 at 2x in each
+appearance.
+
+Measured in the captures and reproduced: the 971 by 702 pt frame; the 22 pt title bar with
+its gradient (`#e4e4e4` to `#cdcdcd` in Aqua), highlight rows and bottom rows; the window
+controls at x 8, 28 and 48 pt; the centred 13 pt title in its form, two names, a hyphen,
+three spaces and the state in parentheses; and the view's flat floor colour, `#404040`,
+which is the placeholder's backdrop.
+
+### Known differences
+
+- **The board and the pieces** are the demo's own, by decision: a flat board in two cool greys
+  with flat silhouettes, seen from above, or the 3D view (`boardView="3d"`), where the squares
+  stay plain colours, without wood, and the turned pieces are shapes made here. The 3D view
+  takes the capture's camera angle and backdrop greys, and its horizon is straight where the
+  capture's curves. The file letters are lower case beside the board, as squares are
+  named; the application engraves capitals on its frame.
+- **No computer opponent here.** The application plays the other side; on this site both are
+  moved by hand, and the default names are "Player One" and "Player Two". On the desktop's
+  Ferrite application the window can play the computer, with an engine of its own that is not
+  the application's.
+- **New Game is a button in the window.** In the application it is a command of the Game
+  menu in the menu bar and opens a sheet that asks for the players and the variant; the
+  window has no controls at all. The status line beside the button is the demo's too.
+- **Moving.** A piece is moved with two clicks or two key presses and jumps to its square.
+  The application's pieces are dragged and slide. The marks for the picked piece, its
+  destinations, the last move and a check are the demo's own.
+- **The Dark Aqua title bar** is the library's, measured in Finder: `#404142` to `#343435`,
+  where this window's runs from `#434447` to `#37383a`, three to five levels lighter and a
+  little bluer, and its first highlight row is `#838485` where the capture has `#86878a`.
+  That is the mean difference of 3.66 in `title-bar-drawing-dark`; few pixels differ visibly
+  (0.09%). The demo does not restyle the library's bar.
+- **The title's text** is set in the fallback font off Apple devices and names invented
+  players, which is nearly all of the unmasked scores.
+- **No Image View.** The reference blueprint suggests the library's
+  [Image View](/components/image-view) as a stand-in for the application's view. An image
+  view is a picture, one element with the role `img`, and cannot hold a board that is played
+  on, so the view is the demo's own grid.
+- **Not in a screenshot (provisional):** every title but `(New Game)`, the wording of the
+  results among them; the promotion sheet; the Claim Draw button; and the window when it is
+  not key.
+- **Draws.** Threefold repetition and fifty moves are draws the side to move claims with
+  Claim Draw, as the rules of chess have them; the game ends by itself only at stalemate, at a
+  dead position the rules module recognises (listed in the walkthrough; not every dead
+  position is), at seventy-five moves and at the fifth occurrence of a position. A claim is
+  made only in the position on the board, for repetition and for fifty moves alike: the rules
+  also let a player claim by naming the move that would bring either about, and the demo does
+  not. Making that move does not give its player the claim: the position it leaves is the
+  other player's to claim in. How the application treats claims is not shown in a capture.
+- **Not built:** speech and offering a draw to the other player. Taking back a move, hints, saving
+  and opening games, the game log, clocks and the variants need the desktop's Ferrite application,
+  as does resigning.
+- **Clocks.** New Game offers a clock of 1, 5, 10 or 30 minutes each, or none. The real application
+  has none, so this is an addition: the server charges each move and ends a game whose side to move
+  has run out of time.
+- **Variants.** New Game offers Regular, Crazyhouse, Losers and Suicide, and the rules are the same in
+  the page and on the server. In Suicide a pawn does not promote to a king. A variant is written in
+  a saved game's `Variant` tag and read back from it.

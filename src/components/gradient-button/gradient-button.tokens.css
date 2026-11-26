@@ -1,0 +1,21 @@
+/*
+ * Gradient button: the bar of the Network preference pane, which is not drawn like the bars of
+ * the other panes (reference/spec/components/gradient-button.md, "Network pane bar"). The
+ * standard bezel is the shared --mac-bezel-square-* tokens; these are the `network` variant.
+ */
+:root {
+  /* [measured] the 19 pt fill, first row, middle and last row: Light- and
+     Dark-System-Preferences-Network @ 220,1034, @ 220,1055, @ 220,1071 */
+  --mac-gradient-button-network-fill: linear-gradient(
+    light-dark(#fafafa, #4e4f50),
+    light-dark(#f7f7f7, #4b4c4c) 57%,
+    light-dark(#f5f5f5, #48494a)
+  );
+  /* [measured] the top line, across the whole bar: @ 220,1032 (Dark Aqua @ 400,1032) */
+  --mac-gradient-button-network-border-top: light-dark(#b4b4b4, #808080);
+  /* [measured] the bottom and the outer side borders: @ 220,1072, @ 152,1055 (Dark Aqua
+     @ 153,1055, @ 490,1055) */
+  --mac-gradient-button-network-border: light-dark(#b4b4b4, #636465);
+  /* [measured] the borders between cells: @ 202,1055 */
+  --mac-gradient-button-network-separator: light-dark(#b4b4b4, #8a8b8c);
+}

@@ -1,0 +1,57 @@
+/*
+ * Appearance (NSAppearance: Aqua / Dark Aqua).
+ *
+ * Every appearance-dependent colour token is written once as light-dark(<aqua>, <dark aqua>).
+ * The browser picks a side from the element's used `color-scheme`, so:
+ *
+ *   - by default the page follows the operating system (prefers-color-scheme);
+ *   - data-appearance="light" | "dark" on <html> forces one appearance;
+ *   - the same attribute on any element re-themes just that subtree (a dark window on a
+ *     light page), with no extra selectors in component CSS.
+ *
+ * Component CSS must never test the appearance itself. Use tokens.
+ *
+ * Values that are not colours. light-dark() accepts only colours, so a length, a percentage
+ * or a number that differs between the appearances cannot use it. For those, this file also
+ * maintains the number --mac-appearance-dark (0 in Aqua, 1 in Dark Aqua), following the same
+ * three sources as color-scheme. A token interpolates with it, as the menu material's filter
+ * does:
+ *
+ *   blur(22px) saturate(calc(180% + 40% * var(--mac-appearance-dark)))
+ *
+ * and, because var() is resolved where the token is declared, such a token is declared in a
+ * rule that matches `:root, [data-appearance]`, so that it is recomputed in a subtree that
+ * switches appearance. This is the only place that tests the appearance; token files use the
+ * number, and component CSS uses neither.
+ */
+:root {
+  color-scheme: light dark;
+  --mac-appearance-dark: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-appearance]) {
+    --mac-appearance-dark: 1;
+  }
+}
+
+[data-appearance="light"] {
+  color-scheme: light;
+  --mac-appearance-dark: 0;
+}
+
+[data-appearance="dark"] {
+  color-scheme: dark;
+  --mac-appearance-dark: 1;
+}
+
+/*
+ * Window state (key, main or inactive window).
+ *
+ * A window element carries data-window-state="key" | "main" | "inactive"; no attribute means
+ * key. <html> carries "inactive" while the browser window is in the background, set by
+ * trackWindowActivation() from macalicious/lib/window-activation. Components restyle themselves
+ * with ancestor selectors and there is nothing to declare here; the attribute is documented in
+ * this file because it is the second global styling hook. The rules, and which selector a
+ * control or a piece of window chrome uses, are in CONTRIBUTING.md under "Window state".
+ */

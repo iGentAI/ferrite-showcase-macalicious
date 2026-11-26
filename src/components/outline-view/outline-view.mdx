@@ -1,0 +1,195 @@
+---
+title: Outline View
+description: A table whose first column shows a hierarchy, with a disclosure triangle on every item that has children.
+---
+
+<Example name="basic" both />
+
+AppKit's `NSOutlineView`: System Information's report list, Font Book's font list, a file
+list in Finder's list view. It is a [table view](/components/table-view) with levels: rows,
+stripes, selection, header, sorting and column resizing are the table view's, and so is
+rendering only the rows in view. For the translucent source list on the leading side of a
+window use a [sidebar](/components/sidebar).
+
+## Usage
+
+```tsx
+import { OutlineView, type OutlineViewItem } from "macalicious/outline-view";
+import "macalicious/scroll-view.css"; // the stylesheets of the parts come first
+import "macalicious/table-header.css";
+import "macalicious/table-view.css";
+import "macalicious/disclosure-triangle.css";
+import "macalicious/outline-view.css";
+
+interface Entry extends OutlineViewItem {
+  name: string;
+}
+
+const items: Entry[] = [
+  { id: "hardware", name: "Hardware", children: [{ id: "audio", name: "Audio" }] },
+  { id: "software", name: "Software", children: [] },
+];
+
+<OutlineView
+  aria-label="Report"
+  items={items}
+  renderCell={(item) => item.name}
+  getItemLabel={(item) => item.name}
+  defaultExpanded={["hardware"]}
+  rowHeight={16}
+  size="mini"
+  style={{ height: 300 }}
+/>
+```
+
+Or copy the source into your project: `npx macalicious add outline-view`.
+
+Items are objects with an `id` and, for a parent, `children`; add your own fields by
+extending `OutlineViewItem`, and `renderCell` receives your type. An item with `children`,
+even an empty array, has a triangle; one without is a leaf. The outline holds which items
+are expanded (`defaultExpanded`), or you do (`expanded` and `onExpandedChange`): store it to
+remember the state between visits, as the guidelines ask.
+
+Without `columns` the outline is a single column with no header:
+
+<Example name="single-column" both />
+
+With `columns` it has a header and attribute columns, as in the first example; the hierarchy
+is shown in the first column only.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[outline views](https://web.archive.org/web/20200503161505/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/outline-views/):
+
+- Use an outline for hierarchical data with attributes worth showing in columns. Show the
+  hierarchy in the first column only.
+- Use the disclosure triangle to expand and collapse; clicking it shows one level, and
+  Option-clicking it shows every level inside.
+- Remember what people expanded, so that the outline looks the same the next time.
+- Everything the guidelines say about tables applies: noun headings, sorting, resizable
+  columns, alternating rows for several columns.
+
+## Variants and states
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Collapsed parent | an item with `children` that is not in `expanded` | Triangle pointing to the trailing side, 8.5 pt from the pane's edge |
+| Expanded parent | its id in `expanded` | Triangle pointing down, 7.5 pt from the edge; the children follow at the same row pitch |
+| Leaf | an item without `children` | No triangle, but its slot is kept, so labels of one level align |
+| Level | nesting | Each level is indented by `indentation`, 16 pt |
+| Selected, focused | as the table view | Accent highlight; the triangle turns white with the text |
+| Selected, not focused or window not key | as the table view | Grey highlight; the triangle keeps its grey |
+| Dimmed row | `dimmed` on the item | Text in `#c0c0c0` (Aqua) or `#565658` (Dark Aqua), as Font Book's fonts that are not installed |
+| Single column | no `columns` | No header |
+
+Measured: the triangle's position, size and Aqua colour, the indentation, the label's
+position at 11 pt and 13 pt, the white triangle on an accent selection and the dimmed text
+colour. Provisional: the triangle's Dark Aqua colour, which the spec computes from another
+control, the pressed triangle and its rotation when it is activated.
+
+An item that is selected stays in the selection while a collapsed parent hides it.
+
+## Sizes
+
+As the [table view](/components/table-view): `size` sets the text (13, 12 or 11 pt) and
+`rowHeight` the row pitch. Catalina's outlines use 16 pt rows of 11 pt text (System
+Information) and 18 pt rows of 13 pt text (Font Book). The triangle is the same at every
+size.
+
+## API
+
+<PropsTable name="OutlineViewProps" />
+
+The remaining props are the [table view's](/components/table-view): `rowHeight`, `size`,
+`alternatingRows`, `header`, `selectionMode`, `value`, `defaultValue`, `onValueChange`
+(values are item ids), `sort`, `onSortChange`, `onColumnResize`, and the root element's
+attributes.
+
+An item (`OutlineViewItem`) has an `id`, optionally `children` (items of the same type) and
+`dimmed`.
+
+`revealedItem` scrolls an item into view, as `NSTableView.scrollRowToVisible` does. Give it
+the item's id: the outline scrolls its own scrolling element just far enough to show the
+item's row, under the header, and scrolls nothing when the row is in view already. It does
+this when it is first shown and each time the id changes, not on every render, so people can
+scroll away afterwards; to reveal the same item a second time, set the prop to `undefined`
+in between. Nothing else changes: the keyboard focus, the selection and `expanded` stay as
+they are. An item inside a collapsed parent has no row, as in AppKit, so nothing scrolls and
+nothing is expanded for it. To reveal such an item, expand its ancestors with `expanded` in
+the same update, as the second button does here:
+
+<Example name="reveal" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `aria-level` | row | a number from 1 | The item's depth. |
+| `aria-expanded` | row | `true`, `false` | On an item with children. |
+
+| Class | Part |
+| --- | --- |
+| `.mac-outline-view` | Root, on the table view's root |
+| `.mac-outline-view-cell` | Content of a first-column cell |
+| `.mac-outline-view-triangle` | The disclosure triangle, or a leaf's empty slot |
+| `.mac-outline-view-label` | Your content after the triangle |
+| `.mac-outline-view-row-dimmed` | A dimmed row |
+
+## Accessibility
+
+- The root is a `treegrid` named by your `aria-label`; each row has `aria-level` and, for a
+  parent, `aria-expanded`. It is one tab stop and names the current row with
+  `aria-activedescendant`.
+- Keys, beyond the table view's (Up, Down, Page Up, Page Down, Home, End, Return, typing a
+  label): Right Arrow expands the selected item, and on an expanded item moves to its first
+  child; Left Arrow collapses it, and on a collapsed item or a leaf moves to its parent. With
+  Option, Right and Left Arrow expand and collapse every level inside the item. In a
+  right-to-left layout the two arrows swap.
+- The triangle is a pointer target only: it is out of the tab order and hidden from
+  assistive technology, because the row carries the state and the arrow keys change it.
+  Clicking it does not select the row; Option-click expands or collapses every level. When
+  the current row is collapsed out of sight, by a triangle or by the owner of `expanded`,
+  the keyboard carries on from its nearest visible ancestor.
+- A dimmed row is drawn lighter but is not disabled: it can be selected. Its text does not
+  meet contrast requirements, as in Catalina; do not use dimming alone to convey a state.
+
+## Visual comparison
+
+`visual-system-information` reproduces the top of System Information's outline (11 pt text,
+16 pt rows, an expanded parent selected with the focus) and `visual-font-book` the end of
+Font Book's font list (13 pt text, 18 pt rows, collapsed and expanded parents, a dimmed row
+and a selected child). Each is compared twice: the whole crop, where the text is set in the
+fallback font off Apple platforms, and with the labels masked at a colour distance of 0.05,
+which scores the background, the selection and the triangles. Results in Chromium on Linux:
+
+| Comparison | Whole crop, 2x | Whole crop, 1x | Labels masked, 2x | Masked, 1x |
+| --- | --- | --- | --- | --- |
+| System Information, Aqua | 6.36% of pixels differ, mean Δ 7.27 | 8.33%, 8.78 | 0.00%, 0.11 | 0.48%, 0.27 |
+| System Information, Dark Aqua | 6.21%, 6.68 | 8.52%, 8.49 | 0.65%, 0.51 | 0.91%, 0.62 |
+| Font Book, Aqua | 8.00%, 10.09 | 9.86%, 9.39 | 0.00%, 0.23 | 1.71%, 0.88 |
+| Font Book, Dark Aqua | 8.16%, 9.45 | 9.63%, 8.97 | 0.00%, 0.19 | 1.73%, 0.77 |
+
+In the Dark Aqua capture of System Information the white triangle sits one device pixel to
+the left of where the Aqua capture has it, which is the 0.65%. The 1x figures are higher
+because the triangle's slanted edges fall between pixels at that scale. The whole-crop
+figures are text in the fallback font.
+
+`visual-states` is checked with real input: both collapsed triangles at rest; after a click
+on a triangle, the expanded triangle, the child's triangle one level in, the leaf's empty
+slot and the unselected row; after Right Arrow three times, the selected child with a white
+expanded triangle; after Left Arrow in Dark Aqua, the parent selected again; and in an
+inactive window the grey selection with a grey triangle. The collapsed, expanded, Right Arrow
+and inactive-window checks now run in Dark Aqua too. The Dark Aqua triangle colour in
+these checks is the spec's computed value, not a measurement. The Right Arrow check also runs
+with the purple accent, whose selection colour is the token's formula, computed: no screenshot
+shows a selection in an accent other than blue.
+
+`visual-reveal` checks `revealedItem` in the browser, in both appearances: sixty rows in a
+view of three under a header. As it opens, the triangle of item 40 is in the last row of the
+view, so the outline has scrolled down just far enough; after a click on that row, which the
+example answers by revealing item 2, the triangle of item 2 is in the first row under the
+header and no row in view is selected.
+
+Large outlines are rendered like large tables: only the rows in view are in the document
+(see the measurements on the [table view's](/components/table-view) page). The list of
+visible rows is rebuilt when an item is expanded or collapsed, in time proportional to the
+number of visible items.

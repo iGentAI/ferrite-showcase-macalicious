@@ -1,0 +1,21 @@
+[package]
+name = "reckless-web"
+version = "0.9.0"
+edition = "2024"
+build = "build/build.rs"
+license = "AGPL-3.0-only"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[features]
+syzygy = []
+numa = []
+spsa = []
+
+[profile.release]
+lto = "fat"
+panic = "abort"
+codegen-units = 1
+opt-level = 3

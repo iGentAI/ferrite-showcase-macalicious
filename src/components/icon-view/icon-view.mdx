@@ -1,0 +1,234 @@
+---
+title: Icon View
+description: A grid of icons with their names beneath, selectable with pointer and keyboard, as in Finder's icon view.
+---
+
+<Example name="basic" both />
+
+Finder's icon view: items laid out left to right and top to bottom as icons with a name of up
+to two lines under each. The grid fills the width with as many columns as fit, scrolls in a
+[scroll view](/components/scroll-view) and renders only the rows in view, so it can hold
+thousands of items. The artwork is yours: the view draws the grid, the labels and the
+selection.
+
+## Usage
+
+```tsx
+import { IconView } from "macalicious/icon-view";
+import "macalicious/scroll-view.css";
+import "macalicious/icon-view.css";
+
+const renderIcon = (index: number) => <img src={files[index].icon} width={64} height={64} alt="" />;
+
+<IconView
+  aria-label="Documents"
+  count={files.length}
+  renderIcon={renderIcon}
+  getItemLabel={(index) => files[index].name}
+  getItemId={(index) => files[index].id}
+  value={selected}
+  onValueChange={setSelected}
+  onItemAction={(index) => open(files[index])}
+  style={{ height: 400 }}
+/>
+```
+
+Or copy the source into your project: `npx macalicious add icon-view`.
+
+The view does not hold your data. It asks for `count` items and calls `renderIcon(index)` and
+`getItemLabel(index)` for the ones in view.
+
+- Give the root a height (or a flex or grid cell that has one). The width decides the number
+  of columns: as many `cellWidth` cells as fit with at least 8 pt between them, then the same
+  whole number of points between the columns and to both edges (an odd point goes to the
+  trailing edge). That is Finder's layout: a
+  915 pt wide Applications window has eight columns 113 pt apart, a 950 pt wide one eight
+  columns 117 pt apart.
+- `renderIcon` returns artwork of at most `iconSize` on each side; it is centred in the icon
+  box and hidden from assistive technology, because the label names the item. It is artwork
+  only: do not put a button, a field or another control in it. Define the
+  function outside the component, or with `useCallback`: items are memoised, and with a stable
+  function a selection change re-renders only the items it touches.
+- The selection holds item ids. `getItemId` maps an index to an id (default: the index); use
+  real ids when items can be added, removed or sorted.
+- `renderTag` puts something before the name on the label's line, such as a
+  [tag dot](/components/tag-dot) at its small size.
+- `onItemAction` is "open": a double click, Return, or Command-Down Arrow.
+
+### Large collections
+
+<Example name="large" hideCode />
+
+Measured in Chromium with this example (5,000 items in a 600 x 360 pt view, React's
+development build): five columns; 35 item elements in 7 rows and 249 elements in all under
+the view at rest, at most 55 items while scrolling. Twenty scroll steps from the top to the
+bottom, waiting one animation frame after each, took 322 ms in all, 16 ms per step: one frame
+each, with the rows rendered before the frame is painted. Selecting an item changes the DOM of
+two items (the old and the new selection). The listbox carries all event handlers; items have
+none. The width is observed through the library's one shared `ResizeObserver`.
+
+## Guidelines
+
+Catalina's Human Interface Guidelines have no page for icon or collection views (the Finder
+and Window Anatomy pages, which the specification cites, do not describe them). What follows
+is Finder's own behaviour, as the specification records it:
+
+- Use an icon view when people recognise items by their picture: applications, folders,
+  images, documents with previews. Use a [list view](/components/list-view) or a table when
+  they compare names, dates or sizes.
+- Keep names short. A name takes at most two lines; Finder truncates a longer one in the
+  middle, this view at the end.
+- A click selects, a double click opens, and a click on the background deselects. Do not put
+  buttons inside an item; offer further actions in a toolbar or contextual menu.
+- Let people choose the icon size where it matters. Finder offers 16 to 512 pt and shows
+  64 pt by default.
+
+## Variants and states
+
+<Example name="variants" both hideCode />
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | default | Icon in its box, name centred under it in 12 pt text, up to two lines |
+| Selected, view without focus | click an item, focus elsewhere | A rounded backdrop 4 pt around the icon box (black at 10%, white at 15% in Dark Aqua) and a grey rounded highlight behind the name (`#dcdcdc`, `#464646`) |
+| Selected, view with focus | click an item or Tab to the view, in a key window | The same backdrop; the name's highlight is the accent colour and its text white |
+| Inactive or main window | `data-window-state` on an ancestor | The highlight stays grey also while the view has focus; no focus ring |
+| Keyboard focus | Tab | Focus ring inside the view's edge, never around an item |
+| Tag | `renderTag` | What it returns, 6 pt before the name |
+| Icon size | `iconSize` | The icon box; cells and rows grow with it |
+| Single or no selection | `selectionMode` | `"single"` selects one item at a time, `"none"` nothing |
+
+Measured: the grid of 64 pt icons (cell width 103 pt, rows 116 pt apart, icon box 8 pt below
+the row's top, label position and its 16 pt line pitch) and of 160 pt icons (cell width
+177 pt, rows 226 pt apart), the whole-point gaps and the centring in four windows of different
+widths, the background and label colours, and the tag dot's place. Provisional: everything
+about the selection. No Finder window in the reference screenshots has a selected icon, so the
+backdrop, the label highlight, its radius and padding are the specification's inferred values,
+with the measured selection colours of lists. Also provisional: the least gap of 8 pt that
+decides when a column is dropped (the screenshots bound it between 4 and 9 pt), and rows
+taller than the default for sizes other than 160 pt.
+
+Not implemented: selection by dragging a rectangle, drag and drop, renaming in place,
+labels on the right, middle truncation, and Finder's free placement of icons that are not
+arranged on the grid. Page Up and Page Down scroll and do not move the selection.
+
+## Sizes
+
+An icon view has no control sizes. Its cells follow `iconSize`:
+
+| `iconSize` | Default `cellWidth` | Default `rowHeight` | Seen in |
+| --- | --- | --- | --- |
+| 64 (default) | 103 | 116 | Applications, Utilities |
+| 160 | 177 | 212; the Home window has 226 | Home folder |
+| other | `iconSize + 17`, at least 103 | `iconSize + 52` | not in the screenshots |
+
+A row holds 4 pt, the backdrop (the icon box and 4 pt around it), 3 pt, two label lines of
+16 pt and 5 pt. A taller `rowHeight` keeps that content in the row's middle, a point up.
+
+## API
+
+<PropsTable name="IconViewProps" />
+
+The remaining props are those of [`ScrollView`](/components/scroll-view) (`scrollerStyle`,
+`knobStyle`, `size`) and of its root element, to which `ref`, `className` and `style` go.
+`aria-label` and `aria-labelledby` are given to the scrolling element, which is the listbox.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `aria-selected` | item | `true`, `false` | The item is selected; the selection's look hangs on it. |
+| `data-index` | item | number | The item's index. |
+| `data-force` | root | `focus` | Pins the emphasised highlight for documentation and tests. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-icon-view-background` | `var(--mac-color-control-background)` | Background of the view. Finder's icon views are `#1e2022` in Dark Aqua (Home, Applications, Utilities), two levels of blue above the control background's `#1e1e1e`; set `light-dark(#ffffff, #1e2022)` to match them, as the Home comparison does. |
+| `--mac-icon-view-plate` | black at 10%, white at 15% in Dark Aqua | The backdrop behind a selected icon. |
+
+| Class | Part |
+| --- | --- |
+| `.mac-icon-view` | Root (also `.mac-scroll-view`) |
+| `.mac-icon-view-items` | The grid, as tall as all rows, inside the listbox |
+| `.mac-icon-view-item` | A cell |
+| `.mac-icon-view-icon` | The icon box with the selection's backdrop |
+| `.mac-icon-view-label`, `.mac-icon-view-tag`, `.mac-icon-view-label-text` | The label, what precedes the name, and the name with its highlight |
+
+## Accessibility
+
+- The scrolling element is a `listbox` with `aria-multiselectable`, and each item an `option`
+  with `aria-selected`, `aria-setsize` and `aria-posinset`. A listbox rather than a `grid`:
+  the items are one ordered set, and its rows are an effect of the width that changes when the
+  view is resized. A grid would have to announce row and column positions that mean nothing,
+  and needs row elements that this layout does not have. Arrow keys in both dimensions work
+  in a listbox all the same.
+- Give the view a name with `aria-label` or `aria-labelledby`. An item's name is its label;
+  the icon is hidden from assistive technology.
+- The view is one tab stop. Focus stays on the listbox, which names the current item with
+  `aria-activedescendant`. An item out of view is not in the document and cannot be named,
+  so the current item is scrolled into view when the keyboard focus enters the view, and
+  when the selection is changed from outside while the view has the focus. Scrolling the
+  current item out of view with the pointer leaves it unnamed until the next key.
+- Keys: Left and Right Arrow move to the previous and next item (reversed in a right-to-left
+  layout) and continue on the neighbouring row; Up and Down Arrow move by one row, and Down
+  Arrow above a short last row goes to the last item; Home and End go to the first and last
+  item; typing the start of a name selects it, and repeating a letter steps through the names
+  that start with it; Return and Command-Down Arrow call `onItemAction`. In
+  `selectionMode="multiple"` Shift with a movement key extends the selection over every item
+  between, Command-click (Control-click) toggles an item, Shift-click extends, and Command-A
+  selects all. Control with a movement key moves the current item without changing the
+  selection, and Control-Space adds the current item to the selection or takes it out;
+  Finder has no such keys, they are here so that any set of items can be selected without a
+  pointer.
+- Differences from Finder: there Return renames and Space shows Quick Look; here Return opens,
+  as Command-Down Arrow does, and Space scrolls by a page, as do Page Up and Page Down. Shift
+  extends over the items in reading order, not over a rectangle.
+- Only the icon and the name take the pointer, as in Finder; the rest of a cell is background.
+  Make the artwork fill the icon box if a larger target is wanted.
+- The item moved to is scrolled into view. The emphasised highlight and the focus ring are
+  drawn only in a key window. In forced-colours mode a selected item has an outline round its
+  icon box and its name uses the system highlight colours.
+
+## Visual comparison
+
+Two Finder windows are compared in both appearances: Applications (64 pt icons, eight columns)
+and a home folder (160 pt icons, five columns in the Aqua window and four in the narrower
+Dark Aqua one, with a tag dot before one name). Each is compared twice. In the whole crop the
+icons are Apple's artwork in the screenshot and plain stand-in shapes in the example, and the
+names are set in the fallback font, so that figure mostly measures the artwork. In the masked
+comparison every icon box and every label is masked where the screenshot has it; what is
+scored is the background and that nothing is drawn outside those boxes. That catches an item
+or a label drawn in the wrong cell, but the masks are wider than the artwork and the text, so
+it does not measure the column pitch, the row pitch or the label position to the point.
+Results in Chromium on Linux:
+
+| Comparison | Whole crop, 2x | Whole crop, 1x | Masked, 2x | Masked, 1x |
+| --- | --- | --- | --- | --- |
+| Applications, Aqua | 18.20% of pixels differ, mean Δ 15.64 | 18.42%, mean Δ 15.38 | 0.00%, mean Δ 0.00 | 0.00%, mean Δ 0.00 |
+| Applications, Dark Aqua | 18.87%, mean Δ 17.38 | 19.12%, mean Δ 16.92 | 0.00%, mean Δ 0.00 | 0.00%, mean Δ 0.00 |
+| Home, Aqua | 3.63%, mean Δ 3.33 | 3.53%, mean Δ 3.25 | 0.00%, mean Δ 0.00 | 0.00%, mean Δ 0.00 |
+| Home, Dark Aqua | 10.12%, mean Δ 9.16 | 10.21%, mean Δ 9.09 | 0.00%, mean Δ 0.00 | 0.00%, mean Δ 0.00 |
+
+The crops (2x pixels): `442,186,1830,1390` in `10-15-Catalina-Light-Applications.png`,
+`442,186,1900,1344` in `10-15-Catalina-Dark-Applications.png`, `444,286,1878,1240` in
+`10-15-Catalina-Light-Finder-Home.png` and `442,286,1818,1120` in
+`10-15-Catalina-Dark-Finder-Home.png`. They leave out the last points of each window, where
+its round corners are; the last point of the Dark Aqua crops is the window's edge highlight,
+which lies over the view and which the examples paint.
+
+What the masked figure does not show, read from the unmasked pairs: the names sit on the same
+pixel rows as in the screenshots (cap tops and descenders agree in all four), and "System
+Preferences" breaks into the same two lines. Across, the names of the Aqua Applications
+window start and end on the screenshot's pixels and those of the Dark Aqua home folder within
+half a point; in the two other windows they are 1 pt (Applications, Dark Aqua) and 2 pt
+(home folder, Aqua) to the right of the screenshot's. Finder places the grid by a rule that
+the four widths do not settle.
+
+The selection is in no screenshot. It is checked with `expect` comparisons on a three-item
+view with real input: at rest (backdrop and grey highlight), after a click on another icon
+(backdrop and accent highlight there, nothing on the first), after Tab and Right Arrow (focus
+ring inside the edge, selection moved), and after a click and Tab in an inactive window (grey
+highlight, no ring), in Aqua and Dark Aqua. The at-rest check and the Tab and Right Arrow
+check now run in Dark Aqua too, and the accent highlight after a click is also checked with
+the purple accent in both appearances. Those colours are the specification's inferred
+values, so the checks prove that the view draws what the specification says, not that Finder
+looked exactly so. The thumbnail grid of Photos, which the specification lists with this
+view, has cells without labels and its own spacing; it is not reproduced or compared.

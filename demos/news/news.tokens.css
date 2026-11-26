@@ -1,0 +1,163 @@
+/*
+ * News: the colours of the app that no shared token and no component holds, from
+ * reference/spec/apps/news.md and the two News captures (L: 10-15-Catalina-Light-News.png,
+ * D: 10-15-Catalina-Dark-News.png). The toolbar's and the sidebar's colours are the Catalyst
+ * chrome's.
+ */
+:root {
+  /* [measured] the feed pane where no section is: L @ 700,153; D below the section */
+  --mac-news-pane: light-dark(#ffffff, #1e1e1e);
+  /* [measured] the masthead: "News" L @ 746,179,235,60; the date L @ 746,248,314,48; Dark Aqua
+     from the same places of the Dark capture */
+  --mac-news-masthead: light-dark(#000000, #e5e5e5);
+  --mac-news-masthead-date: light-dark(#6e6e6e, #9f9f9f);
+  /* [measured] the line under the masthead: L col x=2300 @ y=330. [provisional] Dark Aqua,
+     read from the capture. */
+  --mac-news-rule: light-dark(#eaeaea, #2f2f2f);
+  /* [measured] "Top Stories" and the red of "TOP STORIES", the same in both appearances:
+     L @ 760,440 and @ 2174,1670,209,15 */
+  --mac-news-section-title: #dc1812;
+  --mac-news-more-tint: #dc0000;
+  /* [provisional] the grey of "MORE", read from the captures */
+  --mac-news-more: light-dark(#8a8a8e, #98989e);
+  /* [measured] the section's background, down the pane: L @ 600,700 .. @ 600,1740 and the same
+     rows of the Dark capture at x=620 */
+  --mac-news-section-1: light-dark(#f5faff, #151b21);
+  --mac-news-section-2: light-dark(#edf5fe, #0f1922);
+  --mac-news-section-3: light-dark(#e5f1ff, #091723);
+  --mac-news-section-4: light-dark(#dcedff, #031425);
+  --mac-news-section-5: light-dark(#daecff, #001326);
+  /* [measured] the line over "MORE TOP STORIES": L @ 1560,1642. [provisional] Dark Aqua. */
+  --mac-news-section-rule: light-dark(#b4c1d1, #2a3644);
+  /* [measured] headlines: L @ 745,1188,36,31; D the same place */
+  --mac-news-headline: light-dark(#000000, #e5e7e7);
+  /* [measured] timestamps: L @ 745,1350,53,13; D the same place */
+  --mac-news-timestamp: light-dark(#747370, #989da4);
+  /* [provisional] the publisher's name, where the captures have its logo */
+  --mac-news-publisher: light-dark(#1d1d1f, #f2f2f2);
+  /* [provisional] the reader's text, which no capture shows */
+  --mac-news-body: light-dark(#1d1d1f, #dcdcdc);
+  /* [provisional] the placeholder that stands where the captures have news photographs: a flat
+     panel and the mark on it. No capture is their source. */
+  --mac-news-picture-fill: light-dark(#e3e6ea, #2c2f33);
+  --mac-news-picture-mark: light-dark(#bcc1c8, #4a4e54);
+  /* [measured] the play mark of a video story: a translucent dark disc with a white triangle,
+     L @ 1940,760,90,90 */
+  --mac-news-play-disc: rgb(0 0 0 / 0.5);
+  --mac-news-play-triangle: #ffffff;
+
+  /* [provisional] the places Find in Story has found, and the one it stands on: as Safari marks
+     them, which no capture of News shows */
+  --mac-news-find-match: light-dark(#fff3a3, #6d5f12);
+  --mac-news-find-current: light-dark(#ffd60a, #c7a500);
+  --mac-news-find-text: light-dark(#000000, #ffffff);
+  /* [provisional] the find bar's padding and the corner of a place found */
+  --mac-news-find-padding: 6px;
+  --mac-news-find-radius: 2px;
+
+  /* Lengths, in points from the window's top-left corner of the News captures (see the head of
+     news.css). */
+
+  /* [measured] The section's height and the stops of its tint, down from its top. */
+  --mac-news-section-height: 779.25px;
+  --mac-news-section-stop-0: 68px;
+  --mac-news-section-stop-1: 274px;
+  --mac-news-section-stop-2: 424px;
+  --mac-news-section-stop-3: 574px;
+  --mac-news-section-stop-4: 724px;
+  --mac-news-section-stop-5: 774px;
+
+  /* [provisional] The line a channel dragged in the sidebar would land at: no capture shows it. */
+  --mac-news-drop-line: 2px;
+  /* [provisional] How far outside a story its chosen outline stands: no capture shows it. */
+  --mac-news-picked-offset: 4px;
+
+  /* [measured] The column: 820 pt, centred on the pane, with 24 pt kept beside it in a narrow
+     pane; its centring starts 409 pt (half the column) left of the pane's middle. */
+  --mac-news-column-width: 820px;
+  --mac-news-column-half-width: 409px;
+  --mac-news-column-margin: 24px;
+  --mac-news-column-margin-double: 48px;
+  --mac-news-list-padding: 17.6px 0 32px;
+
+  /* [measured] The masthead's and the section title's type and spacing. */
+  --mac-news-masthead-padding: 17.6px 0 15.4px 1px;
+  --mac-news-masthead-font-size: 33px;
+  --mac-news-masthead-line-height: 28px;
+  --mac-news-mark-margin: 4px;
+  --mac-news-mark-offset: -1px;
+  --mac-news-section-title-margin: 39.6px 0 18.4px;
+  --mac-news-section-title-padding: 0 0 0 0.5px;
+  --mac-news-title-line-height: 36px;
+
+  /* [measured] A story's picture, 399 x 300 pt as a lead, 88 pt square beside the text. */
+  --mac-news-art-aspect-width: 399;
+  --mac-news-art-aspect-height: 300;
+  --mac-news-art-beside-size: 88px;
+  --mac-news-art-beside-radius: 3px;
+  --mac-news-beside-gap: 8.5px;
+
+  /* [measured] The publisher, the headline and the age of a lead. */
+  --mac-news-publisher-font-size: 13px;
+  --mac-news-publisher-line-height: 18px;
+  --mac-news-age-font-size: 9px;
+  --mac-news-age-line-height: 11px;
+  --mac-news-lead-publisher-margin-top: 12px;
+  --mac-news-lead-headline-min-height: 72px;
+  --mac-news-lead-headline-margin-top: 8.7px;
+  --mac-news-lead-headline-font-size: 22px;
+  --mac-news-lead-headline-line-height: 24px;
+  --mac-news-lead-age-margin-top: 10.9px;
+
+  /* [measured] The same of a story beside its picture. */
+  --mac-news-beside-publisher-font-size: 11px;
+  --mac-news-beside-publisher-line-height: 13px;
+  --mac-news-beside-headline-min-height: 48px;
+  --mac-news-beside-headline-margin-top: 2.4px;
+  --mac-news-beside-headline-font-size: 15.5px;
+  --mac-news-beside-headline-line-height: 16px;
+  --mac-news-beside-age-margin-top: 15.2px;
+
+  /* [measured] The focus ring's offset. */
+  --mac-news-focus-offset: 2px;
+
+  /* [measured] The blocks under the leads: 8 pt inside the grid's room, the row's padding, and
+     the "MORE TOP STORIES" button. */
+  --mac-news-block-margin-top: -8px;
+  --mac-news-more-row-padding-top: 11.5px;
+  --mac-news-more-font-size: 10px;
+  --mac-news-more-line-height: 12px;
+  --mac-news-more-triangle-margin: 3px;
+  --mac-news-more-triangle-half-height: 3px;
+  --mac-news-more-triangle-width: 4px;
+
+  /* [measured] A list's title, an empty list, and an opened story. */
+  --mac-news-list-title-margin-bottom: 20px;
+  --mac-news-list-title-padding-bottom: 15.4px;
+  --mac-news-empty-min-height: 240px;
+  --mac-news-reader-width: 620px;
+  --mac-news-reader-half-width: 310px;
+  --mac-news-reader-title-margin-top: 6px;
+  --mac-news-reader-age-margin-top: 10px;
+  --mac-news-reader-art-margin: 16px 4px;
+  /* [provisional] The reader's text, which no capture shows. */
+  --mac-news-paragraph-margin-top: 12px;
+  --mac-news-paragraph-font-size: 15px;
+  --mac-news-paragraph-line-height: 22px;
+
+  /* [provisional] The desktop app's live News: the status line under a title, the row of a
+     channel's or a story's buttons, and a row of Discover Channels. No capture shows them. */
+  --mac-news-status-gap: 6px;
+  --mac-news-status-min-height: 18px;
+  --mac-news-status-margin-bottom: 12px;
+  --mac-news-status-font-size: 12px;
+  --mac-news-status-line-height: 16px;
+  --mac-news-actions-margin: 16px 0 12px;
+  --mac-news-discover-row-padding: 8px;
+  /* [provisional] News's widget in Notification Center's Today view. */
+  --mac-news-widget-row-padding: 6px 12px;
+  --mac-news-widget-font-size: 13px;
+  --mac-news-widget-line-height: 16px;
+  --mac-news-widget-small-font-size: 10px;
+  --mac-news-widget-small-line-height: 13px;
+}

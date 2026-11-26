@@ -1,0 +1,122 @@
+/*
+ * Screen Time pane. Every control is a library component placed by form.tsx; this file lays
+ * out the cells of the table of apps and the legend of the charts, and sets the one label of
+ * the charts that is green.
+ *
+ *   .mac-system-preferences-screen-time-app       a picture and a name in a table cell
+ *   .mac-system-preferences-screen-time-average   the label of the average line: 10 pt, green
+ *   .mac-system-preferences-screen-time-legend    a category's name over its time, 19 pt apart,
+ *                                                 6 pt after the swatch
+ *   .mac-system-preferences-screen-time-empty     the area of the table while it shows what
+ *                                                 is not captured
+ *   .mac-system-preferences-screen-time-served    the served page: its facts fit the section's box
+ *   .mac-system-preferences-screen-time-switch    a section's state and its Turn On button
+ *   .mac-system-preferences-screen-time-settings  a section's controls, one under the other
+ *   .mac-system-preferences-screen-time-row       a line of controls
+ *   .mac-system-preferences-screen-time-apps      a list of applications to check, which scrolls
+ *   .mac-system-preferences-screen-time-limits    App Limits' list
+ *   .mac-system-preferences-screen-time-panel     the Add Limit sheet's content
+ */
+.mac-system-preferences-screen-time-app {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 37px;
+  margin-inline-start: 13px;
+}
+
+.mac-system-preferences-screen-time-average {
+  color: var(--mac-color-system-green);
+  font: var(--mac-font-label);
+  letter-spacing: var(--mac-tracking-mini);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.mac-system-preferences-screen-time-legend {
+  display: grid;
+  grid-auto-rows: 19px;
+  margin-inline-start: 6px;
+  white-space: nowrap;
+}
+
+.mac-system-preferences-screen-time-empty {
+  position: relative;
+  height: 177.5px;
+}
+
+.mac-system-preferences-screen-time-served {
+  height: 100%;
+}
+
+.mac-system-preferences-screen-time-served .mac-system-preferences-served-facts > div {
+  grid-template-columns: 150px 1fr;
+}
+
+.mac-system-preferences-screen-time-switch {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mac-system-preferences-screen-time-settings {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.mac-system-preferences-screen-time-settings .mac-tab-view {
+  align-self: stretch;
+}
+
+.mac-system-preferences-screen-time-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mac-system-preferences-screen-time-row > .mac-checkbox {
+  width: 100px;
+}
+
+.mac-system-preferences-screen-time-apps {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+  max-height: 300px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.mac-system-preferences-screen-time-limits {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-system-preferences-screen-time-limits li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.mac-system-preferences-screen-time-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

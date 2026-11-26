@@ -1,0 +1,218 @@
+/*
+ * About This Mac demo: the stand-in artwork and the layout of the four panes that no
+ * screenshot shows. The window, its title bar and tab control, the Overview layout, the
+ * buttons, the labels and the capacity bar are the library's own; nothing here restyles them.
+ *
+ * Parts
+ *   .mac-about-this-mac-badge         the stand-in for the macOS badge: a disc with a pale rim
+ *   .mac-about-this-mac-pane          a pane other than Overview: 20 pt margins [provisional]
+ *   .mac-about-this-mac-pane-actions  its buttons, at the bottom right
+ *   .mac-about-this-mac-displays      the displays, side by side and centred
+ *   .mac-about-this-mac-display       one display: its stand-in over its caption
+ *   .mac-about-this-mac-screen        the stand-in for a display: a rounded rectangle
+ *   .mac-about-this-mac-caption       lines of text, one under the other
+ *   .mac-about-this-mac-heading       a heading: a box around its label, nothing more
+ *   .mac-about-this-mac-storage       the disk beside its usage
+ *   .mac-about-this-mac-disk          the stand-in disk over its name and kind
+ *   .mac-about-this-mac-drive         the stand-in for the disk's icon: a rounded square
+ *   .mac-about-this-mac-usage         name and availability, the Manage button, bar, legend
+ *   .mac-about-this-mac-usage-head    the name and availability beside the button
+ *   .mac-about-this-mac-legend        the categories with their sizes, in columns
+ *   .mac-about-this-mac-legend-item   one category: its name, then its size
+ *   .mac-about-this-mac-version       the version as a button that cycles its lines
+ *   .mac-about-this-mac-segments      the used space by category
+ *   .mac-about-this-mac-segment       one category's colour: [data-tone], [data-swatch] in the legend
+ *   .mac-about-this-mac-resources     the headed groups of links of Support and Service
+ *   .mac-about-this-mac-section       one group
+ *   .mac-about-this-mac-description   its paragraph
+ *   .mac-about-this-mac-links         its links, one per line
+ */
+
+/* The badge is Apple's artwork. The stand-in is the image view's own neutral disc, 153 pt
+   across as the badge is, with a 7 pt rim in the control colour over it. */
+.mac-about-this-mac-badge {
+  border: 7px solid var(--mac-color-control);
+}
+
+.mac-about-this-mac-pane {
+  box-sizing: border-box;
+  gap: 16px;
+  padding: 28px 40px 20px;
+}
+
+.mac-about-this-mac-pane-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-start: auto;
+}
+
+.mac-about-this-mac-displays-note {
+  display: flex;
+  flex: 1 1 auto;
+  gap: var(--mac-space-control-gap);
+  align-items: center;
+  margin-inline-end: var(--mac-space-control-gap);
+}
+
+.mac-about-this-mac-displays {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: center;
+  justify-content: center;
+}
+
+.mac-about-this-mac-display {
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  margin: 0;
+}
+
+.mac-about-this-mac-screen {
+  border: 6px solid var(--mac-color-control);
+  border-radius: 8px;
+}
+
+.mac-about-this-mac-caption {
+  display: grid;
+  gap: 2px;
+  justify-items: start;
+  min-width: 0;
+}
+
+.mac-about-this-mac-display .mac-about-this-mac-caption {
+  justify-items: center;
+}
+
+/* The heading's text is a label; the element only says that it is a heading. */
+.mac-about-this-mac-heading {
+  display: grid;
+  margin: 0;
+}
+
+.mac-about-this-mac-storage {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+  padding-block-start: 24px;
+}
+
+.mac-about-this-mac-disk {
+  display: grid;
+  gap: 2px;
+  justify-items: center;
+}
+
+.mac-about-this-mac-drive {
+  margin-block-end: 8px;
+  border-radius: 12px;
+}
+
+.mac-about-this-mac-usage {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.mac-about-this-mac-usage-head {
+  display: flex;
+  gap: 12px;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.mac-about-this-mac-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 4px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-about-this-mac-legend-item {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.mac-about-this-mac-version {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+
+.mac-about-this-mac-segments {
+  display: flex;
+  overflow: hidden;
+  height: 16px;
+  border-radius: 3px;
+  background: var(--mac-color-separator);
+}
+
+.mac-about-this-mac-segment {
+  display: block;
+  background: var(--mac-color-system-blue);
+}
+
+.mac-about-this-mac-segment[data-swatch] {
+  flex: none;
+  align-self: center;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.mac-about-this-mac-segment[data-tone="1"] {
+  background: var(--mac-color-system-orange);
+}
+
+.mac-about-this-mac-segment[data-tone="2"] {
+  background: var(--mac-color-system-green);
+}
+
+.mac-about-this-mac-segment[data-tone="3"] {
+  background: var(--mac-color-system-purple);
+}
+
+.mac-about-this-mac-segment[data-tone="4"] {
+  background: var(--mac-color-system-red);
+}
+
+.mac-about-this-mac-segment[data-tone="5"] {
+  background: var(--mac-color-system-yellow);
+}
+
+.mac-about-this-mac-resources {
+  display: grid;
+  gap: 20px;
+  align-content: start;
+}
+
+.mac-about-this-mac-section {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+}
+
+.mac-about-this-mac-description {
+  max-width: 420px;
+}
+
+.mac-about-this-mac-links {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

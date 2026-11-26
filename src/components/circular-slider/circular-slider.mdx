@@ -1,0 +1,125 @@
+---
+title: Circular Slider
+description: A dial whose dot is turned to pick a value that repeats, such as an angle.
+order: 41
+---
+
+<Example name="basic" both />
+
+AppKit calls this control a *circular slider* (`NSSlider` with the circular type).
+
+**No reference screenshot shows a circular slider.** The measured spec searched every pane
+and found none, and marks the control "not seen". Everything about its look on this page is
+inferred: the dial is drawn with the recipe measured on the round knob of the linear
+[Slider](/components/slider), and the sizes, the dot and the tick dots are the spec's
+estimates of AppKit's metrics. Treat the appearance as provisional.
+
+Base UI has no primitive for it, so the element is written here, following the WAI-ARIA
+slider pattern: one `role="slider"` element with the value attributes, keyboard support and
+pointer dragging.
+
+## Usage
+
+```tsx
+import { CircularSlider } from "macalicious/circular-slider";
+import "macalicious/circular-slider.css";
+
+<CircularSlider aria-label="Rotation" max={360} value={angle} onValueChange={setAngle} />
+```
+
+Or copy the source into your project: `npx macalicious add circular-slider`. See
+[Installation](/installation).
+
+The value grows clockwise from twelve o'clock, where both `min` and `max` are, and wraps round
+at the ends. A circular slider is usually paired with a field that shows the number:
+
+<Example name="angle" />
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for sliders, as the measured spec summarises them.
+Not verified: this text was not checked against Apple's page.
+
+- Use a circular slider for a value that repeats or continues indefinitely, such as a
+  rotation from 0 to 360 degrees. For a value with two real ends use a linear
+  [Slider](/components/slider).
+- Tick marks, when shown, are dots spaced evenly around the dial.
+- Pair it with a text field and stepper that show the value, so that it can also be typed.
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look (all provisional) |
+| --- | --- | --- |
+| Normal | – | White dial (light grey in Dark Aqua) with a hairline and a shadow, a dark dot at the value |
+| Tick marks | `tickMarks` | Dots around the dial, 3 pt outside its rim; the box grows by 4 pt on every side |
+| Pressed | `:active` | The dial darkens (lightens in Dark Aqua) |
+| Keyboard focus | `:focus-visible` | Focus ring in the accent colour around the dial |
+| Disabled | `disabled` | The whole control at half opacity |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No focus ring. The dial has no accent colour to lose. |
+
+## Sizes
+
+<Example name="sizes" both />
+
+| Size | Dial | Dot | Source |
+| --- | --- | --- | --- |
+| `regular` | 24 pt | 4 pt, centred 4.5 pt inside the rim | inferred by the spec from AppKit's metrics |
+| `small` | 18 pt | 4 pt, centred 4.5 pt inside the rim | inferred by the spec |
+| `mini` | 14 pt | 3 pt, centred 3.5 pt inside the rim | this library's own; AppKit has no mini circular slider |
+
+## API
+
+<PropsTable name="CircularSliderProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-size` | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-tick-marks` | present or absent | Present when `tickMarks` is above zero. |
+| `data-disabled` | present or absent | Reflects `disabled`. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+The root holds a `<span class="mac-circular-slider-thumb">` for the dot, one
+`<span class="mac-circular-slider-tick">` per tick mark and, with `name`, a hidden input.
+It has no CSS variables meant for consumers.
+
+## Accessibility
+
+- The element has `role="slider"` with `aria-valuemin`, `aria-valuemax` and `aria-valuenow`,
+  and is in the tab order.
+- It needs an accessible name: `aria-label` or `aria-labelledby`. Give `aria-valuetext` when
+  the number alone does not say enough ("90 degrees").
+- Right and Up arrows add one step, Left and Down take one away; Page Up, Page Down, and Shift
+  with an arrow move by `largeStep`; Home goes to `min`, End to `max`. Past either end the
+  value comes round again. With `tickMarkValuesOnly` every key moves from mark to mark.
+- With the pointer, press or drag anywhere on the dial: the value follows the pointer's angle
+  around the centre, also when the pointer leaves the dial. The drag uses pointer capture, so
+  nothing listens on the window.
+- A disabled dial leaves the tab order and has `aria-disabled`.
+- In forced-colours mode the dial, its dot and the tick dots are drawn with system colours.
+
+## Visual comparison
+
+There is no comparison with a screenshot, because no screenshot shows the control;
+`circular-slider.visual.json` says so with `pending`. What `npm run visual` does check, in a
+real browser, is that the component matches the values the spec infers and the tokens
+(`expect` comparisons, pixel by pixel):
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| At rest, both appearances | Dial fill, the dot's colour and position for a quarter of the range and for the minimum, the tick dots' colour and position | Inferred |
+| Pressed | The mouse held down on the middle of the dial: darker fill, and the dot moves to where the pointer is | Inferred |
+| End key | Tab, then End: the dot is at twelve o'clock | The behaviour documented above |
+| Keyboard focus | Ring colour, and that the band ends 2.5 pt beyond the dial; with tick marks the ring hugs the dial | Ring measured on a text field; that it follows the dial inferred |
+| Main and inactive window | No focus ring | Inferred |
+
+Every state in the table is checked in Dark Aqua as well as in Aqua. The dark values come from
+the same tokens: a dial of `#cccccc`, `#e0e0e0` while pressed, the dot black at 60% over it, and
+the ring at `#2f6d99` over the window background `#323232`.
+
+These checks show that the component does what the spec infers, not that Catalina looks that
+way. Nothing on this page is measured.

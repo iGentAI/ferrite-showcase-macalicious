@@ -1,0 +1,16 @@
+/*
+ * Window tokens of its own. Tags as in CONTRIBUTING, "Token tags".
+ */
+:root {
+  /*
+   * The two device-pixel rows along the top edge of a window that has no title bar, drawn by
+   * `topHighlight` over whatever the window's content is. They are stored as the white that,
+   * under the window's inner rim, composites to the rows of the App Store window over its
+   * sidebar (Light-/Dark-Mac-App-Store, window at 112,76): #f5f6f6 and #ecedee on #e7e8e9 in
+   * Aqua, #777879 and #666769 on #2c2d2f in Dark Aqua. The values are the title bar's pair,
+   * which composites to within 2 levels of those rows. The layers stack: the first covers one
+   * row, the second both. [measured, computed]
+   */
+  --mac-window-top-highlight: light-dark(rgb(255 255 255 / 0.44), rgb(255 255 255 / 0.11));
+  --mac-window-top-highlight-second: light-dark(rgb(255 255 255 / 0.27), rgb(255 255 255 / 0.1));
+}

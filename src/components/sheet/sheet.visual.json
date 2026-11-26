@@ -1,0 +1,161 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "print-bottom-edge-light",
+      "description": "The bottom of the Print sheet over the white page of the TextEdit window behind it, Aqua: the sheet material, the 0.5 pt edge and the shadow's falloff. No text is in the crop.",
+      "example": "visual-bottom-edge",
+      "selector": "[data-crop='bottom']",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": { "1x": 0.005, "2x": 0.0005 },
+      "deltaBudget": { "1x": 4.8, "2x": 4.8 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Print.png",
+        "crop": { "x": 700, "y": 1012, "width": 200, "height": 80 }
+      }
+    },
+    {
+      "name": "print-bottom-edge-dark",
+      "description": "The bottom of the Print sheet over the dark page of the TextEdit window behind it, Dark Aqua: the sheet material, the 1 pt rim, the dark 0.5 pt edge and the shadow. No text is in the crop.",
+      "example": "visual-bottom-edge",
+      "selector": "[data-crop='bottom']",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": { "1x": 0.005, "2x": 0.0005 },
+      "deltaBudget": { "1x": 4.1, "2x": 4.1 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Print.png",
+        "crop": { "x": 700, "y": 982, "width": 200, "height": 80 }
+      }
+    },
+    {
+      "name": "attachment-light",
+      "description": "A whole sheet hanging from its line, Aqua: no shadow above the line, the fill, the edge and the shadow below.",
+      "example": "visual-attachment",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 120, "height": 60 },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "the page 1.5 pt above the line: a sheet casts no shadow there (measured: the toolbar keeps its colours, spec sheet)"
+          },
+          {
+            "x": 10,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "the same beside the sheet, above the line"
+          },
+          {
+            "x": 60,
+            "y": 35,
+            "color": "#f1f1f1",
+            "tolerance": 3,
+            "note": "fill: the sheet material over white, computed from the token; #efefef measured on the Print sheet"
+          },
+          {
+            "x": 60,
+            "y": 50.25,
+            "color": "#adadad",
+            "tolerance": 6,
+            "scale": 2,
+            "note": "the 0.5 pt edge under the sheet, measured on Light-Print @ 800,1042"
+          }
+        ]
+      }
+    },
+    {
+      "name": "attachment-dark",
+      "description": "A whole sheet hanging from its line, Dark Aqua: no shadow above the line, the fill, the rim and the edge.",
+      "example": "visual-attachment",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 120, "height": 60 },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 18.5,
+            "color": "#1e1e1e",
+            "note": "the page 1.5 pt above the line: a sheet casts no shadow there (inferred from the light capture)"
+          },
+          {
+            "x": 60,
+            "y": 35,
+            "color": "#262626",
+            "tolerance": 3,
+            "note": "fill: the sheet material over #1e1e1e, computed from the token"
+          },
+          {
+            "x": 60,
+            "y": 49.5,
+            "color": "#515151",
+            "tolerance": 8,
+            "note": "the 1 pt rim inside the bottom edge: white at 20% over the fill, computed; #585758 measured on Dark-Print @ 800,1010 over that capture's lighter fill"
+          },
+          {
+            "x": 60,
+            "y": 50.25,
+            "color": "#030303",
+            "tolerance": 6,
+            "scale": 2,
+            "note": "the 0.5 pt edge under the sheet, measured on Dark-Print @ 800,1012"
+          }
+        ]
+      }
+    },
+    {
+      "name": "tall-light",
+      "description": "A sheet with more content than fits below its line, Aqua: it ends inside the page, 5 pt above its bottom, instead of running out of it.",
+      "example": "visual-tall",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 120, "height": 60 },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 40,
+            "color": "#f1f1f1",
+            "tolerance": 3,
+            "note": "fill: the sheet material over white, computed from the token"
+          },
+          {
+            "x": 60,
+            "y": 55.25,
+            "color": "#adadad",
+            "tolerance": 6,
+            "scale": 2,
+            "note": "the 0.5 pt edge under the sheet, measured on Light-Print @ 800,1042: the sheet ends here, 35 pt below its line"
+          }
+        ]
+      }
+    },
+    {
+      "name": "tall-dark",
+      "description": "A sheet with more content than fits below its line, Dark Aqua: it ends inside the page, 5 pt above its bottom, instead of running out of it.",
+      "example": "visual-tall",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 120, "height": 60 },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 40,
+            "color": "#262626",
+            "tolerance": 3,
+            "note": "fill: the sheet material over #1e1e1e, computed from the token"
+          },
+          {
+            "x": 60,
+            "y": 57.5,
+            "color": "#191919",
+            "tolerance": 4,
+            "note": "the page under the sheet's bottom edge, darkened by its shadow: #181818 to #1a1a1a measured on Dark-Print @ 800,1013 to 1022. The fill would be #262626"
+          }
+        ]
+      }
+    }
+  ]
+}

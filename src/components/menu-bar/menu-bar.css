@@ -1,0 +1,110 @@
+/*
+ * Menu bar (NSApplication.mainMenu): a 22 pt vibrant strip of title cells. Cells abut, and the
+ * first starts 10 pt from the bar's edge. A cell is its text plus 9 pt on each side, with the
+ * text's width rounded up to a whole point: the open Finder title is 62 pt for 43.9 pt of
+ * bold text and the open Go title 37 pt for 18.4 pt (Light-Finder-Menu, -Go-Menu). CSS cannot
+ * round a width, so the padding is 9.25 pt, the half point of rounding spread over two sides;
+ * over the seven titles of Light-Desktop every title's ink then lands within 0.5 pt of the
+ * capture, where 10 pt drifted 1.5 pt per title to 10.5 pt late at Help. An image title has
+ * no rounding to absorb and keeps 10 pt: the Apple menu's cell is 35 pt for its 15 pt mark
+ * (Light-Apple-Menu, highlight x=10..45). [measured]
+ *
+ * Parts
+ *   .mac-menu-bar            the strip
+ *   .mac-menu-bar-menus      the titles, a menubar
+ *   .mac-menu-bar-title      one title cell
+ *
+ * States
+ *   .mac-menu-bar-title[data-application]   the application menu: bold title
+ *   .mac-menu-bar-title[data-popup-open]    its menu is open: accent highlight, white title
+ *   .mac-menu-bar-title:focus-visible       reached from the keyboard: the same highlight
+ *   .mac-menu-bar-title[data-disabled]      dimmed
+ *   .mac-menu-bar-title[data-overflow]      no room on this screen: not drawn
+ *   [data-force~="pressed"]                 static preview of the highlight (docs)
+ *
+ * The bar belongs to the screen, not to a window, so nothing here follows data-window-state.
+ */
+.mac-menu-bar {
+  display: flex;
+  box-sizing: border-box;
+  height: 22px;
+  padding-inline-start: 10px;
+  background: var(--mac-material-menu-bar);
+  -webkit-backdrop-filter: var(--mac-material-filter-menu-bar);
+  backdrop-filter: var(--mac-material-filter-menu-bar);
+  box-shadow: 0 1px 0 var(--mac-menu-bar-line);
+  color: var(--mac-menu-bar-text);
+  font: var(--mac-font-menu-bar);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-menu-bar-menus {
+  display: flex;
+  flex: none;
+}
+
+.mac-menu-bar-title {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  box-sizing: border-box;
+  height: 100%;
+  margin: 0;
+  padding: 0 9.25px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: default;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* An image title, such as the Apple mark: 10 pt each side, see above. */
+.mac-menu-bar-title:where(:has(> :is(svg, img))) {
+  padding: 0 10px;
+}
+
+/* A cell the bar has no room for on this screen (MenuBar's keepInside): not drawn. */
+.mac-menu-bar-title[data-overflow] {
+  /* A cell must not set its own display inline, which would beat this rule (desktop-menus.tsx). */
+  display: none;
+}
+
+.mac-menu-bar-title:where([data-application]) {
+  font-weight: var(--mac-font-weight-bold);
+}
+
+.mac-menu-bar-title:where([data-popup-open], :focus-visible, [data-force~="pressed"]):where(
+  :not([data-disabled])
+) {
+  background: var(--mac-menu-bar-highlight);
+  color: var(--mac-color-selected-menu-item-text);
+}
+
+.mac-menu-bar-title:where([data-disabled]) {
+  color: var(--mac-menu-bar-text-disabled);
+}
+
+@media (forced-colors: active) {
+  .mac-menu-bar {
+    border-block-end: 1px solid CanvasText;
+  }
+
+  .mac-menu-bar-title:where([data-popup-open], :focus-visible, [data-force~="pressed"]):where(
+    :not([data-disabled])
+  ) {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  .mac-menu-bar-title:where([data-disabled]) {
+    color: GrayText;
+  }
+}

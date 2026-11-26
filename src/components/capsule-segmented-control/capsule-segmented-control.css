@@ -1,0 +1,111 @@
+/*
+ * Capsule segmented control: a 20 pt high row of segments inside one hairline outline with
+ * capsule ends. No bezel, no shadow, no dividers; the selected segment is filled.
+ *
+ * Segment states
+ *   [data-pressed]                     selected (set by Base UI): fill and a darker title
+ *   :active, [data-force~="pressed"]   being pressed: a stronger tint
+ *   [data-disabled]                    set by Base UI for `disabled`: title in the disabled colour
+ *   :focus-visible, [data-force~="focus"]   keyboard focus ring, only in the key window
+ */
+.mac-capsule-segmented-control {
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  box-sizing: border-box;
+  height: 20px;
+  border: var(--mac-hairline) solid var(--mac-capsule-segmented-control-border);
+  border-radius: 10px;
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* The 1 pt under the title puts its baseline 14 pt below the control's top, as measured. */
+.mac-capsule-segmented-control-segment {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 0;
+  padding: 0 10px 1px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  white-space: nowrap;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  appearance: none;
+  outline: none;
+}
+
+/* The end segments follow the inside of the capsule. */
+.mac-capsule-segmented-control-segment:where(:first-child) {
+  border-start-start-radius: calc(10px - var(--mac-hairline));
+  border-end-start-radius: calc(10px - var(--mac-hairline));
+}
+
+.mac-capsule-segmented-control-segment:where(:last-child) {
+  border-start-end-radius: calc(10px - var(--mac-hairline));
+  border-end-end-radius: calc(10px - var(--mac-hairline));
+}
+
+.mac-capsule-segmented-control-segment:where([data-pressed]) {
+  background: var(--mac-capsule-segmented-control-fill-selected);
+  color: var(--mac-capsule-segmented-control-text-selected);
+}
+
+.mac-capsule-segmented-control-segment:where(:active, [data-force~="pressed"]):where(
+  :not([data-disabled])
+) {
+  background: var(--mac-capsule-segmented-control-fill-pressed);
+}
+
+.mac-capsule-segmented-control-segment:where([data-disabled]) {
+  color: var(--mac-color-control-text-disabled);
+}
+
+.mac-capsule-segmented-control-segment:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  z-index: 1;
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-capsule-segmented-control {
+    border-color: ButtonText;
+  }
+
+  .mac-capsule-segmented-control-segment {
+    color: ButtonText;
+  }
+
+  .mac-capsule-segmented-control-segment:where([data-pressed]) {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .mac-capsule-segmented-control-segment:where([data-disabled]) {
+    color: GrayText;
+  }
+
+  .mac-capsule-segmented-control-segment:where(:focus-visible, [data-force~="focus"]):where(
+    :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+  ) {
+    outline: 2px solid Highlight;
+  }
+}

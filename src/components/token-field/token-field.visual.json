@@ -1,0 +1,364 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "mail-light",
+      "description": "Recipient token with a menu chevron in the To field of a Mail message, Aqua, whole crop.",
+      "example": "visual-mail",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.191,
+        "2x": 0.168
+      },
+      "deltaBudget": {
+        "1x": 17.48,
+        "2x": 19.16
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mail.png",
+        "crop": {
+          "x": 596,
+          "y": 414,
+          "width": 244,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "mail-light-masked",
+      "description": "As mail-light with the name masked, to score the token's shape, fill and chevron alone: text is set in the fallback font off Apple platforms.",
+      "example": "visual-mail",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 6,
+          "y": 5,
+          "width": 102,
+          "height": 15
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.046,
+        "2x": 0.0119
+      },
+      "deltaBudget": {
+        "1x": 1.12,
+        "2x": 0.95
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mail.png",
+        "crop": {
+          "x": 596,
+          "y": 414,
+          "width": 244,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "mail-dark",
+      "description": "Recipient token with a menu chevron in the To field of a Mail message, Dark Aqua, whole crop.",
+      "example": "visual-mail",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.192,
+        "2x": 0.175
+      },
+      "deltaBudget": {
+        "1x": 16.22,
+        "2x": 17.48
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mail.png",
+        "crop": {
+          "x": 600,
+          "y": 406,
+          "width": 244,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "mail-dark-masked",
+      "description": "As mail-dark with the name masked, to score the token's shape, fill and chevron alone: text is set in the fallback font off Apple platforms.",
+      "example": "visual-mail",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 6,
+          "y": 5,
+          "width": 102,
+          "height": 15
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.043,
+        "2x": 0.0119
+      },
+      "deltaBudget": {
+        "1x": 1.02,
+        "2x": 0.83
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mail.png",
+        "crop": {
+          "x": 600,
+          "y": 406,
+          "width": 244,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "bezel-light",
+      "description": "The field's bezel, which no screenshot shows on a token field: the text field's, around a token at rest, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 216,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 8.25,
+            "y": 19,
+            "color": "#b1b1b1",
+            "scale": 2,
+            "tolerance": 1,
+            "note": "side edge, black at 25% over #ececec (spec: token-field, Field: a text-field bezel)"
+          },
+          {
+            "x": 150,
+            "y": 19,
+            "color": "#ffffff",
+            "note": "fill (spec: text-field, Fill)"
+          },
+          {
+            "x": 12,
+            "y": 19,
+            "color": "#bbd7ff",
+            "tolerance": 1,
+            "note": "token fill (spec: token-field, Token fill, measured #bbd7ff)"
+          },
+          {
+            "x": 12,
+            "y": 9.25,
+            "color": "#ffffff",
+            "scale": 2,
+            "note": "field fill above the token: the token is 19 pt high in a 22 pt field"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bezel-dark",
+      "description": "The field's bezel, which no screenshot shows on a token field: the text field's, around a token at rest, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 216,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 150,
+            "y": 8.25,
+            "color": "#4b4b4b",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "top edge, white at 12% over #323232 (spec: text-field)"
+          },
+          {
+            "x": 150,
+            "y": 19,
+            "color": "#3c3c3c",
+            "note": "fill, white at 5% over #323232"
+          },
+          {
+            "x": 12,
+            "y": 19,
+            "color": "#1e3d63",
+            "tolerance": 1,
+            "note": "token fill (spec: token-field, Token fill, measured #1e3d63)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "selected-token-light",
+      "description": "A token selected by a click: emphasised selection, and the focus ring on the field, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": ".mac-token-field-token"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 216,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 19,
+            "color": "#0164e1",
+            "tolerance": 2,
+            "note": "selected token: the selected-content colour for blue (spec: token-field, selected, inferred as the solid accent-class fill; value from the measured selection token)"
+          },
+          {
+            "x": 6.75,
+            "y": 19,
+            "color": "#82abf1",
+            "tolerance": 3,
+            "note": "focus ring over the window background: #82abf1 on #ececec, measured on the Go to Folder field (spec: focus-ring)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "selected-token-dark",
+      "description": "A token selected by a click: emphasised selection, and the focus ring on the field, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": ".mac-token-field-token"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 216,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 19,
+            "color": "#0158d0",
+            "tolerance": 2,
+            "note": "selected token: the selected-content colour for blue (inferred; value from the measured selection token)"
+          },
+          {
+            "x": 6.75,
+            "y": 19,
+            "color": "#2e6d98",
+            "tolerance": 3,
+            "note": "focus ring, rgb(43 168 255 / 0.5), over the untinted window background #323232 (spec: focus-ring measures #2d6c99 on #2f3032)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "selected-not-key-light",
+      "description": "A selected token in a window that is not key: grey selection and no ring, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "click": ".mac-token-field-token"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 216,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 19,
+            "color": "#dcdcdc",
+            "tolerance": 1,
+            "note": "unemphasised selection (inferred; value of the measured unemphasised selection token)"
+          },
+          {
+            "x": 6.75,
+            "y": 19,
+            "color": "#ececec",
+            "note": "no focus ring in a window that is not key"
+          }
+        ]
+      }
+    },
+    {
+      "name": "selected-not-key-dark",
+      "description": "A selected token in a window that is not key: grey selection and no ring, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "click": ".mac-token-field-token"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 216,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 19,
+            "color": "#464646",
+            "tolerance": 1,
+            "note": "unemphasised selection (inferred; value of the measured unemphasised selection token)"
+          },
+          {
+            "x": 6.75,
+            "y": 19,
+            "color": "#323232",
+            "note": "no focus ring in a window that is not key"
+          }
+        ]
+      }
+    },
+    {
+      "name": "selected-token-accent-purple-light",
+      "description": "A token selected by a click with the purple accent, Aqua: the selection follows the accent.",
+      "example": "visual-states",
+      "appearance": "light",
+      "accent": "purple",
+      "actions": [{ "click": ".mac-token-field-token" }],
+      "expect": {
+        "size": { "width": 216, "height": 38 },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 19,
+            "color": "#7f2a7d",
+            "tolerance": 3,
+            "note": "the selected-content colour for purple: the token sheet's offset from the accent, fitted to the measured blue pair, applied to the measured purple swatch #963d96 (inferred; no screenshot shows a selection in another accent)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "selected-token-accent-purple-dark",
+      "description": "A token selected by a click with the purple accent, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "accent": "purple",
+      "actions": [{ "click": ".mac-token-field-token" }],
+      "expect": {
+        "size": { "width": 216, "height": 38 },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 19,
+            "color": "#83347f",
+            "tolerance": 3,
+            "note": "the selected-content colour for purple in Dark Aqua: the token sheet's offset applied to the measured purple swatch #a650a7 (inferred)"
+          }
+        ]
+      }
+    }
+  ]
+}

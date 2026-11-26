@@ -1,0 +1,112 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "window-light",
+      "description": "The whole Force Quit Applications window, Aqua: Mail selected while the list has the keyboard focus (a click on the selected row). Whole crop: the text is set in the fallback font and the application icons are abstract placeholders.",
+      "example": "visual-window",
+      "appearance": "light",
+      "actions": [{ "click": ".mac-bordered-list-row[aria-selected='true']" }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Force-Quit.png",
+        "crop": { "x": 112, "y": 76, "width": 676, "height": 614 }
+      },
+      "budget": { "1x": 0.058, "2x": 0.0515 },
+      "deltaBudget": { "1x": 5.8, "2x": 6.4 }
+    },
+    {
+      "name": "window-light-layout",
+      "description": "As window-light with the text and the placeholder icons masked (the title, the instruction, the icons and names of the three rows, the hint and the button's title: 22% of the crop), to score the frame, the title bar and its controls, the list's border, fill and emphasised selection, and the default button's bezel.",
+      "example": "visual-window",
+      "appearance": "light",
+      "threshold": 0.05,
+      "actions": [{ "click": ".mac-bordered-list-row[aria-selected='true']" }],
+      "masks": [
+        { "x": 91, "y": 3, "width": 156, "height": 17 },
+        { "x": 19, "y": 42, "width": 292, "height": 34 },
+        { "x": 23, "y": 84, "width": 68, "height": 63 },
+        { "x": 19, "y": 264, "width": 190, "height": 27 },
+        { "x": 240, "y": 269, "width": 64, "height": 13 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Force-Quit.png",
+        "crop": { "x": 112, "y": 76, "width": 676, "height": 614 }
+      },
+      "budget": { "1x": 0.007, "2x": 0.0008 },
+      "deltaBudget": { "1x": 0.4, "2x": 0.2 }
+    },
+    {
+      "name": "window-dark",
+      "description": "The whole Force Quit Applications window, Dark Aqua: Mail selected while the list has the keyboard focus. Whole crop: fallback font, placeholder icons, and the desktop picture's tint in the capture's backgrounds (see window-dark-layout).",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "actions": [{ "click": ".mac-bordered-list-row[aria-selected='true']" }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Force-Quit.png",
+        "crop": { "x": 112, "y": 76, "width": 676, "height": 614 }
+      },
+      "budget": { "1x": 0.059, "2x": 0.053 },
+      "deltaBudget": { "1x": 8.4, "2x": 8.9 }
+    },
+    {
+      "name": "window-dark-layout",
+      "description": "As window-dark with the same regions masked as window-light-layout. Nearly all of its mean Δ is the desktop picture's tint: the capture's window background is #303437 and its list #1e2225, where the library's untinted tokens give #323232 and #1d1e1f, about 3 levels a channel over the whole crop, which the mismatch at threshold 0.05 does not count.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "actions": [{ "click": ".mac-bordered-list-row[aria-selected='true']" }],
+      "masks": [
+        { "x": 91, "y": 3, "width": 156, "height": 17 },
+        { "x": 19, "y": 42, "width": 292, "height": 34 },
+        { "x": 23, "y": 84, "width": 68, "height": 63 },
+        { "x": 19, "y": 264, "width": 190, "height": 27 },
+        { "x": 240, "y": 269, "width": 64, "height": 13 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Force-Quit.png",
+        "crop": { "x": 112, "y": 76, "width": 676, "height": 614 }
+      },
+      "budget": { "1x": 0.0045, "2x": 0.0009 },
+      "deltaBudget": { "1x": 3.6, "2x": 3.45 }
+    },
+    {
+      "name": "confirmation-light",
+      "description": "The window while it asks before a force quit, which no screenshot shows: after a click on Force Quit with TextEdit selected, Aqua. The sheet is open and key, and the window behind it is main: its controls are grey, its own button has lost the accent and its selection is not emphasised.",
+      "example": "visual-confirmation",
+      "appearance": "light",
+      "actions": [{ "click": ".mac-force-quit-button" }],
+      "expect": {
+        "size": { "width": 560, "height": 307 },
+        "pixels": [
+          {
+            "x": 392,
+            "y": 109,
+            "color": "#3d88fd",
+            "tolerance": 6,
+            "note": "the sheet's Force Quit is the default button of the key sheet: the middle stop of the accent bezel (--mac-accent-bezel-middle, measured on default buttons; spec: default-button), read at half the bezel's height, 6 pt inside its leading edge"
+          },
+          {
+            "x": 345,
+            "y": 277,
+            "color": "#ffffff",
+            "note": "the window's own button while the window is main: the standard bezel's fill (--mac-color-control), not the accent; inferred from the window-state rule"
+          },
+          {
+            "x": 425,
+            "y": 181,
+            "color": "#dcdcdc",
+            "tolerance": 3,
+            "note": "the selected fifth row in a window that is not key: the unemphasised selection (--mac-color-selected-content-background-unemphasized), 30 pt under the sheet and clear of its shadow; inferred"
+          },
+          {
+            "x": 165,
+            "y": 11,
+            "color": "#d0d0d0",
+            "tolerance": 3,
+            "note": "the zoom button of a main window: --mac-color-window-control-main, measured on main windows (spec: window-controls)"
+          }
+        ]
+      }
+    }
+  ]
+}

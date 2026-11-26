@@ -1,0 +1,183 @@
+/*
+ * AirPort Utility demo: the graph of the network on the window's gradient, and where its
+ * nodes lie. The window, the title bar, the window controls, the buttons, the menu, the status
+ * dots, the popovers, the sheet and its form are the library's own.
+ *
+ * Parts
+ *   .mac-airport-utility              the window
+ *   .mac-airport-utility-graph        the window's content: the gradient the nodes lie on
+ *   .mac-airport-utility-others       places the Other Wi-Fi Devices button
+ *   .mac-airport-utility-internet     places the Internet's node
+ *   .mac-airport-utility-trunk        the line from the Internet down to the base stations
+ *   .mac-airport-utility-stations     the row of base stations under it
+ *   .mac-airport-utility-node         a node: a picture with a status dot and a name under it
+ *   .mac-airport-utility-name         the dot and the 17 pt bold name
+ *   .mac-airport-utility-label        the name's text
+ *   .mac-airport-utility-details      the list of keys and values in a popover
+ *   .mac-airport-utility-actions      the buttons at the end of a popover
+ *   .mac-airport-utility-problem      what keeps the setup sheet from being finished
+ *   .mac-airport-utility-announcement what assistive technology hears of a change
+ */
+/* The graph is never narrower than the widest base station with the row's 24 pt on either
+   side: the status dot (10 pt), its 8 pt gap and the name at its widest, inside the image
+   button's 5 pt of clear space. In a narrower window the row cannot be centred, and the first
+   base station's centre would lie right of the window's centre, off the trunk; at this width
+   the first and the last base station still lie on either side of it wherever the row is
+   scrolled, and the window cuts off what it cannot show. */
+.mac-airport-utility-graph {
+  --_label-max: 132px;
+
+  position: relative;
+  flex: 1;
+  min-width: calc(10px + 8px + var(--_label-max) + 2 * 5px + 2 * 24px);
+  min-height: 0;
+  overflow: hidden;
+  background: var(--mac-airport-utility-backdrop);
+}
+
+/* 24 pt from the window's left edge and 42.5 pt under its top, which is 20.5 pt under the
+   title bar. */
+.mac-airport-utility-others {
+  position: absolute;
+  inset-block-start: 20.5px;
+  inset-inline-start: 24px;
+}
+
+/* The picture's top is 82 pt under the window's top, 60 pt under the title bar, and the node
+   is centred. The node keeps the image button's 5 pt of clear space around it. */
+.mac-airport-utility-internet {
+  position: absolute;
+  inset-block-start: 55px;
+  inset-inline: 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.mac-airport-utility-node {
+  pointer-events: auto;
+}
+
+/* The picture's box is as high as the captured artwork with its ground shadow, 138.5 pt. */
+.mac-airport-utility-picture {
+  display: block;
+  height: 138.5px;
+}
+
+/* The dot and the name are centred as one, 8 pt apart. */
+.mac-airport-utility-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mac-airport-utility-name);
+  font-weight: var(--mac-font-weight-bold);
+  font-size: 17px;
+  line-height: 21px;
+  white-space: nowrap;
+}
+
+/* The trunk: from the Internet's name down to the branch over the base stations, on the
+   window's centre like the Internet. It is not part of the row, so that it stays under the
+   Internet when the row is scrolled; the branch reaches from the first base station's centre
+   to the last one's, which lie on either side of the window's centre wherever a row that
+   overflows is scrolled to, so the trunk always ends on it. */
+.mac-airport-utility-trunk {
+  position: absolute;
+  inset-block-start: 240px;
+  inset-inline-start: 50%;
+  width: 1px;
+  height: 36px;
+  background: var(--mac-airport-utility-link);
+  pointer-events: none;
+}
+
+/* Base stations: one row under the Internet, which scrolls sideways when it is wider than the
+   window. The branch over the row and the line from it down to each base station scroll with
+   the row. No capture shows one. The row's box starts at the Internet's name, so that the
+   lines lie inside it. */
+.mac-airport-utility-stations {
+  position: absolute;
+  inset-block-start: 240px;
+  inset-inline: 0;
+  display: flex;
+  justify-content: safe center;
+  gap: 36px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 48px 24px 8px;
+  overflow-x: auto;
+  list-style: none;
+}
+
+.mac-airport-utility-stations > li {
+  position: relative;
+  flex: none;
+}
+
+/* The drop from the branch to a base station, and the station's part of the branch: from the
+   middle of the gap before it to the middle of the gap after it, and only as far as the
+   station's own centre at the row's two ends. */
+.mac-airport-utility-stations > li::before,
+.mac-airport-utility-stations > li::after {
+  position: absolute;
+  inset-block-start: -12px;
+  background: var(--mac-airport-utility-link);
+  content: "";
+}
+
+.mac-airport-utility-stations > li::before {
+  inset-inline-start: 50%;
+  width: 1px;
+  height: 12px;
+}
+
+.mac-airport-utility-stations > li::after {
+  inset-inline: -18px;
+  height: 1px;
+}
+
+.mac-airport-utility-stations > li:first-child::after {
+  inset-inline-start: 50%;
+}
+
+.mac-airport-utility-stations > li:last-child::after {
+  inset-inline-end: 50%;
+}
+
+.mac-airport-utility-stations .mac-airport-utility-name {
+  font-size: 13px;
+  line-height: 16px;
+}
+
+/* A long name ends with an ellipsis; the node's accessible name keeps all of it. */
+.mac-airport-utility-stations .mac-airport-utility-label {
+  max-width: var(--_label-max);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mac-airport-utility-details {
+  margin-block-start: 8px;
+}
+
+.mac-airport-utility-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--mac-space-control-gap);
+  margin-block-start: 12px;
+}
+
+.mac-airport-utility-problem {
+  display: block;
+  min-height: 14px;
+  margin-block-start: 8px;
+}
+
+.mac-airport-utility-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

@@ -1,0 +1,134 @@
+---
+title: Color Palette
+description: A list of named colours, or rows of crayons, of which one is chosen.
+order: 54
+---
+
+<Example name="basic" both />
+
+Two pickers of the [Colors panel](/components/color-panel) (`NSColorPanel`, modes `colorList`
+and `crayon`) choose among named colours: the palette picker shows a colour list as swatches
+with their names, and the pencil picker shows 48 crayons. Both are one component here, a radio
+group built on [Base UI's Radio Group](https://base-ui.com/react/components/radio), drawn as a
+list or, with `variant="pencils"`, as pencils.
+
+**No reference screenshot shows the Colors panel.** The colours of the two lists are the
+values commonly published for AppKit's "Apple" colour list and its crayons; the drawing is an
+estimate, tagged provisional.
+
+## Usage
+
+```tsx
+import { APPLE_COLORS, ColorPalette, CRAYON_COLORS } from "macalicious/color-palette";
+import "macalicious/color-palette.css";
+
+<ColorPalette aria-label="Apple" value={color} onValueChange={setColor} />
+<ColorPalette aria-label="Pencils" variant="pencils" colors={CRAYON_COLORS} defaultValue="#ff9300" />
+```
+
+The value is the chosen colour as lower-case `#rrggbb`. While the value is not one of the
+palette's colours, nothing is chosen. Or copy the source into your project:
+`npx macalicious add color-palette`. See [Installation](/installation).
+
+<Example name="pencils" both />
+
+### Colours of your own
+
+`colors` takes any list of pairs, a name and a `#rrggbb` value. Names must be unique in a list:
+they are the accessible names of the choices.
+
+<Example name="custom-colors" />
+
+## Guidelines
+
+Apple's Human Interface Guidelines do not describe the pickers of the colour panel; the
+documentation of
+[NSColorPanel](https://developer.apple.com/documentation/appkit/nscolorpanel) names them as
+its modes and lets an app attach colour lists of its own. In practice:
+
+- Use a palette where a small set of named colours is the whole choice, or beside a wheel so
+  that people can return to a colour by name.
+- Name every colour. A palette without names is a row of swatches: use the
+  [colour swatch picker](/components/color-swatch-picker) for that.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Chosen, list | the value is the colour's | The row has the emphasised selection colour and white text |
+| Chosen, pencils | the same | The crayon stands 6 pt above its row, and its name is shown under the rows |
+| Keyboard focus | `:focus-visible` on a colour | Focus ring inside the row or around the crayon |
+| Disabled | `disabled` | The whole palette at half opacity |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | The chosen row is unemphasised (grey, dark text); no focus ring |
+
+| Variant | Look |
+| --- | --- |
+| `list` | A framed list on the text background: 19 pt rows, a 26 x 13 pt swatch and the name. It scrolls beyond 180 pt of height. |
+| `pencils` | Rows of twelve crayons, each row in front of the one above it: a coloured body, a wooden tip and a coloured point. |
+
+## Sizes
+
+A palette is 200 pt wide by default and follows a `width` set with CSS; the pencils share the
+width equally. The list's height is its rows, up to 180 pt (`max-height` changes that). There
+are no control sizes: the text is the small control font, as in AppKit's panel.
+
+## API
+
+<PropsTable name="ColorPaletteProps" />
+
+It also takes the props of Base UI's Radio Group: `value`, `defaultValue`, `onValueChange`,
+`disabled`, `readOnly`, `name`, `render`.
+
+| Export | What it is |
+| --- | --- |
+| `APPLE_COLORS` | The eleven colours of the "Apple" colour list: Black, Blue, Brown, Cyan, Green, Magenta, Orange, Purple, Red, Yellow, White. |
+| `CRAYON_COLORS` | The 48 crayons, row by row: Licorice to Snow, Cayenne to Maroon, Maraschino to Strawberry, Salmon to Carnation. |
+| `ColorPaletteColor` | The type of one entry: `readonly [name: string, value: string]`. |
+
+| Class | Element |
+| --- | --- |
+| `mac-color-palette` | The radio group |
+| `mac-color-palette-color` | One colour: a radio |
+| `mac-color-palette-swatch`, `mac-color-palette-name` | Its swatch (or crayon) and its name |
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-variant` | `list`, `pencils` | Reflects `variant`. |
+| `data-checked`, `data-unchecked`, `data-disabled`, `data-readonly` | present or absent | Set by Base UI on the group or on a colour. |
+
+Keyboard focus is on a colour inside the palette, so there is no `data-force` preview of its
+ring. The component has no CSS variables for a consumer to set; `--_color` on a colour is private.
+
+## Accessibility
+
+- The palette is a `radiogroup` and needs a name: `aria-label` or `aria-labelledby`. Each
+  colour is a `radio` named after the colour, also in the pencils, where only the chosen
+  crayon's name is visible.
+- It is one tab stop. The arrow keys move the choice to the next or previous colour and wrap;
+  in the pencils, Up and Down move one crayon, not one row, since a radio group is a single
+  sequence.
+- The chosen colour is marked by more than colour: the row's highlight, or the crayon's raised
+  position and its name.
+- In forced-colours mode the swatches keep their colours, the chosen row uses the system
+  highlight and the chosen crayon is outlined.
+
+## Visual comparison
+
+No screenshot shows the Colors panel, so `npm run visual -- color-palette` has no crop to
+score against. Its checks render the list and the pencils in a real browser, at 1x and 2x,
+and hold chosen pixels to the colours given and to shared tokens
+(`color-palette.visual.json`):
+
+| What is checked | How it is brought about | Source of the values |
+| --- | --- | --- |
+| Swatches and crayons show their colours; the chosen row is emphasised, in both appearances | the palettes at rest | The colours given; the selection colour measured on Finder's lists |
+| The choice follows the keyboard | Tab, Down Arrow | The same |
+| A clicked crayon is raised | a click on Licorice | The crayon's colour and the wood of its neighbour's tip (inferred) |
+| Unemphasised selection in a window that is not key, in both appearances | an inactive page | Measured in Contacts |
+
+Provisional: every measurement of the list and of the pencils, the pencils' drawing (AppKit's
+are photographic artwork, which this library does not copy) and the two lists' colour values,
+which are the commonly published sRGB values and were not read from a Mac. Not checked
+anywhere: Firefox and Safari.

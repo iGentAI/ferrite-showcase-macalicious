@@ -1,0 +1,147 @@
+---
+title: Default Button
+description: The push button a window draws in the accent colour and that the Return key activates.
+order: 11
+---
+
+<Example name="basic" both />
+
+AppKit calls this the *default button*: the push button whose key equivalent is Return. It is
+a [push button](/components/push-button) with `variant="primary"`, which draws it, plus the
+Return key, and like it is built on
+[Base UI's Button](https://base-ui.com/react/components/button).
+
+## Usage
+
+```tsx
+import { DefaultButton } from "macalicious/default-button";
+import { PushButton } from "macalicious/push-button";
+import "macalicious/push-button.css";
+import "macalicious/default-button.css";
+
+<PushButton onClick={cancel}>Cancel</PushButton>
+<DefaultButton onClick={go}>Go</DefaultButton>
+```
+
+Or copy the source into your project: `npx macalicious add default-button`. See
+[Installation](/installation).
+
+### The Return key
+
+Pressing Return anywhere in the button's "window" activates it. The window is the nearest
+ancestor that is a `<form>`, a `<dialog>`, an element with `role="dialog"` or
+`role="alertdialog"`, or an element that carries `data-window-state` (a window component).
+Outside all of those the button answers no key, so two default buttons on a plain page never
+compete.
+
+<Example name="return-key" />
+
+The key is left alone when the focused element uses it: another button, a link, a text area
+or other multi-line editor, a `<select>`, a menu item, an open combo box or an option of an
+open list. A control's own `keydown` handler keeps the key by calling `preventDefault()` or
+`stopPropagation()`: the default button looks at the event last. The key is also left alone
+with a modifier key, while an input method is composing, when the button is disabled, hidden
+or inert, and when
+its window is not key. Pass `keyEquivalent="none"` to draw a default button that answers no
+key.
+
+Only the nearest window counts. Return pressed in a dialog or form nested inside a window
+never activates the outer window's default button, whether or not the inner one has a default
+button of its own.
+
+The Cancel button's keys, Escape and Command-Period, are the push button's
+`keyEquivalent="escape"`; see [Push Button](/components/push-button#key-equivalents).
+
+In a form, Return clicks the default button itself, in place of the browser's implicit
+submission (which would activate the form's first submit button, whichever that is). A default
+button with `type="submit"` therefore submits the form once, as its submitter.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for push buttons:
+
+- The default button is the one people are most likely to choose. A view has at most one.
+- Do not make a destructive button the default. When the likely choice is destructive, make
+  Cancel the default instead.
+- In a dialog, alert or sheet it is the rightmost button, with Cancel directly to its left.
+
+In the screenshots the gap to the neighbouring button is 13 pt in dialogs, 15 pt in alerts
+and 9 pt in the Open panel, measured between visible edges; with the library's boxes that is
+12, 14 and 8 px.
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | Accent gradient bezel; white title (white at 85% in Dark Aqua) |
+| Pressed | `:active` | The same gradient, darker |
+| Keyboard focus | `:focus-visible` | Focus ring in the accent colour |
+| Disabled | `disabled` | Drawn exactly as a disabled push button: no accent |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | Drawn as a standard push button: no accent, no focus ring; Return is not answered |
+
+The bezel follows the accent colour. Set `data-accent` on any ancestor; see
+[Theming](/theming).
+
+<Example name="accents" />
+
+## Sizes
+
+<Example name="sizes" />
+
+The sizes are the push button's: 21, 18 and 15 pt boxes. Only the regular size of a default
+button appears in the screenshots.
+
+## API
+
+<PropsTable name="DefaultButtonProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-variant` | `primary` | Always primary: the push button's accent bezel. |
+| `data-size` | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-disabled` | present or absent | Set by Base UI while the button is disabled. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+The element carries the classes `mac-push-button` and `mac-default-button`; a window can find
+its default button with the second.
+
+## Accessibility
+
+- Renders a native `<button>`. Space and Return activate it when it has focus; Tab reaches it.
+- The Return key equivalent is handled by one `keydown` listener per document, on its window, shared by
+  every default button and removed with the last one. It runs after the focused control's own
+  handlers and answers only for the window the key was pressed in.
+- Assistive technology is not told which button is the default; say so in the dialog's
+  description if it matters.
+- A disabled default button answers no key and leaves the tab order.
+
+## Visual comparison
+
+Two examples reproduce default buttons in the reference screenshots and are compared with them
+in both appearances by `npm run visual` (`default-button.visual.json`): Next in the Family
+Sharing pane and Empty Trash in Finder's alert. Share of pixels that differ at 2x, in Chromium
+on Linux with the fallback font:
+
+| Crop | Aqua, whole crop | Aqua, bezel only | Dark Aqua, whole crop | Dark Aqua, bezel only |
+| --- | --- | --- | --- | --- |
+| Next, in a box | 5.61% | 0.12% | 5.63% | 0.27% |
+| Empty Trash, in an alert | not scored | 0.03% | not scored | 0.13% |
+
+"Bezel only" masks the title and counts a pixel as differing at a colour distance of 0.05, half
+the default. The gradient, hairlines, dark highlight row and shadow rows are measured; what
+remains in the whole-crop scores is the title, set in the fallback font instead of San
+Francisco.
+
+No screenshot shows a default button pressed, focused, disabled, in a window that is not key,
+or in the small and mini sizes; those looks are provisional. They are checked in a real
+browser against values from the spec (the `expect` comparisons): the darkened gradient under a
+real mouse press, the focus ring after a real Tab, the disabled fill, the standard bezel
+without a ring in a main and in an inactive window, the accent fill of the small and mini
+sizes at their own heights, and the middle of the gradient in each of the seven other accents
+in both appearances. The accents other than blue are measured
+on the pop-up button of each accent screenshot, not on a default button.

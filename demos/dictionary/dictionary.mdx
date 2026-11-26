@@ -1,0 +1,303 @@
+---
+title: Dictionary
+description: The Dictionary window of macOS 10.15, with Back and Forward, the two text size buttons and a search field in the toolbar, a scope bar of sources, the list of headwords that start with what was typed, and the selected word's entry, over a small vocabulary of the demo's own.
+layout: full
+order: 112
+---
+
+<Example name="basic" />
+
+Type in the search field, choose a source in the bar under the toolbar, and pick a word in
+the list. The window opens on the search of the reference screenshots, "computer", whose 32
+headwords and first entry are the captures'. Everything else is a vocabulary of a few dozen
+words written for the demo: try "d", "menu" or "aqua". Nothing is looked up anywhere here;
+on the desktop served by the Macalicious Ferrite application the same window looks words up
+in public dictionaries (see [On the Ferrite desktop](#on-the-ferrite-desktop)).
+
+## What it shows
+
+- A [Window](/components/window) with a unified [Title Bar](/components/title-bar) whose
+  title counts what was found, and a [Toolbar](/components/toolbar) on the same surface.
+- The toolbar: two [Toolbar Segmented Controls](/components/toolbar-segmented-control) in
+  the `navigation` variant with momentary segments, Back and Forward and the two text size
+  buttons, and a [Toolbar Search Field](/components/toolbar-search-field) at the trailing
+  edge with its focus ring and clear button.
+- A [Scope Bar](/components/scope-bar) on its `toolbar` surface in the `small` size, without
+  a label: the sources are its single-selection group, and the selected one is the filled
+  pill.
+- A [Split View](/components/split-view) of the word list and the entry, whose divider
+  resizes the list.
+- The word list: a [List View](/components/list-view) of 28 pt rows on the sidebar
+  material, with the grey selection of a list that does not have the keyboard, the arrow
+  keys and type-select.
+- The entry: a [Web View](/components/web-view) whose children are the page, as in
+  Dictionary, where the entry is a web view too. The demo sets the page's typography; the
+  text size buttons scale it.
+- An [Empty State](/components/empty-state) when nothing is found.
+
+| Command | Where | What it does |
+| --- | --- | --- |
+| Search | the search field | Lists the headwords that start with the text, in the selected source, and shows the first one's entry. The title counts them. Escape or the clear button empties the field. |
+| Choose a source | the scope bar | All, Dictionary, Thesaurus, Apple or Wikipedia. Under All an entry has a section for every source that knows the word. |
+| Choose a word | the list | A click, the arrow keys, Home and End, or typing the start of a word. |
+| Back, Forward | the toolbar | Steps through what was shown. Choosing a word adds a step; typing changes the step it began. |
+| Smaller, larger | the toolbar | Six sizes of the entry's text, from 80% to 150% of the captured size. |
+| Back, Forward | Go, Command-[ and Command-] | The same steps as the toolbar's, on the desktop. |
+| Make Text Bigger, Make Text Smaller | View, Command-+ and Command-- | The same sizes as the toolbar's, on the desktop. |
+| Print | File, Command-P | Prints a copy of the entry from a frame of its own, without its Listen button. |
+| Undo, Redo, Cut, Paste, Delete | Edit | Act on the search field. Dimmed for a selection in the entry, which cannot change. Paste is dimmed, with the reason, once the browser refuses to let a menu read the clipboard. |
+| Copy, Select All | Edit | Act on whichever of the search field and the entry last held the selection. Command-A in the entry selects the entry alone. |
+| Look Up | Edit | Names the word selected in the field or the entry and searches for it as a new step. Dimmed when what is selected cannot be looked up. |
+
+<Example name="sources" />
+
+## Source walkthrough
+
+The demo is five files in `demos/dictionary/`.
+
+**`dictionary-data.ts`** is the vocabulary and the search. An entry is a headword with what
+each source says about it, and `search(entries, query, scope)` returns the entries whose
+headword starts with the query and that the scope can show, in the list's order: letter by
+letter, with a space or a hyphen before every letter, so that "computer virus" comes before
+"computerese" as in the capture.
+
+**`dictionary.tsx`** is the window. Its state is the scope, the text size and a history of
+visits, each a query and the headword that was shown; the list and the entry are derived
+from the current visit, so Back and Forward need nothing but an index:
+
+```tsx
+const visit = history.visits[history.at];
+const results = useMemo(() => search(entries, visit.query, scope), [entries, visit.query, scope]);
+// The word of the visit while the scope lists it, and else the first one found.
+const shown = results.find((entry) => entry.word === visit.word) ?? results[0];
+```
+
+The chrome is the title bar with its toolbar, then the scope bar as the next bar of the
+window. `divider="line"` gives the title bar the single line that Dictionary draws between
+its title bar and its scope bar, both rows of it one colour:
+
+```tsx
+<TitleBar variant="unified" divider="line" title={title} controls={<WindowControls />}>
+  <Toolbar aria-label="Toolbar">
+    <ToolbarSegmentedControl variant="navigation" tracking="momentary" aria-label="History">
+      <ToolbarSegment aria-label="Back" disabled={history.at === 0} onClick={() => go(-1)}>
+        <Chevron />
+      </ToolbarSegment>
+      {/* Forward, then the two text size segments */}
+    </ToolbarSegmentedControl>
+    <ToolbarSearchField value={visit.query} onValueChange={type} />
+  </Toolbar>
+</TitleBar>
+<ScopeBar surface="toolbar" size="small">
+  <ScopeBarGroup aria-label="Source" value={scope} onValueChange={setScope}>
+    {SCOPES.map((item) => (
+      <ScopeBarButton key={item.id} value={item.id}>{item.title}</ScopeBarButton>
+    ))}
+  </ScopeBarGroup>
+</ScopeBar>
+```
+
+The body is the split view. The list's selection is controlled: it is the shown word, and a
+change of it is a choice:
+
+```tsx
+<SplitView>
+  <SplitViewPane defaultSize={183} minSize={120} maxSize={320}>
+    <ListView
+      aria-label="Words"
+      count={results.length}
+      rowHeight={28}
+      separatorInset={24}
+      renderRow={renderRow}
+      getRowId={(index) => results[index].word}
+      getRowLabel={(index) => results[index].word}
+      value={shown ? [shown.word] : []}
+      onValueChange={(value) => choose(value[0])}
+    />
+  </SplitViewPane>
+  <SplitViewDivider aria-label="Resize the word list" />
+  <SplitViewPane>
+    <WebView title={`Entry for ${shown.word}`}>
+      <Article entry={shown} scope={scope} />
+    </WebView>
+  </SplitViewPane>
+</SplitView>
+```
+
+**`dictionary.css`** places the toolbar's controls where the capture has them, makes the
+small scope bar 25 pt with 12 pt titles, puts the list on the sidebar material 14 pt under the
+bar, and sets the entry's type: every size is multiplied by `--mac-dictionary-text-scale`,
+which the window sets from the text size buttons. **`dictionary.tokens.css`** holds the
+three colours measured in the captures that no shared token has (the list's selection, the
+divider, and the grey of the pronunciation) and every length and font size of
+`dictionary.css` (see [Styling hooks](#styling-hooks)).
+
+**`app.ts`** is the descriptor the [Desktop](/demos/desktop) reads.
+
+## Hosting the window
+
+`Dictionary` renders the library's `Window` as its root and passes every `Window` prop to it,
+so it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component hands to the window controls and
+the title bar. These are the props a [Managed Window](/components/managed-window)'s `render`
+form supplies, so the component can be spread with them as they come.
+
+<Example name="hosted" />
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `entries` | `DictionaryEntry[]` | The vocabulary; the demo's own by default. |
+| `defaultQuery` | `string` | The text in the search field at first; `"computer"`, as captured. |
+| `defaultScope` | `"all" \| "dictionary" \| "thesaurus" \| "apple" \| "wikipedia"` | The source selected at first; `"dictionary"`, as captured. |
+| `onLookUp` | `(word: string \| null, chosen: boolean) => void` | Called with the headword whose entry is shown when it changes, and with `null` when none is; also when the word already shown is chosen in the list. `chosen` says the word was chosen in the list rather than shown by what was typed. |
+| `onQueryChange` | `(query: string) => void` | Called with the search field's text whenever it changes. |
+| `recent` | `string[]` | The words the list shows while the search field is empty, newest first; none by default. |
+| `lookUpRequest` | `{ word: string; n: number }` | A word Look Up names while the window is open; each new `n` starts a search for `word` as a new history step, keeping the scope and text size. |
+| `notice` | `string \| null` | A line above the entry about the window's own state, such as a look-up the server could not save; none by default. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 690 by 650 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `dictionaryApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (690 by 650), `minSize` (480 by 240), `resizable`,
+`menus`, the menu titles after the Apple menu, and `onDesktopStart`, which starts Look Up.
+
+### On the Ferrite desktop
+
+`component` is `DesktopDictionary` (`dictionary-desktop.tsx`). On the desktop that the
+`macalicious-desktop` Ferrite application serves, it asks the application's Dictionary module
+(`ferrite-apps/desktop/src/apps/dictionary`), which looks words up through the application's
+declared egress and keeps each answer for everyone for a week:
+
+- the word list is Datamuse's suggestions for what is typed, with the typed word itself first;
+- an entry's senses, examples and further parts of speech come from Wiktionary, its
+  pronunciation and the recording its Listen button plays from the Free Dictionary API, the
+  thesaurus from Datamuse and the encyclopedia from Wikipedia, each credited under the entry
+  (Wiktionary and Wikipedia under CC BY-SA 4.0);
+- while the search field is empty the list shows the person's recent look-ups, kept on the
+  server;
+- Look Up: Control-Command-D (or Control-Option-D) with text selected in any window of the
+  desktop shows it in Dictionary, opening the window if it is closed. It works on the static
+  desktop too, against the demo's vocabulary.
+
+The Apple source has no public counterpart, so it stays empty there. On every other page the
+window is the demo described above and requests nothing.
+
+## Styling hooks
+
+The demo's measured lengths and font sizes are custom properties in `dictionary.tokens.css`,
+declared on `:root`; set one on the window with `style` to change it. The entry multiplies
+its font sizes, line heights and the top margins of the part of speech, a sense and a
+narrower sense by `--mac-dictionary-text-scale`, so those tokens hold their values at scale
+1; the entry's padding and a source's spacing are not scaled. That file tags each with where
+it comes from: the search field's least width, the
+space before the pronunciation, the gap between two sources and the spacing of a source's
+title are provisional, the rest is measured in the two captures. Left as literals in
+`dictionary.css`, because they are structure rather than measurements: zeros, the 100% sizes
+of the entry, the flex factors, the 1 pt rule under a source's title, and the letter spacing
+of 0.
+
+| Property | Default | Controls |
+| --- | --- | --- |
+| `--mac-dictionary-text-size-margin-start` | `2px` | The text size pair: leading margin |
+| `--mac-dictionary-search-width` | `318px` | The search field: width it keeps when there is room |
+| `--mac-dictionary-letter-size` | `13px` | The small letter of the text size buttons: font size |
+| `--mac-dictionary-letter-line-height` | `16px` | The small letter of the text size buttons: line height |
+| `--mac-dictionary-letter-shift` | `1px` | The small letter of the text size buttons: shift from its laid-out place |
+| `--mac-dictionary-letter-large-size` | `17px` | The large letter of the text size buttons: font size |
+| `--mac-dictionary-letter-large-shift` | `-1px` | The large letter of the text size buttons: shift from its laid-out place |
+| `--mac-dictionary-search-min-width` | `80px` | The search field: least width |
+| `--mac-dictionary-scope-bar-height` | `25px` | The scope bar: height |
+| `--mac-dictionary-scope-bar-padding-top` | `0.5px` | The scope bar: top padding |
+| `--mac-dictionary-scope-bar-padding-right` | `7px` | The scope bar: right padding |
+| `--mac-dictionary-scope-bar-padding-bottom` | `1.5px` | The scope bar: bottom padding |
+| `--mac-dictionary-scope-bar-padding-left` | `7.5px` | The scope bar: left padding |
+| `--mac-dictionary-scope-bar-size` | `12px` | The scope bar: font size |
+| `--mac-dictionary-scope-padding-inline` | `8px` | A scope: inline padding |
+| `--mac-dictionary-sidebar-padding-top` | `14px` | The word list: top padding |
+| `--mac-dictionary-article-padding-top` | `18.5px` | The entry: top padding |
+| `--mac-dictionary-article-padding-right` | `8px` | The entry: right padding |
+| `--mac-dictionary-article-padding-bottom` | `20px` | The entry: bottom padding |
+| `--mac-dictionary-article-padding-left` | `13.5px` | The entry: left padding |
+| `--mac-dictionary-headword-size` | `21.5px` | The headword: font size |
+| `--mac-dictionary-headword-line-height` | `30px` | The headword: line height |
+| `--mac-dictionary-pronunciation-size` | `15.5px` | The pronunciation: font size |
+| `--mac-dictionary-part-size` | `15.5px` | The part of speech: font size |
+| `--mac-dictionary-part-line-height` | `20px` | The part of speech: line height |
+| `--mac-dictionary-part-margin-top` | `7.5px` | The part of speech: top margin |
+| `--mac-dictionary-part-margin-start` | `1.5px` | The part of speech: leading margin |
+| `--mac-dictionary-sense-size` | `13.2px` | A sense: font size |
+| `--mac-dictionary-sense-line-height` | `17px` | A sense: line height |
+| `--mac-dictionary-sense-margin-top` | `6px` | A sense: top margin |
+| `--mac-dictionary-sense-margin-start` | `13.5px` | A sense: leading margin |
+| `--mac-dictionary-subsense-margin-top` | `9.5px` | A narrower sense: top margin |
+| `--mac-dictionary-bullet-margin-start` | `1px` | The bullet of a narrower sense: leading margin |
+| `--mac-dictionary-bullet-margin-end` | `5px` | The bullet of a narrower sense: trailing margin |
+| `--mac-dictionary-pronunciation-margin-start` | `0.4em` | The pronunciation: leading margin |
+| `--mac-dictionary-source-gap` | `24px` | A source after another: space above it |
+| `--mac-dictionary-source-title-margin-bottom` | `10px` | A source's title: bottom margin |
+| `--mac-dictionary-source-title-padding-bottom` | `3px` | A source's title: bottom padding |
+| `--mac-dictionary-example-margin-top` | `3px` | A sense's example: top margin (real entries only; provisional) |
+| `--mac-dictionary-listen-margin-start` | `8px` | The Listen button: leading margin (provisional) |
+| `--mac-dictionary-credits-gap` | `2px` | The credits under an entry: gap between lines (provisional) |
+| `--mac-dictionary-credits-padding-top` | `8px` | The credits under an entry: top padding (provisional) |
+
+Classes of the parts real entries add: `.mac-dictionary-example` (a sense's example),
+`.mac-dictionary-listen` (the Listen button), `.mac-dictionary-credits` and
+`.mac-dictionary-credit` (where the entry's texts come from).
+
+## Accessibility
+
+- The window is a `region` named by its title, so the number found is part of its name.
+- The toolbar is one tab stop; the arrow keys move between its four buttons and the search
+  field. The buttons show a glyph only and are named "Back", "Forward", "Decrease text size"
+  and "Increase text size"; one that has nothing to do is marked unavailable
+  (`aria-disabled`) and stays reachable.
+- The search field is a `searchbox` named "Search"; its clear button is named "Clear".
+- The sources are a `radiogroup` named "Source" and one tab stop; the arrow keys move the
+  selection.
+- The word list is a `listbox` named "Words": the arrow keys, Page Up, Page Down, Home and
+  End move the selection, and typing selects by the start of a word.
+- The divider is a `separator` named "Resize the word list" that the arrow keys move.
+- The entry is a `region` named after its headword ("Entry for computer") that can take the
+  keyboard, so a long entry scrolls with the arrow keys. Its headword is a heading, under a
+  heading for the source when all sources are shown; senses are a list.
+- "No entries found" is a `status`, so it is announced when a search finds nothing.
+
+## Fidelity
+
+`dictionary.visual.json` compares the whole window with the Dictionary screenshots in both
+appearances, each as captured and again with the text and the stand-in drawings masked. The
+comparison clicks in the search field, which has the keyboard in the captures. Scores from
+`npm run visual -- dictionary/` in Chromium on Linux with the fallback font: the share of
+pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 5.46% | 6.40 | 4.29% | 6.26 |
+| `window-light-layout` (masked) | 0.37% | 0.27 | 0.06% | 0.16 |
+| `window-dark` | 5.48% | 6.43 | 4.34% | 6.23 |
+| `window-dark-layout` (masked) | 0.33% | 0.86 | 0.04% | 0.74 |
+
+Measured in the screenshots and reproduced: the 690 by 650 pt frame, the two pairs of
+toolbar buttons and the 318 pt search field with its focus ring, the 25 pt scope bar and its
+pill, the 183 pt word list with its 28 pt rows from 14 pt under the bar and its selection
+colour, the divider, and the entry's headword, part of speech and senses where the captures
+have them.
+
+What differs, and why:
+
+- **Text.** Set in the fallback font off Apple devices, which is nearly all of the unmasked
+  scores. The scope titles are wider in it, so the pill, 72 pt in the capture, is about
+  74 pt there, and the scopes after it stand that much further right.
+- **The bars' fill.** The title bar's bottom line is the library's `divider="line"`,
+  measured in these captures (`#bdbdbd` in Aqua, `#5d5e5f` in Dark Aqua), and the scope bar
+  is the library's small bar. In Dictionary the two bars share one gradient; `divider="line"`
+  fills the title bar with its upper part (`--mac-title-bar-line-fill`, measured here), so the
+  title bar ends at `#d4d4d4` / `#3a3b3c`, as in the captures.
+- **Glyphs.** The chevrons of Back and Forward are original drawings.
+- **Not in a screenshot (provisional):** the Thesaurus, Apple and Wikipedia entries and the
+  sections of All, the numbering of several senses, the text sizes, an empty search and one
+  that finds nothing, the minimum size, and the window when it is not key.

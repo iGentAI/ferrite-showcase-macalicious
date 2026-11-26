@@ -1,0 +1,171 @@
+---
+title: Story Card
+description: A story in News, as a lead story with a large picture or a secondary one with a thumbnail, each with the publisher, the headline and the story's age.
+---
+
+<Example name="basic" both />
+
+The Today page of News opens with top stories: two lead stories, each a picture 399 pt
+wide and 300 tall with the publisher's logo, a bold headline and the story's age under it,
+and a row of smaller stories with the same three lines beside a square thumbnail. News is an
+iPad app in a Mac window ([Catalyst Chrome](/components/catalyst-chrome)) and draws the
+stories itself, in iPad metrics scaled to 77%, which is why the sizes are fractional. Base UI
+has no primitive for them: `StoryCard` is a styled element whose `render` prop, through
+Base UI's `useRender`, makes it a link or a button.
+
+## Usage
+
+```tsx
+import { StoryCard } from "macalicious/story-card";
+import "macalicious/story-card.css";
+
+<StoryCard
+  render={<a href={story.url} />}
+  headingLevel={3}
+  publisher={<img src={story.logo} alt={story.publisher} />}
+  title={story.headline}
+  time="1h ago"
+  artwork={<img src={story.picture} alt="" />}
+/>
+```
+
+Or copy the source into your project: `npx macalicious add story-card`. See
+[Installation](/installation).
+
+A card is as wide as its container: 399 pt for a lead story in News and 258 pt for a
+secondary one, 22 pt apart. The library ships no artwork and no logos: the examples on this
+page draw gradients and write the publisher's name, which the card sets in small bold
+capitals.
+
+<Example name="top-stories" both />
+
+## Guidelines
+
+The Human Interface Guidelines have no page for the stories of News. What News does:
+
+- A headline takes at most three lines; a longer one ends in an ellipsis.
+- The age stands on the same line in every card of a row, however long the headlines are.
+- The publisher is shown by its logo, at the logo's own height.
+- A card is one target: make the whole card the link or the button.
+
+## Variants and states
+
+| Variant | From | Look |
+| --- | --- | --- |
+| `lead` | News, Top Stories | A picture 399 : 300 with corners of 3 pt; under it the publisher, a headline of 22 pt Bold on a 24 pt pitch with room for three lines, and the age in 9 pt Bold |
+| `secondary` | News, Top Stories, second row | The same three lines in a column beside an 88 pt square thumbnail, 8 pt apart; headline of 15.5 pt Bold on a 16 pt pitch; the age level with the thumbnail's foot |
+| `video` | News, the second lead story | A 44 pt disc, black at 60%, with a white triangle, over the middle of the picture |
+
+The states apply when the card is a link or a button. Pressed and keyboard-focused are
+transient, so this gallery pins them.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | As above |
+| Hover | – | No change |
+| Pressed | `:active` on a link or button card | The card dimmed by a tenth |
+| Keyboard focus | `:focus-visible` | Focus ring around the card |
+| Disabled | the card is a disabled button, or has `aria-disabled="true"` | Half opacity. The look only: with `aria-disabled` the card still receives its events, so leave out its handler or its `href` as well |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No focus ring; nothing else changes |
+
+Measured, in both appearances: the two pictures' sizes and corners, the positions, sizes and
+colours of the headline and the age in both variants, the width of the secondary story's text
+and its distance from the thumbnail, and the play badge's size and triangle. Computed: the
+badge's black, from one place where it lies over a dark part of a photograph. Provisional,
+because no screenshot shows them: the pressed and disabled looks, the focus ring, the fill
+behind a missing picture, and the publisher's name as text (News always shows a logo).
+
+## Sizes
+
+One size, set by the container.
+
+| Variant | Width | Height |
+| --- | --- | --- |
+| `lead` | its container's; 399 pt in News | the picture, 399 : 300 (`--mac-story-card-aspect`), and 132.75 pt of text |
+| `secondary` | its container's; 258 pt in News | 90.5 pt, a little more than the 88 pt thumbnail |
+
+Under a lead picture the publisher's line starts 13 pt down and is 16 pt tall, the headline's
+cap top is 43 pt down and the age's 124 pt, wherever the headline ends. News fits the
+publisher's line to the logo, and the text under it moves with it: set
+`--mac-story-card-publisher-height` to your logo's height (the Dark Aqua capture's first logo
+is 14 pt tall, and its headline stands 2 pt higher). In a secondary story the publisher's line
+is 10 pt tall, the headline's cap top is 19.5 pt down and the age's 82.5 pt.
+
+## API
+
+<PropsTable name="StoryCardProps" />
+
+The remaining props are those of a `<div>`, or of the element given to Base UI's `render`
+prop, and go to that element with `ref`.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-variant` | card | `lead`, `secondary` | Reflects `variant`. |
+| `data-video` | card | present or absent | Reflects `video`. |
+| `data-force` | card | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+Classes: `.mac-story-card`, `.mac-story-card-text` (with `-publisher`, `-title` and `-time`
+inside) and `.mac-story-card-artwork`.
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-story-card-aspect` | `399 / 300` | Proportions of a lead story's picture. |
+| `--mac-story-card-publisher-height` | `16px`; secondary `10px` | Height of the publisher's line. |
+| `--mac-story-card-title` | `#242527`, `#dadcdd` in Dark Aqua | The headline, and the publisher's name as text. |
+| `--mac-story-card-time` | `#767472`, `#92989f` in Dark Aqua | The story's age. |
+| `--mac-story-card-badge`, `--mac-story-card-badge-glyph` | black at 60%; `#ffffff` | The play badge's disc and triangle. |
+| `--mac-story-card-placeholder` | `#e9e9eb`, `#48494d` in Dark Aqua | Behind a picture that is missing or transparent. |
+
+## Accessibility
+
+- A card is static unless you render it as a link or a button with `render`. Then it is one
+  tab stop, Return (and Space, for a button) activates it, and it is named by its text:
+  publisher, headline and age, in that order. A card without text needs an `aria-label`.
+- The headline is plain text unless `headingLevel` is given, which makes it a heading of that
+  level (`role="heading"` with `aria-level`), so that a page of stories can be read by its
+  headings. It is a `<span>` and not an `<h3>` so that the card stays valid as a link or a
+  button. Leave `headingLevel` out of a card that is a button.
+- Give a publisher's logo its name as `alt`, and leave the picture's `alt` empty when the
+  headline says what the story is.
+- The play badge is a drawing and is not announced. Say that a story is a video in its
+  headline or in an `aria-label`.
+- The age's grey has a contrast of about 4 : 1 on the page of News in Aqua, as in the app:
+  just under the 4.5 : 1 that text of this size needs. Darken `--mac-story-card-time` where
+  the age must be read.
+- The focus ring is drawn only in a key window. In forced-colours mode the picture has a
+  border, one point wide, in the system's text colour.
+
+## Visual comparison
+
+`npm run visual -- story-card` compares the text of a lead story, a secondary story and a
+picture's corner with the News captures in both appearances. The photographs and the
+publishers' logos are News's content: they are masked or replaced by one colour, and the
+headlines are stand-ins with as many lines as the capture's. Share of pixels that differ, in
+Chromium on Linux with the fallback font:
+
+| Comparison | Aqua 2x | Aqua 1x | Dark Aqua 2x | Dark Aqua 1x |
+| --- | --- | --- | --- | --- |
+| Lead story's text, 399 x 140 pt (`744,1102,798,280`; Dark Aqua `785,1102,798,280`), logo masked | 11.75% | 13.17% | 17.16% | 19.01% |
+| The same, headline and age masked too | 0.01% | 0.03% | 0.03% | 0.00% |
+| Secondary story, 279 x 112 pt (`744,1415,558,224`; Dark Aqua `785,1410,558,224`), logo and thumbnail masked | 12.19% | 13.85% | 11.47% | 13.21% |
+| The same, headline and age masked too | 0.00% | 0.00% | 0.00% | 0.00% |
+| Picture's corner, 20 x 20 pt (thumbnail `1075,1406,40,40`; Dark Aqua lead picture `775,492,40,40`) | 4.00% | 4.25% | 0.06% | 0.00% |
+
+The first and third rows score other words than the capture's in another font, so they say
+only that the lines stand where the capture's do: each line of the fixture starts within a
+point of the capture's line. With the text masked the page around it matches. The corner is
+compared where a photograph is one colour: on a thumbnail in Aqua, whose edges lie on
+fractions of a pixel in the capture, and on the lead picture in Dark Aqua. The Dark Aqua
+fixture sets the publisher's line to 14 pt, the height of that capture's logo.
+
+No screenshot shows the play badge on a flat picture, a pressed or focused card or a window
+that is not key. Those are checked in a real browser (the `expect` comparisons): the lead
+picture fills its box, the badge's triangle and disc are at its middle, the secondary story's
+thumbnail is 88 pt square at the trailing edge with 8 pt before it; pressed, the picture is at
+90% brightness; Tab puts the focus ring around the card in a key window and none in another.
+
+Not built: the rest of the Today page (its masthead, the "Top Stories" title and the "More"
+link), which are plain text in News's own type, and the Stocks app's story list, whose rows
+have other proportions and belong to that demo.

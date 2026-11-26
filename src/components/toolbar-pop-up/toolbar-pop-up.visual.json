@@ -1,0 +1,327 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "finder-light-drawing",
+      "description": "The Group and Action pull-down buttons of a Finder toolbar, Aqua: bezels, the place of the glyph boxes and the chevrons. The two glyphs are masked: they are stand-ins drawn for this library, not Apple's artwork.",
+      "example": "visual-finder",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 11,
+          "y": 5,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "x": 65,
+          "y": 5,
+          "width": 16,
+          "height": 16
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.118,
+        "2x": 0.0049
+      },
+      "deltaBudget": {
+        "1x": 6.2,
+        "2x": 1.11
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Network.png",
+        "crop": {
+          "x": 684,
+          "y": 122,
+          "width": 208,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "finder-dark-drawing",
+      "description": "The Group and Action pull-down buttons of a Finder toolbar, Dark Aqua: bezels, the place of the glyph boxes and the chevrons. The two glyphs are masked: they are stand-ins drawn for this library, not Apple's artwork.",
+      "example": "visual-finder",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 11,
+          "y": 5,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "x": 65,
+          "y": 5,
+          "width": 16,
+          "height": 16
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.072,
+        "2x": 0.0039
+      },
+      "deltaBudget": {
+        "1x": 5.3,
+        "2x": 1.83
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Network.png",
+        "crop": {
+          "x": 618,
+          "y": 122,
+          "width": 208,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "split-light-drawing",
+      "description": "The disabled Highlight split button of Preview's toolbar, Aqua: one bezel, the divider, the 19 pt menu part and its dimmed chevron. The highlighter glyph is masked: it is a stand-in drawn for this library.",
+      "example": "visual-split",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 10,
+          "y": 3,
+          "width": 20,
+          "height": 19
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.133,
+        "2x": 0.0051
+      },
+      "deltaBudget": {
+        "1x": 6.8,
+        "2x": 1.27
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Preview.png",
+        "crop": {
+          "x": 1120,
+          "y": 122,
+          "width": 112,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "split-dark-drawing",
+      "description": "The disabled Highlight split button of Preview's toolbar, Dark Aqua: one bezel, the divider, the 19 pt menu part and its dimmed chevron. The highlighter glyph is masked: it is a stand-in drawn for this library.",
+      "example": "visual-split",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 10,
+          "y": 3,
+          "width": 20,
+          "height": 19
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.08,
+        "2x": 0.0054
+      },
+      "deltaBudget": {
+        "1x": 6.4,
+        "2x": 2.71
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Preview.png",
+        "crop": {
+          "x": 1866,
+          "y": 122,
+          "width": 112,
+          "height": 52
+        }
+      }
+    },
+    {
+      "name": "open-light",
+      "description": "After a click on the Action button its menu stays open and the button keeps the toolbar button's \"on\" bezel; the Group button beside it is unchanged, Aqua.",
+      "example": "visual-finder",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#action"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 26
+        },
+        "pixels": [
+          {
+            "x": 59,
+            "y": 13,
+            "color": "#696969",
+            "tolerance": 3,
+            "note": "fill of the Action button at mid height: the middle of the toolbar button's on gradient (toolbar-button: fill-on, measured on the selected Finder view segment); that an open pull-down takes it is inferred (spec: toolbar-pop-up, States, open)"
+          },
+          {
+            "x": 5,
+            "y": 13,
+            "color": "#f6f6f6",
+            "tolerance": 3,
+            "note": "fill of the Group button at mid height, at rest: measured on the Finder-Network screenshots at y=148 (#f6f6f6 in Aqua, #646566 in Dark Aqua)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "open-dark",
+      "description": "After a click on the Action button its menu stays open and the button keeps the toolbar button's \"on\" bezel; the Group button beside it is unchanged, Dark Aqua.",
+      "example": "visual-finder",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#action"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 26
+        },
+        "pixels": [
+          {
+            "x": 59,
+            "y": 13,
+            "color": "#c3c4c5",
+            "tolerance": 3,
+            "note": "fill of the Action button at mid height: the middle of the toolbar button's on gradient (toolbar-button: fill-on, measured on the selected Finder view segment); that an open pull-down takes it is inferred (spec: toolbar-pop-up, States, open)"
+          },
+          {
+            "x": 5,
+            "y": 13,
+            "color": "#646566",
+            "tolerance": 3,
+            "note": "fill of the Group button at mid height, at rest: measured on the Finder-Network screenshots at y=148 (#f6f6f6 in Aqua, #646566 in Dark Aqua)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "narrow-light",
+      "description": "A pop-up 76 pt wide with a title too long for it: the title ends with an ellipsis before the chevron, Aqua.",
+      "example": "visual-narrow",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 80,
+          "height": 26
+        },
+        "pixels": [
+          {
+            "x": 42.75,
+            "y": 16.75,
+            "color": "#565656",
+            "scale": 2,
+            "tolerance": 4,
+            "note": "first dot of the ellipsis, on the baseline: the toolbar button's text, black at 65% (toolbar-button: text) over the fill #f5f5f5 of that row; the place is the fallback font's, inferred"
+          },
+          {
+            "x": 50.25,
+            "y": 16.75,
+            "color": "#565656",
+            "scale": 2,
+            "tolerance": 4,
+            "note": "third dot of the ellipsis, 3.75 pt after the first: same colour; inferred"
+          },
+          {
+            "x": 42.75,
+            "y": 14.25,
+            "color": "#f6f6f6",
+            "tolerance": 3,
+            "note": "above the first dot there is no ink, so it is a dot and not the stem of a letter H: the fill near mid height (measured on the Finder-Network screenshots as #f6f6f6)"
+          },
+          {
+            "x": 59,
+            "y": 13,
+            "color": "#f6f6f6",
+            "tolerance": 3,
+            "note": "between the title and the chevron: the fill at mid height, measured on the Finder-Network screenshots; the title is cut at least 9.5 pt before the chevron"
+          }
+        ]
+      }
+    },
+    {
+      "name": "narrow-dark",
+      "description": "A pop-up 76 pt wide with a title too long for it: the title ends with an ellipsis before the chevron, Dark Aqua.",
+      "example": "visual-narrow",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 80,
+          "height": 26
+        },
+        "pixels": [
+          {
+            "x": 42.75,
+            "y": 16.75,
+            "color": "#f3f3f3",
+            "scale": 2,
+            "tolerance": 4,
+            "note": "first dot of the ellipsis, on the baseline: the toolbar button's text, white at 92% (toolbar-button: text) over the fill #646566; the place is the fallback font's, inferred"
+          },
+          {
+            "x": 50.25,
+            "y": 16.75,
+            "color": "#f3f3f3",
+            "scale": 2,
+            "tolerance": 4,
+            "note": "third dot of the ellipsis, 3.75 pt after the first: same colour; inferred"
+          },
+          {
+            "x": 42.75,
+            "y": 14.25,
+            "color": "#646566",
+            "tolerance": 3,
+            "note": "above the first dot there is no ink, so it is a dot and not the stem of a letter H: the fill near mid height (measured on the Finder-Network screenshots as #646566)"
+          },
+          {
+            "x": 59,
+            "y": 13,
+            "color": "#646566",
+            "tolerance": 3,
+            "note": "between the title and the chevron: the fill at mid height, measured on the Finder-Network screenshots; the title is cut at least 9.5 pt before the chevron"
+          }
+        ]
+      }
+    },
+    {
+      "name": "preview-view-light-drawing",
+      "description": "The View pull-down button of a Preview toolbar, Aqua, the compact form: a 36 pt bezel, the place of the glyph box and the 7 pt chevron 4 pt after it. The glyph is masked: it is a stand-in drawn for this library.",
+      "example": "visual-preview-view",
+      "appearance": "light",
+      "masks": [{ "x": 6, "y": 6, "width": 17, "height": 14 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.182, "2x": 0.0128 },
+      "deltaBudget": { "1x": 9.6, "2x": 2.2 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Preview.png",
+        "crop": { "x": 124, "y": 122, "width": 80, "height": 52 }
+      }
+    },
+    {
+      "name": "preview-view-dark-drawing",
+      "description": "The View pull-down button of a Preview toolbar, Dark Aqua, the compact form. The glyph is masked.",
+      "example": "visual-preview-view",
+      "appearance": "dark",
+      "masks": [{ "x": 6, "y": 6, "width": 17, "height": 14 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.122, "2x": 0.0118 },
+      "deltaBudget": { "1x": 8.8, "2x": 3.9 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Preview.png",
+        "crop": { "x": 124, "y": 122, "width": 80, "height": 52 }
+      }
+    }
+  ]
+}

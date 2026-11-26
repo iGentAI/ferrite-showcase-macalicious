@@ -1,0 +1,384 @@
+---
+title: Automator
+description: The Automator window of macOS 10.15 with its icon-and-label toolbar, the library of actions and variables beside a workflow that can be built, stepped through, run and stopped, and the log of each run under it.
+layout: full
+order: 24
+---
+
+<Example name="basic" />
+
+Pick a category, type in the search field, double-click an action to add it to the workflow,
+then Run. Nothing is automated and nothing is read from the machine the page runs on: a step
+takes a time that depends only on its action's name, so every run logs the same durations. The
+34 actions the screenshots list carry the names Automator gives them; their descriptions,
+except that of Activate Fonts, and every other action and variable are invented. The icons of
+the library, the actions and the description are plain placeholders, not drawings of Apple's
+artwork.
+
+## What it shows
+
+- A [Window](/components/window) with a unified [Title Bar](/components/title-bar): the
+  [Window Controls](/components/window-controls), the title and a
+  [Toolbar](/components/toolbar) in its icon-and-label mode, which gives the 68 pt chrome.
+- The toolbar: six [Toolbar Buttons](/components/toolbar-button), each in a
+  [Toolbar Labelled Item](/components/toolbar-labelled-item) that sets its label under it
+  and names it, with a flexible space between Media and Record. The Library glyph is the
+  library's [System Image](/components/system-image) of a sidebar; Record is a toggle.
+- The band above the lists: the scopes of a [Scope Bar](/components/scope-bar), which draw
+  Automator's switch between Actions and Variables, and a small
+  [Search Field](/components/search-field) of the sidebar variant that takes the rest of
+  the band.
+- Four [Split Views](/components/split-view): the library beside the workflow, the outline
+  beside the list, the lists over the description, and the workflow over the log. The
+  library's pane is collapsible, and every divider takes the line colour measured in the
+  captures through the split view's hook.
+- The Library outline: an [Outline View](/components/outline-view) with 19 pt rows. The
+  list beside it is a [Table View](/components/table-view) without a header and with single
+  selection by action; only the rows in view are rendered.
+- The description pane: a heading, a [Label](/components/label) and a list of labelled
+  values; with nothing selected, an [Empty State](/components/empty-state).
+- The workflow area: the capsule variant of the [Empty State](/components/empty-state)
+  while there are no steps, and then the steps in a [Scroll View](/components/scroll-view),
+  each with an [Image Button](/components/image-button) that removes it.
+- The log: a [Table View](/components/table-view) with its standard
+  [Table Header](/components/table-header), two headings that do not sort and alternating
+  19 pt rows.
+- Two gradient [Status Bars](/components/status-bar), one under each side: a borderless
+  [Pull-Down Button](/components/pull-down-button) with the gear and two
+  [Menu Items](/components/menu-item), and [Image Buttons](/components/image-button) as
+  toggles.
+
+| Control | What it does |
+| --- | --- |
+| Library | A toggle: hides or shows the library, the part of the window before the workflow. |
+| Media | Calls `onShowMedia`: a host opens its media browser. The demo has none. |
+| Record | A toggle (provisional). While it is on, Run and Step are unavailable; turning it off, or Stop, adds a Watch Me Do step to the workflow. |
+| Step | Runs the next step and pauses. The first Step of a run starts a new log; the last one completes the run. |
+| Stop | Stops the run, which logs "Workflow stopped", or ends the recording. Available while Run's timer is going, between two steps of a stepped run, and while Record is on. |
+| Run | Runs the steps one after the other, `stepInterval` milliseconds apart, or goes on with a stepped run. Unavailable, like Step, while the workflow has no steps. |
+| Actions, Variables | Switches the outline and the list between the actions and the variables. Each keeps its own category and its own selection. |
+| Search | Lists the items of the selected category whose name contains what is typed, in any letter case. |
+| A row of the outline | Lists that category's items; Library lists every action, Most Used and Recently Added a chosen few. A category that is collapsed out of sight hands the selection to its parent. |
+| A row of the list | Shows the item in the description pane. A double click, or Return, adds an action to the workflow as a step, and a variable to the workflow's variables. |
+| Gear | Add to Workflow does the same for the selected item, from the keyboard; Clear Workflow removes every step. |
+| The toggle beside the gear | Hides or shows the description pane. |
+| The two toggles under the workflow | Show the log, or the workflow's variables (provisional), in the lower pane. |
+| A step's close button | Removes the step. A run that is left without a step to take stops. |
+
+A run writes one row for each step, "Ask for Text completed" with the step's duration, and
+a last row, "Workflow completed" with the sum. The log stays scrolled to its newest row
+while it is at its end, also when the pane is resized; scrolling up lets go of it. A step
+that has run carries a green disc until the next run starts, and the step that is running
+an orange one.
+
+## On the desktop's Ferrite application
+
+When the `macalicious-desktop` Ferrite application serves the desktop (`app.ts` hosts
+`DesktopAutomator`, which checks `servedByDesktopApp()`), Automator does real work on the
+server through `/api/automator/` (`automator-server.ts`). Everywhere else, this page and its
+visual comparison included, the window is the invented demo above.
+
+- **Library.** The list holds the desktop's own actions (New Note, New Reminders Item, Find
+  Calendar Events, Run JavaScript and the rest) under Automator's titles, then what the page
+  runs itself, then the rest of the real library dimmed, each row saying why it does not run.
+  The outline has Automator's thirteen categories, Most Used and Recently Added. The Variables
+  switch lists variables whose values are read when a workflow runs; a double click adds one
+  to the workflow's Variables pane, and dragging one into a text setting writes `{{name}}`,
+  which a run replaces with its value. A double click, Return or the gear's Add to Workflow
+  adds a step, up to 16.
+- **Steps.** Each step shows what its action does and its settings, named as the server
+  names them: a text field, a pop-up button for a choice, a checkbox for a yes-or-no setting
+  and a text view for Run JavaScript's code. A setting left empty is not sent, so an action
+  that takes input uses the previous step's output in its place. Enabled switches a step off
+  without removing it.
+- **Run.** Run sends the workflow to the server, which runs it at once as the signed-in
+  person, and a run on the server cannot be interrupted from the page. Step sends one action
+  at a time and pauses; Run then goes on with the rest and Stop ends it. The server keeps no
+  run open between requests, so a stepped run hands every item the server's reply carries to the
+  next request, up to 1 MB in a run: past that it hands on what the log holds, and stops
+  rather than hand on less than a step gave. Record stays dimmed: a web page cannot see other
+  applications. The log then has a row for each step, completed with the items
+  it handed on, failed with the server's reason, or skipped; what Run JavaScript logged; the
+  output; and how the workflow ended, with durations measured on the server. An effect the
+  run asks for, such as opening an app or switching the appearance, is carried out by the
+  desktop.
+- **Actions the page runs.** Ask for Confirmation, Ask for Text, Choose from List, Copy to
+  Clipboard, Set and Get Value of Variable, Loop, Convert CSV to SQL, Display Webpages, the
+  Ask for actions and the Finder items actions run in this page (`automator-page.ts`), and
+  are saved as a Get Specified Text with a setting that names them, since the server refuses
+  an action it does not have. A workflow with one, or with a step set to show when it runs,
+  goes in parts: what lies between them is one request, and Stop ends the run between parts.
+  Items cross from a request as the log shows them, so the window stops before a step that
+  would be handed less than the request gave. Each request is a row in Runs; a page action
+  is not.
+- **Saving.** The bar over the workflow has the Workflows pop-up button, which opens a saved
+  workflow, New, Save and Delete, a line that says what the last save did, the workflow's
+  name and its type. Save stores the whole library with this
+  workflow in it; when another window saved first, the window takes the stored workflows,
+  makes its change to them and saves again, so neither is lost. A workflow the server refuses
+  is not stored, and the line gives the server's reason. A save whose answer cannot be read
+  leaves the workflow unsaved and says it is not known whether it went through.
+- **Runs.** The second toggle under the workflow shows the recent runs, read every ten
+  seconds; a double click or Return shows a run's log. A run whose answer does not come back
+  says it is not known whether it ran, and reads the runs again, instead of inviting a second
+  run.
+- **Files.** File > Export… writes the workflow to the drive as a `.workflow` file of JSON, and Finder
+  opens such a file here as a new workflow. File > Move To… keeps one such file in a folder for a
+  saved workflow: it moves on a second Move To or in Finder, each save writes it again, and Finder
+  opens it as that workflow, not a new one. The server's copy does not move, since that is what a
+  folder, an alarm or the Services menu starts; `/api/automator/locations` says which file belongs
+  to which workflow. Media opens the Media Browser, a panel of the songs,
+  movies and pictures on the drive. The PDF actions rewrite a copy of the file object by object
+  (`automator-pdf.ts`), so its text stays text; Encrypt asks for the password and keeps it nowhere.
+- **SQLite.** Apply SQL runs SQL on a SQLite file of the drive and writes it back when the bytes
+  changed. It uses sql.js 1.15.2 (MIT licence, the npm package `sql.js`), vendored in
+  `vendor/` with its `LICENCE` rather than listed in `package.json`, as the demos' other engines are:
+  46 KB of script and 685 KB of WebAssembly, which load from the site's own assets the first time
+  the action runs.
+- **Images.** Change Type of Images replaces each file, as Automator does: the new one is saved
+  beside the original and then the original goes to the Trash, where it can be got back, unless its
+  checkbox is cleared. Adding it or Rename Finder Items asks about a Copy Finder Items step, as
+  Automator does.
+- **The other document types.** File > New, File > Convert To… and the type pop-up offer Workflow,
+  Application, Quick Action, Folder Action, Calendar Alarm and, where the browser recognizes speech,
+  Dictation Command; the two plug-in types stay dimmed, each with its reason. The page starts each
+  of these on its own event
+  (`automator-background.ts`): a Quick Action from Finder's context menu or the Services menu, on
+  the selection; an Application when its `.app`, written by File > Export…, is opened from Finder,
+  the desktop or the Dock (a web page cannot make a real application); a Folder Action when
+  something arrives in its folder; a Calendar Alarm when the alert of the event its save added
+  shows. The last two run only while a desktop of the person is open and signed in: the server has
+  no event for them, and a page step needs a page. `POST /api/automator/claim` lets one tab or
+  browser start each. A step that would ask the person fails such a run and says so.
+
+## Hosting the window
+
+`Automator` renders the library's `Window` as its root and passes every `Window` prop to it,
+so it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component hands to the window controls and
+the title bar. These are the props a [Managed Window](/components/managed-window)'s `render`
+form supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { automatorApp } from "./app";
+
+<ManagedWindow
+  id={automatorApp.id}
+  defaultFrame={{ x: 80, y: 60, ...automatorApp.defaultSize }}
+  minWidth={automatorApp.minSize.width}
+  minHeight={automatorApp.minSize.height}
+  render={(props) => <automatorApp.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `defaultCategory`, `onCategoryChange` | a category id, and `(id, library) => void` | The category selected at first (`"library"`), and a call with the category chosen and the library it belongs to, `"actions"` or `"variables"`. An id that names no category stands for `"library"`. |
+| `defaultSelectedId` | `string` | The action selected at first, `"activate-fonts"`. An id that names no listed action selects nothing. |
+| `defaultWorkflow`, `onWorkflowChange` | `string[]`, and `(actionIds) => void` | The actions of the workflow at first, by id, and a call with them whenever a step is added or removed. Ids that name no action are left out. |
+| `stepInterval` | `number` | Milliseconds Run takes for each step; 600 by default. 0, or anything that is not a positive number, runs the whole workflow at once. |
+| `defaultLibraryShown`, `defaultDescriptionShown` | `boolean` | Whether the library and the description pane are shown at first; both `true`. |
+| `onShowMedia` | `() => void` | Called for a click on Media. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 1000 by 868 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+The `default…` props give the window its first state; a later change of one is not followed.
+
+`app.ts` exports the descriptor a desktop page reads, as `automatorApp` and as `app`: `id`,
+`name`, `component` (`DesktopAutomator`: the window above, or the served one described in
+"On the desktop's Ferrite application"), `defaultSize` (1000 by 868), `minSize` (700 by 420),
+`resizable` and `menus`, the menu titles after the Apple menu. The served window takes the same
+props; it has no use for `defaultSelectedId`, `defaultWorkflow` and `stepInterval`, and calls
+`onWorkflowChange` with the actions' server names (`notes.make`).
+
+The catalogue and the logic are in `automator-data.ts`, with no interface in it:
+`listItems` gives what a category lists and a search leaves of it, and `reduceWorkflow` moves
+a workflow from one state to the next for an event (add, remove, run, advance, step, stop,
+record). A step's duration is 25 ms for each character of its action's name, so the demo and
+its tests log the same rows on every run.
+
+## Styling hooks
+
+The demo's measured lengths and font sizes are custom properties in `automator.tokens.css`,
+declared on `:root`; set one on the window with `style` to change it. That file tags each
+with where it comes from: the steps of a workflow and the parts of the served window, which no
+capture shows, are provisional, the rest is measured in the two captures. Left as literals in
+`automator.css`, because they are structure rather than measurements: zeros, the 100% sizes
+and the colour stops' percentages, the flex factors, the icon's 22% corner and the step disc's
+50%, the 1 pt borders and lines (a step's outline and heading line, the line above the log,
+the line between its columns, the line under the served window's bar and the box of its code,
+and the bars' separators with the fills beside them), the z-index, and the forced-colours
+borders.
+
+| Property | Default | Controls |
+| --- | --- | --- |
+| `--mac-automator-band-height` | `25px` | The band of the switch and the search field: height |
+| `--mac-automator-band-padding-top` | `2px` | The band of the switch and the search field: top padding |
+| `--mac-automator-band-padding-right` | `8.5px` | The band of the switch and the search field: right padding |
+| `--mac-automator-band-padding-bottom` | `1px` | The band of the switch and the search field: bottom padding |
+| `--mac-automator-band-padding-left` | `6px` | The band of the switch and the search field: left padding |
+| `--mac-automator-search-margin-top` | `-0.5px` | The search field in the band: top margin |
+| `--mac-automator-search-margin-bottom` | `0.5px` | The search field in the band: bottom margin |
+| `--mac-automator-search-margin-start` | `4.5px` | The search field in the band: leading margin |
+| `--mac-automator-row-gap` | `5px` | A row of the outline or the list: gap between the icon and the name |
+| `--mac-automator-row-height` | `18px` | A row of the outline or the list: height |
+| `--mac-automator-description-padding-top` | `9px` | The description pane: top padding |
+| `--mac-automator-description-padding-inline` | `12px` | The description pane: inline padding |
+| `--mac-automator-description-head-gap` | `10px` | The description's icon and title: gap between them |
+| `--mac-automator-description-head-height` | `32px` | The description's icon and title: height |
+| `--mac-automator-description-title-margin-top` | `-1.5px` | The description's title: top margin |
+| `--mac-automator-description-title-size` | `18px` | The description's title: font size |
+| `--mac-automator-description-title-line-height` | `22px` | The description's title: line height |
+| `--mac-automator-description-text-margin-top` | `7px` | The description's sentence: top margin |
+| `--mac-automator-facts-label-width` | `95px` | Input, Result and Version: width of the labels' column |
+| `--mac-automator-facts-gap` | `4px` | Input, Result and Version: gap between label and value |
+| `--mac-automator-facts-margin-top` | `7px` | Input, Result and Version: top margin |
+| `--mac-automator-facts-line-height` | `16px` | Input, Result and Version: line height |
+| `--mac-automator-heading-shift` | `-1px` | A heading's title of the lower pane's table: shift from the library's place |
+| `--mac-automator-log-header-height` | `24px` | The line between the lower pane's columns: where it starts, under the table's 24 pt header (it does not resize the header) |
+| `--mac-automator-log-column-end` | `100px` | The line between the lower pane's columns: distance from the pane's trailing edge |
+| `--mac-automator-steps-gap` | `10px` | The list of steps: gap between them |
+| `--mac-automator-steps-padding-block` | `14px` | The list of steps: block padding |
+| `--mac-automator-steps-padding-inline` | `16px` | The list of steps: inline padding |
+| `--mac-automator-step-head-gap` | `6px` | A step's heading band: gap between its items |
+| `--mac-automator-step-head-height` | `25px` | A step's heading band: height |
+| `--mac-automator-step-head-padding-right` | `3px` | A step's heading band: right padding |
+| `--mac-automator-step-head-padding-left` | `8px` | A step's heading band: left padding |
+| `--mac-automator-step-number-min-width` | `14px` | A step's number: least width |
+| `--mac-automator-step-mark-size` | `8px` | A step's disc: width and height |
+| `--mac-automator-step-body-padding-top` | `7px` | A step's line of text: top padding |
+| `--mac-automator-step-body-padding-right` | `10px` | A step's line of text: right padding |
+| `--mac-automator-step-body-padding-bottom` | `8px` | A step's line of text: bottom padding |
+| `--mac-automator-step-body-padding-left` | `28px` | A step's line of text: left padding |
+| `--mac-automator-document-padding-block` | `6px` | Served window, the bar over the workflow: block padding |
+| `--mac-automator-document-padding-inline` | `10px` | Served window, the bar over the workflow: inline padding |
+| `--mac-automator-document-row-gap` | `6px` | Served window, the bar over the workflow: gap between its lines |
+| `--mac-automator-document-column-gap` | `10px` | Served window, the bar over the workflow: gap between its controls |
+| `--mac-automator-open-min-width` | `140px` | Served window, the Workflows pop-up button: least width |
+| `--mac-automator-field-gap` | `4px` | Served window, a label and its control: gap between them |
+| `--mac-automator-name-field-width` | `180px` | Served window, the workflow's name: width |
+| `--mac-automator-settings-margin-top` | `8px` | Served window, a step's settings: top margin |
+| `--mac-automator-settings-row-gap` | `6px` | Served window, a step's settings: gap between rows |
+| `--mac-automator-settings-column-gap` | `8px` | Served window, a step's settings: gap between a name and its control |
+| `--mac-automator-code-height` | `96px` | Served window, Run JavaScript's code: height of its box |
+
+## Accessibility
+
+- The window is a `region` named by its title. The toolbar is one tab stop; the arrow keys
+  move between its buttons.
+- A toolbar button shows only a glyph and is named by the label under it. Library and
+  Record are toggles and report their state with `aria-pressed`; Library's is also drawn in
+  the glyph's colour and Record's in its bezel. Step, Stop and Run are marked unavailable
+  while they cannot be used, and stay reachable.
+- The switch is a `radiogroup` named "Library": one tab stop, and the arrow keys move the
+  selection. The search field is a `searchbox` named "Search"; its clear button is named
+  "Clear Search".
+- The outline is a `treegrid` named "Action categories" or "Variable categories": the
+  arrow keys move the selection and open and close Library, and typing selects by name. The
+  list is a `grid` named "Actions" or "Variables" and one tab stop; Return adds the
+  selected row to the workflow, as a double click does.
+- Adding to the workflow does not need the pointer or a double click: the gear, a button
+  named "Action", opens a menu with Add to Workflow. Dragging is not supported.
+- The description is a `region` named "Description" with the item's name as its heading.
+  The toggle beside the gear is named for what it will do, "Hide Description" or "Show
+  Description", and reports the pane with `aria-expanded`.
+- The workflow is a `region` named "Workflow" and its steps an ordered list. A step's close
+  button is named with its action, "Remove Ask for Text"; the disc of a step that has run
+  or is running is an image named "Completed" or "Running".
+- The lower pane's table is a `grid` named "Log" or "Workflow variables". The two toggles
+  under the workflow are a `group` named "Lower pane" and report which list is shown with
+  `aria-pressed`. Rows are added to the log without an announcement; the last row of a run
+  says how it ended.
+- The four dividers are focusable separators: the arrow keys resize the pane each one
+  names, and Return collapses or restores the library.
+- The placeholder icons are decoration and hidden from assistive technology; a row is named
+  by its text.
+- In the served window, the bar over the workflow is a `group` named "Document": the
+  Workflows pop-up button is named "Open Workflow", the buttons "New Workflow", "Save
+  Workflow" and "Delete Workflow", and the fields "Workflow name" and "Workflow type" (its
+  Print Plugin and Image Capture Plugin options are disabled, and Dictation Command where the browser has no speech recognition). The line beside the buttons is a
+  `status`, so what a save did is
+  announced. Each step is a `group` named by its action's title, holding its "Enabled"
+  checkbox, its remove button and a control for each setting named by the setting's name
+  ("title", "due", "code"). The disc of a step whose run failed is an image named "Failed";
+  rows that failed are also set in red. The second toggle under the workflow is named "Runs",
+  and the list it shows is a `grid` named "Runs".
+
+## Fidelity
+
+`automator.visual.json` compares the whole window with the Automator screenshots in both
+appearances, each as captured and again with the text and every stand-in masked. Both
+captures show the same state, the search field with the keyboard focus, which the comparison
+gives it with a click; the two selections are therefore unemphasised, as captured. Scores
+from `npm run visual -- automator/` in Chromium on Linux with the fallback font: the share
+of pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 4.92% | 5.31 | 3.46% | 3.85 |
+| `window-light-layout` (masked) | 0.33% | 0.49 | 0.05% | 0.43 |
+| `window-dark` | 4.86% | 4.97 | 3.48% | 3.68 |
+| `window-dark-layout` (masked) | 0.25% | 0.39 | 0.04% | 0.30 |
+
+The masks cover 23.7% of the crop: the title, the six toolbar glyphs and their labels, the
+titles of the two scopes, the magnifier and the placeholder of the search field, the icons
+and names of the outline and the list, the description's icon and text, the capsule's text,
+the two headings of the log and the four glyphs of the bottom bars. The frame, the bezels,
+the pill, the field and its focus ring, the triangle, both selections, every divider, the
+stripes, the lines of the log and the bars stay scored. `run-light` and `run-dark` check a
+state no screenshot shows, a workflow of two steps after a real click on Run, by the colours
+of seven pixels.
+
+Measured in the screenshots and reproduced: the 1000 by 868 pt frame; the 68 pt chrome with
+its six 38 pt bezels on a 46 pt pitch; the 25 pt band, its fill and bottom rows, the 71 pt
+pill 6 pt from the edge and the 18 pt search field with its 3 pt focus ring; the 163 pt
+outline, its line and the 217 pt list with 19 pt rows and the names where the capture has
+them; the two unemphasised selections; the line
+over the 115 pt description and the positions of its title, sentence and three lines; the
+workflow area and its capsule, 9.5 pt above the area's middle; the line over the log, its
+1 + 23 + 1 pt header with the separator 100 pt before the edge, the 19 pt stripes and the
+line down the rows; the 21 pt bottom bars, lighter under the library in Dark Aqua, and the
+line between the two sides, which runs through them.
+
+What differs, and why:
+
+- **Artwork.** Automator's library, action and description icons are Apple's colour
+  artwork. They are not redrawn: each is a plain rounded square in the system colour of its
+  category, 16 pt in the rows and 32 pt in the description, and every one is masked in the
+  layout comparisons. The toolbar glyphs of Media, Record, Step, Stop and Run, the
+  description toggle and the variables toggle are simple original marks; Library, the gear
+  and the log toggle are the library's system images. Record's red and the blue of the two
+  toggles that are on are the captures'.
+- **Text.** Set in the fallback font off Apple devices, which is nearly all of the unmasked
+  scores. The capture cuts four long action names in the middle ("Apply Quartz Co…ter to
+  Image Files"); the library's table cuts a cell at its end.
+- **The switch.** Automator's Actions and Variables are a segmented control in the
+  round-rect style, a filled pill on the selected segment and no bezel. The library's
+  [Segmented Control](/components/segmented-control) draws the rounded and the separated
+  bezels only, so the demo uses the scopes of the Scope Bar, which draw that pill, in a
+  band of Automator's height, font and colours.
+- **The capsule.** Its width follows its text: in the fallback font it is 8 pt wider than
+  the capture's 317 pt, which is most of what the masked comparisons still count.
+- **The triangle.** In the selected, unemphasised row the capture's disclosure triangle is
+  `#6e6e6e` (Dark Aqua `#acacac`); the outline's is `#7e7e7e` (`#9a9a9b`), measured in other
+  applications.
+- **The chrome.** The unified title bar's gradient is about four levels lighter than the
+  capture's over the 68 pt chrome, the title is centred on the window where the capture has
+  it 2.5 pt further on, and the labels sit half a point lower: below what the comparison
+  counts as a differing pixel, and visible in the mean difference.
+- **The log's header.** The table header's fill is one level darker than Automator's in
+  Aqua (`#efefef` for `#f0f0f0`) and two lighter in Dark Aqua (`#2d2f31` for `#2b2c2f`).
+  The table view has no line above its header and none between its columns; the demo draws
+  both around the table.
+- **Dragging.** The capsule asks for actions to be dragged in. A table view takes the press
+  on a row for the selection, so a row cannot be dragged: a double click, Return and the
+  gear's command add an action instead.
+- **Not in a screenshot (provisional):** a step and its marks, the rows of the log and
+  their wording, what Step, Stop and Record do, the variables and their library, the lower
+  pane's list of variables, the description of a variable, the gear's menu, the empty
+  description pane, the inactive window, every size other than the captured one, and the
+  whole served window: its bar over the workflow, a step's settings and the list of runs.

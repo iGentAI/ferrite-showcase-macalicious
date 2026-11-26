@@ -1,0 +1,117 @@
+/*
+ * Drawer (NSDrawer). Every value is [provisional]: no screenshot shows a drawer, and the
+ * figures are the spec's inferences from NSDrawer's defaults and the measured window.
+ *
+ * .mac-drawer           the window and its drawer; the panel is placed against its edges
+ * .mac-drawer-panel     the frame the drawer slides in: it starts at the window's edge and
+ *                       clips there, so the drawer is never drawn over the window
+ * .mac-drawer-content   the drawer's surface, which moves
+ *
+ * States (set by Base UI on the panel)
+ *   [data-edge="left" | "right" | "bottom"]       the edge it slides out from
+ *   [data-starting-style], [data-ending-style]  closed position, while it slides (0.25 s)
+ *   [data-window-state]                         the window's state, for the controls inside
+ *
+ * Hooks
+ *   --mac-drawer-content-size      extent from the window's edge (200 pt)
+ *   --mac-drawer-leading-offset    inset from the window's top or left edge (30 pt, bottom: 8)
+ *   --mac-drawer-trailing-offset   inset from the window's bottom or right edge (8 pt)
+ */
+.mac-drawer {
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.mac-drawer-panel {
+  --_size: var(--mac-drawer-content-size, 200px);
+  --_lead: var(--mac-drawer-leading-offset, 30px);
+  --_trail: var(--mac-drawer-trailing-offset, 8px);
+  --_closed: translateX(-100%);
+  --_radius: 0 var(--mac-radius-window) var(--mac-radius-window) 0;
+  --_rim: 0 0 0 -1px;
+
+  position: absolute;
+  /* Behind the window, whose shadow falls on the drawer. */
+  z-index: -1;
+  inset: var(--_lead) auto var(--_trail) 100%;
+  box-sizing: border-box;
+  width: var(--_size);
+  /* Room for the shadow on the three free sides, none on the window's side. */
+  clip-path: inset(-48px -48px -48px 0);
+  /* Has no visible effect of its own: a transition on the panel is what makes Base UI keep
+     it in the DOM until the content, which has the same duration, has slid away. */
+  transition: visibility 0.25s;
+}
+
+.mac-drawer-panel:where([data-edge="left"]) {
+  --_closed: translateX(100%);
+  --_radius: var(--mac-radius-window) 0 0 var(--mac-radius-window);
+  --_rim: 0 -1px 0 0;
+
+  inset: var(--_lead) 100% var(--_trail) auto;
+  clip-path: inset(-48px 0 -48px -48px);
+}
+
+.mac-drawer-panel:where([data-edge="bottom"]) {
+  --_lead: var(--mac-drawer-leading-offset, 8px);
+  --_closed: translateY(-100%);
+  --_radius: 0 0 var(--mac-radius-window) var(--mac-radius-window);
+  --_rim: -1px 0 0;
+
+  inset: 100% var(--_trail) auto var(--_lead);
+  width: auto;
+  height: var(--_size);
+  clip-path: inset(0 -48px -48px);
+}
+
+.mac-drawer-panel:where([data-starting-style], [data-ending-style]) {
+  visibility: hidden;
+}
+
+.mac-drawer-content {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--_radius);
+  background: var(--mac-color-window-background);
+  box-shadow: var(--mac-shadow-window-inactive);
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  text-align: start;
+  cursor: default;
+  transition:
+    transform 0.25s ease-out,
+    opacity 0.25s ease-out;
+}
+
+/* The window's inner rim, on the three free sides. */
+.mac-drawer-content::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: var(--_rim);
+  border-radius: inherit;
+  box-shadow: var(--mac-shadow-window-rim);
+  pointer-events: none;
+}
+
+.mac-drawer-panel:where([data-starting-style], [data-ending-style]) > .mac-drawer-content {
+  transform: var(--_closed);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-drawer-panel:where([data-starting-style], [data-ending-style]) > .mac-drawer-content {
+    transform: none;
+    opacity: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-drawer-content {
+    border: 1px solid CanvasText;
+  }
+}

@@ -1,0 +1,121 @@
+/*
+ * Colours and sizes of Automator's own that no shared token holds. Pixel positions are those of
+ * 10-15-Catalina-Light-Automator.png and 10-15-Catalina-Dark-Automator.png (2x pixels).
+ */
+:root {
+  /* [measured] The band above the library's lists: fill @ 300,240, and the two device-pixel
+     rows under it @ 300,260 and @ 300,261, both captures. */
+  --mac-automator-band-fill: light-dark(#e4e4e4, #2f3032);
+  /* [provisional] A document type's reason, under the radio button's title. */
+  --mac-automator-type-note-inset: 20px;
+  --mac-automator-band-separator-inner: light-dark(#d5d5d5, #3e3f41);
+  --mac-automator-band-separator-outer: light-dark(#c2c2c2, #515254);
+  /* [measured] The switch in the band: the pill of the scope that is on @ 136,238, its title
+     (the band shows through it in Dark Aqua) and the title of the scope that is off, the
+     darkest (Aqua) and lightest (Dark Aqua) pixel of "Variables" in row 236. */
+  --mac-automator-scope-on-fill: light-dark(#929292, #babbbd);
+  --mac-automator-scope-on-text: light-dark(#ffffff, #2f3032);
+  --mac-automator-scope-off-text: light-dark(#656565, #abacae);
+  /* [measured] Every divider of the window: beside the outline @ 438,900, beside the library
+     @ 874,900, above the description @ 300,1538 and above the log @ 1400,1474. */
+  --mac-automator-divider: light-dark(#d4d4d4, #2a2a2a);
+  /* [measured] The workflow area @ 1400,400. */
+  --mac-automator-workflow-background: light-dark(#e7e9e9, #2c2d2f);
+  /* [measured] The line above the log's header @ 1400,1476. */
+  --mac-automator-log-border: light-dark(#c7c7c7, #45464a);
+  /* [measured, computed] The line between the log's columns, down the rows @ 1910,1560:
+     #cccccc on both stripes in Aqua; in Dark Aqua #343537 on #1e1f21 and #3e3e40 on #28292b,
+     which is white at 10%. */
+  --mac-automator-log-grid: light-dark(#cccccc, rgb(255 255 255 / 0.1));
+  /* [measured] The bottom bar under the library in Dark Aqua, which is lighter than under the
+     workflow, where the library's status bar is measured: top rows @ 420,1770, the fill's
+     first row @ 420,1772 and last @ 420,1809. In Aqua the two parts measure the same, within
+     a level, and these are the library's values. */
+  --mac-automator-library-bar-separator: light-dark(#cecece, #686a6b);
+  --mac-automator-library-bar-top: light-dark(#e5e5e5, #464748);
+  --mac-automator-library-bar-bottom: light-dark(#cdcdcd, #383a3a);
+  /* [measured] The glyph of the Library toolbar button while the library is shown @ 150,140,
+     and of the bottom bar's toggle that is on @ 895,1790. Whether the blues follow the accent
+     colour is not known: the captures are taken with the blue accent. */
+  --mac-automator-toolbar-toggle-on: light-dark(#027aff, #2cb8ff);
+  --mac-automator-bar-toggle-on: light-dark(#026ff6, #027aff);
+  /* [measured] Record's disc @ 1782,148, the same in both captures. */
+  --mac-automator-record: #a42115;
+  /* [provisional] A step of the workflow, which no capture shows: its fill, outline and
+     heading band. */
+  --mac-automator-step-fill: light-dark(#f6f6f6, #3a3b3d);
+  --mac-automator-step-border: light-dark(#b9b9b9, #55565a);
+  --mac-automator-step-head: light-dark(#dedede, #48494c);
+
+  /* Sizes, in points (half the pixels above), the same in both appearances. automator.css says
+     where each lies. */
+  /* [measured] the 25 pt band: the switch's pill 6 pt from the window's edge and 5 pt under
+     the toolbar, the search field ending 8.5 pt before the line; the field 4.5 pt after the box
+     of "Variables", half a point above the band's middle */
+  --mac-automator-band-height: 25px;
+  --mac-automator-band-padding-top: 2px;
+  --mac-automator-band-padding-right: 8.5px;
+  --mac-automator-band-padding-bottom: 1px;
+  --mac-automator-band-padding-left: 6px;
+  --mac-automator-search-margin-top: -0.5px;
+  --mac-automator-search-margin-bottom: 0.5px;
+  --mac-automator-search-margin-start: 4.5px;
+  /* [measured] a row of the outline or the list: the 16 pt icon in the 18 pt highlight, the
+     name 5 pt after it */
+  --mac-automator-row-gap: 5px;
+  --mac-automator-row-height: 18px;
+  --mac-automator-row-dimmed-opacity: 0.45;
+  /* [measured] the description pane in both captures: the icon's box 12 pt from the window's
+     edge and 9 pt under the pane's line, the 18 pt bold title 56 pt from the edge with its
+     baseline 30 pt under the line, the sentence's baseline 58 pt under it; the facts' labels
+     ending 95 pt from the sentence's edge, the values 4 pt after them, on a 16 pt pitch */
+  --mac-automator-description-padding-top: 9px;
+  --mac-automator-description-padding-inline: 12px;
+  --mac-automator-description-head-gap: 10px;
+  --mac-automator-description-head-height: 32px;
+  --mac-automator-description-title-margin-top: -1.5px;
+  --mac-automator-description-title-size: 18px;
+  --mac-automator-description-title-line-height: 22px;
+  --mac-automator-description-text-margin-top: 7px;
+  --mac-automator-facts-label-width: 95px;
+  --mac-automator-facts-gap: 4px;
+  --mac-automator-facts-margin-top: 7px;
+  --mac-automator-facts-line-height: 16px;
+  /* [measured] the pane under the workflow: its table's titles 4 pt from the column's edge, a
+     point before the library's header; the line between the columns starts under the 24 pt
+     header (log-header-height places the line only; the header is the library's) and runs
+     100 pt before the pane's edge */
+  --mac-automator-heading-shift: -1px;
+  --mac-automator-log-header-height: 24px;
+  --mac-automator-log-column-end: 100px;
+  /* [provisional] the steps of a workflow, which no capture shows */
+  --mac-automator-steps-gap: 10px;
+  --mac-automator-steps-padding-block: 14px;
+  --mac-automator-steps-padding-inline: 16px;
+  --mac-automator-step-head-gap: 6px;
+  --mac-automator-step-head-height: 25px;
+  --mac-automator-step-head-padding-right: 3px;
+  --mac-automator-step-head-padding-left: 8px;
+  --mac-automator-step-number-min-width: 14px;
+  --mac-automator-step-mark-size: 8px;
+  --mac-automator-step-body-padding-top: 7px;
+  --mac-automator-step-body-padding-right: 10px;
+  --mac-automator-step-body-padding-bottom: 8px;
+  --mac-automator-step-body-padding-left: 28px;
+  --mac-automator-step-parts-gap: 6px;
+  --mac-automator-step-parts-margin-top: 8px;
+  --mac-automator-step-results-gap: 2px;
+  /* [provisional] the window on the desktop's Ferrite application (automator-desktop.tsx),
+     which no capture shows: the bar over the workflow, its fields, and a step's settings */
+  --mac-automator-document-padding-block: 6px;
+  --mac-automator-document-padding-inline: 10px;
+  --mac-automator-document-row-gap: 6px;
+  --mac-automator-document-column-gap: 10px;
+  --mac-automator-open-min-width: 140px;
+  --mac-automator-field-gap: 4px;
+  --mac-automator-name-field-width: 180px;
+  --mac-automator-settings-margin-top: 8px;
+  --mac-automator-settings-row-gap: 6px;
+  --mac-automator-settings-column-gap: 8px;
+  --mac-automator-code-height: 96px;
+}

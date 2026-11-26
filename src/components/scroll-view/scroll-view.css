@@ -1,0 +1,238 @@
+/*
+ * Scroll view (NSScrollView with NSScroller), on Base UI's Scroll Area.
+ *
+ * Parts
+ *   .mac-scroll-view            the root: sized by the caller, clips its content
+ *   .mac-scroll-view-viewport   the scrolling element; the children are inside it
+ *   .mac-scroll-view-scroller   one scroll bar: a 15 pt (11 pt small) track along an edge
+ *   .mac-scroll-view-knob       its knob: 7 pt wide with round ends, 2 pt from the edge
+ *   .mac-scroll-view-corner     the square where two legacy scroll bars meet
+ *
+ * States
+ *   [data-scroller-style="legacy"]     always visible track beside the content
+ *   [data-knob-style="dark" | "light"] overlay knob colour; "default" follows the appearance
+ *   [data-size="small" | "mini"]       11 pt track
+ *   [data-scrolling]                   set by Base UI while scrolling: overlay knob visible
+ *   [data-orientation]                 set by Base UI on a scroller
+ *   :hover, :active on a scroller      overlay: track appears and the knob widens to 11 pt;
+ *                                      only a visible scroller can be hovered
+ *   [data-force~="scrolling" | "hover"] static previews (docs, visual tests)
+ *
+ * A scroll view does not react to the window state.
+ */
+.mac-scroll-view {
+  --_track: 15px;
+  --_knob-width: 7px;
+  --_knob-inset: 4px;
+  --_knob: var(--mac-scroll-view-knob);
+  --_knob-outline: var(--mac-scroll-view-knob-outline);
+
+  display: flex;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.mac-scroll-view:where([data-size="small"], [data-size="mini"]) {
+  --_track: 11px;
+  --_knob-width: 5px;
+  --_knob-inset: 3px;
+}
+
+.mac-scroll-view:where([data-knob-style="dark"]) {
+  --_knob: var(--mac-scroll-view-knob-dark);
+  --_knob-outline: transparent;
+}
+
+.mac-scroll-view:where([data-knob-style="light"]) {
+  --_knob: var(--mac-scroll-view-knob-light);
+  --_knob-outline: var(--mac-scroll-view-knob-light-outline);
+}
+
+.mac-scroll-view-viewport {
+  flex: 1 1 auto;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  outline: none;
+  overscroll-behavior: contain;
+}
+
+.mac-scroll-view-viewport:where(:focus-visible) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+.mac-scroll-view-viewport:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  outline: none;
+}
+
+/* Scroller: the track's box. The knob keeps 2 pt from the content edge and from both ends. */
+.mac-scroll-view-scroller {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  box-sizing: border-box;
+  padding: 2px;
+  opacity: var(--mac-scroll-view-overlay-opacity, 0);
+  pointer-events: var(--mac-scroll-view-overlay-pointer-events, none);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: opacity 0.25s linear;
+}
+
+.mac-scroll-view-scroller:where([data-orientation="vertical"]) {
+  inset-block: 0 var(--scroll-area-corner-height, 0px);
+  inset-inline-end: 0;
+  width: var(--_track);
+  justify-content: flex-end;
+  border-inline-start: 1px solid transparent;
+}
+
+.mac-scroll-view-scroller:where([data-orientation="horizontal"]) {
+  inset-inline: 0 var(--scroll-area-corner-width, 0px);
+  inset-block-end: 0;
+  height: var(--_track);
+  align-items: flex-end;
+  border-block-start: 1px solid transparent;
+}
+
+/* Overlay: shown while scrolling, kept while the pointer is on it. */
+.mac-scroll-view-scroller:where([data-scrolling], :hover, :active),
+.mac-scroll-view:where([data-force~="scrolling"], [data-force~="hover"])
+  > .mac-scroll-view-scroller,
+.mac-scroll-view:where([data-scroller-style="legacy"]) > .mac-scroll-view-scroller {
+  opacity: 1;
+  pointer-events: auto;
+  transition-duration: 0.1s;
+}
+
+.mac-scroll-view-scroller:where(:hover, :active),
+.mac-scroll-view:where([data-force~="hover"]) > .mac-scroll-view-scroller {
+  border-color: var(--mac-scroll-view-track-overlay-border);
+  background: var(--mac-scroll-view-track-overlay);
+}
+
+.mac-scroll-view-knob {
+  box-sizing: border-box;
+  border-radius: 99px;
+  background: var(--_knob);
+  box-shadow: 0 0 0 1px var(--_knob-outline);
+}
+
+.mac-scroll-view-scroller:where([data-orientation="vertical"]) > .mac-scroll-view-knob {
+  width: var(--_knob-width);
+}
+
+.mac-scroll-view-scroller:where([data-orientation="horizontal"]) > .mac-scroll-view-knob {
+  height: var(--_knob-width);
+}
+
+/* Widened knob: the track less 2 pt on each side (11 pt in a 15 pt track). */
+.mac-scroll-view-scroller:where([data-orientation="vertical"]):where(:hover, :active)
+> .mac-scroll-view-knob,
+.mac-scroll-view:where([data-force~="hover"])
+  > .mac-scroll-view-scroller:where([data-orientation="vertical"])
+  > .mac-scroll-view-knob {
+  flex: none;
+  width: calc(var(--_track) - 4px);
+}
+
+.mac-scroll-view-scroller:where([data-orientation="horizontal"]):where(:hover, :active)
+  > .mac-scroll-view-knob,
+.mac-scroll-view:where([data-force~="hover"])
+  > .mac-scroll-view-scroller:where([data-orientation="horizontal"])
+  > .mac-scroll-view-knob {
+  flex: none;
+  height: calc(var(--_track) - 4px);
+}
+
+/*
+ * Legacy: an opaque track with a 1 pt inner border, which takes its thickness from the
+ * content. The knob is 7 pt wide (5 pt small), centred, and darkens under the pointer.
+ */
+.mac-scroll-view:where([data-scroller-style="legacy"]) > .mac-scroll-view-scroller {
+  padding-block: 2px;
+  padding-inline: calc(var(--_knob-inset) - 1px) var(--_knob-inset);
+  border-color: var(--mac-scroll-view-track-border);
+  background: var(--mac-scroll-view-track);
+}
+
+.mac-scroll-view:where([data-scroller-style="legacy"])
+  > .mac-scroll-view-scroller:where([data-orientation="horizontal"]) {
+  padding-block: calc(var(--_knob-inset) - 1px) var(--_knob-inset);
+  padding-inline: 2px;
+}
+
+/* Its own knobs only: a scroll view inside it keeps its own style. */
+.mac-scroll-view:where([data-scroller-style="legacy"])
+  > :where(.mac-scroll-view-scroller)
+  > .mac-scroll-view-knob {
+  flex: 1 1 auto;
+  margin: 0;
+  background: var(--mac-scroll-view-knob-legacy);
+  box-shadow: none;
+}
+
+.mac-scroll-view:where([data-scroller-style="legacy"])
+  > .mac-scroll-view-scroller:where([data-orientation="vertical"])
+  > .mac-scroll-view-knob {
+  width: auto;
+}
+
+.mac-scroll-view:where([data-scroller-style="legacy"])
+  > .mac-scroll-view-scroller:where([data-orientation="horizontal"])
+  > .mac-scroll-view-knob {
+  flex: none;
+  align-self: stretch;
+  height: auto;
+}
+
+.mac-scroll-view:where([data-scroller-style="legacy"])
+  > :where(.mac-scroll-view-scroller)
+  > .mac-scroll-view-knob:where(:hover, :active),
+.mac-scroll-view:where([data-scroller-style="legacy"]):where([data-force~="hover"])
+  > :where(.mac-scroll-view-scroller)
+  > .mac-scroll-view-knob {
+  background: var(--mac-scroll-view-knob-legacy-hover);
+}
+
+.mac-scroll-view:where([data-scroller-style="legacy"]):where([data-has-overflow-y])
+  > .mac-scroll-view-viewport {
+  margin-inline-end: var(--_track);
+}
+
+.mac-scroll-view:where([data-scroller-style="legacy"]):where([data-has-overflow-x])
+  > .mac-scroll-view-viewport {
+  margin-block-end: var(--_track);
+}
+
+.mac-scroll-view:where([data-scroller-style="legacy"]) > .mac-scroll-view-corner {
+  background: var(--mac-scroll-view-track);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-scroll-view-scroller {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  /* The second selector is as specific as the legacy knob rules above, hover included, and
+     after them. */
+  .mac-scroll-view-knob,
+  .mac-scroll-view > :where(.mac-scroll-view-scroller) > .mac-scroll-view-knob {
+    background: ButtonText;
+    box-shadow: none;
+  }
+
+  .mac-scroll-view-scroller:where(:hover, :active),
+  .mac-scroll-view:where([data-scroller-style="legacy"]) > .mac-scroll-view-scroller {
+    border-color: ButtonText;
+    background: Canvas;
+  }
+}

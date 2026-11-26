@@ -1,0 +1,111 @@
+---
+title: Tag Dot
+description: The coloured disc that identifies a Finder tag in a sidebar, a menu or a file name.
+---
+
+<Example name="basic" both />
+
+Finder draws its tags itself; there is no AppKit control. The colours are those of
+`NSWorkspace.shared.fileLabelColors`. The dot appears as the row icon in the Tags section of a
+sidebar (Finder windows, Open and Save panels), before the name of a tagged file, and in the
+tag row of menus.
+
+## Usage
+
+```tsx
+import { TagDot, TagDotGroup } from "macalicious/tag-dot";
+import "macalicious/tag-dot.css";
+
+<TagDot color="blue" /> Blue
+<TagDot color="green" size="small" /> Documents
+```
+
+Or copy the source into your project: `npx macalicious add tag-dot`.
+
+## Guidelines
+
+- Use the seven Finder colours for the same meaning everywhere in an app; people recognise
+  their tags by colour and by name.
+- Always show the tag's name with the dot, or give the dot a name for assistive technology.
+- A tag without a colour is a hollow grey ring (`color="none"`), not a missing dot.
+- In a sidebar the 12 pt dot takes the place of the row's 18 pt icon, centred in it. Before a
+  file name use the small flat dot, 6 pt before the text.
+
+## Variants and states
+
+<Example name="in-labels" both />
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Colour | `color="red"` … `"gray"` | 1 pt ring in a darker shade around a lighter fill |
+| No colour | `color="none"` | Grey ring, faintly tinted centre |
+| All Tags | `color="all"` | Two colourless rings, the second 3 pt to the right and behind |
+| Several tags | `<TagDotGroup>` | Each dot covers half of the one before it; the last is in front |
+| On an emphasised selection | `emphasized` | 1 pt white ring around the dot; only in the key window |
+
+Measured from the Finder sidebar: blue, orange, gray, green, red, no colour and All Tags, in
+both appearances. Provisional: yellow and purple (not in any screenshot; derived from the
+system colours with the ring-to-fill relation measured on orange and green), the white ring on
+an emphasised selection, and `TagDotGroup`.
+
+The dot is not interactive: it has no hover, pressed, focus or disabled look.
+
+## Sizes
+
+| Size | Diameter | Look |
+| --- | --- | --- |
+| `regular` | 12 pt (measured) | Ring and fill |
+| `small` | 10 pt (measured) | Flat, no ring; a colourless dot keeps its ring |
+
+Only green is shown at the small size, and its flat colour differs slightly from the sidebar
+fill. The other colours use their sidebar fill at this size, which is provisional.
+
+## API
+
+<PropsTable name="TagDotProps" />
+
+`TagDotGroup` takes the props of a `<span>`:
+
+<PropsTable name="TagDotGroupProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-color` | `red`, `orange`, `yellow`, `green`, `blue`, `purple`, `gray`, `none`, `all` | Reflects `color`. |
+| `data-size` | `regular`, `small` | Reflects `size`. |
+| `data-emphasized` | present or absent | Reflects `emphasized`. |
+
+The colours are the tokens `--mac-tag-dot-<color>-ring` and `--mac-tag-dot-<color>-fill`,
+declared in `tag-dot.tokens.css`. An “All Tags” dot is 3 pt wider than a single dot; the
+component reserves that space with a margin.
+
+## Accessibility
+
+- Not focusable and not interactive.
+- By default the dot is decorative (`aria-hidden`); the tag's name beside it carries the
+  meaning.
+- A dot shown without its name needs one: pass `aria-label="Blue tag"` and it becomes an image
+  (`role="img"`). For several tags, name the group instead:
+  `<TagDotGroup role="img" aria-label="Tags: red and blue">`.
+- In forced-colours mode the dot keeps its colour, because the colour is all it is.
+
+## Visual comparison
+
+`visual-sidebar-tags` reproduces the icon column of the eight tag rows of the Finder sidebar
+and `visual-in-label` the green dot before a file name in an icon view. Results in Chromium on
+Linux:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Sidebar tags, Aqua | 0.01% of pixels differ | 0.04% |
+| Sidebar tags, Dark Aqua | 0.00% | 0.00% |
+| In a label, Aqua | 3.06% | 1.53% |
+| In a label, Dark Aqua | 4.08% | 3.06% |
+| Open panel sidebar, Aqua | 0.02% | 0.03% |
+| Open panel sidebar, Dark Aqua | 0.00% | 0.00% |
+
+`visual-open-panel-tags` reproduces the six tag rows in the sidebar of Finder's Open panel
+and `visual-open-panel-tags-dark` the five rows its Dark Aqua capture lists.
+
+The in-label crop is 14 pt square, so a few antialiased pixels on the edge of the flat dot are
+several percent of it; Core Graphics draws that small circle slightly squarer than the browser
+does. The 1x figures are measured against the 2x screenshot averaged in 2 by 2 blocks.

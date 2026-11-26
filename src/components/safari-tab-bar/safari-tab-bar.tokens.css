@@ -1,0 +1,57 @@
+/*
+ * Safari tab bar colours. light-dark(<Aqua>, <Dark Aqua>), read from the Safari v13 captures:
+ * the key window's bar ("top" is its first row, "bottom" its 48th) and, for the inactive
+ * window, the Picture in Picture pair. The docs page has the pixels.
+ */
+:root {
+  /* [measured] a tab that is not selected */
+  --mac-safari-tab-bar-tab-top: light-dark(#c0c0c0, #1f1f20);
+  --mac-safari-tab-bar-tab-bottom: light-dark(#b8b8b8, #1c1d1e);
+  /* [measured] the selected tab */
+  --mac-safari-tab-bar-selected-top: light-dark(#d6d6d6, #38393b);
+  --mac-safari-tab-bar-selected-bottom: light-dark(#cdcdcd, #333436);
+  /* [measured] the 1 pt dividers, also the one before the new-tab cell */
+  --mac-safari-tab-bar-divider-top: light-dark(#b1b1b1, #5b5c5e);
+  --mac-safari-tab-bar-divider-bottom: light-dark(#a8a8a8, #575759);
+  /* [measured] the new-tab cell and its + */
+  --mac-safari-tab-bar-new-top: light-dark(#bababa, #272829);
+  --mac-safari-tab-bar-new-bottom: light-dark(#b1b1b1, #242526);
+  --mac-safari-tab-bar-new-glyph: light-dark(#626262, #949494);
+  /* [measured] the new-tab cell on its own in the toolbar (Favorites captures): its fill, and
+     the 1 pt edge at its top and leading sides */
+  --mac-safari-tab-bar-standalone-top: light-dark(#c0c0c0, #242627);
+  --mac-safari-tab-bar-standalone-bottom: light-dark(#b0b0b0, #202122);
+  --mac-safari-tab-bar-standalone-edge: light-dark(#b0b0b0, #575859);
+  /* [measured] the two device-pixel rows under the bar */
+  --mac-safari-tab-bar-row-inner: light-dark(#bdbdbd, #292a2b);
+  --mac-safari-tab-bar-row-outer: light-dark(#a7a7a7, #000000);
+  /* [measured] titles: the others, the selected one */
+  --mac-safari-tab-bar-title: light-dark(#3a3a3a, #9a9b9b);
+  --mac-safari-tab-bar-title-selected: light-dark(#1c1c1c, #ffffff);
+
+  /* [measured] inactive window: flat fills */
+  --mac-safari-tab-bar-inactive-tab: light-dark(#dddddd, #1e1f21);
+  --mac-safari-tab-bar-inactive-selected: light-dark(#f6f6f6, #2b2c2f);
+  --mac-safari-tab-bar-inactive-divider: light-dark(#d2d2d2, #494a4d);
+  --mac-safari-tab-bar-inactive-row-inner: light-dark(#e7e7e7, #222326);
+  --mac-safari-tab-bar-inactive-row-outer: light-dark(#cecece, #000000);
+  /* [measured, computed] its titles: #a4a4a4 on #dddddd, #5f6062 on #1e1f21 */
+  --mac-safari-tab-bar-inactive-title: light-dark(rgb(0 0 0 / 0.25), rgb(255 255 255 / 0.3));
+  /* [provisional] its new-tab cell is hidden in both captures */
+  --mac-safari-tab-bar-inactive-new: light-dark(#d8d8d8, #252629);
+
+  /* [provisional] not captured: a tab under the pointer, and the close button's square */
+  --mac-safari-tab-bar-hover: light-dark(rgb(0 0 0 / 0.07), rgb(255 255 255 / 0.05));
+  --mac-safari-tab-bar-close-fill-hover: light-dark(rgb(0 0 0 / 0.12), rgb(255 255 255 / 0.14));
+  /* [measured] the bar is 25 pt high with its hairline; [provisional] corner of the close
+     button's square */
+  --mac-safari-tab-bar-height: 25px;
+  --mac-safari-tab-bar-close-radius: 3px;
+  /* [measured] the new-tab cell is 24 pt wide and its + 11 pt */
+  --mac-safari-tab-bar-new-width: 24px;
+  --mac-safari-tab-bar-new-glyph-size: 11px;
+  /* [provisional] not captured: the close button's square and its cross, and a page icon */
+  --mac-safari-tab-bar-close-size: 14px;
+  --mac-safari-tab-bar-close-glyph-size: 8px;
+  --mac-safari-tab-bar-icon-size: 16px;
+}

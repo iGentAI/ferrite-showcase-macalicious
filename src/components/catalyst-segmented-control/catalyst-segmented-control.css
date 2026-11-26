@@ -1,0 +1,138 @@
+/*
+ * Catalyst Segmented Control (UISegmentedControl, iOS 13 style, in a Mac Catalyst app).
+ * Measured on the People and Devices switch of Find My; values and evidence are in the spec
+ * (catalyst-segmented-control) and on the docs page.
+ *
+ * Parts
+ *   .mac-catalyst-segmented-control           the track; it clips the pill's shadow, as captured
+ *   .mac-catalyst-segmented-control-slot      a segment's share of the track; its ::after is the
+ *                                             pill, which only the track clips
+ *   .mac-catalyst-segmented-control-segment   the radio: it fills its slot, so the whole share
+ *                                             takes the click; its ::before is the focus ring
+ *
+ * States
+ *   [data-checked]                    the selected segment: the raised pill (set by Base UI)
+ *   [data-disabled]                   dimmed title (set by Base UI)
+ *   :focus-visible                    focus ring inside the segment, in the key window only
+ *   [data-force~="focus"]             static preview of the focus ring
+ */
+.mac-catalyst-segmented-control {
+  display: inline-flex;
+  flex: none;
+  box-sizing: border-box;
+  height: var(--mac-catalyst-segmented-control-height);
+  overflow: clip;
+  border-radius: var(--mac-catalyst-segmented-control-radius);
+  background: var(--mac-catalyst-segmented-control-track);
+  color: var(--mac-catalyst-segmented-control-text);
+  font: var(--mac-font-control-regular);
+  font-weight: var(--mac-font-weight-medium);
+  font-size: var(--mac-catalyst-segmented-control-font-size);
+  letter-spacing: normal;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* A segment's share of the track. The radio fills it, so a click anywhere in it selects. */
+.mac-catalyst-segmented-control-slot {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* A hairline between two segments neither of which is selected. */
+.mac-catalyst-segmented-control-slot:where(:not(:first-child))::before {
+  content: "";
+  position: absolute;
+  inset-block: var(--mac-catalyst-segmented-control-divider-inset);
+  inset-inline-start: calc(var(--mac-hairline) / -2);
+  width: var(--mac-hairline);
+  background: var(--mac-catalyst-segmented-control-divider);
+}
+
+.mac-catalyst-segmented-control-slot:where(:has([data-checked]))::before,
+.mac-catalyst-segmented-control-slot:where(:has([data-checked]))
+  + .mac-catalyst-segmented-control-slot::before {
+  content: none;
+}
+
+/* The title is centred on the pill: the pill's insets plus 4 pt either side. Its line box is
+   the pill's own, so the text snaps to the rows the capture shows at 1x. */
+.mac-catalyst-segmented-control-segment {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  display: block;
+  flex: 1;
+  min-width: 0;
+  padding-block: var(--mac-catalyst-segmented-control-pill-inset-block);
+  padding-inline: calc(var(--mac-catalyst-segmented-control-pill-inset-start) + 4px)
+    calc(var(--mac-catalyst-segmented-control-pill-inset-end) + 4px);
+  overflow: hidden;
+  outline: none;
+  line-height: calc(
+    var(--mac-catalyst-segmented-control-height) -
+    2 *
+    var(--mac-catalyst-segmented-control-pill-inset-block)
+  );
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The pill and the focus ring on it stand inside the slot by the measured insets. The pill is
+   the slot's, under the radio, so the radio's overflow (for the ellipsis) leaves its shadow. */
+.mac-catalyst-segmented-control-segment::before,
+.mac-catalyst-segmented-control-slot:where(:has([data-checked]))::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-block: var(--mac-catalyst-segmented-control-pill-inset-block);
+  inset-inline: var(--mac-catalyst-segmented-control-pill-inset-start)
+    var(--mac-catalyst-segmented-control-pill-inset-end);
+  border-radius: var(--mac-catalyst-segmented-control-pill-radius);
+  pointer-events: none;
+}
+
+.mac-catalyst-segmented-control-slot:where(:has([data-checked]))::after {
+  z-index: 0;
+  background: var(--mac-catalyst-segmented-control-pill);
+  box-shadow: var(--mac-catalyst-segmented-control-pill-shadow);
+}
+
+.mac-catalyst-segmented-control-segment:where([data-disabled]) {
+  color: var(--mac-catalyst-segmented-control-text-disabled);
+}
+
+/* Keyboard focus, in the key window only: inside the pill's place, since the track clips. */
+.mac-catalyst-segmented-control-segment:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+)::before {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+@media (forced-colors: active) {
+  .mac-catalyst-segmented-control {
+    outline: 1px solid ButtonText;
+    outline-offset: -1px;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+
+  .mac-catalyst-segmented-control-segment:where([data-checked]) {
+    color: HighlightText;
+  }
+
+  .mac-catalyst-segmented-control-slot:where(:has([data-checked]))::after {
+    forced-color-adjust: none;
+    background: Highlight;
+    box-shadow: none;
+  }
+
+  .mac-catalyst-segmented-control-segment:where([data-disabled]) {
+    color: GrayText;
+  }
+}

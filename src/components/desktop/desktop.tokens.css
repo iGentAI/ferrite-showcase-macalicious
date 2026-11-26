@@ -1,0 +1,18 @@
+/*
+ * The desktop's own picture: a plain gradient, drawn when no picture is given. It is original
+ * and deliberately neutral: Catalina's desktop pictures are Apple's artwork and are not part of
+ * this library.
+ */
+:root {
+  /* [provisional] Stand-in for the desktop picture. The stops are near the sky and sea values
+     the spec samples from the Day and Night pictures (Light-Desktop @ 1000,300 and
+     1460,1840; Dark-Desktop @ 300,300 and 1460,1840), so that the materials above it (menu
+     bar, Dock) come out near their measured composites. */
+  --mac-desktop-picture: linear-gradient(
+    light-dark(#85c1f0, #314f79),
+    light-dark(#3c668c, #1b2f4d) 55%,
+    light-dark(#021f36, #0a192b)
+  );
+  /* [provisional] Colour shown where a picture does not reach. */
+  --mac-desktop-fill: light-dark(#3c668c, #0a192b);
+}

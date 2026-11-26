@@ -1,0 +1,130 @@
+---
+title: Account Header
+description: The band at the top of System Preferences, with the account picture, the name over a second line, and image buttons for the account's panes at the trailing edge.
+---
+
+<Example name="basic" both />
+
+System Preferences opens with a band above the grid of panes: the account's picture in a
+circle, the account's name set large over a short second line, and one or two image buttons at
+the trailing edge that open the account's own panes. AppKit has no class for it and Base UI no
+primitive, so `AccountHeader` is a labelled group that lays those parts out to the measured
+positions. The destinations are ordinary buttons, usually
+[preference pane icons](/components/preference-pane-icon).
+
+## Usage
+
+```tsx
+import { AccountHeader } from "macalicious/account-header";
+import { PreferencePaneIcon } from "macalicious/preference-pane-icon";
+import "macalicious/image-button.css";
+import "macalicious/preference-pane-icon.css";
+import "macalicious/account-header.css";
+
+<AccountHeader
+  name="Ada Appleseed"
+  subtitle="Account, Cloud"
+  avatar={<img src={portrait} alt="" width={64} height={64} />}
+>
+  <PreferencePaneIcon title="Account" onClick={() => open("account")}>
+    <img src={accountIcon} alt="" width={37} height={37} />
+  </PreferencePaneIcon>
+</AccountHeader>
+```
+
+Or copy the source into your project: `npx macalicious add account-header`.
+
+The header has no background of its own: put it at the top of a window's content, where the
+window background shows through, and put the grid of panes under its separator. The picture
+and the destinations' artwork are yours to supply; the library ships no Apple artwork.
+
+<Example name="system-preferences" both />
+
+## Guidelines
+
+From the macOS Human Interface Guidelines on
+[preferences](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/app-architecture/preferences/)
+and
+[image buttons](https://web.archive.org/web/20200503180052/https://developer.apple.com/design/human-interface-guidelines/macos/buttons/image-buttons/):
+
+- Keep the header for the one account the whole window is about. It is not a toolbar: put
+  commands in the panes the destinations open.
+- The destinations are image buttons with their label below, like the panes under them. Keep
+  each label to a noun or a short phrase.
+- The name identifies the account, so the picture is decoration; do not rely on the picture
+  alone to say whose account it is.
+
+## Variants and states
+
+| State | Look | Status |
+| --- | --- | --- |
+| Signed in | Picture, name, second line and destinations over a separator | measured |
+| No picture | A neutral head-and-shoulders silhouette in the circle | provisional (the library's drawing) |
+| Signed out | The silhouette, a prompt as the name, and a button as the only destination | provisional (no screenshot) |
+| Window not key | No change of its own; the destinations follow their own rules | provisional |
+
+<Example name="signed-out" both />
+
+The header has no hover, pressed, focused or disabled look: it is not a control. Its
+destinations have theirs.
+
+## Sizes
+
+One size, as wide as its container. The band is 111 pt over a 1 pt separator. The picture is a
+64 pt circle 25 pt from the leading edge and 23 pt from the top; the name is 19 pt regular in a
+box that starts 10 pt after the picture, so that its ink starts 10.5 pt after it as measured;
+the second line is 11 pt regular. Destinations are 82 pt column
+slots that end 6.5 pt from the trailing edge, which puts them over the last columns of a
+668 pt pane grid. A name or second line that does not fit is cut with an ellipsis.
+
+## API
+
+<PropsTable name="AccountHeaderProps" />
+
+The remaining props are those of a `<div>`.
+
+| Attribute or variable | On | Values | Description |
+| --- | --- | --- | --- |
+| `role` | root | `group` | Set by the component, with `aria-labelledby` pointing at the name unless `aria-label` is given. |
+| `--mac-account-header-avatar-fill` | any ancestor | a colour | Disc of the silhouette drawn when there is no picture. |
+| `--mac-account-header-avatar-figure` | any ancestor | a colour | Head and shoulders of the silhouette. |
+
+Classes: `.mac-account-header`, `.mac-account-header-avatar`, `.mac-account-header-text`,
+`.mac-account-header-name`, `.mac-account-header-subtitle` and
+`.mac-account-header-destinations`.
+
+## Accessibility
+
+- The header is a `group` named by the account name, so a screen reader announces whose
+  account the destinations belong to. Pass `aria-label` or `aria-labelledby` to name it
+  differently; the account name then stays readable text inside the group.
+- The picture is hidden from assistive technology: the name already identifies the account.
+  Give an `<img>` an empty `alt`.
+- The header is not focusable and has no action. Tab goes straight to its destinations, in
+  reading order; each is a native button named by its title.
+- The name and the second line are plain text and are read in order. They cannot be selected,
+  as in System Preferences.
+- In forced-colours mode the text and the separator use the system's text colour and the
+  silhouette is drawn in the system's colours with an outline.
+
+## Visual comparison
+
+`npm run visual -- account-header` compares the whole band with the System Preferences
+screenshots in both appearances. The picture and the destinations' artwork are masked in every
+comparison, because the example draws stand-in blocks and not the photograph or Apple's icons.
+Share of pixels that differ at 2x, in Chromium on Linux with the fallback font:
+
+| Crop, 668 x 112 pt (`112,152,1336,224`) | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Text and band, pictures masked | 2.37% | 2.71% |
+| Band and separator only, text masked too | 0.00% | 0.43% |
+
+Measured: the band's height and separator, the picture's circle, the positions and sizes of
+the name and the second line, and where the destinations sit. The first row scores the name,
+the second line and two captions set in the fallback font instead of San Francisco. The
+0.43% left in Dark Aqua is the window's own lighter edge, half a point wide at each end of the
+crop; it belongs to the [window](/components/window), not to the header.
+
+Provisional, because no screenshot shows them: the silhouette, whose colours and shape are
+the library's own and are checked only against the tokens (`expect` comparisons), and the
+signed-out layout.

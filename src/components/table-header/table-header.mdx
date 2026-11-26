@@ -1,0 +1,199 @@
+---
+title: Table Header
+description: The row of column headings above a table or outline, with sort indicators and resizable columns.
+---
+
+<Example name="basic" both />
+
+AppKit's `NSTableHeaderView` and its `NSTableHeaderCell`s. A [table view](/components/table-view)
+and an [outline view](/components/outline-view) draw their headings with it; use it directly
+only for a table you lay out yourself, or for a pane title that looks like a header.
+
+## Usage
+
+```tsx
+import { TableHeader, TableHeaderCell } from "macalicious/table-header";
+import "macalicious/table-header.css";
+
+<div role="table" aria-label="Processes">
+  <TableHeader>
+    <TableHeaderCell width={240}>Process Name</TableHeaderCell>
+    <TableHeaderCell align="center" sortDirection="descending" onSort={reverse}>
+      % CPU
+    </TableHeaderCell>
+    <TableHeaderCell width={90} onResize={setWidth}>Threads</TableHeaderCell>
+  </TableHeader>
+</div>
+```
+
+Or copy the source into your project: `npx macalicious add table-header`.
+
+The header is a `row` and needs a `table`, `grid` or `treegrid` around it. It holds no state:
+you say which column is sorted and how wide each column is, and it tells you when a heading
+is clicked (`onSort`) or a column edge is dragged (`onResize`). A heading without a `width`
+shares the remaining width; give the rows below the same widths.
+
+A header can also draw its headings from a list, as a table view's header does: give it
+`columns` in place of children, the `sort` to show, and `onSortChange` and `onColumnResize`
+to hear of a click on a heading and of a dragged column edge.
+
+<Example name="columns" />
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[table views](https://web.archive.org/web/20200503153039/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/table-views/):
+
+- Write headings as nouns or short noun phrases in title case, without a trailing colon.
+- Let people click a heading to sort by that column, and click it again to reverse the
+  order. Only the sorted column shows an indicator.
+- Let people resize columns. A heading that is too narrow truncates its title; keep the
+  title and the indicator visible at the minimum width.
+- Do not centre headings out of habit: text columns read best left-aligned, and a centred
+  heading belongs over a column of short, centred or numeric values.
+
+## Variants and states
+
+<Example name="variants" both hideCode />
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Standard | default | 23 pt grey fill and a 1 pt bottom border; 1 pt column separators inset 3 pt from the top and bottom; 11 pt regular titles |
+| Plain | `variant="plain"` | The same header on the content background, with lighter lines |
+| Translucent | `variant="translucent"` | The plain header, 95% opaque: what is behind it, such as the rows a table scrolls under it, shows through faintly, as in Console |
+| Top border | `topBorder` | A 1 pt line above the fill, for a header that is not directly under a toolbar (25 pt in all) |
+| Alignment | `align` on a cell | Title left-aligned 5 pt from the column's edge, centred, or right-aligned |
+| Title inset | `--mac-table-header-title-inset` | The space before and after every title, `5px 6px` by default: Console's titles start 2 pt from the column's edge (`2px 6px`), Keychain Access's 3.5 pt (`3.5px 2px`) |
+| Title offset | `--mac-table-header-title-offset` | Moves every title down, or up when it is negative; a heading that sorts and a plain one move alike |
+| Sorted | `sortDirection` on a cell | A 7 x 4 pt chevron 4 pt before the column's separator; the title keeps its weight and colour |
+| Pressed | mouse button held on a sortable heading | The fill darkens (Aqua) or lightens (Dark Aqua) by about 8% |
+| Resizing | drag on a column's trailing edge | Resize pointer; no other change |
+| Keyboard focus | Tab to a heading | Focus ring inside the cell, in a key window only |
+
+A header looks the same in a key, main and inactive window, without the focus ring. The last
+heading has no separator after it.
+
+The title of a heading that sorts is a button and a plain title is a `span`; both set their
+capitals 7 pt under the fill's top, as measured on plain headings (Activity Monitor) and on
+headings that sort (Console, Keychain Access).
+
+Measured: the fill, borders, separators, title metrics and both indicators, in both
+appearances, for the standard header (Activity Monitor, Keychain Access) and the plain one
+(Console); the alpha of the translucent fill, 0.95, from the text of the row that Console's
+header is over in both captures; the title insets of Console and Keychain Access.
+Provisional (no screenshot shows them): the pressed fill, the focus ring, and the
+look while a column is resized.
+
+## Sizes
+
+A header has one size: 24 pt with its bottom border, 25 pt with a top border as well. It is
+as wide as its container. Columns take the `width` you give them, in points.
+
+## API
+
+<PropsTable name="TableHeaderProps" />
+
+<PropsTable name="TableHeaderCellProps" />
+
+Both parts are `div`s and take their attributes, `ref`, `className` and `style`.
+
+A column of `columns` (`TableHeaderColumn`) has an `id`, a `title`, and optionally `width`,
+`minWidth` (20), `maxWidth`, `align`, `headerAlign` (the heading alone, when it differs) and
+`sortable`. A sort (`TableHeaderSort`) is `{ column, direction }`. They are the
+[table view](/components/table-view)'s `TableViewColumn` and `TableViewSort`.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-variant` | header | `standard`, `plain`, `translucent` | Reflects `variant`. |
+| `data-top-border` | header | present or absent | Reflects `topBorder`. |
+| `data-align` | cell | `left`, `center`, `right` | Reflects `align`. |
+| `aria-sort` | cell | `ascending`, `descending`, `none` | The sort direction; `none` on a sortable column that is not sorted. |
+| `data-direction` | indicator | `ascending`, `descending` | Which way the chevron points. |
+| `data-dragging` | resize handle | present or absent | The column edge is being dragged. |
+| `data-moving` | cell | present or absent | The heading is being dragged to another place. |
+
+| Class | Part |
+| --- | --- |
+| `.mac-table-header` | The row |
+| `.mac-table-header-cell` | A column heading |
+| `.mac-table-header-title` | Its title: a `span`, or a `button` when the column sorts |
+| `.mac-table-header-indicator` | The sort chevron |
+| `.mac-table-header-resizer` | The resize handle over the trailing edge |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-table-header-title-inset` | `5px 6px` | The space before and after every title: the padding of the title along the line, one value for both or the leading and then the trailing one. A sorted column keeps 16 pt after its title for the indicator whatever the second value. |
+| `--mac-table-header-title-offset` | `0px` | Moves every title down by this length, or up when it is negative. |
+
+Set them on the header, or on any ancestor: a table view's `style` reaches the header it
+renders.
+
+## Accessibility
+
+- The header is a `row` of `columnheader`s. A sortable heading holds a real `button`, so it
+  is in the tab order and is activated with Return or Space, and its `columnheader` carries
+  `aria-sort`. The chevron is hidden from assistive technology.
+- AppKit's headings are not in the tab order; here the sortable ones are, because the web
+  has no other way to sort with the keyboard. That is a deliberate difference.
+- Columns are resized from the keyboard with Option-Left and Option-Right Arrow on the
+  focused heading, 10 pt at a time within `minWidth` and `maxWidth`. A heading that can be
+  resized but not sorted is itself a tab stop for this. In a right-to-left layout the arrows
+  follow the direction the edge moves on screen.
+- The resize handle is for the pointer only; it is 7 pt wide over the 1 pt separator.
+- With `onColumnMove`, a heading is dragged to another place or moved with Option-Shift-Left and
+  Option-Shift-Right Arrow. The heading follows the pointer and the rows move when it is let go.
+  A heading that neither sorts nor resizes is itself a tab stop for this.
+- In forced-colours mode the border, separators and indicator use the system text colour.
+
+## Visual comparison
+
+Three reference headers, each in both appearances: `visual-activity-monitor` (centred titles,
+descending indicator, directly under the toolbar), `visual-keychain` (left-aligned titles,
+ascending indicator, top border) and `visual-console` (the plain variant). Each is compared
+twice: the whole crop, where the titles are set in the fallback font off Apple platforms, and
+with the titles masked at a colour distance of 0.05, which scores the fill, the borders, the
+separators and the indicator. Results in Chromium on Linux:
+
+| Comparison | Whole crop, 2x | Whole crop, 1x | Titles masked, 2x | Titles masked, 1x |
+| --- | --- | --- | --- | --- |
+| Activity Monitor, Aqua | 7.80% of pixels differ, mean Δ 9.45 | 7.92%, 6.52 | 0.19%, 0.41 | 0.38%, 0.40 |
+| Activity Monitor, Dark Aqua | 7.68%, 10.14 | 8.28%, 7.09 | 0.19%, 0.33 | 0.38%, 0.32 |
+| Keychain Access, Aqua | 2.97%, 5.24 | 3.23%, 5.19 | 0.05%, 0.97 | 0.10%, 0.96 |
+| Keychain Access, Dark Aqua | 2.99%, 6.48 | 3.43%, 6.40 | 0.05%, 2.10 | 0.10%, 2.10 |
+| Console, Aqua | 7.65%, 12.67 | 9.02%, 12.26 | 0.34%, 0.67 | 0.64%, 0.54 |
+| Console, Dark Aqua | 8.08%, 12.46 | 9.59%, 12.39 | 0.35%, 0.70 | 0.64%, 0.67 |
+
+What remains with the titles masked: the antialiased ends of the indicator's strokes, which
+the screenshots cut horizontally and the drawn chevron cuts square; in Console, the start of
+the first log line, which the screenshot shows through the 1 pt gap above the header; and in
+Keychain Access a fill that is one level lighter than Activity Monitor's (`#eeeeee` against
+`#efefef`, and `#2b2c2f` against `#2d2f31`), which the header's tokens take from Activity
+Monitor. The whole-crop figures are the title text in the fallback font.
+
+The states no screenshot shows are checked with real input and pixel colours: the pressed
+fill in both appearances (the spec's inferred 8%), the focus ring on a sortable heading and
+on one that can only be resized, and the absence of the ring in an inactive window. The three
+focus checks now run in Dark Aqua too, against the dark focus ring colour over the measured
+dark fill.
+
+The translucent variant and the two hooks have comparisons of their own, against the same
+crops. `visual-console-titles` is Console's header as Console draws it: translucent, every
+heading sortable, the titles 2 pt from the column's edge and half a point up.
+`visual-keychain-titles` is Keychain Access's, with its headings drawn from `columns` and its
+titles 3.5 pt from the edge and half a point up.
+
+| Comparison | Whole crop, 2x | Whole crop, 1x | Titles masked, 2x | Titles masked, 1x |
+| --- | --- | --- | --- | --- |
+| Console with its titles, Aqua | 3.65% of pixels differ, mean Δ 4.69 | 4.02%, 4.04 | 0.32%, 0.59 | 0.06%, 0.43 |
+| Console with its titles, Dark Aqua | 4.10%, 4.71 | 4.93%, 4.61 | 0.34%, 0.59 | 0.64%, 0.54 |
+| Keychain Access with its titles, Aqua | 1.91%, 2.95 | 2.52%, 2.78 | not compared: the drawing is `visual-keychain`'s | |
+| Keychain Access with its titles, Dark Aqua | 1.91%, 4.12 | 2.67%, 4.08 | not compared: the drawing is `visual-keychain`'s | |
+
+With the titles where the applications have them, the whole-crop figures are about half of
+those above for Console and two thirds for Keychain Access; what is left is the shape of the
+fallback font's letters. No row is under the header in these crops, so they score the
+translucent fill only over the content background. That it lets through what is behind it is
+checked with expected pixels in `visual-translucent`, over the emphasised selection colour:
+white at 95% over `#0164e1` is `#f2f7fd`, and the dark fill over `#0158d0` is `#30343a`. The
+[table view](/components/table-view) compares the header over the rows of Console's
+screenshots.

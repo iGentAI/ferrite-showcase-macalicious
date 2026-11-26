@@ -1,0 +1,28 @@
+/*
+ * Table header colours (reference/spec/components/table-header.md). The title colour is the
+ * shared --mac-color-header-text.
+ */
+:root {
+  /* [measured] Activity Monitor: fill @ 540,200, bottom border @ 540,234, column separator
+     @ 594,210, sort indicator @ 733,212 */
+  --mac-table-header-fill: light-dark(#efefef, #2d2f31);
+  --mac-table-header-border: light-dark(#c6c7c7, #47494c);
+  --mac-table-header-separator: light-dark(#d5d5d5, #45494b);
+  --mac-table-header-indicator: light-dark(#909090, #8b8c8e);
+  /* [measured] Console's header on the content background: fill @ 900,270, bottom border
+     @ 900,306, separator @ 578,268 */
+  --mac-table-header-plain-fill: light-dark(#ffffff, #313131);
+  --mac-table-header-plain-border: light-dark(#d6d6d6, #4a4a49);
+  --mac-table-header-plain-separator: light-dark(#e5e5e5, #494949);
+  /* [measured, computed] Console's header is 95% opaque: the text of the row scrolled under
+     it, #252525 (Aqua) and #dddddd, shows as #f4f4f4 @ 637,290 and #3b3b3a @ 644,290 where
+     the fill alone is #ffffff and #313131; a fit over x=640..716 y=282..303 against the same
+     digits one stripe pair below gives alpha 0.950 in both captures, and the fills white and
+     #323232. The dark fill is stored as #333333: at 95% a browser composites it in 8 bits
+     to the measured #313131 over the #1e1f20 content background, #323232 over a stripe and
+     #3b3b3b over text, where #323232 comes out one level darker in all three */
+  --mac-table-header-translucent-fill: light-dark(rgb(255 255 255 / 0.95), rgb(51 51 51 / 0.95));
+  /* [provisional] a heading while it is pressed: the fill darkens (Aqua) or lightens by
+     about 8%; no screenshot shows it */
+  --mac-table-header-pressed: light-dark(rgb(0 0 0 / 0.08), rgb(255 255 255 / 0.08));
+}

@@ -1,0 +1,597 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "pending": "No Catalina screenshot shows a circular slider (spec: circular-slider, not seen), so there is no reference crop to compare with. The comparisons below are pixel checks against the values the spec infers.",
+  "comparisons": [
+    {
+      "name": "rest-light",
+      "description": "Both dials at rest, Aqua. Every value is the spec's inference: no screenshot shows a circular slider.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 84,
+          "height": 48
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 14,
+            "color": "#ffffff",
+            "note": "dial fill: the round slider knob's (inferred for the dial)"
+          },
+          {
+            "x": 27.5,
+            "y": 20,
+            "color": "#808080",
+            "tolerance": 3,
+            "note": "the dot at three o'clock for a quarter of the range: black at 50% over the dial (inferred)"
+          },
+          {
+            "x": 60,
+            "y": 16.5,
+            "color": "#808080",
+            "tolerance": 3,
+            "note": "second dial: the dot at twelve o'clock for the minimum, 4.5 pt inside the rim"
+          },
+          {
+            "x": 75,
+            "y": 24,
+            "color": "#999999",
+            "tolerance": 4,
+            "scale": 2,
+            "note": "tick dot at three o'clock, 3 pt outside the rim: black at 35% over #ececec (inferred); a 2 pt dot fills a whole pixel only at 2x"
+          },
+          {
+            "x": 60,
+            "y": 39,
+            "color": "#999999",
+            "tolerance": 4,
+            "scale": 2,
+            "note": "tick dot at six o'clock"
+          },
+          {
+            "x": 40,
+            "y": 20,
+            "color": "#ececec",
+            "note": "page between the dials"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rest-dark",
+      "description": "Both dials at rest, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 84,
+          "height": 48
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 14,
+            "color": "#cccccc",
+            "note": "dial fill (inferred)"
+          },
+          {
+            "x": 27.5,
+            "y": 20,
+            "color": "#525252",
+            "tolerance": 3,
+            "note": "dot: black at 60% over #cccccc (inferred)"
+          },
+          {
+            "x": 75,
+            "y": 24,
+            "color": "#656565",
+            "tolerance": 4,
+            "scale": 2,
+            "note": "tick dot: white at 25% over the window background #323232 (inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The mouse held down on the middle of the dial, Aqua: the value goes to where the pointer is, here the minimum.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "#dial"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 84,
+          "height": 48
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 26,
+            "color": "#f0f0f0",
+            "note": "pressed dial fill (inferred)"
+          },
+          {
+            "x": 20,
+            "y": 12.5,
+            "color": "#787878",
+            "tolerance": 3,
+            "note": "the dot has moved to twelve o'clock: black at 50% over #f0f0f0"
+          },
+          {
+            "x": 27.5,
+            "y": 20,
+            "color": "#f0f0f0",
+            "note": "and has left three o'clock"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "The mouse held down on the middle of the dial, Dark Aqua: the value goes to where the pointer is, here the minimum.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": "#dial"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 84,
+          "height": 48
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 26,
+            "color": "#e0e0e0",
+            "note": "pressed dial fill: it lightens in dark, as the spec infers for the slider knob (inferred)"
+          },
+          {
+            "x": 20,
+            "y": 12.5,
+            "color": "#5a5a5a",
+            "tolerance": 3,
+            "note": "the dot has moved to twelve o'clock: black at 60% over #e0e0e0"
+          },
+          {
+            "x": 27.5,
+            "y": 20,
+            "color": "#e0e0e0",
+            "note": "and has left three o'clock"
+          }
+        ]
+      }
+    },
+    {
+      "name": "end-key-light",
+      "description": "Tab to the dial, then End: the value goes to the maximum, which is twelve o'clock again, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "End"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 84,
+          "height": 48
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 12.5,
+            "color": "#808080",
+            "tolerance": 3,
+            "note": "the dot is at twelve o'clock"
+          },
+          {
+            "x": 27.5,
+            "y": 20,
+            "color": "#ffffff",
+            "note": "and has left three o'clock"
+          }
+        ]
+      }
+    },
+    {
+      "name": "end-key-dark",
+      "description": "Tab to the dial, then End: the value goes to the maximum, which is twelve o'clock again, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "End"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 84,
+          "height": 48
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 12.5,
+            "color": "#525252",
+            "tolerance": 3,
+            "note": "the dot is at twelve o'clock: black at 60% over #cccccc (inferred)"
+          },
+          {
+            "x": 27.5,
+            "y": 20,
+            "color": "#cccccc",
+            "note": "and has left three o'clock: the dial fill (inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-light",
+      "description": "Keyboard focus on the dial, reached with Tab, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 84,
+          "height": 48
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 20,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the window background, measured on the Go to Folder field (spec: focus-ring); that it follows the dial is inferred"
+          },
+          {
+            "x": 20,
+            "y": 7,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring above the dial"
+          },
+          {
+            "x": 4.75,
+            "y": 20,
+            "color": "#ececec",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the dial's edge"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-dark",
+      "description": "Keyboard focus on the dial, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 84,
+          "height": 48
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 20,
+            "color": "#2f6d99",
+            "tolerance": 4,
+            "note": "ring colour token at 50% over #323232; measured as #2d6c99 over #2f3032 on Automator's search field (spec: focus-ring); that it follows the dial is inferred"
+          },
+          {
+            "x": 20,
+            "y": 7,
+            "color": "#2f6d99",
+            "tolerance": 4,
+            "note": "ring above the dial"
+          },
+          {
+            "x": 4.75,
+            "y": 20,
+            "color": "#323232",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the dial's edge"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ticked-light",
+      "description": "Keyboard focus on the dial with tick marks, reached with two Tabs, Aqua: the ring hugs the dial, inside the tick dots.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 2
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 84,
+          "height": 48
+        },
+        "pixels": [
+          {
+            "x": 47,
+            "y": 24,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring just outside the dial's left edge at x=48"
+          },
+          {
+            "x": 7,
+            "y": 20,
+            "color": "#ececec",
+            "note": "the first dial has no ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ticked-dark",
+      "description": "Keyboard focus on the dial with tick marks, reached with two Tabs, Dark Aqua: the ring hugs the dial, inside the tick dots.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 2
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 84,
+          "height": 48
+        },
+        "pixels": [
+          {
+            "x": 47,
+            "y": 24,
+            "color": "#2f6d99",
+            "tolerance": 4,
+            "note": "ring just outside the dial's left edge at x=48: ring colour token at 50% over #323232 (measured as #2d6c99 over #2f3032 in Automator)"
+          },
+          {
+            "x": 7,
+            "y": 20,
+            "color": "#323232",
+            "note": "the first dial has no ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "main-window-light",
+      "description": "In a main window that is not key, after a Tab: no focus ring, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "main",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 84,
+          "height": 48
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 20,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window"
+          },
+          {
+            "x": 20,
+            "y": 14,
+            "color": "#ffffff",
+            "note": "the dial is unchanged: it has no accent"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inactive-window-light",
+      "description": "In an inactive window that is not key, after a Tab: no focus ring, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 84,
+          "height": 48
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 20,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window"
+          },
+          {
+            "x": 20,
+            "y": 14,
+            "color": "#ffffff",
+            "note": "the dial is unchanged: it has no accent"
+          }
+        ]
+      }
+    },
+    {
+      "name": "main-window-dark",
+      "description": "In a main window that is not key, after a Tab: no focus ring, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "main",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 84,
+          "height": 48
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 20,
+            "color": "#323232",
+            "note": "no focus ring outside the key window: the window background"
+          },
+          {
+            "x": 20,
+            "y": 14,
+            "color": "#cccccc",
+            "note": "the dial is unchanged: it has no accent (fill inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inactive-window-dark",
+      "description": "In an inactive window that is not key, after a Tab: no focus ring, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 84,
+          "height": 48
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 20,
+            "color": "#323232",
+            "note": "no focus ring outside the key window: the window background"
+          },
+          {
+            "x": 20,
+            "y": 14,
+            "color": "#cccccc",
+            "note": "the dial is unchanged: it has no accent (fill inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "disabled-light",
+      "description": "Disabled dials, Aqua: the whole control at half opacity over the window background (inferred: no screenshot shows a circular slider).",
+      "example": "visual-disabled",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 84,
+          "height": 48
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 14,
+            "color": "#f5f5f5",
+            "tolerance": 2,
+            "note": "dial fill: white at 50% over #ececec"
+          },
+          {
+            "x": 27.5,
+            "y": 20,
+            "color": "#b6b6b6",
+            "tolerance": 3,
+            "note": "dot #808080 at 50% over #ececec"
+          },
+          {
+            "x": 75,
+            "y": 24,
+            "color": "#c2c2c2",
+            "tolerance": 4,
+            "scale": 2,
+            "note": "tick dot #999999 at 50% over #ececec; a 2 pt dot fills a whole pixel only at 2x"
+          },
+          {
+            "x": 40,
+            "y": 20,
+            "color": "#ececec",
+            "note": "window background between the dials"
+          }
+        ]
+      }
+    },
+    {
+      "name": "disabled-dark",
+      "description": "Disabled dials, Dark Aqua: the whole control at half opacity over the window background (inferred: no screenshot shows a circular slider).",
+      "example": "visual-disabled",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 84,
+          "height": 48
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 14,
+            "color": "#7f7f7f",
+            "tolerance": 2,
+            "note": "dial fill #cccccc at 50% over #323232"
+          },
+          {
+            "x": 27.5,
+            "y": 20,
+            "color": "#424242",
+            "tolerance": 3,
+            "note": "dot #525252 at 50% over #323232"
+          },
+          {
+            "x": 75,
+            "y": 24,
+            "color": "#4b4b4b",
+            "tolerance": 4,
+            "scale": 2,
+            "note": "tick dot #656565 at 50% over #323232"
+          },
+          {
+            "x": 40,
+            "y": 20,
+            "color": "#323232",
+            "note": "window background between the dials"
+          }
+        ]
+      }
+    }
+  ]
+}

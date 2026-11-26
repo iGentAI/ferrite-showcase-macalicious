@@ -1,0 +1,145 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "banner-light",
+      "description": "The notification of the Notifications view, Aqua, over the panel colours measured above it. Masked: the text, set in the fallback font off Apple platforms (app name, time, title, message) and the app icon, which is Apple artwork.",
+      "example": "visual-banner",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 10,
+          "y": 8,
+          "width": 80,
+          "height": 21
+        },
+        {
+          "x": 195,
+          "y": 8,
+          "width": 126,
+          "height": 21
+        },
+        {
+          "x": 20,
+          "y": 35,
+          "width": 180,
+          "height": 40
+        }
+      ],
+      "budget": {
+        "1x": 0.0056,
+        "2x": 0.0023
+      },
+      "deltaBudget": {
+        "1x": 4.2,
+        "2x": 4.19
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Notification-Center-Notifications.png",
+        "crop": {
+          "x": 2684,
+          "y": 218,
+          "width": 664,
+          "height": 174
+        }
+      }
+    },
+    {
+      "name": "banner-dark",
+      "description": "The notification of the Notifications view, Dark Aqua, over the panel colours measured above it. Masked: the text, set in the fallback font off Apple platforms (app name, time, title, message) and the app icon, which is Apple artwork.",
+      "example": "visual-banner",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 10,
+          "y": 8,
+          "width": 80,
+          "height": 21
+        },
+        {
+          "x": 195,
+          "y": 8,
+          "width": 126,
+          "height": 21
+        },
+        {
+          "x": 20,
+          "y": 35,
+          "width": 180,
+          "height": 40
+        }
+      ],
+      "budget": {
+        "1x": 0.004,
+        "2x": 0.0012
+      },
+      "deltaBudget": {
+        "1x": 2.8,
+        "2x": 2.77
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Notification-Center-Notifications.png",
+        "crop": {
+          "x": 2684,
+          "y": 218,
+          "width": 664,
+          "height": 174
+        }
+      }
+    },
+    {
+      "name": "clear-on-hover-light",
+      "description": "With the pointer over the card the clear button takes the icon's place, Aqua. No capture shows it; the disc's colour is the one measured on the clear button of the day heading.",
+      "example": "visual-banner",
+      "appearance": "light",
+      "actions": [
+        {
+          "hover": ".mac-notification-banner"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 332,
+          "height": 87
+        },
+        "pixels": [
+          {
+            "x": 21,
+            "y": 13.5,
+            "color": "#415d6d",
+            "tolerance": 4,
+            "note": "disc of the clear button, above its cross: measured on the day heading's button (spec: notification-center, Clear button); on a card it is inferred"
+          }
+        ]
+      }
+    },
+    {
+      "name": "clear-on-hover-dark",
+      "description": "With the pointer over the card the clear button takes the icon's place, Dark Aqua. No capture shows it; the disc's colour is the one measured on the clear button of the day heading.",
+      "example": "visual-banner",
+      "appearance": "dark",
+      "actions": [
+        {
+          "hover": ".mac-notification-banner"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 332,
+          "height": 87
+        },
+        "pixels": [
+          {
+            "x": 21,
+            "y": 13.5,
+            "color": "#aeb8c7",
+            "tolerance": 4,
+            "note": "disc of the clear button, above its cross: measured on the day heading's button (spec: notification-center, Clear button); on a card it is inferred"
+          }
+        ]
+      }
+    }
+  ]
+}

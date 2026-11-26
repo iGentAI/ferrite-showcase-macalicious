@@ -1,0 +1,169 @@
+/*
+ * Mission Control on the desktop: the live windows, scaled under the library's buttons.
+ *
+ * [data-mission-control-open]   on the manager: the desktop's picture shows dimmed behind the
+ *                               windows, and its icons and the menu bar go
+ * [data-mission-control]        on a window: "shown" stands under its button, "away" is out of sight
+ */
+.mac-desktop-shell [data-mission-control] {
+  transform-origin: 0 0;
+  transition:
+    translate 0.25s ease,
+    scale 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.mac-desktop-shell [data-mission-control],
+.mac-desktop-shell [data-mission-control] * {
+  pointer-events: none;
+}
+
+.mac-desktop-shell [data-mission-control="away"] {
+  opacity: 0;
+}
+
+/* App Exposé's shelf takes the place of the Spaces bar, under the windows; with nothing to show, none. */
+.mac-desktop-shell-mission-control[data-app-expose] > [role="group"] {
+  order: 1;
+  height: auto;
+  margin-block-end: var(--mac-mission-control-inset-bottom, 80px);
+  background: none;
+  backdrop-filter: none;
+}
+
+.mac-desktop-shell-mission-control[data-app-expose] > div:not([role="group"]) {
+  margin-block-end: 0;
+}
+
+.mac-desktop-shell-recent-icon {
+  flex: none;
+  block-size: var(--mac-desktop-shell-recent-icon);
+  inline-size: var(--mac-desktop-shell-recent-icon);
+}
+
+.mac-desktop-shell-mission-control[data-app-expose]
+  > [role="group"]:has(.mac-desktop-shell-recent-shelf:empty) {
+  display: none;
+}
+
+.mac-desktop-shell-recent-shelf {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+  justify-content: center;
+  padding-block: var(--mac-space-window-margin);
+}
+
+.mac-desktop-shell-recent-shelf :where(button) {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--mac-desktop-shell-recent-gap);
+  align-items: center;
+  inline-size: var(--mac-desktop-shell-recent-size);
+  color: var(--mac-color-label);
+}
+
+.mac-desktop-shell-recent-shelf :where(span:not(.mac-desktop-shell-recent-icon)) {
+  overflow: hidden;
+  max-inline-size: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* While Space shows a window, the thumbnails' rings and captions go. */
+.mac-desktop-shell-mission-control[data-peeking] [data-mission-window] {
+  opacity: 0;
+}
+
+/* Windows grouped by application: the application's name on the first of them, giving way to the
+   window's own title under the pointer. */
+.mac-desktop-shell-mission-control [data-group-name]::after {
+  position: absolute;
+  bottom: var(--mac-desktop-shell-group-name-inset);
+  left: 50%;
+  padding: var(--mac-desktop-shell-group-name-padding);
+  border-radius: var(--mac-desktop-shell-group-name-radius);
+  background: var(--mac-mission-control-caption-fill);
+  content: attr(data-group-name);
+  translate: -50% 0;
+}
+
+.mac-desktop-shell-mission-control [data-group-name]:is(:hover, :focus-visible)::after {
+  opacity: 0;
+}
+
+/* The windows are under the overlay, which is clear, so the buttons' captions and rings are over them. */
+.mac-desktop-shell-mission-control {
+  background: transparent;
+}
+
+[data-mission-control-open] .mac-desktop-shell-desktop {
+  filter: brightness(0.6);
+  transition: filter 0.25s ease;
+}
+
+[data-mission-control-open] .mac-desktop-shell-desktop .mac-desktop-icon,
+[data-mission-control-open] .mac-desktop-shell-menu-bar {
+  visibility: hidden;
+}
+
+.mac-desktop-shell-app-switcher {
+  z-index: calc(var(--mac-window-manager-layer-chrome) + 1300);
+}
+
+/* A Space in the bar, with its button to remove it, which shows under the pointer or the focus. */
+.mac-desktop-shell-space {
+  position: relative;
+}
+
+.mac-desktop-shell-space-picture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mac-desktop-shell-space[data-drop-target]::after {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--mac-desktop-shell-space-drop-radius);
+  background: var(--mac-desktop-shell-space-drop);
+  content: "";
+  pointer-events: none;
+}
+
+.mac-desktop-shell-mission-control[data-drop-on-add] button[aria-label="Add Desktop"] {
+  border-radius: var(--mac-desktop-shell-space-drop-radius);
+  background: var(--mac-desktop-shell-space-drop);
+}
+
+.mac-desktop-shell-space-remove {
+  position: absolute;
+  top: calc(var(--mac-desktop-shell-space-remove-size) / -2);
+  left: calc(var(--mac-desktop-shell-space-remove-size) / -2);
+  display: grid;
+  width: var(--mac-desktop-shell-space-remove-size);
+  height: var(--mac-desktop-shell-space-remove-size);
+  padding: var(--mac-desktop-shell-space-remove-padding);
+  border: 0;
+  border-radius: 50%;
+  background: var(--mac-desktop-shell-space-remove-fill);
+  color: var(--mac-desktop-shell-space-remove-mark);
+  opacity: 0;
+}
+
+.mac-desktop-shell-space-remove > svg {
+  fill: none;
+  stroke: currentcolor;
+  stroke-linecap: round;
+  stroke-width: 1.5;
+}
+
+.mac-desktop-shell-space:hover > .mac-desktop-shell-space-remove,
+.mac-desktop-shell-space-remove:focus-visible {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-desktop-shell [data-mission-control] {
+    transition: opacity 0.25s ease;
+  }
+}

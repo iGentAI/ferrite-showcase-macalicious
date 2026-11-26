@@ -1,0 +1,251 @@
+/*
+ * Calculator demo: the window around the library's calculator keypad.
+ *
+ * Calculator's window is a dark window in both appearances: the light capture has the dark
+ * window's rim, hairline, shadow and window-control colours. So the window is pinned to the
+ * dark colour scheme here, and every token inside it resolves to its Dark Aqua side. The
+ * keypad's three neutral fills still follow the page's appearance; they are built for exactly
+ * this (see calculator-keypad.tokens.css).
+ *
+ * There is no title bar. The window controls float over the display, where a title bar would
+ * put them: 8 pt from the left edge, 5 pt from the top.
+ */
+.mac-calculator {
+  color-scheme: dark;
+  outline: none;
+}
+
+/* The number can be selected, by Select All or a double click, though the keypad's text cannot. */
+.mac-calculator .mac-calculator-keypad-display-text {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.mac-calculator-controls {
+  position: absolute;
+  z-index: 1;
+  top: var(--mac-calculator-controls-top);
+  left: var(--mac-calculator-controls-left);
+}
+
+/* The Scientific layout: six narrower columns of function keys before the basic four. */
+.mac-calculator-science {
+  --mac-calculator-keypad-columns: var(--mac-calculator-science-columns);
+}
+
+.mac-calculator-science .mac-calculator-science-key,
+.mac-calculator-programmer .mac-calculator-science-key {
+  font: var(--mac-calculator-science-key-font);
+}
+
+/* The Programmer layout: a bar of bases and the character, the bits, then the keys. */
+.mac-calculator-programmer {
+  --mac-calculator-keypad-columns: var(--mac-calculator-programmer-columns);
+  --mac-calculator-keypad-rows: var(--mac-calculator-programmer-rows);
+}
+
+.mac-calculator-bar,
+.mac-calculator-bits {
+  grid-column: 1 / -1;
+  background: var(--mac-calculator-keypad-function);
+}
+
+.mac-calculator-bar {
+  display: flex;
+  align-items: stretch;
+  gap: var(--mac-calculator-bar-gap);
+  padding: 0 var(--mac-calculator-bar-gap);
+}
+
+.mac-calculator-bar-button {
+  margin: 0;
+  padding: 0 var(--mac-calculator-bar-padding);
+  border: 0;
+  background: transparent;
+  color: var(--mac-calculator-keypad-label);
+  font: var(--mac-calculator-science-key-font);
+  cursor: default;
+  appearance: none;
+}
+
+.mac-calculator-bar-button[aria-pressed="true"] {
+  background: var(--mac-calculator-keypad-operator);
+}
+
+.mac-calculator-character {
+  flex: 1;
+  color: var(--mac-calculator-keypad-display-text);
+  font: var(--mac-calculator-science-key-font);
+  line-height: var(--mac-calculator-bar-height);
+  text-align: center;
+}
+
+.mac-calculator-bits {
+  display: grid;
+  grid-template-columns: repeat(8, auto);
+  justify-content: space-evenly;
+  align-content: space-evenly;
+}
+
+.mac-calculator-nibble {
+  display: grid;
+  justify-items: end;
+}
+
+.mac-calculator-nibble-bits {
+  display: flex;
+}
+
+.mac-calculator-bit {
+  width: var(--mac-calculator-bit-width);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--mac-calculator-keypad-label);
+  font: var(--mac-calculator-bit-font);
+  cursor: default;
+  appearance: none;
+}
+
+.mac-calculator-bit[aria-pressed="true"] {
+  color: var(--mac-calculator-keypad-operator);
+}
+
+.mac-calculator-nibble-label {
+  color: var(--mac-calculator-keypad-label);
+  font: var(--mac-calculator-bit-label-font);
+}
+
+/* Over the display, at its left: radians are the exception, so only they are named. */
+.mac-calculator-angle {
+  position: absolute;
+  top: var(--mac-calculator-angle-top);
+  left: var(--mac-calculator-angle-left);
+  color: var(--mac-calculator-keypad-display-text);
+  font: var(--mac-calculator-science-key-font);
+  pointer-events: none;
+}
+
+/* RPN Mode adds a row of stack keys under the display, and names itself above the Rad mark. */
+.mac-calculator-rpn {
+  --mac-calculator-keypad-rows: var(--mac-calculator-rpn-rows);
+}
+
+.mac-calculator-programmer.mac-calculator-rpn {
+  --mac-calculator-keypad-rows: var(--mac-calculator-programmer-rpn-rows);
+}
+
+.mac-calculator-rpn-mark {
+  position: absolute;
+  top: var(--mac-calculator-rpn-mark-top);
+  left: var(--mac-calculator-angle-left);
+  color: var(--mac-calculator-keypad-display-text);
+  font: var(--mac-calculator-science-key-font);
+  pointer-events: none;
+}
+
+/* The registers above X, in a line beside the window controls. */
+.mac-calculator-stack {
+  position: absolute;
+  top: var(--mac-calculator-stack-top);
+  right: var(--mac-calculator-stack-right);
+  left: var(--mac-calculator-stack-left);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--mac-calculator-stack-gap);
+  overflow: hidden;
+  color: var(--mac-calculator-keypad-display-text);
+  font: var(--mac-calculator-bit-label-font);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* A window with no title bar: a sheet hangs from where its title bar would end. */
+.mac-calculator-rates-note {
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-label);
+}
+
+.mac-calculator-sheet-anchor {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: var(--mac-calculator-sheet-top);
+  pointer-events: none;
+}
+
+/*
+ * The Paper Tape window, opened on the Ferrite application's desktop only: an ordinary window
+ * in the page's appearance, the calculations right-aligned on a text background, a Clear button
+ * below them.
+ */
+.mac-calculator-tape-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.mac-calculator-tape-menu-area {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.mac-calculator-tape-lines {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  outline: none;
+  margin: 0;
+  padding: var(--mac-calculator-tape-padding);
+  list-style: none;
+  background: var(--mac-color-text-background);
+  color: var(--mac-color-text);
+  font: var(--mac-font-body);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+.mac-calculator-tape-line + .mac-calculator-tape-line {
+  margin-top: var(--mac-calculator-tape-line-gap);
+}
+
+.mac-calculator-tape-expression,
+.mac-calculator-tape-result {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.mac-calculator-tape-line[data-unsaved] {
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-calculator-tape-line[aria-current="true"] {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-content-text);
+}
+
+[data-window-state="main"] .mac-calculator-tape-line[aria-current="true"],
+[data-window-state="inactive"] .mac-calculator-tape-line[aria-current="true"] {
+  background: var(--mac-color-selected-content-background-unemphasized);
+  color: var(--mac-color-text);
+}
+
+.mac-calculator-tape-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-space-control-gap);
+  justify-content: flex-end;
+  padding: var(--mac-calculator-tape-padding);
+  border-top: 1px solid var(--mac-color-separator);
+}
+
+.mac-calculator-tape-error {
+  flex: 1;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-label);
+}

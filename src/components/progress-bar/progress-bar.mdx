@@ -1,0 +1,165 @@
+---
+title: Progress Bar
+description: A capsule that fills as a task advances, or carries a sweeping band while the length of the task is unknown.
+---
+
+<Example name="basic" both />
+
+AppKit's `NSProgressIndicator` with the bar style. It is built on
+[Base UI's Progress](https://base-ui.com/react/components/progress), which supplies the
+`progressbar` role and the value attributes. For work in a small space, use a
+[progress spinner](/components/progress-spinner).
+
+## Usage
+
+```tsx
+import { ProgressBar } from "macalicious/progress-bar";
+import "macalicious/progress-bar.css";
+
+<ProgressBar value={64} aria-label="Backing up" />
+<ProgressBar aria-label="Connecting" />
+```
+
+Or copy the source into your project: `npx macalicious add progress-bar`.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for progress indicators:
+
+- Use a determinate bar when the length of the task is known, and report progress
+  accurately: do not let the bar stall at 90%. Use an indeterminate bar only while the length
+  cannot be known, and switch to determinate as soon as it can.
+- Keep a progress indicator in the same place for the whole task, in a view, not in the
+  window frame. Do not swap between a bar and a spinner for one task.
+- Say what is happening in words above or below the bar (“Copying 12 items…”, “About 4
+  minutes remaining”), and offer Cancel, or a stop button at the bar's trailing end when
+  interrupting has side effects.
+- People do not interact with the bar itself.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Determinate | `value` | Accent fill from the leading end, square at its trailing edge; in Aqua the track and the fill each have a darker hairline |
+| Complete | `value` equal to `max` | The fill is a full capsule |
+| Indeterminate | `value={null}`, the default | A band 30% of the track wide sweeps along it every 1.5 s |
+| Stopped | `animating={false}` | An indeterminate bar shows an empty track |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | Grey fill |
+
+<Example name="live" />
+
+The fill follows the accent colour (`data-accent`). A change of value is animated over a
+quarter of a second, as in AppKit.
+
+Measured: the determinate bar in both appearances with the blue accent. Provisional, because
+no screenshot shows them: the indeterminate sweep (Catalina's replacement for the barber pole;
+a still image cannot show it), the small size, the look in a window that is not key, and the
+fill in the seven other accents, which is derived from their bezel colours the way the blue
+one relates to the blue bezel.
+
+### Animation cost
+
+- The sweep animates `transform` only, so it runs on the compositor.
+- While the bar is outside the viewport its animation is paused. One `IntersectionObserver`,
+  shared by every indicator on the page (`macalicious/lib/offscreen`), sets `data-offscreen`
+  on the bar; nothing re-renders. Measured in Chromium over two seconds: an off-screen bar
+  produces no frames at all, on the compositor or on the main thread.
+- Only a bar that is animating is watched. A determinate or stopped bar has no animation and
+  no observer entry.
+- `animating={false}` removes the animation altogether.
+- With `prefers-reduced-motion: reduce` nothing moves: the indeterminate band covers the
+  track and fades in and out, and a change of value is not animated.
+
+## Sizes
+
+| Size | Height | Notes |
+| --- | --- | --- |
+| `regular` | 6 pt | Measured |
+| `small` | 4 pt | Provisional |
+
+The bar is a block as wide as its container; give it or its container a width.
+
+## API
+
+<PropsTable name="ProgressBarProps" />
+
+It also takes the props of Base UI's `Progress.Root`: `min`, `max`, `format`, `locale`,
+`getAriaValueText` and `aria-valuetext`.
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-indeterminate`, `data-progressing`, `data-complete` | present or absent | The status, set by Base UI on the root and on the fill. |
+| `data-size` | `regular`, `small` | Reflects `size`. |
+| `data-animating` | present or absent | Reflects `animating`. |
+| `data-offscreen` | present or absent | Set while an animating bar is outside the viewport; pauses the sweep. |
+
+## Accessibility
+
+- The bar has `role="progressbar"` with `aria-valuenow`, `aria-valuemin` and `aria-valuemax`;
+  an indeterminate bar has no `aria-valuenow`. It is not focusable.
+- It needs a name: `aria-label`, or `aria-labelledby` pointing at the text that says what is
+  in progress.
+- Use `getAriaValueText` when a percentage is not the natural reading (“3 of 12 items”).
+- Screen readers do not announce every change. Put the status line in a polite live region if
+  progress must be spoken.
+- In forced-colours mode the track is outlined and the fill uses the system highlight colour,
+  with reduced motion too.
+
+## Visual comparison
+
+`visual-finder-copy-light` and `visual-finder-copy-dark` reproduce the bar of Finder's Copy
+window on the window background, and `visual-time-machine` the backup bar of the Time Machine
+pane, which lies on a box. Results in Chromium on Linux:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Finder Copy, Aqua | 0.03% of pixels differ | 6.60% |
+| Finder Copy, Dark Aqua | 0.00% | 1.07% |
+| Time Machine, Aqua | 0.13% | 10.53% |
+| Trailing end of the track alone, Aqua (strict) | 0.67% | 11.11% |
+| Trailing end of the track alone, Dark Aqua (strict) | 0.00% | 6.67% |
+| Leading end of the fill alone, Aqua (strict) | 1.22% | 14.22% |
+| Leading end of the fill alone, Dark Aqua (strict) | 0.89% | 9.33% |
+
+The last four (`visual-track-end`, `visual-fill-start`, `visual-fill-start-dark`) are 15 pt
+squares around one rounded
+end, counted at half the usual colour distance (`threshold` 0.05), so that the shape of the end
+is most of what is scored: in the whole-bar comparisons a change of 1 pt in the radius moves
+the figure by 0.03 points at most. The ends are half circles of 3 pt, as the measured spec
+gives them. They do not match exactly: drawn with a radius of 2.5 pt the three strict figures
+would be 0.22%, 0.00% and 0.33%. The radius is not changed on that evidence alone.
+
+The budgets sit just above the figures in the table. What they catch was found by changing
+the radius in the stylesheet and running the comparisons again:
+
+- A track radius of 2 pt fails both `track-end` comparisons at 2x (1.78% and 0.67%).
+- A track radius of 2.5 pt lowers every 2x figure, so no 2x budget catches it. The run still
+  fails, but only at 1x and by one pixel: `track-end-light` scores 12.44% (28 of 225 pixels)
+  against a budget of 12.23%.
+- A larger radius cannot be drawn. The ends are already half circles, and a browser reduces a
+  radius of more than half the height to exactly that; with 3.5 pt every figure is unchanged.
+- The fill's own radius is not checked by a comparison. The track clips the fill, and with
+  the fill's radius at 2 pt or 2.5 pt every comparison still passes.
+
+Because the screenshots hold the radius so loosely, it is also checked directly:
+`progress-bar.browser.test.tsx` reads the computed radii in a real browser and requires 3 pt
+for the track and for the leading end of the fill (2 pt for the small bar). A change of the
+radius in either direction fails that test, whatever the comparisons score.
+
+At 2x what differs is the one column where the fill ends, which the screenshot draws half
+covered. The 1x figures are not a fault of the bar. In both captures the bar lies on a half
+point, and there is no 1x screenshot: the 1x reference is the 2x one averaged in 2 by 2
+blocks, which spreads each of the bar's hairlines over two rows, while a browser at 1x draws
+the bar on whole pixels. The Aqua Finder Copy figure is exactly one row of the bar (its top
+hairline against the reference's plain track), and the Time Machine figure two rows over the
+filled part and one over the rest; Dark Aqua has no hairline and scores 1%. The dark capture
+of Time Machine shows no backup in progress, so the leading end of the dark fill is compared
+with the bar of Finder's Copy window instead.
+
+No screenshot shows a bar in a window that is not key or in another accent. `visual-states`
+checks those with pixels in both appearances: the grey fill in a main and in an inactive
+window (`#9b9b9b` in Aqua, `#6a6a6a` in Dark Aqua, both inferred), that the graphite accent
+gets the same grey there in both appearances, and the purple fill (`#be63b3` and `#a541a3`,
+the stops of the purple bezel that correspond to the measured blue fill).

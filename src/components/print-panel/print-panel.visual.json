@@ -1,0 +1,463 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "preview-light",
+      "description": "The preview column of the Print sheet, Aqua: the white page with its shadow and the two page controls, all four buttons disabled on the document's only page. The region paints the sky's colour that the capture has behind the sheet's material.",
+      "example": "visual-sheet",
+      "appearance": "light",
+      "selector": "[data-visual=\"preview\"]",
+      "budget": { "1x": 0.012, "2x": 0.005 },
+      "deltaBudget": { "1x": 1.1, "2x": 0.96 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Print.png",
+        "crop": { "x": 229, "y": 220, "width": 524, "height": 688 }
+      }
+    },
+    {
+      "name": "preview-drawing-light",
+      "description": "The preview column of the Print sheet, Aqua: the white page with its shadow and the two page controls, with the line of text on the page and the page number masked (fallback font off Apple platforms). The region paints the sky's colour that the capture has behind the sheet's material.",
+      "example": "visual-sheet",
+      "appearance": "light",
+      "selector": "[data-visual=\"preview\"]",
+      "threshold": 0.05,
+      "budget": { "1x": 0.014, "2x": 0.004 },
+      "deltaBudget": { "1x": 0.9, "2x": 0.63 },
+      "masks": [
+        { "x": 42, "y": 36, "width": 70, "height": 12 },
+        { "x": 110, "y": 324, "width": 44, "height": 16 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Print.png",
+        "crop": { "x": 229, "y": 220, "width": 524, "height": 688 }
+      }
+    },
+    {
+      "name": "printer-light",
+      "description": "The Printer row of the Print sheet, Aqua: the label and the 239.5 pt pop-up button, with their text. The region ends above the Presets row, which the open menu covers in the capture.",
+      "example": "visual-sheet",
+      "appearance": "light",
+      "selector": "[data-visual=\"printer\"]",
+      "budget": { "1x": 0.156, "2x": 0.0972 },
+      "deltaBudget": { "1x": 15.1, "2x": 13.34 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Print.png",
+        "crop": { "x": 885, "y": 228, "width": 616, "height": 58 }
+      }
+    },
+    {
+      "name": "printer-drawing-light",
+      "description": "The Printer row of the Print sheet, Aqua: the label column's end and the 239.5 pt pop-up button, with the label and the title masked (fallback font off Apple platforms). The region ends above the Presets row, which the open menu covers in the capture.",
+      "example": "visual-sheet",
+      "appearance": "light",
+      "selector": "[data-visual=\"printer\"]",
+      "threshold": 0.05,
+      "budget": { "1x": 0.135, "2x": 0.0023 },
+      "deltaBudget": { "1x": 5.7, "2x": 1.17 },
+      "masks": [
+        { "x": 3, "y": 10, "width": 48, "height": 18 },
+        { "x": 64, "y": 10, "width": 172, "height": 18 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Print.png",
+        "crop": { "x": 885, "y": 228, "width": 616, "height": 58 }
+      }
+    },
+    {
+      "name": "options-light",
+      "description": "The Orientation row, the pane pop-up button in its separator line and the pane's two checkboxes, Aqua, with their text. The two orientation pictograms are masked: the panel draws stand-ins for Apple's artwork.",
+      "example": "visual-sheet",
+      "appearance": "light",
+      "selector": "[data-visual=\"options\"]",
+      "budget": { "1x": 0.097, "2x": 0.0636 },
+      "deltaBudget": { "1x": 10.2, "2x": 8.86 },
+      "masks": [
+        { "x": 96.5, "y": 6, "width": 32, "height": 32 },
+        { "x": 146.5, "y": 6, "width": 32, "height": 32 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Print.png",
+        "crop": { "x": 813, "y": 576, "width": 592, "height": 244 }
+      }
+    },
+    {
+      "name": "options-drawing-light",
+      "description": "The Orientation row, the pane pop-up button in its separator line and the pane's two checkboxes, Aqua. Masked: the two orientation pictograms (stand-ins for Apple's artwork) and the text, which is the label, the pop-up button's title and the checkboxes' titles (fallback font off Apple platforms).",
+      "example": "visual-sheet",
+      "appearance": "light",
+      "selector": "[data-visual=\"options\"]",
+      "threshold": 0.05,
+      "budget": { "1x": 0.048, "2x": 0.0012 },
+      "deltaBudget": { "1x": 1.9, "2x": 0.6 },
+      "masks": [
+        { "x": 96.5, "y": 6, "width": 32, "height": 32 },
+        { "x": 146.5, "y": 6, "width": 32, "height": 32 },
+        { "x": 10, "y": 13, "width": 78, "height": 18 },
+        { "x": 115, "y": 51, "width": 60, "height": 17 },
+        { "x": 120, "y": 81, "width": 176, "height": 18 },
+        { "x": 120, "y": 101, "width": 176, "height": 18 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Print.png",
+        "crop": { "x": 813, "y": 576, "width": 592, "height": 244 }
+      }
+    },
+    {
+      "name": "actions-leading-light",
+      "description": "The bottom separator and the leading end of the button row, Aqua: Help, PDF and Hide Details with their titles, over the sky's colour that the capture has behind the sheet.",
+      "example": "visual-sheet",
+      "appearance": "light",
+      "selector": "[data-visual=\"actions-leading\"]",
+      "budget": { "1x": 0.055, "2x": 0.0245 },
+      "deltaBudget": { "1x": 5, "2x": 3.12 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Print.png",
+        "crop": { "x": 157, "y": 904, "width": 448, "height": 120 }
+      }
+    },
+    {
+      "name": "actions-leading-drawing-light",
+      "description": "The bottom separator and the leading end of the button row, Aqua: Help, PDF and Hide Details with the two titles masked (fallback font off Apple platforms), over the sky's colour that the capture has behind the sheet.",
+      "example": "visual-sheet",
+      "appearance": "light",
+      "selector": "[data-visual=\"actions-leading\"]",
+      "threshold": 0.05,
+      "budget": { "1x": 0.072, "2x": 0.0031 },
+      "deltaBudget": { "1x": 3.5, "2x": 1.32 },
+      "masks": [
+        { "x": 52, "y": 30, "width": 30, "height": 17 },
+        { "x": 122, "y": 30, "width": 80, "height": 17 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Print.png",
+        "crop": { "x": 157, "y": 904, "width": 448, "height": 120 }
+      }
+    },
+    {
+      "name": "actions-trailing-light",
+      "description": "The bottom separator and the trailing end of the button row, Aqua: Cancel and the default button Print with their titles, 12 pt apart and 20 pt from the sheet's edges, over the rock's colour that the capture has behind the sheet.",
+      "example": "visual-sheet",
+      "appearance": "light",
+      "selector": "[data-visual=\"actions-trailing\"]",
+      "budget": { "1x": 0.048, "2x": 0.0214 },
+      "deltaBudget": { "1x": 4.6, "2x": 3.16 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Print.png",
+        "crop": { "x": 1285, "y": 904, "width": 352, "height": 120 }
+      }
+    },
+    {
+      "name": "actions-trailing-drawing-light",
+      "description": "The bottom separator and the trailing end of the button row, Aqua: Cancel and the default button Print with their titles masked (fallback font off Apple platforms), 12 pt apart and 20 pt from the sheet's edges, over the rock's colour that the capture has behind the sheet.",
+      "example": "visual-sheet",
+      "appearance": "light",
+      "selector": "[data-visual=\"actions-trailing\"]",
+      "threshold": 0.05,
+      "budget": { "1x": 0.053, "2x": 0.0032 },
+      "deltaBudget": { "1x": 3.8, "2x": 2.09 },
+      "masks": [
+        { "x": 22, "y": 30, "width": 50, "height": 17 },
+        { "x": 108, "y": 30, "width": 42, "height": 17 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Print.png",
+        "crop": { "x": 1285, "y": 904, "width": 352, "height": 120 }
+      }
+    },
+    {
+      "name": "preview-dark",
+      "description": "The preview column of the Print sheet, Dark Aqua: the white page with its shadow and the two page controls, all four buttons disabled on the document's only page. The region paints the sky's colour that the capture has behind the sheet's material.",
+      "example": "visual-sheet",
+      "appearance": "dark",
+      "selector": "[data-visual=\"preview\"]",
+      "budget": { "1x": 0.017, "2x": 0.0067 },
+      "deltaBudget": { "1x": 1.5, "2x": 1.4 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Print.png",
+        "crop": { "x": 143, "y": 190, "width": 524, "height": 688 }
+      }
+    },
+    {
+      "name": "preview-drawing-dark",
+      "description": "The preview column of the Print sheet, Dark Aqua: the white page with its shadow and the two page controls, with the line of text on the page and the page number masked (fallback font off Apple platforms). The region paints the sky's colour that the capture has behind the sheet's material.",
+      "example": "visual-sheet",
+      "appearance": "dark",
+      "selector": "[data-visual=\"preview\"]",
+      "threshold": 0.05,
+      "budget": { "1x": 0.014, "2x": 0.004 },
+      "deltaBudget": { "1x": 1.2, "2x": 1.08 },
+      "masks": [
+        { "x": 42, "y": 36, "width": 70, "height": 12 },
+        { "x": 110, "y": 324, "width": 44, "height": 16 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Print.png",
+        "crop": { "x": 143, "y": 190, "width": 524, "height": 688 }
+      }
+    },
+    {
+      "name": "printer-dark",
+      "description": "The Printer row of the Print sheet, Dark Aqua: the label and the 239.5 pt pop-up button, with their text. The region ends above the Presets row, which the open menu covers in the capture.",
+      "example": "visual-sheet",
+      "appearance": "dark",
+      "selector": "[data-visual=\"printer\"]",
+      "budget": { "1x": 0.142, "2x": 0.0912 },
+      "deltaBudget": { "1x": 11.5, "2x": 9.66 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Print.png",
+        "crop": { "x": 799, "y": 198, "width": 616, "height": 58 }
+      }
+    },
+    {
+      "name": "printer-drawing-dark",
+      "description": "The Printer row of the Print sheet, Dark Aqua: the label column's end and the 239.5 pt pop-up button, with the label and the title masked (fallback font off Apple platforms). The region ends above the Presets row, which the open menu covers in the capture.",
+      "example": "visual-sheet",
+      "appearance": "dark",
+      "selector": "[data-visual=\"printer\"]",
+      "threshold": 0.05,
+      "budget": { "1x": 0.076, "2x": 0.0025 },
+      "deltaBudget": { "1x": 5.2, "2x": 1.72 },
+      "masks": [
+        { "x": 3, "y": 10, "width": 48, "height": 18 },
+        { "x": 64, "y": 10, "width": 172, "height": 18 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Print.png",
+        "crop": { "x": 799, "y": 198, "width": 616, "height": 58 }
+      }
+    },
+    {
+      "name": "options-dark",
+      "description": "The Orientation row, the pane pop-up button in its separator line and the pane's two checkboxes, Dark Aqua, with their text. The two orientation pictograms are masked: the panel draws stand-ins for Apple's artwork.",
+      "example": "visual-sheet",
+      "appearance": "dark",
+      "selector": "[data-visual=\"options\"]",
+      "budget": { "1x": 0.091, "2x": 0.064 },
+      "deltaBudget": { "1x": 9.4, "2x": 8.61 },
+      "masks": [
+        { "x": 96.5, "y": 6, "width": 32, "height": 32 },
+        { "x": 146.5, "y": 6, "width": 32, "height": 32 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Print.png",
+        "crop": { "x": 727, "y": 546, "width": 592, "height": 244 }
+      }
+    },
+    {
+      "name": "options-drawing-dark",
+      "description": "The Orientation row, the pane pop-up button in its separator line and the pane's two checkboxes, Dark Aqua. Masked: the two orientation pictograms (stand-ins for Apple's artwork) and the text, which is the label, the pop-up button's title and the checkboxes' titles (fallback font off Apple platforms).",
+      "example": "visual-sheet",
+      "appearance": "dark",
+      "selector": "[data-visual=\"options\"]",
+      "threshold": 0.05,
+      "budget": { "1x": 0.029, "2x": 0.0012 },
+      "deltaBudget": { "1x": 2, "2x": 1.56 },
+      "masks": [
+        { "x": 96.5, "y": 6, "width": 32, "height": 32 },
+        { "x": 146.5, "y": 6, "width": 32, "height": 32 },
+        { "x": 10, "y": 13, "width": 78, "height": 18 },
+        { "x": 115, "y": 51, "width": 60, "height": 17 },
+        { "x": 120, "y": 81, "width": 176, "height": 18 },
+        { "x": 120, "y": 101, "width": 176, "height": 18 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Print.png",
+        "crop": { "x": 727, "y": 546, "width": 592, "height": 244 }
+      }
+    },
+    {
+      "name": "actions-leading-dark",
+      "description": "The bottom separator and the leading end of the button row, Dark Aqua: Help, PDF and Hide Details with their titles, over the sky's colour that the capture has behind the sheet.",
+      "example": "visual-sheet",
+      "appearance": "dark",
+      "selector": "[data-visual=\"actions-leading\"]",
+      "budget": { "1x": 0.045, "2x": 0.0218 },
+      "deltaBudget": { "1x": 3.8, "2x": 2.99 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Print.png",
+        "crop": { "x": 71, "y": 874, "width": 448, "height": 120 }
+      }
+    },
+    {
+      "name": "actions-leading-drawing-dark",
+      "description": "The bottom separator and the leading end of the button row, Dark Aqua: Help, PDF and Hide Details with the two titles masked (fallback font off Apple platforms), over the sky's colour that the capture has behind the sheet.",
+      "example": "visual-sheet",
+      "appearance": "dark",
+      "selector": "[data-visual=\"actions-leading\"]",
+      "threshold": 0.05,
+      "budget": { "1x": 0.034, "2x": 0.0042 },
+      "deltaBudget": { "1x": 2.8, "2x": 1.89 },
+      "masks": [
+        { "x": 52, "y": 30, "width": 30, "height": 17 },
+        { "x": 122, "y": 30, "width": 80, "height": 17 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Print.png",
+        "crop": { "x": 71, "y": 874, "width": 448, "height": 120 }
+      }
+    },
+    {
+      "name": "actions-trailing-dark",
+      "description": "The bottom separator and the trailing end of the button row, Dark Aqua: Cancel and the default button Print with their titles, 12 pt apart and 20 pt from the sheet's edges, over the rock's colour that the capture has behind the sheet.",
+      "example": "visual-sheet",
+      "appearance": "dark",
+      "selector": "[data-visual=\"actions-trailing\"]",
+      "budget": { "1x": 0.041, "2x": 0.0198 },
+      "deltaBudget": { "1x": 3.5, "2x": 2.59 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Print.png",
+        "crop": { "x": 1199, "y": 874, "width": 352, "height": 120 }
+      }
+    },
+    {
+      "name": "actions-trailing-drawing-dark",
+      "description": "The bottom separator and the trailing end of the button row, Dark Aqua: Cancel and the default button Print with their titles masked (fallback font off Apple platforms), 12 pt apart and 20 pt from the sheet's edges, over the rock's colour that the capture has behind the sheet.",
+      "example": "visual-sheet",
+      "appearance": "dark",
+      "selector": "[data-visual=\"actions-trailing\"]",
+      "threshold": 0.05,
+      "budget": { "1x": 0.026, "2x": 0.0022 },
+      "deltaBudget": { "1x": 2.7, "2x": 1.72 },
+      "masks": [
+        { "x": 22, "y": 30, "width": 50, "height": 17 },
+        { "x": 108, "y": 30, "width": 42, "height": 17 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Print.png",
+        "crop": { "x": 1199, "y": 874, "width": 352, "height": 120 }
+      }
+    },
+    {
+      "name": "simple-light",
+      "description": "The simple form, Aqua, as a sheet's content with 20 pt margins. No screenshot shows it: the spec infers the detailed sheet without Paper Size, Orientation and the panes, about 150 pt lower. The panel draws the page at half its size, which gives exactly that.",
+      "example": "visual-simple",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 756, "height": 269 },
+        "pixels": [
+          {
+            "x": 175.5,
+            "y": 95.5,
+            "color": "#ffffff",
+            "note": "the middle of the half-size page: paper (spec: Preview page, measured on the detailed form)"
+          },
+          {
+            "x": 70,
+            "y": 60,
+            "color": "#ececec",
+            "note": "beside the half-size page, where the full-size one would be: the backdrop the example paints (inferred)"
+          },
+          {
+            "x": 500,
+            "y": 170,
+            "color": "#ececec",
+            "note": "where the detailed form has its Paper Size pop-up button: the backdrop (inferred)"
+          },
+          {
+            "x": 400,
+            "y": 207.5,
+            "color": "#d4d4d4",
+            "note": "the bottom separator, 10 pt under the page controls: --mac-color-separator, black at 10%, over the backdrop #ececec; computed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "simple-dark",
+      "description": "The simple form, Dark Aqua, as a sheet's content with 20 pt margins. No screenshot shows it: the spec infers the detailed sheet without Paper Size, Orientation and the panes, about 150 pt lower. The panel draws the page at half its size, which gives exactly that.",
+      "example": "visual-simple",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 756, "height": 269 },
+        "pixels": [
+          {
+            "x": 175.5,
+            "y": 95.5,
+            "color": "#ffffff",
+            "note": "the middle of the half-size page: the paper stays white in Dark Aqua (spec: Preview page, measured on the detailed form)"
+          },
+          {
+            "x": 70,
+            "y": 60,
+            "color": "#323232",
+            "note": "beside the half-size page, where the full-size one would be: the backdrop the example paints (inferred)"
+          },
+          {
+            "x": 500,
+            "y": 170,
+            "color": "#323232",
+            "note": "where the detailed form has its Paper Size pop-up button: the backdrop (inferred)"
+          },
+          {
+            "x": 400,
+            "y": 207.5,
+            "color": "#474747",
+            "note": "the bottom separator, 10 pt under the page controls: --mac-color-separator, white at 10%, over the backdrop #323232; computed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "landscape-light",
+      "description": "The preview after a click on the Landscape button, Aqua: the page lies on its side, 301 x 233 pt, centred where the upright page was. No screenshot shows it.",
+      "example": "visual-sheet",
+      "appearance": "light",
+      "selector": "[data-visual=\"preview\"]",
+      "actions": [{ "click": "[aria-label=\"Landscape\"]" }],
+      "expect": {
+        "size": { "width": 262, "height": 344 },
+        "pixels": [
+          {
+            "x": 5,
+            "y": 150,
+            "color": "#ffffff",
+            "note": "left of where the upright page begins (15 pt into the region): paper, so the page is 301 pt wide (inferred)"
+          },
+          {
+            "x": 240,
+            "y": 20,
+            "color": "#efefef",
+            "note": "where the upright page's top is, above the page on its side: the grey the example paints behind the sheet (inferred)"
+          },
+          {
+            "x": 131,
+            "y": 150,
+            "color": "#ffffff",
+            "note": "the middle of the page: paper (spec: Preview page, measured upright)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "landscape-dark",
+      "description": "The preview after a click on the Landscape button, Dark Aqua: the page lies on its side, 301 x 233 pt, centred where the upright page was. No screenshot shows it.",
+      "example": "visual-sheet",
+      "appearance": "dark",
+      "selector": "[data-visual=\"preview\"]",
+      "actions": [{ "click": "[aria-label=\"Landscape\"]" }],
+      "expect": {
+        "size": { "width": 262, "height": 344 },
+        "pixels": [
+          {
+            "x": 5,
+            "y": 150,
+            "color": "#ffffff",
+            "note": "left of where the upright page begins (15 pt into the region): paper, so the page is 301 pt wide (inferred)"
+          },
+          {
+            "x": 240,
+            "y": 20,
+            "color": "#2d2d2d",
+            "note": "where the upright page's top is, above the page on its side: the grey the example paints behind the sheet (inferred)"
+          },
+          {
+            "x": 131,
+            "y": 150,
+            "color": "#ffffff",
+            "note": "the middle of the page: paper, white in Dark Aqua too (spec: Preview page, measured upright)"
+          }
+        ]
+      }
+    }
+  ]
+}

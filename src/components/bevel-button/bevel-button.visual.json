@@ -1,0 +1,541 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "rounded-light",
+      "description": "The rounded variant, off, Aqua: the square bezel with its corners cut at the control radius. No screenshot shows it.",
+      "example": "visual-rounded",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 54,
+          "height": 54
+        },
+        "pixels": [
+          {
+            "x": 8.25,
+            "y": 8.25,
+            "color": "#ececec",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "the corner of the box is page: a square bezel has its border here. The radius is the control radius, an inference: the spec lists the rounded corners without a measurement"
+          },
+          {
+            "x": 12,
+            "y": 27,
+            "color": "#f0f0f0",
+            "tolerance": 3,
+            "note": "off fill at mid height (spec: bevel-button, Fill, off, measured on the square button)"
+          },
+          {
+            "x": 8.5,
+            "y": 27,
+            "color": "#afafaf",
+            "tolerance": 3,
+            "note": "1 pt border (spec: Border, measured on the square button)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rounded-dark",
+      "description": "The rounded variant, off, Dark Aqua: the square bezel with its corners cut at the control radius. No screenshot shows it.",
+      "example": "visual-rounded",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 54,
+          "height": 54
+        },
+        "pixels": [
+          {
+            "x": 8.25,
+            "y": 8.25,
+            "color": "#323232",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "the corner of the box is page: a square bezel has its border here. The radius is the control radius, an inference: the spec lists the rounded corners without a measurement"
+          },
+          {
+            "x": 12,
+            "y": 27,
+            "color": "#464647",
+            "tolerance": 3,
+            "note": "off fill at mid height (spec: bevel-button, Fill, off, measured on the square button)"
+          },
+          {
+            "x": 8.5,
+            "y": 27,
+            "color": "#606061",
+            "tolerance": 3,
+            "note": "1 pt border (spec: Border, measured on the square button)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "orientation-light",
+      "description": "The Orientation pair of the Print sheet, portrait on and landscape off, Aqua. The two pictograms are masked: the example draws stand-in artwork, so only the bezels are scored.",
+      "example": "visual-orientation",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 10,
+          "y": 11,
+          "width": 29,
+          "height": 27
+        },
+        {
+          "x": 60,
+          "y": 11,
+          "width": 29,
+          "height": 27
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.81,
+        "2x": 0.95
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Print.png",
+        "crop": {
+          "x": 990,
+          "y": 572,
+          "width": 196,
+          "height": 96
+        }
+      }
+    },
+    {
+      "name": "rest-light",
+      "description": "An off, an on and a disabled button, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 154,
+          "height": 54
+        },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 27,
+            "color": "#f0f0f0",
+            "tolerance": 3,
+            "note": "off fill at mid height (spec: bevel-button, Fill, off, measured)"
+          },
+          {
+            "x": 62,
+            "y": 27,
+            "color": "#cfcfcf",
+            "tolerance": 3,
+            "note": "on fill at mid height (spec: Fill, on, measured)"
+          },
+          {
+            "x": 8.5,
+            "y": 27,
+            "color": "#afafaf",
+            "tolerance": 3,
+            "note": "1 pt border of the off button (spec: Border, measured)"
+          },
+          {
+            "x": 58.5,
+            "y": 27,
+            "color": "#afafaf",
+            "tolerance": 3,
+            "note": "border of the on button; in Dark Aqua the fill runs to the edge (spec: Border, measured)"
+          },
+          {
+            "x": 112,
+            "y": 27,
+            "color": "#f0f0f0",
+            "tolerance": 3,
+            "note": "a disabled button keeps the off fill (spec: States, disabled, inferred)"
+          },
+          {
+            "x": 127,
+            "y": 27,
+            "color": "#bdbdbd",
+            "tolerance": 4,
+            "note": "its content at 25% (spec: States, disabled, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The off button held down with the mouse, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "#off"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 154,
+          "height": 54
+        },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 27,
+            "color": "#cfcfcf",
+            "tolerance": 3,
+            "note": "pressed is drawn as on (spec: States, pressed, inferred)"
+          },
+          {
+            "x": 62,
+            "y": 27,
+            "color": "#cfcfcf",
+            "tolerance": 3,
+            "note": "the other button stays on until the mouse is released"
+          }
+        ]
+      }
+    },
+    {
+      "name": "clicked-light",
+      "description": "After a real click on the off button the pair has changed over, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#off"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 154,
+          "height": 54
+        },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 44.5,
+            "color": "#dbdbdb",
+            "tolerance": 3,
+            "note": "the clicked button is on: bottom of the on gradient (spec: Fill, on, measured)"
+          },
+          {
+            "x": 62,
+            "y": 27,
+            "color": "#f0f0f0",
+            "tolerance": 3,
+            "note": "the other button is off"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the first button, reached with Tab, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 154,
+          "height": 54
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 27,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the page, measured on a text field (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 4.75,
+            "y": 27,
+            "color": "#ececec",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the edge of the button (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 12,
+            "y": 27,
+            "color": "#f0f0f0",
+            "tolerance": 3,
+            "note": "the fill does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-light",
+      "description": "The same after Tab in an inactive window, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 154,
+          "height": 54
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 27,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          },
+          {
+            "x": 62,
+            "y": 27,
+            "color": "#cfcfcf",
+            "tolerance": 3,
+            "note": "the on button does not change in an inactive window"
+          }
+        ]
+      }
+    },
+    {
+      "name": "orientation-dark",
+      "description": "The Orientation pair of the Print sheet, portrait on and landscape off, Dark Aqua. The two pictograms are masked: the example draws stand-in artwork, so only the bezels are scored. The dark sheet is a vibrant material with visible noise, drawn here as a flat colour.",
+      "example": "visual-orientation",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 10,
+          "y": 11,
+          "width": 29,
+          "height": 27
+        },
+        {
+          "x": 60,
+          "y": 11,
+          "width": 29,
+          "height": 27
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.73,
+        "2x": 1.5
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Print.png",
+        "crop": {
+          "x": 904,
+          "y": 542,
+          "width": 196,
+          "height": 96
+        }
+      }
+    },
+    {
+      "name": "rest-dark",
+      "description": "An off, an on and a disabled button, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 154,
+          "height": 54
+        },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 27,
+            "color": "#464647",
+            "tolerance": 3,
+            "note": "off fill at mid height (spec: bevel-button, Fill, off, measured)"
+          },
+          {
+            "x": 62,
+            "y": 27,
+            "color": "#8b8b8b",
+            "tolerance": 3,
+            "note": "on fill at mid height (spec: Fill, on, measured)"
+          },
+          {
+            "x": 8.5,
+            "y": 27,
+            "color": "#606061",
+            "tolerance": 3,
+            "note": "1 pt border of the off button (spec: Border, measured)"
+          },
+          {
+            "x": 58.5,
+            "y": 27,
+            "color": "#8b8b8b",
+            "tolerance": 3,
+            "note": "border of the on button; in Dark Aqua the fill runs to the edge (spec: Border, measured)"
+          },
+          {
+            "x": 112,
+            "y": 27,
+            "color": "#464647",
+            "tolerance": 3,
+            "note": "a disabled button keeps the off fill (spec: States, disabled, inferred)"
+          },
+          {
+            "x": 127,
+            "y": 27,
+            "color": "#6d6d6d",
+            "tolerance": 4,
+            "note": "its content at 25% (spec: States, disabled, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "The off button held down with the mouse, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": "#off"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 154,
+          "height": 54
+        },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 27,
+            "color": "#8b8b8b",
+            "tolerance": 3,
+            "note": "pressed is drawn as on (spec: States, pressed, inferred)"
+          },
+          {
+            "x": 62,
+            "y": 27,
+            "color": "#8b8b8b",
+            "tolerance": 3,
+            "note": "the other button stays on until the mouse is released"
+          }
+        ]
+      }
+    },
+    {
+      "name": "clicked-dark",
+      "description": "After a real click on the off button the pair has changed over, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#off"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 154,
+          "height": 54
+        },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 44.5,
+            "color": "#8b8b8b",
+            "tolerance": 3,
+            "note": "the clicked button is on: bottom of the on gradient (spec: Fill, on, measured)"
+          },
+          {
+            "x": 62,
+            "y": 27,
+            "color": "#464647",
+            "tolerance": 3,
+            "note": "the other button is off"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the first button, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 154,
+          "height": 54
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 27,
+            "color": "#2d6c99",
+            "tolerance": 6,
+            "note": "ring over the page, measured on a text field (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 4.75,
+            "y": 27,
+            "color": "#323232",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the edge of the button (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 12,
+            "y": 27,
+            "color": "#464647",
+            "tolerance": 3,
+            "note": "the fill does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-dark",
+      "description": "The same after Tab in an inactive window, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 154,
+          "height": 54
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 27,
+            "color": "#323232",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          },
+          {
+            "x": 62,
+            "y": 27,
+            "color": "#8b8b8b",
+            "tolerance": 3,
+            "note": "the on button does not change in an inactive window"
+          }
+        ]
+      }
+    }
+  ]
+}

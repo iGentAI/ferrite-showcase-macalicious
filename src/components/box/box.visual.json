@@ -1,0 +1,457 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "corner-top-light",
+      "description": "Top-left corner of the Sound pane's box on the window background, Aqua. Threshold 0.02, because the border is too faint for a higher one to count any pixel: at 0.02 a change of 0.05 in the top border's alpha fails. The budgets are set for --mac-radius-group at 4px, the value the measured spec fits to this box (3.875 pt in Aqua, 4.0 pt in Dark Aqua): at the earlier 2.5px about 0.25% of the 2x pixels differ here and the comparison fails.",
+      "example": "visual-corner-top",
+      "appearance": "light",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.0179,
+        "2x": 0.0012
+      },
+      "deltaBudget": {
+        "1x": 0.81,
+        "2x": 0.67
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Sound.png",
+        "crop": {
+          "x": 132,
+          "y": 192,
+          "width": 80,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "corner-top-dark",
+      "description": "Top-left corner of the Sound pane's box, Dark Aqua. Threshold and budgets as explained for corner-top-light.",
+      "example": "visual-corner-top",
+      "appearance": "dark",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.0392,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.83,
+        "2x": 0.52
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Sound.png",
+        "crop": {
+          "x": 132,
+          "y": 192,
+          "width": 80,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "corner-bottom-light",
+      "description": "Bottom-left corner of the Sound pane's box, Aqua. Threshold and budgets as explained for corner-top-light.",
+      "example": "visual-corner-bottom",
+      "appearance": "light",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.0015,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.75,
+        "2x": 0.67
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Sound.png",
+        "crop": {
+          "x": 132,
+          "y": 840,
+          "width": 80,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "corner-bottom-dark",
+      "description": "Bottom-left corner of the Sound pane's box, Dark Aqua. Threshold and budgets as explained for corner-top-light.",
+      "example": "visual-corner-bottom",
+      "appearance": "dark",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.0392,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.83,
+        "2x": 0.52
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Sound.png",
+        "crop": {
+          "x": 132,
+          "y": 840,
+          "width": 80,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "titled-light",
+      "description": "Start of the titled box in Network Utility, on a tinted window, Aqua. The title is set in the fallback font off Apple platforms.",
+      "example": "visual-titled",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0521,
+        "2x": 0.0402
+      },
+      "deltaBudget": {
+        "1x": 3.54,
+        "2x": 3.55
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Network-Utility.png",
+        "crop": {
+          "x": 162,
+          "y": 336,
+          "width": 100,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "titled-dark",
+      "description": "Start of the titled box in Network Utility, Dark Aqua.",
+      "example": "visual-titled",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.0433,
+        "2x": 0.044
+      },
+      "deltaBudget": {
+        "1x": 4.12,
+        "2x": 3.76
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Network-Utility.png",
+        "crop": {
+          "x": 162,
+          "y": 336,
+          "width": 100,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "network-corner-top-light",
+      "description": "Top-left corner of the plain box of the Network pane, Aqua: a second capture of the corner compared in corner-top-light, with the same threshold. The mask covers the edge of the service list, which stands 8 pt to the left of the box in this pane.",
+      "example": "visual-corner-top",
+      "appearance": "light",
+      "threshold": 0.02,
+      "masks": [
+        {
+          "x": 0,
+          "y": 9,
+          "width": 3,
+          "height": 31
+        }
+      ],
+      "budget": {
+        "1x": 0.019,
+        "2x": 0.0012
+      },
+      "deltaBudget": {
+        "1x": 0.82,
+        "2x": 0.56
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Network.png",
+        "crop": {
+          "x": 488,
+          "y": 254,
+          "width": 80,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "band-top-light",
+      "description": "Top edge of the band of the Sharing pane (edges=horizontal), Aqua.",
+      "example": "visual-band-top",
+      "appearance": "light",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.055,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.94,
+        "2x": 0.5
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Sharing.png",
+        "crop": {
+          "x": 280,
+          "y": 324,
+          "width": 80,
+          "height": 40
+        }
+      }
+    },
+    {
+      "name": "band-top-dark",
+      "description": "Top edge of the band of the Sharing pane (edges=horizontal), Dark Aqua.",
+      "example": "visual-band-top",
+      "appearance": "dark",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.055,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 1.01,
+        "2x": 0.52
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Sharing.png",
+        "crop": {
+          "x": 280,
+          "y": 324,
+          "width": 80,
+          "height": 40
+        }
+      }
+    },
+    {
+      "name": "band-bottom-light",
+      "description": "Bottom edge of the band of the Sharing pane (edges=horizontal), Aqua.",
+      "example": "visual-band-bottom",
+      "appearance": "light",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.0015,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.74,
+        "2x": 0.51
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Sharing.png",
+        "crop": {
+          "x": 280,
+          "y": 970,
+          "width": 80,
+          "height": 40
+        }
+      }
+    },
+    {
+      "name": "band-bottom-dark",
+      "description": "Bottom edge of the band of the Sharing pane (edges=horizontal), Dark Aqua.",
+      "example": "visual-band-bottom",
+      "appearance": "dark",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.055,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 1.02,
+        "2x": 0.51
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Sharing.png",
+        "crop": {
+          "x": 280,
+          "y": 970,
+          "width": 80,
+          "height": 40
+        }
+      }
+    },
+    {
+      "name": "leading-edge-light",
+      "description": "Leading edge of the detail region of the Time Machine pane (edges=leading), Aqua.",
+      "example": "visual-leading-edge",
+      "appearance": "light",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.0015,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.9,
+        "2x": 0.85
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Time-Machine.png",
+        "crop": {
+          "x": 550,
+          "y": 300,
+          "width": 80,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "leading-edge-dark",
+      "description": "Leading edge of the detail region of the Time Machine pane (edges=leading), Dark Aqua.",
+      "example": "visual-leading-edge",
+      "appearance": "dark",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.0275,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 1.08,
+        "2x": 0.84
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Time-Machine.png",
+        "crop": {
+          "x": 550,
+          "y": 300,
+          "width": 80,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "well-corner-top-light",
+      "description": "Top-left corner of the summary box in Activity Monitor's footer (variant=well) on the footer's background, Aqua: the 1 pt border, the 4.5 pt corner and the white fill. The crop is 14 x 28 pt: it ends before the first statistic's text. The budgets are set for the 4.5 pt corner: at 4 pt 0.45% of the 2x pixels differ here and the comparison fails.",
+      "example": "visual-well-corner-top",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0015,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.36,
+        "2x": 0.28
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Activity-Monitor.png",
+        "crop": {
+          "x": 361,
+          "y": 1126,
+          "width": 28,
+          "height": 56
+        }
+      }
+    },
+    {
+      "name": "well-corner-top-dark",
+      "description": "Top-left corner of the summary box in Activity Monitor's footer (variant=well), Dark Aqua: the fill is lighter than the footer and the border lighter still.",
+      "example": "visual-well-corner-top",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.022,
+        "2x": 0.005
+      },
+      "deltaBudget": {
+        "1x": 0.66,
+        "2x": 0.33
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Activity-Monitor.png",
+        "crop": {
+          "x": 361,
+          "y": 1126,
+          "width": 28,
+          "height": 56
+        }
+      }
+    },
+    {
+      "name": "well-corner-bottom-light",
+      "description": "Bottom-left corner of the summary box in Activity Monitor's footer (variant=well), Aqua. The crop starts under the last statistic of the first cell.",
+      "example": "visual-well-corner-bottom",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0015,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.21,
+        "2x": 0.27
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Activity-Monitor.png",
+        "crop": {
+          "x": 361,
+          "y": 1256,
+          "width": 80,
+          "height": 70
+        }
+      }
+    },
+    {
+      "name": "well-corner-bottom-dark",
+      "description": "Bottom-left corner of the summary box in Activity Monitor's footer (variant=well), Dark Aqua.",
+      "example": "visual-well-corner-bottom",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0072,
+        "2x": 0.0019
+      },
+      "deltaBudget": {
+        "1x": 0.29,
+        "2x": 0.22
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Activity-Monitor.png",
+        "crop": {
+          "x": 361,
+          "y": 1256,
+          "width": 80,
+          "height": 70
+        }
+      }
+    },
+    {
+      "name": "network-corner-top-dark",
+      "description": "Top-left corner of the plain box of the Network pane, Dark Aqua: a second capture of the corner compared in corner-top-dark, with the same threshold. The mask covers the edge of the service list, as in network-corner-top-light.",
+      "example": "visual-corner-top",
+      "appearance": "dark",
+      "threshold": 0.02,
+      "masks": [{ "x": 0, "y": 9, "width": 3, "height": 31 }],
+      "budget": { "1x": 0.0416, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.97, "2x": 0.57 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Network.png",
+        "crop": { "x": 488, "y": 254, "width": 80, "height": 80 }
+      }
+    },
+    {
+      "name": "well-corner-disk-utility-light",
+      "description": "Top-left corner of Disk Utility's information table, a rounded well with the line colour that app draws (#d1d1d1), set through --mac-box-well-border, Aqua. A second capture of the well's corner.",
+      "example": "visual-well-corner-disk-utility",
+      "appearance": "light",
+      "budget": { "1x": 0.0005, "2x": 0.0031 },
+      "deltaBudget": { "1x": 0.5, "2x": 0.47 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Disk-Utility.png",
+        "crop": { "x": 674, "y": 718, "width": 28, "height": 56 }
+      }
+    },
+    {
+      "name": "well-corner-disk-utility-dark",
+      "description": "Top-left corner of Disk Utility's information table with that app's line colour (#808080), Dark Aqua.",
+      "example": "visual-well-corner-disk-utility",
+      "appearance": "dark",
+      "budget": { "1x": 0.0118, "2x": 0.0118 },
+      "deltaBudget": { "1x": 1.1, "2x": 0.95 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Disk-Utility.png",
+        "crop": { "x": 674, "y": 718, "width": 28, "height": 56 }
+      }
+    }
+  ]
+}

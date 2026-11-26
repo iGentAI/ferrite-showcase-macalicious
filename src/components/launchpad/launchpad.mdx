@@ -1,0 +1,164 @@
+---
+title: Launchpad
+description: Every app as a grid of icons over the blurred, dimmed desktop, with a search field and page dots. It opens and closes like a dialog, and choosing an app closes it.
+---
+
+<Example name="basic" both />
+
+Launchpad covers the desktop with a grid of app icons. It is a modal overlay built on Base UI's
+[Dialog](https://base-ui.com/react/components/dialog): Escape, a click on the background or a
+chosen app closes it. `Launchpad` is the overlay with its search field, grid and page dots;
+`LaunchpadItem` is one app. A folder of apps is a
+[Launchpad Folder](/components/launchpad-folder).
+
+## Usage
+
+```tsx
+import { Launchpad, LaunchpadItem } from "macalicious/launchpad";
+import "macalicious/styles.css";
+
+const [desktop, setDesktop] = useState<HTMLDivElement | null>(null);
+const [open, setOpen] = useState(false);
+
+<div ref={setDesktop} style={{ position: "relative", height: "100vh" }}>
+  …the desktop picture, the windows, the Dock…
+  <Launchpad open={open} onOpenChange={setOpen} container={desktop}>
+    <LaunchpadItem label="Notes" onClick={() => launch("notes")}>
+      <img src={notesIcon} alt="" />
+    </LaunchpadItem>
+    <LaunchpadItem label="Maps" onClick={() => launch("maps")}>
+      <img src={mapsIcon} alt="" />
+    </LaunchpadItem>
+  </Launchpad>
+</div>
+```
+
+Or copy the source into your project: `npx macalicious add launchpad`.
+
+- **Render it into the desktop.** `container` is the element Launchpad covers, which must be
+  positioned. Launchpad blurs and dims what that element shows behind it, so the desktop
+  picture and the windows have to be in the same page, inside that element
+  ([Fidelity limits](/fidelity)). Without `container` it covers the page.
+- **The Dock stays.** Launchpad keeps `--mac-launchpad-inset-bottom` (80 points) clear at the
+  bottom. Put the Dock above it with a higher `z-index` than `--mac-launchpad-layer` (950), or
+  set the inset to `0px` when there is no Dock.
+- **Items are the children**, in order. A page holds `columns` times `rows` of them; the rest
+  go to further pages, reached with the page dots, a
+  [Page Control](/components/page-control). The icon is whatever you put inside an item: the
+  library ships no app icons.
+- **Search** filters by each child's `label`, ignoring case, and shows every match on one
+  page. Typing anywhere in Launchpad goes to the field. An element of your own takes part
+  when it has a string `label` prop.
+- `open`, `search` and `page` can each be controlled (with `onOpenChange`, `onSearchChange`,
+  `onPageChange`) or left to Launchpad (`defaultOpen`, `defaultSearch`, `defaultPage`).
+
+## Guidelines
+
+The Human Interface Guidelines of Catalina's time have no page on Launchpad; this is how
+Catalina's own behaves, as the reference specification records it:
+
+- Launchpad shows every installed app, in an order the user arranges. It is not a place for
+  documents or commands.
+- Clicking an app launches it and closes Launchpad. Clicking the background or pressing
+  Escape closes it without launching anything.
+- The menu bar is hidden while Launchpad is open; the Dock stays visible and usable.
+- Typing starts a search at once, without a click in the field.
+
+## Variants and states
+
+<Example name="pages" />
+
+| State | How it is set | What happens |
+| --- | --- | --- |
+| Open, closed | `open` / `defaultOpen`; Escape, the background, a chosen item | The overlay fades in and out over 0.25 s and the grid settles from 120%; with reduced motion it only fades. Closed, nothing is rendered. |
+| Searching | text in the field | Only matching items are shown, on one page; the page dots are hidden; Return in the field chooses the first match. |
+| Several pages | more children than `columns` times `rows` | Page dots under the grid; only the current page is rendered. |
+| Item pressed | pointer held on an item | Its icon is darkened by half. Provisional. |
+| Item focused | arrow keys or Tab | A focus ring and a light plate around its icon box. Provisional. |
+| Folder open | a [Launchpad Folder](/components/launchpad-folder) inside is open | Field, grid and dots are hidden behind the folder. |
+
+Launchpad looks the same in Aqua and Dark Aqua: only what is behind it differs.
+
+## Sizes
+
+There is no `size` prop. The grid is `columns` by `rows` (7 by 5, Catalina's choice for a
+1680 by 1050 point screen) of cells 195 by 166 points with a 112 point icon box; in a smaller
+desktop the cells and icons shrink to fit. The search field is 250 by 25 points, 25 points
+from the top. Choose fewer columns and rows for a small desktop, as the examples do.
+
+## API
+
+### Launchpad
+
+<PropsTable name="LaunchpadProps" />
+
+Other props, `ref`, `className` and `style` go to the overlay, Base UI's `Dialog.Popup`.
+
+### LaunchpadItem
+
+<PropsTable name="LaunchpadItemProps" />
+
+| Attribute or class | On | Description |
+| --- | --- | --- |
+| `.mac-launchpad` | the overlay | Scrim and blur; `position: absolute`, covering its container. |
+| `data-starting-style`, `data-ending-style` | the overlay | While it fades in and out (Base UI). |
+| `data-nested-dialog-open` | the overlay | While a folder inside it is open (Base UI). |
+| `.mac-launchpad-search`, `.mac-launchpad-search-input` | the field | The search field and its input. |
+| `.mac-launchpad-grid` | the grid | `data-columns` holds the number of columns. |
+| `.mac-launchpad-item`, `.mac-launchpad-item-icon`, `.mac-launchpad-item-label` | an item | The button, its icon box and its name. |
+| `.mac-launchpad-pages` | the page dots | A Page Control, `variant="overlay"`. |
+| `.mac-launchpad-dismiss` | the background | The button that closes Launchpad. |
+| `data-force` | an item | `pressed` or `focus`: pins the state for documentation. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-launchpad-layer` | `950` | `z-index` of the overlay. |
+| `--mac-launchpad-inset-bottom` | `80px` | Room kept clear at the bottom for the Dock. |
+
+## Accessibility
+
+- The overlay is a `dialog` named "Launchpad" (pass `aria-label` to rename it) that keeps the
+  keyboard focus inside while it is open and returns it to where it was on closing.
+- The search field is a `searchbox` named by `searchLabel`. Each app is a `button` named by
+  its `label`; give the icon inside an empty `alt`.
+- When Launchpad opens, the overlay itself has the focus, so no app looks chosen. Arrow Down
+  moves into the grid and Arrow Up from the top row back to the field; the arrow keys move
+  among the apps, Return or Space launches, Tab goes through field, apps and page dots, and
+  Escape closes. Typing a character from anywhere continues in the search field.
+- The background is a button named by `closeLabel`. It is not in the Tab order, because
+  Escape does the same.
+- With `prefers-reduced-motion` the grid does not scale; with `prefers-reduced-transparency`
+  the scrim is an opaque colour without blur; in forced colours the field keeps a border.
+- Catalina's Command-Left and Command-Right for changing pages are not handled: a browser
+  uses them for history. Use the page dots.
+
+## Visual comparison
+
+`launchpad.visual.json` compares the search field and the page dots with the Launchpad
+screenshots in both appearances. What is behind Launchpad in the screenshots is Apple's
+desktop picture, blurred and dimmed, which the library does not have: the examples paint
+that background as measured at the edges of each crop and switch Launchpad's own scrim off.
+In the search comparisons the placeholder text is masked (it is set in the fallback font off
+Apple platforms); nothing is masked in the page dot comparisons. The app icons are Apple
+artwork and are not compared at all.
+
+Scores from `npm run visual -- launchpad/` in Chromium on Linux with the fallback font, at
+threshold 0.05: the share of pixels that differ, and the mean colour difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `search-light` | Light-Launchpad (1400, 30, 560, 90) | 0.40% | 2.33 | 0.34% | 2.42 |
+| `search-dark` | Dark-Launchpad (1400, 30, 560, 90) | 0.42% | 2.18 | 0.39% | 2.23 |
+| `pages-light` | Light-Launchpad (1620, 1810, 120, 52) | 1.03% | 2.23 | 0.46% | 2.05 |
+| `pages-dark` | Dark-Launchpad (1620, 1810, 120, 52) | 1.28% | 0.85 | 0.53% | 0.62 |
+
+State checks in a real browser, in both appearances: over a flat mid grey the scrim, the
+field's fill and its border come out at the colours computed from the tokens; Arrow Down
+focuses the first app and draws the ring and plate; a held mouse button darkens the icon.
+
+Measured: the field's size, position, fill, border and placeholder colour, the magnifier, the
+grid's pitches and position, the label's position and shadow, the dots. Measured and
+computed: the scrim's tint, blur and saturation (the specification's fit against the Desktop
+screenshots). Provisional, because no screenshot shows them: the pressed and focused looks of
+an app, the focused field, the 0.25 s fade and the grid's scale while it opens, and how the
+grid shrinks in a small desktop.

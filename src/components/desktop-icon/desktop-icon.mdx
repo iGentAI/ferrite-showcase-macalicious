@@ -1,0 +1,116 @@
+---
+title: Desktop Icon
+description: A volume, file or folder on the desktop, a 64 pt icon with its name in white below it.
+order: 83
+---
+
+<Example name="basic" both />
+
+Finder's icon-view cell as it appears on the desktop: the artwork in a 64 pt tile and the name
+centred under it in bold white with a soft dark shadow, the same in Aqua and Dark Aqua because
+it sits on the picture and not on a window. `DesktopIcon` is a native `button`. On a
+[`Desktop`](/components/desktop) the desktop keeps the selection of all its icons; on its own
+the icon is a toggle. Base UI has no primitive for it.
+
+## Usage
+
+```tsx
+import { DesktopIcon } from "macalicious/desktop-icon";
+import "macalicious/desktop-icon.css";
+
+<DesktopIcon icon={<img src="/drive.png" alt="" />} onOpen={() => openVolume()}>
+  Macintosh SSD
+</DesktopIcon>
+```
+
+Or copy the source into your project: `npx macalicious add desktop-icon`.
+
+`icon` is any element; it is scaled down to the tile when it is larger and is hidden from
+assistive technology, because the label names the item. The library ships no artwork: Apple's
+icons are not part of it, and the examples draw stand-ins.
+
+`onOpen` is called for a double click, Return, Command-O and Command-Down. A single click only
+selects.
+
+On a desktop an icon is identified in the selection by `value`, which defaults to the label
+when the label is plain text. Give `value` when two items share a name or the label is an
+element.
+
+## Guidelines
+
+- Name every item; an icon alone does not say what it is.
+- A name wraps to two lines at most. Keep the part that tells items apart at the start.
+- Dim an item only to say it is hidden or cut, as Finder does.
+
+## Variants and states
+
+<Example name="states" both />
+
+| State | Look | Status |
+| --- | --- | --- |
+| normal | white 12 pt bold label, shadow `0 1px 2px` black at 60% and `0 0 1px` at 30% | measured (Desktop captures) |
+| two-line label | lines 16 pt apart, each centred, at most 110 pt wide | measured (Desktop-Stacks captures) |
+| selected (`data-selected`) | backing of black at 20% behind the tile, 2 pt wider all round; the name on the accent colour without its shadow | provisional |
+| selected, window not key | the name on the unemphasised selection grey | provisional |
+| keyboard focus | focus ring round the tile, in the key window only | provisional |
+| `dimmed` | artwork at 50% | provisional |
+| renaming | not implemented | no capture shows it |
+
+## Sizes
+
+The tile is 64 pt, Finder's default on the desktop; set `--mac-desktop-icon-size` (Finder
+offers 16 to 128 pt) for another. The cell stays 116 by 112 pt, the pitch of the desktop grid.
+
+## API
+
+<PropsTable name="DesktopIconProps" />
+
+Other props go to the `button`.
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-selected` | present or absent | The item is selected. |
+| `data-dimmed` | present or absent | Reflects `dimmed`. |
+| `data-value` | text | What identifies the item on its desktop. |
+| `data-force` | `focus` | Shows the focus ring, for documentation and visual tests. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-desktop-icon-size` | `64px` | Width and height of the tile. |
+
+Classes: `.mac-desktop-icon` (the cell), `.mac-desktop-icon-image` (the tile),
+`.mac-desktop-icon-label` (the label box) and `.mac-desktop-icon-text` (the text, which carries
+the selection highlight).
+
+## Accessibility
+
+- A native `button` named by its label, with `aria-pressed` for the selection. The artwork is
+  decorative: give it an empty `alt`.
+- Space toggles the selection of an icon on its own. Return opens instead of clicking, and so
+  do Command-O and Command-Down, when `onOpen` is given. On a desktop the arrow keys, Home, End
+  and typing move between icons; see [`Desktop`](/components/desktop).
+- The focus ring is drawn round the tile and, like the accent behind the name, only in the key
+  window.
+- The white label relies on its shadow and on the picture behind it for contrast. In
+  forced-colours mode it uses `CanvasText`, and selection and focus are shown with outlines in
+  `Highlight` and `CanvasText`.
+- `disabled` is the button's own attribute: the item cannot be focused, selected or opened.
+
+## Visual comparison
+
+`npm run visual -- desktop-icon/` compares the first icon of the Desktop captures and checks
+the selected state. Scores from the run that accompanied this component (Chromium on Linux,
+fallback font Inter; 2x):
+
+| Comparison (reference crop, 2x pixels) | Aqua, whole crop | Aqua, masked | Dark Aqua, whole crop | Dark Aqua, masked |
+| --- | --- | --- | --- | --- |
+| `label` (Desktop `3130,56,200,180`) | 7.58% | 0.00% | 8.22% | 0.05% |
+
+The whole-crop figures are loose because they contain the volume icon, which is Apple's
+artwork and absent from the example, and the label in the fallback font. The masked comparisons
+leave both out and gate the cell's place over the stand-in for the picture. `selected-light`
+and `selected-dark` check pixels instead of a screenshot: the backing in the middle of the
+tile, its edge 2 pt outside the tile, and the accent behind the name.
+
+Provisional, because no screenshot shows it on the desktop: selection, keyboard focus and the
+dimmed look, all taken from what the spec infers from Finder's icon view.

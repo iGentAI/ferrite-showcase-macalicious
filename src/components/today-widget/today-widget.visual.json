@@ -1,0 +1,149 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "switches-light",
+      "description": "The card of switches at the top of the Today view, Aqua, over the panel colours measured around it. Masked: the text, set in the fallback font off Apple platforms (row labels) and the two glyphs, which are Apple artwork.",
+      "example": "visual-switches",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 9,
+          "y": 14,
+          "width": 160,
+          "height": 26
+        },
+        {
+          "x": 9,
+          "y": 56,
+          "width": 160,
+          "height": 27
+        }
+      ],
+      "budget": {
+        "1x": 0.0138,
+        "2x": 0.0047
+      },
+      "deltaBudget": {
+        "1x": 3.24,
+        "2x": 3.08
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Notification-Center-Today.png",
+        "crop": {
+          "x": 2684,
+          "y": 154,
+          "width": 664,
+          "height": 196
+        }
+      }
+    },
+    {
+      "name": "switches-dark",
+      "description": "The card of switches at the top of the Today view, Dark Aqua, over the panel colours measured around it. Masked: the text, set in the fallback font off Apple platforms (row labels) and the two glyphs, which are Apple artwork.",
+      "example": "visual-switches",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 9,
+          "y": 14,
+          "width": 160,
+          "height": 26
+        },
+        {
+          "x": 9,
+          "y": 56,
+          "width": 160,
+          "height": 27
+        }
+      ],
+      "budget": {
+        "1x": 0.0157,
+        "2x": 0.0059
+      },
+      "deltaBudget": {
+        "1x": 3.65,
+        "2x": 3.36
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Notification-Center-Today.png",
+        "crop": {
+          "x": 2684,
+          "y": 154,
+          "width": 664,
+          "height": 196
+        }
+      }
+    },
+    {
+      "name": "header-light",
+      "description": "A widget's header band and body on the panel colour over the sky, Aqua. The colours are the card's tokens composited over that colour; the tokens are fitted to the switches card and the notification, whose band is the same.",
+      "example": "visual-header",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 332,
+          "height": 67
+        },
+        "pixels": [
+          {
+            "x": 200,
+            "y": 18,
+            "color": "#d3eaf2",
+            "tolerance": 3,
+            "note": "header band: the header tint over the card fill over the panel colour, computed from the tokens (measured on the notification's band: #d3eef8, #11213a)"
+          },
+          {
+            "x": 200,
+            "y": 48,
+            "color": "#dcf3fd",
+            "tolerance": 3,
+            "note": "body: the card fill over the panel colour, computed from the tokens (measured on the switches card: #dcf5ff, #12233c)"
+          },
+          {
+            "x": 2,
+            "y": 30,
+            "color": "#b7def8",
+            "note": "the panel colour beside the card, which is 322 pt wide"
+          }
+        ]
+      }
+    },
+    {
+      "name": "header-dark",
+      "description": "A widget's header band and body on the panel colour over the sky, Dark Aqua. The colours are the card's tokens composited over that colour; the tokens are fitted to the switches card and the notification, whose band is the same.",
+      "example": "visual-header",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 332,
+          "height": 67
+        },
+        "pixels": [
+          {
+            "x": 200,
+            "y": 18,
+            "color": "#102138",
+            "tolerance": 3,
+            "note": "header band: the header tint over the card fill over the panel colour, computed from the tokens (measured on the notification's band: #d3eef8, #11213a)"
+          },
+          {
+            "x": 200,
+            "y": 48,
+            "color": "#12253f",
+            "tolerance": 3,
+            "note": "body: the card fill over the panel colour, computed from the tokens (measured on the switches card: #dcf5ff, #12233c)"
+          },
+          {
+            "x": 2,
+            "y": 30,
+            "color": "#162e4e",
+            "note": "the panel colour beside the card, which is 322 pt wide"
+          }
+        ]
+      }
+    }
+  ]
+}

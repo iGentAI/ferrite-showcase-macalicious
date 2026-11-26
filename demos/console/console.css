@@ -1,0 +1,178 @@
+/*
+ * Console demo: the layout of the body, the fixed-pitch text of the table's cells and the
+ * text layout of the detail pane. The window, the toolbar and its items, the scope bar, the
+ * sidebar, the split views, the table, the labels, the rule and the text view are the
+ * library's own.
+ *
+ * Parts
+ *   .mac-console                the window (the library's Window)
+ *   .mac-console-glyph-mark     the mark inside a disc glyph: a hole, filled with the toolbar
+ *                               button's mark colour while the toggle is on
+ *   .mac-console-sidebar-button the scope bar's button that hides and shows the sidebar
+ *   .mac-console-body           the window's body, filled by the split view
+ *   .mac-console-split          sidebar | content
+ *   .mac-console-sidebar-frame  the region of the sidebar's contextual menu
+ *   .mac-console-sidebar        the sidebar fills its pane
+ *   .mac-console-content        table over detail pane
+ *   .mac-console-messages       the table's pane: 1 pt of the content background, then the table
+ *   .mac-console-table-frame    the region of the messages' contextual menu
+ *   .mac-console-table          the table takes the pane's height
+ *   .mac-console-no-reports     why a report source is empty, centred over the table
+ *   .mac-console-cell           a cell's text: 11 pt fixed pitch, 7 pt from the column's edge
+ *   .mac-console-type           the Type column's dot
+ *   .mac-console-detail         the detail pane: 20 pt margins
+ *   .mac-console-detail-head    process name, then the lines of metadata
+ *   .mac-console-detail-meta    one line of metadata, the timestamp at its trailing edge
+ *   .mac-console-detail-link    "Details": a button drawn as a link
+ *   .mac-console-detail-time    the timestamp
+ *   .mac-console-detail-rule    the rule under the head
+ *   .mac-console-detail-body    the message text
+ *
+ * States
+ *   [data-type="info" | "debug" | "error" | "fault"]   on a dot: the level's colour
+ */
+
+/* The toolbar button's hook for a mark inside a solid glyph. */
+.mac-console-glyph-mark {
+  fill: var(--mac-toolbar-button-glyph-mark, none);
+}
+
+/* The sidebar button's glyph has the colour of a scope that is off, the bar's own token. Two
+   classes, so that it holds whatever the order of the stylesheets. */
+.mac-console .mac-console-sidebar-button {
+  color: var(--mac-scope-bar-toolbar-small-off-text);
+}
+
+.mac-console-body {
+  display: flex;
+  overflow: hidden;
+}
+
+.mac-console-split {
+  flex: 1;
+  min-width: 0;
+}
+
+.mac-console-sidebar,
+.mac-console-content {
+  height: 100%;
+}
+
+/* Console leaves a point of the content background between the scope bar and the header. */
+.mac-console-messages {
+  display: flex;
+  flex-direction: column;
+  padding-block-start: 1px;
+}
+
+.mac-console-table-frame {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.mac-console-sidebar-frame {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.mac-console-table {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.mac-console-no-reports {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* The text of a cell: its baseline is 10 pt under the row's top, which leaves the row's last
+   points empty, and it starts 7 pt from the column's edge (the cell's own 3 pt and these). */
+.mac-console-cell {
+  display: block;
+  overflow: hidden;
+  padding: 0.5px 0 0 4px;
+  font: var(--mac-font-weight-regular) 11px / 14px var(--mac-font-family-monospace);
+  letter-spacing: normal;
+  white-space: pre;
+  text-overflow: ellipsis;
+}
+
+.mac-console-type {
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin: 6px 0 0 4px;
+  border-radius: 50%;
+  background: var(--mac-console-type-info);
+}
+
+.mac-console-type:where([data-type="debug"]) {
+  background: var(--mac-color-system-gray);
+}
+
+.mac-console-type:where([data-type="error"]) {
+  background: var(--mac-color-system-yellow);
+}
+
+.mac-console-type:where([data-type="fault"]) {
+  background: var(--mac-color-system-red);
+}
+
+.mac-console-detail {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 20.5px 20px 0;
+}
+
+.mac-console-detail-head {
+  display: grid;
+  flex: none;
+  gap: 5.5px;
+  justify-items: start;
+  min-width: 0;
+}
+
+.mac-console-detail-meta {
+  display: flex;
+  gap: 9.5px;
+  align-items: center;
+  justify-self: stretch;
+  min-width: 0;
+}
+
+/* "Details" is a button drawn as a link. */
+.mac-console-detail-link {
+  flex: none;
+  margin-inline-start: 1.5px;
+  border: 0;
+  background: none;
+}
+
+.mac-console-detail-time {
+  flex: none;
+  margin-inline-start: auto;
+}
+
+.mac-console-detail-rule {
+  margin-block: 18px 18.5px;
+}
+
+/* The text view fills what is left; its own 5 pt inset puts the text 25 pt from the pane. */
+.mac-console-detail-body {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+@media (forced-colors: active) {
+  .mac-console-type {
+    border: 1px solid CanvasText;
+  }
+}

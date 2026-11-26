@@ -1,0 +1,1782 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "reminders-icon-size-light",
+      "description": "The icon box set with --mac-sidebar-icon-size, Aqua: the stand-in discs of the Reminders example fill the row's icon box, so they are 22 pt discs only through the hook. The pixels checked lie inside a 22 pt disc and outside the 18 pt one the medium size gives.",
+      "example": "visual-reminders",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 278, "height": 108 },
+        "pixels": [
+          {
+            "x": 30,
+            "y": 8.6,
+            "color": "#007aff",
+            "tolerance": 4,
+            "note": "top of the first row's disc: 22 pt across, centred in the 36 pt row, as measured in Reminders (disc y 586 to 629 in a row from y 572); an 18 pt disc ends 2 pt lower"
+          },
+          {
+            "x": 39.5,
+            "y": 54,
+            "color": "#008000",
+            "tolerance": 4,
+            "note": "trailing side of the second row's disc, 22 pt wide from 19 pt (disc x 152 to 195 in the capture); an 18 pt disc ends at 37 pt"
+          },
+          {
+            "x": 10,
+            "y": 18,
+            "color": "#e7e8e8",
+            "note": "the opaque sidebar material before the disc (measured: Finder-Home)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "reminders-lists-light",
+      "description": "The three My Lists rows of the Reminders sidebar, Aqua, at threshold 0.05: 36 pt rows with 22 pt discs, set with the row-height and icon-size hooks, the last row selected in grey. The discs (Apple's glyphs on them), the labels and the counts are masked; what is scored is the material and where the 36 pt selection lies.",
+      "example": "visual-reminders",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 18, "y": 6, "width": 24, "height": 24 },
+        { "x": 18, "y": 42, "width": 24, "height": 24 },
+        { "x": 18, "y": 78, "width": 24, "height": 24 },
+        { "x": 50, "y": 9, "width": 100, "height": 18 },
+        { "x": 50, "y": 45, "width": 100, "height": 18 },
+        { "x": 50, "y": 81, "width": 100, "height": 18 },
+        { "x": 250, "y": 9, "width": 22, "height": 18 },
+        { "x": 250, "y": 45, "width": 22, "height": 18 },
+        { "x": 250, "y": 81, "width": 22, "height": 18 }
+      ],
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 1.3, "2x": 1.3 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Reminders.png",
+        "crop": { "x": 114, "y": 572, "width": 556, "height": 216 }
+      }
+    },
+    {
+      "name": "reminders-lists-dark",
+      "description": "As reminders-lists-light, Dark Aqua.",
+      "example": "visual-reminders",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 18, "y": 6, "width": 24, "height": 24 },
+        { "x": 18, "y": 42, "width": 24, "height": 24 },
+        { "x": 18, "y": 78, "width": 24, "height": 24 },
+        { "x": 50, "y": 9, "width": 100, "height": 18 },
+        { "x": 50, "y": 45, "width": 100, "height": 18 },
+        { "x": 50, "y": 81, "width": 100, "height": 18 },
+        { "x": 250, "y": 9, "width": 22, "height": 18 },
+        { "x": 250, "y": 45, "width": 22, "height": 18 },
+        { "x": 250, "y": 81, "width": 22, "height": 18 }
+      ],
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.9, "2x": 0.9 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Reminders.png",
+        "crop": { "x": 114, "y": 572, "width": 556, "height": 216 }
+      }
+    },
+    {
+      "name": "reminders-footer-light",
+      "description": "Add List at the foot of the Reminders sidebar, Aqua, at threshold 0.05: the filled footer glyph, a disc with the plus cut out. The title is masked: it is set in the fallback font off Apple platforms.",
+      "example": "visual-reminders-footer",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [{ "x": 29, "y": 6, "width": 70, "height": 22 }],
+      "budget": { "1x": 0.035, "2x": 0.0149 },
+      "deltaBudget": { "1x": 3.2, "2x": 2.6 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Reminders.png",
+        "crop": { "x": 130, "y": 1250, "width": 280, "height": 72 }
+      }
+    },
+    {
+      "name": "reminders-footer-dark",
+      "description": "As reminders-footer-light, Dark Aqua.",
+      "example": "visual-reminders-footer",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [{ "x": 29, "y": 6, "width": 70, "height": 22 }],
+      "budget": { "1x": 0.035, "2x": 0.0152 },
+      "deltaBudget": { "1x": 2.5, "2x": 1.9 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Reminders.png",
+        "crop": { "x": 130, "y": 1250, "width": 280, "height": 72 }
+      }
+    },
+    {
+      "name": "reminders-header-light",
+      "description": "The search field over the lists of the Reminders sidebar, given as the sidebar's header, Aqua, at threshold 0.05: the header is drawn on the pane's material, at the top of the pane. The glass and the placeholder are masked (the placeholder is set in the fallback font off Apple platforms); what is scored is the material around the field and the field's bezel where Reminders has it.",
+      "example": "visual-reminders-header",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [{ "x": 19, "y": 25, "width": 75, "height": 16 }],
+      "budget": { "1x": 0.058, "2x": 0.0005 },
+      "deltaBudget": { "1x": 2.4, "2x": 1.4 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Reminders.png",
+        "crop": { "x": 114, "y": 136, "width": 556, "height": 114 }
+      }
+    },
+    {
+      "name": "reminders-header-dark",
+      "description": "As reminders-header-light, Dark Aqua.",
+      "example": "visual-reminders-header",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [{ "x": 19, "y": 25, "width": 75, "height": 16 }],
+      "budget": { "1x": 0.054, "2x": 0.0007 },
+      "deltaBudget": { "1x": 1.8, "2x": 0.7 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Reminders.png",
+        "crop": { "x": 114, "y": 136, "width": 556, "height": 114 }
+      }
+    },
+    {
+      "name": "header-pinned-light",
+      "description": "A header over a list that scrolls, Aqua: twelve rows under a search field given as the header, in a pane that shows three. Tab twice reaches the list and End selects the last row, which scrolls the list to its end. The field is where it was, on the pane's material, and the selected row is under it, at the foot of the pane.",
+      "example": "visual-header-pinned",
+      "appearance": "light",
+      "actions": [{ "tab": 2 }, { "key": "End" }],
+      "expect": {
+        "size": { "width": 160, "height": 120 },
+        "pixels": [
+          {
+            "x": 140,
+            "y": 17.5,
+            "color": "#d2d3d3",
+            "tolerance": 3,
+            "note": "inside the header's search field, 6 to 29 pt from the pane's top: its fill, black at 9% (search-field token, measured in Reminders) over the opaque material #e7e8e8, computed"
+          },
+          {
+            "x": 4,
+            "y": 3,
+            "color": "#e7e8e8",
+            "note": "beside the field, in the header's own padding: the pane's opaque material"
+          },
+          {
+            "x": 140,
+            "y": 105,
+            "color": "#136fe6",
+            "note": "the last row, selected in a list that holds the focus, at the foot of the pane: accent selection, measured in Disk Utility (spec: Selection, first responder)"
+          },
+          {
+            "x": 140,
+            "y": 50,
+            "color": "#e7e8e8",
+            "note": "where the first row was selected before the list scrolled: an unselected row, the pane's material"
+          }
+        ]
+      }
+    },
+    {
+      "name": "header-pinned-dark",
+      "description": "As header-pinned-light, Dark Aqua.",
+      "example": "visual-header-pinned",
+      "appearance": "dark",
+      "actions": [{ "tab": 2 }, { "key": "End" }],
+      "expect": {
+        "size": { "width": 160, "height": 120 },
+        "pixels": [
+          {
+            "x": 140,
+            "y": 17.5,
+            "color": "#3b3c3e",
+            "tolerance": 3,
+            "note": "inside the header's search field: its fill, white at 7% (search-field token) over the opaque material #2c2d2f, computed"
+          },
+          {
+            "x": 4,
+            "y": 3,
+            "color": "#2c2d2f",
+            "note": "beside the field, in the header's own padding: the pane's opaque material"
+          },
+          {
+            "x": 140,
+            "y": 105,
+            "color": "#0772eb",
+            "note": "the last row, selected in a list that holds the focus, at the foot of the pane: accent selection, measured in Disk Utility (spec: Selection, first responder)"
+          },
+          {
+            "x": 140,
+            "y": 50,
+            "color": "#2c2d2f",
+            "note": "where the first row was selected before the list scrolled: an unselected row, the pane's material"
+          }
+        ]
+      }
+    },
+    {
+      "name": "finder-top-light",
+      "description": "The top of the Finder sidebar: Favorites with Applications selected in grey (the sidebar does not hold the focus), iCloud and the Locations header, Aqua. Whole crop: the text is set in the fallback font and the icons are stand-ins.",
+      "example": "visual-finder",
+      "appearance": "light",
+      "selector": "[data-visual=\"top\"]",
+      "budget": {
+        "1x": 0.0873,
+        "2x": 0.0739
+      },
+      "deltaBudget": {
+        "1x": 7.89,
+        "2x": 8.07
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Applications.png",
+        "crop": {
+          "x": 114,
+          "y": 186,
+          "width": 326,
+          "height": 528
+        }
+      }
+    },
+    {
+      "name": "finder-top-drawing-light",
+      "description": "The top of the Finder sidebar: Favorites with Applications selected in grey (the sidebar does not hold the focus), iCloud and the Locations header, Aqua. The same crop with the headers, labels and stand-in icons masked: the material, the selection's position, height and colour.",
+      "example": "visual-finder",
+      "appearance": "light",
+      "selector": "[data-visual=\"top\"]",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 8,
+          "y": 9.5,
+          "width": 51,
+          "height": 11
+        },
+        {
+          "x": 16,
+          "y": 26,
+          "width": 71,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 52,
+          "width": 74,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 78,
+          "width": 100,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 104,
+          "width": 75,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 130,
+          "width": 94,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 156,
+          "width": 93,
+          "height": 22
+        },
+        {
+          "x": 8,
+          "y": 194.5,
+          "width": 36,
+          "height": 11
+        },
+        {
+          "x": 16,
+          "y": 212,
+          "width": 99,
+          "height": 22
+        },
+        {
+          "x": 8,
+          "y": 249.5,
+          "width": 55,
+          "height": 11
+        }
+      ],
+      "budget": {
+        "1x": 0.0007,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.54,
+        "2x": 0.53
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Applications.png",
+        "crop": {
+          "x": 114,
+          "y": 186,
+          "width": 326,
+          "height": 528
+        }
+      }
+    },
+    {
+      "name": "finder-top-dark",
+      "description": "The top of the Finder sidebar: Favorites with Applications selected in grey (the sidebar does not hold the focus), iCloud and the Locations header, Dark Aqua. Whole crop: the text is set in the fallback font and the icons are stand-ins.",
+      "example": "visual-finder",
+      "appearance": "dark",
+      "selector": "[data-visual=\"top\"]",
+      "budget": {
+        "1x": 0.0932,
+        "2x": 0.0782
+      },
+      "deltaBudget": {
+        "1x": 8.36,
+        "2x": 8.53
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Applications.png",
+        "crop": {
+          "x": 114,
+          "y": 186,
+          "width": 326,
+          "height": 528
+        }
+      }
+    },
+    {
+      "name": "finder-top-drawing-dark",
+      "description": "The top of the Finder sidebar: Favorites with Applications selected in grey (the sidebar does not hold the focus), iCloud and the Locations header, Dark Aqua. The same crop with the headers, labels and stand-in icons masked: the material, the selection's position, height and colour.",
+      "example": "visual-finder",
+      "appearance": "dark",
+      "selector": "[data-visual=\"top\"]",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 8,
+          "y": 9.5,
+          "width": 51,
+          "height": 11
+        },
+        {
+          "x": 16,
+          "y": 26,
+          "width": 71,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 52,
+          "width": 74,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 78,
+          "width": 100,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 104,
+          "width": 75,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 130,
+          "width": 94,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 156,
+          "width": 93,
+          "height": 22
+        },
+        {
+          "x": 8,
+          "y": 194.5,
+          "width": 36,
+          "height": 11
+        },
+        {
+          "x": 16,
+          "y": 212,
+          "width": 99,
+          "height": 22
+        },
+        {
+          "x": 8,
+          "y": 249.5,
+          "width": 55,
+          "height": 11
+        }
+      ],
+      "budget": {
+        "1x": 0.0007,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.22,
+        "2x": 0.22
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Applications.png",
+        "crop": {
+          "x": 114,
+          "y": 186,
+          "width": 326,
+          "height": 528
+        }
+      }
+    },
+    {
+      "name": "finder-tags-light",
+      "description": "The Tags section of the Finder sidebar, each row with a tag dot as its icon, Aqua. Whole crop: the text is set in the fallback font and the icons are stand-ins.",
+      "example": "visual-finder",
+      "appearance": "light",
+      "selector": "[data-visual=\"tags\"]",
+      "budget": {
+        "1x": 0.0273,
+        "2x": 0.024
+      },
+      "deltaBudget": {
+        "1x": 2.67,
+        "2x": 2.73
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Applications.png",
+        "crop": {
+          "x": 114,
+          "y": 872,
+          "width": 326,
+          "height": 480
+        }
+      }
+    },
+    {
+      "name": "finder-tags-drawing-light",
+      "description": "The Tags section of the Finder sidebar, each row with a tag dot as its icon, Aqua. The same crop with the header and labels masked: the material, the row pitch and the tag dots (tag-dot component) in the icon box.",
+      "example": "visual-finder",
+      "appearance": "light",
+      "selector": "[data-visual=\"tags\"]",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 7,
+          "y": 14,
+          "width": 29,
+          "height": 13
+        },
+        {
+          "x": 39,
+          "y": 31,
+          "width": 29,
+          "height": 20
+        },
+        {
+          "x": 39,
+          "y": 57,
+          "width": 34,
+          "height": 20
+        },
+        {
+          "x": 39,
+          "y": 83,
+          "width": 47,
+          "height": 20
+        },
+        {
+          "x": 39,
+          "y": 109,
+          "width": 31,
+          "height": 20
+        },
+        {
+          "x": 39,
+          "y": 135,
+          "width": 39,
+          "height": 20
+        },
+        {
+          "x": 39,
+          "y": 161,
+          "width": 38,
+          "height": 20
+        },
+        {
+          "x": 39,
+          "y": 187,
+          "width": 25,
+          "height": 20
+        },
+        {
+          "x": 39,
+          "y": 213,
+          "width": 61,
+          "height": 20
+        }
+      ],
+      "budget": {
+        "1x": 0.0024,
+        "2x": 0.0029
+      },
+      "deltaBudget": {
+        "1x": 0.59,
+        "2x": 0.61
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Applications.png",
+        "crop": {
+          "x": 114,
+          "y": 872,
+          "width": 326,
+          "height": 480
+        }
+      }
+    },
+    {
+      "name": "finder-tags-dark",
+      "description": "The Tags section of the Finder sidebar, each row with a tag dot as its icon, Dark Aqua. Whole crop: the text is set in the fallback font and the icons are stand-ins.",
+      "example": "visual-finder",
+      "appearance": "dark",
+      "selector": "[data-visual=\"tags\"]",
+      "budget": {
+        "1x": 0.033,
+        "2x": 0.0281
+      },
+      "deltaBudget": {
+        "1x": 2.91,
+        "2x": 2.97
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Applications.png",
+        "crop": {
+          "x": 114,
+          "y": 924,
+          "width": 326,
+          "height": 480
+        }
+      }
+    },
+    {
+      "name": "finder-tags-drawing-dark",
+      "description": "The Tags section of the Finder sidebar, each row with a tag dot as its icon, Dark Aqua. The same crop with the header and labels masked: the material, the row pitch and the tag dots (tag-dot component) in the icon box.",
+      "example": "visual-finder",
+      "appearance": "dark",
+      "selector": "[data-visual=\"tags\"]",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 7,
+          "y": 14,
+          "width": 29,
+          "height": 13
+        },
+        {
+          "x": 39,
+          "y": 31,
+          "width": 29,
+          "height": 20
+        },
+        {
+          "x": 39,
+          "y": 57,
+          "width": 34,
+          "height": 20
+        },
+        {
+          "x": 39,
+          "y": 83,
+          "width": 47,
+          "height": 20
+        },
+        {
+          "x": 39,
+          "y": 109,
+          "width": 31,
+          "height": 20
+        },
+        {
+          "x": 39,
+          "y": 135,
+          "width": 39,
+          "height": 20
+        },
+        {
+          "x": 39,
+          "y": 161,
+          "width": 38,
+          "height": 20
+        },
+        {
+          "x": 39,
+          "y": 187,
+          "width": 25,
+          "height": 20
+        },
+        {
+          "x": 39,
+          "y": 213,
+          "width": 61,
+          "height": 20
+        }
+      ],
+      "budget": {
+        "1x": 0.0031,
+        "2x": 0.0026
+      },
+      "deltaBudget": {
+        "1x": 0.26,
+        "2x": 0.28
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Applications.png",
+        "crop": {
+          "x": 114,
+          "y": 924,
+          "width": 326,
+          "height": 480
+        }
+      }
+    },
+    {
+      "name": "outline-light",
+      "description": "Disk Utility's device outline: three levels with disclosure triangles, the selection in the accent colour (the outline holds the focus, pinned with data-force), Aqua. Whole crop: the text is set in the fallback font and the icons are stand-ins.",
+      "example": "visual-outline",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.1041,
+        "2x": 0.0954
+      },
+      "deltaBudget": {
+        "1x": 10.22,
+        "2x": 10.85
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Disk-Utility.png",
+        "crop": {
+          "x": 114,
+          "y": 216,
+          "width": 504,
+          "height": 600
+        }
+      }
+    },
+    {
+      "name": "outline-drawing-light",
+      "description": "Disk Utility's device outline: three levels with disclosure triangles, the selection in the accent colour (the outline holds the focus, pinned with data-force), Aqua. The same crop with the headers, labels, stand-in disk icons and eject glyphs masked: the material, the accent selection and the disclosure triangles at 16 pt per level.",
+      "example": "visual-outline",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 7.5,
+          "y": 8.5,
+          "width": 43,
+          "height": 11
+        },
+        {
+          "x": 21,
+          "y": 26,
+          "width": 199,
+          "height": 22
+        },
+        {
+          "x": 37,
+          "y": 52,
+          "width": 119,
+          "height": 22
+        },
+        {
+          "x": 53,
+          "y": 78,
+          "width": 112,
+          "height": 22
+        },
+        {
+          "x": 53,
+          "y": 104,
+          "width": 154,
+          "height": 22
+        },
+        {
+          "x": 7.5,
+          "y": 141.5,
+          "width": 46,
+          "height": 11
+        },
+        {
+          "x": 21,
+          "y": 159,
+          "width": 202,
+          "height": 22
+        },
+        {
+          "x": 228,
+          "y": 159,
+          "width": 10,
+          "height": 22
+        },
+        {
+          "x": 37,
+          "y": 185,
+          "width": 122,
+          "height": 22
+        },
+        {
+          "x": 53,
+          "y": 211,
+          "width": 119,
+          "height": 22
+        },
+        {
+          "x": 53,
+          "y": 237,
+          "width": 161,
+          "height": 22
+        },
+        {
+          "x": 53,
+          "y": 263,
+          "width": 113,
+          "height": 22
+        },
+        {
+          "x": 228,
+          "y": 263,
+          "width": 10,
+          "height": 22
+        }
+      ],
+      "budget": {
+        "1x": 0.0033,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 1.2,
+        "2x": 1.08
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Disk-Utility.png",
+        "crop": {
+          "x": 114,
+          "y": 216,
+          "width": 504,
+          "height": 600
+        }
+      }
+    },
+    {
+      "name": "outline-dark",
+      "description": "Disk Utility's device outline: three levels with disclosure triangles, the selection in the accent colour (the outline holds the focus, pinned with data-force), Dark Aqua. Whole crop: the text is set in the fallback font and the icons are stand-ins.",
+      "example": "visual-outline",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.1072,
+        "2x": 0.0936
+      },
+      "deltaBudget": {
+        "1x": 11.17,
+        "2x": 11.77
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Disk-Utility.png",
+        "crop": {
+          "x": 114,
+          "y": 216,
+          "width": 504,
+          "height": 600
+        }
+      }
+    },
+    {
+      "name": "outline-drawing-dark",
+      "description": "Disk Utility's device outline: three levels with disclosure triangles, the selection in the accent colour (the outline holds the focus, pinned with data-force), Dark Aqua. The same crop with the headers, labels, stand-in disk icons and eject glyphs masked: the material, the accent selection and the disclosure triangles at 16 pt per level.",
+      "example": "visual-outline",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 7.5,
+          "y": 8.5,
+          "width": 43,
+          "height": 11
+        },
+        {
+          "x": 21,
+          "y": 26,
+          "width": 199,
+          "height": 22
+        },
+        {
+          "x": 37,
+          "y": 52,
+          "width": 119,
+          "height": 22
+        },
+        {
+          "x": 53,
+          "y": 78,
+          "width": 112,
+          "height": 22
+        },
+        {
+          "x": 53,
+          "y": 104,
+          "width": 154,
+          "height": 22
+        },
+        {
+          "x": 7.5,
+          "y": 141.5,
+          "width": 46,
+          "height": 11
+        },
+        {
+          "x": 21,
+          "y": 159,
+          "width": 202,
+          "height": 22
+        },
+        {
+          "x": 228,
+          "y": 159,
+          "width": 10,
+          "height": 22
+        },
+        {
+          "x": 37,
+          "y": 185,
+          "width": 122,
+          "height": 22
+        },
+        {
+          "x": 53,
+          "y": 211,
+          "width": 119,
+          "height": 22
+        },
+        {
+          "x": 53,
+          "y": 237,
+          "width": 161,
+          "height": 22
+        },
+        {
+          "x": 53,
+          "y": 263,
+          "width": 113,
+          "height": 22
+        },
+        {
+          "x": 228,
+          "y": 263,
+          "width": 10,
+          "height": 22
+        }
+      ],
+      "budget": {
+        "1x": 0.0032,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.59,
+        "2x": 0.46
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Disk-Utility.png",
+        "crop": {
+          "x": 114,
+          "y": 216,
+          "width": 504,
+          "height": 600
+        }
+      }
+    },
+    {
+      "name": "inactive-light",
+      "description": "Mail's mailbox list in an inactive window: flat material, lighter selection, dimmed labels and the Drafts badge, Aqua. Whole crop: the text is set in the fallback font and the icons are stand-ins.",
+      "example": "visual-inactive",
+      "appearance": "light",
+      "windowState": "inactive",
+      "budget": {
+        "1x": 0.0499,
+        "2x": 0.0451
+      },
+      "deltaBudget": {
+        "1x": 4.17,
+        "2x": 4.31
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mail.png",
+        "crop": {
+          "x": 54,
+          "y": 196,
+          "width": 398,
+          "height": 204
+        }
+      }
+    },
+    {
+      "name": "inactive-drawing-light",
+      "description": "Mail's mailbox list in an inactive window: flat material, lighter selection, dimmed labels and the Drafts badge, Aqua. The same crop with the header, labels, stand-in icons and the badge's digit masked: the inactive material, the selection and the badge's capsule (sidebar-badge component).",
+      "example": "visual-inactive",
+      "appearance": "light",
+      "windowState": "inactive",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 7.5,
+          "y": 8.5,
+          "width": 57,
+          "height": 11
+        },
+        {
+          "x": 16,
+          "y": 26,
+          "width": 59,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 52,
+          "width": 62,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 78,
+          "width": 53,
+          "height": 22
+        },
+        {
+          "x": 171,
+          "y": 56,
+          "width": 8,
+          "height": 12
+        }
+      ],
+      "budget": {
+        "1x": 0.0025,
+        "2x": 0.0019
+      },
+      "deltaBudget": {
+        "1x": 0.32,
+        "2x": 0.33
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mail.png",
+        "crop": {
+          "x": 54,
+          "y": 196,
+          "width": 398,
+          "height": 204
+        }
+      }
+    },
+    {
+      "name": "inactive-dark",
+      "description": "Mail's mailbox list in an inactive window: flat material, lighter selection, dimmed labels and the Drafts badge, Dark Aqua. Whole crop: the text is set in the fallback font and the icons are stand-ins.",
+      "example": "visual-inactive",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "budget": {
+        "1x": 0.0484,
+        "2x": 0.0454
+      },
+      "deltaBudget": {
+        "1x": 4.01,
+        "2x": 4.19
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mail.png",
+        "crop": {
+          "x": 42,
+          "y": 194,
+          "width": 398,
+          "height": 204
+        }
+      }
+    },
+    {
+      "name": "inactive-drawing-dark",
+      "description": "Mail's mailbox list in an inactive window: flat material, lighter selection, dimmed labels and the Drafts badge, Dark Aqua. The same crop with the header, labels, stand-in icons and the badge's digit masked: the inactive material, the selection and the badge's capsule (sidebar-badge component).",
+      "example": "visual-inactive",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 7.5,
+          "y": 8.5,
+          "width": 57,
+          "height": 11
+        },
+        {
+          "x": 16,
+          "y": 26,
+          "width": 59,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 52,
+          "width": 62,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 78,
+          "width": 53,
+          "height": 22
+        },
+        {
+          "x": 171,
+          "y": 56,
+          "width": 8,
+          "height": 12
+        }
+      ],
+      "budget": {
+        "1x": 0.0023,
+        "2x": 0.0019
+      },
+      "deltaBudget": {
+        "1x": 0.22,
+        "2x": 0.22
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mail.png",
+        "crop": {
+          "x": 42,
+          "y": 194,
+          "width": 398,
+          "height": 204
+        }
+      }
+    },
+    {
+      "name": "music-light",
+      "description": "Music's source list, set with the spacing custom properties (rows that touch, a 10 pt section gap, the label 5 pt after the icon, headers 2 pt lower): three sections with Albums selected in grey, Aqua. Whole crop: the text is set in the fallback font and the icons are stand-ins.",
+      "example": "visual-music",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0562,
+        "2x": 0.05
+      },
+      "deltaBudget": {
+        "1x": 5.67,
+        "2x": 5.67
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Music.png",
+        "crop": {
+          "x": 114,
+          "y": 260,
+          "width": 438,
+          "height": 564
+        }
+      }
+    },
+    {
+      "name": "music-drawing-light",
+      "description": "Music's source list, set with the spacing custom properties, Aqua. The same crop with the headers, labels and stand-in icons masked: the material and the selection's position, which the 24 pt row pitch and the 30 pt header slots decide (it is the sixth of eight rows, under two headers), its height and its colour.",
+      "example": "visual-music",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 6,
+          "y": 10.5,
+          "width": 80,
+          "height": 12
+        },
+        {
+          "x": 16,
+          "y": 26,
+          "width": 80,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 50,
+          "width": 80,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 74,
+          "width": 72,
+          "height": 22
+        },
+        {
+          "x": 6,
+          "y": 112.5,
+          "width": 55,
+          "height": 12
+        },
+        {
+          "x": 16,
+          "y": 128,
+          "width": 135,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 152,
+          "width": 76,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 176,
+          "width": 80,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 200,
+          "width": 74,
+          "height": 22
+        },
+        {
+          "x": 6,
+          "y": 238.5,
+          "width": 45,
+          "height": 12
+        },
+        {
+          "x": 16,
+          "y": 254,
+          "width": 112,
+          "height": 22
+        }
+      ],
+      "budget": {
+        "1x": 0.0006,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 1.19,
+        "2x": 1.19
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Music.png",
+        "crop": {
+          "x": 114,
+          "y": 260,
+          "width": 438,
+          "height": 564
+        }
+      }
+    },
+    {
+      "name": "music-dark",
+      "description": "Music's source list, set with the spacing custom properties (rows that touch, a 10 pt section gap, the label 5 pt after the icon, headers 2 pt lower): three sections with Albums selected in grey, Dark Aqua. Whole crop: the text is set in the fallback font and the icons are stand-ins.",
+      "example": "visual-music",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.054,
+        "2x": 0.0492
+      },
+      "deltaBudget": {
+        "1x": 4.62,
+        "2x": 4.61
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Music.png",
+        "crop": {
+          "x": 114,
+          "y": 260,
+          "width": 438,
+          "height": 564
+        }
+      }
+    },
+    {
+      "name": "music-drawing-dark",
+      "description": "Music's source list, set with the spacing custom properties, Dark Aqua. The same crop with the headers, labels and stand-in icons masked: the material and the selection's position, which the 24 pt row pitch and the 30 pt header slots decide (it is the sixth of eight rows, under two headers), its height and its colour.",
+      "example": "visual-music",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 6,
+          "y": 10.5,
+          "width": 80,
+          "height": 12
+        },
+        {
+          "x": 16,
+          "y": 26,
+          "width": 80,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 50,
+          "width": 80,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 74,
+          "width": 72,
+          "height": 22
+        },
+        {
+          "x": 6,
+          "y": 112.5,
+          "width": 55,
+          "height": 12
+        },
+        {
+          "x": 16,
+          "y": 128,
+          "width": 135,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 152,
+          "width": 76,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 176,
+          "width": 80,
+          "height": 22
+        },
+        {
+          "x": 16,
+          "y": 200,
+          "width": 74,
+          "height": 22
+        },
+        {
+          "x": 6,
+          "y": 238.5,
+          "width": 45,
+          "height": 12
+        },
+        {
+          "x": 16,
+          "y": 254,
+          "width": 112,
+          "height": 22
+        }
+      ],
+      "budget": {
+        "1x": 0.0006,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.57,
+        "2x": 0.57
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Music.png",
+        "crop": {
+          "x": 114,
+          "y": 260,
+          "width": 438,
+          "height": 564
+        }
+      }
+    },
+    {
+      "name": "rows-light",
+      "description": "Row heights of the three sizes, read off the grey selection of the first row of three sidebars that do not hold the focus, Aqua. No screenshot shows the small and large sizes.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 80
+        },
+        "pixels": [
+          {
+            "x": 80,
+            "y": 5.5,
+            "color": "#c7c8c8",
+            "note": "medium: the grey selection starts 5 pt under the pane's top (measured: Font Book's first row; colour measured in Finder, spec: Selection, not first responder)"
+          },
+          {
+            "x": 80,
+            "y": 28.5,
+            "color": "#c7c8c8",
+            "note": "medium: last point of the 24 pt selection (measured)"
+          },
+          {
+            "x": 80,
+            "y": 29.5,
+            "color": "#e7e8e8",
+            "note": "medium: the 2 pt between rows shows the opaque material (measured)"
+          },
+          {
+            "x": 80,
+            "y": 43,
+            "color": "#e7e8e8",
+            "note": "medium: the second row is not selected"
+          },
+          {
+            "x": 180,
+            "y": 24.5,
+            "color": "#c7c8c8",
+            "note": "small: last point of a 20 pt row (inferred in the spec, not captured)"
+          },
+          {
+            "x": 180,
+            "y": 25.5,
+            "color": "#e7e8e8",
+            "note": "small: material after 20 pt (inferred)"
+          },
+          {
+            "x": 280,
+            "y": 36.5,
+            "color": "#c7c8c8",
+            "note": "large: last point of a 32 pt row (inferred in the spec, not captured)"
+          },
+          {
+            "x": 280,
+            "y": 37.5,
+            "color": "#e7e8e8",
+            "note": "large: material after 32 pt (inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-light",
+      "description": "Keyboard focus reached with Tab: the focus ring runs inside the edge of the whole list, not around a row, and the selection turns to the accent colour, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 80
+        },
+        "pixels": [
+          {
+            "x": 1.5,
+            "y": 65,
+            "color": "#80a9ef",
+            "tolerance": 3,
+            "note": "3 pt focus ring inside the list's edge: the ring token (accent at 50%) over the opaque material, computed; that the ring surrounds the list is the spec's statement (inferred look)"
+          },
+          {
+            "x": 50,
+            "y": 78.5,
+            "color": "#80a9ef",
+            "tolerance": 3,
+            "note": "the ring along the bottom edge (computed as above)"
+          },
+          {
+            "x": 4.5,
+            "y": 65,
+            "color": "#e7e8e8",
+            "note": "material just inside the 3 pt ring"
+          },
+          {
+            "x": 80,
+            "y": 17,
+            "color": "#136fe6",
+            "note": "selected row of the focused list: accent selection, measured in Disk Utility (spec: Selection, first responder)"
+          },
+          {
+            "x": 80,
+            "y": 43,
+            "color": "#e7e8e8",
+            "note": "second row, not selected"
+          },
+          {
+            "x": 180,
+            "y": 15,
+            "color": "#c7c8c8",
+            "note": "the second sidebar does not hold the focus: its selection stays grey (measured colour)"
+          },
+          {
+            "x": 101.5,
+            "y": 65,
+            "color": "#e7e8e8",
+            "note": "no ring on the second sidebar"
+          }
+        ]
+      }
+    },
+    {
+      "name": "arrow-down-light",
+      "description": "Tab, then Down Arrow: the selection moves to the second row and keeps the accent colour, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowDown"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 80
+        },
+        "pixels": [
+          {
+            "x": 80,
+            "y": 43,
+            "color": "#136fe6",
+            "note": "second row selected: accent selection (measured colour, Disk Utility)"
+          },
+          {
+            "x": 80,
+            "y": 17,
+            "color": "#e7e8e8",
+            "note": "first row no longer selected: material"
+          },
+          {
+            "x": 80,
+            "y": 30,
+            "color": "#e7e8e8",
+            "note": "the 2 pt between the rows is not part of the selection (measured pitch 26, row 24)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inactive-focus-light",
+      "description": "The same list focused with Tab in an inactive window: no focus ring, no accent, the inactive material and selection, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 80
+        },
+        "pixels": [
+          {
+            "x": 1.5,
+            "y": 65,
+            "color": "#f6f6f6",
+            "note": "no focus ring in a window that is not key: inactive material, measured in Mail (spec: Material, inactive window)"
+          },
+          {
+            "x": 80,
+            "y": 17,
+            "color": "#d2d2d2",
+            "note": "selection in an inactive window, measured in Mail (spec: Selection, inactive window)"
+          },
+          {
+            "x": 80,
+            "y": 43,
+            "color": "#f6f6f6",
+            "note": "unselected row: inactive material"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rows-dark",
+      "description": "Row heights of the three sizes, read off the grey selection of the first row of three sidebars that do not hold the focus, Dark Aqua. No screenshot shows the small and large sizes.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 80
+        },
+        "pixels": [
+          {
+            "x": 80,
+            "y": 5.5,
+            "color": "#505153",
+            "note": "medium: the grey selection starts 5 pt under the pane's top (measured: Font Book's first row; colour measured in Finder, spec: Selection, not first responder)"
+          },
+          {
+            "x": 80,
+            "y": 28.5,
+            "color": "#505153",
+            "note": "medium: last point of the 24 pt selection (measured)"
+          },
+          {
+            "x": 80,
+            "y": 29.5,
+            "color": "#2c2d2f",
+            "note": "medium: the 2 pt between rows shows the opaque material (measured)"
+          },
+          {
+            "x": 80,
+            "y": 43,
+            "color": "#2c2d2f",
+            "note": "medium: the second row is not selected"
+          },
+          {
+            "x": 180,
+            "y": 24.5,
+            "color": "#505153",
+            "note": "small: last point of a 20 pt row (inferred in the spec, not captured)"
+          },
+          {
+            "x": 180,
+            "y": 25.5,
+            "color": "#2c2d2f",
+            "note": "small: material after 20 pt (inferred)"
+          },
+          {
+            "x": 280,
+            "y": 36.5,
+            "color": "#505153",
+            "note": "large: last point of a 32 pt row (inferred in the spec, not captured)"
+          },
+          {
+            "x": 280,
+            "y": 37.5,
+            "color": "#2c2d2f",
+            "note": "large: material after 32 pt (inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-dark",
+      "description": "Keyboard focus reached with Tab: the focus ring runs inside the edge of the whole list, not around a row, and the selection turns to the accent colour, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 80
+        },
+        "pixels": [
+          {
+            "x": 1.5,
+            "y": 65,
+            "color": "#2c6b97",
+            "tolerance": 3,
+            "note": "3 pt focus ring inside the list's edge: the ring token (accent at 50%) over the opaque material, computed; that the ring surrounds the list is the spec's statement (inferred look)"
+          },
+          {
+            "x": 50,
+            "y": 78.5,
+            "color": "#2c6b97",
+            "tolerance": 3,
+            "note": "the ring along the bottom edge (computed as above)"
+          },
+          {
+            "x": 4.5,
+            "y": 65,
+            "color": "#2c2d2f",
+            "note": "material just inside the 3 pt ring"
+          },
+          {
+            "x": 80,
+            "y": 17,
+            "color": "#0772eb",
+            "note": "selected row of the focused list: accent selection, measured in Disk Utility (spec: Selection, first responder)"
+          },
+          {
+            "x": 80,
+            "y": 43,
+            "color": "#2c2d2f",
+            "note": "second row, not selected"
+          },
+          {
+            "x": 180,
+            "y": 15,
+            "color": "#505153",
+            "note": "the second sidebar does not hold the focus: its selection stays grey (measured colour)"
+          },
+          {
+            "x": 101.5,
+            "y": 65,
+            "color": "#2c2d2f",
+            "note": "no ring on the second sidebar"
+          }
+        ]
+      }
+    },
+    {
+      "name": "arrow-down-dark",
+      "description": "Tab, then Down Arrow: the selection moves to the second row and keeps the accent colour, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowDown"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 80
+        },
+        "pixels": [
+          {
+            "x": 80,
+            "y": 43,
+            "color": "#0772eb",
+            "note": "second row selected: accent selection (measured colour, Disk Utility)"
+          },
+          {
+            "x": 80,
+            "y": 17,
+            "color": "#2c2d2f",
+            "note": "first row no longer selected: material"
+          },
+          {
+            "x": 80,
+            "y": 30,
+            "color": "#2c2d2f",
+            "note": "the 2 pt between the rows is not part of the selection (measured pitch 26, row 24)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inactive-focus-dark",
+      "description": "The same list focused with Tab in an inactive window: no focus ring, no accent, the inactive material and selection, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 80
+        },
+        "pixels": [
+          {
+            "x": 1.5,
+            "y": 65,
+            "color": "#2c2d2f",
+            "note": "no focus ring in a window that is not key: inactive material, measured in Mail (spec: Material, inactive window)"
+          },
+          {
+            "x": 80,
+            "y": 17,
+            "color": "#505153",
+            "note": "selection in an inactive window, measured in Mail (spec: Selection, inactive window)"
+          },
+          {
+            "x": 80,
+            "y": 43,
+            "color": "#2c2d2f",
+            "note": "unselected row: inactive material"
+          }
+        ]
+      }
+    },
+    {
+      "name": "arrow-down-purple-light",
+      "description": "As arrow-down-light, with the purple accent: the emphasised selection follows the accent. No screenshot shows a selection in an accent other than blue, so the colour is the token's, computed.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowDown"
+        }
+      ],
+      "accent": "purple",
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 80
+        },
+        "pixels": [
+          {
+            "x": 80,
+            "y": 43,
+            "color": "#963d96",
+            "note": "the selected row in the purple accent: the accent itself, #963d96 (accent.css: a focused sidebar's selection in an accent other than blue is the plain accent); computed, not measured",
+            "tolerance": 4
+          },
+          {
+            "x": 80,
+            "y": 17,
+            "color": "#e7e8e8",
+            "note": "first row no longer selected: material"
+          },
+          {
+            "x": 80,
+            "y": 30,
+            "color": "#e7e8e8",
+            "note": "the 2 pt between the rows is not part of the selection (measured pitch 26, row 24)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "arrow-down-purple-dark",
+      "description": "As arrow-down-dark, with the purple accent: the emphasised selection follows the accent. No screenshot shows a selection in an accent other than blue, so the colour is the token's, computed.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowDown"
+        }
+      ],
+      "accent": "purple",
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 80
+        },
+        "pixels": [
+          {
+            "x": 80,
+            "y": 43,
+            "color": "#a650a7",
+            "note": "the selected row in the purple accent: the accent itself, #a650a7 (accent.css: a focused sidebar's selection in an accent other than blue is the plain accent); computed, not measured",
+            "tolerance": 4
+          },
+          {
+            "x": 80,
+            "y": 17,
+            "color": "#2c2d2f",
+            "note": "first row no longer selected: material"
+          },
+          {
+            "x": 80,
+            "y": 30,
+            "color": "#2c2d2f",
+            "note": "the 2 pt between the rows is not part of the selection (measured pitch 26, row 24)"
+          }
+        ]
+      }
+    }
+  ]
+}

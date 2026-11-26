@@ -1,0 +1,181 @@
+/*
+ * Split view (NSSplitView).
+ *
+ * Parts
+ *   .mac-split-view            the container: panes and dividers laid edge to edge
+ *   .mac-split-view-pane       a pane; with a size it keeps it, without one it shares the rest
+ *   .mac-split-view-divider    the divider: 1 pt line with a 5 pt hit area (thin), a clear
+ *                              9 pt band (thick) or a filled 10 pt band (pane splitter), the
+ *                              two bands with a 6 pt dimple at their centre (::after)
+ *
+ * States
+ *   [data-orientation="horizontal" | "vertical"]   panes side by side or stacked
+ *   [data-divider-style="thin" | "thick" | "pane-splitter"]
+ *   [data-sized], [data-collapsed]                 on a pane; a collapsed pane is not rendered
+ *                                                  (display: none, set inline)
+ *   [data-dragging], [data-disabled]               on a divider
+ *   [aria-disabled="true"]                         on a divider that cannot be moved: disabled,
+ *                                                  or with no sized pane beside it
+ *   :focus-visible                                 keyboard focus ring on a divider
+ *
+ * A divider does not change in a window that is not key, except that it shows no focus ring.
+ *
+ * Hooks
+ *   --mac-split-view-divider-color   colour of the thin line (default: the divider between
+ *                                    opaque panes; set the measured colour beside a sidebar)
+ *   --mac-split-view-splitter-dimple the pane splitter's dimple, in place of the shared
+ *                                    --mac-split-view-dimple (kept from before the dimple was
+ *                                    measured; unset by default)
+ */
+.mac-split-view {
+  display: flex;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.mac-split-view:where([data-orientation="vertical"]) {
+  flex-direction: column;
+}
+
+.mac-split-view-pane {
+  flex: 1 1 0;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.mac-split-view-pane:where([data-sized]) {
+  flex: 0 1 auto;
+}
+
+/* The limits hold for every pane: a flexible pane does not shrink under its minimum. */
+.mac-split-view:where([data-orientation="horizontal"]) > .mac-split-view-pane {
+  min-width: var(--_min, 0);
+  max-width: var(--_max, none);
+}
+
+.mac-split-view:where([data-orientation="vertical"]) > .mac-split-view-pane {
+  min-height: var(--_min, 0);
+  max-height: var(--_max, none);
+}
+
+.mac-split-view:where([data-orientation="horizontal"]) > .mac-split-view-pane:where([data-sized]) {
+  width: var(--_size);
+}
+
+.mac-split-view:where([data-orientation="vertical"]) > .mac-split-view-pane:where([data-sized]) {
+  height: var(--_size);
+}
+
+.mac-split-view-divider {
+  --_thickness: 1px;
+
+  position: relative;
+  z-index: 1;
+  flex: none;
+  box-sizing: border-box;
+  background: var(--mac-split-view-divider-color, var(--mac-color-split-divider));
+  outline: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-split-view:where([data-divider-style="thick"]) > .mac-split-view-divider {
+  --_thickness: 9px;
+
+  background: none;
+}
+
+.mac-split-view:where([data-divider-style="pane-splitter"]) > .mac-split-view-divider {
+  --_thickness: 10px;
+
+  background: var(--mac-split-view-splitter-fill);
+}
+
+/* The dimple of the two bands: a 6 pt disc at the divider's centre, shaded from above
+   (measured on the thick divider between the two lists of the Sharing pane). */
+.mac-split-view:where([data-divider-style="thick"], [data-divider-style="pane-splitter"])
+> .mac-split-view-divider::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 6px;
+  height: 6px;
+  margin: auto;
+  border-radius: 50%;
+  background: var(--mac-split-view-dimple);
+  pointer-events: none;
+}
+
+/* The pane splitter's dimple can still be recoloured through its earlier hook. */
+.mac-split-view:where([data-divider-style="pane-splitter"]) > .mac-split-view-divider::after {
+  background: var(--mac-split-view-splitter-dimple, var(--mac-split-view-dimple));
+}
+
+.mac-split-view:where([data-orientation="horizontal"]) > .mac-split-view-divider {
+  width: var(--_thickness);
+  cursor: col-resize;
+}
+
+.mac-split-view:where([data-orientation="vertical"]) > .mac-split-view-divider {
+  height: var(--_thickness);
+  cursor: row-resize;
+}
+
+/* Hit area of a thin divider: the line and 2 pt on each side. */
+.mac-split-view-divider::before {
+  content: "";
+  position: absolute;
+  inset: 0 -2px;
+}
+
+.mac-split-view:where([data-orientation="vertical"]) > .mac-split-view-divider::before {
+  inset: -2px 0;
+}
+
+.mac-split-view:where([data-divider-style="thick"], [data-divider-style="pane-splitter"])
+  > .mac-split-view-divider::before {
+  inset: 0;
+}
+
+/* As specific as the orientation rules above, and after them. A divider is disabled by its
+   prop, or because no pane beside it has a size: both set aria-disabled. */
+.mac-split-view > .mac-split-view-divider:where([aria-disabled="true"]) {
+  cursor: default;
+}
+
+.mac-split-view-divider:where([aria-disabled="true"])::before {
+  content: none;
+}
+
+.mac-split-view-divider:where(:focus-visible, [data-force~="focus"]) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+}
+
+.mac-split-view-divider:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  outline: none;
+}
+
+/* As specific as the divider-style rules above, and after them. The line is the system's
+   text colour; the wide dividers, which have no line, are a band with an edge on each side. */
+@media (forced-colors: active) {
+  .mac-split-view > .mac-split-view-divider {
+    background: CanvasText;
+  }
+
+  .mac-split-view:where([data-divider-style="thick"], [data-divider-style="pane-splitter"])
+    > .mac-split-view-divider {
+    border: 1px solid CanvasText;
+    background: Canvas;
+  }
+
+  .mac-split-view > .mac-split-view-divider::after {
+    background: var(--mac-split-view-dimple-forced);
+  }
+}

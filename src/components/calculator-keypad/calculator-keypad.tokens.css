@@ -1,0 +1,59 @@
+/*
+ * Calculator keypad colours (reference/spec/components/calculator-keypad.md), read from
+ * Light-Calculator and Dark-Calculator.
+ *
+ * The keypad is dark in both appearances, and Calculator's window is a dark window in both
+ * (dark rim, hairline, shadow and window controls). Only the three neutral fills differ
+ * between the two captures. They are therefore interpolated with --mac-appearance-dark, the
+ * number that follows the page's appearance, and not written with light-dark(): inside a
+ * window that is pinned to the dark colour scheme, light-dark() would always pick the dark
+ * side. Declared for `:root, [data-appearance]`, like every value built on that number.
+ */
+:root,
+[data-appearance] {
+  /* [measured] display, window body and the 1 pt gaps between keys (@ 170,150):
+     #37393c in the light capture, #2d3134 in the dark one */
+  --mac-calculator-keypad-background: color-mix(
+    in srgb,
+    #37393c,
+    #2d3134 calc(var(--mac-appearance-dark) * 100%)
+  );
+  /* [measured] function keys (@ 170,250): #4a4c4e, #424447 */
+  --mac-calculator-keypad-function: color-mix(
+    in srgb,
+    #4a4c4e,
+    #424447 calc(var(--mac-appearance-dark) * 100%)
+  );
+  /* [measured] digit keys (@ 170,350): #68696b, #616365 */
+  --mac-calculator-keypad-digit: color-mix(
+    in srgb,
+    #68696b,
+    #616365 calc(var(--mac-appearance-dark) * 100%)
+  );
+  /* [provisional] pressed neutral keys lighten: white at 20% over a function key and at 40%
+     over a digit key. No screenshot shows a pressed key. */
+  --mac-calculator-keypad-function-pressed: color-mix(
+    in srgb,
+    #6f7173,
+    #686a6c calc(var(--mac-appearance-dark) * 100%)
+  );
+  --mac-calculator-keypad-digit-pressed: color-mix(
+    in srgb,
+    #a5a6a7,
+    #a0a1a3 calc(var(--mac-appearance-dark) * 100%)
+  );
+}
+
+:root {
+  /* [measured] operator keys (@ 520,350) and display digits (@ 441,190), the same in both
+     captures */
+  --mac-calculator-keypad-operator: #ff9f0b;
+  --mac-calculator-keypad-display-text: #ffffff;
+  /* [measured, computed] key labels: white at 85% gives #e8e8e9 on a digit key, #e3e4e4 on a
+     function key and #fff0e0 on an operator key */
+  --mac-calculator-keypad-label: rgb(255 255 255 / 0.85);
+  /* [provisional] a pressed operator key darkens: black at 20% over the fill */
+  --mac-calculator-keypad-operator-pressed: #cc7e0a;
+  /* [provisional] 1 pt inset outline of an armed operator key */
+  --mac-calculator-keypad-armed: rgb(0 0 0 / 0.25);
+}

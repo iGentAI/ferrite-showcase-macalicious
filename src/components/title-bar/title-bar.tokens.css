@@ -1,0 +1,62 @@
+/*
+ * Title bar tokens. Measured on Light-/Dark-Finder-Network (column x=1200 / x=1300, the
+ * 55 pt unified bar), Light-/Dark-System-Preferences-General (38 pt) and, for the inactive
+ * rows, Light-/Dark-Safari-v13-Picture-in-Picture and Light-/Dark-Split-Screen-Apps.
+ * The gradient itself is the shared --mac-material-titlebar.
+ */
+:root {
+  /*
+   * The two device-pixel rows at the top. They are stored as the white that, under the
+   * window's inner rim, composites to the measured rows: #f6f6f6 and #ececec on #e5e5e5 in
+   * Aqua, #858686 and #767677 on #404142 in Dark Aqua. The same pair gives the rows of an
+   * inactive bar (#fdfdfd / #f8f8f8 on #f6f6f6; #575757 / #424242 on #2d2d2d without a rim).
+   * The layers stack: the first covers one row, the second both. [measured, computed]
+   */
+  --mac-title-bar-highlight: light-dark(rgb(255 255 255 / 0.44), rgb(255 255 255 / 0.11));
+  --mac-title-bar-highlight-second: light-dark(rgb(255 255 255 / 0.27), rgb(255 255 255 / 0.1));
+
+  /* The two rows at the bottom: a shadow row, then the separator. [measured] */
+  --mac-title-bar-shadow-row: light-dark(#bdbdbd, #2a2a2a);
+  --mac-title-bar-separator: light-dark(#a7a7a7, #000000);
+  /* Inactive window (Safari; Notes reads #cecece for the light separator). [measured] */
+  --mac-title-bar-shadow-row-inactive: light-dark(#e7e7e7, #242424);
+  --mac-title-bar-separator-inactive: light-dark(#d1d1d1, #000000);
+
+  /* The same two rows when another bar follows (divider="bar"): #c5c5c5, #afafaf above the
+     Finder tab bar and #c3c3c3, #adadad above Console's scope bar; #444546, #515253 and
+     #424344, #4f5051 in Dark Aqua. The midpoints are stored. [measured] */
+  --mac-title-bar-shadow-row-bar: light-dark(#c4c4c4, #434445);
+  --mac-title-bar-separator-bar: light-dark(#aeaeae, #505152);
+  /* Inactive, above Safari's tab bar [measured]; Aqua is the same as above content */
+  --mac-title-bar-shadow-row-bar-inactive: light-dark(#e7e7e7, #3c3d3f);
+  --mac-title-bar-separator-bar-inactive: light-dark(#d1d1d1, #494a4c);
+
+  /* divider="line": both rows one colour, Dictionary rows 108, 109 @ x=140..1480. [measured] */
+  --mac-title-bar-line: light-dark(#bdbdbd, #5d5e5f);
+  /* divider="line" fill: the upper part of the gradient Dictionary's bar shares with its scope
+     bar (measurements: the docs page, Visual comparison). [measured] */
+  --mac-title-bar-line-fill: linear-gradient(
+    light-dark(#e5e5e5, #434446) 2px,
+    light-dark(#d4d4d4, #3a3b3c)
+  );
+
+  /*
+   * The translucent bar of a movie window (material="translucent"), dark in both appearances,
+   * so no light-dark(). Read from 10-15-Catalina-Light-QuickTime and its Dark twin (window at
+   * 112,76), columns x=160..2900 of rows 2..41. [measured, computed] With the backdrop taken
+   * out, the tint is #4e5051 at 79% falling to #3e3f40 at 82% in the light capture and
+   * #47494c to #38393c in the dark one; the mean of the two is stored.
+   */
+  --mac-title-bar-translucent: linear-gradient(rgb(75 77 78 / 0.79), rgb(59 60 62 / 0.82));
+  /* [provisional] In a window that is not key: no capture shows one. The flat inactive Dark
+     Aqua fill at the bar's own opacity. */
+  --mac-title-bar-translucent-inactive: rgb(45 45 45 / 0.8);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    /* [provisional] the tints flattened over a mid grey; no capture shows them */
+    --mac-title-bar-translucent: linear-gradient(#56585a, #47484a);
+    --mac-title-bar-translucent-inactive: #3d3d3d;
+  }
+}

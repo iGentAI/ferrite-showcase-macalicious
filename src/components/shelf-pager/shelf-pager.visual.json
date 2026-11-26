@@ -1,0 +1,317 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "next-light",
+      "description": "The trailing chevron of TV's hero shelf, enabled, in the window's right margin, Aqua. Nothing is masked.",
+      "example": "visual-next",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": { "1x": 0.064, "2x": 0.0033 },
+      "deltaBudget": { "1x": 5.0, "2x": 0.45 },
+      "reference": {
+        "file": "10-15-Catalina-Light-TV.png",
+        "crop": { "x": 2640, "y": 1134, "width": 56, "height": 88 }
+      }
+    },
+    {
+      "name": "next-dark",
+      "description": "The trailing chevron of TV's first shelf, enabled, in the window's right margin, Dark Aqua. Nothing is masked.",
+      "example": "visual-next",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": { "1x": 0.063, "2x": 0.0025 },
+      "deltaBudget": { "1x": 4.4, "2x": 0.4 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-TV.png",
+        "crop": { "x": 2640, "y": 364, "width": 56, "height": 88 }
+      }
+    },
+    {
+      "name": "previous-light",
+      "description": "The leading chevron of TV's hero shelf, disabled, in the window's left margin, Aqua. Nothing is masked.",
+      "example": "visual-previous",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": { "1x": 0.03, "2x": 0.001 },
+      "deltaBudget": { "1x": 1.2, "2x": 0.15 },
+      "reference": {
+        "file": "10-15-Catalina-Light-TV.png",
+        "crop": { "x": 116, "y": 1134, "width": 56, "height": 88 }
+      }
+    },
+    {
+      "name": "previous-dark",
+      "description": "The leading chevron of TV's first shelf, disabled, in the window's left margin, Dark Aqua. Nothing is masked.",
+      "example": "visual-previous",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": { "1x": 0.028, "2x": 0.001 },
+      "deltaBudget": { "1x": 1.1, "2x": 0.15 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-TV.png",
+        "crop": { "x": 116, "y": 364, "width": 56, "height": 88 }
+      }
+    },
+    {
+      "name": "states-light",
+      "description": "What no screenshot shows together, Aqua: an enabled leading chevron and a disabled trailing one, each 13.5 pt from its edge of the pager and level with its middle.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 120, "height": 44 },
+        "pixels": [
+          {
+            "x": 14.2,
+            "y": 22,
+            "color": "#262626",
+            "tolerance": 8,
+            "scale": 2,
+            "note": "the leading chevron's point, 0.7 pt inside its box, which starts 13.5 pt in: enabled (spec: Colours, chevron enabled, measured)"
+          },
+          {
+            "x": 105.5,
+            "y": 22,
+            "color": "#d4d4d4",
+            "tolerance": 8,
+            "scale": 2,
+            "note": "the trailing chevron's point, 1 pt inside its box, which ends 13.5 pt before the edge: disabled (spec: Colours, chevron disabled, measured)"
+          },
+          {
+            "x": 10,
+            "y": 22,
+            "color": "#ffffff",
+            "note": "the 13.5 pt between the pager's edge and the leading chevron"
+          },
+          {
+            "x": 60,
+            "y": 22,
+            "color": "#ffffff",
+            "note": "between the chevrons: the pager draws nothing else"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-dark",
+      "description": "An enabled leading chevron and a disabled trailing one, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 120, "height": 44 },
+        "pixels": [
+          {
+            "x": 14.2,
+            "y": 22,
+            "color": "#dddede",
+            "tolerance": 8,
+            "scale": 2,
+            "note": "the leading chevron's point: enabled (spec: Colours, chevron enabled, measured)"
+          },
+          {
+            "x": 105.5,
+            "y": 22,
+            "color": "#444647",
+            "tolerance": 8,
+            "scale": 2,
+            "note": "the trailing chevron's point: disabled (spec: Colours, chevron disabled, measured)"
+          },
+          { "x": 60, "y": 22, "color": "#1e2022", "note": "between the chevrons" }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the leading chevron, reached with Tab, Aqua: a 3 pt ring around its 13 x 29 pt box.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 120, "height": 44 },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 6,
+            "color": "#8cb5fb",
+            "tolerance": 4,
+            "note": "focus ring token rgb(24 106 246 / 0.5) over the page #ffffff, 1.5 pt above the chevron's box, which starts 7.5 pt down"
+          },
+          { "x": 20, "y": 2, "color": "#ffffff", "note": "above the ring" }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the leading chevron, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 120, "height": 44 },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 6,
+            "color": "#256491",
+            "tolerance": 4,
+            "note": "focus ring token rgb(43 168 255 / 0.5) over the page #1e2022, 1.5 pt above the chevron's box"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-disabled-light",
+      "description": "A disabled chevron stays in the tab order, Aqua: the second Tab puts the ring around the disabled trailing chevron.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 2 }],
+      "expect": {
+        "size": { "width": 120, "height": 44 },
+        "pixels": [
+          {
+            "x": 100,
+            "y": 6,
+            "color": "#8cb5fb",
+            "tolerance": 4,
+            "note": "focus ring above the trailing chevron's box"
+          },
+          { "x": 20, "y": 6, "color": "#ffffff", "note": "no ring left around the leading chevron" }
+        ]
+      }
+    },
+    {
+      "name": "focus-inactive-light",
+      "description": "Tab in a window that is not key, Aqua: the chevron takes the focus without a ring.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 120, "height": 44 },
+        "pixels": [
+          { "x": 20, "y": 6, "color": "#ffffff", "note": "no ring (CONTRIBUTING, Window state)" }
+        ]
+      }
+    },
+    {
+      "name": "paging-start-light",
+      "description": "The shelf example at its start, Aqua: the leading chevron is disabled, level with the cards (8 pt below the pager's middle).",
+      "example": "visual-paging",
+      "appearance": "light",
+      "expect": {
+        "pixels": [
+          {
+            "x": 14.2,
+            "y": 95.5,
+            "color": "#d4d4d4",
+            "tolerance": 8,
+            "scale": 2,
+            "note": "the leading chevron's point: disabled at the start of the shelf"
+          },
+          { "x": 5, "y": 95.5, "color": "#ffffff", "note": "the margin before the chevron" }
+        ]
+      }
+    },
+    {
+      "name": "paging-next-light",
+      "description": "The shelf example after a click on the trailing chevron, Aqua: the shelf has scrolled by a page, so the leading chevron is enabled and the trailing one, at the end, disabled. The cards of the page before do not reach under the chevron.",
+      "example": "visual-paging",
+      "appearance": "light",
+      "actions": [{ "click": "[data-direction=next]" }],
+      "expect": {
+        "pixels": [
+          {
+            "x": 14.2,
+            "y": 95.5,
+            "color": "#262626",
+            "tolerance": 8,
+            "scale": 2,
+            "note": "the leading chevron's point: enabled once the shelf has left its start"
+          },
+          {
+            "x": 505.5,
+            "y": 95.5,
+            "color": "#d4d4d4",
+            "tolerance": 8,
+            "scale": 2,
+            "note": "the trailing chevron's point: disabled at the end of the shelf"
+          },
+          {
+            "x": 20,
+            "y": 95.5,
+            "color": "#ffffff",
+            "note": "inside the chevron's box, beside its strokes: no card under it"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rtl-light",
+      "description": "A pager in a block whose CSS direction is right to left, with no dir attribute, Aqua: the leading chevron is at the right and points right, the disabled trailing one at the left and points left.",
+      "example": "visual-rtl",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 120, "height": 44 },
+        "pixels": [
+          {
+            "x": 105.5,
+            "y": 22,
+            "color": "#262626",
+            "tolerance": 8,
+            "scale": 2,
+            "note": "the leading chevron's point at the outer edge of its box, which is now at the right: enabled"
+          },
+          {
+            "x": 14.2,
+            "y": 22,
+            "color": "#d4d4d4",
+            "tolerance": 8,
+            "scale": 2,
+            "note": "the trailing chevron's point at the outer edge of its box, which is now at the left: disabled"
+          },
+          {
+            "x": 95,
+            "y": 22,
+            "color": "#ffffff",
+            "note": "the inner side of the leading chevron's box at mid height: no stroke, it does not point inwards"
+          },
+          {
+            "x": 25,
+            "y": 22,
+            "color": "#ffffff",
+            "note": "the inner side of the trailing chevron's box at mid height: no stroke"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The enabled chevron held down with the mouse, Aqua: 70% opaque.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "press": "[data-direction=previous]" }],
+      "expect": {
+        "size": { "width": 120, "height": 44 },
+        "pixels": [
+          {
+            "x": 14.2,
+            "y": 22,
+            "color": "#676767",
+            "tolerance": 8,
+            "scale": 2,
+            "note": "the chevron #262626 at 70% over the page #ffffff (spec: States, pressed, inferred)"
+          },
+          {
+            "x": 105.5,
+            "y": 22,
+            "color": "#d4d4d4",
+            "tolerance": 8,
+            "scale": 2,
+            "note": "the disabled chevron is unchanged"
+          },
+          { "x": 60, "y": 22, "color": "#ffffff", "note": "between the chevrons" }
+        ]
+      }
+    }
+  ]
+}

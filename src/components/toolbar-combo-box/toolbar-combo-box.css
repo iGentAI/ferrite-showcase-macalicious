@@ -1,0 +1,189 @@
+/*
+ * Toolbar combo box (NSComboBox in a toolbar or a format bar).
+ *
+ * The root's box is the bezel's fill; ::before is the bezel, one hairline larger on every side
+ * for Aqua's border, as on a toolbar button. Inside are the input and, after a 1 pt divider,
+ * the button with the chevron. Measured on TextEdit's font size control, the small size,
+ * 43 x 15 pt of fill (44 x 16 pt with Aqua's border):
+ *
+ *   |<-3.5->[text 9 pt ...]|1|<-5->[chevron 7]<-6->|
+ *            field 24         button 18
+ *
+ * States
+ *   [data-size="small"]                 the format bar's size
+ *   :focus-within                       focus ring, in the key window only
+ *   :active on the button,
+ *   [data-popup-open]                   pressed, or the list is open: the button darkens
+ *   [data-disabled]                     set by Base UI for `disabled`
+ *   [data-window-state="main"] *        bezel and ink as in the key window (measured on
+ *                                       TextEdit under its Print sheet); no focus ring
+ *                                       [provisional]
+ *   [data-window-state="inactive"] *    flat outlined bezel, grey ink
+ *   [data-force~="pressed" | "focus"]   static previews, read from the input
+ */
+.mac-toolbar-combo-box {
+  --_fill: var(--mac-toolbar-combo-box-fill);
+  --_border-top: var(--mac-toolbar-button-border-top);
+  --_border-side: var(--mac-toolbar-button-border-side);
+  --_border-bottom: var(--mac-toolbar-button-border-bottom);
+  --_shadow: 0 var(--mac-hairline) 0 var(--mac-toolbar-button-shadow);
+  --_arrow: var(--mac-toolbar-combo-box-arrow);
+  --_inset: 5px;
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  flex: none;
+  box-sizing: border-box;
+  width: 60px;
+  height: 22px;
+  border-radius: var(--mac-radius-control-regular);
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  vertical-align: middle;
+}
+
+.mac-toolbar-combo-box::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: calc(-1 * var(--mac-hairline));
+  box-sizing: border-box;
+  border: var(--mac-hairline) solid;
+  border-color: var(--_border-top) var(--_border-side) var(--_border-bottom);
+  border-radius: calc(var(--mac-radius-control-regular) + var(--mac-hairline));
+  background: var(--_fill) padding-box;
+  box-shadow: var(--_shadow);
+  pointer-events: none;
+}
+
+/* The format bar's size: 9 pt text, its baseline 11 pt under the fill's top. */
+.mac-toolbar-combo-box:where([data-size="small"]) {
+  --_inset: 3.5px;
+
+  width: 43px;
+  height: 15px;
+  font: var(--mac-font-control-mini);
+  letter-spacing: var(--mac-tracking-mini);
+}
+
+.mac-toolbar-combo-box-input {
+  flex: 1 1 auto;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  padding: 0 1px 0 var(--_inset);
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  appearance: none;
+  outline: none;
+}
+
+.mac-toolbar-combo-box-input::placeholder {
+  color: var(--mac-color-text-placeholder);
+  opacity: 1;
+}
+
+/* The button: 18 pt of the fill's trailing end, after the divider. */
+.mac-toolbar-combo-box-button {
+  flex: none;
+  box-sizing: content-box;
+  width: 18px;
+  margin: 0;
+  padding: 0;
+  border: 0 solid var(--mac-toolbar-combo-box-divider);
+  border-inline-start-width: 1px;
+  border-start-end-radius: inherit;
+  border-end-end-radius: inherit;
+  background: none;
+  background-clip: padding-box;
+  color: var(--_arrow);
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+/* The chevron's box: 7 x 5 pt, 5 pt after the divider, its top 5.4 pt under the top of a 15 pt
+   fill (a button centres its content, so 0.8 pt of margin above a 5 pt box). */
+.mac-toolbar-combo-box-button > svg {
+  display: block;
+  width: 7px;
+  height: 5px;
+  margin: 0.8px 0 0 5px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+}
+
+/* Pressed, or with the list open: the button's part of the bezel darkens. */
+.mac-toolbar-combo-box-button:where(:active, [data-popup-open]):where(:not([data-disabled])),
+.mac-toolbar-combo-box:where(:has(> [data-force~="pressed"]):not([data-disabled]))
+  > .mac-toolbar-combo-box-button {
+  background-image: var(--mac-toolbar-button-fill-pressed);
+}
+
+/* Inactive window: Aqua keeps only an outline, Dark Aqua a fainter fill; the ink greys. */
+.mac-toolbar-combo-box:where([data-window-state="inactive"] *) {
+  --_fill: var(--mac-toolbar-button-fill-inactive);
+  --_border-top: var(--mac-toolbar-button-border-inactive);
+  --_border-side: var(--mac-toolbar-button-border-inactive);
+  --_border-bottom: var(--mac-toolbar-button-border-inactive);
+  --_shadow: inset 0 0 0 var(--mac-hairline) var(--mac-toolbar-button-ring-inactive);
+  --_arrow: var(--mac-toolbar-button-text-inactive);
+
+  color: var(--mac-toolbar-button-text-inactive);
+}
+
+/* Disabled: the bezel stays, the text and the chevron dim. */
+.mac-toolbar-combo-box:where([data-disabled]) {
+  --_arrow: var(--mac-toolbar-button-text-disabled);
+
+  color: var(--mac-toolbar-button-text-disabled);
+}
+
+.mac-toolbar-combo-box:where([data-disabled]):where([data-window-state="inactive"] *) {
+  --_arrow: var(--mac-toolbar-button-text-inactive-disabled);
+
+  color: var(--mac-toolbar-button-text-inactive-disabled);
+}
+
+/* Focus: a text field shows its ring for pointer focus too; only in the key window. */
+.mac-toolbar-combo-box:where(:focus-within, :has(> [data-force~="focus"])):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-toolbar-combo-box {
+    color: FieldText;
+  }
+
+  .mac-toolbar-combo-box::before {
+    border: 1px solid ButtonText;
+  }
+
+  .mac-toolbar-combo-box-button {
+    border-color: ButtonText;
+    color: ButtonText;
+  }
+
+  .mac-toolbar-combo-box:where([data-disabled]),
+  .mac-toolbar-combo-box:where([data-disabled]) > .mac-toolbar-combo-box-button {
+    border-color: GrayText;
+    color: GrayText;
+  }
+
+  .mac-toolbar-combo-box:where([data-disabled])::before {
+    border-color: GrayText;
+  }
+}

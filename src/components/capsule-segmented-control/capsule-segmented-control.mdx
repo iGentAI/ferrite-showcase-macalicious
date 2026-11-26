@@ -1,0 +1,139 @@
+---
+title: Capsule Segmented Control
+description: A flat segmented control with capsule ends and a hairline outline, as the Info and Picture switch of a Contacts card being edited.
+---
+
+<Example name="basic" both />
+
+Contacts draws this control itself: it is not one of AppKit's `NSSegmentedControl` styles. It
+has no bezel, no shadow and no dividers: one hairline outline with capsule ends, and a faint
+grey fill in the selected segment. For the standard bezelled control use the
+[segmented control](/components/segmented-control); in a toolbar, the
+[toolbar segmented control](/components/toolbar-segmented-control). It is built on
+[Base UI's Toggle Group](https://base-ui.com/react/components/toggle-group) and Toggle, which
+supply the group, the single tab stop, the arrow keys and the pressed state of each segment.
+
+## Usage
+
+```tsx
+import { CapsuleSegment, CapsuleSegmentedControl } from "macalicious/capsule-segmented-control";
+import "macalicious/capsule-segmented-control.css";
+
+<CapsuleSegmentedControl aria-label="Card" defaultValue={["info"]} style={{ width: 215 }}>
+  <CapsuleSegment value="info">Info</CapsuleSegment>
+  <CapsuleSegment value="picture">Picture</CapsuleSegment>
+</CapsuleSegmentedControl>
+```
+
+Or copy the source into your project: `npx macalicious add capsule-segmented-control`.
+
+As in Base UI the value is an array; the control reports it with one entry. Exactly one segment
+is always selected: clicking the selected segment does not deselect it, and the control never
+shows an empty selection. The selection is the first entry of `value` (or `defaultValue`) that
+names a mounted segment; other entries are ignored. When no entry does (no value, an empty
+array, a mistyped default, or the selected segment was removed), the first segment in document
+order that is not disabled is selected instead (the first segment, if all are disabled). This
+fallback is not a choice by the user, so `onValueChange` is not called for it. A handler that
+cancels a change (`details.cancel()`) keeps the selection. An uncontrolled control keeps the
+selection as its value, with one entry: a removed segment that comes back is not reselected. A
+controlled control only shows the fallback and leaves `value` as it is, so a controlled `[]`
+does not clear the selection; update `value` when you remove the segment it names. The group
+reads its segments' order from the document whenever it is needed, so segments moved by a
+component of your own are followed too.
+
+Server-rendered HTML and the first render select one valid segment, chosen the same way from
+the segments written among the control's children, directly or inside fragments and arrays.
+Segments that only your own components render are known once they mount: in server HTML the
+first given entry stands for them, so give such a control a `value` that names one. In
+development the control warns in the console when its first render had to be corrected.
+
+Every segment needs a `value`, unique in the group; the type requires it. Segments may sit
+inside fragments, arrays or components of your own: the group finds each one wherever it is
+rendered, in document order. The segments share the width equally; without a `width` the
+control is as wide as its widest title needs (10 pt beside each title). Contacts' is 215 pt
+wide.
+
+## Guidelines
+
+- Use it to switch one view between a few modes inside content, where a bezelled control would
+  be too heavy, as Contacts does between a card's information and its picture.
+- Keep to short text titles, two or three segments.
+- It draws no background of its own behind the segments that are not selected: place it on a
+  plain surface.
+
+These are this library's own advice, drawn from the one place Catalina shows the control; Apple's
+Human Interface Guidelines do not describe it, so they are not verified against any guideline
+text.
+
+## Variants and states
+
+<Example name="states" both />
+
+| State | Appearance |
+| --- | --- |
+| Normal | Title in the control text colour, no fill |
+| Selected | A faint fill (black at 4% in Aqua) and a title at full strength |
+| Pressed | A stronger tint while the mouse button is down |
+| Disabled | Titles in the disabled control text colour; the selected segment keeps its fill |
+| Focused | The focus ring around the focused segment, only in the key window |
+
+The control looks the same in a window that is not key; no capture shows it there.
+
+## Sizes
+
+One size: 20 pt high with 13 pt titles, the size Contacts draws it at. There is no `size` prop.
+
+## API
+
+<PropsTable name="CapsuleSegmentedControlProps" />
+
+It also accepts every prop of Base UI's Toggle Group except `multiple` and `orientation`:
+`value`, `defaultValue`, `onValueChange`, `disabled`, `loopFocus`, `render`.
+
+<PropsTable name="CapsuleSegmentProps" />
+
+A segment also accepts every other prop of Base UI's Toggle: `disabled`, `onPressedChange`,
+`render` and the attributes of a `<button>`.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-pressed` | segment | present | Set by Base UI on the selected segment. |
+| `data-disabled` | both | present | Set by Base UI. |
+| `data-force` | segment | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+| Class | Element |
+| --- | --- |
+| `mac-capsule-segmented-control` | The group. |
+| `mac-capsule-segmented-control-segment` | A segment, a native `<button>`. |
+
+## Accessibility
+
+- The control is a group and needs a name: `aria-label` or `aria-labelledby`.
+- Each segment is a native button with `aria-pressed`.
+- The control is one tab stop. The arrow keys move focus between segments and wrap around
+  (`loopFocus={false}` stops at the ends); Space and Return select the focused segment.
+- A disabled segment is skipped by the arrow keys.
+- In forced-colours mode the outline and titles take the system button text colour, the
+  selected segment the system highlight, and disabled titles the system's disabled text colour.
+
+## Visual comparison
+
+`visual-contacts` reproduces the Info / Picture control of the card being edited in the Aqua
+Contacts capture. Results in Chromium on Linux:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Contacts, Aqua | 3.69% of pixels differ | 3.30% |
+| Contacts, Aqua, titles masked (colour distance 0.05) | 0.00% | 0.11% |
+| Dark Aqua | pixel check of the provisional tokens | pixel check |
+
+The masked comparison scores the drawing: the 215 x 20 pt capsule, its hairline and colour, and
+the selected segment's fill. The unmasked one differs in the titles, which are set in the
+fallback font off Apple platforms; their baseline and position match the capture to a pixel.
+
+Measured, in Aqua: the height, the capsule ends, the outline's width and colour, the selected
+fill, the two title colours, the title size and its baseline. Provisional: everything in Dark
+Aqua, where the only Contacts capture shows a card that is not being edited (the dark
+comparison checks that the provisional tokens are what is drawn, not that they are right); the
+pressed tint and the disabled look, which no capture shows; and the 10 pt beside a title, which
+Contacts' fixed width does not reveal.

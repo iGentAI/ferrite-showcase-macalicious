@@ -1,0 +1,269 @@
+---
+title: Launchpad
+description: Launchpad of macOS 10.15 on a stage that stands for the screen, with the 35 entries of the captured first page, a second page, a search field that also looks into folders, page dots and arrow keys, the folder Other with its 17 applications, and the Dock under it.
+layout: full
+order: 6
+---
+
+<Example name="basic" />
+
+Click **Launchpad**, the second tile of the Dock. Type to search, turn the page with the dots
+or the arrow keys, open the folder Other, and choose an application: Launchpad closes and the
+desktop says which one was chosen. Escape, a click on the background, or the Launchpad tile
+again closes it without choosing. Nothing is launched: the applications are names.
+
+Every application icon and the desktop picture are Apple's artwork, so the demo shows
+placeholders: a plain rounded square in the tint of the application's category with its
+initial, and an abstract gradient for the picture. Neither is a drawing of what it replaces.
+
+## What it shows
+
+- The stage: a `div` that stands for the screen. It is as wide as the page allows and keeps
+  the 1680 by 1050 proportion of the captured screen down to 672 pt wide; the grid, the
+  icons and the Dock's tiles shrink with it. Narrower than that the stage stops shrinking in
+  height and stays 420 pt tall, so that the grid and the Dock keep room to be used. Launchpad
+  is rendered into the stage and covers it, not the page.
+- A [Desktop](/components/desktop) with the abstract picture, and on it the line that names
+  the application that was chosen.
+- A [Dock](/components/dock) with the 20 tiles of the captures as placeholders: Finder with
+  its running dot, Launchpad, sixteen applications, the separator, Downloads and the Trash.
+  It stays in front of Launchpad, as in Catalina, and a click on one of its applications
+  while Launchpad shows closes Launchpad and reports that application.
+- [Launchpad](/components/launchpad): the overlay with its scrim and blur, the search field,
+  the 7 by 5 grid of `LaunchpadItem`s and the page dots, a
+  [Page Control](/components/page-control). Page 1 holds the 35 entries of the captures in
+  their order; the second page holds six more names of the demo's choosing, because the
+  captures show that a second page exists and not what is on it.
+- A [Launchpad Folder](/components/launchpad-folder): Other, the 28th entry, with the 17
+  applications of the Launchpad-Folder captures. Its tile shows the first nine placeholders,
+  small. While it is open the search field, the grid, the page dots and the Dock are gone,
+  as in the captures.
+
+| Action | Where | What happens |
+| --- | --- | --- |
+| Show or hide | the Dock's Launchpad tile | Launchpad fades in over the stage, or out. |
+| Close | Escape, or a click between the icons | Launchpad goes; nothing is chosen. |
+| Search | type anywhere, or click the field | Every application whose name holds the text is shown on one page, those in the folder too; the dots go. Return chooses the first. The field is empty the next time Launchpad shows. |
+| Turn the page | a page dot; Left and Right Arrow | The arrows move among the applications first and turn the page from the last or first one of a page, and from the overlay itself. An arrow held with Command, Option, Control or Shift does not turn the page. Launchpad remembers the page. |
+| Open the folder | click Other, or Return on it | The panel of its applications; Escape or a click beside it closes the folder and leaves Launchpad. A `defaultFolder` that is not a folder on the page shown opens nothing. |
+| Choose | click an application, or Return on it | Launchpad (and its folder) closes; `onLaunch` is called and the desktop names the application. |
+
+## Source walkthrough
+
+**`launchpad-data.ts`** is the content: `pageOne`, `otherFolder`, `pageTwo` and
+`defaultEntries`, each entry an application `{ id, name, category }` or a folder
+`{ id, name, apps }`, and the Dock's sixteen applications. The category only chooses the
+placeholder's tint.
+
+**`launchpad.tsx`** is `CatalinaLaunchpad`. The stage is state, because Launchpad is rendered
+into it, and the entries become the library's elements directly, so that Launchpad's own
+search and paging work on them:
+
+```tsx
+<div ref={setStage} className="mac-launchpad-demo">
+  <Desktop picture={picture}>…</Desktop>
+  <Dock>…</Dock>
+  <Launchpad
+    open={open}
+    onOpenChange={onOverlayOpenChange}
+    container={stage}
+    page={page}
+    onPageChange={setPage}
+    search={search}
+    onSearchChange={setSearch}
+    onKeyDown={turnPage}
+  >
+    {shown.map((entry) =>
+      isGroup(entry) ? (
+        <LaunchpadFolder
+          key={entry.id}
+          label={entry.name}
+          open={folderOpen && folder === entry.id}
+          onOpenChange={(next) => setFolder(next ? entry.id : null)}
+        >
+          {entry.apps.map(item)}
+        </LaunchpadFolder>
+      ) : (
+        item(entry)
+      ),
+    )}
+  </Launchpad>
+</div>
+```
+
+Three things are the demo's own. A search is given every application, the folders' included
+(`shown` is `applicationsOf(entries)` while the field holds text), so that the library's
+filter finds an application inside a folder, as Catalina does. `turnPage` is Launchpad's
+`onKeyDown`: the library's items leave an arrow key that leads nowhere to the grid's owner,
+and the demo turns the page with it. And the folder is controlled, so that the stage knows
+when to take the Dock away; `folderOpen` holds only while the folder's id is a folder on the
+page shown. `onOverlayOpenChange` notes when the press that closed Launchpad was on the
+Dock's Launchpad tile, so that the click that follows hides Launchpad and does not show it
+again: a browser closes the overlay on that press before the tile hears of it.
+
+**`launchpad.css`** sizes the stage, keeps the Dock above Launchpad's layer and draws the
+placeholders; **`launchpad.tokens.css`** holds the colours of the status line and of a
+placeholder's initial. Nothing in them restyles a library component.
+
+## Using the demo
+
+`CatalinaLaunchpad` renders the stage as its root and passes every other prop to that `div`.
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `entries` | `LaunchpadEntry[]` | What Launchpad holds; the captured page and the second page by default. |
+| `open`, `defaultOpen`, `onOpenChange` | `boolean`, `boolean`, `(open) => void` | Whether Launchpad shows, controlled or not; hidden at first by default. |
+| `defaultPage` | `number` | The page shown at first, from 0. |
+| `defaultSearch` | `string` | The text in the search field at first. |
+| `defaultFolder` | `string` | The id of the folder that is open at first, while Launchpad shows; only a folder on the page shown opens. |
+| `onLaunch` | `(app: LaunchpadApp) => void` | Called with the application chosen in the grid, in a folder or in the Dock. |
+| `picture` | `ReactNode` | The desktop picture, in place of the abstract one. |
+| `overlayProps` | `{ className?, style? }` | For the library's Launchpad overlay; the comparison fixtures use it. |
+| the rest | `ComponentProps<"div">` | `style`, `className`, `ref` and so on, on the stage. |
+
+## On the desktop
+
+The demo has no `app.ts`, so the [Desktop demo](/demos/desktop) does not list it, and that is
+deliberate. The desktop's contract for a hosted application is a component whose root is a
+window of the library, placed and sized by the window manager; its test of every descriptor
+asks the root for `data-window-state`. Launchpad is not a window. It is an overlay that
+covers the whole desktop under the Dock and hides the menu bar, and wrapping it in a window to
+satisfy the contract would show something Catalina does not have.
+
+The Desktop demo has a Launchpad of its own instead: the Launchpad tile of its Dock shows the
+library's [Launchpad](/components/launchpad) over its windows, filled with the applications
+of that desktop, and choosing one opens it there. This demo stays the page that reproduces
+the Launchpad captures: their grid, their folder and their Dock.
+
+## Accessibility
+
+- The stage's desktop is a group named "Desktop" and the Dock a `toolbar` named "Dock" with
+  one tab stop; its tiles are buttons named after what they stand for, and Finder is
+  described as running. The line that names the chosen application is a `status`.
+- Launchpad is a `dialog` named "Launchpad" that holds the keyboard focus while it shows and
+  returns it to where it was when it goes. The search field is a `searchbox`
+  named "Search", each application a `button` named by its name, and the dots a group named
+  "Pages" whose buttons are named "Page 1 of 2" and "Page 2 of 2".
+- Down Arrow goes from the overlay or the field into the grid, the arrow keys move among the
+  applications, Return or Space chooses, Escape closes. Left and Right Arrow turn the page
+  where no application takes them. In the search field they move the insertion point.
+- The folder is a button that says it opens a dialog; the open folder is a `dialog` named
+  "Other" with that name as its heading. Escape closes the folder first and Launchpad second.
+  Opened from the keyboard, or open at first, its first application has the focus and shows
+  the library's focus ring.
+- While Launchpad shows, the library hides everything outside it from assistive technology
+  and keeps the Tab key inside it, so the Dock, which Catalina leaves usable, can then be
+  reached with the pointer only. While a folder is open the Dock is `inert` and invisible.
+- The placeholders are decorative and hidden from assistive technology.
+
+## Fidelity
+
+The captures show Launchpad over Apple's desktop picture, blurred and dimmed, and everything
+Launchpad draws is translucent over it. The demo's picture is an abstract gradient, so the
+whole screen cannot be compared in colour: a score of it would measure the picture.
+`launchpad.visual.json` compares what can be compared, in two ways.
+
+**Crops against the captures.** `visual-grid` and `visual-folder` render the demo at 1680 by
+1050 pt with page 1, and with the folder open. Eight parts of the screen are compared with
+the Launchpad and Launchpad-Folder screenshots in both appearances. Behind each of those
+crops, and nowhere else, the fixture paints the capture's backdrop as measured at the crop's
+edges, and takes Launchpad's own scrim and blur off, as the library's own comparisons do; the
+open folder's blur cannot be taken off, so its backdrops reach 120 pt beyond their crops.
+Scores from `npm run visual -- launchpad/` in Chromium on Linux with the fallback font: the
+share of pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `grid-search-light` | Light-Launchpad (1400, 30, 560, 90) | 0.00% | 2.13 | 0.05% | 2.22 |
+| `grid-search-dark` | Dark-Launchpad, same crop | 0.00% | 1.98 | 0.08% | 2.02 |
+| `grid-pages-light` | Light-Launchpad (1620, 1810, 120, 52) | 1.03% | 2.23 | 0.46% | 2.05 |
+| `grid-pages-dark` | Dark-Launchpad, same crop | 1.28% | 0.86 | 0.53% | 0.62 |
+| `grid-folder-tile-light` | Light-Launchpad (2720, 1128, 256, 296) | 2.16% | 3.96 | 1.80% | 3.98 |
+| `grid-folder-tile-dark` | Dark-Launchpad, same crop | 2.19% | 3.45 | 1.85% | 3.45 |
+| `grid-folder-tile-drawing-light` (name masked) | as above | 0.09% | 1.63 | 0.27% | 1.66 |
+| `grid-folder-tile-drawing-dark` (name masked) | as above | 0.23% | 0.73 | 0.33% | 0.75 |
+| `grid-label-first-light` | Light-Launchpad (358, 372, 300, 48) | 10.28% | 9.75 | 8.63% | 9.44 |
+| `grid-label-first-dark` | Dark-Launchpad, same crop | 11.14% | 14.48 | 9.23% | 13.96 |
+| `grid-label-last-light` | Light-Launchpad (2698, 1700, 300, 48) | 15.89% | 20.06 | 13.45% | 20.37 |
+| `grid-label-last-dark` | Dark-Launchpad, same crop | 16.28% | 21.15 | 13.54% | 21.45 |
+| `folder-panel-top-left-light` | Light-Launchpad-Folder (244, 432, 140, 120) | 1.05% | 1.80 | 0.83% | 1.89 |
+| `folder-panel-top-left-dark` | Dark-Launchpad-Folder, same crop | 1.36% | 2.31 | 1.01% | 2.25 |
+| `folder-panel-bottom-right-light` | Light-Launchpad-Folder (2700, 1380, 440, 280) | 0.17% | 1.46 | 0.14% | 1.51 |
+| `folder-panel-bottom-right-dark` | Dark-Launchpad-Folder, same crop | 0.19% | 0.83 | 0.14% | 0.80 |
+| `folder-title-light` | Light-Launchpad-Folder (1560, 360, 240, 140) | 6.57% | 9.85 | 4.76% | 10.16 |
+| `folder-title-dark` | Dark-Launchpad-Folder, same crop | 7.14% | 9.31 | 4.92% | 9.53 |
+| `folder-title-drawing-light` (name masked) | as above | 1.95% | 4.18 | 2.37% | 4.21 |
+| `folder-title-drawing-dark` (name masked) | as above | 0.00% | 2.26 | 0.00% | 2.25 |
+
+Four more, `grid-label-first-backdrop-*` and `grid-label-last-backdrop-*`, are the companions
+the harness requires beside a comparison of unmasked text: the same crops with the name
+masked. All that is left in them is the backdrop the fixture paints (0.00%, mean Δ 0.44 to
+2.02), so they say that the painted backdrop is the capture's and nothing about the demo.
+
+**Checks, not comparisons.** `visual-checks` and `visual-checks-folder` render the same two
+states over a flat grey in place of the picture. Over a flat grey every layer's colour
+follows from the library's tokens, so points can be checked exactly, with no capture
+involved: the comparisons named `check-*` look for the edges of the search field, of the
+first and last placeholders of the grid, of the page dots, of the Dock, of the folder's panel
+and of the first and last placeholders in it, at the positions the captures give. Five of
+them use real input in a real browser: Right Arrow turns the page, a typed letter searches
+(and finds an application inside the folder), a click on a Dock tile and Escape close
+Launchpad, and Escape closes the folder and brings the Dock back. All pass at 1x and 2x in
+both appearances.
+
+### What is masked
+
+Every mask, in points from its crop's top left corner, and why:
+
+| Comparison | Mask (x, y, width, height) | Share of the crop | Why |
+| --- | --- | --- | --- |
+| `grid-search-*` | 103, 12, 74, 20 | 12% | The placeholder "Search" is text in the fallback font, wider than in San Francisco, and moves the magnifier beside it. |
+| `grid-folder-tile-*` | 19, 19, 90, 90 | 43% | The nine small icons on the tile: Apple's artwork in the capture, placeholders in the demo. |
+| `grid-folder-tile-drawing-*` | the same, and 34, 121, 60, 20 | 49% | Also the folder's name, text in the fallback font. |
+| `grid-label-first-backdrop-*` | 40, 2, 70, 20 | 39% | The name "App Store", text in the fallback font. |
+| `grid-label-last-backdrop-*` | 26, 2, 98, 20 | 54% | The name "Image Capture", text in the fallback font. |
+| `folder-title-drawing-*` | 20, 4, 80, 30 | 29% | The folder's name, text in the fallback font. |
+
+Nothing is masked in `grid-pages-*`, `grid-label-first-*`, `grid-label-last-*`,
+`folder-panel-*` and `folder-title-*`. No crop holds an application icon, apart from the nine
+on the folder's tile: the icons are not compared at all.
+
+### What is and is not compared
+
+Compared with the captures: the search field's place, size, fill and border; the page dots;
+the folder's tile where the grid puts its 28th entry; where the names of the first and last
+entries stand; two opposite corners of the open folder's panel; and the folder's name above
+the panel's top edge. Checked by computed colours: the rest of the grid's geometry, the
+Dock's place, the folder's panel and its grid.
+
+Not compared, and why:
+
+- **The application icons and the desktop picture** are Apple's artwork. The placeholders
+  and the abstract picture are not meant to look like them.
+- **The backdrop** in every crop is painted by the fixture from the capture's own pixels, so
+  no score says anything about how the demo's picture looks through Launchpad. The library's
+  scrim over a known backdrop is checked by `check-grid-*` (and by the library's own
+  `scrim-*`).
+- **The Dock over Launchpad** is checked for its place only. Its tiles are placeholders, and
+  its material over the blurred picture is the library's (compared on the Dock's own page
+  with the Desktop captures).
+- **The second page**, a search, keyboard focus and the stage at any other size are in no
+  screenshot: provisional.
+
+What differs, and why:
+
+- **The names stand about 1.5 pt too high.** In the captures a name's capitals start at
+  193.5 pt in the first row (858 pt in the fifth); the library's `LaunchpadItem` sets them
+  from 192 pt (856 pt). This is the library's distance between icon and name, which the demo
+  does not restyle, and it is nearly all of the `grid-label-*` scores together with the
+  fallback font.
+- **Text** is set in the fallback font off Apple devices: the names, the placeholder and the
+  folder's title.
+- **The folder's title in Aqua** carries a mean Δ of about 4 with the name masked: the
+  capture's backdrop turns from blue to brown along the crop's top, and the folder's blur,
+  applied to the fixture's measured colours a second time, flattens the turn.
+- **The folder's first application looks focused** when the folder is open at first or opened
+  from the keyboard: the library focuses it. The captures were opened with the pointer and
+  show no focus. It lies outside every crop.
+- **Pages are not swiped.** Catalina turns pages with a swipe and with Command-Arrow; the demo
+  uses the dots and the plain arrow keys, since a browser keeps Command-Arrow for history.

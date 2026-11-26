@@ -1,0 +1,320 @@
+/*
+ * HUD window: the dark translucent panel (NSPanel, HUD style) and QuickTime Player's floating
+ * controller. The root carries data-appearance="dark", so every token resolves to Dark Aqua.
+ *
+ * States
+ *   [data-variant="knob" | "scrubber"]     on a slider
+ *   [data-variant="controller"]            lighter material, 4 pt corners, no shadow or padding,
+ *                                          additive foreground
+ *   [data-title-bar]                       set while a title bar is drawn
+ *   [data-window-state="inactive"]         dimmed title
+ *   buttons: :hover, :active, :focus-visible, [data-disabled], [data-force~="hover" | "pressed" | "focus"]
+ */
+.mac-hud-window {
+  --_fg: var(--mac-color-label);
+  --_blend: normal;
+  --_title: var(--mac-color-label);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  border-radius: 6px;
+  box-shadow: var(--mac-shadow-panel);
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  text-align: start;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* The material is a layer under the content: on the root it would isolate the controller's
+   additive foreground from it. */
+.mac-hud-window::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--_material, var(--mac-material-hud));
+  -webkit-backdrop-filter: var(--mac-material-filter);
+  backdrop-filter: var(--mac-material-filter);
+  pointer-events: none;
+}
+
+.mac-hud-window:where([data-variant="controller"]) {
+  --_material: var(--mac-hud-window-controller-material);
+
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+/* The controller's glyphs and text add their light to the panel instead of covering it. */
+@supports (mix-blend-mode: plus-lighter) {
+  .mac-hud-window:where([data-variant="controller"]) {
+    --_fg: var(--mac-hud-window-vibrant);
+    --_blend: plus-lighter;
+  }
+}
+
+.mac-hud-window:where([data-window-state="inactive"], [data-window-state="inactive"] *) {
+  --_title: var(--mac-color-label-secondary);
+}
+
+.mac-hud-window-title-bar {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 19px;
+  padding: 0 22px;
+}
+
+.mac-hud-window-title {
+  overflow: hidden;
+  color: var(--_title);
+  font: var(--mac-font-window-title-small);
+  letter-spacing: var(--mac-tracking-small);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The button's box is 16 x 19 pt; the 10 pt circle and its x are the ::before. */
+.mac-hud-window-close {
+  position: absolute;
+  inset: 0 auto 0 3px;
+  width: 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mac-color-label-secondary);
+  cursor: default;
+  appearance: none;
+  outline: none;
+}
+
+.mac-hud-window-close::before {
+  content: "";
+  position: absolute;
+  inset: 4.5px 3px;
+  box-sizing: border-box;
+  border: 1px solid;
+  border-radius: 50%;
+  background:
+    linear-gradient(45deg, transparent 44%, currentColor 44% 56%, transparent 56%) center / 6px 6px
+    no-repeat,
+    linear-gradient(-45deg, transparent 44%, currentColor 44% 56%, transparent 56%) center / 6px 6px
+    no-repeat;
+}
+
+.mac-hud-window-close:where(:hover, :active, [data-force~="hover"], [data-force~="pressed"]) {
+  color: var(--mac-color-label);
+}
+
+.mac-hud-window-body {
+  position: relative;
+  flex: 1 1 auto;
+  box-sizing: border-box;
+  min-height: 0;
+  padding: 12px;
+}
+
+.mac-hud-window:where([data-title-bar]) > .mac-hud-window-body {
+  padding-top: 6px;
+}
+
+.mac-hud-window:where([data-variant="controller"]) > .mac-hud-window-body {
+  padding: 0;
+}
+
+.mac-hud-window-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  font: inherit;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-hud-window-button,
+.mac-hud-window-text {
+  color: var(--_fg, var(--mac-color-label));
+  mix-blend-mode: var(--_blend, normal);
+}
+
+.mac-hud-window-text {
+  font-variant-numeric: tabular-nums;
+}
+
+.mac-hud-window-button:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  opacity: 0.5;
+}
+
+.mac-hud-window-button:where([data-disabled]) {
+  opacity: 0.3;
+}
+
+/* Slider. The control is padded by half a thumb, so the thumb stops flush with the ends. */
+.mac-hud-window-slider {
+  --_t: 11px;
+  --_h: 11px;
+  --_fill: var(--mac-accent-control-fill-top);
+  --_thumb: var(--mac-hud-window-slider-knob);
+  --_cut: transparent;
+
+  flex: none;
+  touch-action: none;
+}
+
+.mac-hud-window-slider:where([data-variant="scrubber"]) {
+  --_t: 3px;
+  --_h: 15px;
+  --_fill: var(--mac-hud-window-slider-played);
+  --_thumb: var(--mac-hud-window-slider-bar);
+}
+
+.mac-hud-window-slider:where([data-disabled]) {
+  opacity: 0.3;
+}
+
+.mac-hud-window-slider-control {
+  display: flow-root;
+  box-sizing: border-box;
+  block-size: var(--_h);
+  padding-inline: calc(var(--_t) / 2);
+}
+
+/* The scrubber adds its light as one group; the bar and the 1 pt beside it lie over an opaque
+   layer that adds nothing, which cuts the track there. */
+@supports (mix-blend-mode: plus-lighter) {
+  .mac-hud-window-slider:where([data-variant="scrubber"]) {
+    --_cut: var(--mac-hud-window-slider-cut);
+  }
+
+  .mac-hud-window-slider:where([data-variant="scrubber"]) > .mac-hud-window-slider-control {
+    mix-blend-mode: plus-lighter;
+  }
+}
+
+.mac-hud-window-slider-track {
+  block-size: 3px;
+  margin-block-start: calc((var(--_h) - 3px) / 2);
+  border-radius: 1.5px;
+}
+
+.mac-hud-window-slider-track::before {
+  content: "";
+  position: absolute;
+  inset: 0 calc(var(--_t) / -2);
+  border-radius: inherit;
+  background: var(--mac-hud-window-slider-track);
+}
+
+.mac-hud-window-slider-fill {
+  box-sizing: content-box;
+  block-size: 100%;
+  margin-inline-start: calc(var(--_t) / -2);
+  padding-inline-start: calc(var(--_t) / 2);
+  border-radius: inherit;
+  background: var(--_fill);
+}
+
+.mac-hud-window-slider-thumb {
+  box-sizing: border-box;
+  inline-size: var(--_t);
+  block-size: var(--_h);
+  margin: calc(var(--_h) / -2) 0 0 calc(var(--_t) / -2);
+  border-radius: var(--_t);
+  background: linear-gradient(var(--_thumb), var(--_thumb)) var(--_cut);
+  box-shadow: var(--mac-hud-window-slider-knob-shadow);
+}
+
+.mac-hud-window-slider:where([data-variant="scrubber"]) .mac-hud-window-slider-thumb {
+  box-shadow: 0 0 0 1px var(--_cut);
+}
+
+/* Keyboard focus ring; only in the key window. */
+.mac-hud-window-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+),
+.mac-hud-window-close:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+)::before {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: 1px;
+}
+
+.mac-hud-window-slider-thumb:where(:has(:focus-visible), [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: 1px;
+}
+
+@media (forced-colors: active) {
+  .mac-hud-window {
+    border: 1px solid CanvasText;
+  }
+
+  .mac-hud-window::before {
+    background: Canvas;
+  }
+
+  .mac-hud-window-button,
+  .mac-hud-window-close {
+    color: ButtonText;
+    mix-blend-mode: normal;
+  }
+
+  .mac-hud-window-text {
+    color: CanvasText;
+    mix-blend-mode: normal;
+  }
+
+  .mac-hud-window-slider {
+    --_fill: Highlight;
+    --_cut: Canvas;
+  }
+
+  .mac-hud-window-slider > .mac-hud-window-slider-control {
+    mix-blend-mode: normal;
+  }
+
+  .mac-hud-window-slider-track::before {
+    background: GrayText;
+  }
+
+  /* A gradient is not painted in forced colours: the thumb gets a plain fill and a border. */
+  .mac-hud-window-slider-thumb {
+    border: 1px solid ButtonText;
+    background: ButtonText;
+    box-shadow: none;
+  }
+
+  .mac-hud-window-slider:where([data-disabled]) .mac-hud-window-slider-thumb {
+    border-color: GrayText;
+    background: GrayText;
+  }
+
+  .mac-hud-window-slider:where([data-disabled]) {
+    --_fill: GrayText;
+
+    opacity: 1;
+  }
+
+  .mac-hud-window-button:where([data-disabled]) {
+    color: GrayText;
+    opacity: 1;
+  }
+}

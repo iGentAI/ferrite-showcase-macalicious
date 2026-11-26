@@ -1,0 +1,37 @@
+/*
+ * HUD window values of its own. A HUD is dark in both appearances, so none of them uses
+ * light-dark(). Tags as in CONTRIBUTING, "Token tags". Read from
+ * 10-15-Catalina-Light-QuickTime.png (controller at 1143,1325) and its Dark twin (1018,1209).
+ * The panel material, --mac-material-hud, is a shared token.
+ */
+:root {
+  /* [provisional] tint of the floating controller. A vibrant material over a movie cannot be
+     separated from its backdrop: averaged over both captures the panel is the movie around it
+     saturated to 180% and darkened as by #1e1e1e at 7% to 27%, depending on the channel and
+     the capture. The spec's fit by eye to three edge pairs is 35%. */
+  --mac-hud-window-controller-material: rgb(30 30 30 / 0.2);
+  /* [measured, computed] glyphs and time text add light to the panel: the play glyph is
+     #ffeed5 over a fill of #84745d, about 121 levels on the channels that do not clip, which is
+     what white at 48% adds (plus-lighter). The duration text, #ffeed3, fits the same value. */
+  --mac-hud-window-vibrant: rgb(255 255 255 / 0.48);
+
+  /* Sliders of the controller. [measured, computed] against the fill beside them the scrubber
+     adds white at 12.5% where the movie is still to play, at 30.5% where it has played (the
+     second value is laid over the first: 12.5% and 20.6% of the rest) and at 55% for its bar.
+     The cut adds nothing: it is the 1 pt of panel on either side of the bar. */
+  --mac-hud-window-slider-track: rgb(255 255 255 / 0.125);
+  --mac-hud-window-slider-played: rgb(255 255 255 / 0.206);
+  --mac-hud-window-slider-bar: rgb(255 255 255 / 0.55);
+  --mac-hud-window-slider-cut: #000000;
+  /* [measured] the volume knob, #dad6ce in both captures; [provisional] its shadow. The
+     volume track is full in both captures: its empty part is taken from the scrubber. */
+  --mac-hud-window-slider-knob: #dad6ce;
+  --mac-hud-window-slider-knob-shadow: 0 0.5px 1px rgb(0 0 0 / 0.3);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    /* [provisional] the tint flattened over a mid grey; no capture shows it */
+    --mac-hud-window-controller-material: #6c6c6c;
+  }
+}

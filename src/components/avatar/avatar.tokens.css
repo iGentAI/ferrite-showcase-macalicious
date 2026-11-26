@@ -1,0 +1,19 @@
+/*
+ * Avatar colours. Measured on the disc of "Me" in 10-15-Catalina-Light-Find-My.png (window at
+ * 112,76) and 10-15-Catalina-Dark-Find-My.png (window at 68,52); coordinates are image pixels.
+ * The disc and the silhouette are the same in both appearances; only the rim differs.
+ */
+:root {
+  /* [measured] The disc, top to bottom: #a5aab6 to #868a93 (Light col x=163: y=250 and y=303;
+     the same colours in Dark col x=119: y=226 and y=279), #959aa4 at the middle. */
+  --mac-avatar-fill: linear-gradient(#a5aab6, #868a93);
+  /* [measured] The silhouette: #ffffff (Light @ 163,268; Dark @ 119,244). Initials take it. */
+  --mac-avatar-glyph: #ffffff;
+  /* [measured] A hairline just outside the disc: none in Aqua (Light col x=163, y=247 is the
+     sidebar's colour), black in Dark Aqua (Dark col x=119, y=223 is #000100, and the row under
+     the disc is #171817). */
+  --mac-avatar-rim: light-dark(transparent, #000000);
+  /* [measured] The disc's diameter in Find My's list: 29 pt (Light col x=163, y=248..305 at
+     2x). `size` sets it on each avatar. */
+  --mac-avatar-size: 29px;
+}

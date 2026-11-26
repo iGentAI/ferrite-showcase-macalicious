@@ -1,0 +1,162 @@
+---
+title: Switch
+description: Turns one setting on or off, with a knob that slides between the two ends of a capsule.
+order: 24
+---
+
+<Example name="basic" both />
+
+AppKit calls this control a *switch* (`NSSwitch`, new in macOS 10.15). It is built on
+[Base UI's Switch](https://base-ui.com/react/components/switch), which supplies the `switch`
+role, the keyboard handling, the hidden input that takes part in forms, and the `render` prop.
+
+## Usage
+
+```tsx
+import { Switch } from "macalicious/switch";
+import "macalicious/switch.css";
+
+<Switch aria-label="Do Not Disturb" checked={on} onCheckedChange={setOn} />
+```
+
+Or copy the source into your project: `npx macalicious add switch`. See
+[Installation](/installation).
+
+A switch has no title of its own. Put a `<label>` beside it and connect the two with `id` and
+`htmlFor`; the `id` goes to the switch's input, so a click on the text toggles the switch:
+
+<Example name="labelled" />
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for switches, as the measured spec summarises them.
+Not verified: this text was not checked against Apple's page.
+
+- A switch is on when its accent colour shows and off when it is colourless. Use it for a
+  setting that takes effect at once.
+- It has more visual weight than a checkbox. Use it for a setting that stands for a group of
+  options, in the body of a view, and do not put it in a window frame.
+- Do not replace existing checkboxes with switches. Catalina's own preference panes still use
+  checkboxes; the only switch in the reference screenshots is Do Not Disturb in Notification
+  Center.
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Off | – | Colourless capsule with an inner rim, knob at the leading end |
+| On | `checked` or `defaultChecked` | Capsule filled with the accent colour, knob at the trailing end |
+| Pressed | `:active` | The knob darkens (lightens in Dark Aqua) |
+| Keyboard focus | `:focus-visible` | Focus ring in the accent colour around the capsule |
+| Disabled | `disabled` | The whole control at half opacity |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No accent: an on switch is a neutral grey, darker than off; no focus ring |
+
+The knob slides in 0.2 s and the accent fill fades in with it; with
+`prefers-reduced-motion` the knob jumps and the fill changes at once. The window state is not a
+prop: see [Building a window](/building-a-window).
+
+## Sizes
+
+<Example name="sizes" />
+
+| Size | Track | Knob | Source |
+| --- | --- | --- | --- |
+| `regular` | 38 x 21 pt | 20 pt, of which 19 pt fill | measured |
+| `small` | 32 x 18 pt | 17 pt | provisional |
+| `mini` | 26 x 15 pt | 14 pt | provisional |
+
+Catalina's `NSSwitch` has the regular size only; small and mini switches arrived with macOS 11.
+They are offered here because every sized control in the library takes `size`, and are drawn
+in the Catalina style with the proportions of the regular one.
+
+## Accent colour
+
+The on fill follows the accent colour: set `data-accent` on any ancestor. See
+[Theming](/theming). No screenshot shows a switch that is on, in any accent: the fill is the
+one measured on the checkboxes of System Preferences › General, which the spec assigns to the
+switch so that the two controls match.
+
+<Example name="accents" both />
+
+## API
+
+<PropsTable name="SwitchProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-size` | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-checked`, `data-unchecked` | present or absent | Set by Base UI for on and off. |
+| `data-disabled`, `data-readonly`, `data-required` | present or absent | Set by Base UI. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+The knob is a `<span class="mac-switch-thumb">` (Base UI's `Switch.Thumb`) inside the root.
+
+| CSS variable | Default (Aqua, Dark Aqua) | Description |
+| --- | --- | --- |
+| `--mac-switch-track-top`, `--mac-switch-track-bottom` | black at 8.6% to 4.1%, white at 7% | Fill of the off track, top to bottom. The values are measured on Notification Center's vibrant panel; on an opaque window the spec suggests, without a measurement, black at 9% and white at 10%. Set both on the switch or on any ancestor. |
+
+## Accessibility
+
+- The root has `role="switch"` and `aria-checked`; a hidden checkbox input carries the form
+  value. Space and Enter toggle it; Tab reaches it.
+- A switch needs an accessible name: a `<label>` connected with `htmlFor` or wrapped around
+  it, `aria-label`, or `aria-labelledby`. Every example on this page has one.
+- The state is carried by the knob's position as well as by colour, so it survives a window
+  that is not key, the graphite accent and forced-colours mode, where the capsule gets a
+  border in a system colour.
+- A disabled switch leaves the tab order and has `aria-disabled`.
+- The knob cannot be dragged, as it can in AppKit; a press anywhere on the switch toggles it.
+
+## Visual comparison
+
+One example reproduces the Do Not Disturb switch of Notification Center's Today view, off, the
+only switch in the reference set, and is compared with it in both appearances by
+`npm run visual` (`switch.visual.json`). The crop is
+`10-15-Catalina-<Light|Dark>-Notification-Center-Today.png` at x=3234, y=178, 92 x 60 px. It
+holds no text. A pixel counts as differing at a colour distance of 0.05, half the default.
+
+| Crop | Aqua, 2x | Aqua, 1x | Dark Aqua, 2x | Dark Aqua, 1x |
+| --- | --- | --- | --- | --- |
+| Do Not Disturb, off | 0.13% (mean Δ 0.99) | 8.48% (mean Δ 3.52) | 0.40% (mean Δ 1.09) | 9.86% (mean Δ 5.69) |
+
+What remains at 2x is antialiasing on the knob's edge. The mean Δ of about 1 comes from the
+panel behind the switch, a vibrant material that the example approximates with two gradients.
+The 1x scores are high because the switch sits on a half point in the screenshot (its top is
+at y=187 px), so at 1x the browser must round its position, and because there is no 1x
+reference: the 2x screenshot is averaged down ([Fidelity limits](/fidelity)).
+
+Measured, in sRGB, on the pixels of that crop:
+
+| Part | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Track 38 x 21 pt | x 3242 to 3317, y 187 to 228 | the same |
+| Off track fill | `#cfe0e9` under the top edge to `#d8e9f5` above the bottom, on a panel of `#e3f3fd` to `#e2f4ff`: black at 8.6% to 4.1% | `#38404a` on `#2b323c`: white at 7% |
+| Rim inside the track's edge | top row `#c7d8e0`, ends `#cadbe6`, second pixel `#d0e1ec`: an inner shadow | `#595f68` then `#454b56` on every side: a lighter rim |
+| Knob fill, 19 pt | `#ffffff` | `#cfd0d2`, first row `#d4d5d6` |
+| Knob hairline, 0.5 pt outside the fill | `#b3bbc0` at the top and sides, `#a0aab1` at the bottom: black at 15%, 17%, 26% over the track | `#44494f`, `#42464d`, `#383d45`: black at 8%, 11%, 18% |
+| Knob shadow | `#bcc8cf` on the first row below the hairline, `#dcebf3` on the second | `#4f545c`, `#29303b` |
+
+No screenshot shows a switch that is on, pressed, focused, disabled or in a window that is not
+key, or the small and mini sizes. Those states are checked in a real browser against values
+from the spec and the tokens instead (the `expect` comparisons of `switch.visual.json`):
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| On | Fill colour, knob at the trailing end; blue, purple and graphite, each in both appearances | Fill measured on checkboxes; that the switch uses it, and the knob's travel of 17 pt, inferred |
+| Off on a window | Track colour over the window background | Alpha measured on the Notification Center panel |
+| Pressed | Knob fill `#f0f0f0`, `#e0e0e0` in Dark Aqua, while the mouse is held down | Inferred |
+| Keyboard focus | Ring colour, and that the band ends 2.5 pt beyond the track; both appearances | Measured on a text field's ring |
+| Main and inactive window | On is drawn in neutral grey; no focus ring; both appearances | Inferred |
+
+The pressed knob, the main and inactive window and the purple and graphite accents are checked
+in Dark Aqua as well as in Aqua. The dark values are computed from the same tokens: the neutral
+on track is white at 25% over the off track, `#707070` on the window background `#323232`.
+
+These checks hold the component to the spec; where the spec infers a value, they do not show
+that Catalina looks that way. Not checked anywhere: the disabled look, the small and mini
+sizes, and the on state's rim.

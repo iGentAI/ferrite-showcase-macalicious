@@ -1,0 +1,30 @@
+/*
+ * Message bubble: the colours of Messages' transcript, which no shared token holds. Measured in
+ * 10-15-Catalina-Light-Messages.png and 10-15-Catalina-Dark-Messages.png, where the Messages
+ * window is not key: the bubbles keep these colours in every window state.
+ */
+:root {
+  /* [measured] Light @ 1700,600; Dark @ 1700,600 */
+  --mac-message-bubble-transcript-background: light-dark(#ffffff, #1d1e1f);
+
+  /* [measured] sent with iMessage: a vertical gradient over the bubble. Light col x=1900,
+     y=298 and 376; Dark col x=2100, y=290 and 368 */
+  --mac-message-bubble-imessage-fill-top: light-dark(#4bb7fa, #057df6);
+  --mac-message-bubble-imessage-fill-bottom: light-dark(#44b3f9, #047bf3);
+  /* [provisional] sent as a text message: no screenshot shows a green bubble. The system
+     green of each appearance, lightened in Aqua by the step the blue bubble takes from
+     system blue, with the gradient's step between top and bottom */
+  --mac-message-bubble-sms-fill-top: light-dark(#5fd76b, #32c84e);
+  --mac-message-bubble-sms-fill-bottom: light-dark(#59d365, #30c44c);
+  /* [measured] Light @ 1671,330; Dark @ 1681,320: white in both appearances */
+  --mac-message-bubble-sent-text: #ffffff;
+
+  /* [measured] Light @ 1332,440; Dark @ 1344,436 */
+  --mac-message-bubble-received-fill: light-dark(#e5e5ea, #555555);
+  /* [measured] Light @ 1345,444; Dark @ 1357,436 */
+  --mac-message-bubble-received-text: light-dark(#000000, #ffffff);
+
+  /* [measured] header and status text. Light stems @ 1669,277 and 2081,397; Dark @ 2093,389:
+     #8e8e93 in both appearances */
+  --mac-message-bubble-status-text: #8e8e93;
+}

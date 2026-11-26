@@ -1,0 +1,833 @@
+/*
+ * Calendar demo: the layout of the toolbar, the sidebar pane, the views and the event popover.
+ * The window, the toolbar controls, the sidebar, the mini month, the week grid, the list and
+ * the popover are the library's own; nothing here restyles them.
+ *
+ * Parts
+ *   .mac-calendar-toolbar-group    the toolbar's two sides, equally wide, so that the view
+ *                                  switcher between them is centred
+ *   .mac-calendar-body, -split     the window's body: the calendar list beside the view
+ *   .mac-calendar-sidebar          the list of calendars over the mini month, 165 pt wide
+ *   .mac-calendar-check            a calendar's checkbox in its colour, in the icon column
+ *   .mac-calendar-chip             a calendar's colour in the popover's menu
+ *   .mac-calendar-view             a view: it fills the pane
+ *   .mac-calendar-plus             the plus of the New Event button, where the capture has it
+ *   .mac-calendar-navigation       previous, Today and next, in a view's title row
+ *   .mac-calendar-chevron          the chevron of previous and of next, where the capture has it
+ *   .mac-calendar-heading          the title row of the month and year views
+ *   .mac-calendar-month, -year     the month view (whole weeks, each day with its events) and
+ *                                  the year view (twelve months)
+ *   .mac-calendar-popover          the event popover: a head and its rows between lines
+ *   .mac-calendar-popover-detail   the repeat under the date, in the secondary colour
+ *   .mac-calendar-editor           a popover row opened for editing: label and control lines
+ *   .mac-calendar-results          the search results over the view
+ *   .mac-calendar-sidebar-menu     the list of calendars as the trigger of its contextual menu
+ *   .mac-calendar-view-menu        the view as the trigger of its contextual menu
+ *   .mac-calendar-invitees         an event's invitees in its popover: -invitee is one, with its
+ *                                  -name and -status; -invitee-actions the buttons under them and
+ *                                  an invitation's Accept and Decline; -invitee-error what failed
+ *   .mac-calendar-import-form      the Import sheet's label and calendar menu; -label is its label
+ *   .mac-calendar-panel-layer      where the drive's Open panel stands, over the page
+ *   .mac-calendar-alerts           the alerts of events whose moment came, under the menu bar
+ *
+ * States
+ *   [data-side="trailing"]         on a toolbar group: its items sit at the trailing edge
+ *   [data-resize-edge]             on a week or day grid: the pointer is over an event's top or
+ *                                  bottom edge, which a drag moves (calendar-drag.ts)
+ *   [data-dragging]                on a week or day grid: an event is being dragged, `move`d or
+ *                                  its `start` or `end` changed
+ *
+ * Every measured length and font size is a token in calendar.tokens.css (--mac-calendar-*).
+ * Literal here, as structure: zeros, the 100% sizes of the sidebar, the flex factors and the
+ * year grid's 1fr, the 1 pt line over each popover row, and the title's weight.
+ */
+.mac-calendar-toolbar-group {
+  display: flex;
+  flex: 1 1 0;
+  gap: var(--mac-calendar-toolbar-gap);
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+/* The trailing side is wider by the room the window controls take on the leading side, which
+   centres the view switcher on the window. */
+.mac-calendar-toolbar-group:where([data-side="trailing"]) {
+  flex-basis: var(--mac-calendar-toolbar-trailing-basis);
+  justify-content: flex-end;
+}
+
+/* The 11 pt plus starts 13 pt into the 38 pt button and 5 pt under its top edge (measured):
+   half a point before the centre both ways. */
+.mac-calendar-plus {
+  position: relative;
+  inset-block-start: var(--mac-calendar-plus-offset);
+  inset-inline-start: var(--mac-calendar-plus-offset);
+}
+
+.mac-calendar-body {
+  display: flex;
+  overflow: hidden;
+}
+
+.mac-calendar-split {
+  flex: 1;
+  min-width: 0;
+}
+
+.mac-calendar-sidebar {
+  width: 100%;
+  height: 100%;
+}
+
+/* The contextual menu's trigger adds no box of its own. */
+.mac-calendar-sidebar-menu,
+.mac-calendar-view-menu {
+  display: contents;
+}
+
+.mac-calendar-check {
+  display: inline-flex;
+}
+
+.mac-calendar-chip {
+  box-sizing: border-box;
+  display: block;
+  width: var(--mac-calendar-chip-size);
+  height: var(--mac-calendar-chip-size);
+  margin: var(--mac-calendar-chip-margin);
+  border-radius: var(--mac-calendar-chip-radius);
+}
+
+.mac-calendar-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--mac-calendar-pane);
+}
+
+.mac-calendar-view {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Dragging events (calendar-drag.ts): over an event's top or bottom edge, and while that edge is
+   dragged, the pointer is the resize one; while an event is moved, the closed hand. */
+.mac-calendar-view[data-resize-edge] .mac-calendar-week-grid-event:hover,
+.mac-calendar-view[data-dragging="start"],
+.mac-calendar-view[data-dragging="start"] *,
+.mac-calendar-view[data-dragging="end"],
+.mac-calendar-view[data-dragging="end"] * {
+  cursor: ns-resize;
+}
+
+.mac-calendar-view[data-dragging="move"],
+.mac-calendar-view[data-dragging="move"] * {
+  cursor: grabbing;
+}
+
+/* The control's box is 15.5 pt under the pane's top and 13 pt from its trailing edge; its three
+   bezels touch. */
+.mac-calendar-navigation {
+  flex: none;
+  margin: var(--mac-calendar-navigation-margin-top) var(--mac-calendar-navigation-margin-end) 0 0;
+}
+
+/* The chevrons sit half a point under the centre of their segment; the one of previous starts
+   1.25 pt before its centred place and the one of next half a point after it (measured in both
+   captures). */
+.mac-calendar-chevron {
+  position: relative;
+  inset-block-start: var(--mac-calendar-chevron-offset);
+  inset-inline-start: var(--mac-calendar-chevron-offset);
+}
+
+.mac-calendar-chevron:where([data-name="go-back"]) {
+  inset-inline-start: var(--mac-calendar-chevron-back-offset);
+}
+
+/* As the week grid's title row: 51 pt, the title 14.5 pt in. */
+.mac-calendar-heading {
+  display: flex;
+  flex: none;
+  align-items: flex-start;
+  justify-content: space-between;
+  height: var(--mac-calendar-heading-height);
+  padding-inline: var(--mac-calendar-heading-padding-start) var(--mac-calendar-heading-padding-end);
+  color: var(--mac-calendar-heading);
+}
+
+.mac-calendar-heading-title {
+  margin: var(--mac-calendar-heading-title-margin-top) 0 0;
+  font:
+    300 var(--mac-calendar-heading-title-size) / var(--mac-calendar-heading-title-line-height)
+    var(--mac-font-family-system);
+  white-space: nowrap;
+}
+
+[data-calendar-text="-1"] {
+  --mac-calendar-month-font-size: var(--mac-calendar-text-smaller-font-size);
+  --mac-calendar-month-event-height: var(--mac-calendar-text-smaller-event-height);
+}
+
+[data-calendar-text="1"] {
+  --mac-calendar-month-font-size: var(--mac-calendar-text-big-font-size);
+  --mac-calendar-month-event-height: var(--mac-calendar-text-big-event-height);
+}
+
+[data-calendar-text="2"] {
+  --mac-calendar-month-font-size: var(--mac-calendar-text-bigger-font-size);
+  --mac-calendar-month-event-height: var(--mac-calendar-text-bigger-event-height);
+}
+
+[data-calendar-text="3"] {
+  --mac-calendar-month-font-size: var(--mac-calendar-text-biggest-font-size);
+  --mac-calendar-month-event-height: var(--mac-calendar-text-biggest-event-height);
+}
+
+.mac-calendar-month {
+  background: var(--mac-calendar-pane);
+}
+
+.mac-calendar-month-weekdays {
+  display: grid;
+  flex: none;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  height: var(--mac-calendar-month-weekdays-height);
+  border-bottom: 1px solid var(--mac-calendar-week-grid-band);
+  color: var(--mac-calendar-week-grid-text);
+  font:
+    var(--mac-calendar-month-font-size) / var(--mac-calendar-month-weekdays-height)
+    var(--mac-font-family-system);
+  text-align: end;
+}
+
+.mac-calendar-month-weekdays > div {
+  padding-inline-end: var(--mac-calendar-month-cell-padding);
+}
+
+.mac-calendar-month-rows {
+  display: grid;
+  flex: 1;
+  grid-auto-rows: minmax(0, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  min-height: 0;
+}
+
+.mac-calendar-month-cell {
+  box-sizing: border-box;
+  min-width: 0;
+  overflow: hidden;
+  border-inline-end: 1px solid var(--mac-calendar-week-grid-line);
+  border-bottom: 1px solid var(--mac-calendar-week-grid-line);
+}
+
+.mac-calendar-month-cell:where([data-weekend]) {
+  background: var(--mac-calendar-week-grid-weekend);
+}
+
+.mac-calendar-month-day {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: var(--mac-calendar-month-day-height);
+  padding-inline-end: var(--mac-calendar-month-cell-padding);
+}
+
+.mac-calendar-month-number {
+  min-width: var(--mac-calendar-month-number-size);
+  height: var(--mac-calendar-month-number-size);
+  padding: 0 var(--mac-calendar-month-number-padding);
+  border: 0;
+  border-radius: var(--mac-calendar-month-number-size);
+  background: none;
+  color: var(--mac-calendar-week-grid-text);
+  font:
+    var(--mac-calendar-month-font-size) / var(--mac-calendar-month-number-size)
+    var(--mac-font-family-system);
+}
+
+.mac-calendar-month-cell:where([data-other-month]) .mac-calendar-month-number {
+  color: var(--mac-calendar-week-grid-hour-text);
+}
+
+.mac-calendar-month-cell .mac-calendar-month-number:where([data-today]) {
+  background: var(--mac-calendar-week-grid-now);
+  color: var(--mac-calendar-week-grid-on-color);
+}
+
+.mac-calendar-month-event {
+  --_color: var(--mac-calendar-month-event-color, var(--mac-calendar-week-grid-event-default));
+
+  display: flex;
+  gap: var(--mac-calendar-month-cell-padding);
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--mac-calendar-month-event-height);
+  padding: 0 var(--mac-calendar-month-cell-padding);
+  border: 0;
+  border-radius: var(--mac-calendar-month-event-radius);
+  background: none;
+  color: var(--mac-calendar-week-grid-text);
+  font:
+    var(--mac-calendar-month-font-size) / var(--mac-calendar-month-event-height)
+    var(--mac-font-family-system);
+  text-align: start;
+  cursor: default;
+}
+
+/* A timed event is a dot of its calendar's colour; an all-day one a tint across the day. */
+.mac-calendar-month-event:where(:not([data-all-day]))::before {
+  flex: none;
+  width: var(--mac-calendar-month-dot-size);
+  height: var(--mac-calendar-month-dot-size);
+  border-radius: 50%;
+  background: var(--_color);
+  content: "";
+}
+
+.mac-calendar-month-event:where([data-all-day]) {
+  background: color-mix(
+    in srgb,
+    var(--_color) var(--mac-calendar-week-grid-event-tint),
+    transparent
+  );
+}
+
+.mac-calendar-month-event:where([aria-pressed="true"]) {
+  background: color-mix(
+    in srgb,
+    var(--_color) var(--mac-calendar-week-grid-event-selected-tint),
+    transparent
+  );
+  color: var(--mac-calendar-week-grid-on-color);
+}
+
+.mac-calendar-month-event:where([aria-pressed="true"])::before {
+  background: var(--mac-calendar-week-grid-on-color);
+}
+
+.mac-calendar-month-event-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-calendar-month-event-time {
+  flex: none;
+  color: var(--mac-calendar-week-grid-weekend-text);
+}
+
+.mac-calendar-month-event:where([aria-pressed="true"]) .mac-calendar-month-event-time {
+  color: inherit;
+}
+
+.mac-calendar-month-more {
+  display: block;
+  width: 100%;
+  height: var(--mac-calendar-month-event-height);
+  padding: 0 var(--mac-calendar-month-cell-padding);
+  border: 0;
+  background: none;
+  color: var(--mac-calendar-week-grid-weekend-text);
+  font:
+    var(--mac-calendar-month-font-size) / var(--mac-calendar-month-event-height)
+    var(--mac-font-family-system);
+  text-align: start;
+}
+
+.mac-calendar-year {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(auto-fill, minmax(var(--mac-calendar-year-column-min-width), 1fr));
+  gap: var(--mac-calendar-year-row-gap) var(--mac-calendar-year-column-gap);
+  align-content: start;
+  overflow: auto;
+  padding: var(--mac-calendar-year-padding-top) var(--mac-calendar-year-padding-inline)
+    var(--mac-calendar-year-padding-bottom);
+}
+
+/* The year view shades a day by how many events it has; today keeps its disc. */
+.mac-calendar-year-month .mac-calendar-mini-month-day[data-density="1"]:not([data-today]) {
+  background: var(--mac-calendar-density-1);
+}
+
+.mac-calendar-year-month .mac-calendar-mini-month-day[data-density="2"]:not([data-today]) {
+  background: var(--mac-calendar-density-2);
+}
+
+.mac-calendar-year-month .mac-calendar-mini-month-day[data-density="3"]:not([data-today]) {
+  background: var(--mac-calendar-density-3);
+}
+
+.mac-calendar-year-month .mac-calendar-mini-month-day[data-density="4"]:not([data-today]) {
+  background: var(--mac-calendar-density-4);
+}
+
+/* The day view: the hours beside the details of what is selected, or the day's list. */
+.mac-calendar-day {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+.mac-calendar-day-detail {
+  flex: none;
+  width: var(--mac-calendar-day-detail-width);
+  overflow: auto;
+  border-inline-start: 1px solid var(--mac-color-separator);
+  background: var(--mac-calendar-pane);
+}
+
+.mac-calendar-day-detail-title {
+  margin: 0;
+  padding: var(--mac-calendar-popover-head-padding-top)
+    var(--mac-calendar-popover-head-padding-left);
+  color: var(--mac-color-label);
+  font: var(--mac-font-headline);
+}
+
+.mac-calendar-day-detail > .mac-calendar-note {
+  display: block;
+  padding-inline: var(--mac-calendar-popover-head-padding-left);
+}
+
+.mac-calendar-day-detail-event {
+  display: flex;
+  gap: var(--mac-calendar-editor-gap);
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--mac-calendar-detail-gap) var(--mac-calendar-popover-head-padding-left);
+  border: 0;
+  background: none;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-subheadline);
+  text-align: start;
+}
+
+.mac-calendar-day-detail-event::before {
+  flex: none;
+  width: var(--mac-calendar-month-dot-size);
+  height: var(--mac-calendar-month-dot-size);
+  border-radius: 50%;
+  background: var(--mac-calendar-day-detail-color);
+  content: "";
+}
+
+.mac-calendar-day-detail-event-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--mac-color-label);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A floating panel over the window's trailing side; a drag of its title bar moves it. */
+.mac-calendar-inspector {
+  position: absolute;
+  z-index: var(--mac-calendar-inspector-z-index);
+  inset-block-start: var(--mac-calendar-inspector-top);
+  inset-inline-end: var(--mac-calendar-inspector-end);
+  max-height: calc(100% - var(--mac-calendar-inspector-top) - var(--mac-calendar-inspector-end));
+}
+
+.mac-calendar-inspector .mac-calendar-note {
+  display: block;
+  padding: var(--mac-calendar-popover-head-padding-top);
+}
+
+.mac-calendar-quick-event {
+  width: var(--mac-calendar-quick-event-width);
+}
+
+/* A free event is striped: its time stays open. */
+.mac-calendar-week-grid-event[data-free],
+.mac-calendar-month-event[data-all-day][data-free] {
+  background-image: repeating-linear-gradient(
+    var(--mac-calendar-stripe-angle),
+    transparent 0 var(--mac-calendar-stripe-width),
+    var(--mac-calendar-stripe) var(--mac-calendar-stripe-width)
+      calc(2 * var(--mac-calendar-stripe-width))
+  );
+}
+
+.mac-calendar-month-event:where(:not([data-all-day]))[data-free]::before {
+  border: 1px solid var(--_color);
+  background: none;
+}
+
+/* An event's travel time, above it: a drawing that a press goes through. */
+.mac-calendar-week-grid-event[data-travel] {
+  z-index: 0;
+  pointer-events: none;
+  border-inline-start-style: dotted;
+  background-color: transparent;
+  font-weight: var(--mac-font-weight-regular);
+  opacity: var(--mac-calendar-travel-opacity);
+}
+
+/* The popover of the capture: 289 pt wide, a 60 pt head, then rows of 35, 29 and 38 pt, each
+   with its line. */
+.mac-calendar-popover {
+  width: var(--mac-calendar-popover-width);
+}
+
+.mac-calendar-popover-head {
+  display: flex;
+  gap: var(--mac-calendar-popover-head-gap);
+  align-items: flex-start;
+  justify-content: space-between;
+  box-sizing: border-box;
+  min-height: var(--mac-calendar-popover-head-min-height);
+  padding: var(--mac-calendar-popover-head-padding-top)
+    var(--mac-calendar-popover-head-padding-right) var(--mac-calendar-popover-head-padding-bottom)
+    var(--mac-calendar-popover-head-padding-left);
+}
+
+.mac-calendar-popover-name {
+  display: grid;
+  min-width: 0;
+}
+
+.mac-calendar-popover-row {
+  box-sizing: border-box;
+  min-height: var(--mac-calendar-popover-row-min-height);
+  padding: var(--mac-calendar-popover-row-padding-block)
+    var(--mac-calendar-popover-row-padding-inline);
+  border-top: 1px solid var(--mac-calendar-popover-line);
+  font: var(--mac-font-body);
+}
+
+.mac-calendar-popover-row:where([data-row="invitees"]) {
+  min-height: var(--mac-calendar-popover-invitees-min-height);
+  padding-block: var(--mac-calendar-popover-invitees-padding-block);
+}
+
+.mac-calendar-popover-row:where([data-row="notes"]) {
+  min-height: var(--mac-calendar-popover-notes-min-height);
+}
+
+.mac-calendar-popover-hint {
+  color: var(--mac-color-label-tertiary);
+  font: var(--mac-font-body);
+}
+
+.mac-calendar-popover-location,
+.mac-calendar-popover-notes {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+}
+
+.mac-calendar-popover-detail {
+  margin-top: var(--mac-calendar-detail-gap);
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-subheadline);
+}
+
+/* An event's files: each a name that downloads it, and its size. */
+.mac-calendar-details {
+  display: contents;
+}
+
+.mac-calendar-files {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-calendar-detail-gap);
+  margin-top: var(--mac-calendar-detail-gap);
+  font: var(--mac-font-subheadline);
+}
+
+.mac-calendar-file {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-space-2);
+  min-width: 0;
+}
+
+.mac-calendar-file-name {
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mac-color-link);
+  font: inherit;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.mac-calendar-file-size {
+  flex: none;
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-calendar-popover-url {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--mac-color-link);
+  font: var(--mac-font-body);
+}
+
+.mac-calendar-editor {
+  display: grid;
+  gap: var(--mac-calendar-editor-gap);
+}
+
+.mac-calendar-editor-line {
+  display: grid;
+  grid-template-columns: var(--mac-calendar-editor-label-width) 1fr;
+  gap: var(--mac-calendar-editor-gap);
+  align-items: center;
+}
+
+.mac-calendar-editor-control {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-calendar-editor-gap);
+  align-items: center;
+  min-width: 0;
+}
+
+.mac-calendar-editor-count {
+  width: var(--mac-calendar-editor-count-width);
+}
+
+.mac-calendar-editor-notes {
+  height: var(--mac-calendar-editor-notes-height);
+}
+
+.mac-calendar-editor-done {
+  justify-self: end;
+}
+
+.mac-calendar-results {
+  flex: none;
+  height: var(--mac-calendar-results-height);
+  border-bottom: 1px solid var(--mac-color-separator);
+}
+
+.mac-calendar-results-list {
+  height: 100%;
+}
+
+.mac-calendar-results-empty {
+  display: block;
+  padding: var(--mac-calendar-results-empty-padding);
+}
+
+.mac-calendar-color-item {
+  display: inline-flex;
+  gap: var(--mac-calendar-editor-gap);
+  align-items: center;
+}
+
+.mac-calendar-import-form {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--mac-space-label-gap);
+  align-items: center;
+}
+
+.mac-calendar-import-label {
+  justify-self: end;
+}
+
+/* The drive's Open panel stands in the middle of the page, over every window, as TextEdit's. */
+.mac-calendar-panel-layer {
+  position: fixed;
+  z-index: var(--mac-calendar-panel-layer-z-index);
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  pointer-events: none;
+}
+
+.mac-calendar-panel-layer > * {
+  max-width: calc(100% - var(--mac-calendar-panel-layer-margin));
+  max-height: calc(100% - var(--mac-calendar-panel-layer-margin));
+  pointer-events: auto;
+}
+
+/* The alerts of events stand under the menu bar at the trailing edge, over every window. */
+.mac-calendar-alerts {
+  position: fixed;
+  z-index: var(--mac-calendar-alerts-layer-z-index);
+  inset-block-start: var(--mac-calendar-alerts-top);
+  inset-inline-end: var(--mac-calendar-alerts-end);
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-calendar-alerts-gap);
+}
+
+.mac-calendar-invitees {
+  display: grid;
+  gap: var(--mac-calendar-editor-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-calendar-invitee {
+  display: flex;
+  gap: var(--mac-calendar-editor-gap);
+  align-items: center;
+  min-width: 0;
+}
+
+.mac-calendar-invitee-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-calendar-invitee-offers {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.mac-calendar-invitee-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-calendar-editor-gap);
+  justify-content: flex-end;
+}
+
+.mac-calendar-invitee-error {
+  margin: 0;
+  color: var(--mac-color-system-red);
+}
+
+.mac-calendar-popover-maps {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mac-color-link);
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Hours outside the day of Preferences, on the desktop's week and day views. */
+.mac-calendar-main[data-off-hours] .mac-calendar-week-grid-column {
+  background-image: linear-gradient(
+    to bottom,
+    var(--mac-calendar-off-hours) calc(var(--mac-calendar-day-from) / 24 * 100%),
+    transparent 0 calc(var(--mac-calendar-day-to) / 24 * 100%),
+    var(--mac-calendar-off-hours) 0
+  );
+}
+
+/* The alternate calendar's day and the week's number, on the grid the library draws. */
+.mac-calendar-week-grid-day[data-alternate]::after,
+.mac-calendar-week-grid-title[data-week-number]::after {
+  margin-inline-start: var(--mac-calendar-note-gap);
+  color: var(--mac-calendar-note-text);
+  font-size: var(--mac-calendar-note-size);
+  font-weight: normal;
+}
+
+.mac-calendar-week-grid-day[data-alternate]::after {
+  content: attr(data-alternate);
+}
+
+.mac-calendar-week-grid-title[data-week-number]::after {
+  content: attr(data-week-number);
+}
+
+.mac-calendar-month-alternate,
+.mac-calendar-month-week-number {
+  margin-inline-end: var(--mac-calendar-note-gap);
+  overflow: hidden;
+  color: var(--mac-calendar-note-text);
+  font-size: var(--mac-calendar-note-size);
+  white-space: nowrap;
+}
+
+.mac-calendar-month-week-number {
+  margin-inline-end: auto;
+  padding-inline-start: var(--mac-calendar-note-gap);
+}
+
+/* File > Print: the pages as they will print, beside what they show. The frame is a sheet of paper
+   shown small, so its own size is the page's. */
+.mac-calendar-print {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+  align-items: flex-start;
+  margin-block-end: var(--mac-space-control-gap);
+}
+
+.mac-calendar-print-preview {
+  flex: none;
+  width: var(--mac-calendar-print-preview-width);
+  height: var(--mac-calendar-print-preview-height);
+  border: var(--mac-calendar-print-preview-border);
+  background: var(--mac-calendar-print-preview-paper);
+}
+
+.mac-calendar-print-settings {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--mac-space-control-gap);
+  min-width: 0;
+}
+
+.mac-calendar-print-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-space-4);
+  align-items: flex-start;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* The window's floating panels: the Address Panel, Spelling and Substitutions. By the window's
+   leading corner, since an event's popover opens over the views and is drawn above them. */
+.mac-calendar-floating-panel {
+  position: absolute;
+  z-index: var(--mac-calendar-inspector-z-index);
+  inset-block-end: var(--mac-calendar-inspector-end);
+  inset-inline-start: var(--mac-calendar-inspector-end);
+}
+
+.mac-calendar-address {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-calendar-editor-gap);
+  padding: var(--mac-calendar-popover-head-padding-top);
+}
+
+.mac-calendar-address-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mac-calendar-editor-gap);
+}
+
+.mac-calendar-address-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,0 +1,160 @@
+/*
+ * Progress spinner (NSProgressIndicator, spinning style).
+ *
+ * Parts
+ *   .mac-progress-spinner         the root (role=progressbar), a square
+ *   .mac-progress-spinner-spokes  indeterminate: twelve round-ended spokes, cut out with a mask
+ *                                 from a twelve-step conic gradient (its ::before) that turns
+ *                                 one spoke at a time
+ *   .mac-progress-spinner-pie     determinate: a ring with a sector that grows clockwise
+ *
+ * States
+ *   [data-indeterminate]               spinning form (Base UI)
+ *   [data-progressing], [data-complete]  determinate form (Base UI)
+ *   [data-animating]                   the spokes turn
+ *   [data-offscreen]                   outside the viewport (lib/offscreen): the animation is
+ *                                      paused
+ *   [data-displayed-when-stopped]      a stopped spinner stays visible as a still frame;
+ *                                      without it a stopped spinner is hidden
+ *   [data-size="small" | "mini"]       16 pt or 10 pt instead of 32 pt
+ *   [data-material] *                  on a vibrant material (a sidebar): fainter spokes
+ *
+ * The spinner does not react to the window state.
+ *
+ * Cost. One transform animation per spinner, in twelve steps a second, on the compositor: the
+ * gradient is rasterised once and only turned. Inside a spoke the gradient is one flat colour,
+ * so the turned raster stays crisp. While a spinner is off screen its animation is paused, and
+ * a paused animation produces no frames; a stopped spinner has no animation at all. With
+ * prefers-reduced-motion the spokes stand still and the spinner fades in and out.
+ * (content-visibility: auto is not used: it takes the animation off the compositor and makes
+ * an off-screen spinner tick on the main thread at the display rate.)
+ */
+.mac-progress-spinner {
+  --_size: 32px;
+
+  position: relative;
+  display: inline-block;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--_size);
+  height: var(--_size);
+  vertical-align: middle;
+}
+
+.mac-progress-spinner:where([data-size="small"]) {
+  --_size: 16px;
+}
+
+.mac-progress-spinner:where([data-size="mini"]) {
+  --_size: 10px;
+}
+
+/* Stopped and not displayed when stopped: keeps its place, leaves the accessibility tree. */
+.mac-progress-spinner:where([data-indeterminate]):where(
+  :not([data-animating], [data-displayed-when-stopped])
+) {
+  visibility: hidden;
+}
+
+/* The spokes, drawn for a 16 pt spinner and scaled with it: each is 4.5 pt long and 1.5 pt
+   wide with round ends, from 3.5 pt to 8 pt from the centre, one every 30 degrees. */
+.mac-progress-spinner-spokes {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' d='M8 3.75V.75M10.13 4.32l1.5-2.6M11.68 5.88l2.6-1.51M12.25 8h3M11.68 10.13l2.6 1.49M10.13 11.68l1.5 2.6M8 12.25v3M5.88 11.68l-1.5 2.6M4.32 10.13l-2.6 1.5M3.75 8h-3M4.32 5.88l-2.6-1.51M5.87 4.32l-1.5-2.6'/%3E%3C/svg%3E")
+    center / 100% 100% no-repeat;
+}
+
+/* One wedge per spoke. The head is at 12 o'clock; going clockwise from it come the faintest
+   spoke, just ahead of the head, and then ever stronger ones round to the spoke behind it. */
+.mac-progress-spinner-spokes::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(
+    from -15deg,
+    var(--mac-progress-spinner-spoke-1) 0 30deg,
+    var(--mac-progress-spinner-spoke-12) 0 60deg,
+    var(--mac-progress-spinner-spoke-11) 0 90deg,
+    var(--mac-progress-spinner-spoke-10) 0 120deg,
+    var(--mac-progress-spinner-spoke-9) 0 150deg,
+    var(--mac-progress-spinner-spoke-8) 0 180deg,
+    var(--mac-progress-spinner-spoke-7) 0 210deg,
+    var(--mac-progress-spinner-spoke-6) 0 240deg,
+    var(--mac-progress-spinner-spoke-5) 0 270deg,
+    var(--mac-progress-spinner-spoke-4) 0 300deg,
+    var(--mac-progress-spinner-spoke-3) 0 330deg,
+    var(--mac-progress-spinner-spoke-2) 0
+  );
+}
+
+/* The native indicator steps from spoke to spoke; it does not turn smoothly. */
+.mac-progress-spinner:where([data-animating]) .mac-progress-spinner-spokes::before {
+  animation: mac-progress-spinner-spin 1s steps(12, end) infinite;
+}
+
+/* On a vibrant material, which a sidebar is ([data-material] on an ancestor), the spokes are
+   fainter towards the head (progress-spinner.tokens.css). */
+:where([data-material]) .mac-progress-spinner {
+  --mac-progress-spinner-spoke-1: var(--mac-progress-spinner-vibrant-spoke-1);
+  --mac-progress-spinner-spoke-2: var(--mac-progress-spinner-vibrant-spoke-2);
+  --mac-progress-spinner-spoke-3: var(--mac-progress-spinner-vibrant-spoke-3);
+  --mac-progress-spinner-spoke-4: var(--mac-progress-spinner-vibrant-spoke-4);
+  --mac-progress-spinner-spoke-5: var(--mac-progress-spinner-vibrant-spoke-5);
+  --mac-progress-spinner-spoke-6: var(--mac-progress-spinner-vibrant-spoke-6);
+  --mac-progress-spinner-spoke-9: var(--mac-progress-spinner-vibrant-spoke-9);
+  --mac-progress-spinner-spoke-10: var(--mac-progress-spinner-vibrant-spoke-10);
+  --mac-progress-spinner-spoke-11: var(--mac-progress-spinner-vibrant-spoke-11);
+  --mac-progress-spinner-spoke-12: var(--mac-progress-spinner-vibrant-spoke-12);
+}
+
+@keyframes mac-progress-spinner-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes mac-progress-spinner-pulse {
+  from {
+    opacity: 0.35;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-progress-spinner:where([data-animating]) .mac-progress-spinner-spokes::before {
+    animation: mac-progress-spinner-pulse 1s ease-in-out infinite alternate;
+  }
+}
+
+/* Determinate: a ring one sixteenth of the diameter wide, and a sector from 12 o'clock that
+   covers --_fraction of the circle, both in the secondary label colour. They are one
+   translucent fill behind two mask layers, so the ring and the sector do not add up. */
+.mac-progress-spinner-pie {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--mac-color-label-secondary);
+  /* raw-color-ok: mask layers, "black" is alpha here, not a colour. */
+  mask:
+    radial-gradient(closest-side, transparent calc(87.5% - 0.5px), black 87.5%),
+    conic-gradient(black calc(var(--_fraction, 0) * 1turn), transparent 0);
+}
+
+@media (forced-colors: active) {
+  .mac-progress-spinner-spokes::before,
+  .mac-progress-spinner-pie {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
+}
+
+/* Off screen: paused. Last in the file, after every rule that sets `animation`. */
+.mac-progress-spinner:where([data-offscreen]) .mac-progress-spinner-spokes::before {
+  animation-play-state: paused;
+}

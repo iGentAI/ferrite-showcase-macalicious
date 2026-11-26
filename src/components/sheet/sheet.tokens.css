@@ -1,0 +1,12 @@
+/*
+ * Sheet values of its own (reference/spec/components/sheet.md), measured on the Print sheet.
+ */
+:root {
+  /* [measured, computed] the 0.5 pt line along the sides and the bottom. Light: #adadad over
+     the white page with the shadow's 0.19 beside it (Light-Print @ 800,1042). Dark: #030303
+     over the #181818 of the shadowed page (Dark-Print @ 800,1012) */
+  --mac-sheet-edge: light-dark(rgb(0 0 0 / 0.16), rgb(0 0 0 / 0.88));
+  /* [measured, computed] the 1 pt lighter rim inside the sides and the bottom of a dark sheet:
+     #585758 on the #2d2d2d fill (Dark-Print @ 800,1010 and @ 55,700). A light sheet has none */
+  --mac-sheet-rim: light-dark(transparent, rgb(255 255 255 / 0.2));
+}

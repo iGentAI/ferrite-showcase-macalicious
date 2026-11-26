@@ -1,0 +1,155 @@
+/*
+ * Window controls: close, minimize, zoom.
+ *
+ * Each button is a 12 pt disc: a flat fill, in Aqua a 0.5 pt darker ring and a faint lighter
+ * band inside it, and a glyph that shows while the pointer is over the group.
+ *
+ * States
+ *   [data-size="small"]                 11 pt discs, 18 pt apart (utility panel)
+ *   [data-kind="close" | "minimize" | "zoom"]
+ *   :hover / :focus-within on the group glyphs on all three
+ *   :active                             pressed: the fill darkens [provisional]
+ *   [data-disabled]                     grey disc, no glyph
+ *   [data-edited]                       dot in the close button
+ *   [data-window-state="main"] *        all three grey
+ *   [data-window-state="inactive"] *    all three a lighter grey
+ *   [data-accent="graphite"]            grey set (window-controls.tokens.css)
+ *   [data-force~="hover" | "pressed" | "focus"]   static previews
+ *
+ * In a window that is not key the buttons take their colours back while the pointer is over
+ * the group, as in macOS.
+ */
+.mac-window-controls {
+  --_size: 12px;
+
+  display: inline-flex;
+  flex: none;
+  gap: 8px;
+  align-items: center;
+}
+
+.mac-window-controls:where([data-size="small"]) {
+  --_size: 11px;
+
+  gap: 7px;
+}
+
+.mac-window-controls-button {
+  --_fill: var(--mac-color-window-control-disabled);
+  --_ring: var(--mac-window-controls-disabled-ring);
+  --_band: transparent;
+
+  position: relative;
+  display: block;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--_size);
+  height: var(--_size);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--_fill);
+  box-shadow:
+    inset 0 0 0 var(--mac-hairline) var(--_ring),
+    inset 0 0 0 calc(2 * var(--mac-hairline)) var(--_band);
+  color: var(--_glyph, transparent);
+  cursor: default;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-window-controls-button:where([data-kind="close"]) {
+  --_fill: var(--mac-window-controls-close);
+  --_ring: var(--mac-window-controls-close-ring);
+  --_band: var(--mac-window-controls-close-band);
+  --_glyph: var(--mac-window-controls-close-glyph);
+}
+
+.mac-window-controls-button:where([data-kind="minimize"]) {
+  --_fill: var(--mac-window-controls-minimize);
+  --_ring: var(--mac-window-controls-minimize-ring);
+  --_band: var(--mac-window-controls-minimize-band);
+  --_glyph: var(--mac-window-controls-minimize-glyph);
+}
+
+.mac-window-controls-button:where([data-kind="zoom"]) {
+  --_fill: var(--mac-window-controls-zoom);
+  --_ring: var(--mac-window-controls-zoom-ring);
+  --_band: var(--mac-window-controls-zoom-band);
+  --_glyph: var(--mac-window-controls-zoom-glyph);
+}
+
+/* Main and inactive windows: grey, unless the pointer is over the group. */
+.mac-window-controls:where(:not(:hover, [data-force~="hover"]))
+> .mac-window-controls-button:where([data-window-state="main"] *) {
+  --_fill: var(--mac-color-window-control-main);
+  --_ring: var(--mac-window-controls-main-ring);
+  --_band: transparent;
+}
+
+.mac-window-controls:where(:not(:hover, [data-force~="hover"]))
+  > .mac-window-controls-button:where([data-window-state="inactive"] *) {
+  --_fill: var(--mac-color-window-control-inactive);
+  --_ring: var(--mac-window-controls-inactive-ring);
+  --_band: transparent;
+}
+
+/* Disabled: wins over every other fill. */
+.mac-window-controls > .mac-window-controls-button:where([data-disabled]) {
+  --_fill: var(--mac-color-window-control-disabled);
+  --_ring: var(--mac-window-controls-disabled-ring);
+  --_band: transparent;
+}
+
+.mac-window-controls-button:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  filter: brightness(0.8);
+}
+
+/* Glyphs: hidden until the pointer is over the group or a button has keyboard focus. */
+.mac-window-controls-glyph,
+.mac-window-controls-dot {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  pointer-events: none;
+}
+
+.mac-window-controls-glyph {
+  opacity: 0;
+}
+
+.mac-window-controls:where(:hover, :has(:focus-visible), [data-force~="hover"])
+  > .mac-window-controls-button:where(:not([data-disabled]))
+  > .mac-window-controls-glyph {
+  opacity: 1;
+}
+
+.mac-window-controls:where(:hover, :has(:focus-visible), [data-force~="hover"])
+  > .mac-window-controls-button
+  > .mac-window-controls-dot {
+  opacity: 0;
+}
+
+/* Keyboard focus ring, only in the key window. */
+.mac-window-controls-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-window-controls-button {
+    border: 1px solid ButtonText;
+    color: ButtonText;
+  }
+
+  .mac-window-controls-button:where([data-disabled]) {
+    border-color: GrayText;
+  }
+}

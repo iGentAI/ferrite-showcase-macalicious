@@ -1,0 +1,197 @@
+---
+title: Stock Row
+description: One ticker of the Stocks watchlist, with its symbol and name, a sparkline of the session against the previous close, and the price over a green or red change badge.
+---
+
+<Example name="basic" both />
+
+The sidebar of Stocks lists the tickers you follow. Each row has the symbol over the company's
+name at the leading edge, a small chart of the session in the middle, and the last price over
+a coloured badge at the trailing edge: green when the ticker is up on the previous close, red
+when it is down. Stocks is a Mac Catalyst app, so the row is an iOS table cell at 77% and
+AppKit has no class for it; Base UI has no primitive either. `StockRow` draws it as a list
+item with an inline SVG sparkline, and `StockList` is the list.
+
+## Usage
+
+```tsx
+import { StockList, StockRow } from "macalicious/stock-row";
+import "macalicious/stock-row.css";
+
+<StockList aria-label="Watchlist">
+  <StockRow
+    symbol="AAPL"
+    name="Apple Inc."
+    price="220.82"
+    change="+1.86"
+    direction="gain"
+    data={session}
+    previousClose={218.96}
+    selected={shown === "AAPL"}
+    onSelect={() => setShown("AAPL")}
+    onBadgeClick={() => setBadge(next)}
+  />
+</StockList>
+```
+
+Or copy the source into your project: `npx macalicious add stock-row`.
+
+The row formats nothing: pass the price and the badge's text as they should read, with the
+sign on the change. `data` is the session's prices in order, spaced evenly; `progress` says
+how much of the session they cover, so that the line stops part of the way across while the
+dashed previous close runs on. The sparkline's height spans the lowest to the highest price,
+the previous close included; pass `domain` to span another range, for instance the same one
+for every row.
+
+A row is plain text until it is given something to do. With `onSelect` its symbol, name,
+sparkline and price become one button; with `onBadgeClick` the badge becomes a second button,
+which in Stocks cycles between the change in price, the change in percent and the market
+capitalisation:
+
+<Example name="watchlist" both />
+
+## Guidelines
+
+The Human Interface Guidelines have no section for the row; it is a cell of a single-column
+[table view](https://web.archive.org/web/20200503153039/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/table-views/)
+in a
+[Mac Catalyst](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/ios/overview/mac-catalyst/)
+app. From those and from what Stocks does:
+
+- Keep the sign on the change. The badge's colour repeats it and must not be the only thing
+  that says whether a ticker is up or down.
+- Show the same kind of value in every badge of a list, so that the column can be compared
+  down the rows.
+- Select the row whose ticker the pane beside the list shows, and only that one.
+- Use the symbol the market uses, and the full name under it; let a long name be cut rather
+  than shrinking the text.
+
+## Variants and states
+
+<Example name="states" both />
+
+| Variant or state | Look | Status |
+| --- | --- | --- |
+| Gain | Badge `#35c759`; line `#4cd864`, Dark Aqua `#4dd763`; dashed previous close `#70e080`, Dark Aqua `#4ac860` | measured |
+| Loss | Badge and line `#ff3b30`; dashed previous close `#ff4b40`, Dark Aqua `#ed3c31` | measured |
+| Session under way (`progress`) | The line and its fill stop; the dashed line spans the box | measured (44% in the Dark Aqua screenshot) |
+| Fill under the line | The line's colour, 45% opaque at the top of the box (52% in Dark Aqua) to nothing at the bottom | measured, computed |
+| Selected | Row fill `#f2f2f3`, Dark Aqua `#575858`: the selected cell above the list | provisional |
+| Row pressed | The selected fill while the mouse is down | provisional |
+| Badge pressed | The badge at 70% | provisional |
+| Keyboard focus | A 3 pt focus ring inside the row's edges, and around the badge | provisional |
+| Window not key | No change, except that the focus ring is not drawn | provisional |
+| No quote (`direction="none"`) | Badge in the system grey, `#8e8e93`, Dark Aqua `#98989d`; the price and the badge show what they are given, such as `--`; a sparkline, if there is `data`, is grey too | provisional |
+| No session data | No sparkline, whatever the direction | provisional |
+
+There is no disabled look: a row that cannot be chosen is a row without `onSelect`.
+
+## Sizes
+
+One size. A row is 48.2 pt tall and as wide as its list, 330 pt in Stocks; a hairline along
+its bottom starts 12.3 pt from the leading edge. The symbol is 14 pt medium with its baseline
+21 pt below the row's top, the name 12.5 pt regular with its baseline at 37.5 pt. The
+sparkline's box is 54.67 x 26 pt, 13 pt below the top and 136 pt before the trailing edge; its
+line is 1.5 pt with round joins, and the dashed line 0.85 pt, 2.33 pt on and 1.52 pt off. The
+price is 13 pt regular on the symbol's baseline and ends 12 pt before the trailing edge. The
+badge is 58.5 x 17.65 pt with 3.08 pt corners, 25.85 pt below the top, and holds 11.5 pt
+semibold text aligned to its right. In a wider list only the name's column grows.
+
+Three of these depart from the spec's nominal values, each to match the pixels: the pitch is
+48.2 pt and not 48.25 pt (ten hairlines lie 867.65 px apart), the badge's corner is 3.08 pt
+and not 2.5 pt, and the sparkline's box is 54.67 x 26 pt from 13 pt and not 55 x 25 pt from
+14 pt (the dashed line ends 54.67 pt along, and it is drawn as high as 13.3 pt below the top).
+
+## API
+
+<PropsTable name="StockRowProps" />
+
+<PropsTable name="StockListProps" />
+
+The remaining props of `StockRow` are those of a `<div>` and go to the row, not to its
+buttons; those of `StockList` are the props of a `<div>` too. Both accept Base UI's `render`
+prop.
+
+| Attribute or variable | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-direction` | row | `gain`, `loss`, `none` | Reflects `direction`. |
+| `data-selected` | row | present or absent | Reflects `selected`. |
+| `aria-current` | row's button, or the row without `onSelect` | `true` or absent | Set for the selected row. |
+| `data-force` | row | `pressed`, `focus` | Pins the main button's transient look, for documentation and visual tests only. |
+| `--mac-stock-row-separator` | any ancestor | a colour | The hairline under a row. |
+| `--mac-stock-row-symbol-text`, `--mac-stock-row-name-text`, `--mac-stock-row-price-text` | any ancestor | colours | The three texts. |
+| `--mac-stock-row-gain-badge`, `--mac-stock-row-loss-badge`, `--mac-stock-row-badge-text` | any ancestor | colours | Badge fills and the badge's text. |
+| `--mac-stock-row-gain-line`, `--mac-stock-row-loss-line` | any ancestor | colours | The sparkline's line and the fill under it. |
+| `--mac-stock-row-gain-close`, `--mac-stock-row-loss-close` | any ancestor | colours | The dashed previous close. |
+| `--mac-stock-row-fill-opacity` | any ancestor | a number from 0 to 1 | Opacity of the fill at the top of the sparkline's box. |
+| `--mac-stock-row-selected-fill` | any ancestor | a colour | Fill of a selected or pressed row. |
+
+Classes: `.mac-stock-row-list` (the list, which has no styles of its own), `.mac-stock-row`,
+`.mac-stock-row-main` (the row's content, a `<button>` with `onSelect`),
+`.mac-stock-row-symbol`, `.mac-stock-row-name`,
+`.mac-stock-row-sparkline` (with `-line`, `-close`, `-fill-top` and `-fill-bottom` inside),
+`.mac-stock-row-price` and `.mac-stock-row-badge`.
+
+## Accessibility
+
+- The list is a `list` and each row a list item, not a `listbox` with options: an option
+  cannot hold a second control, and the badge is one. Name the list with `aria-label`. Both
+  are `<div>`s with the list roles and not `<ul>` and `<li>`, so that a page's own list styles
+  do not reach the rows.
+- With `onSelect` a row's content is one native button, named by what it shows: symbol, name,
+  the sparkline's label, price and, unless the badge is a button too, the change. The selected
+  row's button has `aria-current`.
+- Every button is in the tab order. With the focus on a row's button, Up and Down move it to
+  the row above or below, and Home and End to the first and last row; Return and Space choose
+  the row. On a badge the arrow keys do nothing.
+- With `onBadgeClick` the badge is a button of its own, named by its text. Say what a click
+  does with `badgeLabel`, such as “+1.86, show percent change”.
+- The sparkline is an image named “Trending up”, “Trending down” or, for a ticker without a
+  quote, “No change”; pass `chartLabel` to say more, or in another language. Its numbers are
+  in the row as text.
+- The sign in the badge carries the direction, so the row does not rely on red and green
+  alone. White on the green badge has a contrast of about 2.2:1, as in Stocks.
+- The focus ring is drawn only in the key window. In forced-colours mode the badge has an
+  outline, the sparkline is drawn in the system's text colour and the selected row is
+  outlined in the highlight colour.
+
+## Visual comparison
+
+`npm run visual -- stock-row` compares a gain and a loss row with the Stocks screenshots in
+both appearances: Dow Jones in each, DIS in Aqua and GE in Dark Aqua. Each crop is 328 x 48 pt
+of the sidebar, without the window's edge and the sidebar's divider. Share of pixels that
+differ at 2x, in Chromium on Linux with the fallback font:
+
+| Crop (`114,y,656,96`) | Gain, Aqua (`y` 328) | Gain, Dark Aqua (328) | Loss, Aqua (810) | Loss, Dark Aqua (906) |
+| --- | --- | --- | --- | --- |
+| Row with its text | 10.07% | 10.40% | 5.31% | 4.08% |
+| Badge, hairline and sparkline, text masked | 1.05% | 0.85% | 1.39% | 0.87% |
+
+The same comparisons at 1x score 12.56%, 13.31%, 7.84% and 6.34% with the text and 3.65%,
+3.27%, 4.64% and 2.15% without; at 1x the half-point hairline and the 1.5 pt line cannot match
+their averaged counterparts. The masks cover a little over half of each crop, so the second
+row counts differing pixels against the other half only.
+
+The sparkline is not masked. Its prices cannot be known, so each fixture's series is the
+screenshot's own line, traced column by column and corrected against the rendering, with
+`domain` mapping a value straight to a height. About half of what is left is the tracing's
+error along the line (0.4 to 0.9 points of the second row). The rest is the badge's top edge,
+0.4 to 0.5 points in every crop: it lies 25.86 pt below the row's top in the screenshot,
+between two device pixels, and a browser draws it on one.
+
+Measured: the row's pitch and hairline, the positions, sizes and colours of the three texts,
+the badge's box, corner and colours, the sparkline's box, line, fill and dashed line, and the
+share of the box a session under way covers.
+
+Provisional, because no screenshot shows them: the selected and pressed row, the pressed
+badge, the focus ring, the look in a window that is not key, a row without data, the grey of a
+ticker without a quote (the spec infers a grey badge and gives no value; it is the system
+grey, checked with an `expect` comparison), and how far a
+long name may run before it is cut (4 pt before the sparkline; the longest name shown ends
+12.5 pt before it, uncut). The selected fill, the pressed badge, the focus ring and its
+absence in a window that is not key are checked in a real browser against the tokens (`expect`
+comparisons), as is the forced-colours outline, and that the text of a row that is a button
+stands where a plain row's does (`button-alignment`). The rule that scales prices to the box, lowest
+to highest with the previous close included, is the spec's inference: in the screenshots the
+lines do not fill the box, so Stocks scales them some other way, which is why the fixtures set
+`domain`.

@@ -1,0 +1,201 @@
+/*
+ * Popover (NSPopover): a rounded panel of the popover material with the popover shadow, whose
+ * first layer is the 0.5 pt outer hairline, an inner rim, and an arrow of 13 x 29 pt on the
+ * edge that faces the anchor.
+ *
+ * The arrow is drawn pointing left and turned for the other sides. Its fill, its hairline and
+ * its rim continue the panel's; a strip of the opaque fill hides the panel's own hairline and
+ * rim where the arrow joins it, and the arrow's shadow is clipped at the panel's edge.
+ *
+ * States (set by Base UI)
+ *   [data-side="top" | "bottom" | "left" | "right" | "inline-start" | "inline-end"]
+ *   [data-open] / [data-closed]
+ *   [data-starting-style] / [data-ending-style]     while it scales and fades, 0.2 s
+ *   [data-instant]                                  shown or hidden without the animation
+ *
+ * Hooks
+ *   --mac-popover-padding              padding of the panel (default 12px); 0 for content
+ *                                      that reaches the edges, such as full-width separators
+ */
+.mac-popover-positioner {
+  z-index: 950;
+}
+
+.mac-popover {
+  position: relative;
+  box-sizing: border-box;
+  max-width: var(--available-width, none);
+  padding: var(--mac-popover-padding, 12px);
+  border-radius: var(--mac-radius-popover);
+  outline: 0;
+  background: var(--mac-material-popover);
+  box-shadow: var(--mac-shadow-popover), var(--mac-popover-rim);
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  letter-spacing: var(--mac-tracking-regular);
+  cursor: default;
+  transform-origin: var(--transform-origin);
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+  -webkit-backdrop-filter: var(--mac-material-filter);
+  backdrop-filter: var(--mac-material-filter);
+}
+
+.mac-popover:where([data-starting-style], [data-ending-style]) {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.mac-popover:where([data-instant]) {
+  transition: none;
+}
+
+.mac-popover-title {
+  margin: 0;
+  color: var(--mac-color-label);
+  font: var(--mac-font-title-3);
+}
+
+.mac-popover-description {
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-body);
+}
+
+/* A line between groups of content: 1 pt, as wide as its container (Calendar's run from edge
+   to edge of a popover without padding; Reminders' are inset 14 pt). */
+.mac-popover-separator {
+  flex: none;
+  box-sizing: border-box;
+  height: 1px;
+  margin: 0;
+  border: 0;
+  background: var(--mac-popover-separator);
+}
+
+.mac-popover-separator:where([data-orientation="vertical"]) {
+  align-self: stretch;
+  width: 1px;
+  height: auto;
+  min-height: 1em;
+}
+
+/* The arrow's box, placed by Base UI along the edge: 29 x 13 on a horizontal edge. */
+.mac-popover-arrow {
+  position: absolute;
+  width: 29px;
+  height: 13px;
+  pointer-events: none;
+}
+
+.mac-popover-arrow:where([data-side="left"], [data-side="right"], [data-side^="inline"]) {
+  width: 13px;
+  height: 29px;
+}
+
+.mac-popover-arrow:where([data-side="top"]) {
+  top: 100%;
+}
+
+.mac-popover-arrow:where([data-side="bottom"]) {
+  bottom: 100%;
+}
+
+.mac-popover-arrow:where([data-side="left"], [data-side="inline-start"]) {
+  left: 100%;
+}
+
+.mac-popover-arrow:where([data-side="right"], [data-side="inline-end"]) {
+  right: 100%;
+}
+
+.mac-popover-arrow-shape {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 13px;
+  height: 29px;
+  margin: -14.5px 0 0 -6.5px;
+}
+
+.mac-popover-arrow:where([data-side="top"]) > .mac-popover-arrow-shape {
+  rotate: -90deg;
+}
+
+.mac-popover-arrow:where([data-side="bottom"]) > .mac-popover-arrow-shape {
+  rotate: 90deg;
+}
+
+.mac-popover-arrow:where([data-side="left"], [data-side="inline-start"])
+  > .mac-popover-arrow-shape {
+  rotate: 180deg;
+}
+
+/* Hides the panel's hairline and rim across the arrow's base. */
+.mac-popover-arrow-shape::after {
+  content: "";
+  position: absolute;
+  top: 2.5px;
+  left: 12.5px;
+  width: 1.5px;
+  height: 24px;
+  background: var(--mac-material-popover-opaque);
+}
+
+/* Lets the arrow's shadow out on three sides and stops it at the panel's edge. */
+.mac-popover-arrow-clip {
+  display: block;
+  width: 13px;
+  height: 29px;
+  clip-path: inset(-24px 0 -24px -24px);
+}
+
+.mac-popover-arrow-clip > svg {
+  display: block;
+  overflow: visible;
+  filter: var(--mac-popover-arrow-shadow);
+}
+
+.mac-popover-arrow-fill {
+  fill: var(--mac-material-popover-opaque);
+}
+
+.mac-popover-arrow-edge {
+  fill: none;
+  stroke: var(--mac-popover-edge);
+  stroke-width: 0.5px;
+  transform: translateX(-0.3px);
+}
+
+.mac-popover-arrow-rim {
+  fill: none;
+  stroke: var(--mac-popover-rim-arrow);
+  stroke-width: 1px;
+  transform: translateX(0.7px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-popover:where([data-starting-style], [data-ending-style]) {
+    transform: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-popover {
+    border: 1px solid CanvasText;
+  }
+
+  .mac-popover-arrow-fill {
+    fill: Canvas;
+  }
+
+  .mac-popover-separator {
+    background: CanvasText;
+  }
+
+  .mac-popover-arrow-edge {
+    stroke: CanvasText;
+    stroke-width: 1px;
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "window-light",
+      "description": "The whole Keychain Access window, Aqua: the login keychain selected while its list has the keyboard focus (a click on the selected row), All Items and the first item selected without it. Whole crop: the text is set in the fallback font, and the icons and the two toolbar glyphs are stand-in drawings.",
+      "example": "visual-window",
+      "appearance": "light",
+      "actions": [
+        { "click": ".mac-keychain-access-keychains .mac-table-view-row[aria-selected='true']" }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Keychain-Access.png",
+        "crop": { "x": 112, "y": 76, "width": 1754, "height": 1186 }
+      },
+      "budget": { "1x": 0.109, "2x": 0.0825 },
+      "deltaBudget": { "1x": 11.8, "2x": 10.4 }
+    },
+    {
+      "name": "window-light-layout",
+      "description": "As window-light with the text and the stand-in drawings masked (the two toolbar glyphs, the search placeholder, the two pane titles, the icons and names of both lists, the summary's icon and text, the five headings, and the icon column and the text of every column of the rows), to score the frame, the toolbar and its controls' bezels, the pane titles' fills and lines, the three selections, the dividers, the summary's line, the header with its separators and sort indicator, and the stripes.",
+      "example": "visual-window",
+      "appearance": "light",
+      "threshold": 0.05,
+      "actions": [
+        { "click": ".mac-keychain-access-keychains .mac-table-view-row[aria-selected='true']" }
+      ],
+      "masks": [
+        { "x": 84, "y": 12, "width": 13, "height": 14 },
+        { "x": 115, "y": 10, "width": 17, "height": 18 },
+        { "x": 706, "y": 12, "width": 50, "height": 14 },
+        { "x": 58, "y": 42, "width": 58, "height": 14 },
+        { "x": 58, "y": 320, "width": 58, "height": 15 },
+        { "x": 17, "y": 61, "width": 18, "height": 80 },
+        { "x": 40, "y": 61, "width": 90, "height": 80 },
+        { "x": 17, "y": 339, "width": 18, "height": 121 },
+        { "x": 40, "y": 339, "width": 92, "height": 121 },
+        { "x": 186, "y": 46, "width": 66, "height": 66 },
+        { "x": 264, "y": 46, "width": 190, "height": 52 },
+        { "x": 178, "y": 149, "width": 36, "height": 13 },
+        { "x": 399, "y": 149, "width": 28, "height": 13 },
+        { "x": 522, "y": 149, "width": 80, "height": 13 },
+        { "x": 673, "y": 149, "width": 44, "height": 13 },
+        { "x": 824, "y": 149, "width": 50, "height": 13 },
+        { "x": 193, "y": 168, "width": 18, "height": 425 },
+        { "x": 215, "y": 168, "width": 178, "height": 425 },
+        { "x": 398, "y": 168, "width": 116, "height": 425 },
+        { "x": 521, "y": 168, "width": 146, "height": 425 },
+        { "x": 672, "y": 168, "width": 14, "height": 425 },
+        { "x": 823, "y": 168, "width": 30, "height": 425 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Keychain-Access.png",
+        "crop": { "x": 112, "y": 76, "width": 1754, "height": 1186 }
+      },
+      "budget": { "1x": 0.0062, "2x": 0.0008 },
+      "deltaBudget": { "1x": 0.7, "2x": 0.62 }
+    },
+    {
+      "name": "window-dark",
+      "description": "The whole Keychain Access window, Dark Aqua: the search field has the keyboard focus (a click on it), so the three lists show their selections unemphasised. Whole crop: fallback font, stand-in icons and glyphs.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "actions": [{ "click": ".mac-toolbar-search-field-input" }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Keychain-Access.png",
+        "crop": { "x": 112, "y": 76, "width": 1754, "height": 1186 }
+      },
+      "budget": { "1x": 0.1125, "2x": 0.086 },
+      "deltaBudget": { "1x": 12.1, "2x": 10.5 }
+    },
+    {
+      "name": "window-dark-layout",
+      "description": "As window-dark with the same regions masked as window-light-layout. Scores the frame, the toolbar with its bezels and the search field's focus ring, the pane titles' fills and lines, the three unemphasised selections, the dividers, the summary's line, the header and the stripes.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "actions": [{ "click": ".mac-toolbar-search-field-input" }],
+      "masks": [
+        { "x": 84, "y": 12, "width": 13, "height": 14 },
+        { "x": 115, "y": 10, "width": 17, "height": 18 },
+        { "x": 706, "y": 12, "width": 50, "height": 14 },
+        { "x": 58, "y": 42, "width": 58, "height": 14 },
+        { "x": 58, "y": 320, "width": 58, "height": 15 },
+        { "x": 17, "y": 61, "width": 18, "height": 80 },
+        { "x": 40, "y": 61, "width": 90, "height": 80 },
+        { "x": 17, "y": 339, "width": 18, "height": 121 },
+        { "x": 40, "y": 339, "width": 92, "height": 121 },
+        { "x": 186, "y": 46, "width": 66, "height": 66 },
+        { "x": 264, "y": 46, "width": 190, "height": 52 },
+        { "x": 178, "y": 149, "width": 36, "height": 13 },
+        { "x": 399, "y": 149, "width": 28, "height": 13 },
+        { "x": 522, "y": 149, "width": 80, "height": 13 },
+        { "x": 673, "y": 149, "width": 44, "height": 13 },
+        { "x": 824, "y": 149, "width": 50, "height": 13 },
+        { "x": 193, "y": 168, "width": 18, "height": 425 },
+        { "x": 215, "y": 168, "width": 178, "height": 425 },
+        { "x": 398, "y": 168, "width": 116, "height": 425 },
+        { "x": 521, "y": 168, "width": 146, "height": 425 },
+        { "x": 672, "y": 168, "width": 14, "height": 425 },
+        { "x": 823, "y": 168, "width": 30, "height": 425 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Keychain-Access.png",
+        "crop": { "x": 112, "y": 76, "width": 1754, "height": 1186 }
+      },
+      "budget": { "1x": 0.0039, "2x": 0.0008 },
+      "deltaBudget": { "1x": 0.69, "2x": 0.57 }
+    }
+  ]
+}

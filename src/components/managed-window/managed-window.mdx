@@ -1,0 +1,215 @@
+---
+title: Managed Window
+description: A window that the window manager moves, resizes, orders and focuses, with a hook that wires its title bar and window controls. Drag the title bar, resize from any edge or corner, minimize, zoom, go full screen, close.
+order: 81
+---
+
+<Example name="basic" both />
+
+`ManagedWindow` is a [Window](/components/window) placed on a
+[Window Manager](/components/window-manager). The manager gives it its state (key, main or
+inactive), its place in the stacking order and its frame; the managed window turns pointer
+gestures into frames and reports them back. It has to be rendered inside a `WindowManager`.
+
+## Usage
+
+```tsx
+import { ManagedWindow, useManagedWindow } from "macalicious/managed-window";
+import { TitleBar } from "macalicious/title-bar";
+import { WindowBody } from "macalicious/window";
+import { WindowControls } from "macalicious/window-controls";
+import { WindowManager } from "macalicious/window-manager";
+import "macalicious/managed-window.css";
+
+function Chrome({ title }: { title: string }) {
+  const managed = useManagedWindow();
+  return (
+    <TitleBar
+      title={title}
+      controls={<WindowControls {...managed.controlsProps} />}
+      {...managed.titleBarProps}
+    />
+  );
+}
+
+<WindowManager style={{ height: 480 }}>
+  <ManagedWindow id="notes" app="notes" title="Notes" defaultFrame={{ x: 80, y: 60, width: 640, height: 420 }}>
+    <Chrome title="Notes" />
+    <WindowBody>…</WindowBody>
+  </ManagedWindow>
+</WindowManager>
+```
+
+Or copy the source into your project: `npx macalicious add managed-window`.
+
+There are two ways to put an application in a managed window.
+
+**Children.** `ManagedWindow` renders the `Window`; its children are the title bar, the body
+and any other bar. A component inside calls `useManagedWindow()` and spreads `titleBarProps`
+onto the [Title Bar](/components/title-bar) and `controlsProps` onto the
+[Window Controls](/components/window-controls), as `Chrome` does above. That is all the
+wiring there is: the drag region moves the window, a double click zooms it, and the three
+buttons close, minimize, and zoom or enter full screen, with the right glyph and the right
+buttons disabled.
+
+**`render`.** An application that is one component with a `Window` as its own root is handed
+everything that root needs:
+
+<Example name="render" />
+
+```tsx
+<ManagedWindow
+  id="calculator"
+  app="calculator"
+  title="Calculator"
+  resizable={false}
+  defaultFrame={{ width: 232, height: 321 }}
+  render={(props) => <Calculator {...props} />}
+/>
+```
+
+`props` holds the `Window` props for the root (`state`, `variant`, `fullScreen`, `width` and
+`height` of `"100%"`, `tabIndex`, and whatever else was passed to `ManagedWindow`) and eight
+more that the component takes out before it spreads the rest onto its root: `onClose`,
+`onMinimize`, `onZoom`, `zoomRole`, `minimizeDisabled` and `zoomDisabled` for the
+[Window Controls](/components/window-controls), and `onDragRegionPointerDown` and
+`onDragRegionDoubleClick` for the [Title Bar](/components/title-bar). Hand all six to the
+window controls: `zoomRole` turns the green button into the way out of full screen, and the
+two flags disable the buttons that do nothing in the window's present state. The component
+must not position its root; the manager places a wrapper around it.
+
+Render a managed window anywhere inside the manager, as long as no element between the two
+is positioned or transformed: windows are placed from the manager's top-left corner.
+
+### Opening and closing
+
+A managed window is open by default and removes itself when it is closed. To decide
+yourself, control it the way Base UI's popups are controlled:
+
+```tsx
+const [open, setOpen] = useState(false);
+
+<ManagedWindow open={open} onOpenChange={setOpen} … />
+```
+
+A closed window is not rendered and its content loses its state. A minimized window stays
+mounted, hidden and inert, so it comes back as it was.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines on
+[window anatomy](https://web.archive.org/web/20200503170954/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/window-anatomy/)
+and [panels](https://web.archive.org/web/20200503170954/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/panels/):
+
+- Give a window a sensible minimum size, so that it cannot be made too small to use.
+- A window that cannot be resized has a disabled zoom button, like Calculator's or a
+  preference pane's.
+- The green button enters full screen in a window that supports it; holding Option turns it
+  into zoom. A window that does not support full screen has a zoom button.
+- Use a panel for controls that act on the main window: it floats above the windows of its
+  application and does not take the main window's place.
+
+## Variants and states
+
+<Example name="panel" />
+
+| State | How it is set | What happens |
+| --- | --- | --- |
+| Key, main, inactive | by the manager | Passed to the `Window` as `state`; see [Window](/components/window). |
+| Minimized | minimize button, `minimize()`, Control-Option-M | The window shrinks towards the Dock and is hidden and `inert`; it stays mounted. |
+| Zoomed | double click on the title bar, Option-click on the green button, `zoom()` | Fills the manager inside its insets. Dragging it keeps the size as its own frame. |
+| Full screen | the green button, `toggleFullScreen()` | Covers the manager, without frame, above the menu bar and the Dock while it is key; the minimize button is disabled and the zoom button leaves full screen. Another window brought in front of it is in front. |
+| Panel | `panel` | `Window variant="panel"`; floats above ordinary windows; while it is key the front window stays main. The prop can change while the window is open: frame and state are kept. |
+| Not resizable | `resizable={false}` | No resize handles; no zoom or full screen, so the green button is a disabled zoom button. A window that stops being resizable while zoomed or in full screen can still leave that state by the same button. |
+
+## Sizes
+
+`defaultFrame` gives the window its first position and size, in points; any part may be left
+out. Without `x` and `y` the window is cascaded 24 points down and right of the ones already
+open, and without a size it is 480 by 320. `minWidth` and `minHeight` bound resizing.
+`width` and `height` are not for a managed window: its frame belongs to the manager.
+
+## API
+
+<PropsTable name="ManagedWindowProps" />
+
+<PropsTable name="ManagedWindowRenderProps" />
+
+### useManagedWindow()
+
+For components inside a managed window. It throws outside one.
+
+| Member | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | The window's id in its manager. |
+| `state` | `"key" \| "main" \| "inactive"` | The window state. The frame already shows it; read it to change behaviour. |
+| `minimized`, `zoomed`, `fullScreen` | `boolean` | The window's flags. |
+| `titleBarProps` | object | `onDragRegionPointerDown` and `onDragRegionDoubleClick`, to spread onto `TitleBar`. |
+| `controlsProps` | object | `onClose`, `onMinimize`, `onZoom`, `zoomRole`, `minimizeDisabled` and `zoomDisabled`, to spread onto `WindowControls`. |
+| `close()`, `minimize()`, `zoom()`, `toggleFullScreen()` | `() => void` | The window's commands, for menu items and buttons. |
+
+| Attribute or class | On | Description |
+| --- | --- | --- |
+| `.mac-managed-window` | the wrapper around the `Window` | Placed with a transform, sized inline, stacked with `z-index`. |
+| `data-window-id` | the wrapper | The window's id. |
+| `data-minimized` | the wrapper | Minimized. |
+| `data-zoomed` | the wrapper | Zoomed. |
+| `data-full-screen` | the wrapper and the `Window` | In full screen. |
+| `data-dragging` | the wrapper | While the pointer moves or resizes the window. |
+| `.mac-managed-window-resize` | the eight handles | `data-edge` is `n`, `e`, `s`, `w`, `ne`, `se`, `sw` or `nw`. |
+
+| Custom property | Default | Description |
+| --- | --- | --- |
+| `--mac-managed-window-minimize-scale` | `0.08` | The `scale()` arguments a window shrinks to as it minimizes. |
+| `--mac-managed-window-minimize-skew` | `0deg` | The skew it takes on the way, for a Genie-like effect. |
+
+`ref`, `className`, `style` and every other prop go to the `Window`, which is the element
+with the role and the name; the wrapper is the manager's.
+
+## Accessibility
+
+- The window is the labelled `region` of [Window](/components/window), named by its title
+  bar. Without a title bar give it `aria-label`.
+- Focus moving into a window makes it key. After a command (the Dock, a menu, the keyboard,
+  another window closing) the key window receives the keyboard focus on its frame, unless
+  the focus is inside it already. So does a window that opens while the focus is inside the
+  desktop, and a window whose edge is pressed to resize it. A window that is on the page when
+  it loads, or opens while the focus is elsewhere on the page, does not take the focus.
+- Moving and resizing are pointer gestures; the same can be done from the keyboard with the
+  manager's window commands ([Window Manager](/components/window-manager#accessibility)):
+  Control-Option with the arrow keys moves, with Shift it resizes. The resize handles are
+  hidden from assistive technology.
+- A minimized window is `inert`.
+- With `prefers-reduced-motion` a minimizing window fades instead of shrinking.
+- A touch on the title bar or on a resize handle moves or resizes the window and does not pan
+  the page (`touch-action: none` on both).
+
+## Performance
+
+- While a window follows the pointer nothing renders: the gesture reads the manager's size
+  once when it starts and from then on only writes a transform (and, when resizing, a width
+  and height) to the one element. A resize stops where it would take the title bar out of
+  reach: 40 points of the window stay between the manager's left and right insets, as they do in a move. The frame reaches React, and the manager's list, once, on
+  release.
+- A change of order re-renders only the windows whose state or stacking position changed.
+- Listeners live on the title bar or handle that was pressed, for the length of the gesture,
+  and follow the one pointer that started it: a second finger starts nothing. A press or a
+  double click in a popup of the title bar (the menu of a toolbar item, a popover) is the
+  popup's: it neither moves nor zooms the window, though React hands it to the bar. A gesture also
+  ends, keeping the frame it reached, when the window closes or its handles go away under
+  the pointer (it stops being resizable, zooms or enters full screen).
+  Nothing listens on `window` or `document`.
+
+## Visual comparison
+
+A window at rest is compared with the crop the plain window is measured with, the top-left
+corner of the Finder window in both appearances, so what the manager adds is held to the same
+screenshot. No reference screenshot can show a window being moved or zoomed, so
+`managed-window.visual.json` also holds state checks: in a real browser, in both appearances, a
+window is where its frame says, and after Control-Option-Z it fills the manager inside the top
+inset and no further.
+
+Provisional, because no screenshot or measurement backs it: the 0.28 s scale effect of
+minimizing (Catalina's default is the genie effect, which CSS transforms cannot draw), the
+resize handles reaching 4 points outside the frame and 2 points over it, and the default
+minimum size of 160 by 80.

@@ -1,0 +1,122 @@
+/*
+ * Music demo: the layout of the content pane. The window, the playback bar, the sidebar, the
+ * album cells, the tables and every control are the library's own; nothing here restyles them.
+ *
+ * Parts
+ *   .mac-music-layout          the pane's row: the scrolling page, then the side panel
+ *   .mac-music-page            the page: 40 pt above the first section
+ *   .mac-music-heading         title of the song table in the search results
+ *   .mac-music-table           a table section's 39 pt side margins
+ *   .mac-music-album           the chosen album's details under the grid
+ *   .mac-music-album-header    its cover, title, artist, facts and Play button
+ *   .mac-music-panel           the Lyrics or Up Next panel at the trailing edge
+ *   .mac-music-announcement    the visually hidden line that announces a new song
+ *   .mac-music-source-list-start  the sidebar's first section, raised to the capture's place
+ */
+/* Music's source list starts 1.5 pt higher than Podcasts' in the same chrome: the first
+   header's cap top is at 103.5 pt and the first row's top at 117 pt in both captures (the
+   library's list, which Podcasts matches exactly, puts them at 105 and 118.5). */
+.mac-music-source-list-start {
+  margin-block-start: var(--mac-music-source-list-margin-block-start);
+}
+
+.mac-music-layout {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+}
+
+.mac-music-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+}
+
+/* The first album cell is 40 pt under the playback bar and 39 pt after the divider; the
+   point at the trailing edge makes five 168 pt cells fill the pane at the window's 1220 pt. */
+.mac-music-page {
+  box-sizing: border-box;
+  padding: var(--mac-music-page-padding);
+}
+
+.mac-music-heading {
+  margin-block-end: var(--mac-music-heading-margin-block-end);
+  color: var(--mac-color-label);
+  font: var(--mac-font-title-3);
+}
+
+.mac-music-table {
+  padding: var(--mac-music-section-padding);
+}
+
+.mac-music-album {
+  padding: var(--mac-music-section-padding);
+}
+
+.mac-music-album-header {
+  display: flex;
+  gap: var(--mac-music-album-header-gap);
+  align-items: flex-end;
+  padding-block: var(--mac-music-album-header-padding-block);
+  border-block-start: 1px solid var(--mac-color-separator);
+}
+
+.mac-music-album-cover {
+  flex: none;
+  width: var(--mac-music-album-cover-size);
+  height: var(--mac-music-album-cover-size);
+  overflow: hidden;
+  border-radius: var(--mac-music-album-cover-radius);
+}
+
+.mac-music-album-about {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.mac-music-album-title {
+  color: var(--mac-color-label);
+  font: var(--mac-font-title-2);
+}
+
+.mac-music-album-artist {
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+}
+
+.mac-music-album-meta {
+  margin-block: var(--mac-music-album-meta-margin-block);
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-label);
+}
+
+.mac-music-panel {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: var(--mac-music-panel-width);
+  border-inline-start: 1px solid var(--mac-color-separator);
+}
+
+.mac-music-panel-title {
+  padding: var(--mac-music-panel-title-padding);
+  color: var(--mac-color-label);
+  font: var(--mac-font-headline);
+}
+
+.mac-music-panel-body {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.mac-music-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

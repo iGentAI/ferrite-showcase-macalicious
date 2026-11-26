@@ -1,0 +1,130 @@
+---
+title: Tooltip
+description: A help tag, the small floating label that describes the control under the pointer. No visual reference exists in the screenshots.
+order: 36
+---
+
+<Example name="basic" both />
+
+Apple calls it a help tag (`NSView.toolTip`). The parts are built on Base UI's
+[Tooltip](https://base-ui.com/react/components/tooltip) and keep its anatomy; `TooltipPopup`
+combines Base UI's portal, positioner and popup, because a help tag has no arrow and is always
+assembled the same way.
+
+**No visual reference.** A help tag appears only while the pointer rests on a control, and none
+of the 294 reference screenshots was taken in that state. Every visual value on this page is
+inferred from Apple's documentation and from the look of Catalina's other floating surfaces.
+
+## Usage
+
+```tsx
+import { PushButton } from "macalicious/push-button";
+import { Tooltip, TooltipPopup, TooltipTrigger } from "macalicious/tooltip";
+import "macalicious/push-button.css";
+import "macalicious/tooltip.css";
+
+<Tooltip>
+  <TooltipTrigger render={<PushButton>Revert</PushButton>} />
+  <TooltipPopup>Discard changes and go back to the last saved version</TooltipPopup>
+</Tooltip>
+```
+
+Or copy the source into your project: `npx macalicious add tooltip`.
+
+`TooltipTrigger` renders a `<button>`; pass the real control with `render`. The tooltip opens
+after the pointer has rested on the trigger for 1.5 seconds, 16 pt below and 8 pt to the right
+of the pointer, and on keyboard focus below the control. Wrap several triggers in a
+`TooltipProvider` and, once one tag has shown, the next shows at once.
+
+<Example name="controls" />
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for help tags:
+
+- Describe what the control under the pointer does; do not repeat its name.
+- Keep the text brief, in sentence case, without a full stop for a fragment.
+- Add help tags to your own controls, not to system controls such as scrollers.
+- A tag may change with the control's state.
+- Never put essential information in a help tag alone.
+
+## Variants and states
+
+| `kind` | Use | Look |
+| --- | --- | --- |
+| `help-tag` | Describes a control | 11 pt text, 4 pt and 2 pt padding, below the pointer; wraps at 300 pt |
+| `expansion` | Shows the full text of a clipped field | The regular 13 pt control font, laid over the field, one line |
+
+<Example name="expansion" />
+
+| State | Look |
+| --- | --- |
+| Opening | Fades in over 0.1 s |
+| Closing | Fades out over 0.5 s |
+| Window not key | Unchanged: a tooltip is a window of its own |
+
+All of it is provisional.
+
+## Sizes
+
+A help tag has one size.
+
+## API
+
+`Tooltip` takes Base UI's Root props, `TooltipTrigger` its Trigger props, `TooltipPopup` its
+Popup props, and `TooltipProvider` its Provider props, plus these:
+
+<PropsTable name="TooltipProps" />
+
+<PropsTable name="TooltipTriggerProps" />
+
+<PropsTable name="TooltipPopupProps" />
+
+<PropsTable name="TooltipProviderProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-kind` | popup | `help-tag`, `expansion` | Reflects the tooltip's `kind`. |
+| `data-open`, `data-closed` | popup | present or absent | Set by Base UI. |
+| `data-starting-style`, `data-ending-style` | popup | present or absent | Set by Base UI while it fades. |
+| `data-side`, `data-align` | popup | a side, an alignment | Where it was placed. |
+
+Classes: `.mac-tooltip` (the popup) and `.mac-tooltip-positioner`.
+
+A popup is rendered in a portal, so it cannot inherit its field's font. For an expansion
+tooltip over a small, mini or monospaced field, set `--mac-tooltip-font` on the popup. React's
+style type does not know custom properties, so the object is cast:
+
+```tsx
+import type { CSSProperties } from "react";
+
+<TooltipPopup
+  kind="expansion"
+  style={{ "--mac-tooltip-font": "var(--mac-font-control-small)" } as CSSProperties}
+>
+  The full text of the field
+</TooltipPopup>
+```
+
+## Accessibility
+
+- The popup has `role="tooltip"` and the trigger points to it with `aria-describedby`, so its
+  text is the control's description. The trigger still needs its own name.
+- A tooltip opens on keyboard focus as well as on hover, and Escape closes it. It never takes
+  the focus and holds no controls: use a popover for anything interactive.
+- Base UI's hoverable popup is kept: the pointer can move onto a tooltip that does not follow
+  it without closing it, which WCAG asks of content shown on hover (`disableHoverablePopup`
+  switches that off).
+- Touch devices have no hover; do not rely on a help tag for anything people need.
+- The fade is an opacity change only, so it needs no reduced-motion variant.
+
+## Visual comparison
+
+No comparison with a screenshot is possible: no help tag is in the reference set, which
+`tooltip.visual.json` records as pending. `npm run visual -- tooltip` instead opens a tooltip
+and checks pixels against the values the spec infers: the fill (`#f2f2f2`, Dark Aqua
+`#2a2a2a`), the hairline border (black or white at 20%) and the square corner. They pass in
+both appearances at 1x and 2x.
+
+Provisional: every value, including the fill, border, shadow, padding, delay and position.
+The rounded help tag of later macOS versions is deliberately not used.

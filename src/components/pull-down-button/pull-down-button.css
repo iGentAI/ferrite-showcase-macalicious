@@ -1,0 +1,22 @@
+/*
+ * Pull-down button (NSPopUpButton, pullsDown = true).
+ *
+ * The bezel, the accent cap, the sizes and every state are the pop-up button's
+ * (pop-up-button.css): this element also carries the class mac-pop-up-button, with
+ * data-arrows="down" for the single chevron. Only what differs is here.
+ *
+ * States: as the pop-up button. [data-popup-open] is set by Base UI while the menu is open.
+ */
+.mac-pull-down-button {
+  /* A pull-down button is as wide as its title, like a push button, unless given a width. */
+  flex: none;
+}
+
+/* Without a bezel: the small chevron starts 3 pt after the title (Mouse pane). Its box is
+   10 pt wide with 1.3 pt of air on each side of the 7.4 pt glyph. */
+.mac-pull-down-button:where([data-bordered="false"]) {
+  --_cap: 10px;
+  /* Title and chevron, enabled: lighter than control text in Aqua (Trackpad pane). */
+  --_plain: var(--mac-pull-down-button-borderless-text);
+  padding-right: calc(var(--_cap) + 1.5px);
+}

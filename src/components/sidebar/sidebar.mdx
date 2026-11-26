@@ -1,0 +1,310 @@
+---
+title: Sidebar
+description: A source list of sections, rows and outline rows on the sidebar material, with single selection and keyboard navigation.
+---
+
+<Example name="basic" both />
+
+AppKit's source list: an `NSOutlineView` with the source-list highlight style on the sidebar
+material, as on the leading side of Finder, Mail, Notes and Disk Utility windows. Base UI has
+no tree, so the sidebar is written to the WAI-ARIA tree pattern. It uses the
+[disclosure triangle](/components/disclosure-triangle) for outline rows and scrolls inside a
+[scroll view](/components/scroll-view).
+
+## Usage
+
+```tsx
+import { Sidebar, SidebarFooter, SidebarItem, SidebarSection } from "macalicious/sidebar";
+import "macalicious/scroll-view.css";
+import "macalicious/disclosure-triangle.css";
+import "macalicious/sidebar.css";
+
+<Sidebar aria-label="Folders" defaultValue="documents" style={{ width: 200, height: 400 }}>
+  <SidebarSection title="Favorites">
+    <SidebarItem value="recents" label="Recents" icon={<ClockGlyph />} />
+    <SidebarItem value="documents" label="Documents" icon={<PageGlyph />} />
+  </SidebarSection>
+</Sidebar>
+```
+
+Or copy the source into your project: `npx macalicious add sidebar`.
+
+The root is the pane. Give it a size (or place it in a [split view](/components/split-view)
+pane, which draws the divider): the list scrolls inside it, so the caller does not wrap it in
+a scroll view. `value` is the `value` of the selected `SidebarItem`; control it with `value`
+and `onValueChange`, or let the sidebar keep it with `defaultValue`.
+
+An item with child items is an outline row with a disclosure triangle, and its children are
+indented 16 pt per level:
+
+```tsx
+<SidebarItem value="albums" label="My Albums" defaultExpanded>
+  <SidebarItem value="summer" label="Summer" />
+</SidebarItem>
+```
+
+A row's `icon` is any glyph of your own that draws with `currentColor`, or a
+[tag dot](/components/tag-dot). Its `accessory` is trailing content such as a
+[sidebar badge](/components/sidebar-badge). Those two components take the row's state as props
+of their own (`selected`, `emphasized`), so control the selection when a selected row holds
+one, as the outline example below does. The library ships no icons.
+
+`footer` takes a `SidebarFooter`, the borderless button under the list (“New Folder”).
+`header` takes what stays over the list while it scrolls, such as the switch between Bookmarks
+and the Reading List in Safari's sidebar, or the search field over the lists in Reminders: it
+is drawn on the pane's material, outside the tree, and is laid out by its own styles. It is
+not part of the list: it keeps its own tab stops, before the list's, and the arrow keys and
+type-select of the list do not reach it.
+
+<Example name="header" both />
+
+The sidebar renders every row it is given. It is meant for the short lists a sidebar holds;
+for thousands of rows use a [list view](/components/list-view), which renders only the
+visible ones. A change of selection renders no row again: the sidebar moves `aria-selected`
+between the two rows it concerns, and rows have no handlers or subscriptions of their own.
+The one exception is the disclosure triangle of an outline row, which is a
+[disclosure triangle](/components/disclosure-triangle) button and handles its own click, as
+it does anywhere else.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[sidebars](https://web.archive.org/web/20200503160808/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/sidebars/):
+
+- Use titles to form logical groups of related items. A sidebar has no column header.
+- Do not expose more than two levels of hierarchy. For deeper data consider a second sidebar
+  or a column view.
+- Use the translucent background, except when a window has more than one sidebar or the
+  sidebar is in a panel or a preferences window: there, use the opaque one.
+- Consider hiding the sidebar automatically when the window becomes narrow, and showing it
+  again when there is room.
+- Let people customise what the sidebar holds where possible.
+- In an editable sidebar, buttons that add or remove items are borderless and float above the
+  bottom of the sidebar, or are gradient buttons directly below it.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+<Example name="outline" both />
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Translucent | default | The sidebar material, which blurs what is behind the pane in the page. A page cannot see the desktop behind the browser window, so over nothing it is the material's own tint |
+| Opaque | `material="opaque"` | `#e7e8e8`, `#2c2d2f` in Dark Aqua: the material as captured over a neutral window |
+| Row selected | `value`, a click, the arrow keys | A 24 pt rectangle from edge to edge, grey (`#c7c8c8`, `#505153`); label `#141515`, icon `#545555` |
+| Row selected, sidebar has the focus | the list holds the keyboard focus in a key window, or `data-force="focus"` on the root | Accent selection (`#136fe6`, `#0772eb`); label, icon and triangle white |
+| Keyboard focus | Tab to the list | Focus ring inside the edge of the whole list, never around a row; key window only. A click gives the focus without the ring |
+| Inactive window | an ancestor with `data-window-state="inactive"` | Flat material `#f6f6f6` (`#2c2d2f`), selection `#d2d2d2` (`#505153`), labels, headers and icons dimmed to `#777777` (`#a8a9ab`); no accent, no ring |
+| Main window | an ancestor with `data-window-state="main"` | As in a key window, but the selection stays grey |
+| Outline row | an item with child items | Disclosure triangle 9 pt before the icon; children 16 pt further in per level; in a sidebar with outline rows every icon starts 6 pt further in |
+| Collapsed section | `collapsed` on `SidebarSection` | Header only |
+| Disabled row | `disabled` on `SidebarItem` | Half opacity; cannot be selected, skipped by the keyboard |
+
+There is no hover and no pressed look: macOS sidebars have none, and the selection changes on
+mouse down.
+
+Measured: the row height and pitch, the header's position and its 29 pt slot, the insets of
+icon, label, triangle and accessory, the indent per level, and every colour above in both
+appearances, including the inactive window. Provisional (no screenshot shows them): the
+small and large sizes, the disabled row, the collapsed section, the footer's pressed look and
+the translucent material over page content. Not implemented: the “Hide”/“Show” button that
+appears when the pointer is over a header, and the drag-target outline.
+
+## Sizes
+
+<Example name="sizes" both hideCode />
+
+`size` is the system-wide “Sidebar icon size” of General preferences, not the control size of
+other components.
+
+| Size | Row | Icon box | Basis |
+| --- | --- | --- | --- |
+| `small` | 20 pt | 16 pt | Icon size documented by Apple; row height inferred |
+| `medium` | 24 pt | 18 pt | Measured: every sidebar in the reference set |
+| `large` | 32 pt | 32 pt | Icon size documented by Apple; row height inferred |
+
+A source list whose rows are none of the three sets the row height and the icon box itself,
+with `--mac-sidebar-row-height` and `--mac-sidebar-icon-size` on the `Sidebar` (in `style`) or
+on an ancestor; unset, the size decides. Reminders' “My Lists” has 36 pt rows with 22 pt
+discs (measured: `10-15-Catalina-Light-Reminders.png` at 660,716 and 152,586), which is
+`--mac-sidebar-row-height: 36px` and `--mac-sidebar-icon-size: 22px`. The comparisons
+`reminders-lists-light` and `-dark` hold the three rows to the captures (0.00% of pixels
+differ with discs and text masked), and `reminders-footer-light` and `-dark` the filled
+“Add List” glyph (1.44% and 1.47% at 2x, title masked).
+
+Rows are 2 pt apart at every size (a 26 pt pitch at `medium`). A header takes 20 pt, with
+9 pt above it after a section, 29 pt in all. Labels are 13 pt and headers 11 pt semibold at
+every size. The first row or header starts 5 pt below the top of the list; a header's text
+starts 10 pt from the edge, an icon box 18 pt (24 pt in a sidebar with outline rows), and an
+accessory ends 12 pt before the far edge.
+
+### Spacing
+
+Those distances are the ones Finder, Mail and Disk Utility use. Some applications set their
+source list tighter, and three custom properties change the spacing without touching the
+rows: set them in `style` on the `Sidebar`, or in CSS on it or on any ancestor. Unset, each
+keeps the default, so nothing changes for a sidebar that does not use them. A fourth,
+`--mac-sidebar-header-inset`, moves the header's text inside its 20 pt.
+
+<Example name="spacing" both />
+
+| Source list | Row pitch | `--mac-sidebar-row-spacing` | `--mac-sidebar-section-gap` | `--mac-sidebar-label-gap` | `--mac-sidebar-header-inset` |
+| --- | --- | --- | --- | --- | --- |
+| Default (Finder, Mail, Disk Utility) | 26 pt | `2px` | `9px` | `4px` | `2px` (Finder `3px`) |
+| Music | 24 pt | `0px` | `10px` | `5px` | `4px` |
+
+The rows keep their height at every setting: with a row spacing of `0px` they touch, and the
+pitch is the row height. The label gap moves only the label; the disclosure triangle and the
+accessory keep their places.
+
+## API
+
+<PropsTable name="SidebarProps" />
+
+The root is a `div` and takes its attributes, `ref`, `className` and `style`. `aria-label` and
+`aria-labelledby` are moved to the tree inside it.
+
+<PropsTable name="SidebarSectionProps" />
+
+<PropsTable name="SidebarItemProps" />
+
+An item's attributes, `ref`, `className` and `style` go to its row element. The row's `id` is
+derived from `value` and cannot be set.
+
+<PropsTable name="SidebarFooterProps" />
+
+`SidebarFooter` is a `button` and takes its props; its children are the title. Its glyph is a
+plus in a ring, as in Notes; `filled` cuts the plus out of a disc, as Reminders' “Add List”
+does, and sets `data-filled` on the button.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-size` | root | `small`, `medium`, `large` | Reflects `size`. |
+| `data-material` | root | `translucent`, `opaque` | Reflects `material`. |
+| `data-force` | root | `focus` | Pins the accent selection for documentation and visual tests. |
+| `aria-selected` | row | `true`, `false` | The selected row. |
+| `aria-expanded` | row | `true`, `false`, absent | Present on an outline row. |
+| `aria-level` | row | 1 and up | Depth of the row. |
+| `aria-disabled` | row | `true`, absent | Reflects `disabled`. |
+| `data-value` | row | the item's `value` | Absent on a disabled row. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-sidebar-header-inset` | `2px` | Space above a header's line of text. Finder sets its headers 1 pt lower: `3px`; Music 2 pt lower: `4px`. |
+| `--mac-sidebar-row-spacing` | `2px` | Space under every row. `0px` makes the rows touch, as in Music: a 24 pt pitch at `medium`. |
+| `--mac-sidebar-section-gap` | `9px` | Space above every section but the first, after the row spacing under the last row before it. Music: `10px`. |
+| `--mac-sidebar-label-gap` | `4px` | Space between a row's icon and its label. Music: `5px`. |
+
+The four are inherited, so they can be set on the `Sidebar` or on an element around it.
+
+| Class | Part |
+| --- | --- |
+| `.mac-sidebar` | The pane |
+| `.mac-sidebar-scroll` | The scroll view |
+| `.mac-sidebar-tree` | Its viewport: the tree |
+| `.mac-sidebar-section`, `.mac-sidebar-header` | A section and its header |
+| `.mac-sidebar-item` | A row |
+| `.mac-sidebar-triangle`, `.mac-sidebar-icon`, `.mac-sidebar-label`, `.mac-sidebar-accessory` | The parts of a row |
+| `.mac-sidebar-footer` | The footer button |
+
+## Accessibility
+
+- The list is a `tree`; rows are `treeitem`s with `aria-selected`, `aria-level` and, for
+  outline rows, `aria-expanded`. A section is a `group` named by its header, which is not a
+  row and cannot be selected. Name the tree with `aria-label` or `aria-labelledby` on
+  `Sidebar`.
+- The tree is one tab stop. It keeps the focus and names the selected row with
+  `aria-activedescendant`; rows are never focused themselves.
+- Up and Down Arrow move the selection through the visible rows, past headers and disabled
+  rows. Home and End select the first and last row. Right Arrow expands a collapsed outline
+  row, and on an expanded one moves to its first child; Left Arrow collapses an expanded row,
+  and otherwise moves to the parent; in a right-to-left layout the two arrows swap. Typing
+  the start of a label selects the next row whose label begins with it; characters typed
+  within a second are joined, and repeating one letter steps through the rows that start
+  with it.
+- An expanded outline row owns the group of its child rows (`aria-owns`) and is named by its
+  own label, so assistive technology hears the hierarchy and not only the level.
+- Selection follows the keyboard, as in AppKit: there is no separate focused row and nothing
+  to activate with Return or Space. The selected row is scrolled into view.
+- The disclosure triangle is a pointer target only (`aria-hidden`, not in the tab order): the
+  row's `aria-expanded` and the arrow keys carry the same information and action. Clicking it
+  does not select its row, unless collapsing the row hides the selection.
+- A row's accessory is part of its accessible name (“Drafts 1”). An icon should be
+  `aria-hidden`: the label carries the meaning. A button or other control in an accessory
+  keeps its own presses and keys: pressing it does not select the row.
+- The focus ring surrounds the whole list and is drawn only in a key window. In
+  forced-colours mode the selected row uses the system highlight colours.
+- The translucent material follows `prefers-reduced-transparency` through the shared material
+  tokens.
+
+## Visual comparison
+
+Ten reference sidebars, five in each appearance: the Finder sidebar with a grey selection
+(`visual-finder`, compared in two regions: the top down to the Locations header, and the
+Tags section), Disk Utility's three-level outline with the accent selection
+(`visual-outline`), Mail's mailbox list in an inactive window (`visual-inactive`) and Music's
+source list, set with the spacing custom properties (`visual-music`). Every
+crop is scored twice: whole, and with the headers, labels and stand-in icons masked at a
+colour distance of 0.05, which scores the material, the selection, the triangles, the badge
+and the tag dots. Results in Chromium on Linux:
+
+| Comparison | Whole crop, 2x | Whole crop, 1x | Masked, 2x | Masked, 1x |
+| --- | --- | --- | --- | --- |
+| Finder, top, Aqua | 7.33% of pixels differ, mean Δ 7.92 | 8.67%, mean Δ 7.73 | 0.00%, mean Δ 0.37 | 0.02%, mean Δ 0.38 |
+| Finder, top, Dark Aqua | 7.77%, mean Δ 8.37 | 9.27%, mean Δ 8.20 | 0.00%, mean Δ 0.06 | 0.02%, mean Δ 0.07 |
+| Finder, Tags, Aqua | 2.35%, mean Δ 2.57 | 2.68%, mean Δ 2.51 | 0.23%, mean Δ 0.46 | 0.19%, mean Δ 0.43 |
+| Finder, Tags, Dark Aqua | 2.75%, mean Δ 2.82 | 3.25%, mean Δ 2.76 | 0.21%, mean Δ 0.12 | 0.25%, mean Δ 0.11 |
+| Disk Utility outline, Aqua | 9.49%, mean Δ 10.70 | 10.36%, mean Δ 10.07 | 0.00%, mean Δ 0.93 | 0.27%, mean Δ 1.05 |
+| Disk Utility outline, Dark Aqua | 9.31%, mean Δ 11.61 | 10.66%, mean Δ 11.01 | 0.00%, mean Δ 0.31 | 0.26%, mean Δ 0.43 |
+| Mail, inactive window, Aqua | 4.45%, mean Δ 4.16 | 4.94%, mean Δ 4.01 | 0.14%, mean Δ 0.17 | 0.20%, mean Δ 0.17 |
+| Mail, inactive window, Dark Aqua | 4.49%, mean Δ 4.04 | 4.78%, mean Δ 3.86 | 0.14%, mean Δ 0.07 | 0.17%, mean Δ 0.07 |
+| Music, Aqua | 4.94%, mean Δ 5.51 | 5.56%, mean Δ 5.51 | 0.00%, mean Δ 1.03 | 0.01%, mean Δ 1.03 |
+| Music, Dark Aqua | 4.86%, mean Δ 4.45 | 5.34%, mean Δ 4.46 | 0.00%, mean Δ 0.41 | 0.01%, mean Δ 0.41 |
+
+The whole-crop figures are the text, set in the fallback font off Apple platforms, and the
+icons, which are stand-in glyphs drawn for the examples and not Apple's artwork. What remains
+with those masked:
+
+- Tags: the antialiased edge of each tag dot, and the “All Tags…” double ring, which the
+  reference draws half a point further right than the tag dot component centres it.
+- Mail: the antialiased ends of the badge's capsule, and in the Aqua crop the shadow that the
+  compose window in front casts on the corner of the list.
+- The mean difference in the Aqua crops is the material: the screenshots hold `#e7e8e9` in
+  Finder and `#e8e9e9` in Disk Utility and Music where the token is `#e7e8e8`, because the
+  real material takes a trace of what is behind the window. Music's Dark Aqua list holds
+  `#2c2d30` where the token gives `#2c2d2f`.
+- At 1x the disclosure triangles' slanted edges differ from the averaged screenshot.
+
+Three things in the examples follow one application rather than the component's defaults, and
+all are visible in their source: Finder's headers sit 1 pt lower than Disk Utility's and
+Mail's (`--mac-sidebar-header-inset: 3px`), Mail draws the content of its rows 1 pt higher
+than Finder and Disk Utility do (2 pt of bottom padding on the rows), and Music's list has its
+own spacing (the four custom properties under [Spacing](#spacing)). In the masked Music
+comparison the selected row is the sixth of eight, under two headers, so its position scores
+the 24 pt row pitch and the 30 pt header slots; the 5 pt label gap is under the mask and is
+held by a layout test in a browser instead.
+
+States no screenshot shows are checked with real input and pixel colours from the spec
+(`visual-states`, both appearances): the row heights of the three sizes, read off the grey
+selection; the focus ring around the list and the accent selection after Tab; the selection
+moved by Down Arrow; and the same list focused in an inactive window, where there is no ring
+and no accent. The Down Arrow check also runs with the purple accent, where the selection is
+the accent itself: no screenshot shows a sidebar in an accent other than blue, so that colour
+is the token's, not a measurement. The small and large row heights are inferred in the spec, so those checks prove
+that the component draws what the spec says, not that Catalina looked like it.
+
+The `header` is compared with the search field over the lists of the Reminders sidebar, in
+both appearances (`visual-reminders-header`): the pane from 30 pt under the window's top to
+just above the smart-list tiles, with the glass and the placeholder masked, at a colour
+distance of 0.05. At 2x 0.00% of the pixels differ in Aqua (mean Δ 1.24, the material: the
+screenshot holds `#e7e7e6` there) and 0.02% in Dark Aqua (mean Δ 0.52); at 1x 5.33% and 4.96%
+(mean Δ 2.15 and 1.55), which is the field's edges, half a point inside the 16 pt margins. The
+distances around the field are Reminders' own and are set in the example; the sidebar gives a
+header the material and its place, nothing else. That the header stays where it is while the
+list scrolls is not in a screenshot: `visual-header-pinned` moves the selection to the last
+of twelve rows with the keyboard and finds the field where it was and the selected row under
+it, in both appearances. The measured spec of the sidebar gives the same rectangle for the
+header, as Reminders' own distances.
+
+No comparison covers the translucent material over page content or the disabled row.

@@ -1,0 +1,121 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "console-light",
+      "description": "Console's icon-and-label toolbar, Aqua. Whole crop: stand-in glyphs and labels in the fallback font.",
+      "example": "visual-console",
+      "appearance": "light",
+      "reference": {
+        "file": "10-15-Catalina-Light-Console.png",
+        "crop": { "x": 112, "y": 76, "width": 818, "height": 136 }
+      },
+      "budget": { "1x": 0.087, "2x": 0.0324 },
+      "deltaBudget": { "1x": 9.9, "2x": 7.1 }
+    },
+    {
+      "name": "console-light-layout",
+      "description": "As console-light with the glyphs, the labels and the window title masked, to score the bar's height, the bezels and their positions: the glyphs are application artwork and the text is set in the fallback font.",
+      "example": "visual-console",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 0, "y": 48, "width": 409, "height": 15 },
+        { "x": 16, "y": 27, "width": 28, "height": 18 },
+        { "x": 70, "y": 27, "width": 28, "height": 18 },
+        { "x": 164, "y": 27, "width": 28, "height": 18 },
+        { "x": 216, "y": 27, "width": 28, "height": 18 },
+        { "x": 308, "y": 27, "width": 28, "height": 18 },
+        { "x": 369, "y": 27, "width": 28, "height": 18 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Console.png",
+        "crop": { "x": 112, "y": 76, "width": 818, "height": 136 }
+      },
+      "budget": { "1x": 0.06, "2x": 0.0032 },
+      "deltaBudget": { "1x": 4.9, "2x": 2.9 }
+    },
+    {
+      "name": "console-dark",
+      "description": "Console's icon-and-label toolbar, Dark Aqua. Whole crop.",
+      "example": "visual-console",
+      "appearance": "dark",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Console.png",
+        "crop": { "x": 112, "y": 76, "width": 818, "height": 136 }
+      },
+      "budget": { "1x": 0.082, "2x": 0.0309 },
+      "deltaBudget": { "1x": 12.4, "2x": 8 }
+    },
+    {
+      "name": "console-dark-layout",
+      "description": "As console-dark with the glyphs and the labels masked.",
+      "example": "visual-console",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 0, "y": 48, "width": 409, "height": 15 },
+        { "x": 16, "y": 27, "width": 28, "height": 18 },
+        { "x": 70, "y": 27, "width": 28, "height": 18 },
+        { "x": 164, "y": 27, "width": 28, "height": 18 },
+        { "x": 216, "y": 27, "width": 28, "height": 18 },
+        { "x": 308, "y": 27, "width": 28, "height": 18 },
+        { "x": 369, "y": 27, "width": 28, "height": 18 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Console.png",
+        "crop": { "x": 112, "y": 76, "width": 818, "height": 136 }
+      },
+      "budget": { "1x": 0.034, "2x": 0.0028 },
+      "deltaBudget": { "1x": 8.4, "2x": 7.1 }
+    },
+    {
+      "name": "label-only-segments-light",
+      "description": "A segmented control in a label-only toolbar keeps its segments [provisional: no screenshot shows label-only mode]; the pixel is inside the first segment, which is the bar itself when the control is hidden.",
+      "example": "visual-label-only-segments",
+      "appearance": "light",
+      "expect": {
+        "pixels": [
+          {
+            "x": 16,
+            "y": 8,
+            "color": "#f8f8f8",
+            "tolerance": 3,
+            "note": "inside the first segment: the bezel's fill gradient near its top, not the bar"
+          },
+          {
+            "x": 46,
+            "y": 8,
+            "color": "#f8f8f8",
+            "tolerance": 3,
+            "note": "inside the second segment"
+          }
+        ]
+      }
+    },
+    {
+      "name": "label-only-segments-dark",
+      "description": "A segmented control in a label-only toolbar keeps its segments [provisional: no screenshot shows label-only mode]; the pixel is inside the first segment, which is the bar itself when the control is hidden.",
+      "example": "visual-label-only-segments",
+      "appearance": "dark",
+      "expect": {
+        "pixels": [
+          {
+            "x": 16,
+            "y": 8,
+            "color": "#686869",
+            "tolerance": 3,
+            "note": "inside the first segment: the bezel's fill gradient near its top, not the bar"
+          },
+          {
+            "x": 46,
+            "y": 8,
+            "color": "#686869",
+            "tolerance": 3,
+            "note": "inside the second segment"
+          }
+        ]
+      }
+    }
+  ]
+}

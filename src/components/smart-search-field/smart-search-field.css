@@ -1,0 +1,238 @@
+/*
+ * Smart Search field. The root's box is the 22 pt fill; ::before is the bezel, a hairline
+ * larger for Aqua's border. While the field is not edited the input is transparent and the
+ * display (padlock and host, or magnifier and placeholder) stands in, centred on the field.
+ */
+.mac-smart-search-field {
+  --_fill: var(--mac-smart-search-field-fill);
+  --_top: var(--mac-smart-search-field-border-top);
+  --_side: var(--mac-smart-search-field-border-side);
+  --_bottom: var(--mac-smart-search-field-border-bottom);
+  --_shadow: 0 var(--mac-hairline) 0 var(--mac-smart-search-field-shadow);
+  --_glyph: var(--mac-smart-search-field-glyph);
+  --_lock: var(--mac-smart-search-field-lock);
+  /* The fill's radius: 4.25 pt on the border in Aqua, measured. */
+  --_r: var(--mac-smart-search-field-radius);
+  --_display: flex;
+  --_edit: none;
+  --_input: 0;
+
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  box-sizing: border-box;
+  min-width: var(--mac-smart-search-field-min-width);
+  height: var(--mac-smart-search-field-height);
+  border-radius: var(--_r);
+  color: var(--mac-smart-search-field-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  cursor: default;
+}
+
+.mac-smart-search-field::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: calc(-1 * var(--mac-hairline));
+  box-sizing: border-box;
+  border: var(--mac-hairline) solid;
+  border-color: var(--_top) var(--_side) var(--_bottom);
+  border-radius: calc(var(--_r) + var(--mac-hairline));
+  background: var(--_fill) padding-box;
+  box-shadow: var(--_shadow);
+  pointer-events: none;
+}
+
+.mac-smart-search-field:where([data-window-state="inactive"] *) {
+  --_fill: var(--mac-smart-search-field-fill-inactive);
+  --_top: var(--mac-smart-search-field-border-inactive);
+  --_side: var(--_top);
+  --_bottom: var(--_top);
+  --_shadow: inset 0 0 0 var(--mac-hairline) var(--mac-smart-search-field-ring-inactive);
+  --_glyph: var(--mac-smart-search-field-glyph-inactive);
+  --_lock: var(--mac-smart-search-field-lock-inactive);
+}
+
+.mac-smart-search-field:where([data-disabled]) {
+  --_glyph: currentColor;
+  --_lock: currentColor;
+  color: var(--mac-color-control-text-disabled);
+}
+
+/* Editing: by focus or, for docs, data-force. */
+.mac-smart-search-field:where(:has(> .mac-smart-search-field-input:focus), [data-force~="focus"]) {
+  --_display: none;
+  --_edit: block;
+  --_input: 1;
+}
+
+/* The ring, 3 pt outside the fill and a hairline inside it; only in the key window. */
+.mac-smart-search-field:where(
+  :has(> .mac-smart-search-field-input:focus),
+  [data-force~="focus"]
+):where(:not(:where([data-window-state="main"], [data-window-state="inactive"]) *)) {
+  --_top: transparent;
+  --_side: transparent;
+  --_bottom: transparent;
+  --_shadow: inset 0 0 0 var(--mac-hairline) var(--mac-focus-ring-color);
+
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+.mac-smart-search-field-glyph {
+  display: block;
+  flex: none;
+  fill: currentColor;
+}
+
+/* A glyph's last path is stroked, the one before it, if any, filled. */
+.mac-smart-search-field-glyph > :where(:last-child) {
+  fill: none;
+  stroke: currentColor;
+}
+
+/* The two letters reach 2 pt beyond the spacing the other glyphs keep. */
+.mac-smart-search-field-glyph:where([data-glyph="text-size"]) {
+  margin-inline: -2px;
+}
+
+/* The padlock stands on the baseline, 5 pt before the text. */
+.mac-smart-search-field-glyph:where([data-glyph="lock"]) {
+  margin: 0 5px 1px 0;
+  color: var(--_lock);
+}
+
+/* The magnifier while editing: 7 pt from the edge, the text 4.25 pt on. */
+.mac-smart-search-field > .mac-smart-search-field-glyph {
+  display: var(--_edit);
+  align-self: center;
+  margin: 0.5px 4.25px 0 7px;
+  color: var(--mac-smart-search-field-search);
+}
+
+/* Text sits half a point low: its baseline is 16 pt below the fill's top. */
+.mac-smart-search-field-input {
+  flex: 1 1 0;
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 0;
+  padding: 1px 4px 0 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  opacity: var(--_input);
+  appearance: none;
+  outline: none;
+}
+
+.mac-smart-search-field-input::placeholder {
+  color: var(--mac-smart-search-field-placeholder);
+  opacity: 1;
+}
+
+.mac-smart-search-field-input:where(:disabled) {
+  cursor: default;
+}
+
+.mac-smart-search-field-display {
+  position: absolute;
+  inset: 0;
+  display: var(--_display);
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 1px 48px 0;
+  pointer-events: none;
+}
+
+.mac-smart-search-field-display:where([data-empty] > *) {
+  color: var(--mac-smart-search-field-placeholder);
+}
+
+.mac-smart-search-field-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The placeholder group is 3 pt right of centre in the capture: 6 pt lead it. */
+.mac-smart-search-field-display > :where([data-glyph="search"]) {
+  margin: 0 4.25px 0.5px 6px;
+  color: var(--mac-smart-search-field-search);
+}
+
+/* A leading button is a 28 pt cell; trailing glyphs are 6.5 pt apart and from the edge. */
+.mac-smart-search-field-leading,
+.mac-smart-search-field-trailing {
+  display: flex;
+  flex: none;
+}
+
+.mac-smart-search-field-leading {
+  --_pad: 7px;
+
+  overflow: hidden;
+  border-start-start-radius: var(--_r);
+  border-end-start-radius: var(--_r);
+}
+
+.mac-smart-search-field-trailing {
+  padding-inline-end: 3.25px;
+}
+
+.mac-smart-search-field-button {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 var(--_pad, 3.25px);
+  border: 0;
+  background: none;
+  color: var(--_glyph);
+  font: inherit;
+  cursor: default;
+  appearance: none;
+  outline: none;
+}
+
+/* Pressed [provisional]: the glyph takes the text colour. */
+.mac-smart-search-field-button:where(:active, [data-force~="pressed"]):where(
+  :not([data-disabled])
+) {
+  color: var(--mac-smart-search-field-text);
+}
+
+.mac-smart-search-field-button:where([data-pressed]) {
+  background: var(--mac-smart-search-field-on-fill);
+  color: var(--mac-smart-search-field-on-glyph);
+}
+
+.mac-smart-search-field-button:where([data-disabled]) {
+  color: var(--mac-color-control-text-disabled);
+}
+
+.mac-smart-search-field-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  border-radius: var(--_r);
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(0px - var(--mac-focus-ring-width));
+}
+
+@media (forced-colors: active) {
+  .mac-smart-search-field::before {
+    border: 1px solid FieldText;
+    background: Field;
+  }
+
+  .mac-smart-search-field-button:where([data-pressed]) {
+    background: linear-gradient(Highlight, Highlight) Field;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+}

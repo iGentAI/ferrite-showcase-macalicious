@@ -1,0 +1,217 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "photo-booth-light",
+      "description": "Photo Booth's effects pager: arrows and three dots, the second current, Aqua.",
+      "example": "visual-photo-booth",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.004,
+        "2x": 0.0007
+      },
+      "deltaBudget": {
+        "1x": 0.6,
+        "2x": 0.4
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Photo-Booth.png",
+        "crop": {
+          "x": 668,
+          "y": 1112,
+          "width": 328,
+          "height": 56
+        }
+      }
+    },
+    {
+      "name": "photo-booth-dark",
+      "description": "Photo Booth's effects pager, Dark Aqua.",
+      "example": "visual-photo-booth",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.003,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.5,
+        "2x": 0.4
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Photo-Booth.png",
+        "crop": {
+          "x": 668,
+          "y": 1112,
+          "width": 328,
+          "height": 56
+        }
+      }
+    },
+    {
+      "name": "launchpad-light",
+      "description": "Launchpad's page dots over the blurred Day desktop picture; the example paints a flat backdrop.",
+      "example": "visual-launchpad",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.017,
+        "2x": 0.0036
+      },
+      "deltaBudget": {
+        "1x": 2.8,
+        "2x": 2.1
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Launchpad.png",
+        "crop": {
+          "x": 1642,
+          "y": 1820,
+          "width": 72,
+          "height": 32
+        }
+      }
+    },
+    {
+      "name": "launchpad-dark",
+      "description": "Launchpad's page dots over the blurred Night desktop picture; the example paints a flat backdrop.",
+      "example": "visual-launchpad",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.017,
+        "2x": 0.0036
+      },
+      "deltaBudget": {
+        "1x": 1.8,
+        "2x": 1.1
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Launchpad.png",
+        "crop": {
+          "x": 1642,
+          "y": 1820,
+          "width": 72,
+          "height": 32
+        }
+      }
+    },
+    {
+      "name": "pager-window-main-light",
+      "description": "The pager in a main window that is not key, Aqua: the current dot loses its blue. Inferred; no screenshot shows the pager in such a window.",
+      "example": "visual-photo-booth",
+      "appearance": "light",
+      "windowState": "main",
+      "expect": {
+        "size": { "width": 164, "height": 28 },
+        "pixels": [
+          {
+            "x": 82,
+            "y": 14,
+            "color": "#676765",
+            "note": "current dot in the grey of the other dots, inferred (spec: page-control, States, inactive window); the grey is measured in Photo Booth"
+          },
+          {
+            "x": 46,
+            "y": 14,
+            "color": "#676765",
+            "note": "another dot: unchanged (measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pager-window-inactive-light",
+      "description": "The pager in an inactive window, Aqua. Inferred.",
+      "example": "visual-photo-booth",
+      "appearance": "light",
+      "windowState": "inactive",
+      "expect": {
+        "size": { "width": 164, "height": 28 },
+        "pixels": [
+          {
+            "x": 82,
+            "y": 14,
+            "color": "#676765",
+            "note": "current dot in the grey of the other dots, inferred (spec: page-control, States, inactive window)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pager-window-main-dark",
+      "description": "The pager in a main window that is not key, Dark Aqua. Inferred.",
+      "example": "visual-photo-booth",
+      "appearance": "dark",
+      "windowState": "main",
+      "expect": {
+        "size": { "width": 164, "height": 28 },
+        "pixels": [
+          {
+            "x": 82,
+            "y": 14,
+            "color": "#b7b7b9",
+            "note": "current dot in the grey of the other dots, inferred (spec: page-control, States, inactive window); the grey is measured in Photo Booth"
+          },
+          {
+            "x": 46,
+            "y": 14,
+            "color": "#b7b7b9",
+            "note": "another dot: unchanged (measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pager-window-inactive-dark",
+      "description": "The pager in an inactive window, Dark Aqua. Inferred.",
+      "example": "visual-photo-booth",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "expect": {
+        "size": { "width": 164, "height": 28 },
+        "pixels": [
+          {
+            "x": 82,
+            "y": 14,
+            "color": "#b7b7b9",
+            "note": "current dot in the grey of the other dots, inferred (spec: page-control, States, inactive window)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pager-accent-purple-light",
+      "description": "The pager with the purple accent, Aqua: the current dot keeps Photo Booth's blue, which is the app's own colour and not the accent (spec: page-control, other accent colours).",
+      "example": "visual-photo-booth",
+      "appearance": "light",
+      "accent": "purple",
+      "expect": {
+        "size": { "width": 164, "height": 28 },
+        "pixels": [
+          {
+            "x": 82,
+            "y": 14,
+            "color": "#004ac6",
+            "note": "current dot, measured in Photo Booth with the blue accent; that it is fixed is inferred"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pager-accent-purple-dark",
+      "description": "The pager with the purple accent, Dark Aqua: the current dot keeps its blue.",
+      "example": "visual-photo-booth",
+      "appearance": "dark",
+      "accent": "purple",
+      "expect": {
+        "size": { "width": 164, "height": 28 },
+        "pixels": [
+          {
+            "x": 82,
+            "y": 14,
+            "color": "#3784fe",
+            "note": "current dot, measured in Photo Booth with the blue accent; that it is fixed is inferred"
+          }
+        ]
+      }
+    }
+  ]
+}

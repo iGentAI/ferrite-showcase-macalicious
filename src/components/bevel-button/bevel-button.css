@@ -1,0 +1,95 @@
+/*
+ * Bevel button (NSButton, regular-square bezel, on/off).
+ *
+ * A square cell, 38 x 38 pt in the Print dialog: 1 pt border, a vertical gradient that is
+ * lighter at the bottom, centred content, no shadow. The cell grows with a title.
+ *
+ * States
+ *   [data-pressed]                     on (set by Base UI's Toggle): darker fill
+ *   :active                            pressed: drawn as on
+ *   [data-variant="rounded"]           rounded corners
+ *   :focus-visible                     keyboard focus ring, only in the key window
+ *   [data-disabled]                    set by Base UI for `disabled`: content at 25%
+ *   [data-force~="pressed" | "focus"]  static previews of transient states (docs, visual tests)
+ *
+ * It looks the same in a window that is not key, apart from the focus ring.
+ */
+.mac-bevel-button {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 38px;
+  min-height: 38px;
+  margin: 0;
+  /* 4 pt on each side keeps the Print dialog's 27.5 pt pictogram in the measured 38 pt cell */
+  padding: 0 4px;
+  border: 1px solid var(--mac-bevel-button-border);
+  border-radius: 0;
+  background: var(--mac-bevel-button-fill);
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-regular);
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-bevel-button-content {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--mac-space-1);
+}
+
+.mac-bevel-button:where([data-variant="rounded"]) {
+  border-radius: var(--mac-radius-control-regular);
+}
+
+/* On, and pressed */
+.mac-bevel-button:where([data-pressed]),
+.mac-bevel-button:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  border-color: var(--mac-bevel-button-border-on);
+  background: var(--mac-bevel-button-fill-on);
+}
+
+/* Disabled: the bezel stays, the content dims */
+.mac-bevel-button:where([data-disabled]) .mac-bevel-button-content {
+  opacity: 0.25;
+}
+
+/* Keyboard focus ring; only in the key window, as in AppKit. It covers the cell's border. */
+.mac-bevel-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  z-index: 1;
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(var(--mac-focus-ring-offset) - 0.5px);
+}
+
+/* A group: 12 pt between buttons */
+.mac-bevel-button-group {
+  display: inline-flex;
+  gap: var(--mac-space-control-gap);
+  vertical-align: middle;
+}
+
+@media (forced-colors: active) {
+  .mac-bevel-button {
+    border-color: ButtonText;
+  }
+
+  .mac-bevel-button:where([data-pressed]) {
+    border-color: Highlight;
+    outline: 1px solid Highlight;
+    outline-offset: -3px;
+  }
+}

@@ -1,0 +1,873 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "sharing-light",
+      "description": "Computer Name field of System Preferences > Sharing, Aqua, whole crop.",
+      "example": "visual-sharing",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.158,
+        "2x": 0.0109
+      },
+      "deltaBudget": {
+        "1x": 7.49,
+        "2x": 1.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Sharing.png",
+        "crop": {
+          "x": 424,
+          "y": 198,
+          "width": 928,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "sharing-light-masked",
+      "description": "As sharing-light with the text masked, to score the bezel alone: text is set in the fallback font off Apple platforms.",
+      "example": "visual-sharing",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 5,
+          "y": 5,
+          "width": 52,
+          "height": 15
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.148,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 6.77,
+        "2x": 0.16
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Sharing.png",
+        "crop": {
+          "x": 424,
+          "y": 198,
+          "width": 928,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "sharing-dark",
+      "description": "Computer Name field of System Preferences > Sharing, Dark Aqua, whole crop.",
+      "example": "visual-sharing",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.02,
+        "2x": 0.0099
+      },
+      "deltaBudget": {
+        "1x": 4.1,
+        "2x": 1.28
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Sharing.png",
+        "crop": {
+          "x": 424,
+          "y": 198,
+          "width": 928,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "sharing-dark-masked",
+      "description": "As sharing-dark with the text masked, to score the bezel alone: text is set in the fallback font off Apple platforms.",
+      "example": "visual-sharing",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 5,
+          "y": 5,
+          "width": 52,
+          "height": 15
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.096,
+        "2x": 0.0006
+      },
+      "deltaBudget": {
+        "1x": 3.35,
+        "2x": 0.42
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Sharing.png",
+        "crop": {
+          "x": 424,
+          "y": 198,
+          "width": 928,
+          "height": 50
+        }
+      }
+    },
+    {
+      "name": "edges-light",
+      "description": "The field at rest: each hairline of its bezel, which a whole-crop score is too coarse to gate one by one, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 8.25,
+            "y": 18,
+            "color": "#b1b1b1",
+            "scale": 2,
+            "tolerance": 1,
+            "note": "side edge, black at 25% over #ececec (spec: text-field, Border, measured #b1b1b1)"
+          },
+          {
+            "x": 68,
+            "y": 8.25,
+            "color": "#b1b1b1",
+            "scale": 2,
+            "tolerance": 1,
+            "note": "top edge, black at 25% over #ececec (spec: text-field, Border, measured)"
+          },
+          {
+            "x": 68,
+            "y": 27.75,
+            "color": "#b1b1b1",
+            "scale": 2,
+            "tolerance": 1,
+            "note": "bottom edge, black at 25% over #ececec (spec: text-field, Border, measured)"
+          },
+          {
+            "x": 8.75,
+            "y": 18,
+            "color": "#f0f0f0",
+            "scale": 2,
+            "tolerance": 1,
+            "note": "inner line (spec: text-field, Inner line, measured #f0f0f0)"
+          },
+          {
+            "x": 68,
+            "y": 18,
+            "color": "#ffffff",
+            "note": "fill (spec: text-field, Fill, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "edges-dark",
+      "description": "The field at rest: each hairline of its bezel, which a whole-crop score is too coarse to gate one by one, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 8.25,
+            "y": 18,
+            "color": "#444444",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "side edge, white at 9% over the untinted window background #323232 (spec: text-field: #424344 on #2f3031)"
+          },
+          {
+            "x": 68,
+            "y": 8.25,
+            "color": "#4b4b4b",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "top edge, white at 12% over #323232 (spec: text-field: #474849 on #2f3031)"
+          },
+          {
+            "x": 68,
+            "y": 27.75,
+            "color": "#656565",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "bottom edge, white at 25% over #323232 (spec: text-field: #636465 on #2f3031)"
+          },
+          {
+            "x": 68,
+            "y": 18,
+            "color": "#3c3c3c",
+            "note": "fill, white at 5% over #323232 (spec: text-field: #393a3b on #2f3031)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus, given by a click in the field: the 3.5 pt ring, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#enabled"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 6.75,
+            "y": 18,
+            "color": "#82abf1",
+            "tolerance": 3,
+            "note": "focus ring over the window background: #82abf1 on #ececec, measured on the Go to Folder field (spec: focus-ring)"
+          },
+          {
+            "x": 4.75,
+            "y": 18,
+            "color": "#ececec",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the field's edge"
+          },
+          {
+            "x": 8.25,
+            "y": 18,
+            "color": "#658ed4",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "ring over the field's edge: the ring colour over black at 25% on #ececec (spec: focus-ring measures #638cd2)"
+          },
+          {
+            "x": 8.75,
+            "y": 18,
+            "color": "#84adf3",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "ring over the inner line (spec: focus-ring, Overlap into the control, measured #84adf3)"
+          },
+          {
+            "x": 68,
+            "y": 18,
+            "color": "#ffffff",
+            "note": "fill, untouched by the ring beyond 1 pt inside the edge"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus, given by a click in the field: the 3.5 pt ring, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#enabled"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 6.75,
+            "y": 18,
+            "color": "#2e6d98",
+            "tolerance": 3,
+            "note": "focus ring, rgb(43 168 255 / 0.5), over the untinted window background #323232 (spec: focus-ring measures #2d6c99 on #2f3032)"
+          },
+          {
+            "x": 4.75,
+            "y": 18,
+            "color": "#323232",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the field's edge"
+          },
+          {
+            "x": 8.25,
+            "y": 18,
+            "color": "#3876a2",
+            "scale": 2,
+            "tolerance": 4,
+            "note": "ring over the field's side edge, white at 9% on #323232 (spec: focus-ring measures #3a78a5 on a tinted window)"
+          },
+          {
+            "x": 8.75,
+            "y": 18,
+            "color": "#33729e",
+            "scale": 2,
+            "tolerance": 4,
+            "note": "ring over the half point inside the edge: the ring colour over the fill, white at 5% on #323232 (inferred from the measured light overlap)"
+          },
+          {
+            "x": 68,
+            "y": 18,
+            "color": "#3c3c3c",
+            "note": "fill, untouched by the ring beyond 1 pt inside the edge"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-not-key-light",
+      "description": "The focused field in a window that is not key: no ring, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "click": "#enabled"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 6.75,
+            "y": 18,
+            "color": "#ececec",
+            "note": "no focus ring in a window that is not key (spec: focus-ring, inactive window, documented)"
+          },
+          {
+            "x": 68,
+            "y": 18,
+            "color": "#ffffff",
+            "note": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-not-key-dark",
+      "description": "The focused field in a window that is not key: no ring, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "click": "#enabled"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 6.75,
+            "y": 18,
+            "color": "#323232",
+            "note": "no focus ring in a window that is not key (spec: focus-ring, inactive window, documented)"
+          },
+          {
+            "x": 68,
+            "y": 18,
+            "color": "#3c3c3c",
+            "note": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "name": "disabled-light",
+      "description": "The disabled field: fainter edges, same fill, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 168.25,
+            "y": 18,
+            "color": "#cfcfcf",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "side edge, black at 12.5% over #ececec (spec: text-field, Disabled: #c8c8c8 on a #e3e3e3 box, measured on the date picker field)"
+          },
+          {
+            "x": 228,
+            "y": 27.75,
+            "color": "#cfcfcf",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "bottom edge, black at 12.5% over #ececec (as above)"
+          },
+          {
+            "x": 228,
+            "y": 18,
+            "color": "#ffffff",
+            "note": "fill (spec: Disabled, fill #ffffff, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "disabled-dark",
+      "description": "The disabled field: fainter edges, same fill, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 228,
+            "y": 8.25,
+            "color": "#3a3a3a",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "top edge, white at 4% over #323232 (spec: text-field, Disabled: #3e3e3f on a #363637 box)"
+          },
+          {
+            "x": 228,
+            "y": 27.75,
+            "color": "#4a4a4a",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "bottom edge, white at 11.5% over #323232 (spec: #4d4d4d on #363637)"
+          },
+          {
+            "x": 228,
+            "y": 18,
+            "color": "#3c3c3c",
+            "note": "fill, unchanged: white at 5% over #323232 (inferred; the date picker field's own fill differs)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bezel-ring-light",
+      "description": "TextFieldBezel around content of its own: the bezel draws the focus ring when its content has the keyboard, Aqua.",
+      "example": "visual-bezel",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#ring"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 6.75,
+            "y": 18,
+            "color": "#82abf1",
+            "tolerance": 3,
+            "note": "the bezel's focus ring over the window background: #82abf1 on #ececec (spec: focus-ring)"
+          },
+          {
+            "x": 68,
+            "y": 18,
+            "color": "#ffffff",
+            "tolerance": 1,
+            "note": "the text field's fill (spec: text-field, Fill)"
+          },
+          {
+            "x": 238,
+            "y": 18,
+            "color": "#dcdcdc",
+            "tolerance": 1,
+            "note": "second bezel: its fill is the value of --mac-text-field-background, here the unemphasised selection colour"
+          },
+          {
+            "x": 166.75,
+            "y": 18,
+            "color": "#ececec",
+            "note": "second bezel: no ring while the first has the keyboard"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bezel-no-ring-light",
+      "description": "TextFieldBezel with focusRing off: no ring from the bezel while its content has the keyboard, Aqua.",
+      "example": "visual-bezel",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#no-ring"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 166.75,
+            "y": 18,
+            "color": "#ececec",
+            "note": "no focus ring: the page shows where the ring would be"
+          },
+          {
+            "x": 309.25,
+            "y": 18,
+            "color": "#ececec",
+            "note": "no focus ring on the trailing side either"
+          },
+          {
+            "x": 238,
+            "y": 18,
+            "color": "#dcdcdc",
+            "tolerance": 1,
+            "note": "the overridden fill, untouched"
+          },
+          {
+            "x": 6.75,
+            "y": 18,
+            "color": "#ececec",
+            "note": "first bezel: no ring, it does not have the keyboard"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bezel-ring-dark",
+      "description": "TextFieldBezel around content of its own: the bezel draws the focus ring when its content has the keyboard, Dark Aqua.",
+      "example": "visual-bezel",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#ring"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 6.75,
+            "y": 18,
+            "color": "#2e6d98",
+            "tolerance": 3,
+            "note": "the bezel's focus ring, rgb(43 168 255 / 0.5), over the untinted window background #323232 (spec: focus-ring measures #2d6c99 on #2f3032)"
+          },
+          {
+            "x": 68,
+            "y": 18,
+            "color": "#3c3c3c",
+            "tolerance": 1,
+            "note": "the text field's fill, white at 5% over #323232"
+          },
+          {
+            "x": 238,
+            "y": 18,
+            "color": "#464646",
+            "tolerance": 1,
+            "note": "second bezel: its fill is the value of --mac-text-field-background, here the unemphasised selection colour"
+          },
+          {
+            "x": 166.75,
+            "y": 18,
+            "color": "#323232",
+            "note": "second bezel: no ring while the first has the keyboard"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bezel-no-ring-dark",
+      "description": "TextFieldBezel with focusRing off: no ring from the bezel while its content has the keyboard, Dark Aqua.",
+      "example": "visual-bezel",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#no-ring"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 166.75,
+            "y": 18,
+            "color": "#323232",
+            "note": "no focus ring: the page shows where the ring would be"
+          },
+          {
+            "x": 309.25,
+            "y": 18,
+            "color": "#323232",
+            "note": "no focus ring on the trailing side either"
+          },
+          {
+            "x": 238,
+            "y": 18,
+            "color": "#464646",
+            "tolerance": 1,
+            "note": "the overridden fill, untouched"
+          },
+          {
+            "x": 6.75,
+            "y": 18,
+            "color": "#323232",
+            "note": "first bezel: no ring, it does not have the keyboard"
+          }
+        ]
+      }
+    },
+    {
+      "name": "messages-field-light",
+      "description": "The capsule bezel: the empty message field of Messages with its placeholder, Aqua. The emoji button inside the field's trailing end is Messages' own artwork and is masked; the mask ends 1 pt before the capsule's edge, which stays in the score. The placeholder is set in the fallback font off Apple platforms.",
+      "example": "visual-messages-field",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 386,
+          "y": 8,
+          "width": 20,
+          "height": 18
+        }
+      ],
+      "budget": {
+        "1x": 0.023,
+        "2x": 0.015
+      },
+      "deltaBudget": {
+        "1x": 1.26,
+        "2x": 1.1
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Messages.png",
+        "crop": {
+          "x": 1306,
+          "y": 1068,
+          "width": 830,
+          "height": 68
+        }
+      }
+    },
+    {
+      "name": "messages-field-light-bezel",
+      "description": "As messages-field-light with the placeholder masked too, to score the capsule alone: its 24 pt height, round ends, 1 pt edge and fill.",
+      "example": "visual-messages-field",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 386,
+          "y": 8,
+          "width": 20,
+          "height": 18
+        },
+        {
+          "x": 13,
+          "y": 8,
+          "width": 64,
+          "height": 18
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.17,
+        "2x": 0.13
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Messages.png",
+        "crop": {
+          "x": 1306,
+          "y": 1068,
+          "width": 830,
+          "height": 68
+        }
+      }
+    },
+    {
+      "name": "messages-field-dark",
+      "description": "The capsule bezel: the empty message field of Messages with its placeholder, Dark Aqua. The emoji button inside the field's trailing end is Messages' own artwork and is masked; the mask ends 1 pt before the capsule's edge, which stays in the score. The placeholder is set in the fallback font off Apple platforms.",
+      "example": "visual-messages-field",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 386,
+          "y": 8,
+          "width": 20,
+          "height": 18
+        }
+      ],
+      "budget": {
+        "1x": 0.017,
+        "2x": 0.0125
+      },
+      "deltaBudget": {
+        "1x": 1.0,
+        "2x": 0.83
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Messages.png",
+        "crop": {
+          "x": 1318,
+          "y": 1060,
+          "width": 830,
+          "height": 68
+        }
+      }
+    },
+    {
+      "name": "messages-field-dark-bezel",
+      "description": "As messages-field-dark with the placeholder masked too, to score the capsule alone: its 24 pt height, round ends, 1 pt edge and fill.",
+      "example": "visual-messages-field",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 386,
+          "y": 8,
+          "width": 20,
+          "height": 18
+        },
+        {
+          "x": 13,
+          "y": 8,
+          "width": 64,
+          "height": 18
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.005,
+        "2x": 0.0008
+      },
+      "deltaBudget": {
+        "1x": 0.21,
+        "2x": 0.14
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Messages.png",
+        "crop": {
+          "x": 1318,
+          "y": 1060,
+          "width": 830,
+          "height": 68
+        }
+      }
+    },
+    {
+      "name": "capsule-disabled-light",
+      "description": "The capsule enabled and disabled: the disabled one keeps the capsule's fill and takes the disabled edge of a text field, Aqua. No capture shows a disabled capsule.",
+      "example": "visual-capsule-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 308,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 78,
+            "y": 8.5,
+            "color": "#cccccc",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "enabled capsule, top edge (spec: text-field, Capsule, edge, measured #cccccc)"
+          },
+          {
+            "x": 78,
+            "y": 20,
+            "color": "#ffffff",
+            "note": "enabled capsule, fill (spec: text-field, Capsule, fill, measured)"
+          },
+          {
+            "x": 230,
+            "y": 8.5,
+            "color": "#d2d2d2",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "disabled capsule, top edge: the disabled edge of a text field, black at 12.5% over #f0f0f0 (provisional, as for every disabled text field)"
+          },
+          {
+            "x": 230,
+            "y": 31.5,
+            "color": "#d2d2d2",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "disabled capsule, bottom edge: as the top"
+          },
+          {
+            "x": 230,
+            "y": 20,
+            "color": "#ffffff",
+            "note": "disabled capsule, fill: unchanged, as on the square and rounded bezels"
+          }
+        ]
+      }
+    },
+    {
+      "name": "capsule-disabled-dark",
+      "description": "The capsule enabled and disabled: the disabled one keeps the capsule's fill and takes the disabled edges of a text field, Dark Aqua. No capture shows a disabled capsule.",
+      "example": "visual-capsule-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 308,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 78,
+            "y": 8.5,
+            "color": "#6d6d6f",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "enabled capsule, top edge (spec: text-field, Capsule, edge, measured #6d6d6f)"
+          },
+          {
+            "x": 78,
+            "y": 20,
+            "color": "#535355",
+            "note": "enabled capsule, fill (spec: text-field, Capsule, fill, measured)"
+          },
+          {
+            "x": 230,
+            "y": 8.5,
+            "color": "#323232",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "disabled capsule, top edge: the disabled top edge of a text field, white at 4% over #292929 (provisional; in Dark Aqua the disabled edges are those of the square bezel, so they are not flat)"
+          },
+          {
+            "x": 230,
+            "y": 31.5,
+            "color": "#424242",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "disabled capsule, bottom edge: the disabled bottom edge of a text field, white at 11.5% over #292929 (provisional)"
+          },
+          {
+            "x": 230,
+            "y": 20,
+            "color": "#535355",
+            "note": "disabled capsule, fill: unchanged, as on the square and rounded bezels"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,196 @@
+---
+title: Window
+description: The Catalina window frame, a rounded, shadowed box that holds a title bar, optional bars and a body, and tells everything inside whether it is key, main or inactive.
+order: 10
+---
+
+<Example name="basic" both />
+
+AppKit calls this an `NSWindow`. Base UI has no window primitive, so the frame is written here:
+a labelled `region` that stacks its children top to bottom and clips them to the 5 pt corners.
+It is presentational. It draws the frame for the state it is given; it does not move, resize,
+order or focus itself. A window manager does that with the hooks listed under
+[For a window manager](#for-a-window-manager).
+
+## Usage
+
+```tsx
+import { TitleBar } from "macalicious/title-bar";
+import { Window, WindowBody } from "macalicious/window";
+import { WindowControls } from "macalicious/window-controls";
+import "macalicious/window.css";
+
+<Window width={480} height={320}>
+  <TitleBar title="Untitled" controls={<WindowControls />} />
+  <WindowBody>Content</WindowBody>
+</Window>
+```
+
+A window is a column: a [Title Bar](/components/title-bar) first, then any
+[Window Tab Bar](/components/window-tab-bar), [Scope Bar](/components/scope-bar) or
+[Window Banner](/components/window-banner), then one `WindowBody`, which takes the height that
+is left and scrolls, then a [Path Bar](/components/path-bar) or
+[Status Bar](/components/status-bar). The window's bottom corners clip whatever comes last.
+The guide [Building a window](/building-a-window) walks through a whole one.
+
+Or copy the source into your project: `npx macalicious add window`.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines on window anatomy. Not verified: this paraphrase was
+not checked against Apple's text.
+
+- A window is a frame (title bar, toolbar, tab bar, rarely a bottom bar) around a body. Put
+  controls that act on the whole window in the frame and content in the body.
+- Exactly one window is key at a time and receives keyboard input. Inactive windows are subdued
+  and appear to fall back: flat title bar, grey window controls, a smaller shadow, and no
+  accent colour on the controls inside.
+- A document window that owns a key panel or sheet stays main: its frame looks active, but its
+  window controls are grey and its controls drop the accent.
+- Leave room for the shadow: 48 pt at the sides, 31 pt above and 67 pt below a key window, if
+  it must not be clipped.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| State | How it is set | Look |
+| --- | --- | --- |
+| Key | `state="key"` (the default) | Gradient title bar, coloured window controls, large shadow; controls inside keep accent and focus ring |
+| Main | `state="main"` | Frame as key; window controls grey; controls inside drop the accent and the focus ring, while toolbar buttons, segments and window tabs keep their key-window selected look |
+| Inactive | `state="inactive"` | Flat title bar, dimmed title, lighter grey window controls, smaller shadow; no accent or focus ring inside |
+| Panel | `variant="panel"` | Utility panel: the small panel shadow. Pair it with `TitleBar variant="utility"` and small window controls |
+| Full screen | `fullScreen` | No corner radius, outer hairline, inner rim or shadow |
+| Top highlight | `topHighlight` | The title bar's two highlight rows along the top edge, over the content: for a window without a title bar, as in App Store |
+
+The state is written to the root as `data-window-state`, always, `key` included. Title bar,
+window controls, toolbar items and every control of the library read it with a CSS ancestor
+selector; nothing is passed down through props or context. A state that is not key on any
+ancestor wins, so when `trackWindowActivation()` marks the page inactive every window on it is
+inactive, and windows do not nest.
+
+`WindowBody` has two fills: `background="window"` (dialogs, preference panes) and
+`background="content"` (lists, browsers, documents).
+
+## For a window manager
+
+<Example name="manager-hooks" />
+
+The window implements no dragging, resizing or stacking order. What a manager uses:
+
+| Need | Hook |
+| --- | --- |
+| Which window is key | `state` on each `Window`; exactly one is `"key"` |
+| Size | `width` and `height` (points or any CSS length) |
+| Position and stacking | `style` (`position`, `left`, `top`, `zIndex`, `transform`) and `className` |
+| Bring to front on click | `onPointerDown` on the `Window` (every native event prop is passed to the root) |
+| Move | `onDragRegionPointerDown` on the `TitleBar`: primary button down on the bar itself, not on a control in it. The bar also carries `data-window-drag-region` |
+| Zoom on double click | `onDragRegionDoubleClick` on the `TitleBar` |
+| Close, minimize, zoom | `onClose`, `onMinimize`, `onZoom` on `WindowControls` |
+| Measure or animate | `ref` to the root element |
+| Keep a child out of the drag region | `data-window-no-drag` on that element |
+| Move a window that has no title bar | `windowDragRegion(onDragRegionPointerDown, onDragRegionDoubleClick)` from `macalicious/lib/window-drag-region`: spread what it returns on each surface that should move the window |
+
+### A window without a title bar
+
+<Example name="without-title-bar" both />
+
+App Store, Reminders, Messages and Music have no title bar: a sidebar or a pane reaches the
+window's top edge, and the window controls float over it. Three things replace the bar:
+
+- `topHighlight` on the `Window` draws the two highlight rows a title bar draws along the top
+  edge, over the content.
+- `WindowControls` is placed by the application, usually 13 pt or 8 pt from the corner.
+- `windowDragRegion()` returns the props that make any element a drag region: the marker
+  `data-window-drag-region` and the two handlers. It reports a primary press and a double-click
+  on the element itself and not on a control: a button, link, field, checkbox, switch, radio
+  button, tab, slider, combo box, list, menu, source list, a label, editable text or an element
+  with `data-window-no-drag`. Nor does it report an event a handler has already cancelled with
+  `preventDefault()`, such as one the window listens with in the capture phase. A `TitleBar`
+  applies the same test to its own surface. Give the window an `aria-label`, since no title
+  names it.
+
+The same module exports `isWindowDragRegion(target)`, the test those handlers apply. It answers
+one question only: whether an event's target is free of the controls listed above, so that a
+press on it may move the window. It does not check that the target is inside an element marked
+`data-window-drag-region`: it is true for any element that is not in a control, marked or not.
+A manager that listens on the window itself, instead of spreading the props, therefore asks
+both: `target.closest("[data-window-drag-region]")` to find a marked surface, then
+`isWindowDragRegion(target)` to leave the controls on it alone.
+
+## Sizes
+
+A window has no `size` prop. `width` and `height` set the frame, as a number of points or any
+CSS length; without them the frame is as large as its content or its container makes it.
+
+## API
+
+<PropsTable name="WindowProps" />
+
+<PropsTable name="WindowBodyProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-window-state` | `.mac-window` | `key`, `main`, `inactive` | Reflects `state`; read by everything inside. |
+| `data-variant` | `.mac-window` | `standard`, `panel` | Reflects `variant`. |
+| `data-full-screen` | `.mac-window` | present or absent | Reflects `fullScreen`. |
+| `data-top-highlight` | `.mac-window` | present or absent | Reflects `topHighlight`. |
+| `data-level` | `.mac-window` | `window`, `panel`, `none` | The shadow level, from [Window Shadow](/components/window-shadow). |
+| `data-background` | `.mac-window-body` | `window`, `content` | Reflects `background`. |
+
+The root also carries the class `mac-window-shadow`: the shadow, the outer hairline and the
+corner radius come from that component.
+
+## Accessibility
+
+- The root has `role="region"` and is named by the title of the `TitleBar` inside it, with no
+  wiring. A window without a title needs `aria-label`; an explicit `aria-label` or
+  `aria-labelledby` wins over the title.
+- A window holds one `TitleBar` title. Every title inside a window takes the same `id`, the one
+  the window is named by, so a second title would duplicate it; a panel nested in a window's
+  content needs a `Window` of its own or an `aria-label`.
+- Controls in a main or inactive window draw no focus ring, as on macOS, where keyboard focus
+  is always in the key window. The window does not move focus: whatever orders the windows
+  must make the window that holds focus the key window, and move focus when it changes the key
+  window. Until then a focused control in a window that is not key has no visible indicator.
+- Pass `role="dialog"` for a panel or dialog. The window does not trap focus or handle Escape;
+  a modal needs a dialog primitive around its content.
+- Window state is conveyed by more than colour: the title dims and the shadow shrinks.
+- Command-W, Command-M and the other window shortcuts belong to the application.
+- In forced-colours mode the frame is drawn with system colours and keeps an outline.
+
+## Visual comparison
+
+`window.visual.json` compares three corners of the frame (top left, bottom left, bottom right)
+with the Finder Network window in both appearances: the 5 pt radius, the outer hairline and
+the inner rim (0.5 pt of white at 16% in Aqua, 1 pt at 20% in Dark Aqua). `top-highlight-*`
+compares the top edge of a window without a title bar, drawn with `topHighlight`, with the
+App Store window over its sidebar. The scores are in the table below.
+
+Scores from `npm run visual -- window` in Chromium on Linux with the fallback font: the share of
+pixels that differ by more than the comparison's threshold, and the mean colour difference out
+of 255. A masked comparison leaves out stand-in artwork and fallback-font text.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `corner-top-left-light` | Light-Finder-Network (0, 0, 252, 120) | 0.16% | 0.67 | 0.26% | 1.00 |
+| `corner-top-left-dark` | Dark-Finder-Network (0, 0, 252, 120) | 0.04% | 1.38 | 0.07% | 1.75 |
+| `corner-bottom-left-light` | Light-Finder-Network (0, 1396, 252, 250) | 0.00% | 0.33 | 0.00% | 0.71 |
+| `corner-bottom-left-dark` | Dark-Finder-Network (0, 1392, 252, 250) | 0.02% | 0.36 | 0.03% | 0.77 |
+| `corner-bottom-right-light` | Light-Finder-Network (1876, 1396, 200, 250) | 0.00% | 0.33 | 0.00% | 0.72 |
+| `corner-bottom-right-dark` | Dark-Finder-Network (2022, 1392, 200, 250) | 0.03% | 0.38 | 0.04% | 0.79 |
+| `top-highlight-light` | Light-Mac-App-Store (312, 76, 120, 20) | 0.00% | 0.36 | 0.00% | 0.38 |
+| `top-highlight-dark` | Dark-Mac-App-Store (312, 76, 120, 20) | 0.00% | 0.02 | 0.00% | 0.05 |
+
+The `top-highlight-*` comparisons use a threshold of 0.05, at which the rows are told from the
+fill beside them at 2x: without `topHighlight` the first row differs in every pixel. At 1x a
+row of half a point is not drawn apart, and the comparison holds the fill and the rim only.
+
+What cannot match a real Mac:
+
+- Catalina tints dark windows with the desktop picture behind them. A page cannot sample what
+  is behind the browser, so the frame uses the untinted values and a dark window differs from a
+  screenshot by a few levels.
+- The outer hairline is half a point. At 1x a browser draws it as a full pixel at the same
+  alpha.
+- Vibrancy inside a window blurs only the page's own pixels ([Fidelity limits](/fidelity)).

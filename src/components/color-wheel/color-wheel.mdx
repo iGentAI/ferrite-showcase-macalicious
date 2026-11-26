@@ -1,0 +1,136 @@
+---
+title: Color Wheel
+description: The wheel and spectrum pickers of the Colors panel, in which a colour is chosen by pointing at it.
+order: 53
+---
+
+<Example name="basic" both />
+
+The colour wheel is the first picker of the [Colors panel](/components/color-panel)
+(`NSColorPanel`, mode `wheel`): a disc with the hues around it and white at its centre, and a
+brightness slider under it. `ColorSpectrum` is its rectangular sibling, the spectrum of the
+panel's image palettes: hue from left to right, white along the top edge and black along the
+bottom one. Base UI has no primitive for a two-dimensional choice, so the area is this
+library's own element; the brightness slider is the library's [`Slider`](/components/slider),
+built on Base UI's.
+
+**No reference screenshot shows the Colors panel.** The pickers draw the HSB colour model
+exactly; their size and the marker are estimates, tagged provisional.
+
+## Usage
+
+```tsx
+import { ColorSpectrum, ColorWheel } from "macalicious/color-wheel";
+import "macalicious/color-wheel.css";
+
+<ColorWheel defaultValue="#34c759" onValueChange={setColor} />
+<ColorSpectrum value={color} onValueChange={setColor} />
+```
+
+The value is a colour as `#rrggbb`; the opacity of a `#rrggbbaa` value is kept and reported
+back. Or copy the source into your project: `npx macalicious add color-wheel`. See
+[Installation](/installation).
+
+<Example name="controlled" />
+
+<Example name="spectrum" both />
+
+The wheel keeps the hue and saturation its marker shows while the colour is black, although
+black has neither: taking the brightness down and up again returns the same colour. A value
+set from outside replaces what it remembers.
+
+The spectrum holds only the colours that are fully saturated or fully bright. A colour that
+is neither (a greyish olive, say) is not in it: its marker stands at the colour's hue and
+brightness, and the next point chosen, with the pointer or the arrow keys, replaces the colour
+with the one at that point. The wheel with its brightness slider, and the
+[sliders](/components/color-sliders), hold every colour.
+
+## Guidelines
+
+Apple's Human Interface Guidelines do not describe the pickers of the colour panel; the
+documentation of
+[NSColorPanel](https://developer.apple.com/documentation/appkit/nscolorpanel) names them as
+its modes. In practice:
+
+- Use a wheel or a spectrum where any colour may be chosen and its exact value does not
+  matter. Where it does, offer [sliders](/components/color-sliders) as well; where only a few
+  colours make sense, a [palette](/components/color-palette).
+- These are parts of a colour panel. To let people set the colour of something, show a
+  [colour well](/components/color-well) that opens the panel, not a bare wheel.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | The hues at the colour's brightness, and a 9 pt ring where the colour is |
+| Lower brightness | the slider, or a darker value | The whole disc darkens; at 0 it is black |
+| Keyboard focus | `:focus-visible` on the area | Focus ring in the accent colour around the disc or the rectangle |
+| Disabled | `disabled` | The area at half opacity; the slider disabled |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No focus ring; the slider's track is not tinted |
+
+| Component | Shape | Sets |
+| --- | --- | --- |
+| `ColorWheel` | A disc, as wide as the component | Hue and saturation in the disc, brightness with the slider |
+| `ColorSpectrum` | A rectangle twice as wide as it is high | Hue, saturation and brightness at once: the upper half fades to white, the lower half to black |
+
+## Sizes
+
+Both are 200 pt wide by default and follow a `width` set with CSS; the disc stays round and
+the spectrum keeps its proportions. There are no control sizes.
+
+## API
+
+<PropsTable name="ColorWheelProps" />
+
+`ColorSpectrum` takes the same props (`ColorSpectrumProps`). Both pass every other `<div>`
+prop to the root element.
+
+| Class | Element |
+| --- | --- |
+| `mac-color-wheel` | The root of either component |
+| `mac-color-wheel-area` | The disc or the rectangle: the focusable `slider` |
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-shape` | `wheel`, `spectrum` | Which of the two components it is. |
+| `data-disabled` | present or absent | Reflects `disabled`. |
+
+Keyboard focus is on the area inside the component, so there is no `data-force` preview of
+its ring; the visual checks reach it with Tab. The component has no CSS variables for a consumer to set; `--_x`, `--_y` and `--_v` on the
+area are private (the marker's position and the brightness).
+
+## Accessibility
+
+- The area is one tab stop with the role `slider`, named "Hue and saturation" (`areaLabel`
+  changes the name). Its value is the hue in degrees, and its value text reads hue, saturation
+  and brightness, for example "Hue 35°, saturation 100%, brightness 100%".
+- The arrow keys move the marker by 2% of the area's width or height, and by 10% with Shift.
+  In the wheel that changes hue and saturation together, as dragging does; people who need to
+  set one component at a time are better served by the [sliders](/components/color-sliders),
+  which the Colors panel offers beside the wheel.
+- The wheel's brightness slider is a second tab stop, a native range input named "Brightness".
+- A disabled picker leaves the tab order and is marked `aria-disabled`.
+- The marker is a white ring with a dark outline on both sides, so it shows on any colour. In
+  forced-colours mode the colours are kept and the area gets a solid border.
+
+## Visual comparison
+
+No screenshot shows the Colors panel, so `npm run visual -- color-wheel` has no crop to score
+against. Its checks render both pickers in a real browser, at 1x and 2x, and hold chosen
+pixels to the HSB colour model, which is documented, not to the component's own output
+(`color-wheel.visual.json`):
+
+| What is checked | How it is brought about | Source of the values |
+| --- | --- | --- |
+| Four points of the disc and five of the spectrum, in both appearances | the pickers at rest, holding white | The colour the HSB model gives for each point's hue, saturation and brightness |
+| Brightness 0 turns the disc black and leaves the spectrum alone | Tab to the slider, Home | The HSB model |
+| The marker follows the keyboard | Tab to the spectrum, Shift with Right and Down Arrow | The marker's ring (inferred) round the colour under it |
+| Keyboard focus ring, in both appearances | Tab | The shared focus ring token over the page |
+| No ring in a window that is not key | Tab in an inactive page | Documented by AppKit |
+
+Provisional: the default width, the marker's size and colours, the hairline around the areas
+and the layout of the slider under the disc. AppKit draws its wheel in a calibrated colour
+space and with a larger marker; no screenshot shows either. Not checked anywhere: Firefox and
+Safari.

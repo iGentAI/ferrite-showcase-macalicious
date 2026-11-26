@@ -1,0 +1,229 @@
+/*
+ * Podcasts demo: the content pane's own layout and type. The window, the playback bar, the
+ * sidebar, the cards and the Preferences window are library components; nothing of theirs is
+ * restyled here. The section headers are set to Podcasts' type through the card grid's
+ * documented variables.
+ */
+.mac-podcasts-layout {
+  display: flex;
+  min-height: 0;
+}
+
+.mac-podcasts-main {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+}
+
+/* The page of a place: the large title and its sections. The section headers are set to
+   Podcasts' type through the card grid's documented variables, on the element's `style`. */
+.mac-podcasts-page {
+  padding-block-end: var(--mac-podcasts-page-padding-block-end);
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  cursor: default;
+}
+
+/* The large title: 34 pt Bold, 40 pt from the pane's edge, cap top 37.5 pt under the bar,
+   and the first section's line 8.5 pt under its line box. */
+.mac-podcasts-title {
+  margin: 0;
+  padding: var(--mac-podcasts-title-padding);
+  overflow: hidden;
+  color: var(--mac-color-label);
+  font:
+    var(--mac-font-weight-bold) var(--mac-podcasts-title-font-size) /
+    var(--mac-podcasts-title-line-height) var(--mac-font-family-system);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-podcasts-note {
+  margin: 0;
+  padding: var(--mac-podcasts-note-padding);
+  color: var(--mac-color-label-secondary);
+}
+
+/* The glyph before the caption of an episode that has been started. */
+.mac-podcasts-progress {
+  margin-inline-end: var(--mac-podcasts-progress-margin-inline-end);
+}
+
+/* A show's page: its cover beside its name, publisher and description. */
+.mac-podcasts-show {
+  display: flex;
+  gap: var(--mac-podcasts-show-gap);
+  padding: var(--mac-podcasts-show-padding);
+}
+
+.mac-podcasts-show-cover {
+  display: grid;
+  flex: none;
+  width: var(--mac-podcasts-show-cover-size);
+  height: var(--mac-podcasts-show-cover-size);
+  overflow: hidden;
+  border-radius: var(--mac-podcasts-show-cover-radius);
+}
+
+.mac-podcasts-show-text {
+  min-width: 0;
+  max-width: var(--mac-podcasts-show-text-max-width);
+}
+
+.mac-podcasts-show-text > :where(p, h2) {
+  margin: 0;
+}
+
+.mac-podcasts-show-category {
+  color: var(--mac-color-label-secondary);
+  font-weight: var(--mac-font-weight-semibold);
+  font-size: var(--mac-podcasts-show-category-font-size);
+  text-transform: uppercase;
+}
+
+.mac-podcasts-show-title {
+  font:
+    var(--mac-font-weight-bold) var(--mac-podcasts-show-title-font-size) /
+    var(--mac-podcasts-show-title-line-height) var(--mac-font-family-system);
+}
+
+.mac-podcasts-show-author {
+  color: var(--mac-color-label-secondary);
+  font-size: var(--mac-podcasts-show-author-font-size);
+  line-height: var(--mac-podcasts-show-author-line-height);
+}
+
+.mac-podcasts-show-description {
+  padding-block: var(--mac-podcasts-show-description-padding-block);
+  line-height: var(--mac-podcasts-show-description-line-height);
+}
+
+.mac-podcasts-episode-actions {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+  padding-block: var(--mac-podcasts-show-description-padding-block);
+}
+
+/* The panel the bar's two trailing buttons open, at the pane's trailing edge. */
+.mac-podcasts-panel {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: var(--mac-podcasts-panel-width);
+  overflow-y: auto;
+  border-inline-start: 1px solid var(--mac-podcasts-panel-line);
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  cursor: default;
+}
+
+.mac-podcasts-panel-text {
+  padding: var(--mac-podcasts-panel-text-padding);
+  line-height: var(--mac-podcasts-panel-text-line-height);
+}
+
+.mac-podcasts-panel-text > :where(p, h3) {
+  margin: var(--mac-podcasts-panel-text-margin);
+}
+
+.mac-podcasts-panel-title {
+  font:
+    var(--mac-font-weight-bold) var(--mac-podcasts-panel-title-font-size) /
+    var(--mac-podcasts-panel-title-line-height) var(--mac-font-family-system);
+}
+
+.mac-podcasts-panel-source {
+  color: var(--mac-color-label-secondary);
+}
+
+/* Preferences, General and Playback: the form ends 25.5 pt from the window's right edge and
+   starts 25 pt under the toolbar; its pop-up buttons are 27 pt apart, which the form's row
+   gap sets on its `style`. */
+.mac-podcasts-preferences-pane {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--mac-podcasts-preferences-pane-padding);
+}
+
+/*
+ * The Ferrite build's own parts. Notices share a column with the page they are over: the page
+ * takes the rest of the pane.
+ */
+.mac-podcasts-column {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.mac-podcasts-column > .mac-podcasts-main {
+  flex: 1 1 0;
+  height: auto;
+  min-height: 0;
+}
+
+.mac-podcasts-banners {
+  flex: none;
+}
+
+/* More than one button at a lockup's trailing edge: Play and Queue. */
+.mac-podcasts-actions {
+  display: flex;
+  gap: var(--mac-podcasts-actions-gap);
+  align-items: center;
+}
+
+/* A chart's title that opens the show's page: the title's own text, as a button. */
+.mac-podcasts-link {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: default;
+}
+
+.mac-podcasts-link:focus-visible {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+}
+
+/* Why a show cannot be followed on this desktop, over its unavailable Subscribe button. */
+.mac-podcasts-show-text > .mac-podcasts-show-reason {
+  padding-block-end: var(--mac-podcasts-show-reason-padding-block-end);
+  color: var(--mac-color-label-secondary);
+}
+
+/* The playback speed, as text in the place of a glyph. */
+.mac-podcasts-speed {
+  min-width: var(--mac-podcasts-speed-min-width);
+  font:
+    var(--mac-font-weight-semibold) var(--mac-podcasts-speed-font-size) / 1
+    var(--mac-font-family-system);
+  text-align: center;
+}
+
+/* A contextual menu's trigger keeps the card or page it wraps in the layout. */
+.mac-podcasts-chosen {
+  background: var(--mac-podcasts-chosen-fill);
+  border-radius: var(--mac-podcasts-chosen-radius);
+}
+
+.mac-podcasts-context-menu {
+  display: contents;
+}
+
+/* The audio element plays; the bar shows it. */
+.mac-podcasts-audio {
+  display: none;
+}
+
+.mac-podcasts-preferences-note {
+  max-width: var(--mac-podcasts-preferences-note-max-width);
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-control-small);
+}

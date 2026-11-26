@@ -1,0 +1,249 @@
+---
+title: Print Panel
+description: The content of the Print dialog, a page preview beside the print settings, over Help, PDF, Cancel and Print.
+---
+
+<Example name="basic" both />
+
+AppKit's `NSPrintPanel`, as TextEdit shows it in Catalina: a white preview page with page
+buttons under it; a form with Printer, Presets, Copies and Pages, and in the detailed form
+Paper Size, Orientation and the option panes; and a bottom row with Help, PDF, Show or Hide
+Details, Cancel and Print. The panel is built from the library's own controls
+([Pop-Up Button](/components/pop-up-button), [Pull-Down Button](/components/pull-down-button),
+[Text Field](/components/text-field), [Checkbox](/components/checkbox),
+[Radio Button](/components/radio-button), [Bevel Button](/components/bevel-button),
+[Segmented Control](/components/segmented-control), [Help Button](/components/help-button),
+[Push Button](/components/push-button), [Default Button](/components/default-button) and
+[Separator](/components/separator)), so each of them looks and behaves as it does on its own.
+
+It is the dialog's content, not the dialog: it has no background, frame or margin. Nothing is
+printed either. The lists come in through props, the state of the form is one `settings`
+object, and Print and Cancel are reported.
+
+## Usage
+
+```tsx
+import { MenuItem } from "macalicious/menu-item";
+import { PrintPanel } from "macalicious/print-panel";
+import { Sheet, SheetPopup } from "macalicious/sheet";
+import "macalicious/styles.css";
+
+<Sheet open={open} onOpenChange={setOpen}>
+  <SheetPopup anchor={titleBar} width={756} aria-label="Print">
+    <PrintPanel
+      printers={[{ value: "office", label: "Office Laser" }]}
+      presets={[{ value: "default", label: "Default Settings" }]}
+      paperSizes={[{ value: "letter", label: "US Letter", description: "8.50 by 11.00 inches" }]}
+      panes={[{ value: "app", label: "Notes", content: <NotesOptions /> }]}
+      preview={<PageThumbnail page={page} />}
+      pageCount={12}
+      page={page}
+      onPageChange={setPage}
+      pdfMenu={<MenuItem onClick={saveAsPdf}>Save as PDF…</MenuItem>}
+      onCancel={() => setOpen(false)}
+      onPrint={(settings) => send(settings)}
+    />
+  </SheetPopup>
+</Sheet>
+```
+
+- **Where it goes.** In a [Sheet](/components/sheet) attached to the document's window, 756 pt
+  wide: the sheet supplies the material and the 20 pt margins. Or in the body of a
+  [Window](/components/window) with `padding: 20px`, for the application-modal presentation.
+- **Lists.** `printers`, `presets`, `paperSizes` and `panes` are arrays of `value` and `label`;
+  `separatorBefore` draws a line above an item in the menu. A paper size also has the
+  `description` shown after the pop-up button and an `aspectRatio` (width divided by height of
+  the upright sheet; US Letter when left out). A pane has the `content` shown under the pop-up
+  button in the separator line: your own controls. List your application's pane first. Every
+  pane stays mounted, hidden while another is chosen or the simple form is shown, so its
+  controls keep their state.
+- **Settings.** One object: `printer`, `preset`, `copies`, `twoSided`, `pages` (`"all"` or
+  `"range"`), `from`, `to`, `paperSize`, `orientation` and `pane`. Leave it to the panel
+  (`defaultSettings`, any part of it) or control it (`settings` with `onSettingsChange`, which
+  always receives the complete object). The three number fields report whole numbers of at
+  least 1; an empty or mistyped entry is dropped when the focus leaves the field. Typing a
+  page chooses the range.
+- **Preview.** `preview` is drawn on the page: render a small copy of the document's current
+  page, laid out for a page 301 pt long. The page takes the proportions of the chosen paper,
+  turns with the orientation, and is white in both appearances; what is on it is clipped and
+  drawn in the light appearance. `pageCount`, and `page` with `onPageChange`, drive the text
+  and the four buttons under it. When `pageCount` falls below the page shown, the last page
+  is shown and reported.
+- **Simple and detailed.** As in AppKit the panel starts with the simple form. The details
+  button switches; `defaultDetailed` or `detailed` with `onDetailedChange` set it.
+- **PDF.** `pdfMenu` holds the items of the PDF pull-down button, from
+  `macalicious/menu-item`. Without it the button is left out.
+- **Print and Cancel.** `onPrint` receives the settings; `onCancel` nothing. Return and Escape
+  are the two buttons' key equivalents in the enclosing sheet, dialog or window (see
+  [Default Button](/components/default-button)). In a sheet, Escape is the sheet's own: it
+  closes through `onOpenChange` and `onCancel` is not called, so close on both. `printDisabled`
+  disables Print and the Return key with it.
+- **Translation.** `labels` replaces any of the panel's own texts, by their English wording:
+  `labels={{ "Printer:": "Drucker:", Print: "Drucken" }}`.
+- **Printing.** The panel collects settings. A browser prints with its own dialog
+  (`window.print()`), which a page cannot fill in.
+
+### In a window
+
+<Example name="window" />
+
+The application-modal presentation: the panel in the body of a window of its own. Here the
+settings are controlled, the preview follows the page buttons, and Print is disabled while the
+range ends before it begins.
+
+## Guidelines
+
+From the Human Interface Guidelines for macOS,
+[Printing](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/system-capabilities/printing/):
+
+- People expect the printing system's options in every application. Offer Print in the File
+  menu, and enable it only when there is something to print and a printer to print it on.
+- Use the standard Print dialog: it is familiar. It opens in a collapsed form with the settings
+  people change most, and expands to show the rest.
+- Enable the options that suit your content: a page range, several copies, and both sides of
+  the paper when it makes sense and the printer can do it.
+- Put application-specific options in a category of their own in the expanded dialog, named so
+  that it does not conflict with the system's categories (Layout, Paper Handling): in general
+  your application's name. Offer there only what the system does not already provide.
+- Make dependencies between options clear, keep advanced options apart from frequently used
+  ones, and preview the effect of a change where you can.
+- Settings that are rarely changed and belong to one document (page size, orientation,
+  scaling) go in a Page Setup dialog and are stored with the document; settings that change
+  with every printing go in the Print dialog.
+
+## Variants and states
+
+| Variant or state | Look | Source |
+| --- | --- | --- |
+| Detailed form, in a sheet | Preview 233 x 301 pt, six rows, the pane pop-up button in its line, the pane | Measured (Print, light and dark) |
+| Copies and Pages rows | A number field with Two-Sided; All, then From and to on a second line | Provisional: an open menu covers them in both captures, only the two labels are measured |
+| Simple form (`detailed` false) | No Paper Size, Orientation or panes; the page at half its size; 150 pt lower | Provisional: no screenshot; the spec infers the height |
+| Landscape | The page on its side, 301 x 233 pt, centred where the upright page is | Provisional: no screenshot |
+| Page buttons | Disabled at the first and at the last page | Measured disabled, on a document of one page; enabled is the segmented control's look |
+| Print disabled | The default button's disabled look | Provisional: no screenshot |
+| In a window | The same content on the window background | Provisional: no screenshot |
+| Window not key | Each control's own look in a window that is not key | Provisional: no screenshot |
+
+The two orientation pictograms and the page chevrons are drawn for this library with
+`currentColor`; Apple's artwork is not reproduced.
+
+## Sizes
+
+One size. The detailed panel is 716 x 379 pt (a 756 x 419 pt sheet with its 20 pt margins)
+with a pane of two checkboxes; a taller pane makes it taller. The simple panel is 716 x 229 pt.
+The preview column is 310 pt wide; the form takes the rest and grows with the panel. Labels
+end 90.5 pt from the form's left edge and the controls start 9 pt after them. Printer and
+Presets are 239.5 pt wide, Paper Size 178 pt, the pane pop-up button 175 pt, the orientation
+buttons 38 pt, Cancel and Print at least 70 pt.
+
+## API
+
+<PropsTable name="PrintPanelProps" />
+
+The root also takes every `<div>` prop. The types `PrintPanelSettings`, `PrintPanelOption`,
+`PrintPanelPaperSize`, `PrintPanelPane` and `PrintPanelText` (the keys of `labels`) are
+exported with the component.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-detailed` | root | present | The detailed form is shown. |
+| `data-appearance` | page | `light` | The paper is white in both appearances, so its content is drawn in Aqua. |
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `--mac-print-panel-paper` | `#ffffff` | Fill of the preview page. |
+| `--mac-print-panel-paper-shadow` | `0 4px 4px rgb(0 0 0 / 0.26)` | Shadow of the preview page. |
+
+Classes: `.mac-print-panel`, `.mac-print-panel-preview`, `.mac-print-panel-page`,
+`.mac-print-panel-navigation`, `.mac-print-panel-page-button`, `.mac-print-panel-glyph`,
+`.mac-print-panel-form`, `.mac-print-panel-row`, `.mac-print-panel-pop-up` (the four pop-up
+buttons), `.mac-print-panel-number` (the three number fields), `.mac-print-panel-pane-bar` and
+`.mac-print-panel-actions`. The rows of the form and the buttons of the bottom row have no
+classes of their own: the stylesheet finds them by their order.
+
+## Accessibility
+
+- The panel is a `group` named "Print" (or by `aria-label` or `aria-labelledby`). It is not a
+  dialog: the sheet or window around it is, and names itself.
+- Every control has a name. Each label names the controls of its row; the two fields of the
+  range are named by "From:" and "to:"; the orientation buttons are "Portrait" and
+  "Landscape", the pane pop-up button "Options", the page buttons "First page", "Previous
+  page", "Next page" and "Last page". The page number is a polite live region.
+- The preview page is one `img` named "Preview". Put nothing on it that must be operated or
+  read out; describe the document elsewhere.
+- Tab moves through the panel in reading order: the page buttons, the form from Printer down,
+  then Help, PDF, the details button, Cancel and Print. The radio buttons and the orientation
+  buttons are one stop each, moved through with the arrow keys.
+- Return activates Print and Escape Cancel from anywhere in the enclosing sheet, dialog or
+  window, except where the focused control uses the key itself: a button, an open menu, a
+  multi-line text view in a pane. Both keys are left alone when a `keydown` handler prevents
+  their default.
+- A sheet gives the focus to its first text field, which is Copies, as the Print dialog
+  does. Pass the sheet's `initialFocus` to start elsewhere.
+- In forced-colours mode the page has an edge in place of its shadow.
+
+## Visual comparison
+
+`print-panel.visual.json` compares one example, the whole sheet of the reference screenshots,
+with both captures of TextEdit's Print sheet. In the captures the Presets menu is open over the
+middle of the form and its shadow falls on the Paper Size row, so five regions that the menu
+leaves free are compared: the preview column, the Printer row, the Orientation row with the
+pane pop-up button and the pane, and the two ends of the bottom row. The sheet's material
+shows the desktop picture, blurred: each region paints the colours measured behind the sheet
+at that spot, so the comparison scores the panel and not the material, which is the sheet's.
+The dark sheet was found one pixel to the left of where the spec puts it (x 55, not 56): its
+crops start there.
+
+Every region is compared twice: whole, and with the text masked at a threshold of 0.05, which
+gates the drawing. Text is masked because it is set in a fallback font off Apple platforms.
+The two orientation pictograms are masked in both, because they are stand-ins. The widths of
+the PDF and Hide Details buttons are set in the example, because their titles' widths place
+the buttons after them.
+
+Scores from `npm run visual -- print-panel` in Chromium on Linux with the fallback font: the
+share of pixels that differ by more than the comparison's threshold, and the mean colour
+difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `preview-light` | Light-Print (229, 220, 524, 688) | 0.67% | 0.93 | 0.44% | 0.85 |
+| `preview-drawing-light` (masked) | Light-Print (229, 220, 524, 688) | 1.07% | 0.66 | 0.35% | 0.52 |
+| `printer-light` | Light-Print (885, 228, 616, 58) | 15.09% | 14.86 | 9.42% | 13.23 |
+| `printer-drawing-light` (masked) | Light-Print (885, 228, 616, 58) | 13.11% | 5.48 | 0.18% | 1.06 |
+| `options-light` | Light-Print (813, 576, 592, 244) | 9.14% | 10.03 | 6.06% | 8.76 |
+| `options-drawing-light` (masked) | Light-Print (813, 576, 592, 244) | 4.49% | 1.66 | 0.06% | 0.49 |
+| `actions-leading-light` | Light-Print (157, 904, 448, 120) | 4.96% | 4.77 | 2.14% | 3.02 |
+| `actions-leading-drawing-light` (masked) | Light-Print (157, 904, 448, 120) | 6.85% | 3.25 | 0.25% | 1.22 |
+| `actions-trailing-light` | Light-Print (1285, 904, 352, 120) | 4.26% | 4.44 | 1.84% | 3.06 |
+| `actions-trailing-drawing-light` (masked) | Light-Print (1285, 904, 352, 120) | 4.96% | 3.58 | 0.26% | 1.98 |
+| `preview-dark` | Dark-Print (143, 190, 524, 688) | 1.15% | 1.28 | 0.62% | 1.30 |
+| `preview-drawing-dark` (masked) | Dark-Print (143, 190, 524, 688) | 1.08% | 1.02 | 0.34% | 0.97 |
+| `printer-dark` | Dark-Print (799, 198, 616, 58) | 13.60% | 11.27 | 8.82% | 9.56 |
+| `printer-drawing-dark` (masked) | Dark-Print (799, 198, 616, 58) | 7.28% | 4.98 | 0.20% | 1.61 |
+| `options-dark` | Dark-Print (727, 546, 592, 244) | 8.58% | 9.18 | 6.09% | 8.51 |
+| `options-drawing-dark` (masked) | Dark-Print (727, 546, 592, 244) | 2.56% | 1.80 | 0.07% | 1.45 |
+| `actions-leading-dark` | Dark-Print (71, 874, 448, 120) | 3.94% | 3.61 | 1.88% | 2.88 |
+| `actions-leading-drawing-dark` (masked) | Dark-Print (71, 874, 448, 120) | 3.02% | 2.56 | 0.37% | 1.78 |
+| `actions-trailing-dark` | Dark-Print (1199, 874, 352, 120) | 3.59% | 3.33 | 1.68% | 2.48 |
+| `actions-trailing-drawing-dark` (masked) | Dark-Print (1199, 874, 352, 120) | 2.22% | 2.46 | 0.16% | 1.61 |
+
+At 1x the masked scores are higher than the whole ones in places: their threshold is half,
+and the reference is the 2x capture averaged down, which a half-point hairline cannot match.
+What is left at 2x is, in the preview, one device pixel along the page's left and right edges
+(the captured page is about 233.6 pt wide) and, elsewhere, edges of the controls the panel is
+built from. The scores of the regions with a pop-up or pull-down button follow those two
+components: they were measured with the versions current on 5 October 2026.
+
+Pixel checks without a reference: `simple-*` render the simple form and hold its height to
+269 pt with the margins, the page to half its size and the bottom separator to its place;
+`landscape-*` click the Landscape button and read the paper where only a page on its side is.
+
+Measured: the page's size, place and shadow; the page controls and the page number's place;
+the label column and every control's place and width in the Printer, Paper Size and
+Orientation rows, the pane pop-up button, its line and the pane's place; the bottom separator
+and the bottom row. Provisional: the controls of the Copies and Pages rows and the width of the
+number fields, the simple form, the landscape page, and everything a window that is not key
+changes. Not compared: the Presets row and the Paper Size row, which the open menu and its
+shadow cover (their places are measured), and the open menu itself, which is the pop-up
+button's. Not built: the printer status line, the system's own panes (Layout, Paper Handling
+and the others, which an application can supply as `panes`), and the Page Setup dialog.

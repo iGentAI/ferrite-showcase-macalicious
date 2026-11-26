@@ -1,0 +1,110 @@
+{
+  "name": "macalicious",
+  "version": "0.1.0",
+  "description": "macOS 10.15 Catalina, rebuilt as React components on Base UI. Plain HTML, CSS and JavaScript.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "bin": {
+    "macalicious": "./bin/macalicious.mjs"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "AGENTS.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./tokens.css": "./dist/tokens.css",
+    "./fallback-font.css": "./dist/fallback-font.css",
+    "./lib/*": {
+      "types": "./dist/lib/*.d.ts",
+      "import": "./dist/lib/*.js"
+    },
+    "./*.css": "./dist/components/*.css",
+    "./*": {
+      "types": "./dist/components/*/index.d.ts",
+      "import": "./dist/components/*.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": "^22.23.4 || ^24.22.1 || >=26.12.1"
+  },
+  "scripts": {
+    "dev": "vite --config docs/vite.config.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check . && node scripts/check-conventions.mjs",
+    "format": "biome check --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build": "vite build && tsc -p tsconfig.build.json && node scripts/finish-declarations.mjs && node scripts/build-registry.mjs && node scripts/report-size.mjs && node scripts/check-package.mjs",
+    "docs:dev": "vite --config docs/vite.config.ts",
+    "docs:build": "node docs/build.mjs",
+    "docs:preview": "vite preview --config docs/vite.config.ts",
+    "visual": "node visual/run.mjs",
+    "visual:crop": "node visual/crop.mjs",
+    "visual:install": "playwright install chromium",
+    "reference:fetch": "node scripts/fetch-reference.mjs",
+    "new": "node scripts/new-component.mjs",
+    "check": "npm run typecheck && npm run lint && npm run test && npm run build && npm run docs:build",
+    "check:browsers": "REQUIRE_BROWSER_TESTS=1 npm run check",
+    "desktop:test": "node ferrite-apps/desktop/scripts/check-test-modules.mjs && node ferrite-apps/desktop/scripts/check-deploy-inputs.mjs && cargo test --manifest-path ferrite-apps/desktop/Cargo.toml --features local-egress",
+    "desktop:dev": "vite --config docs/desktop/vite.config.ts",
+    "desktop:build": "vite build --config docs/desktop/vite.config.ts"
+  },
+  "peerDependencies": {
+    "@fontsource-variable/inter": "^5.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@fontsource-variable/inter": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.8.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@mdx-js/rollup": "^3.1.1",
+    "@shikijs/rehype": "^4.4.3",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "acorn": "^8.19.0",
+    "ajv": "^8.20.0",
+    "axe-core": "^4.13.0",
+    "jsdom": "^30.1.1",
+    "lightningcss": "^1.33.0",
+    "mdast-util-from-markdown": "^2.0.3",
+    "mdast-util-gfm": "^3.1.0",
+    "micromark-extension-gfm": "^3.0.0",
+    "oxc-parser": "^0.152.0",
+    "pdfjs-dist": "^6.4.299",
+    "pixelmatch": "^7.2.0",
+    "playwright": "^1.64.1",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.0",
+    "sharp": "^0.35.5",
+    "shiki": "^4.4.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
+  }
+}

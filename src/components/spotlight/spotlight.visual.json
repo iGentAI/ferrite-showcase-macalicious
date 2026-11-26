@@ -1,0 +1,217 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "top-light",
+      "description": "Top-left 200 x 98 pt of the window, Aqua: the magnifying glass, the field, the first category band and the selected top hit. The capture is over the desktop picture; the gradient behind the window stands in for it. Masked: the text, set in the fallback font off Apple platforms (query, completion, category, result) and the result's icon, which is Apple artwork.",
+      "example": "visual-top-light",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 48,
+          "y": 10,
+          "width": 152,
+          "height": 38
+        },
+        {
+          "x": 18,
+          "y": 59,
+          "width": 70,
+          "height": 12
+        },
+        {
+          "x": 18,
+          "y": 75,
+          "width": 90,
+          "height": 21
+        }
+      ],
+      "budget": {
+        "1x": 0.0165,
+        "2x": 0.0151
+      },
+      "deltaBudget": {
+        "1x": 3.78,
+        "2x": 4.17
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Spotlight.png",
+        "crop": {
+          "x": 1000,
+          "y": 420,
+          "width": 400,
+          "height": 196
+        }
+      }
+    },
+    {
+      "name": "list-dark",
+      "description": "Top-left 300 x 250 pt of the window, Dark Aqua: the rim, the magnifying glass, the field, two category bands, the selected first result, plain results, the line between list and preview and the preview's own background. A window capture with nothing behind the window, so the material is its opaque base. Masked: the text, set in the fallback font off Apple platforms (query, completion, categories, results), the results' icons, which are Apple artwork, and the preview's text at the crop's edge.",
+      "example": "visual-list-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        {
+          "x": 48,
+          "y": 10,
+          "width": 252,
+          "height": 38
+        },
+        {
+          "x": 18,
+          "y": 59,
+          "width": 80,
+          "height": 12
+        },
+        {
+          "x": 18,
+          "y": 75,
+          "width": 268,
+          "height": 22
+        },
+        {
+          "x": 18,
+          "y": 101,
+          "width": 268,
+          "height": 22
+        },
+        {
+          "x": 18,
+          "y": 127,
+          "width": 268,
+          "height": 22
+        },
+        {
+          "x": 18,
+          "y": 153,
+          "width": 268,
+          "height": 22
+        },
+        {
+          "x": 18,
+          "y": 179,
+          "width": 268,
+          "height": 22
+        },
+        {
+          "x": 18,
+          "y": 221,
+          "width": 268,
+          "height": 22
+        },
+        {
+          "x": 18,
+          "y": 205,
+          "width": 80,
+          "height": 12
+        },
+        {
+          "x": 18,
+          "y": 245,
+          "width": 80,
+          "height": 5
+        },
+        {
+          "x": 294,
+          "y": 57,
+          "width": 6,
+          "height": 193
+        }
+      ],
+      "budget": {
+        "1x": 0.0086,
+        "2x": 0.0045
+      },
+      "deltaBudget": {
+        "1x": 0.83,
+        "2x": 0.86
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Spotlight.png",
+        "crop": {
+          "x": 112,
+          "y": 76,
+          "width": 600,
+          "height": 500
+        }
+      }
+    },
+    {
+      "name": "arrow-down-dark",
+      "description": "Down Arrow in the field moves the selection to the second result, Dark Aqua. The keyboard focus stays in the field, which shows its focus line under the text.",
+      "example": "visual-list-dark",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": ".mac-spotlight-input"
+        },
+        {
+          "key": "ArrowDown"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 250
+        },
+        "pixels": [
+          {
+            "x": 6,
+            "y": 112,
+            "color": "#0772eb",
+            "tolerance": 3,
+            "note": "selected second result: --mac-color-sidebar-selection-emphasized (measured on the first result: #0971ea)"
+          },
+          {
+            "x": 6,
+            "y": 86,
+            "color": "#2b2c2d",
+            "note": "first result, no longer selected: the window's base (measured)"
+          },
+          {
+            "x": 280,
+            "y": 44,
+            "color": "#2b6a96",
+            "tolerance": 4,
+            "note": "focus line under the field's text: --mac-focus-ring-color, #2ba8ff at 50%, over the window's base; the library's own, no capture shows it"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inactive-selection-dark",
+      "description": "The selection in a window that is not key, Dark Aqua: grey instead of the accent colour. Inferred; no capture shows it.",
+      "example": "visual-list-dark",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 250
+        },
+        "pixels": [
+          {
+            "x": 6,
+            "y": 86,
+            "color": "#4f5050",
+            "tolerance": 3,
+            "note": "--mac-color-sidebar-selection, white at 17%, over the window's base #2b2c2d; inferred"
+          },
+          {
+            "x": 6,
+            "y": 112,
+            "color": "#2b2c2d",
+            "note": "a result that is not selected: the window's base (measured)"
+          },
+          {
+            "x": 280,
+            "y": 44,
+            "color": "#2b2c2d",
+            "note": "no focus line without the keyboard focus: the window's base"
+          }
+        ]
+      }
+    }
+  ]
+}

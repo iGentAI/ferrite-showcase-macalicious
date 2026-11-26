@@ -1,0 +1,273 @@
+/*
+ * Card grid: a titled section of cards, wrapping or on a shelf that scrolls sideways. The
+ * measurements, states and parts are on the docs page.
+ */
+.mac-card-grid {
+  --_margin: var(--mac-card-grid-margin, 40px);
+  --_gap: var(--mac-card-grid-gap, 20px);
+  --_min: var(--mac-card-grid-min-card-width, 168px);
+
+  box-sizing: border-box;
+  padding: 0 var(--_margin) 32px;
+  cursor: default;
+}
+
+/* 48 pt: title baseline at 30, cards 18 pt below it (TV) */
+.mac-card-grid-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--_gap);
+  padding: var(--mac-card-grid-header-padding, 12.5px 0 13.5px);
+}
+
+.mac-card-grid:where([data-separator]) > .mac-card-grid-header {
+  border-top: 1px solid var(--mac-card-grid-separator);
+}
+
+.mac-card-grid-title {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--mac-card-grid-title);
+  font: var(--mac-card-grid-title-font);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-card-grid-action {
+  flex: none;
+  margin: 0;
+  margin-inline-start: auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--mac-card-grid-action-radius);
+  background: none;
+  color: var(--mac-card-grid-action);
+  font: var(--mac-card-grid-action-font);
+  text-decoration: none;
+  cursor: default;
+  outline: none;
+}
+
+.mac-card-grid-list {
+  display: grid;
+  grid-template-columns: repeat(var(--mac-card-grid-columns, auto-fill), minmax(var(--_min), 1fr));
+  gap: var(--mac-card-grid-row-gap, var(--_gap)) var(--_gap);
+  outline: none;
+}
+
+.mac-card-grid-list:where([data-columns]) {
+  grid-template-columns: repeat(var(--mac-card-grid-columns), minmax(0, 1fr));
+}
+
+/* A shelf scrolls under the section's margins; its padding keeps the cards' shadows. */
+.mac-card-grid-list:where([data-layout="shelf"]) {
+  --_bleed: max(var(--_margin), 14px);
+
+  grid-template-columns: none;
+  grid-auto-columns: var(--_min);
+  grid-auto-flow: column;
+  margin: -12px calc(-1 * var(--_bleed)) -20px;
+  padding: 12px var(--_bleed) 20px;
+  overflow-x: auto;
+  scroll-padding-inline: var(--_bleed);
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+
+.mac-card-grid-list:where([data-layout="shelf"][data-columns]) {
+  grid-auto-columns: calc(
+    (100% - (var(--mac-card-grid-columns) - 1) * var(--_gap)) /
+    var(--mac-card-grid-columns)
+  );
+}
+
+.mac-card-grid-item {
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+/* Landscape (TV): no hairline along the bottom. */
+.mac-card-grid-card {
+  --_aspect: 16 / 9;
+  --_radius: var(--mac-card-grid-card-radius-landscape);
+  --_edge: var(--mac-card-grid-card-edge);
+  --_edge-bottom: 0;
+  --_shadow: var(--mac-card-grid-card-shadow-landscape);
+
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mac-card-grid-card-subtitle);
+  font: var(--mac-card-grid-card-font);
+  text-align: start;
+  text-decoration: none;
+  cursor: default;
+  outline: none;
+}
+
+.mac-card-grid-card-artwork {
+  position: relative;
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  aspect-ratio: var(--_aspect);
+  overflow: hidden;
+  border-radius: var(--_radius);
+  background: var(--mac-card-grid-card-placeholder);
+  box-shadow: var(--_shadow);
+}
+
+.mac-card-grid-card-artwork::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: var(--mac-hairline) solid var(--_edge);
+  border-bottom-width: var(--_edge-bottom);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Cap top 7 pt below the artwork, lines 16.5 pt apart (Music) */
+.mac-card-grid-card-text,
+.mac-card-grid-card-text > * {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-card-grid-card-text {
+  padding-top: 3.5px;
+}
+
+.mac-card-grid-card-title {
+  color: var(--mac-card-grid-card-title);
+}
+
+.mac-card-grid-card-caption {
+  color: var(--mac-card-grid-card-caption);
+  font-weight: var(--mac-font-weight-semibold);
+  font-size: var(--mac-card-grid-card-caption-size);
+  text-transform: uppercase;
+}
+
+.mac-card-grid-card:where([data-variant="square"]) {
+  --_aspect: 1;
+  --_radius: var(--mac-card-grid-card-radius-square);
+  --_edge: var(--mac-card-grid-card-edge-square);
+  --_edge-bottom: var(--mac-hairline);
+  --_shadow: var(--mac-card-grid-card-shadow-square);
+}
+
+/* Episode (Podcasts): baselines 20, 40 and 60 pt below the artwork, then 15 pt apart */
+.mac-card-grid-card:where([data-variant="episode"]) {
+  --_aspect: 1;
+  --_radius: var(--mac-card-grid-card-radius-episode);
+  --_edge: transparent;
+  --_shadow: var(--mac-card-grid-card-shadow-episode);
+
+  font: var(--mac-card-grid-episode-font);
+}
+
+:where(.mac-card-grid-card[data-variant="episode"]) > .mac-card-grid-card-text {
+  padding-top: 8.5px;
+}
+
+:where(.mac-card-grid-card[data-variant="episode"]) .mac-card-grid-card-title {
+  margin-top: 1px;
+  color: var(--mac-color-label);
+  font: var(--mac-card-grid-episode-title-font);
+}
+
+:where(.mac-card-grid-card[data-variant="episode"]) .mac-card-grid-card-subtitle {
+  display: -webkit-box;
+  margin-top: 3.5px;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+:where(.mac-card-grid-card[data-variant="episode"]) .mac-card-grid-card-footnote {
+  margin-top: 3px;
+}
+
+/* Lockup (App Store): a 69 pt row with its line, which starts 64 pt in */
+.mac-card-grid-card:where([data-variant="lockup"]) {
+  --_aspect: 1;
+  --_radius: 0;
+  --_edge: transparent;
+  --_shadow: none;
+
+  display: grid;
+  grid-template: 50px / 50px minmax(0, 1fr) auto;
+  column-gap: 15px;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid transparent;
+  background: linear-gradient(var(--mac-color-grid) 0 0) 64px 100% / 100% 1px no-repeat border-box;
+  color: var(--mac-color-system-gray);
+  font: var(--mac-card-grid-lockup-font);
+}
+
+:where(.mac-card-grid-card[data-variant="lockup"]) > .mac-card-grid-card-artwork {
+  background: none;
+}
+
+:where(.mac-card-grid-card[data-variant="lockup"]) > .mac-card-grid-card-text {
+  display: -webkit-box;
+  margin-bottom: 3px;
+  padding: 0;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+/* Three lines together: a title that needs two leaves the subtitle one. */
+:where(.mac-card-grid-card[data-variant="lockup"]) > .mac-card-grid-card-text > * {
+  overflow: visible;
+  white-space: normal;
+}
+
+:where(.mac-card-grid-card[data-variant="lockup"]) .mac-card-grid-card-title {
+  margin-bottom: 2px;
+  color: var(--mac-color-label);
+  font: var(--mac-card-grid-lockup-title-font);
+}
+
+.mac-card-grid-card-accessory {
+  display: flex;
+  grid-column: 3;
+  margin-inline-end: 1px;
+}
+
+/* Pressed: a card that is a link or a button dims its artwork */
+.mac-card-grid-card:where(:where(:any-link, :enabled):active, [data-force~="pressed"])
+> .mac-card-grid-card-artwork {
+  filter: brightness(var(--mac-card-grid-card-pressed-brightness));
+}
+
+.mac-card-grid-card:where(:disabled, [aria-disabled="true"]) {
+  opacity: var(--mac-card-grid-card-disabled-opacity);
+}
+
+/* Keyboard focus ring, around a card's artwork and the header's action; key window only */
+.mac-card-grid-card:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) > .mac-card-grid-card-artwork,
+.mac-card-grid-action:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(var(--mac-focus-ring-offset) - var(--mac-hairline));
+}
+
+/* A focused shelf: the ring is drawn inside its box, which clips what lies outside */
+.mac-card-grid-list:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}

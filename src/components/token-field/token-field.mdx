@@ -1,0 +1,143 @@
+---
+title: Token Field
+description: A text field whose entries become tokens, blocks of text that are selected, moved over and deleted as units, as in Mail's address fields.
+order: 34
+---
+
+<Example name="basic" both />
+
+The AppKit control is `NSTokenField`. Base UI has no primitive for it, so `TokenField` is
+written here: the tokens are a list box of options beside a native `<input>`, the pattern the
+WAI-ARIA Authoring Practices give for a set of removable items next to a text box.
+
+## Usage
+
+```tsx
+import { TokenField } from "macalicious/token-field";
+import "macalicious/token-field.css";
+
+<TokenField aria-label="Tags" defaultValue={["Work", "Travel"]} />
+<TokenField aria-label="To" value={recipients} onValueChange={setRecipients} bordered={false} />
+```
+
+Or copy the source into your project: `npx macalicious add token-field`.
+
+The value is an array of strings. Typing a comma or Return, or leaving the field, turns the
+typed text into a token; `tokenizingCharacters` changes which characters do. Other props
+(`placeholder`, `id`, `aria-label`, `disabled`, `readOnly`) go to the `<input>`; `className`,
+`style` and `ref` go to the root. With `name`, the tokens are submitted as one form value,
+joined by the first tokenizing character; `form` names the form they belong to when the field
+is outside it. The field is 240 pt wide unless `style` sets its
+width, and grows downwards as tokens wrap.
+
+### Completions
+
+Mail's address fields suggest completions while typing. That is a component of its own,
+[`TokenFieldCompletions`](/components/token-field-completions): this field with a list of
+completions under the text being typed, AppKit's `completionDelay` included. It takes every
+prop listed here. `TokenField` itself draws no list, so a field that needs none does not
+carry the code for one. What the list is built on is public: the typed text through
+`onChange`, every key through `onKeyDown` before the field acts on it (a key the handler
+prevents is left alone), the controlled list of tokens, and `inputRef`.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for token fields:
+
+- Use tokens for entries people handle as units, such as recipients or tags.
+- Tokenise at a comma by default; add other characters, such as Return, when they suit the
+  content.
+- Give a token a contextual menu when there is more to do with it than delete it; the
+  downward chevron marks such a token.
+
+<Example name="recipients" />
+
+## Variants and states
+
+<Example name="token-styles" both hideCode />
+
+| `tokenStyle` | Look | Status |
+| --- | --- | --- |
+| `rounded` | Tinted fill, 2 pt corners | measured (Mail) |
+| `squared` | Tinted fill, square corners | provisional |
+| `plain-squared` | No fill until selected | provisional |
+| `none` | Plain text followed by a comma | provisional |
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look | Status |
+| --- | --- | --- | --- |
+| Token | – | 19 pt high, fill `#bbd7ff` (Dark Aqua `#1e3d63`) with the blue accent | measured (Mail) |
+| Token with menu | `tokenMenu` | Chevron 5.5 pt after the text | measured (Mail) |
+| Token selected | click, or the arrow keys | Emphasised selection colour, white text | provisional |
+| Token hover | pointer over a token | Slightly darker fill | provisional |
+| Field focused | the input or a token has the keyboard | Focus ring on the bezel | provisional: ring measured elsewhere |
+| Disabled | `disabled` | Tokens at half opacity, dimmed text | provisional |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | Grey selection, no focus ring | provisional |
+| Other accents | `data-accent` on an ancestor | Fill mixed from the accent | provisional |
+
+`bordered={false}` removes the bezel and its padding, for a field inside a surface that already
+frames it, as in Mail's message header.
+
+## Sizes
+
+The token field has one size: 13 pt text and 19 pt tokens, 22 pt high with its bezel. The
+screenshots show no other.
+
+## API
+
+<PropsTable name="TokenFieldProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-token-style` | root | `rounded`, `squared`, `plain-squared`, `none` | Reflects `tokenStyle`. |
+| `data-bordered` | root | present or absent | Reflects `bordered`. |
+| `data-disabled` | root | present or absent | Reflects `disabled`. |
+| `data-index` | token | a number | The token's position. |
+| `data-force` | input, token | `focus`, `hover` | Documentation and visual tests only. |
+
+Classes: `.mac-token-field`, `.mac-token-field-tokens`, `.mac-token-field-token`,
+`.mac-token-field-token-text`, `.mac-token-field-token-menu`, `.mac-token-field-input`.
+
+## Accessibility
+
+- The `<input>` is the one tab stop. Name it with a label or `aria-label`; the list of tokens
+  is a list box named by `tokensLabel`, and each token is an option.
+- Left Arrow or Backspace at the start of the text selects the last token. Left and Right
+  Arrow then move between tokens, Home and End jump to the first token and back to the text,
+  and Backspace or Delete removes the selected token: Backspace moves to the token before it,
+  Delete to the one after.
+- Typing while a token is selected returns to the text and adds the typed character there.
+- The selected token has `aria-selected="true"`; it is the one with the focus.
+- Text that an input method is still composing is not tokenised: a comma or Return counts
+  once the composition is committed.
+- `required` is satisfied by one token (or by text still being typed); the tokens, not the
+  empty text box, are what the form validates. Resetting the form restores `defaultValue`.
+- With `tokenMenu`, Space or Down Arrow on a selected token calls `onTokenMenu`, as does a
+  click on the chevron; open your menu anchored to the element it passes.
+- `disabled` disables the input and takes the tokens out of reach; `readOnly` leaves tokens
+  selectable but not removable.
+- A selected token is shown by the selection colour, not by a focus ring, as in AppKit; in
+  forced-colours mode tokens get a border and the selected one uses `Highlight`.
+
+## Visual comparison
+
+`npm run visual -- token-field` compares the recipient token of a Mail message in both
+appearances. Scores from the run that accompanied this component (Chromium on Linux, fallback
+font Inter; 2x, whole crop and with the name masked):
+
+| Comparison (reference crop, 2x pixels) | Aqua, whole crop | Aqua, text masked | Dark Aqua, whole crop | Dark Aqua, text masked |
+| --- | --- | --- | --- | --- |
+| `mail` (Mail `596,414,244,46`; dark `600,406,244,46`) | 14.79% | 1.14% | 15.38% | 1.14% |
+
+The token is nearly all text, so the whole-crop figure is the fallback font. A token is as wide
+as its text; the comparison's example tightens the letter spacing by 0.27 pt so that the token
+has the reference's width with the fallback font, which an application does not do. The masked
+figure is the token's shape and fill (exact) and the chevron, an original drawing that differs
+from Apple's by antialiasing.
+
+The bezel, the selected token and the window that is not key have no screenshot and are
+checked pixel by pixel after real input, in both appearances; so is a selected token with the
+purple accent, whose fill is the selected-content colour derived for purple (`#7f2a7d` in
+Aqua, `#83347f` in Dark Aqua; inferred). Provisional: everything in the tables above that is
+not marked measured, and the 2 pt gap between tokens (only one token is ever shown).

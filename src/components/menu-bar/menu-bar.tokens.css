@@ -1,0 +1,57 @@
+/*
+ * Menu bar (reference/spec/components/menu-bar.md). The material and its filter are shared
+ * tokens.
+ */
+:root {
+  /* [measured, computed] titles: black at 85% over the bar; white in Dark Aqua [measured].
+     Catalina's titles are vibrant (navy over the Day sky), which CSS cannot do. */
+  --mac-menu-bar-text: light-dark(rgb(0 0 0 / 0.85), #ffffff);
+  /* [provisional] title of a disabled menu: the disabled menu item's colour */
+  --mac-menu-bar-text-disabled: light-dark(rgb(0 0 0 / 0.26), rgb(255 255 255 / 0.33));
+  /* [measured, computed] the 1 pt line under the bar: #4e7aa1 over #5a92c2, #172b48 over
+     #264370 */
+  --mac-menu-bar-line: light-dark(rgb(0 0 0 / 0.16), rgb(0 0 0 / 0.36));
+}
+
+/*
+ * Highlight of the open title, per accent: the colour that, at 85% (Aqua) or 88% (Dark Aqua)
+ * over the bar, gives the highlight measured on the open application title of the accent
+ * screenshots (Theme-Light-<Accent> and Theme-Dark-<Accent> @ 92,2).
+ */
+:root,
+[data-accent="blue"] {
+  /* [measured, computed] */
+  --mac-menu-bar-highlight: light-dark(rgb(16 106 239 / 0.85), rgb(10 118 246 / 0.88));
+}
+[data-accent="purple"] {
+  /* [measured, computed] */
+  --mac-menu-bar-highlight: light-dark(rgb(152 55 141 / 0.85), rgb(146 60 146 / 0.88));
+}
+[data-accent="pink"] {
+  /* [measured, computed] */
+  --mac-menu-bar-highlight: light-dark(rgb(252 75 150 / 0.85), rgb(241 77 153 / 0.88));
+}
+[data-accent="red"] {
+  /* [measured, computed] */
+  --mac-menu-bar-highlight: light-dark(rgb(228 52 54 / 0.85), rgb(218 57 60 / 0.88));
+}
+[data-accent="orange"] {
+  /* [measured, computed] */
+  --mac-menu-bar-highlight: light-dark(rgb(250 125 27 / 0.85), rgb(241 126 29 / 0.88));
+}
+[data-accent="yellow"] {
+  /* [measured, computed] */
+  --mac-menu-bar-highlight: light-dark(rgb(255 179 39 / 0.85), rgb(244 178 39 / 0.88));
+}
+[data-accent="green"] {
+  /* [measured, computed] */
+  --mac-menu-bar-highlight: light-dark(rgb(100 181 63 / 0.85), rgb(98 181 66 / 0.88));
+}
+[data-accent="graphite"] {
+  /* [measured, computed] a neutral grey in Aqua; a cool grey in Dark Aqua, as measured */
+  --mac-menu-bar-highlight: light-dark(rgb(135 135 135 / 0.85), rgb(110 127 151 / 0.88));
+}
+[data-accent="custom"] {
+  /* [provisional] a custom accent has no measurement: the shared formula */
+  --mac-menu-bar-highlight: var(--mac-accent-menu-selection);
+}

@@ -1,0 +1,174 @@
+---
+title: Menu Bar Extra
+description: A cell at the trailing end of the menu bar that shows an image or a short text and opens a menu or acts when clicked, like the battery, the clock and Spotlight.
+order: 66
+---
+
+<Example name="basic" both />
+
+AppKit's `NSStatusItem`. The extras sit in a group at the trailing end of a
+[menu bar](/components/menu-bar). The group is a
+[Base UI Menubar](https://base-ui.com/react/components/menubar) of its own, as the status
+menus are a second menu bar in macOS; an extra's menu is a [`Menu`](/components/menu) attached
+under the bar.
+
+The example shows the extras in both appearances. A menu opened from one renders in a portal
+and takes the appearance of the page, not of the bar it hangs from.
+
+## Usage
+
+```tsx
+import { MenuBar, MenuBarMenu } from "macalicious/menu-bar";
+import { MenuBarExtra, MenuBarExtraMenu, MenuBarExtras } from "macalicious/menu-bar-extra";
+import { MenuItem } from "macalicious/menu-item";
+import "macalicious/menu.css";
+import "macalicious/menu-item.css";
+import "macalicious/menu-bar.css";
+import "macalicious/menu-bar-extra.css";
+
+<MenuBar
+  extras={
+    <MenuBarExtras>
+      <MenuBarExtraMenu title={<BatteryImage />} aria-label="Battery">
+        <MenuItem>Show Percentage</MenuItem>
+      </MenuBarExtraMenu>
+      <MenuBarExtraMenu title="Stephen">
+        <MenuItem>Login Window…</MenuItem>
+      </MenuBarExtraMenu>
+      <MenuBarExtra aria-label="Search" active={searching} onClick={toggleSearch}>
+        <MagnifierImage />
+      </MenuBarExtra>
+    </MenuBarExtras>
+  }
+>
+  <MenuBarMenu title="Notes" application>…</MenuBarMenu>
+</MenuBar>
+```
+
+Or copy the source into your project: `npx macalicious add menu-bar-extra menu-item`.
+
+Pass the group to the bar's `extras` prop. `MenuBarExtraMenu` is an extra with a menu;
+`MenuBarExtra` is one without, which acts when clicked and can be kept highlighted with
+`active` while the panel it opened is showing. An extra's content is an image, a text, or
+both; draw images with `currentColor` (template images), so that they take the bar's text
+colour and turn white while the extra is highlighted. The system's own images (Wi-Fi,
+battery, Spotlight and the others) are Apple's and are not included.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines,
+[Menu Bar Extras](https://web.archive.org/web/20200503161847/https://developer.apple.com/design/human-interface-guidelines/macos/extensions/menu-bar-extras/):
+
+- Use a template image, so that the extra looks right in both appearances and while it is
+  highlighted.
+- Show a menu, not a popover, when the extra is clicked, unless the content cannot be a menu.
+- Do not rely on the extra being visible: the system hides extras when the application menus
+  need the room. Offer the same commands elsewhere.
+- Let people decide whether the extra is shown.
+
+## Variants and states
+
+| Part or state | Look | Basis |
+| --- | --- | --- |
+| Cell | As high as the bar; the content and 7 pt on each side; cells abut and are packed against the trailing edge | Measured: the system's cells leave 4.5 to 11 pt beside the image |
+| Image or text | The bar's text colour; 14 pt text with figures of equal width | Measured |
+| `emphasized` | Bold text, for an extra that should stand out. The user name is not bold: in the screenshots it has the clock's regular weight, or close to it | Provisional: no screenshot shows a bold extra |
+| Menu open, or `active` | The cell filled from top to bottom, square, content white. In the blue accent the fill is lighter than that of an open menu title | Measured (battery, Time Machine and user menus) |
+| Other accents | The highlight of an open menu title | Provisional |
+| Keyboard focus | The same highlight | Provisional |
+| Disabled | Content in the disabled menu item colour | Provisional |
+| No room | The group gives way to the titles and is cut off from its leading side | Provisional: macOS hides whole extras |
+
+## Sizes
+
+One size. Set `--mac-menu-bar-extra-padding` on an extra (or on the group) for the space
+beside its content, or give the cell a `width`, as the system's extras differ.
+
+## API
+
+`MenuBarExtras` takes the props of Base UI's Menubar (`modal`, `disabled`, `loopFocus`).
+`MenuBarExtraMenu` takes the props of [`Menu`](/components/menu) and these:
+
+<PropsTable name="MenuBarExtraMenuProps" />
+
+`MenuBarExtra` takes the props of Base UI's Menu.Trigger, on which it is built so that it is
+an item of the group like the others, and these:
+
+<PropsTable name="MenuBarExtraProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-emphasized` | extra | present or absent | Reflects `emphasized`. |
+| `data-active` | extra without a menu | present or absent | Reflects `active`. |
+| `data-popup-open` | extra with a menu | present or absent | Its menu is open. Set by Base UI. |
+| `data-disabled` | extra | present or absent | The extra, or the group, is disabled. |
+
+| CSS variable | Description |
+| --- | --- |
+| `--mac-menu-bar-extra-padding` | Space on each side of the content; 7 pt. |
+| `--mac-menu-bar-extra-highlight` | Fill of an open or active extra. |
+
+Classes: `.mac-menu-bar-extra-group` (the group) and `.mac-menu-bar-extra` (one cell, which is
+also a `.mac-menu-bar-title`).
+
+## Accessibility
+
+- The group is a second `menubar`, named "Status menus" unless `aria-label` says otherwise.
+  Its extras are `menuitem`s; one is in the tab order, and Left and Right Arrow move between
+  them, the ones without a menu included.
+- An extra with a menu has `aria-haspopup="menu"` and `aria-expanded`; Down Arrow, Return or
+  Space opens it. An extra without a menu announces none and acts on Return, Space or a click.
+  If it shows a panel, name the relationship yourself (`aria-controls`, `aria-expanded`).
+- An extra whose content is an image needs an `aria-label`.
+- While one extra's menu is open, moving the pointer to another extra switches to its menu.
+  The titles and the extras are separate menu bars, so the pointer does not switch between a
+  title's menu and an extra's.
+- Extras that are cut off for want of room stay in the keyboard order.
+
+## Visual comparison
+
+`npm run visual -- menu-bar-extra` compares nine cells of the measured widths with the extras
+of the Desktop screenshots, an open battery extra with the Menu-Bar-Battery screenshots, and
+the open Time Machine and fast user switching menus with their screenshots
+(`menu-bar-extra.visual.json`). Scores at 2x, in Chromium on Linux with the fallback font:
+
+| Crop | Aqua, whole crop | Aqua, drawing only | Dark Aqua, whole crop | Dark Aqua, drawing only |
+| --- | --- | --- | --- | --- |
+| Extras, none open: pixels that differ | 12.86% | 0.00% | 14.01% | 0.00% |
+| Extras, none open: mean Δ of 255 | 20.14 | 3.44 | 22.65 | 1.70 |
+| Battery open: pixels that differ | 10.40% | 3.99% | 15.31% | 0.98% |
+| Battery open: mean Δ of 255 | 14.34 | 4.93 | 24.05 | 2.73 |
+| Time Machine menu: pixels that differ | 10.21% | 0.22% | pixel checks | pixel checks |
+| Time Machine menu: mean Δ of 255 | 14.33 | 4.42 | | |
+| Fast user switching menu: pixels that differ | 11.16% | 0.90% | pixel checks | pixel checks |
+| Fast user switching menu: mean Δ of 255 | 16.92 | 4.36 | | |
+
+The images are stand-ins of the size of Apple's, so the whole-crop scores mostly measure
+artwork and text that differ by design. "Drawing only" masks them, which for the row of extras
+leaves the bar itself, and halves the colour threshold. In the battery crop the ends of the
+neighbouring images are masked as well; what remains is the highlight, the bar and the first
+row of the attached menu under the cell.
+
+The Time Machine menu hangs under its extra at the cell's leading edge; the fast user
+switching menu hangs at the trailing edge of the user name, because it would not fit the
+screen otherwise. Its two user rows (34 pt, a round picture and a name) are the application's
+own content, composed in the fixture inside ordinary menu items; the pictures are stand-ins.
+
+In Dark Aqua these two menus are held to pixels of their screenshots, not to a score of the
+whole crop: the open cell's highlight, the highlighted row's top and bottom, and the picture
+just outside the menu's leading and trailing edges. The reason is the shared menu material.
+Over this corner of the Dark picture, which is nearly black, it comes out about 16 levels
+lighter than the capture (`#2c3750` where Catalina has `#1c2e49`), more than a comparison of
+the drawing may differ by. Over the lighter sky at the other end of the bar the same material
+is within 4 levels ([Menu](/components/menu)).
+
+Two more checks use real input: with the user menu open the pointer moves to the battery
+extra, which must take the highlight; and a click on an extra without a menu must leave it
+without one.
+
+What is not exact: the desktop picture is replaced by a gradient of its colours under the
+bar; the material and the vibrant content colour are as on the [Menu Bar](/components/menu-bar)
+page; Siri's coloured orb is a template image like the others.
+
+Provisional: the highlight in accents other than blue, keyboard focus, the disabled look,
+and what happens when there is no room.

@@ -1,0 +1,120 @@
+---
+title: Page Control
+description: A row of dots, one per page, that shows the current page and goes to another when clicked.
+---
+
+<Example name="basic" both />
+
+macOS 10.15 has no standard page control: `NSPageController` pages content but draws no
+indicator. Two of Catalina's own apps draw one, and they do not match, so they are two variants
+here: Photo Booth's effects pager (`pager`) and Launchpad's page dots (`overlay`).
+
+## Usage
+
+```tsx
+import { PageControl } from "macalicious/page-control";
+import "macalicious/page-control.css";
+
+<PageControl count={3} page={page} onPageChange={setPage} aria-label="Effects pages" />
+```
+
+Or copy the source into your project: `npx macalicious add page-control`.
+
+## Guidelines
+
+- Use a page control when content is split into a small number of equal pages that people
+  step through in order. For many pages, or pages with names, use a list or tabs.
+- Centre it under (or over) the paged content.
+- Pages do not wrap: on the first page the previous arrow is disabled, on the last the next
+  arrow.
+- Use `overlay` only on a dark or pictorial backdrop; its dots are translucent white.
+
+## Variants and states
+
+<Example name="overlay" />
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Current page | `page` / `defaultPage` | Pager: blue dot. Overlay: solid white dot |
+| Other page | – | Pager: grey dot. Overlay: white at 20% |
+| Pressed | `:active` | Pager: darker in Aqua, lighter in Dark Aqua. Overlay: more opaque |
+| Keyboard focus | `:focus-visible` | Focus ring around the dot or the arrow |
+| Arrow at an end | first or last page | Arrow at 30% opacity, `aria-disabled` |
+| Disabled | `disabled` | Everything at 30% opacity |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | Pager: the current dot takes the grey of the others; no focus ring |
+
+The pager's blue is Photo Booth's own colour, not the accent colour, so it does not follow
+`data-accent`.
+
+Measured: the size, pitch and colours of both variants and the arrows, in both appearances.
+Provisional, because no screenshot shows them: pressed, disabled, the focus ring, and the look
+in a window that is not key.
+
+## Sizes
+
+| Variant | Dot | Pitch | Arrows |
+| --- | --- | --- | --- |
+| `pager` | 12 pt | 36 pt | 16 × 20 pt triangles, 20 pt from the nearest dot |
+| `overlay` | 8 pt | 20 pt | none by default |
+
+Each dot's button is as wide as the pitch and 20 pt high, so the hit target is larger than the
+dot. The control's own box ends at the outer dots (or arrows).
+
+## Controlled use
+
+<Example name="controlled" />
+
+## API
+
+<PropsTable name="PageControlProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-variant` | `pager`, `overlay` | On the root. Reflects `variant`. |
+| `data-disabled` | present or absent | On the root. Reflects `disabled`. |
+| `data-current` | present or absent | On the current page's dot. |
+| `data-direction` | `previous`, `next` | On an arrow. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient state on a dot or an arrow. |
+
+## Accessibility
+
+- The root is a `group`; give it an `aria-label` that says what is paged.
+- Each dot is a button named “Page 2 of 3” (change it with `getPageLabel`); the current one
+  has `aria-current="page"`.
+- The row of dots is one tab stop. Left and Right Arrow go to the previous and next page,
+  Home and End to the first and last; focus follows the current page. Space and Return
+  activate a dot or an arrow.
+- With more than 100 pages the row draws 100 dots at a time, those that hold the current
+  page. Every page stays reachable: the arrows and the arrow keys step through all of them,
+  and Home and End go to the first and the last.
+- The arrows are buttons named “Previous page” and “Next page”. At an end an arrow is
+  `aria-disabled` rather than removed from the tab order, so the arrow that just took the pager
+  to its last page keeps keyboard focus.
+- The control does not announce the new page. Put the paged content in a live region, or move
+  focus to it, when a change should be announced.
+- In right-to-left text the arrows are mirrored and the arrow keys are swapped.
+- In forced-colours mode the dots are outlined and the current one is filled with the
+  highlight colour.
+
+## Visual comparison
+
+`visual-photo-booth` reproduces the effects pager in Photo Booth's bottom bar and
+`visual-launchpad` Launchpad's page dots. Results in Chromium on Linux:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Photo Booth, Aqua | 0.01% of pixels differ | 0.02% |
+| Photo Booth, Dark Aqua | 0.00% | 0.00% |
+| Launchpad, Day | 0.30% | 1.39% |
+| Launchpad, Night | 0.30% | 1.39% |
+
+Launchpad draws its dots over the blurred desktop picture; the example paints a flat colour
+behind them, so the backdrop of that comparison differs by a few levels across the crop. The 1x
+figures are measured against the 2x screenshot averaged in 2 by 2 blocks.
+
+No screenshot shows the pager in a window that is not key or with another accent. Pixel checks
+on `visual-photo-booth` hold both appearances to what the spec infers: in a main and in an
+inactive window the current dot takes the grey of the other dots, and with the purple accent
+it keeps its blue, which is Photo Booth's own colour.

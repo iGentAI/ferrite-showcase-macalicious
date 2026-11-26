@@ -1,0 +1,429 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "window-light",
+      "description": "The whole Aqua capture: the Siri window with its shadow, answering with the Weather result. The window was captured with the desktop picture blended into its materials and nothing behind it, so the example puts an element behind the window (grey #757575, over which the HUD material measures #383838, with the aqua cast of the capture) and sets --mac-siri-card-glow for the light in the card. What differs here is the text, in the fallback font, the weather glyphs and header icon, which are plain shapes, and the orb, which is the library's own drawing.",
+      "example": "visual-light",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.035,
+        "2x": 0.029
+      },
+      "deltaBudget": {
+        "1x": 4.2,
+        "2x": 4.1
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Siri.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 764,
+          "height": 1404
+        }
+      }
+    },
+    {
+      "name": "window-light-chrome",
+      "description": "As window-light with the card's text and glyphs and the orb masked, to score the window alone: chrome, edge, shadow, strips, lines, buttons, and the card with its corners and header band.",
+      "example": "visual-light",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 38,
+          "y": 50,
+          "width": 100,
+          "height": 18
+        },
+        {
+          "x": 46,
+          "y": 86,
+          "width": 292,
+          "height": 88
+        },
+        {
+          "x": 47,
+          "y": 182,
+          "width": 52,
+          "height": 377
+        },
+        {
+          "x": 171,
+          "y": 182,
+          "width": 40,
+          "height": 377
+        },
+        {
+          "x": 305,
+          "y": 182,
+          "width": 28,
+          "height": 377
+        },
+        {
+          "x": 170,
+          "y": 566,
+          "width": 42,
+          "height": 42
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0008,
+        "2x": 0.00075
+      },
+      "deltaBudget": {
+        "1x": 1.2,
+        "2x": 1.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Siri.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 764,
+          "height": 1404
+        }
+      }
+    },
+    {
+      "name": "window-dark",
+      "description": "The whole Dark Aqua capture. The window is the same as in Aqua; the capture differs in the result and in the desktop picture, for which the element behind the window and --mac-siri-card-glow stand in as explained for window-light, here with warm and pink casts.",
+      "example": "visual-dark",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.034,
+        "2x": 0.028
+      },
+      "deltaBudget": {
+        "1x": 5.1,
+        "2x": 5
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Siri.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 764,
+          "height": 1374
+        }
+      }
+    },
+    {
+      "name": "window-dark-chrome",
+      "description": "As window-dark with the card's text and glyphs and the orb masked, to score the window alone. The mean difference is higher than in Aqua because the casts of this desktop picture are stronger and the gradients follow them only roughly.",
+      "example": "visual-dark",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 38,
+          "y": 50,
+          "width": 100,
+          "height": 18
+        },
+        {
+          "x": 46,
+          "y": 86,
+          "width": 292,
+          "height": 74
+        },
+        {
+          "x": 47,
+          "y": 167,
+          "width": 52,
+          "height": 392
+        },
+        {
+          "x": 171,
+          "y": 167,
+          "width": 40,
+          "height": 392
+        },
+        {
+          "x": 305,
+          "y": 167,
+          "width": 28,
+          "height": 392
+        },
+        {
+          "x": 170,
+          "y": 566,
+          "width": 42,
+          "height": 42
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.00075,
+        "2x": 0.0007
+      },
+      "deltaBudget": {
+        "1x": 2.3,
+        "2x": 2.3
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Siri.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 764,
+          "height": 1374
+        }
+      }
+    },
+    {
+      "name": "parts-light",
+      "description": "A short window, listening at full level with the waveform still, on the flat grey over which the HUD material measures #383838, Aqua. The window does not differ between the appearances.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 368,
+          "height": 224
+        },
+        "pixels": [
+          {
+            "x": 112,
+            "y": 26,
+            "color": "#383838",
+            "note": "chrome: rgb(30 30 30) at 70% over #757575 (spec: siri, Window chrome, measured #383838)"
+          },
+          {
+            "x": 12.5,
+            "y": 100,
+            "color": "#575757",
+            "tolerance": 3,
+            "note": "1 pt rim inside the edge: white at 15.5% over the chrome (spec: Inner border, measured #535252 to #575757)"
+          },
+          {
+            "x": 18,
+            "y": 40.5,
+            "color": "#575757",
+            "tolerance": 3,
+            "note": "line under the top strip, beside the card (measured #565755)"
+          },
+          {
+            "x": 28,
+            "y": 22,
+            "color": "#454545",
+            "tolerance": 3,
+            "note": "disc of the close button: white at 6.5% over the chrome (measured #434443)"
+          },
+          {
+            "x": 200,
+            "y": 53,
+            "color": "#cdcdcd",
+            "note": "header band of the card: black at 4% over #d6d6d6 (measured #cacece on #d2d6d6)"
+          },
+          {
+            "x": 200,
+            "y": 90,
+            "color": "#d6d6d6",
+            "note": "card fill (spec: Card fill, measured)"
+          },
+          {
+            "x": 100,
+            "y": 153.5,
+            "color": "#575757",
+            "tolerance": 3,
+            "note": "line over the bottom strip (measured #585858 on #393939)"
+          },
+          {
+            "x": 184,
+            "y": 180.75,
+            "color": "#4a90f0",
+            "tolerance": 3,
+            "note": "middle of the waveform's centre bar at level 1: the middle stop of its gradient; the listening state is inferred and the drawing is the library's own"
+          },
+          {
+            "x": 172,
+            "y": 170.75,
+            "color": "#383838",
+            "note": "10 pt above the middle of the outer bar, which is 14.5 pt tall at level 1: chrome"
+          }
+        ]
+      }
+    },
+    {
+      "name": "parts-dark",
+      "description": "As parts-light, Dark Aqua: the same colours, because the window is dark and its card light in both appearances.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 368,
+          "height": 224
+        },
+        "pixels": [
+          {
+            "x": 112,
+            "y": 26,
+            "color": "#383838",
+            "note": "chrome: rgb(30 30 30) at 70% over #757575 (spec: siri, Window chrome, measured #373838)"
+          },
+          {
+            "x": 12.5,
+            "y": 100,
+            "color": "#575757",
+            "tolerance": 3,
+            "note": "1 pt rim inside the edge (spec: Inner border, measured #545555)"
+          },
+          {
+            "x": 28,
+            "y": 22,
+            "color": "#454545",
+            "tolerance": 3,
+            "note": "disc of the close button: white at 6.5% over the chrome"
+          },
+          {
+            "x": 200,
+            "y": 53,
+            "color": "#cdcdcd",
+            "note": "header band of the card: black at 4% over #d6d6d6"
+          },
+          {
+            "x": 200,
+            "y": 90,
+            "color": "#d6d6d6",
+            "note": "card fill: light in Dark Aqua too (measured)"
+          },
+          {
+            "x": 184,
+            "y": 180.75,
+            "color": "#4a90f0",
+            "tolerance": 3,
+            "note": "middle of the waveform's centre bar at level 1; inferred state, own drawing"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-close-light",
+      "description": "The close button while the mouse is held down on it, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": ".mac-siri-close"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 368,
+          "height": 224
+        },
+        "pixels": [
+          {
+            "x": 28,
+            "y": 22,
+            "color": "#585858",
+            "tolerance": 3,
+            "note": "disc: white at 16% over the chrome #383838; inferred, no capture shows a button pressed"
+          },
+          {
+            "x": 112,
+            "y": 26,
+            "color": "#383838",
+            "note": "the chrome does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-close-dark",
+      "description": "The close button while the mouse is held down on it, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": ".mac-siri-close"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 368,
+          "height": 224
+        },
+        "pixels": [
+          {
+            "x": 28,
+            "y": 22,
+            "color": "#585858",
+            "tolerance": 3,
+            "note": "disc: white at 16% over the chrome #383838; inferred, no capture shows a button pressed"
+          },
+          {
+            "x": 112,
+            "y": 26,
+            "color": "#383838",
+            "note": "the chrome does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-orb-light",
+      "description": "Keyboard focus on the orb's button, the fourth Tab stop after close, results and help, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 4
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 368,
+          "height": 224
+        },
+        "pixels": [
+          {
+            "x": 184,
+            "y": 159.25,
+            "color": "#285197",
+            "tolerance": 4,
+            "note": "focus ring, rgb(24 106 246) at 50%, over the chrome #383838, 1.5 pt above the button (computed from the tokens)"
+          },
+          {
+            "x": 184,
+            "y": 156,
+            "color": "#383838",
+            "note": "chrome just outside the ring, which is 3 pt wide"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-orb-dark",
+      "description": "Keyboard focus on the orb's button, the fourth Tab stop after close, results and help, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 4
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 368,
+          "height": 224
+        },
+        "pixels": [
+          {
+            "x": 184,
+            "y": 159.25,
+            "color": "#32709c",
+            "tolerance": 4,
+            "note": "focus ring, rgb(43 168 255) at 50%, over the chrome #383838, 1.5 pt above the button (computed from the tokens)"
+          },
+          {
+            "x": 184,
+            "y": 156,
+            "color": "#383838",
+            "note": "chrome just outside the ring, which is 3 pt wide"
+          }
+        ]
+      }
+    }
+  ]
+}

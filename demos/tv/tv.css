@@ -1,0 +1,277 @@
+/*
+ * TV demo: the layout of the window around the library's title bar, toolbar, shelf pagers,
+ * card grids and hero.
+ *
+ * Measured on 10-15-Catalina-Light-TV.png (frame 1294 x 876 pt at x=112, y=76 of the 2x image;
+ * the dark capture agrees). Distances below are points from the window's top-left corner.
+ *
+ *   bar          37 pt: 36 of fill and a 1 pt line; the window controls at x 10, 30 and 50,
+ *                y 12.5; the sections' bezel x 403.5..882.5, y 6..29, five segments at a
+ *                95 pt pitch; the search field x 1109.5..1285.5, y 6.5..28.5
+ *   page         from y=37; What to Watch: cards from y=85; a line at y=279; the hero
+ *                y 319..774; a line at y=806; the trailers from y=854.5
+ */
+
+/* The window takes the keyboard back when a page goes; nothing is drawn for it. */
+.mac-tv:focus {
+  outline: none;
+}
+
+.mac-tv-menu-area {
+  display: contents;
+}
+
+.mac-tv-bar {
+  display: flex;
+  min-width: 0;
+}
+
+/* The window controls: 10 pt from the edge, centred on the bar. */
+.mac-tv-controls {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: 37px;
+  padding-inline-start: 10px;
+}
+
+.mac-tv-toolbar {
+  flex: 1 1 auto;
+}
+
+/* The sections are placed against the window, 4 pt left of its middle, as captured. */
+.mac-tv-sections {
+  position: absolute;
+  inset-block-start: 6.5px;
+  inset-inline-start: calc(50% - 243px);
+}
+
+/* The first segment holds the bezel's 2.5 pt before its cell and the last a point after it. */
+.mac-tv-section {
+  box-sizing: border-box;
+  width: 95px;
+  padding-inline: 0;
+}
+
+.mac-tv-section:first-child {
+  width: 97.5px;
+}
+
+.mac-tv-section:last-child {
+  width: 96px;
+}
+
+/* The search field keeps the capture's width, at the trailing edge. */
+.mac-tv-search {
+  flex: 0 0 175px;
+  margin-inline: auto 1px;
+}
+
+.mac-tv-body {
+  display: flex;
+  overflow: hidden;
+  background: var(--mac-tv-page);
+}
+
+.mac-tv-scroll {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+}
+
+.mac-tv-page {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-height: 100%;
+  background: var(--mac-tv-page);
+}
+
+.mac-tv-empty {
+  flex: 1 1 auto;
+}
+
+/* A picture fills its artwork box and is cropped to it. */
+.mac-tv-artwork {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* A title's page: what it is, a sentence about it and the Library button, under its card. */
+.mac-tv-about {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  max-width: 560px;
+  padding: 0 40px 32px;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+}
+
+.mac-tv-summary,
+.mac-tv-description {
+  margin: 0;
+}
+
+.mac-tv-summary {
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-tv-description {
+  margin-block-end: 8px;
+}
+
+/* A title of the Library with its checkbox under it. */
+.mac-tv-library-item {
+  display: grid;
+  gap: 8px;
+}
+
+/* The notes of the Preferences window's General pane, in the small system font. */
+.mac-tv-note {
+  max-width: 400px;
+  white-space: normal;
+}
+
+/*
+ * The YouTube window (tv-youtube.tsx): a hint over Watch Now, a video page's buttons, and the
+ * player that fills the body: a column of the title row, YouTube's embedded player, a message
+ * when YouTube will not play, and the controller. Nothing lies over YouTube's player.
+ */
+.mac-tv-hint {
+  margin: 0;
+  padding: var(--mac-tv-hint-padding);
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-body);
+}
+
+.mac-tv-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-space-control-gap);
+}
+
+.mac-tv-player {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--mac-tv-player-inset);
+  min-width: 0;
+  padding: var(--mac-tv-player-inset);
+  overflow: hidden;
+  background: var(--mac-tv-player-stage);
+  outline: none;
+}
+
+.mac-tv-player-video {
+  flex: 1 1 auto;
+  align-self: stretch;
+  min-height: 0;
+}
+
+.mac-tv-player-video > iframe,
+.mac-tv-player-video > video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* The Library's list of genres, beside its page, once a video has a genre. */
+.mac-tv-sidebar {
+  flex: none;
+  width: 200px;
+  height: 100%;
+}
+
+/* Get Info's row: the label, then the field. */
+.mac-tv-info-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-block: 12px;
+}
+
+/* A card chosen by Command-click or Shift-click: its first child is its artwork. */
+[data-tv-picked] > :first-child {
+  outline: var(--mac-focus-ring-width) solid var(--mac-color-selected-content-background);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+/* A home video's card: no picture of it is at hand until its file is read. */
+.mac-tv-home-artwork {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background: var(--mac-tv-home-artwork);
+  color: var(--mac-color-label-tertiary);
+}
+
+/* The Import panel over the desktop. */
+.mac-tv-panel-layer {
+  position: fixed;
+  z-index: var(--mac-tv-panel-layer-z-index);
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  pointer-events: none;
+}
+
+.mac-tv-panel-layer > * {
+  max-width: calc(100% - var(--mac-tv-panel-layer-margin));
+  max-height: calc(100% - var(--mac-tv-panel-layer-margin));
+  pointer-events: auto;
+}
+
+.mac-tv-player-message {
+  display: grid;
+  justify-items: center;
+  gap: var(--mac-space-control-gap);
+  padding: var(--mac-tv-player-message-padding);
+  text-align: center;
+  white-space: normal;
+}
+
+.mac-tv-player-top {
+  align-self: flex-start;
+}
+
+.mac-tv-player-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-tv-player-row-gap);
+  padding: var(--mac-tv-player-title-padding);
+}
+
+.mac-tv-player-controller {
+  flex: none;
+  width: var(--mac-tv-player-hud-width);
+  max-width: 100%;
+}
+
+.mac-tv-player-rows {
+  display: grid;
+  gap: var(--mac-tv-player-row-spacing);
+  padding: var(--mac-tv-player-hud-padding);
+}
+
+.mac-tv-player-row {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-tv-player-row-gap);
+}
+
+.mac-tv-player-gap,
+.mac-tv-player-timeline {
+  flex: 1 1 auto;
+}
+
+.mac-tv-player-volume {
+  flex: none;
+  width: var(--mac-tv-player-volume-width);
+}

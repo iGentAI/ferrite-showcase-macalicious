@@ -1,0 +1,249 @@
+---
+title: Catalyst Chrome
+description: The chrome of a Mac Catalyst app such as News, Stocks, Home or Voice Memos, with the 38 pt toolbar row, a sidebar in iPad metrics and the content, which can run under a translucent toolbar; or, as in Find My, with no toolbar row at all.
+---
+
+<Example name="basic" both />
+
+News, Stocks, Home and Voice Memos are iPad apps running in a Mac window (Mac Catalyst, new in
+macOS 10.15). The window frame, the toolbar and the window controls are AppKit's; everything
+under the toolbar is the iPad view hierarchy scaled to 77%, which is why its rows are 26 pt
+apart and its text sizes are fractional. `CatalystChrome` lays that out inside a
+[window](/components/window): the toolbar row is the library's
+[title bar](/components/title-bar) in its title-hidden layout with a
+[toolbar](/components/toolbar) in it, the sidebar and the content are its own.
+
+## Usage
+
+```tsx
+import {
+  CatalystChrome,
+  CatalystSidebar,
+  CatalystSidebarGroup,
+  CatalystSidebarItem,
+} from "macalicious/catalyst-chrome";
+import { Toolbar } from "macalicious/toolbar";
+import { ToolbarButton } from "macalicious/toolbar-button";
+import { Window } from "macalicious/window";
+import { WindowControls } from "macalicious/window-controls";
+import "macalicious/styles.css";
+
+<Window width={900} height={600}>
+  <CatalystChrome
+    title="News"
+    controls={<WindowControls />}
+    toolbar={
+      <Toolbar aria-label="News toolbar">
+        <ToolbarButton aria-label="Back" disabled>
+          <BackGlyph />
+        </ToolbarButton>
+      </Toolbar>
+    }
+    sidebar={
+      <CatalystSidebar aria-label="Channels">
+        <CatalystSidebarGroup title="Following">
+          <CatalystSidebarItem icon={<ChannelIcon />} selected>
+            Today
+          </CatalystSidebarItem>
+        </CatalystSidebarGroup>
+      </CatalystSidebar>
+    }
+  >
+    <Stories />
+  </CatalystChrome>
+</Window>
+```
+
+Or copy the source into your project: `npx macalicious add catalyst-chrome`.
+
+The chrome is presentational, like the window: selection is the `selected` prop of a row, and
+the row's `onClick` (or a link passed as `render`) is where the app navigates. Toolbar buttons
+are 39 pt wide in these apps; give them that width.
+
+Stocks ends its 330 pt column with half a point of shade instead of a line: pass
+`width={330} divider="shade"` to the sidebar. In Dark Aqua the toolbar is a little darker over
+the sidebar's column in both apps; the chrome draws that from the sidebar's `width`.
+
+<Example name="reader" both />
+
+With `underToolbar` the content starts at the window's top edge and the toolbar becomes the
+translucent material that shows it through, as in Home (a wallpaper) and Voice Memos (black).
+Pad the content by `var(--mac-catalyst-chrome-toolbar-inset)` where it must clear the toolbar.
+
+<Example name="under-toolbar" both />
+
+Find My has no toolbar row: its window controls float over a sidebar that takes the window's
+whole height. `bar="none"` draws that. The controls stand where a 22 pt title bar has them, in
+a strip along the top edge that is the drag region; the sidebar's rows start under the strip
+and the content at the window's top edge (`var(--mac-catalyst-chrome-toolbar-inset)` is 22 pt
+there). `title` and `toolbar` are not drawn, so name the `Window` with `aria-label`, and give
+it `topHighlight`, which a title bar would otherwise draw. Find My's sidebar ends in a plain
+one-point line, `divider="plain"`.
+
+<Example name="no-toolbar" both />
+
+A sidebar's colours are variables, set in its `style` when an app has its own: Find My's
+column is lighter than News'.
+
+```tsx
+import type { CSSProperties } from "react";
+
+const findMy = {
+  "--mac-catalyst-chrome-sidebar-fill": "light-dark(#f8f7f4, #1f2021)",
+  "--mac-catalyst-chrome-sidebar-divider": "light-dark(#e4e3de, #343536)",
+} as CSSProperties;
+
+<CatalystSidebar aria-label="People and devices" width={261} divider="plain" style={findMy} />;
+```
+
+For the content, the stylesheet provides the measured iPad text styles and tints as variables
+(`--mac-catalyst-chrome-font-large-title`, `-title`, `-headline`, `-body`, `-subheadline`;
+`--mac-catalyst-chrome-tint-red`, `-green`, `-blue`). The chrome uses none of them itself.
+
+## Guidelines
+
+From the Human Interface Guidelines on
+[Mac Catalyst](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/ios/overview/mac-catalyst/),
+[toolbars](https://web.archive.org/web/20200503121036/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/toolbars/)
+and
+[sidebars](https://web.archive.org/web/20200503160808/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/sidebars/):
+
+- Move an iPad app's navigation into a sidebar and its commands into the toolbar and the menu
+  bar; do not bring a tab bar to the Mac.
+- iOS views are scaled to 77% so that text matches the Mac's; lay content out in those
+  metrics rather than enlarging it back.
+- Keep the toolbar to the few commands used most, and give every toolbar item a menu command
+  as well.
+- A sidebar holds top-level destinations in titled groups. Its selection shows where the user
+  is; it is not a command.
+
+## Variants and states
+
+| Variant or state | Look | Status |
+| --- | --- | --- |
+| Toolbar over opaque content | The title bar material, 38 pt, title centred | measured (News, Stocks) |
+| Toolbar with content under it | Translucent: `#e0e0e0` to `#c3c3c3` at 84%, Dark Aqua `#474849` to `#3a3b3c` at 80%, with a blur | measured over black (Voice Memos) and solved with News; the blur is provisional |
+| Sidebar row | 26 pt pitch, 18.5 pt icon, 13 pt label | measured (News) |
+| Sidebar row, selected | Grey `#c7c8c9`, Dark Aqua `#505154`; never the accent colour | measured |
+| Sidebar divider, `divider="line"` | One point after the column (`#a9a9a9`, Dark Aqua white at 16%), then half a point of shade over the content | measured (News) |
+| Sidebar divider, `divider="shade"` | The column's last half point shaded (black at 4.5%), nothing after it | measured (Stocks) |
+| Sidebar divider, `divider="plain"` | One point after the column, nothing over the content | measured (Find My, in its own colours) |
+| No toolbar row, `bar="none"` | No bar; window controls 8 pt from the edge and 5 pt down, over the sidebar | measured (Find My) |
+| Toolbar over the sidebar's column | Dark Aqua: black at 10% over the column, fading before its edge (half gone 25 pt before it); Aqua: nothing | measured (Stocks, News) |
+| Sidebar row, keyboard focus | Focus ring inside the row, key window only | provisional |
+| Window not key | Toolbar is the title bar's flat inactive fill; sidebar unchanged | provisional (inferred) |
+| Scroll indicator | Thin, `#0f0f0f` in Dark Aqua | Dark Aqua colour measured; drawn by the browser's own thin scrollbar |
+
+The iOS-style switch, slider and stepper that a Catalyst app can contain are not part of this
+component: none of the captures shows one, and the spec lists their values as inferred, for
+completeness only. Use the AppKit controls of the library (Switch, Slider, Stepper) where a
+Catalyst pane needs one. The iOS segmented control, which Find My shows, is the
+[Catalyst Segmented Control](/components/catalyst-segmented-control).
+
+## Sizes
+
+One size. The toolbar row is 38 pt; toolbar items start 77.5 pt from the window's leading
+edge, stand 7 pt apart and end 7.5 pt from the trailing edge. The sidebar is 227 pt wide by
+default (News; 330 pt in Stocks) plus a 1 pt divider, or exactly its width with
+`divider="shade"`; a group header takes 26 pt, a row 26 pt,
+and a group that follows another starts 2 pt lower. The content takes the rest and scrolls.
+Without a toolbar row the strip that holds the window controls is 22 pt; Find My's sidebar is
+261 pt wide.
+
+## API
+
+<PropsTable name="CatalystChromeProps" />
+
+<PropsTable name="CatalystSidebarProps" />
+
+<PropsTable name="CatalystSidebarGroupProps" />
+
+<PropsTable name="CatalystSidebarItemProps" />
+
+| Attribute or variable | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-bar` | root | `toolbar`, `none` | Reflects `bar`. |
+| `data-under-toolbar` | root | present or absent | Reflects `underToolbar`. |
+| `data-divider` | sidebar | `line`, `shade`, `plain` | Reflects `divider`. |
+| `aria-current` | sidebar item | `page` or absent | Reflects `selected`; draws the selection. |
+| `--mac-catalyst-chrome-toolbar-inset` | root | `var(--mac-catalyst-chrome-bar-height)` under a toolbar, `var(--mac-catalyst-chrome-strip-height)` without a toolbar row, unset otherwise | What the content runs under, for its own top padding. The sidebar pads its rows by it. |
+| `--mac-catalyst-chrome-bar-height` | root | a length, default `38px` | The clearance that content under the toolbar keeps (what `--mac-catalyst-chrome-toolbar-inset` takes with `underToolbar`). It does not size the toolbar row, which is the title bar's own height; change both together. Measured. |
+| `--mac-catalyst-chrome-strip-height` | root | a length, default `22px` | Without a toolbar row: the height of the strip that holds the window controls, a title bar's. Measured (Find My). |
+| `--mac-catalyst-chrome-strip-inset` | root | a length, default `8px` | Without a toolbar row: the window controls' distance from the window's leading edge. Measured (Find My). |
+| `--mac-catalyst-chrome-sidebar-fill` | sidebar | a colour | The column's fill. Set it in the sidebar's `style` for an app's own. |
+| `--mac-catalyst-chrome-sidebar-divider` | sidebar | a colour | The one-point line after the column (`line`, `plain`). |
+| `--mac-catalyst-chrome-sidebar-selection` | sidebar | a colour | The selected row's fill. |
+| `--mac-catalyst-chrome-sidebar-text`, `-text-selected`, `-header` | sidebar | colours | Row labels, the selected row's label and group headers. |
+| `--mac-catalyst-chrome-sidebar-width` | root and sidebar | a length, default `227px` | Set by the sidebar's `width`, or in its `style`: the column's width without its divider. The root's copy places the toolbar's darker stretch; set it in the chrome's `style` when the sidebar is wrapped in your own component or gets its width from a stylesheet. |
+| `--mac-toolbar-gap` | toolbar wrapper | `7px` | The toolbar's item spacing in these apps, set inline. |
+
+Classes: `.mac-catalyst-chrome`, `.mac-catalyst-chrome-bar` (the toolbar row, which also has
+`.mac-title-bar`), `.mac-catalyst-chrome-strip` (the window controls' strip without a toolbar
+row), `.mac-catalyst-chrome-toolbar`, `.mac-catalyst-chrome-body`,
+`.mac-catalyst-chrome-content`, `.mac-catalyst-chrome-sidebar`,
+`.mac-catalyst-chrome-sidebar-scroll`, `.mac-catalyst-chrome-sidebar-group`,
+`.mac-catalyst-chrome-sidebar-header`, `.mac-catalyst-chrome-sidebar-item`,
+`.mac-catalyst-chrome-sidebar-icon` and `.mac-catalyst-chrome-sidebar-label`.
+
+## Accessibility
+
+- The title names the window's `region`, as with any title bar. A chrome without a title
+  needs an `aria-label` on the `Window`; so does one without a toolbar row, which draws no
+  title. Its strip is a pointer-only drag region, and the window controls come first in it.
+  Like a title bar, the strip and the toolbar row keep a window's veto: a press or a double
+  click that a handler before them cancelled with `preventDefault` (the `Window`'s
+  `onPointerDownCapture` or `onDoubleClickCapture`) neither moves nor zooms the window.
+- The toolbar is Base UI's Toolbar: one tab stop, arrow keys between its items. Give it an
+  `aria-label`, and every glyph-only button one too.
+- The sidebar is a `navigation` landmark; give it an `aria-label`. Each group is a `group`
+  named by its header.
+- Each row is a native button (or the link you render), reached with Tab and activated with
+  Return or Space. The selected row has `aria-current="page"`. Row icons are hidden from
+  assistive technology.
+- The content is a plain `<div>`: add a landmark role or a heading inside it as the page
+  needs. A page with several windows should not have several `main` landmarks.
+- In forced-colours mode the selection uses the system's highlight colours and the divider
+  the system's text colour.
+
+## Visual comparison
+
+`npm run visual -- catalyst-chrome` compares the leading part of the News window (window
+controls, two toolbar buttons, the sidebar and its divider), the leading part of the Stocks
+window (the toolbar over the sidebar and the content, the shade divider), the top of the
+Voice Memos window (the toolbar over black content) and the leading top of the Find My window
+(no toolbar row: the window controls over the sidebar, in Find My's colours, and its plain
+line) with the screenshots in both appearances.
+Row icons and button glyphs are masked everywhere: the examples draw stand-ins, not Apple's
+artwork; the Stocks search field, which is the app's, is masked too.
+Share of pixels that differ at 2x, in Chromium on Linux with the fallback font:
+
+| Crop | Aqua | Dark Aqua |
+| --- | --- | --- |
+| News, 300 x 304 pt (`112,76,600,608`), with text | 3.98% | 3.96% |
+| News, text masked | 0.28% | 0.11% |
+| Stocks, 400 x 70 pt (`112,76,800,140`), search field masked | 0.45% | 0.20% |
+| Voice Memos, 789 x 60 pt (`112,76,1578,120`), title masked | 0.26% | 0.10% |
+| Find My, 300 x 36 pt (`112,76,600,72`; Dark Aqua `68,52,600,72`, window not key), map masked | 0.46% | 0.10% |
+
+Measured: the toolbar row and its item positions, the sidebar's fill, divider, selection, row
+pitch, icon and label positions and header positions, the Stocks divider, the Dark Aqua
+toolbar over the sidebar's column, the translucent toolbar over black
+content, and the place of the window controls and the sidebar's plain line in a chrome
+without a toolbar row (Find My; most of its Aqua score is the edge of the three window
+controls, which are the library's). The first row scores eleven lines of text set in the fallback font instead of San
+Francisco. In Dark Aqua the sidebar of the capture is 234 pt wide, because its window is
+wider; the example follows it.
+
+Provisional, because no screenshot shows them: the chrome in a window that is not key, checked
+in a real browser against the title bar's measured inactive fill (`expect` comparisons); the
+focus ring of a sidebar row; the blur behind a translucent toolbar, which only shows over
+content that is not flat; and the scroll indicator, which is the browser's thin scrollbar in
+the measured colour and not UIKit's 6 pt pill. The toolbar's darker stretch is drawn as a
+soft shadow fitted to the two captures, half gone 25 pt before the column's edge; in the
+captures it is the blurred edge of the column. It lies over the sidebar's column in a right-to-left layout too, whether a `dir`
+attribute or a stylesheet sets the direction (an `expect` comparison holds the stylesheet
+case).
+It is drawn in a window that is not key as well, which no screenshot shows.
+The Home toolbar over its wallpaper is not compared here. Find My's sidebar is a translucent
+material in the captures; here it is the flat colour it has there. A chrome without a toolbar
+row in an Aqua window that is not key, or in a key Dark Aqua one, is in no screenshot.

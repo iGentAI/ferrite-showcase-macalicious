@@ -1,0 +1,319 @@
+/*
+ * Photo Booth demo: the stage with the effect previews or the camera's picture, and the bar
+ * under it. The window, the title bar, the window controls, the preview buttons, the page
+ * control and the push buttons are the library's own.
+ *
+ * Parts
+ *   .mac-photo-booth              the window
+ *   .mac-photo-booth-body         the window's content: the stage over the bar
+ *   .mac-photo-booth-stage        the dark area, 480 pt high in the captures
+ *   .mac-photo-booth-grid         the Effects browser: three by three previews, 3 pt apart
+ *   .mac-photo-booth-preview      a preview's picture, 236 x 156 pt in the captures
+ *   .mac-photo-booth-effect-name  the effect's name over its preview
+ *   .mac-photo-booth-camera       the camera view: the picture, the countdown, the strip
+ *   .mac-photo-booth-picture      the image view that holds the placeholder picture
+ *   .mac-photo-booth-count        the countdown's figure over the picture
+ *   .mac-photo-booth-strip        the pictures taken, along the stage's lower edge
+ *   .mac-photo-booth-thumb        one of them: a 60 x 40 pt image view
+ *   .mac-photo-booth-thumb-button a picture that can be deleted (served by the desktop app)
+ *   .mac-photo-booth-taken        a picture taken with the browser's camera
+ *   .mac-photo-booth-notice       a line over the stage: why no picture can be taken
+ *   .mac-photo-booth-flash        the white flash as a picture is taken
+ *   .mac-photo-booth-bar          the 60 pt bar: the pager or the shutter, and Effects
+ *   .mac-photo-booth-middle       places the bar's middle control on the window's centre
+ *   .mac-photo-booth-effects      places the Effects button
+ *   .mac-photo-booth-share        places the Share button, left of Effects
+ *   .mac-photo-booth-announcement what assistive technology hears of a change
+ */
+.mac-photo-booth-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.mac-photo-booth-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--mac-photo-booth-stage);
+  container-type: size;
+}
+
+/* Three columns and three rows of previews, 3 pt apart and 3 pt from the stage's edges, as
+   captured. They share the stage, which makes them 236 x 156 pt in the window's 720 x 480 pt
+   stage, and larger in full screen. */
+.mac-photo-booth-grid {
+  display: grid;
+  grid-template: repeat(3, auto) / repeat(3, auto);
+  gap: var(--mac-photo-booth-preview-gap);
+  justify-content: start;
+  padding: var(--mac-photo-booth-preview-gap);
+}
+
+.mac-photo-booth-preview {
+  position: relative;
+  display: block;
+  width: calc((100cqw - 4 * var(--mac-photo-booth-preview-gap)) / 3);
+  height: calc((100cqh - 4 * var(--mac-photo-booth-preview-gap)) / 3);
+  overflow: hidden;
+}
+
+/* A computed effect lies over the video it reads, in the video's box. */
+.mac-photo-booth-preview > canvas,
+.mac-photo-booth-frame > canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mac-photo-booth-preview > svg,
+.mac-photo-booth-preview > video,
+.mac-photo-booth-thumb > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* A camera and a picture taken with it fill their box and are cropped to it, as the
+   placeholder is. */
+.mac-photo-booth-preview > video,
+.mac-photo-booth-frame > video,
+.mac-photo-booth-taken {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The empty slots of the Backdrops page. */
+.mac-photo-booth-preview[data-empty] {
+  background: var(--mac-photo-booth-stage);
+}
+
+/* Centred; its baseline is 14.5 pt above the preview's bottom edge. */
+.mac-photo-booth-effect-name {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 8.5px;
+  overflow: hidden;
+  color: var(--mac-photo-booth-effect-name);
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 4px var(--mac-photo-booth-effect-name-shadow);
+  white-space: nowrap;
+}
+
+.mac-photo-booth-camera {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  overflow: hidden;
+}
+
+/* The image view is the size container of what it holds, so the drawing takes its size in
+   container units. */
+.mac-photo-booth-camera > .mac-photo-booth-picture {
+  display: grid;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  overflow: hidden;
+  background: none;
+}
+
+.mac-photo-booth-frame {
+  position: relative;
+  display: block;
+  width: 100cqw;
+  height: 100cqh;
+}
+
+.mac-photo-booth-count {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--mac-photo-booth-count);
+  font-weight: var(--mac-font-weight-bold);
+  font-size: 120px;
+  line-height: 1;
+  text-shadow: 0 2px 12px var(--mac-photo-booth-effect-name-shadow);
+  pointer-events: none;
+}
+
+.mac-photo-booth-strip {
+  position: absolute;
+  inset-inline: 8px;
+  inset-block-end: 8px;
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+}
+
+/* The screen's flash as a picture is taken. */
+.mac-photo-booth-flash {
+  position: absolute;
+  inset: 0;
+  background: var(--mac-photo-booth-count);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-photo-booth-flash {
+    display: none;
+  }
+}
+
+/* A picture of the strip, shown whole in the camera's place. */
+.mac-photo-booth-viewed {
+  object-fit: contain;
+}
+
+/* The three modes at the bar's left, 20 pt under its top like the buttons beside them. */
+.mac-photo-booth-modes {
+  position: absolute;
+  inset-block-start: 20px;
+  inset-inline-start: 19.5px;
+}
+
+/* A clip in the strip carries a mark over its picture. */
+.mac-photo-booth-thumb-button[data-clip]::after {
+  position: absolute;
+  inset-block-end: 3px;
+  inset-inline-start: 3px;
+  border-block: 4px solid transparent;
+  border-inline-start: 6px solid var(--mac-photo-booth-count);
+  content: "";
+}
+
+.mac-photo-booth-thumb-button {
+  position: relative;
+}
+
+.mac-photo-booth-thumb-button[data-selected] {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(var(--mac-focus-ring-width) * -1);
+}
+
+.mac-photo-booth-slideshow {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: grid;
+  place-items: center;
+  background: var(--mac-photo-booth-stage);
+  outline: none;
+}
+
+.mac-photo-booth-slide {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.mac-photo-booth-slideshow-controls {
+  position: absolute;
+  inset-block-end: var(--mac-space-control-gap);
+}
+
+.mac-photo-booth-slideshow-buttons {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+}
+
+.mac-photo-booth-strip > li {
+  flex: none;
+  outline: 1px solid var(--mac-photo-booth-strip-edge);
+  outline-offset: -1px;
+}
+
+/* A picture that can be deleted is a button around its image view, drawn as the image view. */
+.mac-photo-booth-thumb-button {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+}
+
+.mac-photo-booth-thumb-button:focus-visible {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+/* Why no picture can be taken, or what happened to one, over the stage's top. */
+.mac-photo-booth-notice {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: var(--mac-space-control-gap);
+  margin: 0;
+  color: var(--mac-photo-booth-count);
+  font-size: var(--mac-font-size-regular);
+  text-align: center;
+  text-shadow: 0 1px 4px var(--mac-photo-booth-effect-name-shadow);
+  pointer-events: none;
+}
+
+.mac-photo-booth-strip .mac-photo-booth-thumb {
+  display: block;
+  width: 60px;
+  max-width: none;
+  height: 40px;
+  overflow: hidden;
+  background: none;
+}
+
+.mac-photo-booth-bar {
+  position: relative;
+  flex: none;
+  height: 60px;
+  background: var(--mac-photo-booth-bar);
+}
+
+/* The pager's arrows and dots are 20 pt high, 20 pt under the bar's top, and centred on the
+   window. The shutter takes the same place. */
+.mac-photo-booth-middle {
+  position: absolute;
+  inset-block-start: 20px;
+  inset-inline: 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.mac-photo-booth-middle > * {
+  pointer-events: auto;
+}
+
+/* 95 pt wide, 19.5 pt from the window's right edge and 20 pt under the bar's top. */
+.mac-photo-booth-effects {
+  position: absolute;
+  inset-block-start: 20px;
+  inset-inline-end: 19.5px;
+}
+
+/* Beside Effects, which is 95 pt wide and 19.5 pt from the edge, and centred on the same line. */
+.mac-photo-booth-share {
+  position: absolute;
+  inset-block-start: 15px;
+  inset-inline-end: calc(19.5px + 95px + var(--mac-space-control-gap));
+}
+
+.mac-photo-booth-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

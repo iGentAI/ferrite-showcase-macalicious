@@ -1,0 +1,201 @@
+/*
+ * Favorites bar (Safari). Every measure is inferred [provisional]: no screenshot shows it.
+ *
+ * 25 pt: 24 pt of fill and a 1 pt separator, drawn as one 1px strip whose gradient is
+ * sampled at each device pixel's centre (two rows at 2x, their mean at 1x). Items are 19 pt
+ * pills with 8 pt of padding, 4 pt apart, the first 8 pt from the edge.
+ *
+ * Parts
+ *   .mac-favorites-bar            the bar (role=toolbar)
+ *   .mac-favorites-bar-items      the row of items; one that does not fit wraps to a second
+ *                                 row, which is cut off, so an item shows whole or not at all
+ *   .mac-favorites-bar-item       a bookmark, a folder or the overflow button
+ *   .mac-favorites-bar-icon       16 pt box before the title
+ *   .mac-favorites-bar-title      the title
+ *   .mac-favorites-bar-chevron    a folder's chevron
+ *   .mac-favorites-bar-overflow   the double chevron at the trailing end
+ *
+ * States
+ *   :hover, [data-force~="hover"]                        pill under the pointer
+ *   :active, [data-popup-open], [data-force~="pressed"]  pressed, or the item's menu is open
+ *   :focus-visible, [data-force~="focus"]                focus ring, in the key window only
+ *   [data-disabled]                                      dimmed
+ *   [data-window-state="inactive"] *                     the bar flattens, its titles dim
+ */
+.mac-favorites-bar {
+  --_fill: var(--mac-favorites-bar-fill);
+  --_inner: var(--mac-favorites-bar-separator-inner);
+  --_outer: var(--mac-favorites-bar-separator-outer);
+
+  display: flex;
+  box-sizing: border-box;
+  height: var(--mac-favorites-bar-height);
+  padding-block-end: 1px;
+  background:
+    linear-gradient(var(--_inner) 25%, var(--_outer) 75%) bottom / 100% 1px no-repeat var(--_fill);
+  color: var(--mac-favorites-bar-text);
+  font: var(--mac-font-icon-label);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  /* Lets the overflow button, a sibling of the row, follow the row's scroll timeline. */
+  timeline-scope: --mac-favorites-bar-row;
+}
+
+.mac-favorites-bar:where([data-window-state="inactive"] *) {
+  --_fill: var(--mac-material-titlebar-inactive);
+  --_inner: var(--mac-favorites-bar-separator-inner-inactive);
+  --_outer: var(--mac-favorites-bar-separator-outer-inactive);
+  color: var(--mac-color-window-frame-text-inactive);
+}
+
+/* Rows are exactly as high as the row box, so the keyboard focusing an item of the second
+   row scrolls that row into place. The padding keeps the first item's focus ring inside. */
+.mac-favorites-bar-items {
+  display: flex;
+  flex: 1 1 0;
+  flex-wrap: wrap;
+  column-gap: 4px;
+  box-sizing: border-box;
+  min-width: 0;
+  /* The bar without its 1 pt separator. */
+  height: calc(var(--mac-favorites-bar-height) - 1px);
+  padding-inline: 8px;
+  overflow: hidden;
+  scroll-timeline: --mac-favorites-bar-row block;
+}
+
+.mac-favorites-bar-item {
+  display: inline-flex;
+  flex: none;
+  gap: 4px;
+  align-items: center;
+  box-sizing: border-box;
+  max-width: 100%;
+  height: var(--mac-favorites-bar-item-height);
+  margin: 2.5px 0;
+  padding: 0 8px;
+  border: 0;
+  border-radius: var(--mac-favorites-bar-item-radius);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: default;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-favorites-bar-item:where(:hover, [data-force~="hover"]):where(:not([data-disabled])) {
+  background: var(--mac-favorites-bar-hover);
+}
+
+.mac-favorites-bar-item:where(:active, [data-popup-open], [data-force~="pressed"]):where(
+  :not([data-disabled])
+) {
+  background: var(--mac-favorites-bar-pressed);
+}
+
+.mac-favorites-bar-item:where([data-disabled]) {
+  color: var(--mac-color-control-text-disabled);
+}
+
+.mac-favorites-bar-icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--mac-favorites-bar-icon-size);
+  height: var(--mac-favorites-bar-icon-size);
+}
+
+.mac-favorites-bar-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Chevrons: 1.25 pt strokes. A folder's points down, 7 x 4 pt; the overflow button's two
+   point to the trailing edge, 4 x 7 pt each. */
+.mac-favorites-bar-chevron,
+.mac-favorites-bar-overflow::before,
+.mac-favorites-bar-overflow::after {
+  content: "";
+  flex: none;
+  width: var(--mac-favorites-bar-chevron-length);
+  height: var(--mac-favorites-bar-chevron-depth);
+  background: currentColor;
+  clip-path: polygon(0 22%, 12% 0, 50% 66%, 88% 0, 100% 22%, 50% 100%);
+}
+
+.mac-favorites-bar-overflow::before,
+.mac-favorites-bar-overflow::after {
+  width: var(--mac-favorites-bar-chevron-depth);
+  height: var(--mac-favorites-bar-chevron-length);
+  clip-path: polygon(0 12%, 22% 0, 100% 50%, 22% 100%, 0 88%, 66% 50%);
+}
+
+.mac-favorites-bar-overflow:where(:dir(rtl))::before,
+.mac-favorites-bar-overflow:where(:dir(rtl))::after {
+  transform: scaleX(-1);
+}
+
+.mac-favorites-bar-overflow {
+  gap: 1px;
+  margin-inline-end: 8px;
+  padding: 0 5px;
+}
+
+/* Shown only while the row has a second row to scroll to, where the browser has scroll
+   timelines: without overflow the timeline is inactive and the animation does nothing. */
+@supports (animation-timeline: scroll()) {
+  .mac-favorites-bar-overflow {
+    visibility: hidden;
+    animation: mac-favorites-bar-overflow linear both;
+    animation-timeline: --mac-favorites-bar-row;
+  }
+}
+
+@keyframes mac-favorites-bar-overflow {
+  from,
+  to {
+    visibility: visible;
+  }
+}
+
+/* Keyboard focus ring; only in the key window. Half a point inside the usual place, so that
+   it fits the 24 pt row. */
+.mac-favorites-bar-item:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: -0.5px;
+}
+
+@media (forced-colors: active) {
+  .mac-favorites-bar {
+    padding-block-end: 0;
+    border-block-end: 1px solid CanvasText;
+    background: Canvas;
+    /* A system colour here is what the chevrons, which opt out of the forcing, inherit. */
+    color: CanvasText;
+  }
+
+  .mac-favorites-bar-item:where(:hover, :active, [data-popup-open]):where(:not([data-disabled])) {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  .mac-favorites-bar-item:where([data-disabled]) {
+    color: GrayText;
+  }
+
+  .mac-favorites-bar-chevron,
+  .mac-favorites-bar-overflow::before,
+  .mac-favorites-bar-overflow::after {
+    forced-color-adjust: none;
+  }
+}

@@ -1,0 +1,54 @@
+/*
+ * About window values of its own: the tab control in the title bar, measured on
+ * Light-/Dark-About-This-Mac (column x=1560 through an unselected tab, x=1420 through the
+ * selected one, row y=424 across the control; reference/spec/components/about-window.md).
+ * It is the textured bezel of a toolbar control at a height of its own, 18 pt.
+ */
+:root {
+  /* Fill. Aqua #fcfcfc to #f3f3f3 [measured]; Dark Aqua white at 37%, 26%, then 23.4% to
+     22.3% over the title bar (#878788, #717273, #6c6d6e to #666768) [measured, computed] */
+  --mac-about-window-tab-fill: linear-gradient(
+    light-dark(#fcfcfc, rgb(255 255 255 / 0.37)) 0 0.5px,
+    light-dark(#fcfcfc, rgb(255 255 255 / 0.26)) 0.5px 1px,
+    light-dark(#fbfbfb, rgb(255 255 255 / 0.234)) 1px,
+    light-dark(#f3f3f3, rgb(255 255 255 / 0.223))
+  );
+  /* Hairline border and the shadow row below, Aqua only: #c8c8c8, #c3c3c3, #a0a0a0 and
+     #c6c6c6 over the title bar [measured, computed] */
+  --mac-about-window-tab-border-top: light-dark(rgb(0 0 0 / 0.107), transparent);
+  --mac-about-window-tab-border-side: light-dark(rgb(0 0 0 / 0.1), transparent);
+  --mac-about-window-tab-border-bottom: light-dark(rgb(0 0 0 / 0.24), transparent);
+  --mac-about-window-tab-shadow: light-dark(rgb(0 0 0 / 0.057), transparent);
+  /* Divider between two tabs: #e3e3e3 on #fcfcfc, #5b5c5d on #696a6b [measured, computed] */
+  --mac-about-window-tab-divider: light-dark(rgb(0 0 0 / 0.099), rgb(0 0 0 / 0.133));
+
+  /* Selected tab [measured] */
+  --mac-about-window-tab-fill-on: linear-gradient(
+    light-dark(#6f6f6f, #dddedf) 0 0.5px,
+    light-dark(#6f6f6f, #cfcfd0) 0.5px 1px,
+    light-dark(#6f6f6f, #cacacc) 1px,
+    light-dark(#666666, #c5c5c6)
+  );
+  --mac-about-window-tab-border-top-on: light-dark(#696969, transparent);
+  --mac-about-window-tab-border-side-on: light-dark(#636363, transparent);
+  --mac-about-window-tab-border-bottom-on: light-dark(#5d5d5d, transparent);
+  /* Painted under that border, so that nothing shows between it and the fill at the corners:
+     the border's own grey in Aqua, nothing in Dark Aqua, which has no border [measured] */
+  --mac-about-window-tab-under-on: linear-gradient(
+    light-dark(#696969, transparent),
+    light-dark(#5d5d5d, transparent)
+  );
+
+  /* Titles: #565656 on #f6f6f6 and #fcfdfe on #696a6b [measured, computed]; white and
+     #3b3b3c on the selected tab [measured] */
+  --mac-about-window-tab-text: light-dark(rgb(0 0 0 / 0.65), rgb(255 255 255 / 0.98));
+  --mac-about-window-tab-text-on: light-dark(#ffffff, #3b3b3c);
+
+  /* [provisional] No screenshot shows a tab pressed, a disabled tab, or the control in a
+     window that is not key: the steps are those the toolbar's segmented control takes. */
+  --mac-about-window-tab-fill-pressed: linear-gradient(
+    light-dark(#dcdcdc, rgb(255 255 255 / 0.32)),
+    light-dark(#d5d5d5, rgb(255 255 255 / 0.32))
+  );
+  --mac-about-window-tab-text-dimmed: light-dark(rgb(0 0 0 / 0.3), rgb(255 255 255 / 0.3));
+}

@@ -1,0 +1,24 @@
+/*
+ * Notification in the Notification Center list (reference/spec/components/notification-banner.md).
+ * The card is a translucent overlay on the Notification Center material; Catalina blends it
+ * with vibrancy, so one tint cannot reproduce every backdrop. Text colours are the vibrant
+ * colours as measured over the default picture.
+ */
+:root {
+  /* [measured, computed] body #ddf7ff on panel #b7dff8, which takes a tint lighter in green and
+     blue than in red; #112741 on #162e4e (col 2934) */
+  --mac-notification-banner-fill: light-dark(rgb(240 255 255 / 0.65), rgb(0 0 0 / 0.17));
+  /* [measured, computed] 1 px edge: #bcd7e1 beside #d3eef8, #0c1829 beside #11213a */
+  --mac-notification-banner-edge: light-dark(rgb(0 0 0 / 0.105), rgb(0 0 0 / 0.3));
+  /* [measured, computed] header band #d3eef8 against the body #dcf7ff, #11213a against #132640 */
+  --mac-notification-banner-header-fill: light-dark(rgb(0 0 0 / 0.04), rgb(0 0 0 / 0.12));
+  /* [measured] */
+  --mac-notification-banner-app: light-dark(#546f79, #8fa0b9);
+  --mac-notification-banner-time: light-dark(#5d6d74, #a8acaf);
+  --mac-notification-banner-title: light-dark(#27444d, #ffffff);
+  --mac-notification-banner-body: light-dark(#5d7881, #94a7c5);
+  /* [measured] the clear disc of the day heading; on a card it is inferred */
+  --mac-notification-banner-clear: light-dark(#415d6d, #aeb8c7);
+  /* [provisional] a pressed card darkens by 10% */
+  --mac-notification-banner-pressed: rgb(0 0 0 / 0.1);
+}

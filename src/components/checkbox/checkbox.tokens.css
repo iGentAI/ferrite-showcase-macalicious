@@ -1,0 +1,80 @@
+/*
+ * Checkbox colours missing from src/styles/tokens. Measured on General (Theme-Light-Blue,
+ * Theme-Dark-Blue @ 1478,1272 off and 1478,1312 on) and Security and Privacy (@ 328,408 and
+ * 328,452, disabled), in sRGB; checkbox.mdx tabulates the pixels. All [measured, computed]
+ * unless tagged otherwise.
+ */
+:root {
+  /* Off well: #ffffff; dark is white at 15% to 28.5% (#4f4f51 to #6b6b6d on #303032) */
+  --mac-checkbox-fill-top: light-dark(#ffffff, rgb(255 255 255 / 0.15));
+  --mac-checkbox-fill-bottom: light-dark(#ffffff, rgb(255 255 255 / 0.285));
+  /* Hairline inside the box. Light: #a5a5a5, #b7b7b7, #b8b8b9 over white. Dark: only a top
+     highlight row, #727273. */
+  --mac-checkbox-border-top: light-dark(rgb(0 0 0 / 0.353), rgb(255 255 255 / 0.2));
+  --mac-checkbox-border-side: light-dark(rgb(0 0 0 / 0.282), transparent);
+  --mac-checkbox-border-bottom: light-dark(rgb(0 0 0 / 0.278), transparent);
+  /* Inner shadow of the light well (#e1e1e0, #ecedec, #faf9f9 under the top hairline);
+     dark: the second row, #555557 */
+  --mac-checkbox-well-shadow:
+    inset 0 0.5px 0 0 light-dark(rgb(0 0 0 / 0.017), rgb(255 255 255 / 0.03)),
+    inset 0 1px 0 0 light-dark(rgb(0 0 0 / 0.042), transparent),
+    inset 0 1.5px 0 0 light-dark(rgb(0 0 0 / 0.02), transparent),
+    inset 0 0 0 0.5px light-dark(rgb(0 0 0 / 0.03), transparent),
+    inset 0 0 0 1px light-dark(rgb(0 0 0 / 0.015), transparent);
+  /* Dark: second row of an on box, #2472e7 over #1869e6 */
+  --mac-checkbox-on-well-shadow: inset 0 0.5px 0 0 light-dark(transparent, rgb(255 255 255 / 0.05));
+  /* Dark: hairline ring outside the box (#2c2c2d, #2a2a2c, #262627 on #303032) and the push
+     button's shadow beyond it (#2b2b2d, #2e2e30) */
+  --mac-checkbox-ring-top: light-dark(transparent, rgb(0 0 0 / 0.083));
+  --mac-checkbox-ring-side: light-dark(transparent, rgb(0 0 0 / 0.125));
+  --mac-checkbox-ring-bottom: light-dark(transparent, rgb(0 0 0 / 0.21));
+  --mac-checkbox-shadow:
+    0 0 0 0.5px light-dark(transparent, rgb(0 0 0 / 0.022)),
+    0 0.5px 0 0 light-dark(transparent, rgb(0 0 0 / 0.045)),
+    0 1px 0 0 light-dark(transparent, rgb(0 0 0 / 0.038));
+  /* Disabled: the box is at half opacity; these are the hairline (#bbbbbb, #c3c3c3 on
+     #e3e3e3) and glyph (black at 40%, white at 25%) alphas before that opacity */
+  --mac-checkbox-border-top-disabled: light-dark(rgb(0 0 0 / 0.424), rgb(255 255 255 / 0.2));
+  --mac-checkbox-border-side-disabled: light-dark(rgb(0 0 0 / 0.36), transparent);
+  --mac-checkbox-glyph-disabled: light-dark(rgb(0 0 0 / 0.8), rgb(255 255 255 / 0.5));
+  /* [provisional] pressed off well: no pressed checkbox is captured */
+  --mac-checkbox-fill-pressed-top: light-dark(#f0f0f0, rgb(255 255 255 / 0.23));
+  --mac-checkbox-fill-pressed-bottom: light-dark(#f0f0f0, rgb(255 255 255 / 0.365));
+}
+
+/* The checkmark differs between the appearances (checkbox.tsx): the one that does not apply
+   gets a stroke width of zero. A length, so it follows --mac-appearance-dark. */
+:root,
+[data-appearance] {
+  --mac-checkbox-check-light-width: calc(1.55px * (1 - var(--mac-appearance-dark)));
+  --mac-checkbox-check-dark-width: calc(1.65px * var(--mac-appearance-dark));
+}
+
+:root,
+[data-accent] {
+  /* Top hairline of an on box: the accent edge in light, the bezel highlight in dark */
+  --mac-checkbox-on-border-top: light-dark(
+    var(--mac-accent-control-edge),
+    var(--mac-accent-bezel-highlight)
+  );
+  /* Light: shadow under a white glyph (Software Update @ 596,588: #1766db, #2773e8, #3280f5
+     on #3b88fd), a 0.83 pt Gaussian 0.5 pt down, 29 levels below the glyph-shadow token */
+  --mac-checkbox-glyph-shadow: drop-shadow(
+    0 0.5px 0.83px
+      light-dark(
+        rgb(from var(--mac-accent-glyph-shadow) calc(r - 29) calc(g - 29) calc(b - 29)),
+        transparent
+      )
+  );
+  /* [provisional] pressed on fill: multiplied by 0.88, as the pressed accent bezel */
+  --mac-checkbox-on-fill-pressed-top: color-mix(
+    in srgb,
+    var(--mac-accent-control-fill-top) 88%,
+    black
+  );
+  --mac-checkbox-on-fill-pressed-bottom: color-mix(
+    in srgb,
+    var(--mac-accent-control-fill-bottom) 88%,
+    black
+  );
+}

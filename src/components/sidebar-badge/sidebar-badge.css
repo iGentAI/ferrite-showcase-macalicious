@@ -1,0 +1,90 @@
+/*
+ * Sidebar badge: the count at the trailing edge of a source-list row.
+ *
+ * States
+ *   [data-variant="pill"]     filled 16 pt capsule, bold 13 pt digits knocked out of it
+ *   [data-variant="plain"]    13 pt number, no bezel
+ *   [data-selected]           the row is selected (grey highlight)
+ *   [data-emphasized]         the row's selection is accent-coloured; key window only
+ *   [data-window-state="main" | "inactive"] *
+ *                             window that is not key: an emphasised badge is drawn as a
+ *                             selected, unemphasised one (CONTRIBUTING, Window state)
+ *
+ * Hooks
+ *   --mac-sidebar-badge-knockout   colour of the pill's digits. A real knock-out shows the
+ *                                  sidebar through the pill; the digits are painted in the
+ *                                  sidebar's opaque colour instead. Set it when the badge sits
+ *                                  on another background.
+ */
+.mac-sidebar-badge {
+  --_fill: var(--mac-sidebar-badge-fill);
+  --_digits: var(--mac-sidebar-badge-knockout, var(--mac-material-sidebar-opaque));
+
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 24px;
+  height: 16px;
+  padding: 0 6px;
+  border-radius: 8px;
+  background: var(--_fill);
+  color: var(--_digits);
+  /* 13 pt bold: the knocked-out "1" in Mail has a 9 pt cap height and a 2 pt stem */
+  font: var(--mac-font-body-emphasized);
+  line-height: 1;
+  letter-spacing: var(--mac-tracking-regular);
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Window that is not key: the measured fill. Before the selected rules, which then win. */
+.mac-sidebar-badge:where(:where([data-window-state="main"], [data-window-state="inactive"]) *) {
+  --_fill: var(--mac-sidebar-badge-fill-inactive);
+}
+
+.mac-sidebar-badge:where([data-selected]) {
+  --_fill: var(--mac-sidebar-badge-fill-selected);
+  --_digits: var(--mac-sidebar-badge-knockout-selected);
+}
+
+.mac-sidebar-badge:where([data-emphasized]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  --_fill: var(--mac-sidebar-badge-fill-emphasized);
+  --_digits: var(--mac-color-sidebar-selection-emphasized);
+}
+
+/* Plain number */
+.mac-sidebar-badge:where([data-variant="plain"]) {
+  min-width: 0;
+  height: auto;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--mac-sidebar-badge-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+}
+
+.mac-sidebar-badge:where([data-variant="plain"]):where([data-selected]) {
+  color: var(--mac-sidebar-badge-text-selected);
+}
+
+.mac-sidebar-badge:where([data-variant="plain"]):where([data-emphasized]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  color: var(--mac-sidebar-badge-text-emphasized);
+}
+
+@media (forced-colors: active) {
+  .mac-sidebar-badge:where([data-variant="pill"]) {
+    border: 1px solid CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+}

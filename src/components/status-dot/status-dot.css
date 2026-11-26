@@ -1,0 +1,53 @@
+/*
+ * Status dot (NSStatusAvailable, NSStatusPartiallyAvailable, NSStatusUnavailable,
+ * NSStatusNone): a flat disc with a half-point rim of the same hue.
+ *
+ * States
+ *   [data-status="available" | "partially-available" | "unavailable" | "none"]
+ *   [data-size="small"]                6 pt instead of 10 pt
+ *
+ * The dot does not react to the window state: the captures show the same colours in key and
+ * background windows.
+ */
+.mac-status-dot {
+  --_fill: var(--mac-status-dot-none);
+  --_rim: var(--mac-status-dot-none-rim);
+
+  display: inline-block;
+  flex: none;
+  box-sizing: border-box;
+  width: 10px;
+  height: 10px;
+  border: var(--mac-hairline) solid var(--_rim);
+  border-radius: 50%;
+  background: var(--_fill);
+  vertical-align: middle;
+}
+
+.mac-status-dot:where([data-size="small"]) {
+  width: 6px;
+  height: 6px;
+}
+
+.mac-status-dot:where([data-status="available"]) {
+  --_fill: var(--mac-status-dot-available);
+  --_rim: var(--mac-status-dot-available-rim);
+}
+
+.mac-status-dot:where([data-status="partially-available"]) {
+  --_fill: var(--mac-status-dot-partially-available);
+  --_rim: var(--mac-status-dot-partially-available-rim);
+}
+
+.mac-status-dot:where([data-status="unavailable"]) {
+  --_fill: var(--mac-status-dot-unavailable);
+  --_rim: var(--mac-status-dot-unavailable-rim);
+}
+
+/* Forced colours replace backgrounds; keep the fill, it is the whole control. The state must
+   also be in the text beside the dot, here as everywhere. */
+@media (forced-colors: active) {
+  .mac-status-dot {
+    forced-color-adjust: none;
+  }
+}

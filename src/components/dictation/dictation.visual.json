@@ -1,0 +1,339 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "panel-light",
+      "description": "The silent panel beside the TextEdit window with 12 pt of the desktop around it, Aqua. The desktop picture cannot be reproduced: the example paints the sky as a gradient through colours measured clear of the panel, and an element at its right edge stands for the window, whose shadow falls on the gap. The crop's origin is odd so that the panel, which sits on odd pixels, is on whole points.",
+      "example": "visual-light",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0225,
+        "2x": 0.0047
+      },
+      "deltaBudget": {
+        "1x": 6.5,
+        "2x": 5.4
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Dictation.png",
+        "crop": {
+          "x": 29,
+          "y": 99,
+          "width": 220,
+          "height": 240
+        }
+      }
+    },
+    {
+      "name": "panel-light-drawing",
+      "description": "As panel-light with the title of Done masked, to score the drawing alone: the title is set in the fallback font off Apple platforms. Most of the mean difference is the fill: the shared menu material gives #c3def0 over this sky where the capture measures #bde4f8.",
+      "example": "visual-light",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 35,
+          "y": 85,
+          "width": 38,
+          "height": 14
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0255,
+        "2x": 0.0049
+      },
+      "deltaBudget": {
+        "1x": 6.4,
+        "2x": 5.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Dictation.png",
+        "crop": {
+          "x": 29,
+          "y": 99,
+          "width": 220,
+          "height": 240
+        }
+      }
+    },
+    {
+      "name": "panel-dark",
+      "description": "The panel beside the TextEdit window, at the level the capture shows, with 12 pt of the desktop around it, Dark Aqua. The backdrop stands in for the desktop picture as explained for panel-light.",
+      "example": "visual-dark",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.0175,
+        "2x": 0.0035
+      },
+      "deltaBudget": {
+        "1x": 4.4,
+        "2x": 3.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Dictation.png",
+        "crop": {
+          "x": 5,
+          "y": 93,
+          "width": 220,
+          "height": 240
+        }
+      }
+    },
+    {
+      "name": "panel-dark-drawing",
+      "description": "As panel-dark with the title of Done masked, to score the drawing alone. Part of what differs is the night sky at the left edge, which has clouds where the example has a gradient.",
+      "example": "visual-dark",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 35,
+          "y": 85,
+          "width": 38,
+          "height": 14
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0245,
+        "2x": 0.008
+      },
+      "deltaBudget": {
+        "1x": 4.4,
+        "2x": 3.5
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Dictation.png",
+        "crop": {
+          "x": 5,
+          "y": 93,
+          "width": 220,
+          "height": 240
+        }
+      }
+    },
+    {
+      "name": "parts-light",
+      "description": "The panel at half level on a flat grey, where the token colours can be computed, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 119
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 24,
+            "color": "#cacaca",
+            "tolerance": 3,
+            "note": "fill: the menu material, rgb(234 234 234) at 70%, over #808080 (computed from the token)"
+          },
+          {
+            "x": 54,
+            "y": 28,
+            "color": "#ffffff",
+            "note": "capsule above the level (spec: dictation, Microphone capsule interior, measured)"
+          },
+          {
+            "x": 54,
+            "y": 46,
+            "color": "#3b6477",
+            "note": "the level at 0.5; its Aqua colour is inferred from the outline, no capture shows it"
+          },
+          {
+            "x": 54,
+            "y": 64.75,
+            "color": "#3b6477",
+            "note": "base of the microphone (spec: Microphone outline, measured #376476 to #3b6476)"
+          },
+          {
+            "x": 22,
+            "y": 75.5,
+            "color": "#b6b6b6",
+            "tolerance": 3,
+            "note": "divider: black at 10% over the fill (spec: Divider, alpha computed from the measured composite)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "parts-dark",
+      "description": "The panel at half level on a flat grey, where the token colours can be computed, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 119
+        },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 24,
+            "color": "#2c2c2e",
+            "tolerance": 3,
+            "note": "fill: rgb(41 41 43) at 96% over #808080 (computed from the token; #29292b measured over the night sky)"
+          },
+          {
+            "x": 54,
+            "y": 28,
+            "color": "#a2a3a4",
+            "note": "capsule above the level, the outline's colour (measured)"
+          },
+          {
+            "x": 54,
+            "y": 46,
+            "color": "#424243",
+            "note": "the level (measured in the Dark Aqua capture)"
+          },
+          {
+            "x": 54,
+            "y": 64.75,
+            "color": "#a2a3a4",
+            "note": "base of the microphone (spec: Microphone outline, measured)"
+          },
+          {
+            "x": 22,
+            "y": 75.5,
+            "color": "#4e4e50",
+            "tolerance": 3,
+            "note": "divider: white at 16% over the fill (spec: Divider, alpha computed from the measured composite)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "Done while the mouse is held down on it, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": ".mac-dictation-done"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 119
+        },
+        "pixels": [
+          {
+            "x": 22,
+            "y": 96,
+            "color": "#b6b6b6",
+            "tolerance": 3,
+            "note": "black at 10% over the fill #cacaca; inferred (spec: dictation, States, Done pressed)"
+          },
+          {
+            "x": 20,
+            "y": 24,
+            "color": "#cacaca",
+            "tolerance": 3,
+            "note": "the microphone area does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "Done while the mouse is held down on it, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": ".mac-dictation-done"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 119
+        },
+        "pixels": [
+          {
+            "x": 22,
+            "y": 96,
+            "color": "#28282a",
+            "tolerance": 3,
+            "note": "black at 10% over the fill #2c2c2e; inferred (spec: dictation, States, Done pressed)"
+          },
+          {
+            "x": 20,
+            "y": 24,
+            "color": "#2c2c2e",
+            "tolerance": 3,
+            "note": "the microphone area does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-light",
+      "description": "Keyboard focus on Done, reached with Tab: the ring is inside the button, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 119
+        },
+        "pixels": [
+          {
+            "x": 54,
+            "y": 105.5,
+            "color": "#719ae0",
+            "tolerance": 4,
+            "note": "focus ring, rgb(24 106 246) at 50%, over the fill #cacaca, 1.5 pt inside the bottom edge (computed from the tokens)"
+          },
+          {
+            "x": 22,
+            "y": 96,
+            "color": "#cacaca",
+            "tolerance": 3,
+            "note": "inside the ring the button is not filled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-dark",
+      "description": "Keyboard focus on Done, reached with Tab: the ring is inside the button, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 119
+        },
+        "pixels": [
+          {
+            "x": 54,
+            "y": 105.5,
+            "color": "#2c6a97",
+            "tolerance": 4,
+            "note": "focus ring, rgb(43 168 255) at 50%, over the fill #2c2c2e, 1.5 pt inside the bottom edge (computed from the tokens)"
+          },
+          {
+            "x": 22,
+            "y": 96,
+            "color": "#2c2c2e",
+            "tolerance": 3,
+            "note": "inside the ring the button is not filled"
+          }
+        ]
+      }
+    }
+  ]
+}

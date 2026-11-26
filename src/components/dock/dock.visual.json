@@ -1,0 +1,365 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "left-end-light",
+      "description": "The left end of the shelf with its 5 pt corner, its first tile and the running dot, Aqua. Masked: the tile's icon, which is Apple artwork in the reference and a stand-in in the example, and the 5 pt of desktop picture above and beside the shelf, a photograph the example replaces with its mean colour.",
+      "example": "visual-left-end",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.0015
+      },
+      "deltaBudget": {
+        "1x": 3.95,
+        "2x": 3.95
+      },
+      "masks": [
+        {
+          "x": 15,
+          "y": 15,
+          "width": 56,
+          "height": 56
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 81,
+          "height": 5
+        },
+        {
+          "x": 0,
+          "y": 5,
+          "width": 5,
+          "height": 80
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Desktop.png",
+        "crop": {
+          "x": 272,
+          "y": 1930,
+          "width": 162,
+          "height": 170
+        }
+      }
+    },
+    {
+      "name": "left-end-dark",
+      "description": "The left end of the shelf with its 5 pt corner, inner border and outer hairline, its first tile and the running dot, Dark Aqua, over 5 pt of desktop. Masked: the tile's icon, which is Apple artwork in the reference and a stand-in in the example.",
+      "example": "visual-left-end",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 2.05,
+        "2x": 2.1
+      },
+      "masks": [
+        {
+          "x": 15,
+          "y": 15,
+          "width": 56,
+          "height": 56
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Desktop.png",
+        "crop": {
+          "x": 272,
+          "y": 1930,
+          "width": 162,
+          "height": 170
+        }
+      }
+    },
+    {
+      "name": "separator-light",
+      "description": "The separator slot between the last application and the first stack, Aqua: the shelf's top edge and the 1 by 60 pt line. The crop lies between the two icons. Masked: the 5 pt of desktop picture above the shelf, a photograph the example replaces with its mean colour.",
+      "example": "visual-separator",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 2.2,
+        "2x": 2.2
+      },
+      "masks": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 41,
+          "height": 5
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Desktop.png",
+        "crop": {
+          "x": 2728,
+          "y": 1930,
+          "width": 82,
+          "height": 170
+        }
+      }
+    },
+    {
+      "name": "separator-dark",
+      "description": "The separator slot between the last application and the first stack, Dark Aqua: the shelf's top border and hairline and the 1 by 60 pt line, over 5 pt of desktop. Nothing is masked; the crop lies between the two icons.",
+      "example": "visual-separator",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 1.15,
+        "2x": 1.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Desktop.png",
+        "crop": {
+          "x": 2728,
+          "y": 1930,
+          "width": 82,
+          "height": 170
+        }
+      }
+    },
+    {
+      "name": "rest-light",
+      "description": "Three tiles at rest on a flat grey desktop, Aqua: the shelf's material, the running dot, and no label.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 260,
+          "height": 170
+        },
+        "pixels": [
+          {
+            "x": 28,
+            "y": 165,
+            "color": "#a2a2a2",
+            "tolerance": 3,
+            "note": "the shelf below the tiles: --mac-material-dock, white at 0.27 over the grey desktop #808080 (measured, computed)"
+          },
+          {
+            "x": 62,
+            "y": 166,
+            "color": "#000000",
+            "note": "the running dot under the first tile, centred 4 pt above the bottom: --mac-dock-indicator (measured)"
+          },
+          {
+            "x": 38,
+            "y": 68,
+            "color": "#808080",
+            "note": "the desktop where the first tile's label appears under the pointer: no label at rest"
+          },
+          {
+            "x": 130,
+            "y": 128,
+            "color": "#3366cc",
+            "note": "the second tile's icon, centred 38 pt below the shelf's top"
+          },
+          {
+            "x": 222,
+            "y": 104,
+            "color": "#ff0000",
+            "note": "a child of the third tile, a 16 pt square: drawn over the tile from its top trailing corner, in front of the icon, which also covers this point"
+          },
+          {
+            "x": 210,
+            "y": 116,
+            "color": "#3366cc",
+            "note": "the third tile's icon just beyond the child: the child takes no room from it"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rest-dark",
+      "description": "Three tiles at rest on a flat grey desktop, Dark Aqua: the shelf's material and the running dot.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "pixels": [
+          {
+            "x": 28,
+            "y": 165,
+            "color": "#6f6f6f",
+            "tolerance": 3,
+            "note": "the shelf below the tiles: --mac-material-dock, grey 60 at 0.25 over the grey desktop #808080 (provisional token)"
+          },
+          {
+            "x": 62,
+            "y": 166,
+            "color": "#b3bbc5",
+            "tolerance": 4,
+            "note": "the running dot: --mac-dock-indicator, rgb(225 238 255) at 0.6 over the shelf (measured, computed)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "hover-light",
+      "description": "The pointer over the first tile, Aqua: its label appears above the shelf, and with reduced motion the magnification the Dock asks for moves nothing. The label is inferred; no screenshot shows one.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "hover": ".mac-dock-item"
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 38,
+            "y": 68,
+            "color": "#e7e7e7",
+            "tolerance": 3,
+            "note": "the label's padding: --mac-dock-label-background, grey 240 at 0.92 over the desktop (provisional)"
+          },
+          {
+            "x": 62,
+            "y": 93,
+            "color": "#a2a2a2",
+            "tolerance": 3,
+            "note": "the shelf above the tile: the tile has not grown, the comparison runs with prefers-reduced-motion"
+          }
+        ]
+      }
+    },
+    {
+      "name": "hover-dark",
+      "description": "The pointer over the first tile, Dark Aqua: its label appears above the shelf. Inferred; no screenshot shows one.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "hover": ".mac-dock-item"
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 38,
+            "y": 68,
+            "color": "#353639",
+            "tolerance": 3,
+            "note": "the label's padding: --mac-dock-label-background, rgb(46 48 51) at 0.92 over the desktop (provisional)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-light",
+      "description": "Keyboard focus on the first tile, reached with Tab, Aqua: the focus ring around the tile. Inferred; no screenshot shows the Dock with keyboard focus.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 28.5,
+            "y": 128,
+            "color": "#5d86cc",
+            "tolerance": 4,
+            "note": "the 3 pt ring left of the tile: --mac-focus-ring-color, rgb(24 106 246) at 0.5 over the shelf #a2a2a2"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-dark",
+      "description": "Keyboard focus on the first tile, reached with Tab, Dark Aqua. Inferred; no screenshot shows the Dock with keyboard focus.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 28.5,
+            "y": 128,
+            "color": "#4d8cb7",
+            "tolerance": 4,
+            "note": "the 3 pt ring left of the tile: --mac-focus-ring-color, rgb(43 168 255) at 0.5 over the shelf #6f6f6f"
+          }
+        ]
+      }
+    },
+    {
+      "name": "left-light",
+      "description": "The Dock on the left edge, Aqua: an 80 pt wide shelf centred on the edge, with the running dot between the tile and the edge. Inferred; no screenshot shows the Dock on a side.",
+      "example": "visual-left",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 170
+        },
+        "pixels": [
+          {
+            "x": 77,
+            "y": 85,
+            "color": "#a2a2a2",
+            "tolerance": 3,
+            "note": "the shelf between the tiles and its inner edge: --mac-material-dock over the grey desktop"
+          },
+          {
+            "x": 100,
+            "y": 85,
+            "color": "#808080",
+            "note": "the desktop beyond the shelf, which is 80 pt wide"
+          },
+          {
+            "x": 4,
+            "y": 51,
+            "color": "#000000",
+            "note": "the running dot, centred 4 pt from the screen edge beside the first tile: --mac-dock-indicator"
+          }
+        ]
+      }
+    },
+    {
+      "name": "forced-colors-light",
+      "description": "Forced colours: the shelf keeps an edge. The colours are the browser's emulated system colours, not Catalina's.",
+      "example": "visual-states",
+      "appearance": "light",
+      "forcedColors": true,
+      "expect": {
+        "pixels": [
+          {
+            "x": 130,
+            "y": 90.5,
+            "color": "#000000",
+            "tolerance": 4,
+            "note": "the shelf's top border, 1 pt: CanvasText"
+          },
+          {
+            "x": 28,
+            "y": 165,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "the shelf: Canvas, with no backdrop filter"
+          }
+        ]
+      }
+    }
+  ]
+}

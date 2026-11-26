@@ -1,0 +1,76 @@
+/*
+ * Window (NSWindow frame).
+ *
+ * The shadow, the outer hairline and the corner radius come from the window-shadow component,
+ * which the root also is. This file adds the frame fill, the clip, the column of bars and body,
+ * and the inner rim painted over the content (::after): 0.5 pt of white at 16% in Aqua, 1 pt of
+ * white at 20% in Dark Aqua.
+ *
+ * States
+ *   [data-window-state="key" | "main" | "inactive"]   always written; read by everything inside
+ *   [data-variant="panel"]                            utility panel (smaller shadow)
+ *   [data-full-screen]                                no radius, hairline, rim or shadow
+ *   [data-top-highlight]                              two highlight rows under the rim, along
+ *                                                     the top edge, for a window with no title bar
+ */
+.mac-window {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: var(--mac-color-window-background);
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  text-align: start;
+  cursor: default;
+}
+
+.mac-window::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--mac-shadow-window-rim);
+  pointer-events: none;
+}
+
+/* A title bar draws these two rows itself; a window without one asks for them here. They lie
+   under the rim, as the title bar's do, and over the content. */
+.mac-window:where([data-top-highlight])::after {
+  box-shadow:
+    var(--mac-shadow-window-rim),
+    inset 0 var(--mac-hairline) 0 var(--mac-window-top-highlight),
+    inset 0 calc(2 * var(--mac-hairline)) 0 var(--mac-window-top-highlight-second);
+}
+
+.mac-window:where([data-full-screen]) {
+  --mac-window-shadow-radius: 0px;
+}
+
+.mac-window:where([data-full-screen])::after {
+  content: none;
+}
+
+.mac-window-body {
+  position: relative;
+  flex: 1 1 auto;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+.mac-window-body:where([data-background="content"]) {
+  background: var(--mac-color-control-background);
+}
+
+/* The rim is a shadow and disappears in forced-colours mode; window-shadow keeps the edge. */
+@media (forced-colors: active) {
+  .mac-window {
+    background: Canvas;
+    color: CanvasText;
+  }
+}

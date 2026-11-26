@@ -1,0 +1,1061 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "grid-search-light",
+      "description": "The search field on the demo's 1680 by 1050 pt screen against the Aqua Launchpad capture: its place 25 pt from the top, its size, fill and 1 pt border. Masked (12% of the crop): the magnifier and the placeholder, whose text is set in the fallback font off Apple platforms and moves the magnifier beside it. Behind Launchpad in the capture is Apple's desktop picture, blurred: the fixture paints that backdrop behind the crop as measured, and Launchpad's own scrim and blur are off.",
+      "example": "visual-grid",
+      "appearance": "light",
+      "selector": "[data-crop='search']",
+      "threshold": 0.05,
+      "masks": [{ "x": 103, "y": 12, "width": 74, "height": 20 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Launchpad.png",
+        "crop": { "x": 1400, "y": 30, "width": 560, "height": 90 }
+      },
+      "budget": { "1x": 0.001, "2x": 0.001 },
+      "deltaBudget": { "1x": 2.35, "2x": 2.45 }
+    },
+    {
+      "name": "grid-pages-light",
+      "description": "The two page dots, first page current, on the demo's screen against the Aqua Launchpad capture: their place 52 pt above the Dock, which the demo's two pages and the height it keeps clear for its Dock give. Nothing is masked. The backdrop behind the crop is painted by the fixture as measured.",
+      "example": "visual-grid",
+      "appearance": "light",
+      "selector": "[data-crop='pages']",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Light-Launchpad.png",
+        "crop": { "x": 1620, "y": 1810, "width": 120, "height": 52 }
+      },
+      "budget": { "1x": 0.011, "2x": 0.0055 },
+      "deltaBudget": { "1x": 2.5, "2x": 2.35 }
+    },
+    {
+      "name": "grid-folder-tile-light",
+      "description": "The folder Other in the 28th place of the grid, with its name under it, against the Aqua Launchpad capture: where the demo's grid puts its fourth row and seventh column, the library's tile, and the name. Masked (43% of the crop): the nine small icons on the tile, which are Apple's artwork in the capture and placeholders in the demo. The name is set in the fallback font and stands about 1.5 pt higher than in the capture. The backdrop is painted by the fixture as measured.",
+      "example": "visual-grid",
+      "appearance": "light",
+      "selector": "[data-crop='folder-tile']",
+      "masks": [{ "x": 19, "y": 19, "width": 90, "height": 90 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Launchpad.png",
+        "crop": { "x": 2720, "y": 1128, "width": 256, "height": 296 }
+      },
+      "budget": { "1x": 0.0235, "2x": 0.0195 },
+      "deltaBudget": { "1x": 4.3, "2x": 4.3 }
+    },
+    {
+      "name": "grid-folder-tile-drawing-light",
+      "description": "As grid-folder-tile-light with the name masked as well (49% of the crop: the nine small icons, Apple's artwork, and the name, which is text in the fallback font), to score the tile alone: its place in the grid, its size, corner and fill, Aqua.",
+      "example": "visual-grid",
+      "appearance": "light",
+      "selector": "[data-crop='folder-tile']",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 19, "y": 19, "width": 90, "height": 90 },
+        { "x": 34, "y": 121, "width": 60, "height": 20 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Launchpad.png",
+        "crop": { "x": 2720, "y": 1128, "width": 256, "height": 296 }
+      },
+      "budget": { "1x": 0.002, "2x": 0.0035 },
+      "deltaBudget": { "1x": 1.9, "2x": 1.95 }
+    },
+    {
+      "name": "grid-label-first-light",
+      "description": "The name under the first application, App Store, against the Aqua Launchpad capture: where the names of the first row and column stand. Whole crop, nothing masked. The score is the text: it is set in the fallback font off Apple platforms, and the library sets a name about 1.5 pt higher than the capture has it (ink from 192 pt, captured from 193.5 pt). The icon above it, Apple's artwork, is outside the crop. The backdrop is painted by the fixture as measured.",
+      "example": "visual-grid",
+      "appearance": "light",
+      "selector": "[data-crop='label-first']",
+      "reference": {
+        "file": "10-15-Catalina-Light-Launchpad.png",
+        "crop": { "x": 358, "y": 372, "width": 300, "height": 48 }
+      },
+      "budget": { "1x": 0.11, "2x": 0.092 },
+      "deltaBudget": { "1x": 10.5, "2x": 10.2 }
+    },
+    {
+      "name": "grid-label-first-backdrop-light",
+      "description": "The companion the harness requires beside grid-label-first-light: the same crop with the name masked (39% of the crop, text in the fallback font). What is left is the backdrop the fixture paints, so this scores only that the painted backdrop is the capture's, Aqua; it says nothing about the demo.",
+      "example": "visual-grid",
+      "appearance": "light",
+      "selector": "[data-crop='label-first']",
+      "threshold": 0.05,
+      "masks": [{ "x": 40, "y": 2, "width": 70, "height": 20 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Launchpad.png",
+        "crop": { "x": 358, "y": 372, "width": 300, "height": 48 }
+      },
+      "budget": { "1x": 0.001, "2x": 0.001 },
+      "deltaBudget": { "1x": 1.1, "2x": 1.1 }
+    },
+    {
+      "name": "grid-label-last-light",
+      "description": "The name under the 35th and last entry of the page, Image Capture, against the Aqua Launchpad capture: where the names of the fifth row and seventh column stand. Whole crop, nothing masked. The score is the text: fallback font, and the library's name stands about 2 pt higher than the captured one (ink from 856 pt, captured from 858 pt). The backdrop is painted by the fixture as measured.",
+      "example": "visual-grid",
+      "appearance": "light",
+      "selector": "[data-crop='label-last']",
+      "reference": {
+        "file": "10-15-Catalina-Light-Launchpad.png",
+        "crop": { "x": 2698, "y": 1700, "width": 300, "height": 48 }
+      },
+      "budget": { "1x": 0.168, "2x": 0.143 },
+      "deltaBudget": { "1x": 21.2, "2x": 21.5 }
+    },
+    {
+      "name": "grid-label-last-backdrop-light",
+      "description": "The companion the harness requires beside grid-label-last-light: the same crop with the name masked (54% of the crop, text in the fallback font). What is left is the backdrop the fixture paints, so this scores only that the painted backdrop is the capture's, Aqua; it says nothing about the demo.",
+      "example": "visual-grid",
+      "appearance": "light",
+      "selector": "[data-crop='label-last']",
+      "threshold": 0.05,
+      "masks": [{ "x": 26, "y": 2, "width": 98, "height": 20 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Launchpad.png",
+        "crop": { "x": 2698, "y": 1700, "width": 300, "height": 48 }
+      },
+      "budget": { "1x": 0.001, "2x": 0.001 },
+      "deltaBudget": { "1x": 1.0, "2x": 1.0 }
+    },
+    {
+      "name": "grid-search-dark",
+      "description": "The search field on the demo's screen against the Dark Aqua Launchpad capture, with the magnifier and the placeholder masked (12% of the crop) and the backdrop painted as measured, as in grid-search-light.",
+      "example": "visual-grid",
+      "appearance": "dark",
+      "selector": "[data-crop='search']",
+      "threshold": 0.05,
+      "masks": [{ "x": 103, "y": 12, "width": 74, "height": 20 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Launchpad.png",
+        "crop": { "x": 1400, "y": 30, "width": 560, "height": 90 }
+      },
+      "budget": { "1x": 0.001, "2x": 0.0013 },
+      "deltaBudget": { "1x": 2.2, "2x": 2.25 }
+    },
+    {
+      "name": "grid-pages-dark",
+      "description": "The two page dots, first page current, on the demo's screen against the Dark Aqua Launchpad capture. Nothing is masked; the backdrop is painted by the fixture as measured.",
+      "example": "visual-grid",
+      "appearance": "dark",
+      "selector": "[data-crop='pages']",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Dark-Launchpad.png",
+        "crop": { "x": 1620, "y": 1810, "width": 120, "height": 52 }
+      },
+      "budget": { "1x": 0.0135, "2x": 0.006 },
+      "deltaBudget": { "1x": 1.1, "2x": 0.9 }
+    },
+    {
+      "name": "grid-folder-tile-dark",
+      "description": "The folder Other in the 28th place of the grid, with its name under it, against the Dark Aqua Launchpad capture. Masked (43% of the crop): the nine small icons, Apple's artwork. The name is text in the fallback font, about 1.5 pt higher than captured. Backdrop painted as measured, as in grid-folder-tile-light.",
+      "example": "visual-grid",
+      "appearance": "dark",
+      "selector": "[data-crop='folder-tile']",
+      "masks": [{ "x": 19, "y": 19, "width": 90, "height": 90 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Launchpad.png",
+        "crop": { "x": 2720, "y": 1128, "width": 256, "height": 296 }
+      },
+      "budget": { "1x": 0.024, "2x": 0.02 },
+      "deltaBudget": { "1x": 3.75, "2x": 3.75 }
+    },
+    {
+      "name": "grid-folder-tile-drawing-dark",
+      "description": "As grid-folder-tile-dark with the name masked as well (49% of the crop: the small icons, Apple's artwork, and the name, text in the fallback font), to score the tile alone: its place in the grid, its size, corner and fill, Dark Aqua.",
+      "example": "visual-grid",
+      "appearance": "dark",
+      "selector": "[data-crop='folder-tile']",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 19, "y": 19, "width": 90, "height": 90 },
+        { "x": 34, "y": 121, "width": 60, "height": 20 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Launchpad.png",
+        "crop": { "x": 2720, "y": 1128, "width": 256, "height": 296 }
+      },
+      "budget": { "1x": 0.0035, "2x": 0.004 },
+      "deltaBudget": { "1x": 1.0, "2x": 1.0 }
+    },
+    {
+      "name": "grid-label-first-dark",
+      "description": "The name under the first application, App Store, against the Dark Aqua Launchpad capture. Whole crop, nothing masked: the score is the text, set in the fallback font and about 1.5 pt higher than captured, as in grid-label-first-light. Backdrop painted as measured.",
+      "example": "visual-grid",
+      "appearance": "dark",
+      "selector": "[data-crop='label-first']",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Launchpad.png",
+        "crop": { "x": 358, "y": 372, "width": 300, "height": 48 }
+      },
+      "budget": { "1x": 0.12, "2x": 0.099 },
+      "deltaBudget": { "1x": 15.3, "2x": 14.8 }
+    },
+    {
+      "name": "grid-label-first-backdrop-dark",
+      "description": "The companion the harness requires beside grid-label-first-dark: the same crop with the name masked (39% of the crop, text in the fallback font). It scores only that the backdrop the fixture paints is the capture's, Dark Aqua; it says nothing about the demo.",
+      "example": "visual-grid",
+      "appearance": "dark",
+      "selector": "[data-crop='label-first']",
+      "threshold": 0.05,
+      "masks": [{ "x": 40, "y": 2, "width": 70, "height": 20 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Launchpad.png",
+        "crop": { "x": 358, "y": 372, "width": 300, "height": 48 }
+      },
+      "budget": { "1x": 0.001, "2x": 0.001 },
+      "deltaBudget": { "1x": 2.3, "2x": 2.3 }
+    },
+    {
+      "name": "grid-label-last-dark",
+      "description": "The name under the last entry of the page, Image Capture, against the Dark Aqua Launchpad capture. Whole crop, nothing masked: the score is the text, set in the fallback font and about 2 pt higher than captured, as in grid-label-last-light. Backdrop painted as measured.",
+      "example": "visual-grid",
+      "appearance": "dark",
+      "selector": "[data-crop='label-last']",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Launchpad.png",
+        "crop": { "x": 2698, "y": 1700, "width": 300, "height": 48 }
+      },
+      "budget": { "1x": 0.172, "2x": 0.144 },
+      "deltaBudget": { "1x": 22.3, "2x": 22.6 }
+    },
+    {
+      "name": "grid-label-last-backdrop-dark",
+      "description": "The companion the harness requires beside grid-label-last-dark: the same crop with the name masked (54% of the crop, text in the fallback font). It scores only that the backdrop the fixture paints is the capture's, Dark Aqua; it says nothing about the demo.",
+      "example": "visual-grid",
+      "appearance": "dark",
+      "selector": "[data-crop='label-last']",
+      "threshold": 0.05,
+      "masks": [{ "x": 26, "y": 2, "width": 98, "height": 20 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Launchpad.png",
+        "crop": { "x": 2698, "y": 1700, "width": 300, "height": 48 }
+      },
+      "budget": { "1x": 0.001, "2x": 0.001 },
+      "deltaBudget": { "1x": 0.7, "2x": 0.7 }
+    },
+    {
+      "name": "folder-panel-top-left-light",
+      "description": "The top left corner of the open folder's panel on the demo's screen against the Aqua Launchpad-Folder capture: the panel's place at 137, 231 pt, which the demo's 17 applications in three rows give, its corner and its fill. Nothing is masked; no application is in the crop. The backdrop is painted by the fixture as measured, 120 pt beyond the crop, and blurred by the open folder.",
+      "example": "visual-folder",
+      "appearance": "light",
+      "selector": "[data-crop='panel-top-left']",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Light-Launchpad-Folder.png",
+        "crop": { "x": 244, "y": 432, "width": 140, "height": 120 }
+      },
+      "budget": { "1x": 0.0115, "2x": 0.009 },
+      "deltaBudget": { "1x": 2.05, "2x": 2.15 }
+    },
+    {
+      "name": "folder-panel-bottom-right-light",
+      "description": "The bottom right corner of the open folder's panel on the demo's screen against the Aqua Launchpad-Folder capture: the panel ends at 1543, 804 pt, three rows high. Nothing is masked: the third row ends after three applications, so no artwork is in the crop. Backdrop painted as measured and blurred by the folder.",
+      "example": "visual-folder",
+      "appearance": "light",
+      "selector": "[data-crop='panel-bottom-right']",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Light-Launchpad-Folder.png",
+        "crop": { "x": 2700, "y": 1380, "width": 440, "height": 280 }
+      },
+      "budget": { "1x": 0.0025, "2x": 0.002 },
+      "deltaBudget": { "1x": 1.75, "2x": 1.8 }
+    },
+    {
+      "name": "folder-title-light",
+      "description": "The folder's name, Other, above the panel, and the panel's top edge under it, against the Aqua Launchpad-Folder capture. Whole crop, nothing masked: the name is set in the fallback font off Apple platforms. Backdrop painted as measured and blurred by the folder.",
+      "example": "visual-folder",
+      "appearance": "light",
+      "selector": "[data-crop='title']",
+      "reference": {
+        "file": "10-15-Catalina-Light-Launchpad-Folder.png",
+        "crop": { "x": 1560, "y": 360, "width": 240, "height": 140 }
+      },
+      "budget": { "1x": 0.07, "2x": 0.051 },
+      "deltaBudget": { "1x": 10.6, "2x": 10.9 }
+    },
+    {
+      "name": "folder-title-drawing-light",
+      "description": "As folder-title-light with the name masked (29% of the crop, text in the fallback font), to score the panel's top edge at 231 pt and its fill under the name. What still differs is the backdrop along the crop's top: the capture's turns from blue to brown there, and the folder's blur, applied to the fixture's measured colours a second time, flattens the turn.",
+      "example": "visual-folder",
+      "appearance": "light",
+      "selector": "[data-crop='title']",
+      "threshold": 0.05,
+      "masks": [{ "x": 20, "y": 4, "width": 80, "height": 30 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Launchpad-Folder.png",
+        "crop": { "x": 1560, "y": 360, "width": 240, "height": 140 }
+      },
+      "budget": { "1x": 0.0215, "2x": 0.0255 },
+      "deltaBudget": { "1x": 4.5, "2x": 4.55 }
+    },
+    {
+      "name": "folder-panel-top-left-dark",
+      "description": "The top left corner of the open folder's panel on the demo's screen against the Dark Aqua Launchpad-Folder capture. Nothing is masked; backdrop painted as measured and blurred by the folder, as in folder-panel-top-left-light.",
+      "example": "visual-folder",
+      "appearance": "dark",
+      "selector": "[data-crop='panel-top-left']",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Dark-Launchpad-Folder.png",
+        "crop": { "x": 244, "y": 432, "width": 140, "height": 120 }
+      },
+      "budget": { "1x": 0.0145, "2x": 0.011 },
+      "deltaBudget": { "1x": 2.55, "2x": 2.55 }
+    },
+    {
+      "name": "folder-panel-bottom-right-dark",
+      "description": "The bottom right corner of the open folder's panel on the demo's screen against the Dark Aqua Launchpad-Folder capture. Nothing is masked; backdrop painted as measured and blurred by the folder.",
+      "example": "visual-folder",
+      "appearance": "dark",
+      "selector": "[data-crop='panel-bottom-right']",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Dark-Launchpad-Folder.png",
+        "crop": { "x": 2700, "y": 1380, "width": 440, "height": 280 }
+      },
+      "budget": { "1x": 0.0025, "2x": 0.0019 },
+      "deltaBudget": { "1x": 1.1, "2x": 1.05 }
+    },
+    {
+      "name": "folder-title-dark",
+      "description": "The folder's name, Other, above the panel, and the panel's top edge under it, against the Dark Aqua Launchpad-Folder capture. Whole crop, nothing masked: the name is set in the fallback font. Backdrop painted as measured and blurred by the folder.",
+      "example": "visual-folder",
+      "appearance": "dark",
+      "selector": "[data-crop='title']",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Launchpad-Folder.png",
+        "crop": { "x": 1560, "y": 360, "width": 240, "height": 140 }
+      },
+      "budget": { "1x": 0.076, "2x": 0.053 },
+      "deltaBudget": { "1x": 10.0, "2x": 10.2 }
+    },
+    {
+      "name": "folder-title-drawing-dark",
+      "description": "As folder-title-dark with the name masked (29% of the crop, text in the fallback font), to score the panel's top edge at 231 pt and its fill under the name, Dark Aqua.",
+      "example": "visual-folder",
+      "appearance": "dark",
+      "selector": "[data-crop='title']",
+      "threshold": 0.05,
+      "masks": [{ "x": 20, "y": 4, "width": 80, "height": 30 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Launchpad-Folder.png",
+        "crop": { "x": 1560, "y": 360, "width": 240, "height": 140 }
+      },
+      "budget": { "1x": 0.001, "2x": 0.001 },
+      "deltaBudget": { "1x": 2.5, "2x": 2.5 }
+    },
+    {
+      "name": "check-grid-light",
+      "description": "A check, not a comparison with a capture: Launchpad on the demo's 1680 by 1050 pt screen over a flat grey in place of the picture, Aqua. Over a flat grey every layer's colour follows from the library's tokens, so the points pin the geometry the Launchpad captures give: the search field's edges, the first and the last placeholder of the 7 by 5 grid, the two page dots, and the Dock's ends and top.",
+      "example": "visual-checks",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 1680, "height": 1050 },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 500,
+            "color": "#545454",
+            "note": "Launchpad's scrim, 44% of #1c1c1c over the fixture's #808080 (computed from --mac-launchpad-scrim)"
+          },
+          {
+            "x": 840,
+            "y": 25.5,
+            "color": "#787878",
+            "note": "the search field's top border, 21% white over #545454 (computed from --mac-launchpad-search-border): the field starts 25 pt from the top, measured in Launchpad @ 1500,50"
+          },
+          { "x": 840, "y": 23, "color": "#545454", "note": "scrim above the field" },
+          {
+            "x": 716.5,
+            "y": 37.5,
+            "color": "#5f5f5f",
+            "note": "the field's fill 1.5 pt inside its left edge at 715 pt, 6.5% white over #545454 (computed from --mac-launchpad-search-fill); edge measured in Launchpad @ 1430,74"
+          },
+          {
+            "x": 966.5,
+            "y": 37.5,
+            "color": "#545454",
+            "note": "scrim 1.5 pt beyond the field's right edge at 965 pt (measured)"
+          },
+          {
+            "x": 208,
+            "y": 131.5,
+            "color": "#8e8e93",
+            "note": "the first placeholder's plate (App Store, --mac-color-system-gray) 2 pt inside the left edge of its 96 pt plate: its icon box is centred at 254, 131.5 pt, the measured first column and row"
+          },
+          { "x": 204, "y": 131.5, "color": "#545454", "note": "scrim 2 pt beyond that edge" },
+          {
+            "x": 254,
+            "y": 86,
+            "color": "#8e8e93",
+            "note": "the same plate 2.5 pt under its top edge at 83.5 pt"
+          },
+          { "x": 254, "y": 81, "color": "#545454", "note": "scrim 2.5 pt above that edge" },
+          {
+            "x": 1470,
+            "y": 795.5,
+            "color": "#af52de",
+            "note": "the last placeholder's plate (Image Capture, --mac-color-system-purple) 2 pt inside its right edge: seventh column, fifth row, centred at 1424, 795.5 pt (254 + 6 x 195, 131.5 + 4 x 166: measured pitches)"
+          },
+          { "x": 1474, "y": 795.5, "color": "#545454", "note": "scrim 2 pt beyond that edge" },
+          {
+            "x": 1424,
+            "y": 841,
+            "color": "#af52de",
+            "note": "the same plate 2.5 pt above its bottom edge at 843.5 pt"
+          },
+          {
+            "x": 1424,
+            "y": 846,
+            "color": "#545454",
+            "note": "scrim 2.5 pt under that edge, above the name"
+          },
+          {
+            "x": 828.75,
+            "y": 918,
+            "color": "#ffffff",
+            "note": "the current page's dot; centre measured in Launchpad @ 1657,1836"
+          },
+          {
+            "x": 848.75,
+            "y": 918,
+            "color": "#767676",
+            "note": "the other page's dot, 20% white over #545454 (computed from --mac-page-control-overlay-dot); centre measured in Launchpad @ 1697,1836"
+          },
+          { "x": 838.75, "y": 918, "color": "#545454", "note": "scrim between the two dots" },
+          {
+            "x": 143.5,
+            "y": 1040,
+            "color": "#828282",
+            "note": "the Dock's material, 27% white over the scrim's #545454 (computed from --mac-material-dock), inside the shelf's left end at 141 pt: the Dock of the captures is 1398 pt wide, measured @ 282,1940"
+          },
+          {
+            "x": 138,
+            "y": 1040,
+            "color": "#545454",
+            "note": "scrim beyond the shelf's left end"
+          },
+          {
+            "x": 1536.5,
+            "y": 1040,
+            "color": "#828282",
+            "note": "the shelf inside its right end at 1539 pt"
+          },
+          {
+            "x": 1542,
+            "y": 1040,
+            "color": "#545454",
+            "note": "scrim beyond the shelf's right end"
+          },
+          {
+            "x": 150,
+            "y": 967,
+            "color": "#545454",
+            "note": "scrim above the shelf, whose top is at 970 pt (measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "check-page-two-light",
+      "description": "A check in a real browser, Aqua: Right Arrow on the freshly shown Launchpad turns to the second page. The second dot is the current one and the grid holds the second page's six applications.",
+      "example": "visual-checks",
+      "appearance": "light",
+      "actions": [{ "key": "ArrowRight" }],
+      "expect": {
+        "size": { "width": 1680, "height": 1050 },
+        "pixels": [
+          {
+            "x": 828.75,
+            "y": 918,
+            "color": "#767676",
+            "note": "the first page's dot is no longer current: 20% white over #545454 (computed)"
+          },
+          { "x": 848.75, "y": 918, "color": "#ffffff", "note": "the second page's dot is current" },
+          {
+            "x": 208,
+            "y": 131.5,
+            "color": "#28cd41",
+            "note": "the first place holds the second page's first application (Automator, --mac-color-system-green)"
+          },
+          {
+            "x": 1378,
+            "y": 131.5,
+            "color": "#545454",
+            "note": "the seventh place of the first row is empty: the second page holds six applications"
+          }
+        ]
+      }
+    },
+    {
+      "name": "check-search-light",
+      "description": "A check in a real browser, Aqua: a letter typed on the freshly shown Launchpad goes to the search field. The two applications whose names hold an x are shown on one page, one of them from inside the folder, and the page dots are gone.",
+      "example": "visual-checks",
+      "appearance": "light",
+      "actions": [{ "key": "x" }],
+      "expect": {
+        "size": { "width": 1680, "height": 1050 },
+        "pixels": [
+          {
+            "x": 208,
+            "y": 131.5,
+            "color": "#28cd41",
+            "note": "the first match is Bluetooth File Exchange, found inside the folder (--mac-color-system-green)"
+          },
+          {
+            "x": 403,
+            "y": 131.5,
+            "color": "#ff9500",
+            "note": "the second is TextEdit (--mac-color-system-orange)"
+          },
+          { "x": 598, "y": 131.5, "color": "#545454", "note": "there is no third match: scrim" },
+          {
+            "x": 828.75,
+            "y": 918,
+            "color": "#545454",
+            "note": "no page dot while searching: scrim"
+          },
+          {
+            "x": 848.75,
+            "y": 918,
+            "color": "#545454",
+            "note": "no page dot while searching: scrim"
+          }
+        ]
+      }
+    },
+    {
+      "name": "check-dock-launch-light",
+      "description": "A check in a real browser, Aqua: a click on Safari in the Dock while Launchpad shows closes Launchpad, and the Dock stays.",
+      "example": "visual-checks",
+      "appearance": "light",
+      "actions": [{ "click": ".mac-dock-item[aria-label='Safari']" }],
+      "expect": {
+        "size": { "width": 1680, "height": 1050 },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 500,
+            "color": "#808080",
+            "note": "Launchpad is gone: the fixture's flat picture, undimmed"
+          },
+          { "x": 828.75, "y": 918, "color": "#808080", "note": "no page dot" },
+          {
+            "x": 143.5,
+            "y": 1040,
+            "color": "#a2a2a2",
+            "note": "the Dock is still there: its material, 27% white over the bare #808080 (computed from --mac-material-dock)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "check-escape-light",
+      "description": "A check in a real browser, Aqua: Escape closes Launchpad.",
+      "example": "visual-checks",
+      "appearance": "light",
+      "actions": [{ "key": "Escape" }],
+      "expect": {
+        "size": { "width": 1680, "height": 1050 },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 500,
+            "color": "#808080",
+            "note": "Launchpad is gone: the fixture's flat picture, undimmed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "check-folder-light",
+      "description": "A check, not a comparison with a capture: the folder Other open on the demo's screen over a flat grey, Aqua. The points pin the panel's four edges where the Launchpad-Folder captures have them, the first and the last placeholder in it, and that the search field, the page dots and the Dock are gone.",
+      "example": "visual-checks-folder",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 1680, "height": 1050 },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 500,
+            "color": "#4d4d4d",
+            "note": "the open folder's dimming, 8% black over the scrim's #545454 (computed from --mac-launchpad-folder-scrim)"
+          },
+          {
+            "x": 139.5,
+            "y": 500,
+            "color": "#a3a3a3",
+            "note": "the panel's fill, 51% of #f5f5f5 over #4d4d4d (computed from --mac-launchpad-folder-fill), 2.5 pt inside the panel's left edge at 137 pt (measured in Launchpad-Folder @ 262,1300)"
+          },
+          {
+            "x": 134.5,
+            "y": 500,
+            "color": "#4d4d4d",
+            "note": "dimmed scrim 2.5 pt beyond that edge"
+          },
+          {
+            "x": 1540.5,
+            "y": 500,
+            "color": "#a3a3a3",
+            "note": "the fill 2.5 pt inside the panel's right edge at 1543 pt (measured @ 3070,1300)"
+          },
+          {
+            "x": 1545.5,
+            "y": 500,
+            "color": "#4d4d4d",
+            "note": "dimmed scrim 2.5 pt beyond that edge"
+          },
+          {
+            "x": 400,
+            "y": 233.5,
+            "color": "#a3a3a3",
+            "note": "the fill 2.5 pt under the panel's top edge at 231 pt (measured @ 1000,440)"
+          },
+          {
+            "x": 400,
+            "y": 228.5,
+            "color": "#4d4d4d",
+            "note": "dimmed scrim 2.5 pt above that edge"
+          },
+          {
+            "x": 400,
+            "y": 801.5,
+            "color": "#a3a3a3",
+            "note": "the fill 2.5 pt above the panel's bottom edge at 804 pt (measured @ 1000,1590)"
+          },
+          {
+            "x": 400,
+            "y": 806.5,
+            "color": "#4d4d4d",
+            "note": "dimmed scrim 2.5 pt under that edge"
+          },
+          {
+            "x": 208,
+            "y": 338.5,
+            "color": "#28cd41",
+            "note": "the first placeholder's plate in the panel (Grapher, --mac-color-system-green) 2 pt inside its left edge: first column centred at 254 pt, as in the grid, first row's icon box 51.5 pt under the panel's top"
+          },
+          {
+            "x": 690,
+            "y": 670.5,
+            "color": "#28cd41",
+            "note": "the 17th and last placeholder's plate (Audio MIDI Setup) 2 pt inside its right edge: third column, third row, centred at 644, 670.5 pt"
+          },
+          {
+            "x": 694,
+            "y": 670.5,
+            "color": "#a3a3a3",
+            "note": "the panel's fill 2 pt beyond that edge"
+          },
+          {
+            "x": 644,
+            "y": 721,
+            "color": "#a3a3a3",
+            "note": "the panel's fill 2.5 pt under the same plate's bottom edge at 718.5 pt, above its name"
+          },
+          {
+            "x": 840,
+            "y": 1040,
+            "color": "#4d4d4d",
+            "note": "no Dock while a folder is open, as in the Launchpad-Folder captures"
+          },
+          {
+            "x": 828.75,
+            "y": 918,
+            "color": "#4d4d4d",
+            "note": "no page dots while a folder is open"
+          },
+          {
+            "x": 840,
+            "y": 37.5,
+            "color": "#4d4d4d",
+            "note": "no search field while a folder is open"
+          }
+        ]
+      }
+    },
+    {
+      "name": "check-folder-escape-light",
+      "description": "A check in a real browser, Aqua: Escape closes the open folder and leaves Launchpad, with its page dots and the Dock back.",
+      "example": "visual-checks-folder",
+      "appearance": "light",
+      "actions": [{ "key": "Escape" }],
+      "expect": {
+        "size": { "width": 1680, "height": 1050 },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 500,
+            "color": "#545454",
+            "note": "the folder is closed and Launchpad stays: its scrim, without the folder's dimming"
+          },
+          { "x": 828.75, "y": 918, "color": "#ffffff", "note": "the page dots are back" },
+          {
+            "x": 143.5,
+            "y": 1040,
+            "color": "#828282",
+            "note": "the Dock is back: its material over the scrim (computed from --mac-material-dock)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "check-grid-dark",
+      "description": "A check, not a comparison with a capture: Launchpad on the demo's screen over a flat grey, Dark Aqua. The same points as check-grid-light: the search field's edges, the first and the last placeholder of the grid, the two page dots, and the Dock's ends and top, by colours computed from the library's tokens.",
+      "example": "visual-checks",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 1680, "height": 1050 },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 500,
+            "color": "#545454",
+            "note": "Launchpad's scrim, 44% of #1c1c1c over the fixture's #808080 (computed from --mac-launchpad-scrim)"
+          },
+          {
+            "x": 840,
+            "y": 25.5,
+            "color": "#787878",
+            "note": "the search field's top border, 21% white over #545454 (computed from --mac-launchpad-search-border): the field starts 25 pt from the top, measured in Launchpad @ 1500,50"
+          },
+          { "x": 840, "y": 23, "color": "#545454", "note": "scrim above the field" },
+          {
+            "x": 716.5,
+            "y": 37.5,
+            "color": "#5f5f5f",
+            "note": "the field's fill 1.5 pt inside its left edge at 715 pt, 6.5% white over #545454 (computed from --mac-launchpad-search-fill); edge measured in Launchpad @ 1430,74"
+          },
+          {
+            "x": 966.5,
+            "y": 37.5,
+            "color": "#545454",
+            "note": "scrim 1.5 pt beyond the field's right edge at 965 pt (measured)"
+          },
+          {
+            "x": 208,
+            "y": 131.5,
+            "color": "#98989d",
+            "note": "the first placeholder's plate (App Store, --mac-color-system-gray) 2 pt inside the left edge of its 96 pt plate: its icon box is centred at 254, 131.5 pt, the measured first column and row"
+          },
+          { "x": 204, "y": 131.5, "color": "#545454", "note": "scrim 2 pt beyond that edge" },
+          {
+            "x": 254,
+            "y": 86,
+            "color": "#98989d",
+            "note": "the same plate 2.5 pt under its top edge at 83.5 pt"
+          },
+          { "x": 254, "y": 81, "color": "#545454", "note": "scrim 2.5 pt above that edge" },
+          {
+            "x": 1470,
+            "y": 795.5,
+            "color": "#bf5af2",
+            "note": "the last placeholder's plate (Image Capture, --mac-color-system-purple) 2 pt inside its right edge: seventh column, fifth row, centred at 1424, 795.5 pt (254 + 6 x 195, 131.5 + 4 x 166: measured pitches)"
+          },
+          { "x": 1474, "y": 795.5, "color": "#545454", "note": "scrim 2 pt beyond that edge" },
+          {
+            "x": 1424,
+            "y": 841,
+            "color": "#bf5af2",
+            "note": "the same plate 2.5 pt above its bottom edge at 843.5 pt"
+          },
+          {
+            "x": 1424,
+            "y": 846,
+            "color": "#545454",
+            "note": "scrim 2.5 pt under that edge, above the name"
+          },
+          {
+            "x": 828.75,
+            "y": 918,
+            "color": "#ffffff",
+            "note": "the current page's dot; centre measured in Launchpad @ 1657,1836"
+          },
+          {
+            "x": 848.75,
+            "y": 918,
+            "color": "#767676",
+            "note": "the other page's dot, 20% white over #545454 (computed from --mac-page-control-overlay-dot); centre measured in Launchpad @ 1697,1836"
+          },
+          { "x": 838.75, "y": 918, "color": "#545454", "note": "scrim between the two dots" },
+          {
+            "x": 143.5,
+            "y": 1040,
+            "color": "#4e4e4e",
+            "note": "the Dock's material, 25% of #3c3c3c over the scrim's #545454 (computed from --mac-material-dock), inside the shelf's left end at 141 pt and its 1 pt border: the Dock of the captures is 1398 pt wide, measured @ 282,1940"
+          },
+          {
+            "x": 138,
+            "y": 1040,
+            "color": "#545454",
+            "note": "scrim beyond the shelf's left end"
+          },
+          {
+            "x": 1536.5,
+            "y": 1040,
+            "color": "#4e4e4e",
+            "note": "the shelf inside its right end at 1539 pt"
+          },
+          {
+            "x": 1542,
+            "y": 1040,
+            "color": "#545454",
+            "note": "scrim beyond the shelf's right end"
+          },
+          {
+            "x": 150,
+            "y": 967,
+            "color": "#545454",
+            "note": "scrim above the shelf, whose top is at 970 pt (measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "check-page-two-dark",
+      "description": "A check in a real browser, Dark Aqua: Right Arrow on the freshly shown Launchpad turns to the second page.",
+      "example": "visual-checks",
+      "appearance": "dark",
+      "actions": [{ "key": "ArrowRight" }],
+      "expect": {
+        "size": { "width": 1680, "height": 1050 },
+        "pixels": [
+          {
+            "x": 828.75,
+            "y": 918,
+            "color": "#767676",
+            "note": "the first page's dot is no longer current: 20% white over #545454 (computed)"
+          },
+          { "x": 848.75, "y": 918, "color": "#ffffff", "note": "the second page's dot is current" },
+          {
+            "x": 208,
+            "y": 131.5,
+            "color": "#32d74b",
+            "note": "the first place holds the second page's first application (Automator, --mac-color-system-green)"
+          },
+          {
+            "x": 1378,
+            "y": 131.5,
+            "color": "#545454",
+            "note": "the seventh place of the first row is empty: the second page holds six applications"
+          }
+        ]
+      }
+    },
+    {
+      "name": "check-search-dark",
+      "description": "A check in a real browser, Dark Aqua: a letter typed on the freshly shown Launchpad goes to the search field; the two matches are on one page, one of them from inside the folder, and the page dots are gone.",
+      "example": "visual-checks",
+      "appearance": "dark",
+      "actions": [{ "key": "x" }],
+      "expect": {
+        "size": { "width": 1680, "height": 1050 },
+        "pixels": [
+          {
+            "x": 208,
+            "y": 131.5,
+            "color": "#32d74b",
+            "note": "the first match is Bluetooth File Exchange, found inside the folder (--mac-color-system-green)"
+          },
+          {
+            "x": 403,
+            "y": 131.5,
+            "color": "#ff9f0a",
+            "note": "the second is TextEdit (--mac-color-system-orange)"
+          },
+          { "x": 598, "y": 131.5, "color": "#545454", "note": "there is no third match: scrim" },
+          {
+            "x": 828.75,
+            "y": 918,
+            "color": "#545454",
+            "note": "no page dot while searching: scrim"
+          },
+          {
+            "x": 848.75,
+            "y": 918,
+            "color": "#545454",
+            "note": "no page dot while searching: scrim"
+          }
+        ]
+      }
+    },
+    {
+      "name": "check-dock-launch-dark",
+      "description": "A check in a real browser, Dark Aqua: a click on Safari in the Dock while Launchpad shows closes Launchpad, and the Dock stays.",
+      "example": "visual-checks",
+      "appearance": "dark",
+      "actions": [{ "click": ".mac-dock-item[aria-label='Safari']" }],
+      "expect": {
+        "size": { "width": 1680, "height": 1050 },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 500,
+            "color": "#808080",
+            "note": "Launchpad is gone: the fixture's flat picture, undimmed"
+          },
+          { "x": 828.75, "y": 918, "color": "#808080", "note": "no page dot" },
+          {
+            "x": 143.5,
+            "y": 1040,
+            "color": "#6f6f6f",
+            "note": "the Dock is still there: its material, 25% of #3c3c3c over the bare #808080 (computed from --mac-material-dock)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "check-escape-dark",
+      "description": "A check in a real browser, Dark Aqua: Escape closes Launchpad.",
+      "example": "visual-checks",
+      "appearance": "dark",
+      "actions": [{ "key": "Escape" }],
+      "expect": {
+        "size": { "width": 1680, "height": 1050 },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 500,
+            "color": "#808080",
+            "note": "Launchpad is gone: the fixture's flat picture, undimmed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "check-folder-dark",
+      "description": "A check, not a comparison with a capture: the folder Other open on the demo's screen over a flat grey, Dark Aqua. The same points as check-folder-light: the panel's four edges, the first and the last placeholder in it, and no search field, page dots or Dock.",
+      "example": "visual-checks-folder",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 1680, "height": 1050 },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 500,
+            "color": "#4d4d4d",
+            "note": "the open folder's dimming, 8% black over the scrim's #545454 (computed from --mac-launchpad-folder-scrim)"
+          },
+          {
+            "x": 139.5,
+            "y": 500,
+            "color": "#a3a3a3",
+            "note": "the panel's fill, 51% of #f5f5f5 over #4d4d4d (computed from --mac-launchpad-folder-fill), 2.5 pt inside the panel's left edge at 137 pt (measured in Launchpad-Folder @ 262,1300)"
+          },
+          {
+            "x": 134.5,
+            "y": 500,
+            "color": "#4d4d4d",
+            "note": "dimmed scrim 2.5 pt beyond that edge"
+          },
+          {
+            "x": 1540.5,
+            "y": 500,
+            "color": "#a3a3a3",
+            "note": "the fill 2.5 pt inside the panel's right edge at 1543 pt (measured @ 3070,1300)"
+          },
+          {
+            "x": 1545.5,
+            "y": 500,
+            "color": "#4d4d4d",
+            "note": "dimmed scrim 2.5 pt beyond that edge"
+          },
+          {
+            "x": 400,
+            "y": 233.5,
+            "color": "#a3a3a3",
+            "note": "the fill 2.5 pt under the panel's top edge at 231 pt (measured @ 1000,440)"
+          },
+          {
+            "x": 400,
+            "y": 228.5,
+            "color": "#4d4d4d",
+            "note": "dimmed scrim 2.5 pt above that edge"
+          },
+          {
+            "x": 400,
+            "y": 801.5,
+            "color": "#a3a3a3",
+            "note": "the fill 2.5 pt above the panel's bottom edge at 804 pt (measured @ 1000,1590)"
+          },
+          {
+            "x": 400,
+            "y": 806.5,
+            "color": "#4d4d4d",
+            "note": "dimmed scrim 2.5 pt under that edge"
+          },
+          {
+            "x": 208,
+            "y": 338.5,
+            "color": "#32d74b",
+            "note": "the first placeholder's plate in the panel (Grapher, --mac-color-system-green) 2 pt inside its left edge: first column centred at 254 pt, as in the grid, first row's icon box 51.5 pt under the panel's top"
+          },
+          {
+            "x": 690,
+            "y": 670.5,
+            "color": "#32d74b",
+            "note": "the 17th and last placeholder's plate (Audio MIDI Setup) 2 pt inside its right edge: third column, third row, centred at 644, 670.5 pt"
+          },
+          {
+            "x": 694,
+            "y": 670.5,
+            "color": "#a3a3a3",
+            "note": "the panel's fill 2 pt beyond that edge"
+          },
+          {
+            "x": 644,
+            "y": 721,
+            "color": "#a3a3a3",
+            "note": "the panel's fill 2.5 pt under the same plate's bottom edge at 718.5 pt, above its name"
+          },
+          {
+            "x": 840,
+            "y": 1040,
+            "color": "#4d4d4d",
+            "note": "no Dock while a folder is open, as in the Launchpad-Folder captures"
+          },
+          {
+            "x": 828.75,
+            "y": 918,
+            "color": "#4d4d4d",
+            "note": "no page dots while a folder is open"
+          },
+          {
+            "x": 840,
+            "y": 37.5,
+            "color": "#4d4d4d",
+            "note": "no search field while a folder is open"
+          }
+        ]
+      }
+    },
+    {
+      "name": "check-folder-escape-dark",
+      "description": "A check in a real browser, Dark Aqua: Escape closes the open folder and leaves Launchpad, with its page dots and the Dock back.",
+      "example": "visual-checks-folder",
+      "appearance": "dark",
+      "actions": [{ "key": "Escape" }],
+      "expect": {
+        "size": { "width": 1680, "height": 1050 },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 500,
+            "color": "#545454",
+            "note": "the folder is closed and Launchpad stays: its scrim, without the folder's dimming"
+          },
+          { "x": 828.75, "y": 918, "color": "#ffffff", "note": "the page dots are back" },
+          {
+            "x": 143.5,
+            "y": 1040,
+            "color": "#4e4e4e",
+            "note": "the Dock is back: its material over the scrim (computed from --mac-material-dock)"
+          }
+        ]
+      }
+    }
+  ]
+}

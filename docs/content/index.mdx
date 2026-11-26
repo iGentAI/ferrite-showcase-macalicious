@@ -1,0 +1,81 @@
+---
+title: Introduction
+description: macOS 10.15 Catalina, rebuilt as React components. Plain HTML, CSS and JavaScript.
+group: Overview
+order: 1
+---
+
+Macalicious is a React component library for building web pages that look like macOS 10.15
+Catalina, in the light (Aqua) and dark (Dark Aqua) appearances. Every control is drawn with CSS:
+no bitmap images, no canvas. Behaviour and accessibility come from
+[Base UI](https://base-ui.com); the look is measured from the
+[512 Pixels Aqua Screenshot Library](https://512pixels.net/projects/aqua-screenshot-library/macos-10-15-catalina/).
+
+```tsx
+import { PushButton } from "macalicious/push-button";
+import "macalicious/styles.css";
+
+export function GoToFolder() {
+  return (
+    <footer style={{ display: "flex", gap: 12, justifyContent: "flex-end" }}>
+      <PushButton>Cancel</PushButton>
+      <PushButton variant="primary">Go</PushButton>
+    </footer>
+  );
+}
+```
+
+## The path through these pages
+
+Read in this order to go from nothing to a Catalina application in a browser tab:
+
+1. [Getting started](/installation): install the package or copy a component's source, import
+   the styles, and render a first page.
+2. [Theming](/theming): the attributes that switch appearance, accent colour and highlight
+   colour, and the tokens behind every colour, font and metric.
+3. [Building a window](/building-a-window): what makes an element a window, the three window
+   states, and how controls follow them.
+4. [Building an app](/building-an-app): several windows, a desktop, and the application demos.
+5. [Fidelity limits](/fidelity): what matches the reference screenshots and what a browser
+   cannot reproduce. Read it before promising anyone a pixel match.
+
+[Typography](/typography) and [Visual comparison](/visual-comparison) go deeper into two of
+the foundations. If you are a coding agent, or you work with one, the same documentation exists
+as plain Markdown: see [For coding agents](/machine-readable-docs).
+
+## Components
+
+Every component has a page with live examples in both appearances, its props, its states and
+its accessibility notes. [Components](/components) shows them all as pictures, in Aqua and in
+Dark Aqua. This list is generated from the component folders, as the sidebar is:
+
+<PageList group="Components" empty="No component pages have been built into this site." />
+
+## Demos
+
+The [Desktop](/demos/desktop) is a whole Catalina screen in the page: a menu bar, a Dock and a
+window manager that runs the application demos as windows. Each demo rebuilds one Catalina
+application from the library's components and has a page of its own; [Demos](/demos)
+shows them all as pictures. To use the desktop on its own, without the documentation around it,
+open the [full-window desktop](/desktop/). The list is generated from the demo folders like the one above:
+
+<PageList group="Demos" empty="No demo pages have been built into this site." />
+
+## How the library is organised
+
+- **Components** are named after their AppKit counterparts and take the parameters AppKit
+  gives them: a control size of regular, small or mini, a window that is key, main or inactive,
+  an accent colour.
+- **Tokens** hold every colour, font, radius, shadow and metric as CSS custom properties.
+  Appearance, accent colour and highlight colour are switched with one attribute each. See
+  [Theming](/theming).
+- **Two ways to use it**: install the package, or copy a component's source into your project
+  in the style of shadcn/ui. See [Getting started](/installation).
+- **Visual comparisons** render a component in a real browser and score it against a crop of a
+  reference screenshot. See [Visual comparison](/visual-comparison).
+
+## What cannot be identical in a browser
+
+See [Fidelity limits](/fidelity) for the full list. In short: text is only San Francisco on Apple
+devices, vibrancy can blur page content but not the desktop behind the browser, and a 1x display
+cannot show the half-point hairlines that the 2x reference screenshots are made of.

@@ -1,0 +1,126 @@
+/*
+ * Gallery view (Finder's gallery view): a large preview above a strip of thumbnails, and an
+ * optional inspector pane beside them.
+ *
+ * Parts
+ *   .mac-gallery-view            the root: sized by the caller
+ *   .mac-gallery-view-main       the gallery: stage above strip
+ *   .mac-gallery-view-stage      the preview's area: the preview is centred in it, 32 pt from
+ *                                the sides
+ *   .mac-gallery-view-strip      the thumbnail strip: a horizontal scroll view, 62 pt high
+ *   .mac-gallery-view-list       its scrolling element, the listbox
+ *   .mac-gallery-view-items      as wide as all thumbnails together; holds the rendered ones
+ *   .mac-gallery-view-item       one thumbnail's 54 pt square, at a 62 pt pitch; the
+ *                                thumbnail is centred in the 48 pt inside it
+ *   .mac-gallery-view-inspector  the 250 pt pane after a 1 pt divider
+ *
+ * States
+ *   [aria-selected="true"]       on an item: a grey rounded backdrop. Catalina does not tint
+ *                                it with the accent, and it is the same in a window that is
+ *                                not key
+ *   :focus-visible               on the list: focus ring inside the edge of the gallery, in a
+ *                                key window
+ *
+ * Hooks
+ *   --mac-gallery-view-background   background of the gallery and the inspector (default: the
+ *                                   control background)
+ */
+.mac-gallery-view {
+  display: flex;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--mac-gallery-view-background, var(--mac-color-control-background));
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  cursor: default;
+}
+
+.mac-gallery-view-main {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-width: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* One ring for the gallery, not for the strip alone: the preview belongs to the selection. */
+.mac-gallery-view-main:where(:has(.mac-gallery-view-list:focus-visible)) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+.mac-gallery-view-main:where(:where([data-window-state="main"], [data-window-state="inactive"]) *) {
+  outline: none;
+}
+
+.mac-gallery-view-strip > .mac-gallery-view-list {
+  outline: none;
+}
+
+.mac-gallery-view-stage {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 0;
+  margin: 0;
+  padding: 16px 32px;
+  overflow: hidden;
+}
+
+/* The backdrops touch the strip's top; 8 pt stay free under them. */
+.mac-gallery-view-strip {
+  flex: none;
+  height: calc(var(--_thumbnail) + 8px);
+}
+
+.mac-gallery-view-items {
+  display: flex;
+  gap: 8px;
+  box-sizing: border-box;
+  height: var(--_thumbnail);
+}
+
+.mac-gallery-view-item {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--_thumbnail);
+  height: var(--_thumbnail);
+  padding: 3px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.mac-gallery-view-item:where([aria-selected="true"]) {
+  background: var(--mac-gallery-view-selection);
+}
+
+.mac-gallery-view-inspector {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 251px;
+  overflow: hidden;
+  border-inline-start: 1px solid var(--mac-color-split-divider);
+}
+
+@media (forced-colors: active) {
+  .mac-gallery-view-item:where([aria-selected="true"]) {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .mac-gallery-view-inspector {
+    border-color: CanvasText;
+  }
+}

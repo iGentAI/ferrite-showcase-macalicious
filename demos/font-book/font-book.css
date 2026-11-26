@@ -1,0 +1,335 @@
+/*
+ * Font Book demo: the layout of the app around the library's components. All measurements are
+ * points of the reference screenshots (reference/spec/apps/font-book.md).
+ *
+ * Parts
+ *   .mac-font-book                  the window
+ *   .mac-font-book-body             the window's body: the split view fills it
+ *   .mac-font-book-split            the split view
+ *   .mac-font-book-sidebar          the collections
+ *   .mac-font-book-footer           the strip under the collections that holds the plus
+ *   .mac-font-book-add-collection   the plus
+ *   .mac-font-book-custom-glyph     "Aa" and an insertion point, the glyph of the Custom view
+ *   .mac-font-book-list             the font list
+ *   .mac-font-book-off              "Off" at the end of a disabled family's row
+ *   .mac-font-book-preview          the preview pane
+ *   .mac-font-book-size             "Size:" and its combo box, at the pane's top right
+ *   .mac-font-book-size-label       "Size:"
+ *   .mac-font-book-size-field       the combo box
+ *   .mac-font-book-slider           the vertical slider under them
+ *   .mac-font-book-stage            the column of the font's name and the view
+ *   .mac-font-book-title            the font's name
+ *   .mac-font-book-view             the view under the name: fills the rest of the pane
+ *   .mac-font-book-sample           the text of the Sample and Custom views
+ *   .mac-font-book-repertoire       the grid of the Repertoire view
+ *   .mac-font-book-info             the table of the Info view
+ *   .mac-font-book-menu-area        what takes a secondary click: the sidebar, the font list
+ *   .mac-font-book-custom-area      what takes a secondary click in the Custom view
+ *   .mac-font-book-rename           the field a collection's name is edited in
+ *   .mac-font-book-row              a row's text in the font list
+ *   .mac-font-book-drag             the name beside the pointer while fonts are dragged
+ *   .mac-font-book-several          one font of several in the Sample view
+ *   .mac-font-book-sheet-list       the list in the validation and duplicates sheets
+ *   .mac-font-book-smart-rule       one rule of the smart collection sheet
+ *   .mac-font-book-several-custom   the text every font shows in the Custom view of several
+ *   .mac-font-book-preference-note  why a preference is dimmed, wrapped to the pane's width
+ *   .mac-font-book-tools            a row of items in the Customize Toolbar sheet
+ *   .mac-font-book-tools-item       one of them
+ *   .mac-font-book-tools-part       its button
+ *   .mac-font-book-install-sample   the font in the sheet of a file opened from Finder
+ *
+ * States
+ *   [data-view="sample" | "repertoire" | "custom" | "info"]   on the preview pane
+ *   [data-font-drop]                on the collection that fonts dragged over it would go in
+ */
+.mac-font-book-body {
+  display: flex;
+  overflow: hidden;
+}
+
+.mac-font-book-split {
+  flex: 1 1 auto;
+}
+
+/* Font Book's source list; its measurements are the sidebar's hooks, set on the element. */
+.mac-font-book-sidebar {
+  height: 100%;
+}
+
+/* The plus is 11 pt, 17.5 pt from the pane's edge and 18.5 pt above the window's; the button
+   keeps the image button's 5 pt of clear space around it. */
+.mac-font-book-footer {
+  display: flex;
+  flex: none;
+  padding: 0 0 13.5px 12.5px;
+}
+
+.mac-font-book-add-collection {
+  color: var(--mac-font-book-add);
+}
+
+.mac-font-book-custom-glyph {
+  display: inline-flex;
+  gap: 1px;
+  align-items: center;
+}
+
+.mac-font-book-list {
+  height: 100%;
+}
+
+.mac-font-book-off {
+  float: inline-end;
+  padding-inline: 8px 4px;
+}
+
+/* A secondary click's area around a pane: no box of its own, so the pane keeps its layout. */
+.mac-font-book-menu-area {
+  display: contents;
+}
+
+.mac-font-book-row {
+  display: block;
+}
+
+.mac-font-book-smart-rules {
+  margin: var(--mac-space-control-gap) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-font-book-smart-rule {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-font-book-smart-rule-gap);
+  margin-block-end: var(--mac-font-book-smart-rule-gap);
+}
+
+.mac-font-book-sheet-list {
+  max-height: var(--mac-font-book-sheet-list-height);
+  margin-block: var(--mac-space-control-gap);
+  font: var(--mac-font-control-small);
+}
+
+.mac-font-book-sheet-list ul {
+  margin: 0;
+  padding-inline-start: var(--mac-space-control-gap);
+}
+
+.mac-font-book-sheet-list > * > ul,
+.mac-font-book-sheet-list > ul {
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+.mac-font-book-rename {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 0 2px;
+  border: 0;
+  border-radius: 2px;
+  outline: 2px solid var(--mac-accent);
+  background: var(--mac-color-control-background);
+  color: var(--mac-color-label);
+  font: inherit;
+}
+
+[data-font-drop] {
+  outline: 2px solid var(--mac-accent);
+  outline-offset: -2px;
+}
+
+.mac-font-book-drag {
+  position: fixed;
+  z-index: 10000;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: var(--mac-accent);
+  color: var(--mac-color-selected-text);
+  font: var(--mac-font-body);
+  pointer-events: none;
+}
+
+.mac-font-book-several {
+  padding: 0 20px 20px;
+  text-align: center;
+}
+
+.mac-font-book-several-name {
+  margin: 0 0 4px;
+  color: var(--mac-font-book-title);
+  font: var(--mac-font-body);
+}
+
+.mac-font-book-several-sample {
+  color: var(--mac-color-label);
+  white-space: pre-wrap;
+}
+
+.mac-font-book-several-custom {
+  flex: none;
+  height: var(--mac-font-book-several-custom-height);
+  margin-block-start: 5.5px;
+  border-block-end: 1px solid var(--mac-color-separator);
+  color: var(--mac-color-label);
+}
+
+.mac-font-book-several .mac-font-book-repertoire,
+.mac-font-book-several .mac-font-book-info {
+  padding-inline: 0;
+}
+
+.mac-font-book-preference-note {
+  width: 300px;
+  margin: 0;
+}
+
+.mac-font-book-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-font-book-smart-rule-gap);
+  margin: var(--mac-font-book-smart-rule-gap) 0 var(--mac-space-control-gap);
+  padding: var(--mac-font-book-smart-rule-gap);
+  border: 1px solid var(--mac-color-separator);
+  border-radius: 4px;
+  list-style: none;
+}
+
+.mac-font-book-tools-item,
+.mac-font-book-tools-part {
+  border: 0;
+  background: var(--mac-color-control-background);
+  color: var(--mac-color-label);
+  font: var(--mac-font-control-small);
+}
+
+.mac-font-book-tools-item {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 3px;
+}
+
+.mac-font-book-tools-item:disabled {
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-font-book-install-sample {
+  margin-block: var(--mac-space-control-gap);
+  overflow: hidden;
+  color: var(--mac-color-label);
+  font-size: var(--mac-font-book-install-sample-size);
+  line-height: 1.2;
+  text-align: center;
+  white-space: pre-line;
+}
+
+.mac-font-book-several-more {
+  margin: 0;
+  padding-block-end: 20px;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-body);
+  text-align: center;
+}
+
+.mac-font-book-preview {
+  position: relative;
+  background: var(--mac-font-book-preview-background);
+}
+
+/* The combo box is 51 pt wide, 10.5 pt from the window's edge and 14.5 pt under the toolbar;
+   its label's colon ends 9.5 pt before it. */
+.mac-font-book-size {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 14.5px;
+  inset-inline-end: 10.5px;
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
+
+.mac-font-book-size-label {
+  color: var(--mac-font-book-size-label);
+}
+
+.mac-font-book-size-field {
+  width: 51px;
+}
+
+/* The slider's 3 pt track is 28 pt from the window's edge, from 43 pt under the toolbar to
+   20.5 pt above the window's bottom edge. */
+.mac-font-book-slider {
+  position: absolute;
+  z-index: 1;
+  inset-block: 43px 20.5px;
+  inset-inline-end: 21px;
+  height: auto;
+}
+
+/* The text is centred on the pane less 46 pt at its trailing edge, where the slider is. */
+.mac-font-book-stage {
+  position: absolute;
+  inset: 0;
+  inset-inline-end: 46px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 20 pt, its baseline 65 pt under the toolbar; it stays clear of the size control. */
+.mac-font-book-title {
+  flex: none;
+  margin: 46px 0 0;
+  padding-inline: 60px;
+  overflow: hidden;
+  color: var(--mac-font-book-title);
+  font: var(--mac-font-title-1);
+  font-size: 20px;
+  line-height: 24px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-font-book-view {
+  flex: 1 1 0;
+  min-height: 0;
+  margin-block-start: 5.5px;
+}
+
+/* The sample is the library's text view, on the pane's own background (the text view's hook,
+   set on the element), centred, in the label colour the capture's glyphs have. The font, its
+   size and its line height are set inline. */
+/* What takes a secondary click in the Custom view: lays nothing out itself. */
+.mac-font-book-custom-area {
+  display: contents;
+}
+
+.mac-font-book-sample {
+  color: var(--mac-color-label);
+  text-align: center;
+}
+
+.mac-font-book-repertoire {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(1.5em, 1fr));
+  padding: 0 20px 20px;
+  color: var(--mac-color-label);
+  line-height: 1.5;
+  text-align: center;
+}
+
+.mac-font-book-info {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 6px 8px;
+  margin: 0;
+  padding: 14px 20px 20px;
+}
+
+.mac-font-book-info-term,
+.mac-font-book-info-value {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}

@@ -1,0 +1,121 @@
+---
+title: Disclosure Triangle
+description: A small triangle that points right while its content is hidden and down while it is shown.
+order: 17
+---
+
+<Example name="basic" both />
+
+AppKit calls this control a *disclosure triangle* (`NSButton` with the disclosure bezel
+style, and the disclosure button of an outline view). It is built on
+[Base UI's Button](https://base-ui.com/react/components/button) and adds the expanded state.
+
+## Usage
+
+```tsx
+import { DisclosureTriangle } from "macalicious/disclosure-triangle";
+import "macalicious/disclosure-triangle.css";
+
+<DisclosureTriangle
+  expanded={expanded}
+  onExpandedChange={setExpanded}
+  aria-controls="advanced"
+  aria-label="Advanced options"
+/>
+```
+
+Leave out `expanded` to let the triangle keep its own state (`defaultExpanded` sets the
+start). The component is the triangle alone: it does not show or hide anything itself. Or copy
+the source into your project: `npx macalicious add disclosure-triangle`. See
+[Installation](/installation).
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for disclosure controls:
+
+- A disclosure triangle shows and hides content that belongs to a view or to an item of a
+  list. It points right while the content is hidden and down while it is shown.
+- In a dialog give it a label that says what it reveals, and consider changing the label with
+  the state ("Show advanced options", "Hide advanced options").
+- In a list, as in the Finder's list view, a triangle reveals the children of its row.
+
+<Example name="with-label" />
+
+In the outline of the Desktop & Screen Saver pane the triangle's ink starts 8.5 pt from the
+list's left edge and the row's text 13 pt after that; rows are 20 pt apart.
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Collapsed | – | 7.5 x 9 pt triangle pointing right, in the secondary label colour |
+| Expanded | `expanded` or `defaultExpanded` | The same triangle a quarter turn clockwise, 9 x 7.5 pt |
+| Pressed | `:active` | Darkens to the label colour |
+| Keyboard focus | `:focus-visible` | Focus ring around the 13 pt frame |
+| Disabled | `disabled` | Half opacity |
+| In a selected row | the row sets `--mac-disclosure-triangle-color` (see below) | The row's text colour |
+| In a section header | the header sets `--mac-disclosure-triangle-color` (see below) | Finder's Info window draws the triangle of a section header lighter, on the window background: `#8c8c8c` in Aqua and `#7c7c7c` in Dark Aqua, recorded in the spec of the inspector panel. The library has no token for that colour, so the header supplies it |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | Unchanged, but no focus ring |
+
+`--mac-disclosure-triangle-color` is a hook for an application: set it in your own CSS or in
+an inline style, on the triangle or on any ancestor (it inherits). A component inside this
+library cannot use it from its stylesheet, because the convention check lets a component
+declare only its own `--mac-<name>-*` variables; such a component passes `className` to the
+triangle and sets `color` through a selector of its own (the outline view and the sidebar do).
+
+The turn takes 0.1 s, and is instant when the system asks for reduced motion.
+
+## Sizes
+
+One size: the triangle sits in AppKit's 13 x 13 pt disclosure frame, which is the click
+target. There is no `size` prop.
+
+## API
+
+<PropsTable name="DisclosureTriangleProps" />
+
+| Attribute or variable | Values | Description |
+| --- | --- | --- |
+| `aria-expanded` | `true`, `false` | The state, for assistive technology. |
+| `data-expanded` | present or absent | Present while expanded. |
+| `data-disabled` | present or absent | Set by Base UI while the triangle is disabled. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+| `--mac-disclosure-triangle-color` | a colour | The triangle's colour. An application sets it on a selected, emphasised row to the row's text colour. |
+
+## Accessibility
+
+- Renders a native `<button>` with `aria-expanded`. Space and Return toggle it; Tab reaches it.
+- It has no title: name it with `aria-label`, or with `aria-labelledby` pointing at its visible
+  label. Point `aria-controls` at the content it shows and hides.
+- In a tree or an outline the row is the control (`role="treeitem"` with `aria-expanded`, Right
+  and Left Arrow to expand and collapse); there the triangle is the row's pointer target and
+  should leave the tab order (`tabIndex={-1}`).
+- In forced-colours mode the triangle is drawn in the system's button text colour.
+
+## Visual comparison
+
+The examples `visual-expanded` and `visual-collapsed` reproduce the two triangles in the
+outline of the Desktop & Screen Saver pane and are compared with the screenshots in both
+appearances by `npm run visual` (`disclosure-triangle.visual.json`). Share of pixels that
+differ at 2x at half the default colour distance, in Chromium on Linux:
+
+| Crop, 14 x 14 pt | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Expanded | 0.00% | 0.00% |
+| Collapsed | 0.00% | 0.00% |
+
+The shape, the size in both states and the colour on a list background are measured.
+
+No screenshot shows a triangle pressed, focused or disabled; those looks are the spec's
+inference and provisional. They are checked in a real browser against the spec's values (the
+`expect` comparisons): the colour at rest on the window background, the label colour under a
+real mouse press, the turn after a real click, the focus ring after a real Tab, the disabled
+colour, and that the ring is absent in an inactive window. The triangle of a Finder Info
+section header measures slightly lighter than the secondary label colour on a window
+background (#8c8c8c against #767676); that context belongs to the inspector panel and is not
+reproduced here.

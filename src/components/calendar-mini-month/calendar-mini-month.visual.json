@@ -1,0 +1,124 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "calendar-light",
+      "description": "The mini month at the foot of Calendar's sidebar, Aqua: the rule, the title between its chevrons, the weekday initials and six weeks of October 2019 with the 3rd in today's disc. Whole crop: nearly all of it is text, set in the fallback font.",
+      "example": "visual-calendar",
+      "appearance": "light",
+      "reference": {
+        "file": "10-15-Catalina-Light-Calendar.png",
+        "crop": { "x": 114, "y": 996, "width": 326, "height": 326 }
+      },
+      "budget": { "1x": 0.068, "2x": 0.058 },
+      "deltaBudget": { "1x": 5.4, "2x": 5.2 }
+    },
+    {
+      "name": "calendar-light-drawing",
+      "description": "As calendar-light with the text masked (the title, the weekday initials, the first week beside today's disc and the five weeks under it), to score the rule, the chevrons, the sidebar's fill and today's disc with its number.",
+      "example": "visual-calendar",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 30, "y": 10, "width": 104, "height": 20 },
+        { "x": 6, "y": 37, "width": 152, "height": 14 },
+        { "x": 6, "y": 54, "width": 90, "height": 13 },
+        { "x": 117, "y": 54, "width": 42, "height": 13 },
+        { "x": 6, "y": 70, "width": 153, "height": 86 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Calendar.png",
+        "crop": { "x": 114, "y": 996, "width": 326, "height": 326 }
+      },
+      "budget": { "1x": 0.02, "2x": 0.0108 },
+      "deltaBudget": { "1x": 0.8, "2x": 0.55 }
+    },
+    {
+      "name": "calendar-dark",
+      "description": "The mini month at the foot of Calendar's sidebar, Dark Aqua, a day later: the 4th is in today's disc. Whole crop: nearly all of it is text, set in the fallback font.",
+      "example": "visual-calendar-dark",
+      "appearance": "dark",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Calendar.png",
+        "crop": { "x": 114, "y": 996, "width": 326, "height": 326 }
+      },
+      "budget": { "1x": 0.068, "2x": 0.057 },
+      "deltaBudget": { "1x": 5.4, "2x": 5.3 }
+    },
+    {
+      "name": "calendar-dark-drawing",
+      "description": "As calendar-dark with the text masked (the title, the weekday initials, the first week beside today's disc and the five weeks under it), to score the rule, the chevrons, the sidebar's fill and today's disc with its number.",
+      "example": "visual-calendar-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 30, "y": 10, "width": 104, "height": 20 },
+        { "x": 6, "y": 37, "width": 152, "height": 14 },
+        { "x": 6, "y": 54, "width": 112, "height": 13 },
+        { "x": 139, "y": 54, "width": 20, "height": 13 },
+        { "x": 6, "y": 70, "width": 153, "height": 86 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Calendar.png",
+        "crop": { "x": 114, "y": 996, "width": 326, "height": 326 }
+      },
+      "budget": { "1x": 0.019, "2x": 0.0136 },
+      "deltaBudget": { "1x": 1.5, "2x": 1.4 }
+    },
+    {
+      "name": "selected-light",
+      "description": "A selected day that is not today, Aqua: a click on the 16th puts it in a disc of the text colour. No screenshot shows a selected day; the look is inferred.",
+      "example": "visual-calendar",
+      "appearance": "light",
+      "actions": [{ "click": "[data-date='2019-10-16']" }],
+      "expect": {
+        "size": { "width": 163, "height": 163 },
+        "pixels": [
+          {
+            "x": 83.75,
+            "y": 89.5,
+            "color": "#353636",
+            "note": "inferred: the selected day's disc in the colour of the month's days, above its number"
+          },
+          {
+            "x": 83.75,
+            "y": 86.5,
+            "color": "#e8e9e9",
+            "note": "the sidebar just above the disc, which is 18 pt across and starts at 88 pt"
+          },
+          {
+            "x": 106,
+            "y": 56,
+            "color": "#dd0e04",
+            "note": "measured: today's disc keeps its red, Light-Calendar row 1114"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on a day, Dark Aqua: three presses of Tab pass the two chevrons and reach today, which the focus ring surrounds. No screenshot shows it.",
+      "example": "visual-calendar-dark",
+      "appearance": "dark",
+      "actions": [{ "tab": 3 }],
+      "expect": {
+        "size": { "width": 163, "height": 163 },
+        "pixels": [
+          {
+            "x": 139.5,
+            "y": 59.5,
+            "color": "#2c6b97",
+            "tolerance": 6,
+            "note": "inferred: the focus ring, rgb(43 168 255 / 0.5), over the sidebar's #2c2d2e at the trailing end of the day's box"
+          },
+          {
+            "x": 143,
+            "y": 59.5,
+            "color": "#2c2d2e",
+            "note": "the sidebar beyond the ring, which ends 2 pt outside the day's box, before Saturday's number"
+          }
+        ]
+      }
+    }
+  ]
+}

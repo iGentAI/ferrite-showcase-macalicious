@@ -1,0 +1,180 @@
+{
+  "$schema": "../../visual.schema.json",
+  "pending": "The harness's own checks: fixtures that prove what the runner does, so there is no screenshot to compare them with.",
+  "comparisons": [
+    {
+      "name": "pointer-parked",
+      "description": "Nothing is hovered unless an action hovers it. The block sits at the page origin, where a pointer that never moved rests; the runner takes the pointer out of the window before the capture.",
+      "example": "visual-pointer",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 40, "height": 20 },
+        "pixels": [
+          {
+            "x": 1,
+            "y": 1,
+            "color": "#1e6e32",
+            "tolerance": 0,
+            "note": "the fixture's colour at rest, beside the origin"
+          },
+          {
+            "x": 20,
+            "y": 10,
+            "color": "#1e6e32",
+            "tolerance": 0,
+            "note": "the fixture's colour at rest, in the middle"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pointer-parked-oversized",
+      "description": "A capture larger than the window, with no declared size: every point of the window is inside it, so the pointer is parked outside the window and the block is drawn at rest.",
+      "example": "visual-pointer-oversized",
+      "appearance": "light",
+      "expect": {
+        "pixels": [
+          {
+            "x": 1,
+            "y": 1,
+            "color": "#1e6e32",
+            "tolerance": 0,
+            "note": "the fixture's colour at rest, beside the origin"
+          },
+          {
+            "x": 400,
+            "y": 300,
+            "color": "#1e6e32",
+            "tolerance": 0,
+            "note": "the fixture's colour at rest, in the middle of the smallest window"
+          },
+          {
+            "x": 799,
+            "y": 599,
+            "color": "#1e6e32",
+            "tolerance": 0,
+            "note": "the fixture's colour at rest, at the bottom right corner of the smallest window, where the pointer used to be parked"
+          },
+          {
+            "x": 850,
+            "y": 650,
+            "color": "#1e6e32",
+            "tolerance": 0,
+            "note": "the fixture's colour at rest, beyond the edge of the smallest window: the capture is larger than the window"
+          }
+        ]
+      }
+    },
+    {
+      "name": "lazy-image-loaded",
+      "description": "An image marked loading=\"lazy\" far below the window is loaded before the capture, which reaches it: the page asks for it instead of waiting for a scroll that never comes.",
+      "example": "visual-lazy-image",
+      "appearance": "light",
+      "expect": {
+        "pixels": [
+          {
+            "x": 20,
+            "y": 3000,
+            "color": "#1e6e32",
+            "tolerance": 0,
+            "note": "the fixture's background, above the image"
+          },
+          {
+            "x": 20,
+            "y": 6010,
+            "color": "#1e3cc8",
+            "tolerance": 0,
+            "note": "the image's colour; the fixture's background shows instead while the image is not loaded"
+          }
+        ]
+      }
+    },
+    {
+      "name": "chained-image-loaded",
+      "description": "Three lazy images, each put on the page by the load handler of the one before: the page looks for images again until none is loading, so all of them are loaded before the capture.",
+      "example": "visual-chained-image",
+      "appearance": "light",
+      "expect": {
+        "pixels": [
+          {
+            "x": 20,
+            "y": 6010,
+            "color": "#1e3cc8",
+            "tolerance": 0,
+            "note": "the first image's colour"
+          },
+          {
+            "x": 20,
+            "y": 6040,
+            "color": "#c81e3c",
+            "tolerance": 0,
+            "note": "the second image's colour"
+          },
+          {
+            "x": 20,
+            "y": 6070,
+            "color": "#c8a01e",
+            "tolerance": 0,
+            "note": "the third image's colour; the fixture's background shows instead when the page looked for images only once per wait"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pointer-hover-action",
+      "description": "The same block hovered with an action: the fixture can tell a hovered block from one at rest, and an action after the parking still moves the pointer.",
+      "example": "visual-pointer",
+      "appearance": "light",
+      "actions": [{ "hover": "#pointer-probe" }],
+      "expect": {
+        "size": { "width": 40, "height": 20 },
+        "pixels": [
+          {
+            "x": 1,
+            "y": 1,
+            "color": "#c81e1e",
+            "tolerance": 0,
+            "note": "the fixture's colour while hovered"
+          }
+        ]
+      }
+    },
+    {
+      "name": "forced-colors-off",
+      "description": "Without forcedColors the browser is not in a forced-colours mode, whatever the machine's setting.",
+      "example": "visual-forced-colors",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 40, "height": 20 },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 10,
+            "color": "#1e6e32",
+            "tolerance": 0,
+            "note": "the fixture's colour outside forced colours"
+          }
+        ]
+      }
+    },
+    {
+      "name": "forced-colors-on",
+      "description": "forcedColors: true makes (forced-colors: active) match.",
+      "example": "visual-forced-colors",
+      "appearance": "light",
+      "forcedColors": true,
+      "expect": {
+        "size": { "width": 40, "height": 20 },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 10,
+            "color": "#1e3cc8",
+            "tolerance": 0,
+            "note": "the fixture's colour inside its forced-colors media query"
+          }
+        ]
+      }
+    }
+  ]
+}

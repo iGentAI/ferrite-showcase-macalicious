@@ -1,0 +1,112 @@
+---
+title: Avatar
+description: A person's picture in a disc, with initials or a silhouette on a grey disc when there is no picture, as in the People list of Find My.
+---
+
+<Example name="basic" both />
+
+Find My lists people by a disc of 29 pt: the person's picture, or a white silhouette on a grey
+disc. `Avatar` draws that disc. It is built on Base UI's Avatar, which shows the picture once
+it has loaded and the fallback until then, and when the picture cannot be loaded. The
+silhouette is the library's own drawing, a circle and an ellipse placed and sized where the
+capture has the head and the shoulders; it is not Apple's artwork. For any other picture,
+cropped or not, use the [Image View](/components/image-view), whose monogram is the flat grey
+disc of System Preferences.
+
+## Usage
+
+```tsx
+import { Avatar } from "macalicious/avatar";
+import "macalicious/avatar.css";
+
+<Avatar alt={person.name} src={person.picture}>
+  {person.initials}
+</Avatar>
+```
+
+Or copy the source into your project: `npx macalicious add avatar`. See
+[Installation](/installation).
+
+What the disc shows: the picture at `src`, cropped to the disc; without a loaded picture, its
+children (initials); without children, the silhouette. `alt` names it in all three cases.
+
+<Example name="variants" both />
+
+The initials stand in while a picture loads, and stay when it cannot be loaded. A new `src`
+shows them again until the new picture has arrived.
+
+<Example name="pictures" />
+
+## Guidelines
+
+The Human Interface Guidelines have no page for avatars (not verified). What Find My does:
+
+- An avatar stands before a person's name in a list; it does not replace the name.
+- A person without a picture gets the silhouette, on the same grey disc in both appearances.
+
+## Variants and states
+
+| Shows | When | Look | Basis |
+| --- | --- | --- | --- |
+| Silhouette | no `src`, no children | A white head and shoulders on a disc that runs from `#a5aab6` at the top to `#868a93` at the bottom, the same in Aqua and Dark Aqua; in Dark Aqua a black hairline just outside the disc | The disc, its rim and the silhouette's place and size are measured; the silhouette's drawing is the library's own |
+| Initials | children, no loaded picture | White, Medium, two fifths of the disc high | provisional: no capture shows initials on this disc |
+| Picture | `src` has loaded | The picture, cropped to the disc | provisional: no capture shows a picture |
+
+The avatar has no states of its own: it is not interactive, and it is the same in a window
+that is not key (the Dark Aqua capture is of one).
+
+## Sizes
+
+`size` is the diameter in points: 29 by default, as in Find My's list. The silhouette and
+initials scale with it.
+
+## API
+
+<PropsTable name="AvatarProps" />
+
+The remaining props are those of Base UI's `Avatar.Root` and go to the root `<span>` with
+`ref`.
+
+Classes: `.mac-avatar` (the disc), `.mac-avatar-image` (the picture),
+`.mac-avatar-fallback` (initials or the silhouette), `.mac-avatar-glyph` (the silhouette).
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-avatar-size` | `29px` | The diameter; set by `size`. |
+| `--mac-avatar-fill` | `#a5aab6` to `#868a93`, top to bottom | The disc behind initials and the silhouette. |
+| `--mac-avatar-glyph` | `#ffffff` | The silhouette and initials. |
+| `--mac-avatar-rim` | none, black in Dark Aqua | The hairline just outside the disc. |
+
+## Accessibility
+
+- With `alt`, the avatar is an image named by it (`role="img"`), whether it shows the
+  picture, initials or the silhouette; initials are not read separately.
+- Without `alt` it is decoration and hidden from assistive technology. Leave `alt` out when
+  the person's name stands beside the avatar, as in a list row.
+- In forced-colours mode the disc has a border and the system's text colour.
+
+## Visual comparison
+
+`npm run visual -- avatar` compares the disc of "Me" in Find My's People list with both
+captures: 36 x 36 pt of the sidebar around the disc (`128,240,72,72`; Dark Aqua
+`84,216,72,72`), with nothing masked. Share of pixels that differ, in Chromium on Linux:
+
+| Comparison | Aqua 2x | Aqua 1x | Dark Aqua 2x | Dark Aqua 1x |
+| --- | --- | --- | --- | --- |
+| The disc and the silhouette on the sidebar | 3.30% | 5.48% | 4.51% | 5.56% |
+
+The budgets in `avatar.visual.json` are these scores, measured in a visual run, rounded up.
+What differs is the edges: the capture's disc, rim and silhouette are softer than the
+browser draws them, by about a pixel at 2x. Inside the edges the colours agree within a few
+levels.
+
+Measured: the disc's diameter, its place in the row, its gradient, its Dark Aqua rim, and the
+place and size of the head and the shoulders. The `expect` comparisons check in a real
+browser that the silhouette is white at the middle of the head and of the shoulders, that the
+disc shows between them, at its rim and near its top and bottom in the gradient's colours,
+and that a 48 pt avatar scales all of it. `avatar.browser.test.tsx` loads real pictures in
+each installed engine: one that loads replaces the initials, one that fails leaves them, and a
+new address shows them again until its picture arrives.
+
+Not built: a badge on the avatar, a ring around it and groups of avatars; no capture of Find
+My shows them.

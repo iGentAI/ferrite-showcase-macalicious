@@ -1,0 +1,267 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "pending": "No reference: no screenshot shows the Colors panel or its pickers (spec: color-panel, not seen). The checks below hold the wheel and the spectrum, in a real browser, to the HSB colour model they draw and to the shared focus ring.",
+  "comparisons": [
+    {
+      "name": "areas-light",
+      "description": "The wheel and the spectrum at full brightness, Aqua. The disc is centred on 80, 80 with a radius of 60 pt; the spectrum is 240 x 120 pt at 200, 20. Every colour is computed from the HSB model: hue from the angle (anticlockwise from three o'clock) or the horizontal position, saturation from the radius or the upper half, brightness from the lower half. The spectrum's points have the widest tolerance: its gradients change by up to 6 levels per point, and at 1x the pixel that is read is centred half a point beyond the point named.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 460, "height": 180 },
+        "pixels": [
+          {
+            "x": 110,
+            "y": 80,
+            "color": "#ff8080",
+            "tolerance": 4,
+            "note": "wheel, half way out at three o'clock: hue 0, saturation 50% (HSB model, documented)"
+          },
+          {
+            "x": 80,
+            "y": 50,
+            "color": "#bfff80",
+            "tolerance": 4,
+            "note": "wheel, half way out at twelve o'clock: hue 90, saturation 50%"
+          },
+          {
+            "x": 35,
+            "y": 80,
+            "color": "#40ffff",
+            "tolerance": 4,
+            "note": "wheel, three quarters out at nine o'clock: hue 180, saturation 75%"
+          },
+          {
+            "x": 80,
+            "y": 125,
+            "color": "#9f40ff",
+            "tolerance": 4,
+            "note": "wheel, three quarters out at six o'clock: hue 270, saturation 75%"
+          },
+          {
+            "x": 130,
+            "y": 130,
+            "color": "#ffffff",
+            "note": "page in the corner of the disc's box: the area is round"
+          },
+          {
+            "x": 240,
+            "y": 80,
+            "color": "#ffff00",
+            "tolerance": 8,
+            "note": "spectrum, a sixth across at mid height: yellow at full strength"
+          },
+          {
+            "x": 320,
+            "y": 80,
+            "color": "#00ffff",
+            "tolerance": 8,
+            "note": "spectrum, half way across at mid height: cyan at full strength"
+          },
+          {
+            "x": 320,
+            "y": 50,
+            "color": "#80ffff",
+            "tolerance": 8,
+            "note": "spectrum, half way to the top edge: cyan at 50% saturation"
+          },
+          {
+            "x": 320,
+            "y": 110,
+            "color": "#008080",
+            "tolerance": 8,
+            "note": "spectrum, half way to the bottom edge: cyan at 50% brightness"
+          },
+          {
+            "x": 400,
+            "y": 125,
+            "color": "#400040",
+            "tolerance": 4,
+            "note": "spectrum, five sixths across and an eighth above the bottom edge: magenta at 25% brightness"
+          }
+        ]
+      }
+    },
+    {
+      "name": "areas-dark",
+      "description": "The same in Dark Aqua: the colours of the areas do not follow the appearance; the page is black.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 460, "height": 180 },
+        "pixels": [
+          {
+            "x": 110,
+            "y": 80,
+            "color": "#ff8080",
+            "tolerance": 4,
+            "note": "wheel: hue 0, saturation 50% (HSB model, documented)"
+          },
+          {
+            "x": 35,
+            "y": 80,
+            "color": "#40ffff",
+            "tolerance": 4,
+            "note": "wheel: hue 180, saturation 75%"
+          },
+          {
+            "x": 130,
+            "y": 130,
+            "color": "#000000",
+            "note": "page in the corner of the disc's box"
+          },
+          {
+            "x": 320,
+            "y": 50,
+            "color": "#80ffff",
+            "tolerance": 8,
+            "note": "spectrum: cyan at 50% saturation"
+          },
+          {
+            "x": 320,
+            "y": 110,
+            "color": "#008080",
+            "tolerance": 8,
+            "note": "spectrum: cyan at 50% brightness"
+          }
+        ]
+      }
+    },
+    {
+      "name": "brightness-zero-light",
+      "description": "The wheel after its brightness slider is taken to the minimum from the keyboard (Tab twice, Home): the whole disc is black, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 2 }, { "key": "Home" }],
+      "expect": {
+        "size": { "width": 460, "height": 180 },
+        "pixels": [
+          {
+            "x": 110,
+            "y": 80,
+            "color": "#000000",
+            "note": "brightness 0 is black at any hue and saturation (HSB model, documented)"
+          },
+          {
+            "x": 35,
+            "y": 80,
+            "color": "#000000",
+            "note": "the same on the other side of the disc"
+          },
+          {
+            "x": 320,
+            "y": 80,
+            "color": "#00ffff",
+            "tolerance": 8,
+            "note": "the spectrum is another picker: unchanged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "marker-moved-light",
+      "description": "The spectrum after its marker is moved from the keyboard (Tab three times, then Shift-Right five times and Shift-Down five times: half way across, half way down): the marker's white ring is drawn round that point, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        { "tab": 3 },
+        { "key": "Shift+ArrowRight" },
+        { "key": "Shift+ArrowRight" },
+        { "key": "Shift+ArrowRight" },
+        { "key": "Shift+ArrowRight" },
+        { "key": "Shift+ArrowRight" },
+        { "key": "Shift+ArrowDown" },
+        { "key": "Shift+ArrowDown" },
+        { "key": "Shift+ArrowDown" },
+        { "key": "Shift+ArrowDown" },
+        { "key": "Shift+ArrowDown" }
+      ],
+      "expect": {
+        "size": { "width": 460, "height": 180 },
+        "pixels": [
+          {
+            "x": 320,
+            "y": 80,
+            "color": "#00ffff",
+            "tolerance": 8,
+            "note": "inside the marker: the colour under it, cyan"
+          },
+          {
+            "x": 323.5,
+            "y": 80,
+            "color": "#ffffff",
+            "tolerance": 8,
+            "scale": 2,
+            "note": "the marker's ring, 1.5 pt wide inside a 9 pt circle (inferred)"
+          },
+          {
+            "x": 200.5,
+            "y": 20.5,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "the corner the marker left: white, the spectrum's top edge"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-light",
+      "description": "Keyboard focus on the wheel's disc, reached with Tab: the ring starts 1 pt outside the disc and is 3 pt wide, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 460, "height": 180 },
+        "pixels": [
+          {
+            "x": 80,
+            "y": 17.5,
+            "color": "#8cb5fb",
+            "tolerance": 4,
+            "note": "ring above the disc: --mac-focus-ring-color (#186af6 at 50%) over the white page, computed from the token"
+          },
+          { "x": 80, "y": 14, "color": "#ffffff", "note": "page beyond the ring" }
+        ]
+      }
+    },
+    {
+      "name": "focus-dark",
+      "description": "Keyboard focus on the wheel's disc, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 460, "height": 180 },
+        "pixels": [
+          {
+            "x": 80,
+            "y": 17.5,
+            "color": "#165480",
+            "tolerance": 4,
+            "note": "ring above the disc: --mac-focus-ring-color (#2ba8ff at 50%) over the black page, computed from the token"
+          },
+          { "x": 80, "y": 14, "color": "#000000", "note": "page beyond the ring" }
+        ]
+      }
+    },
+    {
+      "name": "focus-inactive-light",
+      "description": "Keyboard focus on the disc in a window that is not key: no ring, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 460, "height": 180 },
+        "pixels": [
+          {
+            "x": 80,
+            "y": 17.5,
+            "color": "#ffffff",
+            "note": "no focus ring in a window that is not key (documented by AppKit)"
+          }
+        ]
+      }
+    }
+  ]
+}

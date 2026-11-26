@@ -1,0 +1,137 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "week-light",
+      "description": "The week view of Calendar left of the event popover, Aqua: the title, the day names with today's disc, the all-day row with its event, the hours from 8 AM, the selected event and the current-time line. Whole crop: the text is set in the fallback font.",
+      "example": "visual-week",
+      "appearance": "light",
+      "selector": "[data-crop='week']",
+      "reference": {
+        "file": "10-15-Catalina-Light-Calendar.png",
+        "crop": { "x": 444, "y": 152, "width": 1380, "height": 1170 }
+      },
+      "budget": { "1x": 0.021, "2x": 0.016 },
+      "deltaBudget": { "1x": 2.4, "2x": 2.1 }
+    },
+    {
+      "name": "week-light-drawing",
+      "description": "As week-light with the text masked (the title, the day names, the all-day label and the all-day event's title, the hours with the current time's label, and the selected event's text), to score the fills, the lines, the separators, the band, today's disc, the event blocks and the current-time line with its disc.",
+      "example": "visual-week",
+      "appearance": "light",
+      "selector": "[data-crop='week']",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 10, "y": 10, "width": 300, "height": 34 },
+        { "x": 74, "y": 54, "width": 495, "height": 24 },
+        { "x": 597, "y": 54, "width": 36, "height": 24 },
+        { "x": 26, "y": 84, "width": 46, "height": 16 },
+        { "x": 204, "y": 85, "width": 112, "height": 16 },
+        { "x": 16, "y": 108, "width": 52, "height": 477 },
+        { "x": 575, "y": 368, "width": 100, "height": 44 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Calendar.png",
+        "crop": { "x": 444, "y": 152, "width": 1380, "height": 1170 }
+      },
+      "budget": { "1x": 0.017, "2x": 0.0028 },
+      "deltaBudget": { "1x": 0.8, "2x": 0.35 }
+    },
+    {
+      "name": "week-dark",
+      "description": "The week view of Calendar left of the event popover, Dark Aqua: Friday is today, its event is selected and Thursday's is not. Whole crop: the text is set in the fallback font.",
+      "example": "visual-week-dark",
+      "appearance": "dark",
+      "selector": "[data-crop='week']",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Calendar.png",
+        "crop": { "x": 444, "y": 152, "width": 1624, "height": 1170 }
+      },
+      "budget": { "1x": 0.019, "2x": 0.016 },
+      "deltaBudget": { "1x": 2.4, "2x": 2 }
+    },
+    {
+      "name": "week-dark-drawing",
+      "description": "As week-dark with the text masked (the title, the day names, the all-day label and the all-day event's title, the hours with the current time's label, and the text of both events), to score the fills, the lines, the separators, the band, today's disc, the unselected event with its bar, the selected event and the current-time line with its disc.",
+      "example": "visual-week-dark",
+      "appearance": "dark",
+      "selector": "[data-crop='week']",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 10, "y": 10, "width": 300, "height": 34 },
+        { "x": 74, "y": 54, "width": 618, "height": 24 },
+        { "x": 726, "y": 54, "width": 26, "height": 24 },
+        { "x": 26, "y": 84, "width": 46, "height": 16 },
+        { "x": 204, "y": 85, "width": 112, "height": 16 },
+        { "x": 16, "y": 108, "width": 52, "height": 477 },
+        { "x": 575, "y": 368, "width": 100, "height": 44 },
+        { "x": 698, "y": 211, "width": 112, "height": 44 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Calendar.png",
+        "crop": { "x": 444, "y": 152, "width": 1624, "height": 1170 }
+      },
+      "budget": { "1x": 0.027, "2x": 0.0011 },
+      "deltaBudget": { "1x": 0.8, "2x": 0.25 }
+    },
+    {
+      "name": "unselected-light",
+      "description": "An unselected event in Aqua, which no screenshot shows: a click in an empty column clears the selection, and the event becomes its calendar's colour as a 20% tint with a solid 2 pt bar, as the dark capture has it.",
+      "example": "visual-week",
+      "appearance": "light",
+      "selector": "[data-crop='week']",
+      "actions": [{ "click": ".mac-calendar-week-grid-column" }],
+      "expect": {
+        "size": { "width": 690, "height": 585 },
+        "pixels": [
+          {
+            "x": 640,
+            "y": 440,
+            "color": "#f3ddf7",
+            "note": "inferred: 20% of the event's colour #c157d9 over the white column, the share measured on the unselected event of the dark capture"
+          },
+          {
+            "x": 570,
+            "y": 440,
+            "color": "#c157d9",
+            "note": "inferred: the 2 pt bar at the leading edge in the event's colour, as in the dark capture"
+          },
+          {
+            "x": 640,
+            "y": 364.75,
+            "scale": 2,
+            "color": "#ffffff",
+            "note": "the half point of column between the 2 PM line and the event, which starts 2 pt under the top of the line; read at 2x, since at 1x the line is drawn on this pixel"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on an event, reached with Tab, Dark Aqua: the focus ring is drawn inside the block's edge, where the grid cannot clip it. No screenshot shows it.",
+      "example": "visual-week-dark",
+      "appearance": "dark",
+      "selector": "[data-crop='week']",
+      "actions": [{ "tab": 3 }],
+      "expect": {
+        "size": { "width": 812, "height": 585 },
+        "pixels": [
+          {
+            "x": 640,
+            "y": 367,
+            "color": "#366ca3",
+            "tolerance": 4,
+            "note": "inferred: the focus ring, rgb(43 168 255 / 0.5), over the unselected event's fill in the 3 pt inside its top edge"
+          },
+          {
+            "x": 640,
+            "y": 420,
+            "color": "#3f2b46",
+            "tolerance": 5,
+            "note": "measured: the unselected event's fill inside the ring, Dark-Calendar row 1030 x=1586"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,397 @@
+/*
+ * Map controls (Maps, Find My): a group pinned to a corner of a map, a button, the zoom pair,
+ * the compass with its 3D toggle, and the map-type radio group. The half-point edge of a face
+ * is an inset shadow, so a 1x display does not round it up to a whole pixel.
+ * map-controls.mdx lists the states.
+ */
+.mac-map-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.mac-map-controls:where([data-orientation="vertical"]) {
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.mac-map-controls:where(:not([data-placement="none"])) {
+  position: absolute;
+  z-index: 1;
+}
+
+.mac-map-controls:where([data-placement^="bottom"]) {
+  bottom: var(--mac-map-controls-margin, 15px);
+}
+
+.mac-map-controls:where([data-placement^="top"]) {
+  top: var(--mac-map-controls-margin, 15px);
+}
+
+.mac-map-controls:where([data-placement$="trailing"]) {
+  inset-inline-end: var(--mac-map-controls-margin, 15px);
+}
+
+.mac-map-controls:where([data-placement$="leading"]) {
+  inset-inline-start: var(--mac-map-controls-margin, 15px);
+}
+
+.mac-map-controls-button,
+.mac-map-controls-zoom-button,
+.mac-map-controls-compass-ring,
+.mac-map-controls-compass-pitch,
+.mac-map-controls-type-option {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mac-map-controls-glyph);
+  font: var(--mac-font-weight-regular) 13px / 16px var(--mac-font-family-system);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-map-controls-button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 28px;
+  height: 20px;
+  padding: 0 4px 0 9.5px;
+  border-radius: 4px;
+  background: var(--mac-map-controls-face);
+  box-shadow: var(--mac-map-controls-edge), var(--mac-map-controls-shadow);
+  white-space: nowrap;
+}
+
+.mac-map-controls-button:where([data-variant="rounded"]) {
+  min-width: 34.5px;
+  height: 21px;
+  padding: 0 7.5px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--mac-map-controls-rounded-face);
+  box-shadow: var(--mac-map-controls-rounded-shadow);
+}
+
+.mac-map-controls-button:where([data-disabled]) > *,
+.mac-map-controls-button:where([data-disabled]) {
+  color: color-mix(
+    in srgb,
+    var(--mac-map-controls-glyph) calc(var(--mac-map-controls-opacity-disabled) * 100%),
+    transparent
+  );
+}
+
+.mac-map-controls-button-chevron {
+  flex: none;
+  width: 4.5px;
+  height: 4.5px;
+  margin: -3px 2.5px 0 auto;
+  border: solid var(--mac-map-controls-chevron);
+  border-width: 0 1.5px 1.5px 0;
+  rotate: 45deg;
+}
+
+/* The chevron has a colour of its own, so a disabled button dims it separately. */
+.mac-map-controls-button:where([data-disabled]) .mac-map-controls-button-chevron {
+  opacity: var(--mac-map-controls-opacity-disabled);
+}
+
+.mac-map-controls-button:where(:not(:has(.mac-map-controls-button-chevron))) {
+  padding: 0 7.5px;
+}
+
+/* Zoom pair: two 28 x 20 pt buttons whose facing edges make the divider. */
+.mac-map-controls-zoom {
+  display: inline-flex;
+  flex: none;
+}
+
+.mac-map-controls-zoom-button {
+  position: relative;
+  flex: none;
+  width: 28px;
+  height: 20px;
+  border-radius: 4px;
+  background: var(--mac-map-controls-face);
+  box-shadow: var(--mac-map-controls-edge), var(--mac-map-controls-shadow);
+}
+
+.mac-map-controls-zoom-button::before,
+.mac-map-controls-zoom-button:where([data-zoom="in"])::after {
+  content: "";
+  position: absolute;
+  top: calc(50% - 0.5px);
+  left: calc(50% - 5.5px);
+  width: 11px;
+  height: 1px;
+  background: currentColor;
+}
+
+.mac-map-controls-zoom-button:where([data-zoom="in"])::after {
+  top: calc(50% - 5.5px);
+  left: calc(50% - 0.5px);
+  width: 1px;
+  height: 11px;
+}
+
+.mac-map-controls-zoom-button:where([data-disabled])::before,
+.mac-map-controls-zoom-button:where([data-disabled])::after {
+  opacity: var(--mac-map-controls-opacity-disabled);
+}
+
+/* Compass: a 53 pt disc with a hole; the 29 pt 3D toggle stands in it, 1 pt of map around. */
+.mac-map-controls-compass {
+  position: relative;
+  flex: none;
+  width: 53px;
+  height: 53px;
+}
+
+.mac-map-controls-compass-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle closest-side,
+    transparent 15.25px,
+    var(--mac-map-controls-face) 15.75px
+  );
+  box-shadow: var(--mac-map-controls-edge), var(--mac-map-controls-shadow);
+}
+
+.mac-map-controls-compass:where([data-plain]) .mac-map-controls-compass-ring {
+  background: var(--mac-map-controls-face);
+}
+
+.mac-map-controls-compass-ring::after {
+  content: "";
+  position: absolute;
+  inset: 11px;
+  border-radius: 50%;
+  box-shadow: var(--mac-map-controls-hole-edge);
+}
+
+.mac-map-controls-compass:where([data-plain]) .mac-map-controls-compass-ring::after {
+  content: none;
+}
+
+.mac-map-controls-compass-rose {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mac-map-controls-compass-north {
+  position: absolute;
+  top: 3px;
+  left: calc(50% - 2.875px);
+  width: 5.75px;
+  height: 5.5px;
+  background: var(--mac-map-controls-compass-north);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.mac-map-controls-compass-tick {
+  position: absolute;
+  top: calc(50% - 0.75px);
+  width: 4px;
+  height: 1.5px;
+  background: var(--mac-map-controls-compass-tick);
+}
+
+.mac-map-controls-compass-tick:where([data-point="east"]) {
+  right: 3.5px;
+}
+
+.mac-map-controls-compass-tick:where([data-point="west"]) {
+  left: 3.5px;
+}
+
+.mac-map-controls-compass-tick:where([data-point="south"]) {
+  top: auto;
+  bottom: 3.5px;
+  left: calc(50% - 0.75px);
+  width: 1.5px;
+  height: 4px;
+}
+
+.mac-map-controls-compass-pitch {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 29px;
+  height: 29px;
+  border-radius: 50%;
+  background: var(--mac-map-controls-face);
+  box-shadow: var(--mac-map-controls-edge);
+  font-size: 14px;
+  line-height: 29px;
+  text-align: center;
+}
+
+/* 3D is on (provisional). */
+.mac-map-controls-compass-pitch:where([data-pressed]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  color: var(--mac-accent);
+}
+
+.mac-map-controls-compass-pitch:where([data-disabled]) {
+  color: color-mix(
+    in srgb,
+    var(--mac-map-controls-glyph) calc(var(--mac-map-controls-opacity-disabled) * 100%),
+    transparent
+  );
+}
+
+/* Map-type control: the selected segment is a pill 2 pt inside its slot. */
+.mac-map-controls-type {
+  display: inline-flex;
+  flex: none;
+  box-sizing: border-box;
+  min-width: 231px;
+  height: 22.25px;
+  border-radius: 7px;
+  background: var(--mac-map-controls-track);
+}
+
+.mac-map-controls-type-segment {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 1.25px 2px 1.5px;
+}
+
+.mac-map-controls-type-segment:where(:not(:first-child))::before {
+  content: "";
+  position: absolute;
+  top: 5.5px;
+  bottom: 5.5px;
+  left: calc(var(--mac-hairline) / -2);
+  width: var(--mac-hairline);
+  background: var(--mac-map-controls-segment-divider);
+}
+
+.mac-map-controls-type-segment:where(:has([data-checked]))::before,
+.mac-map-controls-type-segment:where(:has([data-checked]))
+  + .mac-map-controls-type-segment::before {
+  content: none;
+}
+
+.mac-map-controls-type-option {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 5.5px;
+  color: var(--mac-map-controls-label);
+  font-size: 10.5px;
+  line-height: 19.5px;
+  /* The iPad's 13 pt title scaled to 77%, which is set tighter than 10.5 pt type: People,
+     Devices, Map, Hybrid and Satellite are 31.5, 36, 19.5 to 20, 30 to 30.5 and 36.5 to
+     37.5 pt of ink in the Find My captures. */
+  letter-spacing: -0.35px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-map-controls-type-option:where([data-checked]) {
+  background: var(--mac-map-controls-segment);
+  box-shadow: var(--mac-map-controls-segment-shadow);
+}
+
+.mac-map-controls-type-option:where([data-disabled]) {
+  color: color-mix(
+    in srgb,
+    var(--mac-map-controls-label) calc(var(--mac-map-controls-opacity-disabled) * 100%),
+    transparent
+  );
+}
+
+/* Pressed (provisional): the face darkens. */
+.mac-map-controls-button:where(:active, [data-force~="pressed"]):where(:not([data-disabled])),
+.mac-map-controls-zoom-button:where(:active, [data-force~="pressed"]):where(:not([data-disabled])),
+.mac-map-controls-compass-pitch:where(:active, [data-force~="pressed"]):where(
+  :not([data-disabled])
+) {
+  background-color: var(--mac-map-controls-face-pressed);
+}
+
+/* Keyboard focus, in the key window only. */
+:is(
+  .mac-map-controls-button,
+  .mac-map-controls-zoom-button,
+  .mac-map-controls-compass-ring,
+  .mac-map-controls-compass-pitch,
+  .mac-map-controls-type-option
+):where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-map-controls-button,
+  .mac-map-controls-zoom-button,
+  .mac-map-controls-compass-ring,
+  .mac-map-controls-compass-pitch,
+  .mac-map-controls-type {
+    outline: 1px solid ButtonText;
+    outline-offset: -1px;
+    background: ButtonFace;
+    box-shadow: none;
+    color: ButtonText;
+  }
+
+  .mac-map-controls-type-option {
+    color: ButtonText;
+  }
+
+  .mac-map-controls-compass-ring::after {
+    content: none;
+  }
+
+  .mac-map-controls-compass-north,
+  .mac-map-controls-compass-tick {
+    background: ButtonText;
+  }
+
+  .mac-map-controls-type-option:where([data-checked]) {
+    background: Highlight;
+    box-shadow: none;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  .mac-map-controls-button:where([data-disabled]),
+  .mac-map-controls-compass-pitch:where([data-disabled]),
+  .mac-map-controls-type-option:where([data-disabled]) {
+    color: GrayText;
+  }
+
+  :is(
+    .mac-map-controls-button,
+    .mac-map-controls-zoom-button,
+    .mac-map-controls-compass-ring,
+    .mac-map-controls-compass-pitch,
+    .mac-map-controls-type-option
+  ):where(:focus-visible) {
+    outline: var(--mac-focus-ring-width) solid Highlight;
+    outline-offset: var(--mac-focus-ring-offset);
+  }
+}

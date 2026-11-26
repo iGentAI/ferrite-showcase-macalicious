@@ -1,0 +1,98 @@
+/*
+ * The person's Dock on the desktop demo (desktop-dock.tsx): auto-hide and dragging its tiles.
+ *
+ * .mac-desktop-shell-dock          the Dock; [data-autohide] while it hides itself, [data-shown]
+ *                                  while it is out
+ * .mac-desktop-shell-dock-edge     the strip along the Dock's edge that brings a hidden Dock out
+ *                                  when the pointer reaches it; [data-position] is the edge
+ *   [data-dragging]                a tile being dragged (on a Dock item): it follows the pointer
+ *   [data-removing]                a dragged tile far enough out to leave the Dock when let go
+ * .mac-desktop-shell-dock-divider  the line between the apps and the rest: dragging it sizes the Dock
+ *
+ * Hooks
+ *   --mac-desktop-shell-dock-edge-size   thickness of the strip; default 4px, the few points at
+ *                                        the screen's edge where a Mac brings its Dock out
+ */
+.mac-desktop-shell-dock {
+  transition: translate 0.25s ease;
+}
+
+/*
+ * A screen too narrow for every tile even at the 12 pt floor (dockLayout), such as a 390-point
+ * phone with the desktop's 39 tiles (622 points at 12 pt): the Dock wraps onto further rows
+ * instead of running off the screen. With room for one row this is the Dock as before: its height
+ * is then the tile plus 16 pt either way.
+ */
+/* The class twice: one class more than the library's `.mac-dock { height }`, whichever sheet loads last. */
+.mac-desktop-shell-dock.mac-desktop-shell-dock:where(
+  :not([data-position="left"], [data-position="right"])
+) {
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 100%;
+  height: auto;
+}
+
+.mac-desktop-shell-dock[data-autohide]:not([data-shown]) {
+  translate: 0 100%;
+}
+
+.mac-desktop-shell-dock[data-autohide][data-position="left"]:not([data-shown]) {
+  translate: -100% 0;
+}
+
+.mac-desktop-shell-dock[data-autohide][data-position="right"]:not([data-shown]) {
+  translate: 100% 0;
+}
+
+.mac-desktop-shell-dock-edge {
+  position: absolute;
+  z-index: var(--mac-window-manager-layer-chrome);
+  inset: auto 0 0;
+  block-size: var(--mac-desktop-shell-dock-edge-size, 4px);
+}
+
+.mac-desktop-shell-dock-edge:where([data-position="left"], [data-position="right"]) {
+  inset: 0 auto 0 0;
+  block-size: auto;
+  inline-size: var(--mac-desktop-shell-dock-edge-size, 4px);
+}
+
+.mac-desktop-shell-dock-edge:where([data-position="right"]) {
+  inset: 0 0 0 auto;
+}
+
+.mac-desktop-shell-dock [data-dragging] {
+  z-index: 1;
+  pointer-events: none;
+  transition: none;
+}
+
+.mac-desktop-shell-dock [data-removing] {
+  opacity: 0.5;
+}
+
+.mac-desktop-shell-dock-divider {
+  cursor: ns-resize;
+  touch-action: none;
+}
+
+.mac-desktop-shell-dock:where([data-position="left"], [data-position="right"])
+  .mac-desktop-shell-dock-divider {
+  cursor: ew-resize;
+}
+
+/* Siri's Enable Ask Siri, and Dock's Show indicators for open applications (setting-effects.ts). */
+:root[data-mac-siri-off] .mac-desktop-shell-dock [aria-label="Siri"] {
+  display: none;
+}
+
+:root[data-mac-dock-indicators="off"] .mac-desktop-shell-dock [data-running]::after {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-desktop-shell-dock {
+    transition: none;
+  }
+}

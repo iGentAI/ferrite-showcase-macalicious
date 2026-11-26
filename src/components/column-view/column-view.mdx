@@ -1,0 +1,244 @@
+---
+title: Column View
+description: A hierarchy shown as side-by-side scrolling columns, one per level, with an optional preview column.
+---
+
+<Example name="basic" both />
+
+AppKit's `NSBrowser`, as Finder's column view and the Open and Save panels show it: each
+column lists the children of the item selected in the column before it, and an item that
+opens no column can show a preview instead. Every column scrolls on its own in a
+[scroll view](/components/scroll-view) and the whole view scrolls sideways, keeping the newest
+column in sight.
+
+## Usage
+
+```tsx
+import { ColumnView, ColumnViewPanel } from "macalicious/column-view";
+import "macalicious/scroll-view.css";
+import "macalicious/column-view.css";
+
+const [path, setPath] = useState<(string | number)[]>([]);
+
+<ColumnView
+  aria-label="Files"
+  getChildren={(parentId) => (parentId === null ? volumes : childrenById.get(parentId))}
+  path={path}
+  onPathChange={setPath}
+  renderPreview={(item) => <ColumnViewPanel>{item.label}</ColumnViewPanel>}
+  onItemAction={(item) => open(item.id)}
+  style={{ height: 320 }}
+/>
+```
+
+Or copy the source into your project: `npx macalicious add column-view`.
+
+The data is asked for one column at a time. `getChildren(null)` returns the items of the first
+column and `getChildren(id)` those of an item with `hasChildren`; an item is
+`{ id, label, icon?, hasChildren? }`. The function is called while rendering, for every column
+on the path, so it must be cheap and must return the same array for the same parent until the
+items change: keep the arrays in state, a map or a cache. To load a folder when it is first
+opened, return `[]` (an empty column) until the items have arrived and then render again.
+
+The `path` is the selection: the id of the selected item in the first column, then in the
+second, and so on. Leave it uncontrolled with `defaultPath`, or hold it yourself with `path`
+and `onPathChange`. Ids need only be unique within their column.
+
+### The preview column
+
+With `renderPreview`, an item that opens no column of its own (no `hasChildren`) gets a
+trailing column with what the function returns. `getChildren` can also return `null` for a
+container that has nothing to list, as a server in Finder that is not connected: its column is
+then the preview too. `ColumnViewPanel` is the tinted panel Finder puts at the top of that
+column; its content and padding are yours.
+
+### Column widths
+
+Every column is `columnWidth` wide (204 pt as in Finder) until it is resized. Dragging the line
+after a column resizes that column, the preview column included, down to 60 pt.
+`defaultColumnWidths` gives the first widths by position (`[160, 252]`); `columnWidths` and
+`onColumnWidthsChange` control them, for instance to store them.
+
+### Long columns
+
+<Example name="large" />
+
+A column renders only the rows in view, with eight more on each side, so its length costs
+nothing in the document. Measured in Chromium with two columns of 5,000 items each in a view
+216 pt high (`examples/large`):
+
+| | |
+| --- | --- |
+| Row elements in the document | 40 at rest (20 per column), at most 29 per column while scrolling |
+| Elements under the view, scroll bars included | 93 at rest, 109 after navigating |
+| 20 jumps of 4,489 pt through one column, a frame after each | 315 to 322 ms in three runs, which is the 20 frames |
+| 20 Up Arrow presses at the end of a column, a frame after each | 331 ms |
+| Event handlers | the view's own are on the root only; none on a row (0 listeners per row). The scroll views add theirs to each column's scrolling element and scroll bar |
+
+Scrolling by up to eight rows a frame never shows an empty row. After a jump of thousands of
+rows (End, or dragging the scroll bar's knob) the rows at the new place are painted one frame
+later. The arrow keys, Home, End and type-select scroll the selected row into view, also when
+it was not rendered. The data itself is not virtualised: `getChildren` returns whole arrays,
+and finding the selected item in a column is a linear search of that array.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[column views](https://web.archive.org/web/20200503194050/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/column-views/):
+
+- Use a column view for a deep hierarchy that people move up and down in often, and where
+  seeing the way back matters more than seeing many attributes of each item. For sortable
+  attributes use a table or an outline view.
+- Show the root of the hierarchy in the first column.
+- When the selected item has nothing nested in it, consider showing information about it in
+  the last column, as Finder shows a preview with the kind, size and dates.
+- Let people resize the columns: names are often longer than the default width.
+
+## Variants and states
+
+<Example name="variants" both hideCode />
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Row | default | 18 pt pitch, 13 pt text 26 pt from the column's edge after a 16 pt icon, or 7 pt from it without an icon |
+| Container row | `hasChildren` on the item | A 6 x 7 pt triangle with slightly rounded corners, 2 pt from the column's edge, in the secondary label colour |
+| Selected, emphasised | the row is on the path and its column has the keyboard, in a key window | Accent fill 17 pt high (the slot's first point stays clear), white text and triangle |
+| Selected, unemphasised | the row is on the path in another column, or the keyboard is elsewhere, or the window is not key | Grey fill (`#dcdcdc`, Dark Aqua `#464646`), text unchanged |
+| Column divider | after every column | A 1 pt line (`#e6e6e6`, Dark Aqua black) with a resize pointer over it and 2 pt on each side |
+| Empty column | a container whose `getChildren` returns `[]` | The column with no rows |
+| Preview column | `renderPreview`, for an item that opens no column | Your content in a scrolling column; `ColumnViewPanel` is Finder's tinted panel with a 1 pt line under it |
+| Keyboard focus | Tab into the view | A focus ring inside the edge of the whole view, in a key window only |
+
+Measured in Finder's Network window, in both appearances: the row pitch, the height and
+colour of the emphasised selection, the icon and text insets, the triangle's shape, colours
+and position, the column width, the divider and the panel's fill and bottom line.
+Provisional (no screenshot shows them): the unemphasised selection, which is the table view's;
+the look in a window that is not key; the focus ring, which Finder does not draw; the 60 pt
+minimum width; the text inset of a row without an icon.
+
+Not done: Finder resizes a column to fit its longest name on a double click of its divider,
+and cuts long names in the middle; here a long name ends with an ellipsis. Selecting several
+items in the last column is not supported: a path selects one item per column.
+
+## Sizes
+
+A column view has no control sizes. It is as large as its root element: give it a height, or
+place it in a flex or grid cell that has one. Rows are 18 pt.
+
+## API
+
+<PropsTable name="ColumnViewProps" />
+
+The remaining props are those of [`ScrollView`](/components/scroll-view) (`scrollerStyle`,
+`knobStyle`, `size`) and of its root element, which is the column view's root: `ref`,
+`className`, `style`, `id`, `aria-*`. Your `onKeyDown`, `onMouseDown`, `onPointerDown`,
+`onPointerMove` and `onDoubleClick` run before the view's own; `preventDefault()` in
+`onKeyDown` cancels the view's handling of that key.
+
+An item (`ColumnViewItem`):
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | `string \| number` | What the path holds for the item; unique among the items of its column. |
+| `label` | `string` | The item's name: the row's text and what type-select matches. |
+| `icon` | `ReactNode` | A 16 pt icon before the name. |
+| `hasChildren` | `boolean` | Whether the item opens a column of its own; draws the triangle. |
+
+<PropsTable name="ColumnViewPanelProps" />
+
+`ColumnViewPanel` is a `div` and takes its attributes.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `aria-selected` | row | `true`, `false` | The row is on the path. |
+| `data-children` | row | present or absent | The item has `hasChildren`. |
+| `data-index` | row | number | The row's position in its column. |
+| `data-divider` | divider | number | The position of the column the divider resizes. |
+| `data-force` | root | `focus` | Pins the emphasised look of the last selected row, for documentation and comparisons. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-column-view-background` | `var(--mac-color-control-background)` | Background of the columns. |
+
+| Class | Part |
+| --- | --- |
+| `.mac-column-view` | Root, a horizontal scroll view |
+| `.mac-column-view-columns` | Its scrolling element, which holds the columns |
+| `.mac-column-view-column`, `.mac-column-view-list` | A column (a scroll view) and its scrolling element, the listbox |
+| `.mac-column-view-row`, `.mac-column-view-icon`, `.mac-column-view-label` | A row and its parts |
+| `.mac-column-view-divider` | The line after a column |
+| `.mac-column-view-preview` | The preview column |
+| `.mac-column-view-panel` | `ColumnViewPanel` |
+
+## Accessibility
+
+- The root is a `group`; give it a name with `aria-label` or `aria-labelledby`. Each column is
+  a `listbox` of `option`s: the first carries the view's name and every other one the name of
+  the item it belongs to, so a screen reader announces "Documents, list box" on entering a
+  column and "Letters, selected, 1 of 2" on a row (`aria-setsize` and `aria-posinset` count
+  the rows that are not rendered too). This follows macOS, where a browser is a group of
+  lists, and the ARIA listbox pattern. A `tree` was not used: its levels would have to be
+  tied to parent rows that may not be in the document, and its Right and Left Arrow keys
+  expand and collapse in place, which is not what columns do.
+- The view is one tab stop: the column of the last item on the path. The listbox keeps focus
+  and names the selected row with `aria-activedescendant`. A row out of view is not in the
+  document and cannot be named, so the selected row is scrolled into view when it changes
+  and when the keyboard focus enters the column.
+- Keys: Up and Down Arrow move within the column, Home and End go to its first and last item,
+  typing selects the next item whose name starts with what was typed. Right Arrow moves into
+  the child column and selects its first item; Left Arrow returns to the parent column, which
+  closes the columns after it. Return calls `onItemAction`, as a double click does. In a
+  right-to-left layout the columns run leftwards and Left and Right Arrow change roles.
+- Option-Right Arrow and Option-Left Arrow make the focused column 10 pt wider or narrower.
+  AppKit has no key for this; it is here so that resizing does not need a pointer. The
+  dividers themselves are not focusable, to keep the view one tab stop.
+- A click under the rows of a column clears that column's selection and leaves the keyboard
+  in it; Down Arrow then selects its first item.
+- Keyboard focus draws one ring inside the edge of the whole view, in a key window only. The
+  emphasised selection shows which column has the keyboard.
+- Icons are decoration beside the name; hide them from assistive technology
+  (`aria-hidden`). An item takes content that is not interactive: it is an `option`, and
+  assistive technology does not expose a button, checkbox, field or link inside one. Rows
+  that need a control belong in a [table view](/components/table-view). As a safeguard only,
+  a press or a key in such an element is left to it. Content of the preview column is yours
+  and keeps its own semantics and keys.
+- In forced-colours mode the selection uses the system highlight colours and the dividers and
+  triangles the system text colour.
+
+## Visual comparison
+
+The reference is Finder's Network window in column view. The two appearances were captured
+with different content (four devices with the second selected and a 252 pt panel in Aqua;
+three devices with the first selected and two 204 pt columns in Dark Aqua), so each has its
+own example: `visual-network` and `visual-network-dark`. Each crop is compared twice: whole,
+and with the stand-ins masked at a colour distance of 0.05. The masks cover the device
+pictures and names in the first column and, in the panel, the artwork, the two texts and the
+two buttons, whose bezel style this library does not draw. Results in Chromium on Linux:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Aqua, whole crop | 3.07% of pixels differ, mean Δ 3.39 | 3.40%, mean Δ 3.33 |
+| Aqua, stand-ins masked | 0.00%, mean Δ 0.01 | 0.08%, mean Δ 0.11 |
+| Dark Aqua, whole crop | 3.66%, mean Δ 2.69 | 3.66%, mean Δ 2.60 |
+| Dark Aqua, stand-ins masked | 0.00%, mean Δ 0.01 | 0.01%, mean Δ 0.01 |
+
+The whole-crop figures are the stand-in pictures, the fallback font and the panel's buttons.
+With those masked, what is left at 2x is a handful of antialiased pixels on the slanted edges
+of the triangles; at 1x the Aqua figure is the last half point of the 203.5 pt column, which
+the browser cannot place on a pixel.
+
+The states no screenshot shows are checked on `visual-states` with real input and pixel
+colours from the spec or computed from the tokens, in both appearances: both selections grey
+while the keyboard is elsewhere, the clear first point of a row, the dividers and the
+triangle; the accent selection in a clicked column with grey in the column before it and no
+ring; Left Arrow moving the emphasis to the parent column with a white triangle and the focus
+ring inside the view's edge; a window that is not key; Down Arrow to a leaf closing the child
+column; and Option-Right Arrow moving a divider. The Down Arrow check, which ran in Aqua
+only, now runs in Dark Aqua too. The click check also runs with the purple accent, whose
+selection colour is the token's formula, computed: no screenshot shows a selection in an
+accent other than blue. Clicking through columns, the horizontal
+scroll to a new column, dragging a divider, right-to-left and the numbers under "Long
+columns" come from `visual/output/b7/browser/column-view.mjs`, run in Chromium when the
+component was finished; that script is not part of `npm run check`. The Open panel's browser
+(the other screenshots the spec lists) is not compared here: its preview column belongs to
+the open panel.

@@ -1,0 +1,52 @@
+/*
+ * Sharing pane. Every control is a library component placed by form.tsx; this file lays out
+ * what the cells of the three tables hold and draws the line between the two columns of the
+ * Users table, which a table view without a header does not draw.
+ *
+ *   .mac-system-preferences-sharing-cell        a picture and a name in a table cell
+ *   .mac-system-preferences-sharing-service     a service's name: the captures set the text
+ *                                               of these rows 1.5 pt higher than a table view
+ *                                               of 12 pt text does, and that of the two lists
+ *                                               1 pt higher
+ *   .mac-system-preferences-sharing-users       the Users list and the line over it
+ *   .mac-system-preferences-sharing-users-rule  the line between its two columns
+ *   .mac-system-preferences-sharing-dimple      the dimple between the two lists
+ *   .mac-system-preferences-sharing-empty       fills the detail area of a service whose
+ *                                               settings are not captured
+ */
+.mac-system-preferences-sharing-cell {
+  position: relative;
+  top: -1px;
+  display: flex;
+  align-items: center;
+  gap: 1.5px;
+  margin-inline-start: 2px;
+}
+
+.mac-system-preferences-sharing-service {
+  position: relative;
+  top: -1.5px;
+}
+
+.mac-system-preferences-sharing-users {
+  position: relative;
+}
+
+.mac-system-preferences-sharing-users-rule {
+  position: absolute;
+  top: 1px;
+  left: 137px;
+  width: 1px;
+  height: 137px;
+  background: var(--mac-color-grid);
+  pointer-events: none;
+}
+
+.mac-system-preferences-sharing-dimple {
+  color: var(--mac-color-label);
+}
+
+.mac-system-preferences-sharing-empty {
+  position: absolute;
+  inset: 0;
+}

@@ -1,0 +1,37 @@
+/*
+ * Text field values that no shared token holds. The fill and the top edge are shared
+ * (--mac-color-text-field-background, --mac-color-field-border), as are the focus ring, the
+ * text colours and the highlight.
+ */
+:root {
+  /* [measured, computed] Side and bottom edges. Aqua: black at 25% on every side (#b0b0b0 on
+     #ececec, Sharing @ 429,222 and 800,242). Dark Aqua: the sides are white at 9% (#424344 on
+     #2f3031, @ 429,222) and the bottom edge is the lightest, white at 25% (#636465,
+     @ 800,242). */
+  --mac-text-field-border-side: light-dark(rgb(0 0 0 / 0.25), rgb(255 255 255 / 0.09));
+  --mac-text-field-border-bottom: light-dark(rgb(0 0 0 / 0.25), rgb(255 255 255 / 0.25));
+  /* [measured, computed] Shading inside the edge. Aqua: one device pixel of #f0f0f0 on all
+     four sides (Sharing @ 800,204 and 430,222). Dark Aqua: three device pixel rows under the
+     top edge, #363737, #373738 and #39393a on the fill #3a3b3b (@ 800,204..206; the three
+     layers stack to black at 7%, 5% and 2%), and one row above the bottom edge at white 8%
+     (#494a4b, @ 800,241). */
+  --mac-text-field-inner-shadow:
+    inset 0 0 0 0.5px light-dark(#f0f0f0, transparent),
+    inset 0 0.5px 0 light-dark(transparent, rgb(0 0 0 / 0.018)),
+    inset 0 1px 0 light-dark(transparent, rgb(0 0 0 / 0.036)),
+    inset 0 1.5px 0 light-dark(transparent, rgb(0 0 0 / 0.017)),
+    inset 0 -0.5px 0 light-dark(transparent, rgb(255 255 255 / 0.076));
+  /* [provisional] Edges of a disabled field. Measured only on the field of the disabled date
+     picker, which stands on a box: Aqua #c8c8c8 on #e3e3e3, black at 12.5%, half the enabled
+     strength (Date and Time @ 480,393). Dark Aqua #3e3e3f at the top and #4d4d4d at the
+     bottom on #363637, white at 4% and 11.5%; the side is inferred. That a plain text field
+     dims the same way is inferred. */
+  --mac-text-field-border-top-disabled: light-dark(rgb(0 0 0 / 0.125), rgb(255 255 255 / 0.04));
+  --mac-text-field-border-side-disabled: light-dark(rgb(0 0 0 / 0.125), rgb(255 255 255 / 0.04));
+  --mac-text-field-border-bottom-disabled: light-dark(rgb(0 0 0 / 0.125), rgb(255 255 255 / 0.115));
+  /* [measured] The capsule bezel, Messages' message field: a flat 1 pt edge and the fill
+     (10-15-Catalina-Light-Messages.png @ 1700,1078 and 1700,1100; Dark @ 1700,1070 and
+     1700,1094). */
+  --mac-text-field-capsule-border: light-dark(#cccccc, #6d6d6f);
+  --mac-text-field-capsule-background: light-dark(#ffffff, #535355);
+}

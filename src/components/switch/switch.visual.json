@@ -1,0 +1,591 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "notification-center-light",
+      "description": "The Do Not Disturb switch of Notification Center's Today view, off, Aqua: the only switch in the reference set. No text in the crop.",
+      "example": "visual-notification-center",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.089,
+        "2x": 0.0017
+      },
+      "deltaBudget": {
+        "1x": 3.93,
+        "2x": 1.12
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Notification-Center-Today.png",
+        "crop": {
+          "x": 3234,
+          "y": 178,
+          "width": 92,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "notification-center-dark",
+      "description": "The Do Not Disturb switch of Notification Center's Today view, off, Dark Aqua: the only switch in the reference set. No text in the crop.",
+      "example": "visual-notification-center",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.103,
+        "2x": 0.0044
+      },
+      "deltaBudget": {
+        "1x": 6.31,
+        "2x": 1.23
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Notification-Center-Today.png",
+        "crop": {
+          "x": 3234,
+          "y": 178,
+          "width": 92,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "on-light",
+      "description": "Off and on at rest, Aqua. No screenshot shows a switch that is on.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 66,
+            "y": 18.5,
+            "color": "#3d88fd",
+            "tolerance": 3,
+            "note": "on fill: the shared checkbox fill token (measured on the checkboxes of General as #3b88fd); that the switch uses it is inferred by the spec"
+          },
+          {
+            "x": 85.5,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "the knob is at the trailing end when on (knob fill measured)"
+          },
+          {
+            "x": 40,
+            "y": 18.5,
+            "color": "#dddddd",
+            "note": "off track at mid height: black at 6.3% over #ececec; the alpha is measured on the Notification Center panel"
+          },
+          {
+            "x": 18.5,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "the knob is at the leading end when off"
+          }
+        ]
+      }
+    },
+    {
+      "name": "on-dark",
+      "description": "Off and on at rest, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 66,
+            "y": 18.5,
+            "color": "#1764da",
+            "tolerance": 3,
+            "note": "on fill: the shared checkbox fill token: at mid height, half-way between the measured stops #1869e6 and #155ecd; inferred for the switch"
+          },
+          {
+            "x": 85.5,
+            "y": 18.5,
+            "color": "#cfd0d2",
+            "note": "knob fill (measured)"
+          },
+          {
+            "x": 40,
+            "y": 18.5,
+            "color": "#404040",
+            "note": "off track: white at 7% over the window background #323232; the alpha is measured on the Notification Center panel"
+          }
+        ]
+      }
+    },
+    {
+      "name": "on-purple-light",
+      "description": "On with the purple accent, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "accent": "purple",
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 66,
+            "y": 18.5,
+            "color": "#be63b3",
+            "tolerance": 3,
+            "note": "on fill: the shared checkbox fill token, measured on the purple checkbox of General; inferred for the switch"
+          }
+        ]
+      }
+    },
+    {
+      "name": "on-purple-dark",
+      "description": "On with the purple accent, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "accent": "purple",
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 66,
+            "y": 18.5,
+            "color": "#9c3d9a",
+            "tolerance": 3,
+            "note": "on fill: the shared checkbox fill token: at mid height, half-way between the stops #a541a3 and #933991 measured on the purple pop-up button cap (accent table, Theme-Dark-Purple); inferred for the switch"
+          },
+          {
+            "x": 85.5,
+            "y": 18.5,
+            "color": "#cfd0d2",
+            "note": "knob fill (measured): the accent does not tint it"
+          }
+        ]
+      }
+    },
+    {
+      "name": "on-graphite-light",
+      "description": "On with the graphite accent, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "accent": "graphite",
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 66,
+            "y": 18.5,
+            "color": "#99999e",
+            "tolerance": 3,
+            "note": "on fill: the shared checkbox fill token, measured on the graphite checkbox of General (not the gradient's middle stop #a2a2a7); inferred for the switch"
+          }
+        ]
+      }
+    },
+    {
+      "name": "on-graphite-dark",
+      "description": "On with the graphite accent, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "accent": "graphite",
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 66,
+            "y": 18.5,
+            "color": "#999999",
+            "tolerance": 3,
+            "note": "on fill: the shared checkbox fill token, measured on the graphite checkbox of General; inferred for the switch"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The off switch while the mouse is held down on it, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "[data-name=\"off\"]"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 18.5,
+            "y": 18.5,
+            "color": "#f0f0f0",
+            "note": "pressed knob fill, inferred (the spec's step for a pressed slider knob); no screenshot shows it"
+          },
+          {
+            "x": 40,
+            "y": 18.5,
+            "color": "#dddddd",
+            "note": "still off: the mouse button has not been released"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "The off switch while the mouse is held down on it, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": "[data-name=\"off\"]"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 18.5,
+            "y": 18.5,
+            "color": "#e0e0e0",
+            "note": "pressed knob fill, inferred (the spec's step for a pressed slider knob, which lightens in dark: slider, States); no screenshot shows it"
+          },
+          {
+            "x": 40,
+            "y": 18.5,
+            "color": "#404040",
+            "note": "still off: white at 7% over the window background #323232; the mouse button has not been released"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-light",
+      "description": "Keyboard focus on the off switch, reached with Tab, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the window background, measured on the Go to Folder field (spec: focus-ring)"
+          },
+          {
+            "x": 27,
+            "y": 6.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring above the track"
+          },
+          {
+            "x": 4.75,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the track's edge"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-dark",
+      "description": "Keyboard focus on the off switch, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#2f6d99",
+            "tolerance": 4,
+            "note": "ring colour token at 50% over #323232; measured as #2d6c99 over #2f3032 on Automator's search field"
+          }
+        ]
+      }
+    },
+    {
+      "name": "main-window-light",
+      "description": "In a main window that is not key, after a Tab: no accent and no focus ring, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "main",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 66,
+            "y": 18.5,
+            "color": "#a6a6a6",
+            "tolerance": 3,
+            "note": "on without the accent: black at 25% over the off track (inferred; no screenshot shows it)"
+          },
+          {
+            "x": 85.5,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "the knob stays at the trailing end"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inactive-window-light",
+      "description": "In an inactive window that is not key, after a Tab: no accent and no focus ring, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 66,
+            "y": 18.5,
+            "color": "#a6a6a6",
+            "tolerance": 3,
+            "note": "on without the accent: black at 25% over the off track (inferred; no screenshot shows it)"
+          },
+          {
+            "x": 85.5,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "the knob stays at the trailing end"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window"
+          }
+        ]
+      }
+    },
+    {
+      "name": "main-window-dark",
+      "description": "In a main window that is not key, after a Tab: no accent and no focus ring, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "main",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 66,
+            "y": 18.5,
+            "color": "#707070",
+            "tolerance": 3,
+            "note": "on without the accent: white at 25% over the off track #404040 (inferred; no screenshot shows it)"
+          },
+          {
+            "x": 85.5,
+            "y": 18.5,
+            "color": "#cfd0d2",
+            "note": "the knob stays at the trailing end (knob fill measured)"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#323232",
+            "note": "no focus ring outside the key window: the window background"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inactive-window-dark",
+      "description": "In an inactive window that is not key, after a Tab: no accent and no focus ring, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 66,
+            "y": 18.5,
+            "color": "#707070",
+            "tolerance": 3,
+            "note": "on without the accent: white at 25% over the off track #404040 (inferred; no screenshot shows it)"
+          },
+          {
+            "x": 85.5,
+            "y": 18.5,
+            "color": "#cfd0d2",
+            "note": "the knob stays at the trailing end (knob fill measured)"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#323232",
+            "note": "no focus ring outside the key window: the window background"
+          }
+        ]
+      }
+    },
+    {
+      "name": "disabled-light",
+      "description": "Disabled off and on switches, Aqua: the whole control at half opacity over the window background. No screenshot shows a disabled switch; the half opacity is the shared disabled-bezel token (inferred for the switch).",
+      "example": "visual-disabled",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 66,
+            "y": 18.5,
+            "color": "#95baf5",
+            "tolerance": 3,
+            "note": "on fill #3d88fd at 50% over #ececec: the accent is kept, dimmed"
+          },
+          {
+            "x": 85.5,
+            "y": 18.5,
+            "color": "#f5f5f5",
+            "tolerance": 2,
+            "note": "on knob: white at 50% over #ececec"
+          },
+          {
+            "x": 40,
+            "y": 18.5,
+            "color": "#e4e4e4",
+            "tolerance": 2,
+            "note": "off track #dddddd at 50% over #ececec"
+          },
+          {
+            "x": 18.5,
+            "y": 18.5,
+            "color": "#f5f5f5",
+            "tolerance": 2,
+            "note": "off knob: white at 50% over #ececec"
+          },
+          {
+            "x": 4,
+            "y": 4,
+            "color": "#ececec",
+            "note": "window background"
+          }
+        ]
+      }
+    },
+    {
+      "name": "disabled-dark",
+      "description": "Disabled off and on switches, Dark Aqua: the whole control at half opacity over the window background. No screenshot shows a disabled switch; the half opacity is the shared disabled-bezel token (inferred for the switch).",
+      "example": "visual-disabled",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 104,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 66,
+            "y": 18.5,
+            "color": "#244b86",
+            "tolerance": 3,
+            "note": "on fill #1764da at 50% over #323232"
+          },
+          {
+            "x": 85.5,
+            "y": 18.5,
+            "color": "#808182",
+            "tolerance": 2,
+            "note": "on knob #cfd0d2 at 50% over #323232"
+          },
+          {
+            "x": 40,
+            "y": 18.5,
+            "color": "#393939",
+            "tolerance": 2,
+            "note": "off track #404040 at 50% over #323232"
+          },
+          {
+            "x": 4,
+            "y": 4,
+            "color": "#323232",
+            "note": "window background"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+---
+title: Preference Pane Icon
+description: One pane of the System Preferences grid, artwork over a caption of one or two lines in an 82 pt column, with the grid and stand-in artwork.
+---
+
+<Example name="basic" both />
+
+System Preferences shows its panes as a grid of borderless image buttons with the title under
+the image. AppKit has no class for the grid; each cell is an `NSButton` with
+`imagePosition = .imageAbove`. `PreferencePaneIcon` is the library's
+[image button](/components/image-button) (Base UI's Button) laid out for that grid: a fixed
+column slot, a 40 pt square for the artwork and a caption that keeps its line breaks.
+
+## Usage
+
+```tsx
+import {
+  PreferencePaneIcon,
+  PreferencePaneIconArtwork,
+  PreferencePaneIconGrid,
+} from "macalicious/preference-pane-icon";
+import "macalicious/image-button.css";
+import "macalicious/preference-pane-icon.css";
+
+<PreferencePaneIconGrid>
+  <PreferencePaneIcon title="General" onClick={() => open("general")}>
+    <img src={generalIcon} alt="" width={37} height={37} />
+  </PreferencePaneIcon>
+  <PreferencePaneIcon title={"Desktop &\nScreen Saver"} onClick={() => open("desktop")}>
+    <PreferencePaneIconArtwork tint="purple" />
+  </PreferencePaneIcon>
+</PreferencePaneIconGrid>
+```
+
+Or copy the source into your project: `npx macalicious add preference-pane-icon`.
+
+The artwork is yours to supply: an `<img>`, an inline SVG or the stand-in
+`PreferencePaneIconArtwork`. The library ships none of Apple's icons. Write the caption's line
+break into the string (`"Mission\nControl"`), as System Preferences breaks its captions at
+fixed places and not where they happen to wrap.
+
+<Example name="grid" both />
+
+## Guidelines
+
+From the macOS Human Interface Guidelines on
+[image buttons](https://web.archive.org/web/20200503180052/https://developer.apple.com/design/human-interface-guidelines/macos/buttons/image-buttons/)
+and
+[preferences](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/app-architecture/preferences/):
+
+- An image button's label goes below the image and says what the button opens; keep it to a
+  noun or a short phrase.
+- Leave clear space around the image so that the whole slot, caption included, is the click
+  target.
+- Clicking a pane navigates to it. The button is momentary: do not show a pane as selected in
+  the grid, and do not turn the grid into a radio group.
+- A pane that cannot be used on this Mac is disabled or left out.
+
+## Variants and states
+
+<Example name="states" both />
+
+| State | Look | Status |
+| --- | --- | --- |
+| Normal | Artwork and caption only; the caption is the secondary label colour (`#727272` on the upper band, `#767676` on the lower; Dark Aqua `#a4a4a5` and `#a1a2a2`) | measured |
+| Pressed | Artwork darkened to 70%, caption unchanged | provisional (image button) |
+| Keyboard focus | Focus ring around the 40 pt artwork square, key window only | provisional (image button) |
+| Disabled | Artwork and caption at 50% | provisional (image button) |
+| Window not key | No change, except that the focus ring is not drawn | provisional |
+
+The stand-in artwork has two shapes and eight tints:
+
+<Example name="artwork" both />
+
+## Sizes
+
+One size. The slot is 82 x 85 pt: 5 pt of clear space, the 40 pt artwork square, 7 pt, and two
+14 pt caption lines. A grid places slots 82 pt apart and rows 91 pt apart. Measured artwork is
+about 37 pt wide inside the square, which is what `PreferencePaneIconArtwork` draws.
+
+## API
+
+<PropsTable name="PreferencePaneIconProps" />
+
+<PropsTable name="PreferencePaneIconGridProps" />
+
+<PropsTable name="PreferencePaneIconArtworkProps" />
+
+| Attribute or variable | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-disabled` | icon | present or absent | Set by Base UI while the button is disabled. |
+| `data-force` | icon | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+| `--mac-preference-pane-icon-gap` | icon | a length, default `7px` | Distance from the artwork square to the caption's line box. |
+| `data-shape` | artwork | `tile`, `circle` | Reflects `shape`. |
+| `data-tint` | artwork | `blue`, `gray`, `graphite`, `green`, `orange`, `purple`, `red`, `white` | Reflects `tint`. |
+| `--mac-preference-pane-icon-artwork-size` | artwork | a length, default `37px` | Width and height of the stand-in artwork. |
+
+Classes: `.mac-preference-pane-icon` (the button, which also has `.mac-image-button`),
+`.mac-preference-pane-icon-image` (the 40 pt square), `.mac-preference-pane-icon-grid` and
+`.mac-preference-pane-icon-artwork`.
+
+## Accessibility
+
+- Each pane is a native `<button>` named by its title. Tab reaches every pane in reading
+  order; Space and Return open it.
+- The artwork is decorative: `PreferencePaneIconArtwork` is hidden from assistive technology,
+  and an `<img>` needs an empty `alt` so the name is not said twice.
+- The grid has no role. If the page needs one, pass `role="group"` and an `aria-label`; do not
+  make it a radio group or a list of tabs, because nothing in it stays selected.
+- In forced-colours mode the caption uses the system's button text colour and the stand-in
+  artwork is drawn as an outlined tile.
+
+## Visual comparison
+
+`npm run visual -- preference-pane-icon` compares the first two panes of the grid, General and
+Desktop & Screen Saver, with the System Preferences screenshots in both appearances. The
+artwork is masked in every comparison, because the example draws a stand-in block and not
+Apple's icons. Share of pixels that differ at 2x, in Chromium on Linux with the fallback font:
+
+| Crop, 164 x 80 pt (`122,400,328,160`) | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Captions and band, artwork masked | 4.84% | 5.27% |
+| Band only, artwork and captions masked | 0.00% | 0.00% |
+
+Measured: the 82 pt column pitch, the 91 pt row pitch, the caption's size, colour, line pitch
+and distance from the artwork. What the first row scores is three caption lines set in the
+fallback font instead of San Francisco; the second shows that nothing else is drawn.
+
+Provisional, because no screenshot shows them: the pressed, focused and disabled looks, which
+are the image button's, checked in a real browser against the spec's values (`expect`
+comparisons); the cut after the second line of a caption that is too long, checked the same
+way; the exact invisible bounds of the click target; and all of
+`PreferencePaneIconArtwork`, which is an original drawing and is compared with nothing.

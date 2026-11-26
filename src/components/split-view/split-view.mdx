@@ -1,0 +1,169 @@
+---
+title: Split View
+description: Panes laid edge to edge with dividers that can be dragged or moved with the keyboard.
+---
+
+<Example name="basic" both />
+
+AppKit's `NSSplitView`: the sidebar beside the content of nearly every Catalina window, the
+three panes of Mail and Notes, the table above the detail pane in Console.
+
+## Usage
+
+```tsx
+import { SplitView, SplitViewDivider, SplitViewPane } from "macalicious/split-view";
+import "macalicious/split-view.css";
+
+<SplitView style={{ height: 400 }}>
+  <SplitViewPane defaultSize={200} minSize={150} maxSize={400} collapsible>…</SplitViewPane>
+  <SplitViewDivider aria-label="Resize sidebar" />
+  <SplitViewPane>…</SplitViewPane>
+</SplitView>
+```
+
+Or copy the source into your project: `npx macalicious add split-view`.
+
+Panes and dividers alternate as direct children of the split view. A pane with `size` or
+`defaultSize` keeps that size; panes without one share what is left, so give every pane but
+one a size. A divider resizes the sized pane before it, or else the sized pane after it (an
+inspector on the trailing side). A divider adds its thickness to the layout: 200 + 1 + the
+rest.
+
+Control a pane to store its size or to collapse it from a toolbar button; a size of 0 is the
+collapsed pane:
+
+```tsx
+const [sidebar, setSidebar] = useState(200);
+
+<SplitViewPane size={sidebar} onSizeChange={setSidebar} minSize={150} collapsible>…</SplitViewPane>
+```
+
+Beside a translucent sidebar the Aqua divider is a little lighter than between opaque panes.
+Set it on the split view: `style={{ "--mac-split-view-divider-color": "light-dark(#cfd0d0, #000000)" }}`.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[split views](https://web.archive.org/web/20200503170954/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/split-views/):
+
+- Prefer the thin divider. Use a thick divider or a pane splitter only when the panes need a
+  stronger visual separation.
+- Set reasonable minimum and maximum sizes so that a pane cannot be dragged until its content
+  is useless, and so that the dividers stay visible.
+- Let people hide a pane when that helps them concentrate, and give them a way to bring it
+  back: a toolbar button or a menu command, not only the divider.
+- Keep the panes related: selecting something in one pane changes what the next shows.
+
+## Variants and states
+
+<Example name="variants" both hideCode />
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Thin divider | default | A 1 pt line: `#d5d5d5` between opaque panes in Aqua, black in Dark Aqua. Its hit area is the line and 2 pt on each side |
+| Thick divider | `dividerStyle="thick"` | A clear 9 pt band that shows what is behind the split view, with a 6 pt dimple at its centre, as between the two lists of the Sharing pane |
+| Pane splitter | `dividerStyle="pane-splitter"` | A filled 10 pt band with the same dimple |
+| Side by side | default | Vertical divider lines, resize pointer |
+| Stacked | `orientation="vertical"` | Horizontal divider lines |
+| Dragging | pointer held on a divider | No change of look; the panes resize as the pointer moves |
+| Collapsed pane | `size` 0; dragging a `collapsible` pane under half its minimum; double click or Return on its divider | The pane is not rendered (`display: none`); the divider sits at the edge |
+| Keyboard focus | Tab to a divider | Focus ring around the divider, in a key window only |
+| Fixed divider | `disabled` on the divider | The same line; it cannot be dragged or focused |
+
+A divider looks the same in a key, main and inactive window. The lighter dividers the Mail
+window shows while it is inactive come from its inactive sidebar material, not from the
+split view.
+
+Measured: the thin divider's thickness and its colours between opaque panes and beside a
+sidebar, in both appearances and both orientations; the thick divider's 9 pt band and its
+dimple's size, shading and place across the band, in both appearances. Inferred: that the
+dimple is centred along the divider (in the capture it lies under the middle of the two
+lists, so the split view is taken to reach below them). Documented by Apple: the 10 pt
+thickness of the pane splitter and the 5 pt hit area. Provisional (no screenshot shows them):
+the pane splitter's fill and its dimple, which is taken to be the thick divider's (the dimple
+is drawn on the pane splitter too, and is provisional there, though measured on the thick
+divider); the focus ring on a divider; and the collapse threshold of half the minimum size.
+
+## Sizes
+
+A split view has no control sizes. It is as large as its root element: give it a height, or
+place it in a flex or grid cell that has one.
+
+## API
+
+<PropsTable name="SplitViewProps" />
+
+<PropsTable name="SplitViewPaneProps" />
+
+<PropsTable name="SplitViewDividerProps" />
+
+Each part is a `div` and takes its attributes, `ref`, `className` and `style`. A divider's own
+`onPointerDown` and `onKeyDown` run first and can cancel the resize with `preventDefault()`.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-orientation` | root | `horizontal`, `vertical` | Reflects `orientation`. |
+| `data-divider-style` | root | `thin`, `thick`, `pane-splitter` | Reflects `dividerStyle`. |
+| `data-sized` | pane | present or absent | The pane has a size of its own. |
+| `data-collapsed` | pane | present or absent | The pane's size is 0. |
+| `data-dragging` | divider | present or absent | The pointer is dragging the divider. |
+| `data-disabled` | divider | present or absent | Reflects `disabled`. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-split-view-divider-color` | `var(--mac-color-split-divider)` | Colour of the thin divider line. |
+| `--mac-split-view-splitter-dimple` | `var(--mac-split-view-dimple)` | The pane splitter's dimple, a colour or a gradient. Kept from before the dimple was measured. |
+| `--mac-split-view-dimple-forced` | `CanvasText` | The dimple's colour in forced-colours mode. |
+
+## Accessibility
+
+- A divider is a focusable `separator` (the window splitter pattern) with `aria-orientation`
+  and, as its value, the size in points of the pane it resizes (`aria-valuenow`,
+  `aria-valuemin`, `aria-valuemax`); `aria-controls` names that pane by its `id`, which is
+  generated unless you give the pane one. Give each divider an `aria-label` that says what it
+  resizes.
+- A divider between two panes without a size resizes nothing. It is then disabled
+  (`aria-disabled="true"`) and not a tab stop until one of the panes beside it has a size.
+- Keys on a focused divider: Left and Right Arrow (Up and Down in a stacked split view) move
+  it 10 pt, Home and End take the pane to its minimum and maximum, Return collapses a
+  collapsible pane and opens it again at its previous size. In a right-to-left layout the
+  arrow keys follow the direction the divider moves on screen.
+- AppKit's dividers are not in the tab order; here they are, because the web has no other way
+  to resize with the keyboard. That is a deliberate difference.
+- A collapsed pane is removed from layout and from the accessibility tree. Provide another
+  control to open it again; the divider can do it too, but it is a small target.
+- In forced-colours mode the divider is drawn in the system text colour.
+
+## Visual comparison
+
+Three reference dividers, each in both appearances: `visual-opaque-panes` (System
+Information, between two opaque panes), `visual-stacked` (Console, the horizontal divider
+under the table) and `visual-sidebar-divider` (Notes, beside the sidebar). The crops hold no
+text and no artwork, so nothing is masked and the whole-crop figure is the only one. Results
+in Chromium on Linux, at a colour distance of 0.02 except where noted:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Opaque panes, Aqua | 0.00% of pixels differ, mean Δ 0.06 | 0.00%, mean Δ 0.00 |
+| Opaque panes, Dark Aqua | 0.00%, mean Δ 0.12 | 0.00%, mean Δ 0.01 |
+| Stacked, Aqua | 0.00%, mean Δ 0.00 | 0.00%, mean Δ 0.00 |
+| Stacked, Dark Aqua | 0.00%, mean Δ 0.00 | 0.00%, mean Δ 0.00 |
+| Beside a sidebar, Aqua (default distance 0.1) | 0.00%, mean Δ 1.20 | 0.00%, mean Δ 0.77 |
+| Beside a sidebar, Dark Aqua | 0.00%, mean Δ 0.00 | 0.00%, mean Δ 0.00 |
+
+The mean difference in the Aqua sidebar comparison is the paper texture of the Notes list,
+which is noise in the screenshot and a flat colour in the example; the comparison keeps the
+default colour distance for that reason, and the divider itself is identical.
+
+The states no screenshot shows are checked with real input and pixel colours from the spec:
+the divider's position at rest, after two Right Arrow presses with the focus ring beside it,
+after End and Left Arrow in Dark Aqua, and in an inactive window (moved, no ring). The at-rest,
+Right Arrow and inactive-window checks now run in Dark Aqua too, with the black divider and
+the dark focus ring colour. Dragging,
+the limits, collapsing and right-to-left were exercised in Chromium with a real pointer by
+the script `visual/output/b7/browser/split-view.mjs` when the component was finished; that
+script is not part of `npm run check`. The thick divider and its dimple are compared with the
+Sharing pane, where one sits between the Shared Folders and Users lists (`thick-dimple`: 0.75%
+of pixels differ in Aqua and 0.00% in Dark Aqua at 2x, at a colour distance of 0.05; at 1x the
+18 by 24 pt crop is mostly hairlines and scores 23% and 22%). No comparison covers the pane
+splitter, which no screenshot shows.

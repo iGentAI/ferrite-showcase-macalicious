@@ -1,0 +1,51 @@
+/*
+ * Window control tokens. Fills are the shared --mac-color-window-* tokens; rings, bands and
+ * glyphs are here. Measured on Light-/Dark-Finder-Network (key), Light-/Dark-Full-Screen-App
+ * (hover glyphs), System-Preferences-General (disabled), Finder-Quick-Look (main),
+ * Safari-v13-Picture-in-Picture (inactive) and Theme-Light-/Dark-Graphite.
+ *
+ * The colour set is declared for `:root, [data-accent]` and replaced under the graphite accent,
+ * so the nearest accent wins on a subtree, as in tokens/accent.css.
+ */
+:root,
+[data-accent] {
+  --mac-window-controls-close: var(--mac-color-window-close);
+  --mac-window-controls-minimize: var(--mac-color-window-minimize);
+  --mac-window-controls-zoom: var(--mac-color-window-zoom);
+  /* 0.5 pt ring, Aqua only [measured] */
+  --mac-window-controls-close-ring: light-dark(#e24940, transparent);
+  --mac-window-controls-minimize-ring: light-dark(#e1a228, transparent);
+  --mac-window-controls-zoom-ring: light-dark(#2aad2f, transparent);
+  /* The slightly lighter 0.5 pt band inside the ring, Aqua only [measured] */
+  --mac-window-controls-close-band: light-dark(#ff635b, transparent);
+  --mac-window-controls-minimize-band: light-dark(#ffc432, transparent);
+  --mac-window-controls-zoom-band: light-dark(#2bd042, transparent);
+  /* Hover glyphs: close and zoom [measured]; minimize [provisional], the same darkening ratio */
+  --mac-window-controls-close-glyph: light-dark(#4d0000, #990000);
+  --mac-window-controls-minimize-glyph: light-dark(#995700, #9a5600);
+  --mac-window-controls-zoom-glyph: light-dark(#036302, #015c01);
+}
+
+/* Graphite accent: close and minimize [measured]; zoom [provisional] (it is disabled in the
+   captured window); glyphs [provisional], no graphite hover is captured. */
+[data-accent="graphite"] {
+  --mac-window-controls-close: var(--mac-color-window-control-graphite);
+  --mac-window-controls-minimize: var(--mac-color-window-control-graphite);
+  --mac-window-controls-zoom: var(--mac-color-window-control-graphite);
+  --mac-window-controls-close-ring: light-dark(#727276, #9b9b9b);
+  --mac-window-controls-minimize-ring: light-dark(#727276, #9b9b9b);
+  --mac-window-controls-zoom-ring: light-dark(#727276, #9b9b9b);
+  --mac-window-controls-close-band: transparent;
+  --mac-window-controls-minimize-band: transparent;
+  --mac-window-controls-zoom-band: transparent;
+  --mac-window-controls-close-glyph: light-dark(#3c3c3f, #404040);
+  --mac-window-controls-minimize-glyph: light-dark(#3c3c3f, #404040);
+  --mac-window-controls-zoom-glyph: light-dark(#3c3c3f, #404040);
+}
+
+:root {
+  /* Rings of the grey states, Aqua only [measured] */
+  --mac-window-controls-disabled-ring: light-dark(#b0b1b1, transparent);
+  --mac-window-controls-main-ring: light-dark(#b1b0b2, transparent);
+  --mac-window-controls-inactive-ring: light-dark(#d5d4d4, transparent);
+}

@@ -1,0 +1,50 @@
+# macalicious-desktop: the Macalicious desktop page as one Ferrite application.
+#
+# A Ferrite application names exactly ONE runtime dependency, `ferrite-app`
+# (the admission gate refuses any other with CODE_DEP_UNLISTED), and no build
+# script. The dependency is the public Ferrite SDK
+# (https://github.com/iGentAI/ferrite-sdk), taken by path from a checkout
+# beside this repository: `../ferrite-sdk` relative to the repository root.
+# Locally it compiles against that SDK, which runs on the Forge runtime behind
+# `ferrite dev`; the attested build on Ferrite Cloud redirects the dependency
+# to the platform's own vetted crate.
+[package]
+name = "macalicious-desktop"
+version = "0.1.0"
+edition = "2021"
+publish = false
+license = "MIT"
+autotests = false
+description = "The Macalicious desktop and its app modules, served from Ferrite storage"
+
+[dependencies]
+ferrite-app = { path = "../../../ferrite-sdk/ferrite-app" }
+
+# Printed by `ferrite add qjs-engine`: the vendored WebAssembly interpreter
+# (`src/wasm`, under Script Editor's and Automator's bounded JavaScript) reads
+# these flags. They gate no dependency.
+[features]
+default = ["std", "canonicalize-nans", "debug"]
+canonicalize-nans = []
+debug = []
+std = []
+# Forge supplies deny-all egress fixtures; the hosted SDK has no constructor.
+local-egress = []
+
+[[test]]
+name = "contracts"
+path = "tests/contracts.rs"
+
+[dev-dependencies]
+# The in-process test harness (the Forge planes) from the same SDK checkout.
+ferrite-app-test = { path = "../../../ferrite-sdk/ferrite-app-test" }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+
+# A standalone package, not a member of any enclosing workspace.
+[workspace]
+
+# Password hashing (PBKDF2, 100,000 to 600,000 HMAC-SHA-256 rounds per sign-in)
+# runs in the SDK's MAC: optimise it in test builds, as the sha256-hmac
+# package advises, so the account tests take seconds rather than minutes.
+[profile.dev.package.ferrite-app]
+opt-level = 3

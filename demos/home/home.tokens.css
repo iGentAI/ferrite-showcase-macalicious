@@ -1,0 +1,37 @@
+/*
+ * Home: the colours of the app that no shared token holds, from reference/spec/apps/home.md
+ * and the two Home captures (10-15-Catalina-Light-Home.png, 10-15-Catalina-Dark-Home.png). The
+ * content is the same in both appearances: Home draws white text on its wallpaper whatever the
+ * system's appearance, and only the tiles that are off, which are the library's, change.
+ */
+:root {
+  /*
+   * [provisional] The wallpaper. Home's is a blurred photograph, an image asset that is not
+   * reproduced; this is a drawn stand-in in its colours. The stops are read from the Light
+   * capture where no text or tile covers the picture: #0099b3 under the toolbar (@ 500,152),
+   * #014e62 at the left edge half way down (@ 135,800), darker towards the bottom.
+   */
+  --mac-home-wallpaper:
+    radial-gradient(ellipse 44% 28% at 53% 3%, rgb(0 196 210 / 0.8), rgb(0 196 210 / 0)),
+    linear-gradient(to right, rgb(0 25 40 / 0.35), rgb(0 25 40 / 0) 12%),
+    linear-gradient(to right, rgb(0 30 50 / 0.3), rgb(0 30 50 / 0) 55%),
+    linear-gradient(to bottom, #0c93b1, #0b7f9f 30%, #05738f 60%, #026580 85%, #014a5e);
+  /* [provisional] the other wallpapers a home can choose, drawn stand-ins as well */
+  --mac-home-wallpaper-dusk: linear-gradient(to bottom, #5a3f86, #6d3f78 40%, #3a2a5c 85%);
+  --mac-home-wallpaper-forest: linear-gradient(to bottom, #2f6b4f, #235640 45%, #123527 90%);
+  /* [measured] title, status lines and section headers: Light- and Dark-Home @ 146,245,139,38 */
+  --mac-home-text: #ffffff;
+
+  /* Glyph colours on a tile that is on. The bulb's yellow is the library tile's own tint. */
+  /* [measured] the Apple TV's box: Light-Home @ 1060,1090 */
+  --mac-home-tint-media: #929295;
+  /* [measured] the desk lamp: Light-Home @ 1497,1100 */
+  --mac-home-tint-lamp: #34aadc;
+  /* [measured] the house of a scene: Light-Home @ 1050,775 */
+  --mac-home-tint-scene: #f7951f;
+  /* [provisional] an open door: no capture shows one */
+  --mac-home-tint-door: #f7951f;
+  /* [measured] the bulb's base (Light-Home @ 625,1108) and the figure beside a scene's house
+     (#716557, row y=800 @ 1078), drawn in one grey */
+  --mac-home-glyph-detail: #757575;
+}

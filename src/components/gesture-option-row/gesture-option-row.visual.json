@@ -1,0 +1,163 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "mouse-light",
+      "description": "The three gestures of the Mouse pane, the first highlighted, Aqua. Secondary click's second line is masked: it is a borderless pull-down button in the screenshot, another component.",
+      "example": "visual-mouse",
+      "appearance": "light",
+      "masks": [{ "x": 39, "y": 80, "width": 110, "height": 16 }],
+      "budget": { "1x": 0.0661, "2x": 0.0455 },
+      "deltaBudget": { "1x": 5.4, "2x": 5.24 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Mouse.png",
+        "crop": { "x": 162, "y": 240, "width": 652, "height": 320 }
+      }
+    },
+    {
+      "name": "mouse-light-masked",
+      "description": "As mouse-light with the titles and details masked, which are set in the fallback font off Apple platforms: scores the callout, its edge and point, and the three checkboxes.",
+      "example": "visual-mouse",
+      "appearance": "light",
+      "masks": [
+        { "x": 39, "y": 14, "width": 175, "height": 28 },
+        { "x": 39, "y": 64, "width": 175, "height": 32 },
+        { "x": 39, "y": 114, "width": 175, "height": 28 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0154, "2x": 0.002 },
+      "deltaBudget": { "1x": 0.72, "2x": 0.42 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Mouse.png",
+        "crop": { "x": 162, "y": 240, "width": 652, "height": 320 }
+      }
+    },
+    {
+      "name": "mouse-dark",
+      "description": "The three gestures of the Mouse pane, the first highlighted, Dark Aqua. Secondary click's second line is masked: it is a borderless pull-down button in the screenshot, another component.",
+      "example": "visual-mouse",
+      "appearance": "dark",
+      "masks": [{ "x": 39, "y": 80, "width": 110, "height": 16 }],
+      "budget": { "1x": 0.0557, "2x": 0.0454 },
+      "deltaBudget": { "1x": 4.41, "2x": 4.24 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Mouse.png",
+        "crop": { "x": 162, "y": 240, "width": 652, "height": 320 }
+      }
+    },
+    {
+      "name": "mouse-dark-masked",
+      "description": "As mouse-dark with the titles and details masked, which are set in the fallback font off Apple platforms: scores the callout and its point, and the three checkboxes.",
+      "example": "visual-mouse",
+      "appearance": "dark",
+      "masks": [
+        { "x": 39, "y": 14, "width": 175, "height": 28 },
+        { "x": 39, "y": 64, "width": 175, "height": 32 },
+        { "x": 39, "y": 114, "width": 175, "height": 28 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.004, "2x": 0.0017 },
+      "deltaBudget": { "1x": 0.42, "2x": 0.31 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Mouse.png",
+        "crop": { "x": 162, "y": 240, "width": 652, "height": 320 }
+      }
+    },
+    {
+      "name": "highlighted-off-light",
+      "description": "A highlighted row whose checkbox is off, above a row that is on and not highlighted, Aqua: the callout follows the highlight, not the checkbox.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 321, "height": 110 },
+        "pixels": [
+          {
+            "x": 160,
+            "y": 30,
+            "color": "#f0f0f0",
+            "note": "callout fill behind the row that is off (spec: Colours, selected callout fill, measured; States: highlighted but unchecked, inferred)"
+          },
+          {
+            "x": 312,
+            "y": 30,
+            "color": "#f0f0f0",
+            "note": "inside the point, 4 pt before its end at 316,30 (spec: Geometry, tip, measured)"
+          },
+          {
+            "x": 312,
+            "y": 12,
+            "color": "#e3e3e3",
+            "note": "the parent box above the slope of the point"
+          },
+          {
+            "x": 160,
+            "y": 80,
+            "color": "#e3e3e3",
+            "note": "no callout behind the row that is on and not highlighted (spec: States: checked but unhighlighted, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "highlighted-off-dark",
+      "description": "A highlighted row whose checkbox is off, above a row that is on and not highlighted, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 321, "height": 110 },
+        "pixels": [
+          {
+            "x": 160,
+            "y": 30,
+            "color": "#676768",
+            "note": "callout fill behind the row that is off (spec: Colours, selected callout fill, measured)"
+          },
+          {
+            "x": 160,
+            "y": 4,
+            "color": "#676768",
+            "note": "no edge and no highlight line at the top in Dark Aqua: the fill reaches the outline (spec: Geometry, dark perimeter, measured)"
+          },
+          {
+            "x": 312,
+            "y": 12,
+            "color": "#363637",
+            "note": "the parent box above the slope of the point"
+          },
+          {
+            "x": 160,
+            "y": 80,
+            "color": "#363637",
+            "note": "no callout behind the row that is on and not highlighted"
+          }
+        ]
+      }
+    },
+    {
+      "name": "forced-colors-light",
+      "description": "Forced colours: the callout keeps its outline, drawn one point wide in the system's text colour around the system's background. The colours are the browser's emulated system colours, not Catalina's.",
+      "example": "visual-states",
+      "appearance": "light",
+      "forcedColors": true,
+      "expect": {
+        "size": { "width": 321, "height": 110 },
+        "pixels": [
+          {
+            "x": 5.5,
+            "y": 30,
+            "color": "#000000",
+            "tolerance": 4,
+            "note": "leading edge: CanvasText"
+          },
+          {
+            "x": 160,
+            "y": 30,
+            "color": "#ffffff",
+            "tolerance": 4,
+            "note": "inside the callout: Canvas"
+          }
+        ]
+      }
+    }
+  ]
+}

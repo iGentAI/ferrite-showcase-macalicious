@@ -1,0 +1,50 @@
+/*
+ * Sticky note values that no shared token holds: per colour the body, the key note's title
+ * strip and the widgets' border. A note keeps its colours in both appearances. Values that are
+ * not shown follow the yellow note's steps:
+ *   strip  = 255 - 1.95 x (255 - body)                per channel
+ *   widget = 0.86 x strip - 0.26 x (255 - strip)      per channel
+ */
+:root {
+  /* [measured] Light-Stickies @ 500,900 (body), 500,610 (strip), 162,618 (widget border) */
+  --mac-sticky-note-yellow: #fef49c;
+  --mac-sticky-note-yellow-strip: #feea3d;
+  --mac-sticky-note-yellow-widget: #dbc503;
+  /* [measured] Light-Stickies @ 100,566, Dark-Stickies @ 300,566 */
+  --mac-sticky-note-blue: #aef4ff;
+  /* [provisional] no key blue note is shown: the spec's estimate, by the yellow note's steps */
+  --mac-sticky-note-blue-strip: #6decff;
+  --mac-sticky-note-blue-widget: #2ac5db;
+  /* [provisional] no green, pink, purple or grey note is shown: the bodies are Stickies'
+     palette as the spec records it, the strips and widgets follow the yellow note's steps */
+  --mac-sticky-note-green: #99ff96;
+  --mac-sticky-note-green-strip: #38ff32;
+  --mac-sticky-note-green-widget: #00db00;
+  --mac-sticky-note-pink: #ffc4c6;
+  --mac-sticky-note-pink-strip: #ff8c90;
+  --mac-sticky-note-pink-widget: #db5b5f;
+  --mac-sticky-note-purple: #b2caff;
+  --mac-sticky-note-purple-strip: #6998ff;
+  --mac-sticky-note-purple-widget: #3368db;
+  --mac-sticky-note-gray: #eeeeee;
+  --mac-sticky-note-gray-strip: #dedede;
+  --mac-sticky-note-gray-widget: #b6b6b6;
+
+  /* [provisional] no screenshot shows a translucent note or a widget under the pointer */
+  --mac-sticky-note-translucent-opacity: 0.6;
+  --mac-sticky-note-widget-hover: brightness(0.9);
+  --mac-sticky-note-widget-pressed: brightness(0.75);
+
+  /* [measured] Light-Stickies @ 500,708: black in both appearances */
+  --mac-sticky-note-text: #000000;
+  /* [measured, computed] Helvetica 12 from the 18 px cap height and the 14 pt line pitch; the
+     names after Helvetica are metric-compatible fallbacks for other platforms */
+  --mac-sticky-note-font: 12px / 14px Helvetica, Arimo, "Liberation Sans", Arial, sans-serif;
+
+  /* [measured, computed] fitted to the darkening of the blue note beside the yellow one in
+     both captures (col x=700 y=586..605, row y=632 x=118..137): a 0.5 pt line, near black in
+     Dark Aqua, a tight shadow and a wide one */
+  --mac-sticky-note-shadow:
+    0 0 0 0.5px light-dark(rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.85)), 0 0 3px rgb(0 0 0 / 0.1),
+    0 4px 20px rgb(0 0 0 / 0.21);
+}

@@ -1,0 +1,17 @@
+/*
+ * Contextual menu (NSView.menu). The menu is a detached menu (menu.css) with menu items
+ * (menu-item.css); this file adds what differs.
+ *
+ * Classes
+ *   .mac-contextual-menu-trigger   the area a secondary click opens the menu in
+ *   .mac-contextual-menu           the popup, which is also a .mac-menu
+ *
+ * A contextual menu does not show key equivalents (HIG, Contextual Menus): its popup carries
+ * data-key-equivalents="hidden", which menu-item.css acts on.
+ */
+
+/* A long press opens the menu on a touch screen: keep the system's callout and the text
+   selection it starts out of the way. */
+.mac-contextual-menu-trigger {
+  -webkit-touch-callout: none;
+}

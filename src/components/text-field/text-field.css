@@ -1,0 +1,187 @@
+/*
+ * Text field (NSTextField with a bezel).
+ *
+ * The root's box is the bezel's outer edge, 20 pt high at the regular size. ::before draws the
+ * bezel (an <input> has no pseudo-elements of its own), ::after the focus ring: a 3.5 pt band
+ * from 2.5 pt outside the edge to 1 pt inside it, square inside and rounded outside. The
+ * input fills the root and is transparent.
+ *
+ * States
+ *   [data-bezel="rounded" | "capsule" | "none"]   bezel style
+ *   [data-size="small" | "mini"]      control size
+ *   :focus-within                     the field has the keyboard: focus ring, key window only
+ *   [data-disabled]                   fainter edge, dimmed text
+ *   [data-focus-ring="none"]          the bezel draws no focus ring (TextFieldBezel)
+ *   [data-window-state="main" | "inactive"] *
+ *                                     window that is not key: no focus ring, grey selection
+ *   [data-force~="focus"]             static preview of the focus ring, read from the input
+ *
+ * Custom properties
+ *   --mac-text-field-background       the bezel's fill, in place of the text field background
+ */
+.mac-text-field {
+  --_height: calc(var(--mac-control-height-regular) - 1px);
+  --_radius: var(--mac-radius-text-field);
+  /* The text origin; the first ink is 4 pt from the edge. */
+  --_pad: 3.5px;
+  --_border-top: var(--mac-color-field-border);
+  --_border-side: var(--mac-text-field-border-side);
+  --_border-bottom: var(--mac-text-field-border-bottom);
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 160px;
+  min-width: 0;
+  max-width: 100%;
+  height: var(--_height);
+  border-radius: var(--_radius);
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  cursor: text;
+}
+
+.mac-text-field::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  box-sizing: border-box;
+  border: var(--mac-hairline) solid;
+  border-color: var(--_border-top) var(--_border-side) var(--_border-bottom);
+  border-radius: inherit;
+  background: var(--mac-text-field-background, var(--mac-color-text-field-background)) padding-box;
+  box-shadow: var(--mac-text-field-inner-shadow);
+  pointer-events: none;
+}
+
+/* The line is centred: baseline 14.5 pt below the top edge of a regular field. */
+.mac-text-field-input {
+  flex: 1 1 0;
+  align-self: stretch;
+  box-sizing: border-box;
+  width: 0;
+  min-width: 0;
+  margin: 0;
+  padding: 0 var(--_pad);
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  color: inherit;
+  caret-color: var(--mac-color-text);
+  font: inherit;
+  letter-spacing: inherit;
+  text-overflow: clip;
+  appearance: none;
+  outline: none;
+}
+
+.mac-text-field-input::placeholder {
+  color: var(--mac-color-text-placeholder);
+  opacity: 1;
+  -webkit-text-fill-color: currentcolor;
+}
+
+.mac-text-field-input::selection {
+  background: var(--mac-highlight);
+}
+
+.mac-text-field-input:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+)::selection {
+  background: var(--mac-color-selected-text-background-unemphasized);
+}
+
+/* Sizes. Small and mini are provisional: no screenshot shows them. */
+.mac-text-field:where([data-size="small"]) {
+  --_height: calc(var(--mac-control-height-small) - 1px);
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+.mac-text-field:where([data-size="mini"]) {
+  --_height: calc(var(--mac-control-height-mini) - 1px);
+  --_pad: 2.5px;
+  font: var(--mac-font-control-mini);
+  letter-spacing: var(--mac-tracking-mini);
+}
+
+/* Rounded bezel (provisional): the control corner, 2 pt taller, text 6 pt from the edge. */
+.mac-text-field:where([data-bezel="rounded"]) {
+  --_radius: var(--mac-radius-control-regular);
+  --_pad: 6px;
+  height: calc(var(--_height) + 2px);
+}
+
+/* Capsule (Messages' message field, measured): 4 pt taller, round ends, a flat 1 pt edge, its
+   own fill, text 11 pt from the edge. */
+.mac-text-field:where([data-bezel="capsule"]) {
+  --_radius: 999px;
+  --_pad: 10px;
+  --_border-top: var(--mac-text-field-capsule-border);
+  --_border-side: var(--_border-top);
+  --_border-bottom: var(--_border-top);
+  height: calc(var(--_height) + 4px);
+}
+
+.mac-text-field:where([data-bezel="capsule"])::before {
+  border-width: 1px;
+  background: var(--mac-text-field-background, var(--mac-text-field-capsule-background)) padding-box;
+  box-shadow: none;
+}
+
+/* No bezel: the field is as high as its line of text. */
+.mac-text-field:where([data-bezel="none"]) {
+  --_pad: 2px;
+  height: auto;
+}
+
+.mac-text-field:where([data-bezel="none"])::before {
+  content: none;
+}
+
+/* Disabled */
+.mac-text-field:where([data-disabled]) {
+  --_border-top: var(--mac-text-field-border-top-disabled);
+  --_border-side: var(--mac-text-field-border-side-disabled);
+  --_border-bottom: var(--mac-text-field-border-bottom-disabled);
+  color: var(--mac-color-control-text-disabled);
+  cursor: default;
+}
+
+.mac-text-field-input:where(:disabled) {
+  opacity: 1;
+  -webkit-text-fill-color: currentcolor;
+}
+
+/* Focus ring, whenever the field has the keyboard, in the key window only. */
+.mac-text-field:where(:focus-within, :has(> [data-force~="focus"])):where(
+  :not(
+    [data-focus-ring="none"],
+    :where([data-window-state="main"], [data-window-state="inactive"]) *
+  )
+)::after {
+  content: "";
+  position: absolute;
+  inset: calc(var(--mac-hairline) - var(--mac-focus-ring-width) - var(--mac-focus-ring-offset));
+  border: calc(var(--mac-focus-ring-width) + var(--mac-hairline)) solid var(--mac-focus-ring-color);
+  border-radius: calc(var(--_radius) + var(--mac-focus-ring-width) - var(--mac-hairline));
+  pointer-events: none;
+}
+
+@media (forced-colors: active) {
+  .mac-text-field:where(:not([data-bezel="none"]))::before {
+    border-color: ButtonText;
+  }
+
+  .mac-text-field:where([data-disabled])::before {
+    border-color: GrayText;
+  }
+
+  .mac-text-field:where(:focus-within)::after {
+    border-color: Highlight;
+  }
+}

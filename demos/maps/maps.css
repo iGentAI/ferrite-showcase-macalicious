@@ -1,0 +1,547 @@
+/*
+ * Maps demo: where the toolbar's controls stand, the map with what lies over it, and the
+ * layout of a place card. The window, the bars, the tab bar, the map controls, the popover
+ * and every button are the library's; the drawings are placeholders (maps-artwork.tsx).
+ *
+ * Measured on 10-15-Catalina-Light-Maps.png (frame 1000 x 690 pt at x=112, y=94 of the 2x
+ * image) and 10-15-Catalina-Dark-Maps.png (the same frame at y=76). Points from the window's
+ * top-left corner:
+ *
+ *   toolbar   Directions x 78..168; the location button x 248..286; the search field
+ *             x 294..690; Share x 698..738; the map types x 755..992 (80, 78 and 79; a point
+ *             more each in Dark Aqua, where what stands before them is 3 pt further left)
+ *   tab bar   y 38..63: two tabs and the 24 pt new-tab cell
+ *   map       from y 63; the Show pull-down 13.5 from the left and 14 from the bottom; the
+ *             zoom pair 13.5 from the right and 14 from the bottom, the compass 6.5 above it;
+ *             the weather's plate x 935.5..989.5, y 73..113.5
+ *   card      320 x 600, its body x 157..477; offsets inside it are with the rules below
+ *
+ * Parts
+ *   .mac-maps-toolbar and its items    the toolbar's own widths
+ *   .mac-maps-map                      the map: clips the drawing, holds what lies over it
+ *     [data-map-type="map" | "transit" | "satellite"], [data-traffic], [data-pitched]
+ *   .mac-maps-picture, .mac-maps-art   the image view of the placeholder map and its drawing
+ *   .mac-maps-pin                      the pin: a button, the place card's trigger
+ *   .mac-maps-notes                    the search's note and the scale legend
+ *   .mac-maps-weather                  the weather's mark, temperature and air quality
+ *   .mac-maps-options, -controls       the two groups of map controls
+ *   .mac-maps-card                     the place card: head, separator, scrolling contents
+ */
+
+/* Toolbar. The items keep the capture's widths, whatever the font makes of their titles; the
+   space after Directions takes what is left, and a short window squeezes the search field. */
+.mac-maps-toolbar > .mac-maps-directions {
+  width: var(--mac-maps-directions-width);
+}
+
+.mac-maps-toolbar > .mac-maps-locate {
+  width: var(--mac-maps-locate-width);
+}
+
+.mac-maps-toolbar > .mac-maps-search {
+  flex: 0 1 var(--mac-maps-search-width);
+  min-width: var(--mac-maps-search-min-width);
+}
+
+.mac-maps-toolbar > .mac-maps-share {
+  width: var(--mac-maps-share-width);
+}
+
+/* The map types stand 16 pt after Share, twice the toolbar's gap. */
+.mac-maps-toolbar > .mac-maps-map-type {
+  margin-inline-start: var(--mac-maps-map-type-margin-inline-start);
+}
+
+/* Map. */
+.mac-maps-body {
+  display: flex;
+  overflow: hidden;
+}
+
+.mac-maps-map {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--mac-maps-land);
+}
+
+.mac-maps-map:where([data-map-type="satellite"]) {
+  background: var(--mac-maps-satellite-land);
+}
+
+/* The image view fills the map and centres the drawing, whose origin is the view's middle. */
+.mac-maps-map > .mac-maps-picture {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  background: none;
+}
+
+.mac-maps-art {
+  display: block;
+  overflow: visible;
+}
+
+.mac-maps-art-band {
+  fill: var(--mac-maps-band);
+}
+
+.mac-maps-art-disc {
+  fill: var(--mac-maps-disc);
+}
+
+.mac-maps-art-stripe {
+  fill: var(--mac-maps-stripe);
+}
+
+.mac-maps-art-block {
+  fill: var(--mac-maps-block);
+}
+
+.mac-maps-map:where([data-map-type="satellite"]) .mac-maps-art-band {
+  fill: var(--mac-maps-satellite-band);
+}
+
+.mac-maps-map:where([data-map-type="satellite"]) .mac-maps-art-disc {
+  fill: var(--mac-maps-satellite-disc);
+}
+
+.mac-maps-map:where([data-map-type="satellite"]) .mac-maps-art-stripe {
+  fill: var(--mac-maps-satellite-stripe);
+}
+
+.mac-maps-map:where([data-map-type="satellite"]) .mac-maps-art-block {
+  fill: var(--mac-maps-satellite-block);
+}
+
+/* Shown by a state of the map: the block's raised side in 3D, slow traffic, transit lines. */
+.mac-maps-art-block-side {
+  display: none;
+  fill: var(--mac-maps-block-side);
+}
+
+.mac-maps-map:where([data-pitched]) .mac-maps-art-block-side {
+  display: inline;
+}
+
+.mac-maps-art-traffic {
+  display: none;
+  fill: var(--mac-maps-traffic);
+}
+
+.mac-maps-map:where([data-traffic]) .mac-maps-art-traffic {
+  display: inline;
+}
+
+.mac-maps-art-transit {
+  display: none;
+}
+
+.mac-maps-map:where([data-map-type="transit"]) .mac-maps-art-transit {
+  display: inline;
+}
+
+.mac-maps-art-line {
+  fill: var(--mac-maps-transit-a);
+}
+
+.mac-maps-art-line:where([data-line="b"]) {
+  fill: var(--mac-maps-transit-b);
+}
+
+.mac-maps-art-station {
+  fill: var(--mac-maps-station);
+  stroke: var(--mac-maps-transit-a);
+  stroke-width: 2px;
+}
+
+.mac-maps-art-route {
+  fill: none;
+  stroke: var(--mac-maps-route);
+  stroke-width: 5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mac-maps-art-location {
+  fill: var(--mac-maps-location);
+  stroke: var(--mac-maps-location-ring);
+  stroke-width: 2.5px;
+}
+
+/* Pin. The button's box is the drawing's, 28 x 42 pt, hung so that the stem's foot (14, 38)
+   is on the place. The head is what the place card points at: the 14 pt box of the ball. */
+.mac-maps-pin {
+  position: absolute;
+  z-index: 1;
+  box-sizing: border-box;
+  width: var(--mac-maps-pin-width);
+  height: var(--mac-maps-pin-height);
+  margin: calc(-1 * var(--mac-maps-pin-foot-y)) 0 0 calc(-1 * var(--mac-maps-pin-foot-x));
+  padding: 0;
+  border: 0;
+  border-radius: var(--mac-maps-pin-radius);
+  background: none;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-maps-pin:where(:focus-visible):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  box-shadow: 0 0 0 var(--mac-focus-ring-width) var(--mac-focus-ring-color);
+}
+
+.mac-maps-pin-art {
+  display: block;
+}
+
+.mac-maps-pin-ground {
+  fill: var(--mac-maps-pin-ground);
+}
+
+.mac-maps-pin-stem {
+  stroke: var(--mac-maps-pin-stem);
+  stroke-width: 1.5px;
+}
+
+.mac-maps-pin-ball {
+  fill: var(--mac-maps-pin-ball);
+}
+
+.mac-maps-pin-head {
+  position: absolute;
+  top: var(--mac-maps-pin-head-top);
+  left: var(--mac-maps-pin-head-left);
+  width: var(--mac-maps-pin-head-size);
+  height: var(--mac-maps-pin-head-size);
+}
+
+.mac-maps-pin-label {
+  position: absolute;
+  top: var(--mac-maps-pin-label-top);
+  left: 50%;
+  font-weight: var(--mac-font-weight-bold);
+  font-size: var(--mac-maps-pin-label-font-size);
+  line-height: var(--mac-maps-pin-label-line-height);
+  letter-spacing: var(--mac-maps-pin-label-letter-spacing);
+  text-shadow:
+    0 0 var(--mac-maps-pin-halo-blur) var(--mac-maps-pin-halo),
+    0 0 var(--mac-maps-pin-halo-blur) var(--mac-maps-pin-halo),
+    0 0 var(--mac-maps-pin-halo-outer-blur) var(--mac-maps-pin-halo);
+  text-transform: uppercase;
+  white-space: nowrap;
+  translate: -50% 0;
+}
+
+/* The note of the last search and the scale legend, at the map's top leading corner. */
+.mac-maps-notes {
+  position: absolute;
+  top: var(--mac-maps-notes-top);
+  left: var(--mac-maps-notes-left);
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-maps-notes-gap);
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.mac-maps-notes > .mac-maps-note {
+  padding: var(--mac-maps-note-padding);
+  border-radius: var(--mac-maps-note-radius);
+  background: var(--mac-maps-note-plate);
+}
+
+.mac-maps-notes > .mac-maps-note:empty {
+  display: none;
+}
+
+/* The legend's bar is 60 pt; its text is the distance that is at the map's scale. */
+.mac-maps-notes > .mac-maps-scale {
+  box-sizing: border-box;
+  width: var(--mac-maps-scale-width);
+  padding: var(--mac-maps-scale-padding);
+  border: solid currentColor;
+  border-width: 0 1px 1px;
+  border-radius: var(--mac-maps-scale-radius);
+  background: var(--mac-maps-note-plate);
+  text-align: center;
+}
+
+/* Weather: a 54 x 40.5 pt plate, 10 pt under the bar and 10.5 pt from the window's edge. On
+   it the mark, its middle 9.75 pt from the left and 10.25 pt from the top; the temperature,
+   its digits from 23.5 pt; and the air quality capsule, 51 x 15.5 pt, 1.5 pt from the sides
+   and 2 pt from the bottom. */
+.mac-maps-weather {
+  position: absolute;
+  top: var(--mac-maps-weather-top);
+  right: var(--mac-maps-weather-right);
+  width: var(--mac-maps-weather-width);
+  height: var(--mac-maps-weather-height);
+  border-radius: var(--mac-maps-weather-radius);
+  background: var(--mac-maps-weather-plate);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-maps-weather-glyph {
+  position: absolute;
+  top: var(--mac-maps-weather-glyph-top);
+  left: var(--mac-maps-weather-glyph-left);
+  fill: var(--mac-maps-weather-glyph);
+}
+
+/* The served map's plate has no air quality to show, so it ends under the temperature, and it
+   stands below the tiles' attribution, which holds this corner. */
+.mac-maps-weather[data-served] {
+  top: calc(var(--mac-maps-weather-top) + 20px);
+  height: var(--mac-maps-temperature-line-height);
+}
+
+.mac-maps-temperature {
+  position: absolute;
+  top: 0;
+  left: var(--mac-maps-temperature-left);
+  color: var(--mac-maps-temperature);
+  font: var(--mac-font-body);
+  font-size: var(--mac-maps-temperature-font-size);
+  line-height: var(--mac-maps-temperature-line-height);
+  white-space: nowrap;
+}
+
+.mac-maps-air-quality {
+  position: absolute;
+  top: var(--mac-maps-air-quality-top);
+  left: var(--mac-maps-air-quality-left);
+  box-sizing: border-box;
+  width: var(--mac-maps-air-quality-width);
+  height: var(--mac-maps-air-quality-height);
+  border-radius: var(--mac-maps-air-quality-radius);
+  background: var(--mac-maps-air-quality);
+  color: var(--mac-maps-air-quality-text);
+  font: var(--mac-font-body);
+  font-weight: var(--mac-font-weight-bold);
+  font-size: var(--mac-maps-air-quality-font-size);
+  line-height: var(--mac-maps-air-quality-line-height);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Map controls: the library's groups, placed by the demo at the capture's distances. */
+.mac-maps-options {
+  position: absolute;
+  z-index: 1;
+  bottom: var(--mac-maps-controls-inset-block-end);
+  left: var(--mac-maps-controls-inset-inline);
+}
+
+.mac-maps-controls {
+  position: absolute;
+  z-index: 1;
+  right: var(--mac-maps-controls-inset-inline);
+  bottom: var(--mac-maps-controls-inset-block-end);
+}
+
+/* The compass stands half a point right of the zoom pair's middle and 6.5 pt above it. */
+.mac-maps-controls > .mac-maps-compass {
+  position: relative;
+  left: var(--mac-maps-compass-offset-x);
+  margin-block-end: var(--mac-maps-compass-margin-block-end);
+}
+
+/*
+ * Place card, 320 pt wide and at most 600 pt high: a 34 pt head, a separator, and contents
+ * that scroll when the card has less room than they need. Points from the card's top:
+ *
+ *   head       the two buttons' bezels y 7.5..27.5, x 231..268.5 and 277.5..311.5
+ *   title      15 pt bold, capitals from y 51.5; the second line's from y 69.5
+ *   buttons    full width, 15 pt from each side: bezels y 116..136 and y 340.5..360.5
+ *   photos     290 x 127 from y 153: 192 x 127, then two of 96 x 62.5, 2 pt apart
+ *   link       capitals from y 298
+ *   sections   heading capitals from y 386.5, 482.5 and 533.5; values at a 15 pt pitch from
+ *              17.5 under them; separators at y 471 and 522; the last row from y 585.5
+ */
+.mac-maps-card {
+  display: grid;
+  grid-template-rows: var(--mac-maps-card-head-height) 1px minmax(0, 1fr);
+  width: var(--mac-maps-card-width);
+  max-height: min(
+    var(--mac-maps-card-max-height),
+    var(--available-height, var(--mac-maps-card-max-height))
+  );
+}
+
+.mac-maps-card-head {
+  display: flex;
+  gap: var(--mac-maps-card-head-gap);
+  justify-content: flex-end;
+  padding: var(--mac-maps-card-head-padding);
+}
+
+.mac-maps-card-head > .mac-maps-card-action {
+  width: var(--mac-maps-card-action-width);
+}
+
+.mac-maps-card-head > .mac-maps-card-action:where([data-action="share"]) {
+  width: var(--mac-maps-card-share-width);
+}
+
+.mac-maps-card-content {
+  padding: var(--mac-maps-card-content-padding);
+}
+
+.mac-maps-card-content > .mac-maps-card-title {
+  margin: var(--mac-maps-card-title-margin-top) 0 0;
+  color: var(--mac-maps-card-heading);
+  font: var(--mac-font-title-3);
+  font-weight: var(--mac-font-weight-bold);
+}
+
+.mac-maps-card-content > .mac-maps-card-subtitle {
+  display: block;
+  margin: var(--mac-maps-card-subtitle-margin-top) 0 0;
+}
+
+.mac-maps-card-content > .mac-maps-card-button {
+  display: flex;
+  width: 100%;
+  margin-block-start: var(--mac-maps-card-button-margin-top);
+}
+
+.mac-maps-card-content > .mac-maps-card-button:where([data-button="call"]) {
+  margin-block-start: var(--mac-maps-card-call-margin-top);
+}
+
+.mac-maps-card-photos {
+  display: grid;
+  grid-template:
+    var(--mac-maps-card-photos-row-height) var(--mac-maps-card-photos-row-height)
+    / var(--mac-maps-card-photos-lead-width) var(--mac-maps-card-photos-side-width);
+  gap: var(--mac-maps-card-photos-gap);
+  margin-block-start: var(--mac-maps-card-photos-margin-top);
+}
+
+.mac-maps-card-photos > .mac-maps-card-photo {
+  display: grid;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  background: none;
+}
+
+.mac-maps-card-photos > .mac-maps-card-photo:first-child {
+  grid-row: 1 / span 2;
+}
+
+.mac-maps-photo {
+  display: block;
+  width: 100cqw;
+  height: 100cqh;
+}
+
+.mac-maps-photo-panel {
+  fill: var(--mac-maps-photo-panel);
+}
+
+.mac-maps-photo-mark {
+  fill: var(--mac-maps-photo-mark);
+}
+
+.mac-maps-card-content .mac-maps-card-link {
+  color: var(--mac-maps-link);
+  line-height: var(--mac-maps-card-link-line-height);
+  text-decoration: none;
+}
+
+.mac-maps-card-content > .mac-maps-card-link:where([data-link="photos"]) {
+  display: block;
+  margin-block-start: var(--mac-maps-card-photos-link-margin-top);
+  line-height: var(--mac-maps-card-photos-link-line-height);
+}
+
+/* The wordmark is an image in Maps; here it is the name, set as text. */
+.mac-maps-card-wordmark {
+  color: var(--mac-color-label);
+  font-weight: var(--mac-font-weight-medium);
+}
+
+.mac-maps-card-content > .mac-maps-card-line {
+  margin-block-start: var(--mac-maps-card-line-margin-top);
+}
+
+.mac-maps-card-section {
+  padding-block-start: var(--mac-maps-card-section-padding-top);
+}
+
+.mac-maps-card-section:where([data-first]) {
+  margin-block-start: var(--mac-maps-card-section-first-margin-top);
+  padding-block-start: 0;
+}
+
+.mac-maps-card-section:where([data-row]) {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-block-start: var(--mac-maps-card-section-row-margin-top);
+  padding-block-start: 0;
+}
+
+.mac-maps-card-heading {
+  margin: 0 0 var(--mac-maps-card-heading-margin-bottom);
+  color: var(--mac-maps-card-heading);
+  font: var(--mac-font-headline);
+}
+
+.mac-maps-card-section:where([data-row]) > .mac-maps-card-heading {
+  margin: 0;
+}
+
+.mac-maps-card-section:where([data-row]) > .mac-maps-card-link {
+  line-height: var(--mac-maps-card-row-link-line-height);
+}
+
+.mac-maps-card-section > .mac-maps-card-value {
+  display: block;
+  margin: 0;
+  color: var(--mac-maps-card-heading);
+  line-height: var(--mac-maps-card-value-line-height);
+}
+
+.mac-maps-card-section > .mac-maps-card-link {
+  display: block;
+  width: fit-content;
+}
+
+/* The stand-in icons of the Share menus. */
+.mac-maps-service {
+  display: block;
+  fill: var(--mac-maps-service-0);
+}
+
+.mac-maps-service:where([data-tone="1"]) {
+  fill: var(--mac-maps-service-1);
+}
+
+.mac-maps-service:where([data-tone="2"]) {
+  fill: var(--mac-maps-service-2);
+}
+
+@media (forced-colors: active) {
+  .mac-maps-pin-ball,
+  .mac-maps-art-location {
+    fill: CanvasText;
+  }
+
+  .mac-maps-air-quality {
+    border: 1px solid CanvasText;
+  }
+}

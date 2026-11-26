@@ -1,0 +1,246 @@
+---
+title: Web View
+description: The content area of a browser window. It frames a page you supply, as children or in a sandboxed frame, and draws Safari's own pages - the Favorites grid, Reader, the Tab Overview, a loading line and an error page.
+---
+
+<Example name="basic" both />
+
+AppKit's `WKWebView`, as Safari 13 uses it under its toolbar and tab bar. A web view has no
+frame of its own: it is a surface that starts under the window's chrome and scrolls what does
+not fit. This component frames content that you supply. It has no browsing engine: it does not
+load, navigate or keep a history, and a site that forbids framing stays blank.
+
+## Usage
+
+```tsx
+import { WebView, WebViewProgress } from "macalicious/web-view";
+import "macalicious/web-view.css";
+
+// The children are the page
+<WebView title="Example page" style={{ height: 400 }}>
+  <article>…</article>
+</WebView>
+
+// A document in a sandboxed frame; the title is required
+<WebView src="https://example.com/" title="Example Domain" style={{ height: 400 }}>
+  {loading && <WebViewProgress value={progress} aria-label="Loading example.com" />}
+</WebView>
+```
+
+Or copy the source into your project: `npx macalicious add web-view`.
+
+Give the view a height (or put it in a layout that does): it scrolls its children with the
+browser's own scroll bars. For Catalina's overlay scroll bars, make a
+[scroll view](/components/scroll-view) of the view's full height its only child.
+
+<Example name="frame" both />
+
+With `src` the page is an `<iframe>` that fills the view (the example loads its frame when
+asked). Its `sandbox` defaults to
+`allow-scripts allow-forms`: the page runs its scripts in an origin of its own, and cannot read
+the embedding page, open windows or navigate the top frame. Its referrer policy defaults to
+`no-referrer`. Both are props; other frame attributes go in `frameProps`. Do not add
+`allow-same-origin` to a sandbox that has `allow-scripts` for a page from your own origin: such
+a page can remove its own sandbox.
+
+### Safari's own pages
+
+<Example name="favorites" both />
+
+`WebViewFavorites` is the Favorites grid of the start page, on `surface="start"`. A
+`WebViewFavorite` is a link; `render={<button type="button" />}` makes it a button, for a
+folder. The tile shows its children: a letter, a drawing or an image of your own. The library
+ships no site artwork and no Apple artwork. A tile takes a colour from
+`--mac-web-view-tile-fill`, and an image that fills the tile covers it edge to edge.
+
+<Example name="reader" both />
+
+`WebViewReader` is the Reader sheet, on `surface="reader"`: a sheet of at most 786 pt, 22 pt
+under the view's top edge, set in 20 pt text on 29 pt lines, with a 36 pt bold
+`WebViewReaderTitle`. Paragraphs are yours; Safari sets them 18 pt apart.
+
+<Example name="tab-overview" both />
+
+`WebViewTabOverview` is the grid of the Tab Overview, on `surface="overview"`. A
+`WebViewTabThumbnail` is a button with the page's title over a miniature, its children: a
+picture or a drawing that you supply. `variant="new-tab"` is the grey tile with the +.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[web views](https://web.archive.org/web/20200503225736/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/web-views/):
+
+- A web view loads and displays rich web content, such as embedded HTML and websites, directly
+  within an app.
+- Enable forward and back navigation when people will visit more than one page, and give them
+  the controls for it. A web view has none of its own.
+- Do not use a web view to build a web browser.
+
+The parts on this page that reproduce Safari's start page, Reader and Tab Overview exist for a
+demonstration of Safari itself.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Page | default | The page background: white in Aqua, the text background colour in Dark Aqua |
+| Start page | `surface="start"` | Safari's grey start-page canvas, behind `WebViewFavorites` |
+| Tab Overview | `surface="overview"` | The same canvas, one level apart in Aqua, behind `WebViewTabOverview` |
+| Reader | `surface="reader"` | Grey canvas around the `WebViewReader` sheet and its shadow |
+| Framed | `src` | A sandboxed `<iframe>` fills the view |
+| Loading | a `WebViewProgress` child | A 2 pt line in the accent colour along the top edge (provisional) |
+| Cannot open the page | a `WebViewError` child | Centred grey headline and explanation (provisional) |
+| Pressed tile or thumbnail | `:active` | Darkened (provisional) |
+| Keyboard focus | `:focus-visible` | Focus ring, in the key window only: inside the view's edge, around a tile, around a thumbnail (provisional) |
+| Window not key | `data-window-state="main"` or `"inactive"` on an ancestor | The loading line turns grey and no focus ring is drawn (provisional) |
+
+A page with a background of its own sets `--mac-web-view-background` on the view: Safari's
+canvas shows wherever the page does not cover it.
+
+Not covered: a browsing engine, navigation and history; the Frequently Visited section of the
+start page and the close buttons of Tab Overview thumbnails, which no screenshot shows; and
+the bookmarks sidebar, which is a [sidebar](/components/sidebar) beside the view.
+
+## Sizes
+
+A web view has no `size` prop. It is as wide as its container and needs a height. The
+Favorites grid has a fixed width, 115 pt for each of its `columns`, and is centred; the Tab
+Overview shares the view's width among its `columns`, and each thumbnail keeps the proportion
+in `--mac-web-view-thumbnail-aspect`, as Safari's keep the window's.
+
+## API
+
+<PropsTable name="WebViewProps" />
+
+<PropsTable name="WebViewProgressProps" />
+
+<PropsTable name="WebViewFavoritesProps" />
+
+<PropsTable name="WebViewFavoriteProps" />
+
+<PropsTable name="WebViewReaderProps" />
+
+<PropsTable name="WebViewReaderTitleProps" />
+
+<PropsTable name="WebViewErrorProps" />
+
+<PropsTable name="WebViewTabOverviewProps" />
+
+<PropsTable name="WebViewTabThumbnailProps" />
+
+`className`, `style`, `ref` and other attributes go to each part's outermost element. With
+`src`, TypeScript requires `title`.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-surface` | view | `page`, `start`, `overview`, `reader` | Reflects `surface`. |
+| `data-frame` | view | present or absent | Present when the view frames a document (`src`). |
+| `data-variant` | thumbnail | `page`, `new-tab` | Reflects `variant`. |
+| `data-progressing`, `data-complete`, `data-indeterminate` | loading line | present or absent | Set by Base UI's Progress. |
+| `data-force` | view, favourite, thumbnail | `pressed`, `focus` | Documentation and visual tests only. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-web-view-background` | the surface's canvas | Background of the view, for a page with a colour of its own. |
+| `--mac-web-view-columns` | `6` (Favorites), `4` (Tab Overview) | Tiles in a row. Set by the `columns` props. |
+| `--mac-web-view-tile-fill` | the placeholder tile's fill | Fill of a favourite's tile; set it on the `WebViewFavorite`. |
+| `--mac-web-view-tile-text` | a grey | Colour of the letter on a letter tile. |
+| `--mac-web-view-thumbnail-aspect` | `293 / 220` | Width to height of a Tab Overview thumbnail. |
+
+## Accessibility
+
+- Without `src` the view is a scrolling `<div>` in the tab order, so that the arrow keys, Page
+  Up and Page Down scroll it. With a `title` it is a `region` of that name. Pass
+  `tabIndex={-1}` when the page inside has focusable content and the extra stop is not wanted.
+- With `src` the view is an `<iframe>` and needs a `title`, which names the frame; the view
+  around it is then neither focusable nor a region.
+- `WebViewProgress` is a `progressbar` (Base UI's Progress). Name it with `aria-label`, and
+  remove it when the page has loaded.
+- `WebViewFavorites` is a section named by its heading, an `<h2>`. A `WebViewFavorite` is
+  named by its `label` and `detail`; the tile's content is hidden from assistive technology,
+  so a tile must not be the only place a site is named.
+- `WebViewReader` is an `<article>` and `WebViewReaderTitle` its `<h1>`; `WebViewError` has an
+  `<h2>`. Give the error `role="alert"` when it replaces a page the person was waiting for.
+- `WebViewTabOverview` is a `group`: name it with `aria-label`. A `WebViewTabThumbnail` is a
+  button named by its `title`; the miniature is hidden from assistive technology. The new-tab
+  tile has no text and needs an `aria-label`.
+- A disabled thumbnail, and a favourite with `aria-disabled="true"`, ignore a click on
+  whatever element they are rendered as: a link is not followed. A thumbnail rendered as a
+  link gets `aria-disabled` from `disabled`.
+- The focus ring is drawn in the key window only. In forced-colours mode tiles, the Reader
+  sheet and thumbnails keep a border and the loading line takes the highlight colour.
+
+## Visual comparison
+
+`web-view.visual.json` compares the parts Safari itself draws with the Safari 13 captures
+(`10-15-Catalina-<Light|Dark>-Safari-v13-Reader-Mode.png`, `-Favorites.png` and
+`-Tab-Overview.png`), in both appearances. Page content is not compared: the pages in the
+captures are third-party sites. Scores from `npm run visual -- web-view` in Chromium on Linux:
+the share of pixels that differ by more than the comparison's threshold, and the mean colour
+difference out of 255.
+
+| Comparison | Reference crop (x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `reader-light` | Light Reader-Mode (570, 202, 1732, 160) | 0.01% | 0.05 | 0.00% | 0.06 |
+| `reader-dark` | Dark Reader-Mode (500, 202, 1732, 160) | 0.00% | 0.04 | 0.00% | 0.06 |
+| `favorites-light` (masked) | Light Favorites (1090, 212, 426, 624) | 0.02% | 0.14 | 0.06% | 0.15 |
+| `favorites-dark` (masked) | Dark Favorites (1020, 212, 426, 624) | 0.24% | 0.15 | 0.17% | 0.10 |
+| `new-tab-light` | Light Tab-Overview (2056, 256, 626, 480) | 0.25% | 0.21 | 0.18% | 0.22 |
+| `new-tab-dark` | Dark Tab-Overview (1950, 256, 592, 462) | 0.20% | 0.19 | 0.13% | 0.16 |
+| `thumbnail-top-light` | Light Tab-Overview (170, 236, 270, 90) | 0.00% | 0.28 | 0.00% | 0.25 |
+| `thumbnail-top-dark` | Dark Tab-Overview (170, 236, 270, 90) | 0.00% | 0.12 | 0.00% | 0.12 |
+| `thumbnail-foot-light` (masked) | Light Tab-Overview (170, 656, 200, 120) | 0.00% | 0.67 | 0.00% | 0.65 |
+| `thumbnail-foot-dark` (masked) | Dark Tab-Overview (170, 638, 200, 120) | 0.00% | 0.25 | 0.00% | 0.24 |
+
+What is in the crops, and what is left out of the score:
+
+- **Reader**: the top 80 pt of the page across the whole sheet, above the article's title.
+  No text or site content is in the crop, and nothing is masked.
+- **Favorites**: the heading and the first two columns of the grid. The heading and the tile
+  titles are masked because they are text, set in the fallback font off Apple platforms; the
+  middle of every tile is masked because the capture has site artwork there (Apple's logo, a
+  folder's miniatures), which the library does not reproduce. The tiles' corners, edges and
+  shadows, their pitch and the canvas are scored.
+- **Tab Overview**: the new-tab tile whole, with its +, and two corners of the first
+  thumbnail: border, title band and shadow. The crops avoid the title, and the miniature of
+  the third-party page is masked in the bottom corner.
+
+The shadow comparisons count a pixel as different at a colour distance of 0.02, a fifth of the
+default. A fitted shadow differs from the capture by a level or two at most, so their mismatch
+stays at zero and it is the mean Δ, with a budget just above the score, that fails when a
+shadow or a fill changes.
+
+Measured (image pixels in the light capture; the dark one is 70 px narrower):
+
+- Canvases: start page `#e7e9ea` (Favorites @ 1096,152), Tab Overview `#e7e8e9` (@ 220,152),
+  Reader `#e6e6e6` (@ 600,300); dark `#2c2d30`, `#2c2d30` and `#323233`. The page surface in
+  Aqua is white (Safari-v13 @ 1400,204).
+- Favorites: heading 20 pt bold with its baseline 51 pt under the page's top edge; tiles
+  80 x 80 pt with 8 pt corners, first row 75 pt under the top edge, at a pitch of 115 x 148 pt;
+  titles 13 pt semibold with the baseline 19 pt under the tile, and a 12 pt second line. The
+  tile with no artwork is `#f3f3f4` (`#6a6b6c` in Dark Aqua) with a 1 pt edge (row 730).
+- Reader: sheet 786 pt wide, 22 pt under the top edge, 70 pt of padding; title 36 pt bold with
+  its baseline 87 pt under the sheet's top edge; text 20 pt on 29 pt lines, `#1b1b1b`
+  (`#d7d7d8`).
+- Tab Overview: thumbnails 18 pt apart, 49 pt from the sides and 62 pt under the top edge, with
+  a square 1 pt border and a 25 pt title band (`#ececec`, `#303134`) holding a 13 pt title;
+  the new-tab tile `#d0d1d2` (`#3f4143`) with a + of 49 pt in a 220 pt tile.
+
+Computed from measurements: the three shadows (tile, sheet and thumbnail), fitted to the
+capture's rows and columns, and the alphas of the tile's edge and the thumbnail's border.
+
+These readings differ from the written spec in three places, where the pixels were followed:
+the tile titles measure 13 pt and their second line 12 pt (the spec has 12 and 11), the Tab
+Overview titles measure 13 pt (the spec has 11), and the tiles have a shadow, which the spec
+does not mention.
+
+Provisional, because no screenshot shows it: the loading line (the spec only says that Safari
+draws a thin accent-coloured bar while a page loads), the error page, the pressed and focused
+looks, every look in a window that is not key, the colour of a tile's letter, and the page
+surface in Dark Aqua, where a real page defines its own. `web-view.visual.json` checks the
+loading line, the focus ring and the inactive window with real input against these inferred
+values. The framed form has no comparison: `web-view.browser.test.tsx` tests in a real
+browser that the frame fills the view, that the loading line is drawn over it and that the
+framed document runs in an origin of its own. Text is San Francisco only on Apple devices.

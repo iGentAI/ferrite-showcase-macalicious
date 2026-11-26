@@ -1,0 +1,113 @@
+/*
+ * Help Viewer: the colours of the app that no shared token and no component holds, from
+ * reference/spec/apps/help-viewer.md and the four Help captures (L: 10-15-Catalina-Light-Help.png,
+ * D: 10-15-Catalina-Dark-Help.png, LS and DS: the two -Help-Search.png). Coordinates are image
+ * pixels.
+ */
+:root {
+  /* [measured] the line between the table of contents and the page: L @ 452,300. In Dark Aqua
+     it is black: D has the hidden list's divider at the window's leading edge, #333333 under
+     the window's rim @ 46,700, which is that rim over black. */
+  --mac-help-viewer-divider: light-dark(#e6e6e6, #000000);
+  /* [measured] the page behind the search results: LS and DS @ 1600,200. A topic's page, which
+     no capture shows, is drawn on the same fill [provisional]. */
+  --mac-help-viewer-page-background: light-dark(#ffffff, #1d1e20);
+  /* [measured] the first result's row under the pointer: LS col x=1700 @ y=246..357.
+     [provisional] Dark Aqua: the pointer is not over a row in DS; the unemphasised
+     selection's grey. */
+  --mac-help-viewer-result-highlight: light-dark(#dcdcdc, #464646);
+  /* [provisional] the square behind the Finder's icon before a result, and the Share menu's rows
+     that have no application's icon, in greys of the page. No capture is their source. */
+  --mac-help-viewer-icon-fill: light-dark(#e4e4e6, #3a3a3c);
+  --mac-help-viewer-icon-mark: light-dark(#a8a8ad, #77777c);
+
+  /* The welcome page is the same in both appearances, so its values are not pairs. */
+  /* [measured] the page under the title block: L and D @ 1000,708 */
+  --mac-help-viewer-welcome-background: #ffffff;
+  /* [measured] the title block's vertical gradient: L col x=1700 @ y=136 and y=707 */
+  --mac-help-viewer-hero-top: #ffffff;
+  --mac-help-viewer-hero-bottom: #f2f2f2;
+  /* [measured] the title and the text of the welcome page: L @ 850,510,150,54 */
+  --mac-help-viewer-welcome-text: #000000;
+  /* [measured] the rule under "Table of Contents": L @ 1000,792 */
+  --mac-help-viewer-welcome-rule: #cccccc;
+  /* [measured] "Table of Contents" and its glyph: L @ 983,750 and 1038,750 */
+  --mac-help-viewer-welcome-link: #007aff;
+
+  /* Lengths, in points of the Help captures, y counted from the top of the page, the bottom
+     of the 49 pt bar (see the head of help-viewer.css). */
+
+  /* [measured] The welcome page's title block, 286 pt high: the 109 pt picture's centre
+     99 pt under the bar; the title 32 pt semibold on 38 pt lines, its capitals from 189 pt;
+     the subtitle 18 pt on 22 pt lines, its capitals from 234 pt. */
+  --mac-help-viewer-hero-height: 286px;
+  --mac-help-viewer-hero-padding-block-start: 44.5px;
+  --mac-help-viewer-hero-art-size: 109px;
+  --mac-help-viewer-hero-title-margin-top: 28px;
+  --mac-help-viewer-hero-title-font-size: 32px;
+  --mac-help-viewer-hero-title-line-height: 38px;
+  --mac-help-viewer-hero-subtitle-margin-top: 10.5px;
+  --mac-help-viewer-hero-subtitle-font-size: 18px;
+  --mac-help-viewer-hero-subtitle-line-height: 22px;
+
+  /* [measured] What follows the title block: the rule 20 pt from the pane's edges beside the
+     table of contents (a 673 pt pane) and 34 pt without it (876 pt), interpolated between
+     (6.897% of the pane less 26.4 pt); "Table of Contents" 43 pt under the title block, its
+     17 pt glyph 10 pt before the text and 1.5 pt above the middle of its line; the
+     illustration, 386.5 by 222.5 pt, 35.5 pt under the rule; the heading 18 pt medium on
+     22 pt lines, its capitals from 623 pt, and the sentence on 18 pt lines under it. */
+  --mac-help-viewer-welcome-body-padding-block: 12px 20px;
+  --mac-help-viewer-welcome-body-margin-min: 20px;
+  --mac-help-viewer-welcome-body-margin-max: 34px;
+  --mac-help-viewer-welcome-body-margin-offset: 26.4px;
+  --mac-help-viewer-welcome-body-margin-slope: 6.897%;
+  --mac-help-viewer-contents-link-gap: 6.5px;
+  --mac-help-viewer-contents-link-margin-bottom: 10px;
+  --mac-help-viewer-contents-glyph-margin-top: -3px;
+  --mac-help-viewer-device-art-width: 387px;
+  --mac-help-viewer-device-art-height: 222px;
+  --mac-help-viewer-device-art-margin-top: 35.5px;
+  --mac-help-viewer-device-art-radius: 6px;
+  --mac-help-viewer-welcome-heading-margin-top: 33px;
+  --mac-help-viewer-welcome-heading-font-size: 18px;
+  --mac-help-viewer-welcome-heading-line-height: 22px;
+  --mac-help-viewer-welcome-text-margin-top: 12px;
+  --mac-help-viewer-welcome-text-line-height: 18px;
+
+  /* [measured] The search results: "All Help" 21 pt from the window's edge, its capitals from
+     22 pt, the count's baseline 2.5 pt above the heading's; the first row 55 pt under the
+     bar. A row 2 pt from the window's edges with 4 pt to the next: the 18 pt icon 21 pt from
+     the window's edge and 7 pt under the row's top, the title 46 pt from the edge, the
+     description 22.5 pt under the title. The rule under the list 20 pt from the window's
+     edges. */
+  --mac-help-viewer-results-padding-block: 17.5px 20px;
+  --mac-help-viewer-results-inset: 21px;
+  --mac-help-viewer-results-header-gap: 7.5px;
+  --mac-help-viewer-results-count-offset: -2.5px;
+  --mac-help-viewer-result-list-margin-top: 11.5px;
+  --mac-help-viewer-result-icon-size: 18px;
+  --mac-help-viewer-result-column-gap: 7px;
+  --mac-help-viewer-result-margin: 0 2px 4px;
+  --mac-help-viewer-result-padding: 8px 19px 9.5px;
+  --mac-help-viewer-result-icon-margin-top: -1px;
+  --mac-help-viewer-result-icon-radius: 4px;
+  --mac-help-viewer-result-summary-margin-top: 6.5px;
+  --mac-help-viewer-show-all-gap: 4px;
+  --mac-help-viewer-show-all-margin-top: 11.5px;
+  --mac-help-viewer-results-rule-margin: 23.5px 20px 0;
+  --mac-help-viewer-web-margin-top: 13.5px;
+  --mac-help-viewer-web-arrow-margin-inline-start: 3px;
+
+  /* [provisional] A topic's page, which no capture shows: the results page's margins, a
+     640 pt measure and the demo's spacing between its parts. */
+  --mac-help-viewer-topic-max-width: 640px;
+  --mac-help-viewer-topic-padding: 20px 21px;
+  --mac-help-viewer-topic-title-margin: 2px 0 10px;
+  --mac-help-viewer-topic-text-margin-bottom: 8px;
+  --mac-help-viewer-topic-list-gap: 6px;
+  --mac-help-viewer-topic-list-margin-top: 4px;
+  --mac-help-viewer-feedback-margin-top: 10px;
+  /* [provisional] The stand-in icon of a service in the Share menu. */
+  --mac-help-viewer-service-icon-size: 16px;
+  --mac-help-viewer-service-icon-radius: 4px;
+}

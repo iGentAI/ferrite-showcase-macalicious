@@ -1,0 +1,96 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "pending": "No reference: a window manager has no look of its own, and no screenshot can show stacking order changing. The checks below press a window in a real browser and hold the pixel where two windows overlap to the fill of the window that should be on top.",
+  "comparisons": [
+    {
+      "name": "front-light",
+      "description": "Two overlapping windows, Aqua: the one opened last is in front.",
+      "example": "visual-order",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 300,
+          "height": 200
+        },
+        "pixels": [
+          {
+            "x": 180,
+            "y": 115,
+            "color": "#ffffff",
+            "note": "overlap of the two windows shows the front window's body, --mac-color-control-background"
+          },
+          {
+            "x": 80,
+            "y": 60,
+            "color": "#ececec",
+            "note": "the back window's body where nothing covers it, --mac-color-window-background"
+          }
+        ]
+      }
+    },
+    {
+      "name": "raised-light",
+      "description": "The back window pressed, Aqua: it comes in front of the other.",
+      "example": "visual-order",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "[data-window-id='back']"
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 180,
+            "y": 115,
+            "color": "#ececec",
+            "note": "overlap now shows the pressed window's body, --mac-color-window-background"
+          }
+        ]
+      }
+    },
+    {
+      "name": "front-dark",
+      "description": "Two overlapping windows, Dark Aqua: the one opened last is in front.",
+      "example": "visual-order",
+      "appearance": "dark",
+      "expect": {
+        "pixels": [
+          {
+            "x": 180,
+            "y": 115,
+            "color": "#1e1e1e",
+            "note": "overlap shows the front window's body, --mac-color-control-background"
+          },
+          {
+            "x": 80,
+            "y": 60,
+            "color": "#323232",
+            "note": "the back window's body, --mac-color-window-background"
+          }
+        ]
+      }
+    },
+    {
+      "name": "raised-dark",
+      "description": "The back window pressed, Dark Aqua: it comes in front of the other.",
+      "example": "visual-order",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "[data-window-id='back']"
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 180,
+            "y": 115,
+            "color": "#323232",
+            "note": "overlap now shows the pressed window's body, --mac-color-window-background"
+          }
+        ]
+      }
+    }
+  ]
+}

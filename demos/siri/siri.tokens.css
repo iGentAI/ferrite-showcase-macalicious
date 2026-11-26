@@ -1,0 +1,62 @@
+/*
+ * Siri demo: the sizes of what the demo puts into the library's Siri card. The window's own
+ * values are the library's (--mac-siri-*); these are named --mac-siri-demo-* and are the same
+ * in both appearances, because the window is dark in both.
+ *
+ * Measured on 10-15-Catalina-Light-Siri.png and 10-15-Catalina-Dark-Siri.png (2x: two pixels
+ * are one point). The window is at 19, 18 pt of each capture and the card at 12, 28 pt of the
+ * window; siri.css gives the pixels each value was read from.
+ */
+:root {
+  /* [measured] an hourly weather glyph, and the sun of the summary (x=110..193 of the 2x
+     captures) */
+  --mac-siri-demo-glyph-size: 18px;
+  --mac-siri-demo-glyph-size-large: 42px;
+  /* [provisional] the placeholder in a card's header: the icon is Apple's artwork and is
+     masked in every comparison */
+  --mac-siri-demo-icon-size: 14px;
+
+  /* [measured] the summary block: glyph box from x=23.75 and y=51.75 of the card, the
+     temperature's ink ending 15.5 pt from the card's right edge */
+  --mac-siri-demo-summary-padding-top: 15.5px;
+  --mac-siri-demo-summary-padding-bottom: 10.5px;
+  --mac-siri-demo-summary-padding-start: 23.75px;
+  --mac-siri-demo-summary-padding-end: 15.5px;
+  /* [measured, computed] the sun centred 46.75 pt under the block's top edge, and the city
+     from x=87 of the card */
+  --mac-siri-demo-glyph-offset: 10.25px;
+  --mac-siri-demo-glyph-gap: 21.25px;
+
+  /* [measured] the city: bold 14 pt on an 18 pt line, its line box at y=41.5 of the card */
+  --mac-siri-demo-city-size: 14px;
+  --mac-siri-demo-city-line-height: 18px;
+  /* [measured] the lines under the city: a label that breaks continues after 15 pt, the next
+     label starts 15.75 pt after a label's last line, the first 4 pt under the city */
+  --mac-siri-demo-line-height: 15px;
+  --mac-siri-demo-line-gap: 0.75px;
+  --mac-siri-demo-city-gap: 4px;
+
+  /* [measured, computed] the large temperature: thin 55 pt digits centred 4 pt under the
+     middle of the block */
+  --mac-siri-demo-temperature-size: 55px;
+  --mac-siri-demo-temperature-line-height: 50px;
+  --mac-siri-demo-temperature-offset: 1.5px;
+
+  /* [measured] the hourly rows: 39 pt each, the label from x=17.5, the glyph centred on
+     x=158.5, the degrees right-aligned to x=299.5 */
+  --mac-siri-demo-hour-height: 39px;
+  --mac-siri-demo-hour-padding-top: 1.5px;
+  --mac-siri-demo-hour-padding-start: 17.5px;
+  --mac-siri-demo-hour-padding-end: 20.5px;
+  --mac-siri-demo-hour-glyph-column: 40px;
+
+  /* [provisional] the cards that answer with one value, and the example requests: the demo's
+     own, after the way Siri answers; no capture shows them */
+  --mac-siri-demo-result-padding-top: 14px;
+  --mac-siri-demo-result-padding-inline: 18px;
+  --mac-siri-demo-result-padding-bottom: 16px;
+  --mac-siri-demo-value-size: 44px;
+  --mac-siri-demo-value-line-height: 50px;
+  --mac-siri-demo-value-margin: 2px;
+  --mac-siri-demo-example-padding: 5px;
+}

@@ -1,0 +1,241 @@
+/*
+ * Quick Look panel (QLPreviewPanel).
+ *
+ * One translucent surface: a 38 pt bar, and under it the preview, inset 3 pt from the sides
+ * and the bottom so that the material frames it and fills the bands beside a preview of
+ * another shape. The shadow, the outer hairline and the 5 pt corners come from the
+ * window-shadow component, which the root also is.
+ *
+ * The bar: two 12 pt discs 12 pt from the leading edge on a 20 pt pitch, the title centred on
+ * the panel, 19 pt buttons 10.5 pt apart and 8.5 pt from the trailing edge.
+ *
+ * States
+ *   [data-window-state="key" | "main" | "inactive"]   always written on the root
+ *   [data-tools]                         on the bar while tools replace the title
+ *   :active, [data-force~="pressed"]     pressed button [provisional]
+ *   [data-disabled]                      disabled button: half opacity [provisional]
+ *   :focus-visible, [data-force~="focus"] focus ring, only in a key panel
+ */
+.mac-quick-look-panel {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: var(--mac-quick-look-panel-material);
+  -webkit-backdrop-filter: var(--mac-quick-look-panel-filter);
+  backdrop-filter: var(--mac-quick-look-panel-filter);
+  color: var(--mac-quick-look-panel-label);
+  font: var(--mac-font-window-title);
+  letter-spacing: var(--mac-tracking-regular);
+  cursor: default;
+}
+
+.mac-quick-look-panel::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--mac-quick-look-panel-rim);
+  pointer-events: none;
+}
+
+/* Three columns: the discs, the title, the actions. The outer two are equal while there is
+   room, which centres the title on the panel; when one side needs more, the title moves
+   aside and is cut with an ellipsis, so it never lies under the discs or the actions. */
+.mac-quick-look-panel-bar {
+  position: relative;
+  display: grid;
+  flex: none;
+  grid-template-columns: minmax(max-content, 1fr) minmax(0, auto) minmax(max-content, 1fr);
+  column-gap: 12px;
+  align-items: center;
+  box-sizing: border-box;
+  height: 38px;
+  padding-inline: 12px 8.5px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* With tools: the discs, the tools in all the space left, the actions. */
+.mac-quick-look-panel-bar:where([data-tools]) {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+/* The two discs: centred 18.25 pt under the panel's top edge. */
+.mac-quick-look-panel-controls {
+  display: flex;
+  grid-column: 1;
+  gap: 8px;
+  justify-self: start;
+  margin-block-end: 1.5px;
+}
+
+.mac-quick-look-panel-control {
+  display: block;
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  outline: 0;
+  background: none;
+  color: inherit;
+  cursor: default;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.mac-quick-look-panel-control > :where(svg) {
+  display: block;
+  width: 12px;
+  height: 12px;
+}
+
+.mac-quick-look-panel-title {
+  grid-column: 2;
+  min-width: 0;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* With tools in its place the title only names the panel. */
+.mac-quick-look-panel-bar:where([data-tools]) > .mac-quick-look-panel-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+}
+
+/* The tools scroll sideways, without a scroll bar, when they are wider than the space between
+   the close button and the actions, so that they never lie under either. The padding keeps a
+   focus ring from being clipped. */
+.mac-quick-look-panel-tools {
+  grid-column: 2;
+  min-width: 0;
+  margin: -4px;
+  padding: 4px;
+  overflow: auto hidden;
+  scrollbar-width: none;
+}
+
+.mac-quick-look-panel-actions {
+  display: flex;
+  grid-column: 3;
+  gap: 10.5px;
+  align-items: center;
+  justify-self: end;
+  margin-block-end: 1.5px;
+}
+
+/* A button: its box is the 19 pt fill; the half-point edge is drawn outside it. */
+.mac-quick-look-panel-button {
+  display: inline-flex;
+  flex: none;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 39px;
+  height: 19px;
+  margin: 0;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 4px;
+  outline: 0;
+  background: var(--mac-quick-look-panel-button);
+  box-shadow:
+    inset 0 var(--mac-hairline) 0 var(--mac-quick-look-panel-button-highlight),
+    0 0 0 var(--mac-hairline) var(--mac-quick-look-panel-button-edge),
+    0 calc(2 * var(--mac-hairline)) 0 var(--mac-quick-look-panel-button-shadow);
+  color: var(--mac-quick-look-panel-button-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  white-space: nowrap;
+  cursor: default;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.mac-quick-look-panel-button:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  background: var(--mac-quick-look-panel-button-pressed);
+}
+
+.mac-quick-look-panel-button:where([data-disabled]) {
+  opacity: var(--mac-control-opacity-disabled);
+}
+
+.mac-quick-look-panel-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+),
+.mac-quick-look-panel-control:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+/* Not the key panel: buttons and glyphs fade, as toolbar buttons do. [provisional] */
+.mac-quick-look-panel-bar:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+)
+> :where(
+  .mac-quick-look-panel-controls,
+  .mac-quick-look-panel-title,
+  .mac-quick-look-panel-actions
+) {
+  opacity: 0.5;
+}
+
+/* The preview: centred in the frame; anything larger is scaled down to fit. */
+.mac-quick-look-panel-preview {
+  display: grid;
+  flex: 1 1 auto;
+  place-items: center;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  margin: 0 3px 3px;
+  overflow: hidden;
+}
+
+.mac-quick-look-panel-preview > :where(img, video, canvas, svg) {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+@media (forced-colors: active) {
+  .mac-quick-look-panel {
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .mac-quick-look-panel-bar {
+    border-block-end: 1px solid CanvasText;
+  }
+
+  .mac-quick-look-panel-button {
+    border: 1px solid ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+
+  .mac-quick-look-panel-button:where([data-disabled]) {
+    border-color: GrayText;
+    color: GrayText;
+    opacity: 1;
+  }
+
+  .mac-quick-look-panel-button:where(:focus-visible),
+  .mac-quick-look-panel-control:where(:focus-visible) {
+    outline: 2px solid Highlight;
+    outline-offset: 1px;
+  }
+}

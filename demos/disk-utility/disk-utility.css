@@ -1,0 +1,337 @@
+/*
+ * Disk Utility demo: the spacing of the toolbar and the detail pane.
+ * The window, the toolbar controls, the sidebar, the split view, the capacity bar, the
+ * separators, the information box, the sheets and their controls are the library's own;
+ * nothing here restyles them. Distances are measured in the two Disk Utility captures, in
+ * points from the window's top-left corner.
+ *
+ * Parts
+ *   .mac-disk-utility-split        the split view under the chrome
+ *   .mac-disk-utility-sidebar      the library sidebar, filling its pane
+ *   .mac-disk-utility-unmounted    the name of a volume that is not mounted, dimmed
+ *   .mac-disk-utility-detail       the detail pane: 32 pt margins
+ *   .mac-disk-utility-header       icon, name and lines, capacity box: the first 112 pt
+ *   .mac-disk-utility-icon         the 64 pt stand-in disk icon
+ *   .mac-disk-utility-name         the 25 pt bold name
+ *   .mac-disk-utility-line         a grey line under it; the first is 14 pt, the rest 12 pt
+ *   .mac-disk-utility-capacity     the outlined 120 x 39 pt box with the size, and its caption
+ *   .mac-disk-utility-usage        the capacity bar and its legend: 118 pt between the rules
+ *   .mac-disk-utility-legend       up to three entries at a 204 pt pitch, each with a 10 pt
+ *                                  square drawn before it
+ *   .mac-disk-utility-facts        the information box: two columns of four 31 pt rows
+ *   .mac-disk-utility-fact         a row: label at the leading edge, value at the trailing
+ *   .mac-disk-utility-log          the lines First Aid reports
+ *
+ * States
+ *   [data-key="used" | "other" | "free"]   on a legend entry: the colour of its square
+ *   [data-external]                        on the icon: the coloured drive
+ *
+ * Every measured length and font size is a token in disk-utility.tokens.css
+ * (--mac-disk-utility-*). Literal here, as structure: zeros, the 100% heights, the 1 pt
+ * borders and the divider's 1 pt width, the grid's 282 : 283 column ratio, and the opacity.
+ */
+.mac-disk-utility-split {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.mac-disk-utility-sidebar {
+  height: 100%;
+}
+
+.mac-disk-utility-unmounted {
+  opacity: 0.5;
+}
+
+.mac-disk-utility-detail {
+  box-sizing: border-box;
+  height: 100%;
+  padding-inline: var(--mac-disk-utility-detail-padding-inline);
+  overflow: auto;
+  background: var(--mac-disk-utility-pane);
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  cursor: default;
+}
+
+/* The chrome is 70 pt, so the pane starts at y=70: the icon's box at 93, the name's baseline
+   at 116.5, the lines' at 134.5 and 150.5, the capacity box at 104.5 and the rule at 182. */
+.mac-disk-utility-header {
+  display: flex;
+  box-sizing: border-box;
+  height: var(--mac-disk-utility-header-height);
+  min-width: 0;
+}
+
+.mac-disk-utility-icon {
+  flex: none;
+  margin-block-start: var(--mac-disk-utility-icon-margin-top);
+}
+
+.mac-disk-utility-icon-body {
+  fill: var(--mac-disk-utility-icon-metal);
+  stroke: var(--mac-disk-utility-icon-edge);
+}
+
+.mac-disk-utility-icon:where([data-external]) .mac-disk-utility-icon-body {
+  fill: var(--mac-disk-utility-icon-color);
+}
+
+.mac-disk-utility-icon-base {
+  fill: var(--mac-disk-utility-icon-base);
+  stroke: var(--mac-disk-utility-icon-edge);
+}
+
+.mac-disk-utility-icon-edge {
+  fill: none;
+  stroke: var(--mac-disk-utility-icon-edge);
+}
+
+.mac-disk-utility-icon-light {
+  fill: var(--mac-disk-utility-icon-light);
+}
+
+.mac-disk-utility-heading {
+  flex: 1 1 0;
+  min-width: 0;
+  padding-block-start: var(--mac-disk-utility-heading-padding-top);
+  padding-inline: var(--mac-disk-utility-heading-padding-start)
+    var(--mac-disk-utility-heading-padding-end);
+}
+
+.mac-disk-utility-name {
+  margin: 0;
+  overflow: hidden;
+  font-weight: var(--mac-font-weight-bold);
+  font-size: var(--mac-disk-utility-name-size);
+  line-height: var(--mac-disk-utility-name-line-height);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-disk-utility-line {
+  margin: 0;
+  overflow: hidden;
+  color: var(--mac-color-label-secondary);
+  font-size: var(--mac-disk-utility-line-size);
+  line-height: var(--mac-disk-utility-line-line-height);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-disk-utility-line:where(:first-of-type) {
+  margin-block: var(--mac-disk-utility-line-first-margin-top)
+    var(--mac-disk-utility-line-first-margin-bottom);
+  font-size: var(--mac-disk-utility-line-first-size);
+  line-height: var(--mac-disk-utility-line-first-line-height);
+}
+
+.mac-disk-utility-capacity {
+  flex: none;
+  width: var(--mac-disk-utility-capacity-width);
+  padding-block-start: var(--mac-disk-utility-capacity-padding-top);
+  color: var(--mac-disk-utility-capacity);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* The corners measure about 4 pt; the size is 19 pt, its digits 13 pt high. */
+.mac-disk-utility-capacity-box {
+  box-sizing: border-box;
+  height: var(--mac-disk-utility-capacity-box-height);
+  border: 1px solid var(--mac-disk-utility-capacity);
+  border-radius: var(--mac-disk-utility-capacity-box-radius);
+  font-size: var(--mac-disk-utility-capacity-box-size);
+  line-height: var(--mac-disk-utility-capacity-box-line-height);
+}
+
+/* 10 pt capitals, their baseline 11.5 pt under the box. */
+.mac-disk-utility-capacity-caption {
+  margin-block-start: var(--mac-disk-utility-caption-margin-top);
+  margin-inline: var(--mac-disk-utility-caption-margin-inline);
+  font-size: var(--mac-disk-utility-caption-size);
+  line-height: var(--mac-disk-utility-caption-line-height);
+}
+
+/* The bar starts 26 pt under the first rule, 2 pt inside the column and ends 6 pt before its
+   trailing edge: 600 pt in the captured window. */
+.mac-disk-utility-usage {
+  box-sizing: border-box;
+  height: var(--mac-disk-utility-usage-height);
+  padding-block-start: var(--mac-disk-utility-usage-padding-top);
+  padding-inline-start: var(--mac-disk-utility-usage-padding-start);
+}
+
+.mac-disk-utility-bar {
+  width: calc(100% - var(--mac-disk-utility-bar-inset-end));
+}
+
+/* The squares start where the bar does and are 204 pt apart: thirds of the bar and 12 pt. */
+.mac-disk-utility-legend {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: calc(100% + var(--mac-disk-utility-bar-inset-end));
+  margin: var(--mac-disk-utility-legend-margin-top) 0 0;
+}
+
+.mac-disk-utility-legend-entry {
+  position: relative;
+  min-width: 0;
+  padding-inline-start: var(--mac-disk-utility-legend-entry-padding-start);
+}
+
+.mac-disk-utility-legend-entry::before {
+  position: absolute;
+  inset-block-start: var(--mac-disk-utility-legend-square-top);
+  inset-inline-start: 0;
+  box-sizing: border-box;
+  width: var(--mac-disk-utility-legend-square-size);
+  height: var(--mac-disk-utility-legend-square-size);
+  border: 1px solid var(--_edge);
+  border-radius: var(--mac-disk-utility-legend-square-radius);
+  background: var(--_fill);
+  content: "";
+}
+
+.mac-disk-utility-legend-entry:where([data-key="used"]) {
+  --_fill: var(--mac-disk-utility-used);
+  --_edge: var(--mac-disk-utility-used-edge);
+}
+
+.mac-disk-utility-legend-entry:where([data-key="other"]) {
+  --_fill: var(--mac-disk-utility-other);
+  --_edge: var(--mac-disk-utility-other-edge);
+}
+
+.mac-disk-utility-legend-entry:where([data-key="free"]) {
+  --_fill: var(--mac-disk-utility-free);
+  --_edge: var(--mac-disk-utility-free-edge);
+}
+
+.mac-disk-utility-legend-label,
+.mac-disk-utility-legend-value {
+  margin: 0;
+  overflow: hidden;
+  font-size: var(--mac-disk-utility-legend-size);
+  line-height: var(--mac-disk-utility-legend-line-height);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-disk-utility-legend-label {
+  font-weight: var(--mac-font-weight-bold);
+}
+
+.mac-disk-utility-legend-value {
+  margin-block-start: var(--mac-disk-utility-legend-value-margin-top);
+  color: var(--mac-disk-utility-legend-value);
+}
+
+/* The box starts 24 pt under the second rule. Inside its 1 pt border: 10 pt, a column, the
+   divider in a 20 pt gap, a column a point wider, 11 pt. */
+.mac-disk-utility-facts {
+  margin-block-start: var(--mac-disk-utility-facts-margin-top);
+}
+
+.mac-disk-utility-columns {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 282fr) minmax(0, 283fr);
+  column-gap: var(--mac-disk-utility-columns-gap);
+  padding-inline: var(--mac-disk-utility-columns-padding-start)
+    var(--mac-disk-utility-columns-padding-end);
+}
+
+/* The divider is in the middle of the gap and stops 10 pt short of the box's inner edges. */
+.mac-disk-utility-columns::before {
+  position: absolute;
+  inset-block: var(--mac-disk-utility-divider-inset-top)
+    var(--mac-disk-utility-divider-inset-bottom);
+  inset-inline-start: calc(
+    var(--mac-disk-utility-columns-padding-start) +
+    (
+      100% -
+      (
+        var(--mac-disk-utility-columns-padding-start) +
+        var(--mac-disk-utility-columns-gap) +
+        var(--mac-disk-utility-columns-padding-end)
+      )
+    ) *
+    282 / 565 +
+    var(--mac-disk-utility-divider-offset)
+  );
+  width: 1px;
+  background: var(--mac-disk-utility-rule);
+  content: "";
+}
+
+.mac-disk-utility-column {
+  margin: 0;
+}
+
+/* Rules at 32, 63 and 94 pt under the box's inner edge, which is 123 pt high: the first row
+   has a point more than the next two and the last one two less. The text is on the same
+   baseline, 19.5 pt under each rule. */
+.mac-disk-utility-fact {
+  display: flex;
+  gap: var(--mac-disk-utility-fact-gap);
+  justify-content: space-between;
+  box-sizing: border-box;
+  height: var(--mac-disk-utility-fact-height);
+  border-block-end: 1px solid var(--mac-disk-utility-rule);
+  line-height: var(--mac-disk-utility-fact-line-height);
+  white-space: nowrap;
+}
+
+.mac-disk-utility-fact:where(:first-child) {
+  height: var(--mac-disk-utility-fact-first-height);
+  padding-block-start: var(--mac-disk-utility-fact-first-padding-top);
+}
+
+.mac-disk-utility-fact:where(:last-child) {
+  height: var(--mac-disk-utility-fact-last-height);
+  border-block-end: 0;
+}
+
+.mac-disk-utility-fact-label {
+  flex: none;
+}
+
+.mac-disk-utility-fact-value {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mac-disk-utility-progress {
+  margin-block-start: var(--mac-disk-utility-progress-margin-top);
+}
+
+.mac-disk-utility-log {
+  height: var(--mac-disk-utility-log-height);
+  margin: var(--mac-disk-utility-log-margin-top) 0 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+/* The captures' grey is faint on the Dark Aqua pane; where more contrast is asked for, the
+   values take the label colour. */
+@media (prefers-contrast: more) {
+  .mac-disk-utility-legend-value {
+    color: var(--mac-color-label);
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-disk-utility-capacity-box,
+  .mac-disk-utility-fact {
+    border-color: CanvasText;
+  }
+
+  /* The squares tell the entries apart by colour only: keep the colours. */
+  .mac-disk-utility-legend-entry::before {
+    forced-color-adjust: none;
+  }
+}

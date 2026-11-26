@@ -1,0 +1,28 @@
+/*
+ * Waveform view values that no shared token holds. Voice Memos keeps this content dark in both
+ * appearances, so none of them differs between Aqua and Dark Aqua.
+ */
+:root {
+  /* [measured] Light- and Dark-Voice-Memos @ 300,180: the content around the panel */
+  --mac-waveform-view-background: #000000;
+  /* [measured] @ 300,400 (detailed panel) and @ 1000,900 (overview strip), both captures */
+  --mac-waveform-view-panel: #151515;
+  /* [measured] @ 425,468 (bar core), @ 901,500 (playhead), @ 901,218 (end dot), @ 403,900
+     (overview handle): the audio red, which is not the system accent */
+  --mac-waveform-view-bar: #ff3b30;
+  --mac-waveform-view-playhead: #ff3b30;
+  /* [measured] the half point either side of the playhead's line is darker than the panel:
+     #000f13 @ 899,500 and #000a10 @ 903,500, both captures */
+  --mac-waveform-view-playhead-fringe: #000d12;
+  /* [measured] @ 230,900: the overview's bars are dimmer */
+  --mac-waveform-view-overview-bar: #df3329;
+  /* [measured] @ 423,716 (major tick), @ 462,718 (minor tick) */
+  --mac-waveform-view-tick-major: #424242;
+  --mac-waveform-view-tick-minor: #2b2b2b;
+  /* [measured] brightest stems of the ruler and overview labels, 422,737,65,19 and
+     180,971,64,19 */
+  --mac-waveform-view-label: #5d5d5d;
+  /* [measured, computed] 19 px cap height: 13.5 pt regular (17.5 pt of iOS scaled to 77%) */
+  --mac-waveform-view-font:
+    var(--mac-font-weight-regular) 13.5px / 16px var(--mac-font-family-system);
+}

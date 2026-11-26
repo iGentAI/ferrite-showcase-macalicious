@@ -1,0 +1,122 @@
+/*
+ * Sheet: a panel of the sheet material that hangs from the bottom edge of its window's title
+ * bar or toolbar. Square corners, a 0.5 pt edge (and in Dark Aqua a 1 pt rim inside it) and a
+ * shadow on the sides and the bottom; nothing is drawn above the line it hangs from.
+ *
+ * The positioner is the clip: it starts at the attachment line and is padded at the sides and
+ * the bottom to leave room for the shadow, so the sheet slides out from under the line and
+ * casts no shadow above it. (A clip-path would cut the material off from what it blurs.)
+ *
+ * States (set by Base UI on the popup)
+ *   [data-open] / [data-closed]
+ *   [data-starting-style] / [data-ending-style]     while it slides, 0.25 s
+ *   [data-instant]                                  shown or hidden without the slide
+ *
+ * Hooks
+ *   --mac-sheet-width                  width of the sheet; SheetPopup's width prop sets it
+ *   --mac-sheet-button-min-width       least width of a dismissing button (default 84px)
+ *
+ * Base UI's positioner gives --available-height, the room between the line the sheet hangs
+ * from and the bottom of the viewport: a taller sheet scrolls instead of leaving its buttons
+ * out of reach.
+ */
+.mac-sheet-positioner {
+  z-index: 900;
+  box-sizing: content-box;
+  padding: 0 48px 48px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.mac-sheet {
+  box-sizing: border-box;
+  width: var(--mac-sheet-width, auto);
+  max-width: calc(100vw - 16px);
+  max-height: var(--available-height);
+  overflow-y: auto;
+  padding: var(--mac-space-window-margin);
+  border-radius: var(--mac-radius-sheet);
+  outline: 0;
+  background: var(--mac-material-sheet);
+  box-shadow:
+    inset 1px 0 0 var(--mac-sheet-rim),
+    inset -1px 0 0 var(--mac-sheet-rim),
+    inset 0 -1px 0 var(--mac-sheet-rim),
+    0 0 0 var(--mac-hairline) var(--mac-sheet-edge),
+    var(--mac-shadow-sheet);
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  letter-spacing: var(--mac-tracking-regular);
+  cursor: default;
+  pointer-events: auto;
+  transition: transform 0.25s ease-out;
+  -webkit-backdrop-filter: var(--mac-material-filter-sheet);
+  backdrop-filter: var(--mac-material-filter-sheet);
+}
+
+.mac-sheet:where([data-starting-style], [data-ending-style]) {
+  transform: translateY(-100%);
+}
+
+.mac-sheet:where([data-instant]) {
+  transition: none;
+}
+
+.mac-sheet-title {
+  margin: 0;
+  color: var(--mac-color-label);
+  font: var(--mac-font-headline);
+}
+
+.mac-sheet-description {
+  margin: 7px 0 0;
+  color: var(--mac-color-label);
+  font: var(--mac-font-subheadline);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+.mac-sheet-actions {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+  align-items: center;
+  /* 20.5 pt from the visible edge of the control above to the buttons' bezels. */
+  margin-top: calc(var(--mac-space-window-margin) - 0.5px);
+}
+
+.mac-sheet-actions:where(:first-child) {
+  margin-top: 0;
+}
+
+.mac-sheet-actions-leading,
+.mac-sheet-actions-trailing {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+  align-items: center;
+}
+
+.mac-sheet-actions-trailing {
+  margin-inline-start: auto;
+}
+
+.mac-sheet-actions-trailing > :where(*) {
+  min-width: var(--mac-sheet-button-min-width, 84px);
+}
+
+/* No movement: the sheet fades in under the line instead of sliding. */
+@media (prefers-reduced-motion: reduce) {
+  .mac-sheet {
+    transition: opacity 0.25s;
+  }
+
+  .mac-sheet:where([data-starting-style], [data-ending-style]) {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-sheet {
+    border: 1px solid CanvasText;
+    border-top: 0;
+  }
+}

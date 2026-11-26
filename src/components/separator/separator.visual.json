@@ -1,0 +1,138 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "on-box-light",
+      "description": "Left end of the separator on the box of Security & Privacy, Aqua.",
+      "example": "visual-on-box",
+      "appearance": "light",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.003,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.5,
+        "2x": 0.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Security-and-Privacy.png",
+        "crop": {
+          "x": 188,
+          "y": 684,
+          "width": 240,
+          "height": 22
+        }
+      }
+    },
+    {
+      "name": "on-box-dark",
+      "description": "Left end of the separator on the box of Security & Privacy, Dark Aqua.",
+      "example": "visual-on-box",
+      "appearance": "dark",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.003,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.3,
+        "2x": 0.3
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Security-and-Privacy.png",
+        "crop": {
+          "x": 188,
+          "y": 684,
+          "width": 240,
+          "height": 22
+        }
+      }
+    },
+    {
+      "name": "on-window-light",
+      "description": "Left end of the separator on the window background of Screen Time, Aqua.",
+      "example": "visual-on-window",
+      "appearance": "light",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.003,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.3,
+        "2x": 0.3
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Screen-Time.png",
+        "crop": {
+          "x": 132,
+          "y": 716,
+          "width": 240,
+          "height": 22
+        }
+      }
+    },
+    {
+      "name": "on-window-dark",
+      "description": "Left end of the separator on the window background of Screen Time, Dark Aqua.",
+      "example": "visual-on-window",
+      "appearance": "dark",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.003,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.3,
+        "2x": 0.3
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Screen-Time.png",
+        "crop": {
+          "x": 132,
+          "y": 716,
+          "width": 240,
+          "height": 22
+        }
+      }
+    },
+    {
+      "name": "trackpad-end-light",
+      "description": "Right end of the separator above the sliders of the Trackpad pane, on its box, Aqua: the end is square. A 12 x 11 pt crop close around the end, counted at a colour distance of 0.01, because the line is only 23 levels from its background: the default distance counts none of it, and 0.02 not the two half-covered pixels of a rounded end. At 0.01 six of the 528 pixels at 2x differ as built (the line is one level off on this box) and ten with a rounded end, which the 2x budget refuses; at 1x a rounded end is not seen.",
+      "example": "visual-trackpad-end",
+      "appearance": "light",
+      "threshold": 0.01,
+      "budget": {
+        "1x": 0.0005,
+        "2x": 0.0119
+      },
+      "deltaBudget": {
+        "1x": 0.31,
+        "2x": 0.5
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Trackpad.png",
+        "crop": {
+          "x": 750,
+          "y": 598,
+          "width": 24,
+          "height": 22
+        }
+      }
+    },
+    {
+      "name": "trackpad-end-dark",
+      "description": "Right end of the separator above the sliders of the Trackpad pane, on its box, Dark Aqua: the end is square. Crop and colour distance as in trackpad-end-light.",
+      "example": "visual-trackpad-end",
+      "appearance": "dark",
+      "threshold": 0.01,
+      "budget": { "1x": 0.0005, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.1, "2x": 0.2 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Trackpad.png",
+        "crop": { "x": 750, "y": 598, "width": 24, "height": 22 }
+      }
+    }
+  ]
+}

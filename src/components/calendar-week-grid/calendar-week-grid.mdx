@@ -1,0 +1,183 @@
+---
+title: Calendar Week Grid
+description: Calendar's week view, with a column per day, the all-day row, the hours, events in their calendar's colour and the current-time line.
+---
+
+<Example name="basic" both />
+
+The week (or day) view of the Calendar application: a title with the month and year, the day
+names with today's number in a red disc, a row for all-day events, and a scrolling grid of the
+24 hours in which each event is a block as tall as it is long. AppKit has no such view, it is
+Calendar's own, and Base UI has no primitive for it, so the component is written here. It draws
+what it is given: it runs no clock, loads no calendars and creates no events.
+
+## Usage
+
+```tsx
+import { CalendarWeekGrid, type CalendarWeekGridEvent } from "macalicious/calendar-week-grid";
+import "macalicious/styles.css";
+
+const events: CalendarWeekGridEvent[] = [
+  {
+    id: "screenshots",
+    title: "Make Catalina Screenshots",
+    start: new Date(2019, 9, 3, 14),
+    end: new Date(2019, 9, 3, 16, 45),
+    color: "light-dark(#c157d9, #cc74e1)",
+  },
+];
+
+<CalendarWeekGrid
+  start={new Date(2019, 8, 29)}
+  now={new Date(2019, 9, 3, 15, 38)}
+  events={events}
+  style={{ height: 480 }}
+/>
+```
+
+Or copy the source into your project: `npx macalicious add calendar-week-grid`.
+
+- Give the grid a height (`style`, `className`): the header keeps its size and the hours scroll
+  in what is left. `defaultScrollHour` is the hour at the top edge at first.
+- `start` is the first day and `days` their number: 7 for a week, 1 for Calendar's day view.
+  The title names the month and year of the middle day.
+- Dates are read in local time. An event that crosses midnight is drawn in each day it
+  touches; one that ends at midnight stays in its day. Events outside the days shown are left
+  out, so the whole list can be passed.
+- `color` is the colour of the event's calendar, any CSS colour; `light-dark()` gives one per
+  appearance. Events without one take `--mac-calendar-week-grid-event-color`, Calendar's blue
+  by default.
+- `now` marks today and draws the current-time line. Pass a new date, from a timer of your
+  own, to move it; without `now` neither is drawn.
+- `accessory` sits at the trailing end of the title row. Calendar puts its previous, Today and
+  next control there: a [Segmented Control](/components/segmented-control).
+
+<Example name="controlled" />
+
+A click selects an event and a click beside the events, in the hours or in the all-day row,
+clears the selection (`value`,
+`defaultValue`, `onValueChange`). A double click, or Return on a focused event, calls
+`onEventAction` with the event and its element; Calendar shows the event's
+[Popover](/components/popover) then, anchored to that element.
+
+## Guidelines
+
+The Human Interface Guidelines for macOS describe no calendar view; these notes describe what
+Calendar on macOS 10.15 does, as the reference screenshots show it.
+
+- Colour belongs to the calendar, not to the event: every event of a calendar has the same
+  colour, and the selected event is the one drawn solid.
+- Show the current time only in a period that contains today.
+- Keep event titles short. A block shows the start time and as much of the title as fits.
+
+## Variants and states
+
+<Example name="overlapping" />
+
+Events that overlap share their column side by side; all-day events lie across the days they
+cover and stack where they meet, and the row grows with them.
+
+<Example name="day" />
+
+| State | Look | Source |
+| --- | --- | --- |
+| Weekday column | `#ffffff`, Dark Aqua `#1e1f20` | Measured |
+| Saturday, Sunday | Column `#f5f5f5`, Dark Aqua `#272828`; the day's name grey | Measured |
+| Today | The number white in a 26 pt red disc; the current-time line across every column, its label in the gutter in place of an hour's that it would touch, and a 10 pt disc where today's column starts | Measured in both appearances |
+| Event | The calendar's colour at 20% with a solid 2 pt bar at the leading edge; the time and the bold title in the colour, darkened by 27% in Aqua | Measured in Dark Aqua and on the all-day event in both; a timed, unselected event in Aqua is provisional |
+| Selected event | The colour at 90% (Dark Aqua 60%) with white text and no bar | Measured in both appearances |
+| All-day event | An 18 pt bar in the all-day row, 20% of the colour, bold title | Measured, unselected; selected is provisional |
+| Keyboard focus | The focus ring inside the block's edge | Provisional |
+| Window not key | No focus ring; the selected event stays solid | Provisional |
+
+## Sizes
+
+The component has no control sizes. The header is 80 pt (a 51 pt title row and 29 pt of day
+names), the all-day row 26 pt with its line and band and 20 pt more for each further row of
+events, the gutter 74 pt, and an hour is `hourHeight` points: 40 by default, 39 1/3 in the
+reference capture, where Calendar shows twelve hours in the window. Lines and events are put on
+half points, as AppKit puts them on the device pixels of a 2x display.
+
+## API
+
+`CalendarWeekGrid` takes the props of a `<div>`, which go to its root with `ref`, `className`
+and `style`, and these:
+
+<PropsTable name="CalendarWeekGridProps" />
+
+An event is a `CalendarWeekGridEvent`:
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | Identifies the event in `value`. |
+| `title` | `string` | The event's name. |
+| `start`, `end` | `Date` | Its time span, in local time. |
+| `allDay` | `boolean` | Draws it in the all-day row, across the days from `start` to `end`. |
+| `color` | `string` | The colour of its calendar. |
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-weekend` | day name, column, all-day cell | present or absent | Saturday and Sunday. |
+| `aria-current="date"` | day name | present or absent | The day of `now`. |
+| `aria-pressed` | event | `true`, `false` | The selected event. |
+| `data-event-id` | event | the event's `id` | Finds an event's element, to anchor a popover to it. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-calendar-week-grid-columns` | `repeat(<days>, minmax(0, 1fr))` | The grid tracks of the day columns. At the reference window's width AppKit rounds the seven columns to 123, 124, 124, 124, 123, 123 and 121 pt. |
+| `--mac-calendar-week-grid-event-color` | Calendar's blue, `#1dadf8` | The colour of events that have none. |
+
+Classes: `.mac-calendar-week-grid` (the root), `-header`, `-title`, `-days`, `-day`,
+`-day-number`, `-all-day`, `-scroll`, `-body`, `-column`, `-hour`, `-now`, `-now-dot`, `-event`
+and `-event-time`, each prefixed with `.mac-calendar-week-grid`.
+
+## Accessibility
+
+- The title is a heading, and it names the scrolling grid, which is a `group` and a tab stop so
+  that the hours can be scrolled from the keyboard.
+- Every event is a `<button>` in the tab order, in the order of the days. Its name is its
+  title, its day and its times (“Make Catalina Screenshots, Thursday, October 3, 2019, 2 PM –
+  4:45 PM”), and `aria-pressed` says whether it is selected. Space and Return select it; Return
+  also calls `onEventAction`, as a double click does.
+- Today's name carries `aria-current="date"`.
+- The colour of an event is never its only information; give calendars names where they are
+  listed, as Calendar's sidebar does.
+- The names of the days and the dates in the events' names follow `locale`. The times follow
+  `formatTime`, and `noonLabel` and `allDayLabel` are yours to translate.
+- In forced colours every event has a border, and the selected one a thicker border.
+- Arrow keys do not move between events; that is left to Tab. Dragging to move, resize or
+  create events is not built.
+
+## Visual comparison
+
+`calendar-week-grid.visual.json` compares the week view with the Calendar capture in each
+appearance, left of the event popover that covers its trailing end: 690 pt of it in Aqua, where
+Thursday is today and its event is selected, and 812 pt in Dark Aqua, where Friday is today and
+Thursday's event is not selected. Each comparison has a twin with the text masked, which scores
+the fills, lines, separators, discs and event blocks alone.
+
+Scores from `npm run visual -- calendar-week-grid` in Chromium on Linux, with the text in the
+fallback font: the share of pixels that differ by more than the threshold (0.1; 0.05 for the
+masked twins), and the mean colour difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `week-light` | Light-Calendar (444, 152, 1380, 1170) | 1.72% | 2.00 | 1.24% | 1.70 |
+| `week-light-drawing` | the same, text masked | 1.30% | 0.55 | 0.23% | 0.22 |
+| `week-dark` | Dark-Calendar (444, 152, 1624, 1170) | 1.53% | 1.96 | 1.28% | 1.60 |
+| `week-dark-drawing` | the same, text masked | 2.30% | 0.58 | 0.06% | 0.14 |
+
+At 1x the half-point positions of the lines fall between pixels, which is most of those scores.
+
+`unselected-light` clears the selection with a click and checks the tint and the bar of an
+unselected event in Aqua, and `focus-ring-dark` reaches an event with Tab and checks the ring;
+no screenshot shows either. Both pass at 1x and 2x.
+
+Measured: the column, line, separator and band colours, the header's and the all-day row's
+heights, the gutter, the hour pitch, today's disc, the current-time line and its disc, the
+selected event in both appearances and the unselected one in Dark Aqua, the all-day event.
+Provisional: an unselected timed event in Aqua, a selected all-day event, the focus ring, the
+look in a window that is not key, the side-by-side layout of overlapping events and the
+stacking of all-day events (no screenshot shows events that overlap), and the 40 pt default
+hour. The two purple colours the examples use are computed from the capture's blocks; the
+default blue is measured on the all-day event's text in Dark Aqua.

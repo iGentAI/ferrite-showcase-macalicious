@@ -1,0 +1,329 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "pane-help-light",
+      "description": "The help button of the Bluetooth pane, Aqua. The question mark is drawn for the library on the measured ink box, so its outline is part of the score.",
+      "example": "visual-pane-help",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.075,
+        "2x": 0.014
+      },
+      "deltaBudget": {
+        "1x": 6.05,
+        "2x": 1.8
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Bluetooth.png",
+        "crop": {
+          "x": 1362,
+          "y": 848,
+          "width": 62,
+          "height": 62
+        }
+      }
+    },
+    {
+      "name": "pane-help-light-bezel",
+      "description": "As pane-help-light with the question mark masked, to score the measured bezel alone at half the colour distance.",
+      "example": "visual-pane-help",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 11,
+          "y": 9,
+          "width": 9,
+          "height": 13
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.102,
+        "2x": 0.0044
+      },
+      "deltaBudget": {
+        "1x": 3.5,
+        "2x": 0.63
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Bluetooth.png",
+        "crop": {
+          "x": 1362,
+          "y": 848,
+          "width": 62,
+          "height": 62
+        }
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The help button held down with the mouse, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "#help"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 70,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#f0f0f0",
+            "note": "pressed fill: the shared pressed bezel, --mac-bezel-fill-pressed, #f0f0f0 (spec: tokens.md, inferred). The help-button page of the spec infers a darker #e5e5e5; the two pages disagree and no screenshot settles it, so this pixel holds the component to the token sheet, not to that page"
+          },
+          {
+            "x": 44.5,
+            "y": 18.5,
+            "color": "#f6f6f6",
+            "note": "disabled fill: the bezel at half opacity over the page (spec: help-button, States, inferred from the measured disabled push button)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the help button, reached with Tab, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 70,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the page, measured on a text field (spec: focus-ring, sRGB); its circular shape is inferred"
+          },
+          {
+            "x": 5.25,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the edge of the bezel (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 6.5,
+            "y": 6.5,
+            "color": "#ececec",
+            "note": "page at the corner of the box: the ring follows the circle"
+          },
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "fill (spec: help-button, Fill, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-light",
+      "description": "The same after Tab in an inactive window, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 70,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          },
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "the bezel does not change in an inactive window (spec: help-button, States, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pane-help-dark",
+      "description": "The help button of the Bluetooth pane, Dark Aqua. The question mark is drawn for the library on the measured ink box, so its outline is part of the score.",
+      "example": "visual-pane-help",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.072,
+        "2x": 0.012
+      },
+      "deltaBudget": {
+        "1x": 4.7,
+        "2x": 1.39
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Bluetooth.png",
+        "crop": {
+          "x": 1362,
+          "y": 848,
+          "width": 62,
+          "height": 62
+        }
+      }
+    },
+    {
+      "name": "pane-help-dark-bezel",
+      "description": "As pane-help-dark with the question mark masked, to score the measured bezel alone at half the colour distance.",
+      "example": "visual-pane-help",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 11,
+          "y": 9,
+          "width": 9,
+          "height": 13
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.065,
+        "2x": 0.0041
+      },
+      "deltaBudget": {
+        "1x": 3.23,
+        "2x": 0.65
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Bluetooth.png",
+        "crop": {
+          "x": 1362,
+          "y": 848,
+          "width": 62,
+          "height": 62
+        }
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "The help button held down with the mouse, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": "#help"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 70,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#7c7c7c",
+            "note": "pressed fill: the shared pressed bezel, white at 36% over #323232 (--mac-bezel-fill-pressed; spec: tokens.md, inferred). The help-button page of the spec infers 35%; the two pages disagree and no screenshot settles it, so this pixel holds the component to the token sheet, not to that page"
+          },
+          {
+            "x": 44.5,
+            "y": 18.5,
+            "color": "#4c4c4c",
+            "note": "disabled fill: the bezel at half opacity over the page (spec: help-button, States, inferred from the measured disabled push button)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the help button, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 70,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#2d6c99",
+            "tolerance": 6,
+            "note": "ring over the page, measured on a text field (spec: focus-ring, sRGB); its circular shape is inferred"
+          },
+          {
+            "x": 5.25,
+            "y": 18.5,
+            "color": "#323232",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the edge of the bezel (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 6.5,
+            "y": 6.5,
+            "color": "#323232",
+            "note": "page at the corner of the box: the ring follows the circle"
+          },
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#656565",
+            "note": "fill (spec: help-button, Fill, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-dark",
+      "description": "The same after Tab in an inactive window, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 70,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#323232",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          },
+          {
+            "x": 11.5,
+            "y": 18.5,
+            "color": "#656565",
+            "note": "the bezel does not change in an inactive window (spec: help-button, States, inferred)"
+          }
+        ]
+      }
+    }
+  ]
+}

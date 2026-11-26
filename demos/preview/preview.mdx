@@ -1,0 +1,261 @@
+---
+title: Preview
+description: The Preview document window of macOS 10.15 with its unified toolbar, a sidebar of page thumbnails, search with a find bar and the pages found, zoom and rotation, for a PDF and for an image, built from the library alone.
+layout: full
+order: 100
+---
+
+<Example name="basic" />
+
+Choose a thumbnail to go to its page, scroll the document, zoom and rotate it, and type in the
+search field to list the pages that hold a word (try “pilot”). On this page Preview is the
+window of the reference captures: nothing is opened, saved or shared. The booklet is invented
+and is set from its text; the picture and the banner of a page are abstract placeholders, and
+each glyph and thumbnail is an original stand-in drawing. On the desktop that the Ferrite
+application serves, Preview opens the person's own files (below).
+
+## What it shows
+
+- A [Window](/components/window) with a unified [Title Bar](/components/title-bar) that
+  carries the document's proxy icon and, for a PDF, the page shown: “Island Ferry.pdf (page 9
+  of 22)”.
+- Its [Toolbar](/components/toolbar), in the order of the screenshots and, but for the View
+  button, at the widths measured in them: the View button, a
+  [Toolbar Pull Down](/components/toolbar-pop-up) with the sidebar
+  [System Image](/components/system-image), whose menu
+  of [Menu Radio Items](/components/menu-item) hides and shows the sidebar; zoom out and zoom
+  in, the separated pair of a momentary
+  [Toolbar Segmented Control](/components/toolbar-segmented-control); a
+  [Share Menu](/components/share-menu); after the flexible space the Highlight button, a
+  [Toolbar Split Pull Down](/components/toolbar-pop-up) whose main part switches the
+  highlighting of the text found on and off and whose menu chooses its colour; Rotate Left, a
+  [Toolbar Button](/components/toolbar-button); Show Markup Toolbar, a toolbar button that is
+  a toggle; and a [Toolbar Search Field](/components/toolbar-search-field).
+- A [Split View](/components/split-view) of the sidebar and the document, with a divider that
+  can be dragged and a sidebar that collapses.
+- The sidebar: the file's name over a [List View](/components/list-view) of 82 pt rows, one
+  thumbnail for every page. Choosing a row, with the pointer or the arrow keys, brings its
+  page to the top of the document, the last page too: under it the canvas runs on for as much
+  of the view as a page leaves. Scrolling the document moves the selection with it.
+- The document, in a [Scroll View](/components/scroll-view) that scrolls both ways. A page is
+  98.5% of the view wide at first, as in the screenshots, times the zoom; the pane is a CSS
+  size container, so the size of a page is not measured in script. A page is set from its
+  text in em of its own width and scales as one picture. When the view changes width, as the
+  divider is dragged or the window resized, the pages change size with it and the page shown
+  is put back at the top of the view.
+- Search. With text in the field the window gets Preview's find bar, a
+  [Scope Bar](/components/scope-bar) on the toolbar surface: the scopes sort the pages found
+  by page or by the number of matches, a joined pair of actions steps through them and Done
+  ends the search. The sidebar then lists the pages found, each with its number of matches
+  and the sentence of the first, and every occurrence is marked in the document.
+- Show Markup Toolbar puts a [Markup Toolbar](/components/markup-toolbar) under the toolbar.
+  Its drawing tools can be chosen; nothing is drawn on the document.
+
+## An image
+
+<Example name="image" />
+
+Both Preview screenshots show a picture: it fills the window, the sidebar is hidden and the
+Highlight button is unavailable. An image document is an [Image View](/components/image-view)
+that fills the view, times the zoom, and turns with Rotate Left; its thumbnail is the one row
+of the sidebar. The demo's image document, `desktopPicture`, is an original generated
+photograph of a bay at sunrise, not drawn after the picture in the screenshots; an image
+document without an address shows an abstract placeholder picture.
+
+## Preview on the Ferrite desktop
+
+On the desktop that the `macalicious-desktop` Ferrite application serves, `app.ts` hosts
+`PreviewApp` (`preview-app.tsx`), which works on the person's own files in their drive
+(`demos/desktop/desktop-files.ts`). Where no drive is given, as on this site, `PreviewApp` is
+the `Preview` window above.
+
+- **Open.** The window starts with the drive's Open dialog (the shared `DriveOpenPanel`) on
+  Pictures; Open… in the toolbar and Command-O show it again. Pictures (PNG, JPEG, GIF, WebP,
+  BMP, SVG, AVIF) and PDFs open; the file is read from the drive in pieces and marked opened,
+  for Recents. On the desktop each file has a window of its own: with a document open, Open…, Open
+  Recent, New from Clipboard and a file sent from Finder open another window, the window that
+  already has a file comes to the front, and each window comes back with its file after a reload.
+- **Pages and thumbnails.** A picture is drawn on a canvas; a PDF's pages are drawn by
+  Mozilla's pdf.js (`pdfjs-dist`), loaded only when the first PDF is opened, each page when it
+  comes near the view. The sidebar has a thumbnail of every page, with its markup, and choosing
+  one goes to its page; the title says the page shown.
+- **Zoom and turn.** Zoom In and Zoom Out (Command-plus and Command-minus), Actual Size
+  (Command-0) and Zoom to Fit (Command-9); Rotate Left and Rotate Right (Command-L,
+  Command-R). A PDF's turn is kept with its markup; a picture's is an edit until it is saved.
+  Tools has Flip Horizontal and Flip Vertical for a picture: they flip what the window shows,
+  with its marks, and Save draws the flip in. A PDF's pages are not flipped, as on a Mac.
+- **A PDF's pages.** In the sidebar, Command or Shift chooses several. Dragging moves them, with
+  the marks on them; the Delete key, Edit's Delete and the thumbnail's menu take them out; Edit >
+  Insert > Blank Page adds one after the page chosen. Undo goes back. The file itself stays as it
+  is: the order is kept beside it with the markup, and Export writes a PDF of the pages as shown.
+- **Search a PDF.** The search field reads each page's text with pdf.js, lists the pages found
+  with their number of matches and the words around the first, goes to the first, and colours
+  every place it is found on a page.
+- **Mark a PDF's text.** Tools > Annotate > Highlight Text (Control-Command-H), Underline Text
+  and Strikethrough Text mark the text selected; with nothing selected they, or the toolbar's
+  Highlight button, mark what is dragged over next, until the button is pressed again. Its menu
+  chooses a colour, Underline or Strikethrough, and changes a mark that is chosen. Note
+  (Control-Command-N, or the markup bar) places a note with a click; pressing it opens it to
+  read and change. View > Highlights and Notes lists them all: a row goes to its page and
+  chooses the mark, which Delete takes off.
+- **Markup.** Show Markup Toolbar (Shift-Command-A) gives Select, Rectangular Selection (a
+  picture's crop), Sketch, Shapes (Line, Arrow, Rectangle, Oval), Text and Sign, with the line
+  width, the border and fill colours and the text size. A mark can be chosen, moved and
+  deleted (Delete); a text is edited with a double click; Undo (Command-Z) takes back the last
+  change. Sign → Create Signature… opens a pad to sign on; the signature is kept for the person
+  (at most ten) and placed on the page. Markup is saved beside the file on the server (the
+  `preview` module: `GET`, `PUT` and `DELETE /api/preview/markup/<file id>`, and
+  `/api/preview/signatures`), in fractions of the page, so it stays editable and is drawn again
+  when the file is opened later, in any browser of that person.
+- **Crop and resize a picture.** Rectangular, Elliptical or Lasso Selection, then Crop
+  (Command-K); Adjust Size fits it into a size, or takes a width, height and resolution in the
+  units chosen, in proportion or not.
+- **Save.** File → Save writes a picture back in its own format (PNG, JPEG, WebP) with its
+  turn, crop, size and markup drawn in, as Preview flattens a picture it saves; the file it
+  replaces goes to the drive's Trash with its markup still kept beside it, so putting it back
+  from the Trash brings its markup back; the saved picture is a new file, with none. A GIF or SVG
+  picture, which cannot be written back as itself, is exported instead. A PDF has nothing to
+  save: its markup is kept as it is drawn.
+- **Export.** File → Export… saves a copy to the drive as JPEG, PNG or PDF, through the shared
+  Save dialog; Download as JPEG, PNG or PDF hands the same copy to the computer. A picture
+  exports as itself or as a one-page PDF; a PDF exports as a PDF of every page, or the page
+  shown as a picture. An exported PDF is written in the browser, each page a 150 dpi JPEG of the
+  page as Preview shows it with its markup drawn in: the copy's text cannot be selected or
+  searched.
+
+Limits: the markup of at most 1,000 files is kept per person, at most 500 marks a file. A file
+is at most the drive's 64 MiB. A PDF's links can be followed; its forms and annotations already in
+the file are drawn as pdf.js draws them, not edited. Markup on
+a PDF is not written into the PDF itself, only into an exported copy, where a note is its icon
+alone: what it says stays beside the file.
+
+## Hosting the window
+
+`Preview` renders the library's `Window` as its root and passes every `Window` prop to it, so
+it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and the props that the component takes out before the rest goes to the
+`Window`. These are the props a [Managed Window](/components/managed-window)'s `render` form
+supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { previewApp } from "./app";
+
+<ManagedWindow
+  id={previewApp.id}
+  defaultFrame={{ x: 80, y: 60, ...previewApp.defaultSize }}
+  render={(props) => <previewApp.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `document` | `PreviewDocument` | A PDF (`{ kind: "pdf", name, pages }`, each page its headings and paragraphs; a section line belongs to a page with a title; without pages the window shows “No Pages”) or an image (`{ kind: "image", name, src?, alt, aspect }`); the booklet `islandFerry` by default. The window keeps the state of the document it was given first: give it a `key` to open another. |
+| `defaultPage`, `onPageChange` | `number`, `(page: number) => void` | The page shown at first (1), and the page that comes to the top of the view. With a `defaultQuery`, the `defaultPage` is the page shown at first if the text is found on it, and also if the text is found nowhere; if it is found on other pages only, the window opens on the first of them. |
+| `defaultQuery` | `string` | The text in the search field at first. The window opens on the `defaultPage` if that is one of the pages found, or else on the first page found in the `defaultSort` order, with its row selected in the sidebar; when nothing is found, on the `defaultPage`. |
+| `defaultSort` | `"page" \| "rank"` | The order of the pages found at first (`"page"`). |
+| `defaultSidebar` | `"thumbnails" \| "hidden"` | What the sidebar shows while nothing is searched for: thumbnails for a PDF and hidden for an image by default. |
+| `defaultZoom` | `number` | The zoom at first, as a multiple of the size that fits the view (1). |
+| `onShare` | `(service: "mail" \| "messages" \| "notes") => void` | Called with the service chosen in the Share menu. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `controlsProps` | `WindowControlsProps` | Further props for the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Called for the title bar outside its controls. |
+| `width`, `height` | `number \| string` | The frame; 1147 by 793 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `previewApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (1147 by 793), `minSize` (600 by 360), `resizable` and
+`menus`, the menu titles after the Apple menu. It also exports the two documents,
+`islandFerry` and `desktopPicture`, the document types and `searchDocument`, which finds the
+pages of a PDF that hold a text.
+
+## Accessibility
+
+- The window is a `region` named by its title, which says the page shown.
+- The toolbar is one tab stop with arrow keys between its items. Every item has a name: View,
+  Zoom Out, Zoom In, Share, Highlight (or Stop Highlighting) and Highlight Color, Rotate Left,
+  Show Markup Toolbar, which reports whether it is on, and Search. An item that is
+  unavailable stays reachable and says so.
+- The sidebar is a `listbox`, named Thumbnails or Pages found: the arrow keys move the
+  selection, and with it the document. A row's name is its page, and for a page found the
+  number of matches and the words around the first.
+- The document is a focusable `document` named by the file, so it scrolls from the keyboard;
+  every page in it is a `region` named “Page 9”, and an image has its description.
+- The find bar's scopes are a radio group labelled by “Sort by:”. The number of pages found
+  is a `status`, so it is announced as the search changes; Previous and Next are disabled at
+  the ends of the list. Done empties the search field and returns the focus to it.
+- Text found is a `mark` in the document, also while its highlight colour is switched off.
+
+## Fidelity
+
+`preview.visual.json` compares the window with the four Preview screenshots: the
+Preview-Search captures whole, in both appearances, and the top 64 pt of the two Preview
+captures, each as captured and again with the text and the stand-in artwork masked. Scores
+from `npm run visual -- preview/` in Chromium on Linux with the fallback font: the share of
+pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `search-light` | 11.19% | 13.92 | 9.23% | 13.94 |
+| `search-light-layout` (masked) | 0.68% | 0.86 | 0.45% | 0.73 |
+| `search-dark` | 18.66% | 18.21 | 17.20% | 18.30 |
+| `search-dark-layout` (masked) | 0.15% | 0.17 | 0.26% | 0.13 |
+| `desktop-light` | 6.12% | 4.93 | 4.89% | 4.24 |
+| `desktop-light-layout` (masked) | 4.82% | 2.51 | 2.25% | 1.50 |
+| `desktop-dark` | 3.98% | 6.88 | 3.20% | 6.50 |
+| `desktop-dark-layout` (masked) | 2.21% | 5.13 | 1.32% | 4.64 |
+
+The masked rows count a pixel as differing at a colour distance of 0.05, half the default.
+Every comparison masks the demo's artwork, which stands for pictures that are not
+reproduced: the placeholder picture of an image document, the banner of a page that opens a
+section, and the page miniatures of the sidebar. The other search rows measure mostly the
+document's text: the pages are the demo's own where the captures show another booklet.
+
+Four more checks run the window in the browser and read pixels after a click, in both
+appearances: choosing the row of a page found, and choosing a thumbnail, select that row and
+bring a page to the top of the document, 4 pt under the bar (`choose-found-page-*`,
+`choose-thumbnail-*`). Which page it is cannot be read from pixels:
+`preview.browser.test.tsx` drives the same window in Chromium, Firefox and WebKit, whichever
+are installed, and reads the title, the
+selected row and the place of the page, after choosing a thumbnail, choosing the last page,
+scrolling, searching and choosing a page found, dragging the divider and resizing the window.
+Each of its cases loads the window anew. The window scrolls a page it brings to the top to a
+whole point, since the engines treat a fraction of a scroll position differently, so the
+page starts within half a point of those 4 pt in each of them.
+
+- The captures' PDF is a published booklet and their picture a desktop picture of macOS;
+  neither is reproduced. The demo's booklet is invented and set as HTML in the layout of the
+  captured pages (a banner, a narrow and a wide column; two columns on the other pages), with
+  an abstract placeholder where the capture has a photograph; the comparisons mask it. A PDF is not parsed or rendered: a
+  document is the data it is given.
+- The picture covers 92% of the Preview captures, more than a comparison may mask, so only
+  the strip with the title bar and the toolbar is compared with them.
+- Every toolbar glyph but the View button's and the Share button's, which are the library's
+  [System Image](/components/system-image) and Share Menu glyph, and the proxy icon, the
+  thumbnails and the Share menu's icons are original stand-in drawings; Apple's artwork is not
+  reproduced.
+- The Aqua capture's sidebar shows the pages found without their matches and words; the Dark
+  Aqua one shows both. The demo shows both in either appearance.
+- The captured PDF window is vibrant: in Dark Aqua the white paper behind its bars lightens
+  them, from the sidebar's edge on (`#6c6d6f` beside `#38393b` at the top of the title bar).
+  The demo's bars are the library's, the same from edge to edge, so the Dark Aqua layout
+  comparison masks the bars from 125 pt on and their bezels are scored by the
+  `desktop-dark-layout` comparison. In Aqua the captured title bar is up to nine levels
+  lighter at its lower edge than the library's. In the Dark Aqua Preview capture the bars
+  are darker than the library's by about four levels, over a dark picture.
+- The View button is the library's toolbar pull-down with the library's sidebar image, 47 pt
+  wide where Preview's is 36 pt, so the zoom pair and the Share button sit 11 pt further
+  right than in the captures. That is most of what the `desktop-*-layout` rows measure.
+- The find bar is the library's Scope Bar: its label and scopes are a little wider apart than
+  Preview's, and Previous is disabled on the first page found, where the Aqua capture shows
+  both arrows disabled and the Dark Aqua one both enabled.
+- The etched line under a sidebar row is drawn by the demo's row, 14 pt from either edge as
+  measured; the List View's own separator is a single line to the trailing edge.
+- The overlay scroll bar is visible in the captures and shows here only while scrolling.
+- The thumbnail sidebar outside a search, the markup bar, the menus, zooming, rotating and
+  everything the demo does when a button is pressed have no reference screenshot; they are
+  composed from library components to Catalina's conventions. No screenshot shows the end of
+  a document either: the canvas that runs on under the last page, so that it comes to the top
+  of the view, is the demo's own. Preview's table of contents,
+  contact sheet, annotations, cropping and its other tools are not part of the demo.

@@ -1,0 +1,402 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "standard-light",
+      "description": "The standard 44 x 23 pt well at rest, a disabled one and one without a bezel, Aqua. No screenshot shows a standard well: its geometry is inferred and its colours are the ones measured on the toolbar well.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 164,
+          "height": 39
+        },
+        "pixels": [
+          {
+            "x": 8.25,
+            "y": 19.5,
+            "color": "#d3d3d3",
+            "scale": 2,
+            "note": "side hairline, black at 10.4% over #ececec (alpha measured on the format-bar well: #bdbdbd over #d3d3d3)"
+          },
+          {
+            "x": 9.75,
+            "y": 19.5,
+            "color": "#f7f7f7",
+            "note": "bezel band at mid height: half way from #fcfcfc to #f2f2f2 (measured gradient); that the band is 3 pt wide is inferred (spec: Standard well in a form)"
+          },
+          {
+            "x": 11.5,
+            "y": 19.5,
+            "color": "#e8e8e8",
+            "scale": 2,
+            "note": "1 pt frame between bezel and colour (spec: Inner frame, measured); at 1x the half-point border moves it"
+          },
+          {
+            "x": 30,
+            "y": 19.5,
+            "color": "#ff0000",
+            "note": "the colour the example sets"
+          },
+          {
+            "x": 82,
+            "y": 19.5,
+            "color": "#fb7c7c",
+            "tolerance": 3,
+            "note": "disabled: the colour at 50% over the bezel fill #f7f7f7 (spec: States, disabled, inferred)"
+          },
+          {
+            "x": 112.5,
+            "y": 8.5,
+            "color": "#ff0000",
+            "note": "without a bezel the colour reaches the corner of the 44 x 23 pt frame (AppKit isBordered, documented)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "standard-dark",
+      "description": "The standard well at rest, Dark Aqua: no outline, a translucent fill, a dark frame.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 164,
+          "height": 39
+        },
+        "pixels": [
+          {
+            "x": 8.25,
+            "y": 19.5,
+            "color": "#2f3032",
+            "scale": 2,
+            "note": "no outline in Dark Aqua: the window background shows up to the fill (measured on the format-bar well, row 146 x 651)"
+          },
+          {
+            "x": 9.75,
+            "y": 19.5,
+            "color": "#5f6061",
+            "note": "bezel band, white at 23% over #2f3032 (alpha measured: #67696c over the bar's #3a3c3f)"
+          },
+          {
+            "x": 11.5,
+            "y": 19.5,
+            "color": "#232323",
+            "scale": 2,
+            "note": "frame (spec: Inner frame, dark, measured)"
+          },
+          {
+            "x": 30,
+            "y": 19.5,
+            "color": "#ff0000",
+            "note": "the colour the example sets"
+          },
+          {
+            "x": 82,
+            "y": 19.5,
+            "color": "#af3030",
+            "tolerance": 3,
+            "note": "disabled: the colour at 50% over the bezel fill #5f6061 (spec: States, disabled, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "active-light",
+      "description": "The well while the mouse is held down on it: the bezel darkens, the colour is unchanged. Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "#first"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 164,
+          "height": 39
+        },
+        "pixels": [
+          {
+            "x": 9.75,
+            "y": 19.5,
+            "color": "#c9c9c9",
+            "note": "active bezel (spec: States, active, inferred)"
+          },
+          {
+            "x": 30,
+            "y": 19.5,
+            "color": "#ff0000",
+            "note": "the colour is unchanged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "active-dark",
+      "description": "The well while pressed, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": "#first"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 164,
+          "height": 39
+        },
+        "pixels": [
+          {
+            "x": 9.75,
+            "y": 19.5,
+            "color": "#838485",
+            "note": "active bezel, white at 40.6% over #2f3032: the alpha that gives the spec's inferred #8a8d8f over the format bar's #3a3d3f"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus, reached with Tab, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 164,
+          "height": 39
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 19.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the window background, measured on the Go to Folder field (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 6.25,
+            "y": 19.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "the band is flat and reaches 2.5 pt beyond the bezel's edge at x 8"
+          },
+          {
+            "x": 4.75,
+            "y": 19.5,
+            "color": "#ececec",
+            "note": "window background just outside the ring (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 9.75,
+            "y": 19.5,
+            "color": "#f7f7f7",
+            "note": "the bezel is unchanged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 164,
+          "height": 39
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 19.5,
+            "color": "#2d6c99",
+            "tolerance": 4,
+            "note": "ring over the #2f3032 window background, measured in Automator (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 4.75,
+            "y": 19.5,
+            "color": "#2f3032",
+            "note": "window background just outside the ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-focus-ring-main",
+      "description": "Focused with Tab in a main window that is not key: no ring. Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "main",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 164,
+          "height": 39
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 19.5,
+            "color": "#ececec",
+            "note": "window background where the ring would be: AppKit removes the ring when the window is not key (spec: focus-ring, States, documented)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-focus-ring-inactive",
+      "description": "Focused with Tab in an inactive window: no ring. Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 164,
+          "height": 39
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 19.5,
+            "color": "#ececec",
+            "note": "window background where the ring would be (spec: focus-ring, States, documented)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-focus-ring-main-dark",
+      "description": "Focused with Tab in a main window that is not key: no ring. Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "main",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 164,
+          "height": 39
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 19.5,
+            "color": "#2f3032",
+            "note": "the example's window background where the ring would be: AppKit removes the ring when the window is not key (spec: focus-ring, States, documented)"
+          },
+          {
+            "x": 9.75,
+            "y": 19.5,
+            "color": "#5f6061",
+            "note": "the bezel is unchanged: white at 23% over #2f3032 (alpha measured on the format-bar well)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-focus-ring-inactive-dark",
+      "description": "Focused with Tab in an inactive window: no ring. Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 164,
+          "height": 39
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 19.5,
+            "color": "#2f3032",
+            "note": "the example's window background where the ring would be (spec: focus-ring, States, documented)"
+          },
+          {
+            "x": 9.75,
+            "y": 19.5,
+            "color": "#5f6061",
+            "note": "the bezel is unchanged: white at 23% over #2f3032 (alpha measured on the format-bar well)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "format-bar-light",
+      "description": "The text colour well of TextEdit's format bar, Aqua.",
+      "example": "visual-format-bar",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.208,
+        "2x": 0.0049
+      },
+      "deltaBudget": {
+        "1x": 14.7,
+        "2x": 0.71
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Text-Edit.png",
+        "crop": {
+          "x": 643,
+          "y": 124,
+          "width": 58,
+          "height": 44
+        }
+      }
+    },
+    {
+      "name": "format-bar-dark",
+      "description": "The text colour well of TextEdit's format bar, Dark Aqua.",
+      "example": "visual-format-bar-white",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.198,
+        "2x": 0.0037
+      },
+      "deltaBudget": {
+        "1x": 15.8,
+        "2x": 0.75
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-TextEdit.png",
+        "crop": {
+          "x": 643,
+          "y": 124,
+          "width": 58,
+          "height": 44
+        }
+      }
+    }
+  ]
+}

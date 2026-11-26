@@ -1,0 +1,263 @@
+---
+title: HUD Window
+description: A heads-up display, the dark translucent panel for quick adjustments over visual content, and the floating playback controller QuickTime Player lays over a movie.
+---
+
+<Example name="basic" both />
+
+A HUD is a panel with a darker, translucent appearance (`NSPanel` with the HUD style). It does
+not follow the system appearance: it is the same dark panel in Aqua and in Dark Aqua, and the
+controls inside it are drawn in Dark Aqua. `HudWindow` does that by carrying
+`data-appearance="dark"`, so any component of this library placed inside takes its dark look
+with no further work.
+
+The only HUD in the reference screenshots is QuickTime Player's playback controller, a
+borderless panel floating inside the movie. That is the `controller` variant, and it is
+measured. The titled panel, the default, is not in any screenshot: its look is inferred from
+AppKit and marked provisional throughout.
+
+Base UI has no primitive for a panel, so the surface is an element of its own; the buttons are
+built on [Base UI's Button](https://base-ui.com/react/components/button) and the sliders on
+[Base UI's Slider](https://base-ui.com/react/components/slider).
+
+## Usage
+
+```tsx
+import { HudWindow } from "macalicious/hud-window";
+import { Slider } from "macalicious/slider";
+import "macalicious/slider.css";
+import "macalicious/hud-window.css";
+
+<HudWindow title="Adjust" onClose={hide} style={{ width: 220 }}>
+  <Slider aria-label="Exposure" defaultValue={60} />
+</HudWindow>
+```
+
+Or copy the source into your project: `npx macalicious add hud-window`.
+
+The HUD is presentational. It does not move, float above other windows or fade by itself: place
+it with `style`, and render it while it should be shown. A panel draws a title bar when there
+is a `title` or an `onClose`; the close button appears only with `onClose`.
+
+A controller has no title bar and no padding; lay its content out yourself. Its glyph buttons,
+its text and its sliders are `HudWindowButton`, `HudWindowText` and `HudWindowSlider`: the
+`knob` variant is the volume slider and the `scrubber` variant the timeline.
+
+<Example name="controller" />
+
+```tsx
+import {
+  HudWindow,
+  HudWindowButton,
+  HudWindowSlider,
+  HudWindowText,
+} from "macalicious/hud-window";
+
+<HudWindow variant="controller" role="toolbar" aria-label="Playback">
+  <HudWindowSlider aria-label="Volume" defaultValue={70} style={{ width: 51 }} />
+  <HudWindowButton aria-label="Play" onClick={play}>
+    <svg width="22" height="25" viewBox="0 0 22 25" aria-hidden="true">
+      <path d="M0 0l22 12.5L0 25z" fill="currentColor" />
+    </svg>
+  </HudWindowButton>
+  <HudWindowText>00:03:16</HudWindowText>
+  <HudWindowSlider
+    variant="scrubber"
+    aria-label="Timeline"
+    aria-valuetext="00:03:16 of 00:12:49"
+    max={769}
+    value={seconds}
+    onValueChange={seek}
+  />
+</HudWindow>
+```
+
+No glyphs are included: draw your own with `currentColor`.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[panels](https://web.archive.org/web/20200504055739/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/panels/),
+section “HUD-Style Panels”:
+
+- A HUD serves the same function as a normal panel, but its appearance is darker and
+  translucent. It is designed to complement applications that focus on highly visual content or
+  that provide an immersive experience, such as a full-screen slide show.
+- Like any panel, use it for quick access to controls or information related to the content,
+  and give it a title bar, even without a title, so that it can be moved.
+
+The measured spec adds, from the same section, which was not re-read for this page: prefer a
+HUD only where a standard panel would obscure or clash with the content, keep it small, use
+simple adjustment controls such as sliders and steppers, and use colour sparingly.
+
+## Variants and states
+
+| Variant | Use | Look |
+| --- | --- | --- |
+| `panel` | A titled HUD panel | The HUD material, 6 pt corners, the panel shadow, 12 pt of padding (provisional) |
+| `controller` | A playback controller floating over a movie | A lighter material, 4 pt corners, no border and no shadow (measured); its glyphs and text add light to the panel instead of covering it (measured) |
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Title bar | `title` or `onClose`, on a panel | 19 pt, the title centred in 11 pt (provisional) |
+| Close button | `onClose`, on a panel | A 10 pt circle with an x at the leading end, brighter under the pointer (provisional) |
+| Not key | `state="inactive"`, or an inactive ancestor | The title dims (provisional) |
+| Button pressed | `:active` | The glyph at 50% (provisional) |
+| Button disabled | `disabled` | The glyph at 30% (provisional) |
+| Button focused | `:focus-visible` | Focus ring, in the key window only (provisional) |
+| Slider, `knob` | `variant="knob"` (default) | A 3 pt track filled with the accent colour up to a round 11 pt knob (measured at its maximum; the empty part of the track is provisional) |
+| Slider, `scrubber` | `variant="scrubber"` | A 3 pt track, brighter where the movie has played, cut by a 3 x 15 pt bar with 1 pt of panel on either side; it adds light to the panel as the glyphs do (measured) |
+| Slider disabled, focused | `disabled`, `:focus-visible` | The slider at 30%; a focus ring round the knob or the bar, in the key window only (provisional) |
+
+`HudWindow` is a window component: it writes its `state` to its root as `data-window-state`,
+as [Window](/components/window) does. A controller that floats inside a window follows that
+window: a state that is not key on an ancestor wins.
+
+## Sizes
+
+A HUD has no size of its own: it is as large as its content, or as its `style` says. The
+QuickTime controller is 440 x 75 pt. The Human Interface Guidelines ask for small controls in
+a panel; pass `size="small"` to the controls inside.
+
+## API
+
+<PropsTable name="HudWindowProps" />
+
+<PropsTable name="HudWindowButtonProps" />
+
+<PropsTable name="HudWindowTextProps" />
+
+<PropsTable name="HudWindowSliderProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-variant` | HUD | `panel`, `controller` | Reflects `variant`. |
+| `data-window-state` | HUD | `key`, `main`, `inactive` | Reflects `state`; read by everything inside. |
+| `data-appearance` | HUD | `dark` | Always: a HUD and its content are Dark Aqua. |
+| `data-title-bar` | HUD | present or absent | Set while a title bar is drawn. |
+| `data-disabled` | button, slider | present or absent | Set by Base UI while the control is disabled. |
+| `data-variant` | slider | `knob`, `scrubber` | Reflects the slider's `variant`. |
+| `data-force` | button, close button, slider thumb | `hover`, `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+Parts: `.mac-hud-window-title-bar`, `.mac-hud-window-title`, `.mac-hud-window-close`,
+`.mac-hud-window-body`, `.mac-hud-window-button`, `.mac-hud-window-text` and
+`.mac-hud-window-slider` with its `-control`, `-track`, `-fill` and `-thumb`.
+
+The material is drawn by the root's `::before`, under the content, and the root is
+deliberately not a stacking context: a controller's glyphs use `mix-blend-mode: plus-lighter`
+and have to reach the material. Do not give the HUD an `opacity`, a `transform`, a `filter` or
+a `z-index` that would isolate it from its material layer's siblings; put such properties on a
+wrapper.
+
+## Accessibility
+
+- The root is a `group`, named by the title; a controller, which shows no title, is named by a
+  title that is a string. Without a title give it an `aria-label`. Pass
+  `role="toolbar"` for a controller, or `role="dialog"` for a panel that behaves as one; the
+  HUD does not manage focus either way.
+- The close button is a native button named “Close” (`closeLabel` changes the name). It is the
+  first Tab stop of the HUD; Space and Return activate it. Its target is 16 x 19 pt around the
+  10 pt circle.
+- `HudWindowButton` is a native button. One that holds only a glyph needs an `aria-label`, and
+  the glyph `aria-hidden`. A disabled button leaves the tab order.
+- `HudWindowSlider` holds a native `<input type="range">`: give it an `aria-label`, and a
+  timeline an `aria-valuetext` in time format. The left and right arrow keys move it by a
+  step, Page Up and Page Down by a large step, Home and End to its ends.
+- The additive foreground of a controller depends on what is behind it: over a very light
+  picture it clips to white on a light panel. The material darkens the backdrop to keep text
+  legible, as AppKit's does, but contrast is not guaranteed over arbitrary content; under
+  `prefers-reduced-transparency` the controller is an opaque grey.
+- In forced-colours mode the panel has a border, the glyphs use the button text colour, the
+  text the canvas text colour, and nothing is blended: the sliders are drawn in system colours.
+- The HUD has no animation of its own.
+
+## Visual comparison
+
+`hud-window.visual.json` compares one part of the HUD with the screenshots: the volume knob,
+once in each capture. The only HUD in the reference screenshots is QuickTime Player's
+controller, and it lies over a movie. The panel is a vibrant
+material and its glyphs add light to it, so every pixel of it in the two captures is partly
+that picture, which is a third party's and which the library does not reproduce: examples and
+demos show a plain placeholder instead. With the picture left out only the knob, the one
+opaque part, remains to score, so nothing else of the captures is compared. (The examples
+once painted a backdrop of gradients fitted to the captures so that the whole panel could be
+compared; it was a rendition of the picture and has been removed.)
+
+Scores of the knob from `npm run visual -- hud-window/` in Chromium on Linux: the share of
+pixels that differ by more than the threshold of 0.05, and the mean colour difference out of
+255. The capture is the knob's 11 by 11 pt box at the slider's maximum, with a 2 pt border
+masked: the corners outside the circle and its edge lie over the movie. The crop is the knob's
+own box, so these scores cover its colour; its place is held by the expected pixels below.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `quicktime-light-knob` | Light-QuickTime (1285, 1363, 22, 22) | 0.00% | 0.41 | 0.00% | 0.47 |
+| `quicktime-dark-knob` | Dark-QuickTime (1160, 1247, 22, 22) | 0.00% | 0.86 | 0.00% | 0.88 |
+
+The rest of the controller is checked in a real browser against computed values. `visual-quicktime` and
+`visual-quicktime-dark` lay the controller out as the Aqua and the Dark Aqua capture have it,
+over one flat grey, `#707070`. Over a flat grey the panel's colours follow from the tokens,
+and the `quicktime-light` and `quicktime-dark` checks hold expected pixels to them at 1x and
+2x; a check passes or fails and has no score.
+
+| Check | Holds |
+| --- | --- |
+| `quicktime-light` | The 440 by 75 pt panel; the backdrop outside two of its 4 pt corners and the panel's colour, `#606060`, just inside one and along its four edges (no border); seven glyphs (all but Share, a thin outline) at `#dadada`, the volume knob at its maximum, and the timeline's played part, its bar at 00:03:16:12 and the rest, each at the place measured in the capture. |
+| `quicktime-dark` | The same panel laid out as the Dark Aqua capture has it, in the Dark Aqua page, with fewer pixels: the backdrop outside the top-left corner and the panel's colour just inside it, its left and bottom edges (no border), the mute and play glyphs, the volume knob at its maximum, and the timeline's played part, its bar at 00:04:40:02 as in that capture and the rest. The other corners, the top and right edges and the other five glyphs are held in `quicktime-light` only. |
+
+Measured in the captures, but apart from the knob not compared with them by the harness: the controller's
+size and corner radius, the absence of a border and a shadow, the places of the controls, the
+strengths of the sliders and the additive foreground: the play glyph is `#ffeed5` over a fill
+of `#84745d`, which is white at 48% added to the panel, not blended over it. The glyphs are
+stand-in drawings at the measured sizes, and the time text is set in the fallback font, whose
+tabular digits are wider than San Francisco's. What the checks cannot show is that the
+material looks like Catalina's over a movie: its recipe stays provisional.
+
+### Translucency over two tones
+
+A flat grey cannot show a translucent material at work: grey has no saturation to raise and
+nothing to blur. `visual-two-tone` therefore lays the controller over two flat tones that meet
+under its middle, a slate blue (`#5a6e82`) and a sand (`#a08c6e`). The tones are abstract and
+taken from no picture. `material-two-tone-light` and `material-two-tone-dark` hold seven
+pixels to colours computed from the tokens, at 1x and 2x:
+
+| Pixel | Expected | What it shows |
+| --- | --- | --- |
+| 160 pt left of the seam | `#43607d` | The blue comes through, saturated to 180% (`#4c7094`) and under the tint, `#1e1e1e` at 20%. An opaque panel would be the tint alone; a clear one the tone itself. |
+| 160 pt right of the seam | `#917549` | The same over the sand. |
+| On the seam | `#6a6a63`, to 4 levels | The blur has mixed the two tones evenly. Without a blur the pixel would be one of the two fills. |
+| 30 pt to either side of the seam | `#4f6375` and `#857152`, to 6 levels | One standard deviation of `blur(30px)`: 15.9% of the other tone. Half the radius or twice the radius misses these by 10 levels or more. |
+| A glyph over each tone | `#bddaf7` and `#ffefc4` | White at 48% added to the fill under it, channel by channel, clipping at white; an ordinary blend over the blue would be `#9dacbb`. |
+
+What this proves: the panel is translucent, and it applies the saturation, the tint, a blur
+of about the token's radius and the additive foreground that its tokens state, in Chromium,
+in both appearances. What it does not prove: that those values are Catalina's. The tint and
+the filter are provisional, fitted loosely to two captures of one movie, and no check
+compares the panel over a picture with a screenshot any more. The blur is also only the
+page's own pixels under the panel, mirrored at its edges, where AppKit blurs what is behind
+the window.
+
+No screenshot shows a titled HUD panel, a pressed, focused or disabled control, or either
+material over a known backdrop. Those are checked the same way against values computed
+from the tokens (the other `expect` comparisons); they pass over the Aqua and the Dark Aqua
+page background at 1x and 2x.
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| Panel material | `--mac-material-hud` over the page background | Inferred |
+| Controller material | Its tint over the page background; over two tones, its saturation, tint and blur (above) | Inferred |
+| Panel glyph | White at 85% over the panel; 30% of that when disabled | Inferred |
+| Controller glyph | White at 48% added to the panel, where an ordinary blend would be darker | Measured strength |
+| Pressed | The glyph at 50% | Inferred |
+| Keyboard focus | Ring colour 1 pt outside the button, none when the page is not key | Inferred |
+
+Provisional: the whole `panel` variant (material, 6 pt corners, shadow, padding, title bar and
+close button), both material recipes, the dimmed title of an inactive HUD, and the pressed,
+disabled and focused looks. The controller's tint is `#1e1e1e` at 20%: averaged over both
+captures the panel is the movie around it saturated to 180% and darkened by 7% to 27%,
+depending on the channel; the spec's fit by eye is 35%.
+
+Not built: dragging, and the fade-in and fade-out of QuickTime's controller. The forced-colours
+look is not checked in a browser: the visual harness has no forced-colours mode.

@@ -1,0 +1,197 @@
+/*
+ * Stepper (NSStepper): one bezel, two halves.
+ *
+ * The root's box is the AppKit alignment rectangle, 13 x 22 pt; the visible bezel is ::before,
+ * inset by one hairline like the push button's, 12 x 21 pt from outline to outline. The halves
+ * are two buttons over it; a pressed half paints its own fill and edge over its part of the
+ * bezel.
+ *
+ * States
+ *   [data-size="small" | "mini"]       control size
+ *   .mac-stepper-increment:active      a pressed half: accent fill, white chevron
+ *   :focus-visible                     keyboard focus ring
+ *   [data-disabled]                    disabled: bezel at half opacity, grey chevrons
+ *   [data-window-state="main" | "inactive"] *
+ *                                      window that is not key: a pressed half darkens instead
+ *                                      of taking the accent, and there is no focus ring
+ *   [data-force~="pressed-increment" | "pressed-decrement" | "focus"]
+ *                                      static previews of transient states (docs, visual tests)
+ */
+.mac-stepper {
+  --_width: 13px;
+  --_height: 22px;
+  /* The corner measures a nominal 5.5 pt and is not a quarter circle: its top run is flat for
+     2 pt and its side is straight from 5.75 pt down. A 5px circle is the closest CSS corner
+     (4.75 to 5.75 px, round and elliptical, were scored against the screenshot). */
+  --_radius: 5px;
+  /* The look of a half while pressed; the rule for a window that is not key replaces it. */
+  --_pressed-fill: var(--mac-bezel-accent-fill);
+  --_pressed-under: var(--mac-bezel-accent-under);
+  --_pressed-top: var(--mac-bezel-accent-border-top);
+  --_pressed-side: var(--mac-bezel-accent-border-side);
+  --_pressed-bottom: var(--mac-bezel-accent-border-bottom);
+  --_pressed-highlight: var(--mac-bezel-accent-highlight);
+  --_pressed-glyph: var(--mac-color-control-text-on-accent);
+
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  flex: none;
+  box-sizing: border-box;
+  inline-size: var(--_width);
+  block-size: var(--_height);
+  border-radius: calc(var(--_radius) + var(--mac-bezel-inset));
+  color: var(--mac-stepper-glyph);
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.mac-stepper::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: var(--mac-bezel-inset);
+  box-sizing: border-box;
+  border: var(--mac-bezel-border-width) solid;
+  border-color: var(--mac-bezel-border-top) var(--mac-bezel-border-side)
+    var(--mac-bezel-border-bottom);
+  border-radius: var(--_radius);
+  background: var(--mac-bezel-fill) padding-box;
+  box-shadow: var(--mac-bezel-highlight), var(--mac-bezel-shadow);
+  pointer-events: none;
+}
+
+/* The halves: each covers its half of the bezel, edge included. */
+.mac-stepper-increment,
+.mac-stepper-decrement {
+  position: absolute;
+  inset: var(--mac-bezel-inset);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: var(--mac-bezel-border-width) solid transparent;
+  background: none;
+  color: inherit;
+  cursor: default;
+  appearance: none;
+  outline: none;
+}
+
+.mac-stepper-increment {
+  bottom: 50%;
+  border-bottom-width: 0;
+  border-radius: var(--_radius) var(--_radius) 0 0;
+}
+
+.mac-stepper-decrement {
+  top: 50%;
+  border-top-width: 0;
+  border-radius: 0 0 var(--_radius) var(--_radius);
+}
+
+/* The chevron's drawing covers the half from outline to outline. */
+.mac-stepper-glyph {
+  position: absolute;
+  top: calc(var(--mac-bezel-border-width) * -1);
+  left: calc(var(--mac-bezel-border-width) * -1);
+  inline-size: calc(100% + var(--mac-bezel-border-width) * 2);
+  block-size: calc(100% + var(--mac-bezel-border-width));
+  fill: currentColor;
+  pointer-events: none;
+}
+
+.mac-stepper-decrement > .mac-stepper-glyph {
+  top: 0;
+  transform: scaleY(-1);
+}
+
+/* Sizes [provisional]: only the regular size is captured. */
+.mac-stepper:where([data-size="small"]) {
+  --_width: 11px;
+  --_height: 19px;
+  --_radius: 4px;
+}
+
+.mac-stepper:where([data-size="mini"]) {
+  --_width: 10px;
+  --_height: 16px;
+  --_radius: 3.5px;
+}
+
+/* A window that is not key: no accent on a pressed half. */
+.mac-stepper:where(:where([data-window-state="main"], [data-window-state="inactive"]) *) {
+  --_pressed-fill: var(--mac-stepper-fill-pressed-not-key);
+  --_pressed-under: none;
+  --_pressed-top: transparent;
+  --_pressed-side: transparent;
+  --_pressed-bottom: transparent;
+  --_pressed-highlight: none;
+  --_pressed-glyph: var(--mac-stepper-glyph);
+}
+
+/* Pressed half. A disabled button is never :active. */
+.mac-stepper-increment:where(
+  :active,
+  :is([data-force~="pressed-increment"], [data-force~="pressed"]) > *
+),
+.mac-stepper-decrement:where(:active, [data-force~="pressed-decrement"] > *) {
+  border-color: var(--_pressed-top) var(--_pressed-side) var(--_pressed-bottom);
+  background:
+    var(--_pressed-fill) padding-box,
+    var(--_pressed-under) border-box;
+  color: var(--_pressed-glyph);
+}
+
+.mac-stepper-increment:where(
+  :active,
+  :is([data-force~="pressed-increment"], [data-force~="pressed"]) > *
+) {
+  box-shadow: var(--_pressed-highlight);
+}
+
+/* Disabled */
+.mac-stepper:where([data-disabled]) {
+  color: var(--mac-stepper-glyph-disabled);
+}
+
+.mac-stepper:where([data-disabled])::before {
+  opacity: var(--mac-bezel-opacity-disabled);
+}
+
+/* Keyboard focus ring; only in the key window. It starts on the bezel's border and reaches
+   2.5 pt beyond its edge. */
+.mac-stepper:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(
+    var(--mac-focus-ring-offset) -
+    var(--mac-bezel-inset) -
+    var(--mac-bezel-border-width)
+  );
+}
+
+@media (forced-colors: active) {
+  .mac-stepper::before {
+    border-color: ButtonText;
+    background: ButtonFace;
+  }
+
+  .mac-stepper-increment:where(
+    :active,
+    :is([data-force~="pressed-increment"], [data-force~="pressed"]) > *
+  ),
+  .mac-stepper-decrement:where(:active, [data-force~="pressed-decrement"] > *) {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .mac-stepper:where([data-disabled])::before {
+    border-color: GrayText;
+    opacity: 1;
+  }
+}

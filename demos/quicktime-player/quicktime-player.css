@@ -1,0 +1,798 @@
+/*
+ * QuickTime Player demo: where the picture, the title bar and the controller lie in the
+ * window, where the controller's items are, and the fade of the two bars. The window, the
+ * title bar, the window controls, the HUD with its buttons, sliders and text, the menu and the
+ * Picture in Picture window are the library's own.
+ *
+ * The bar's translucent fill is the library's (Title Bar, `material="translucent"`); this file
+ * only lays the bar over the picture and fades it.
+ *
+ * Parts
+ *   .mac-quicktime-player              the window
+ *   .mac-quicktime-player-movie        the picture, under everything else
+ *   .mac-quicktime-player-picture      the image view that holds the placeholder picture
+ *   .mac-quicktime-player-frame        the placeholder's drawing
+ *   .mac-quicktime-player-note         shown instead of the picture while it floats
+ *   .mac-quicktime-player-video        a real movie's element (`src`)
+ *   .mac-quicktime-player-mirror       its live copy in the in-window floating window
+ *   .mac-quicktime-player-panoramic    its picture stretched by View > Panoramic
+ *   .mac-quicktime-player-clips        View > Show Clips: the strip, over the bottom of the picture
+ *   .mac-quicktime-player-clip         one clip of it
+ *   .mac-quicktime-player-clips-gap    where a clip being dragged would go
+ *   .mac-quicktime-player-chooser      the list of Add Clip to End's and Move To's dialogs
+ *   .mac-quicktime-player-exports      Window > Show Export Progress
+ *   .mac-quicktime-player-versions     File > Revert To > Browse All Versions: the dates, and two
+ *                                      .mac-quicktime-player-version panes, each a movie
+ *                                      (.mac-quicktime-player-version-page) or a note
+ *   .mac-quicktime-player-open-row     a row of the Open window's list, and its heading [data-header]
+ *   .mac-quicktime-player-open-columns the Open window as Columns
+ *   .mac-quicktime-player-open-gallery the Open window as Gallery
+ *   .mac-quicktime-player-preview      a file's picture and facts in those two views
+ *   .mac-quicktime-player-title-button the title, which opens the document's menu
+ *   .mac-quicktime-player-title-bar    the title bar, laid over the top of the picture
+ *   .mac-quicktime-player-controller   places and fades the floating controller
+ *   .mac-quicktime-player-hud          the controller itself, 440 x 75 pt
+ *   .mac-quicktime-player-control      a button or slider of the controller, by [data-control]
+ *   .mac-quicktime-player-time         a time code, by [data-time="elapsed" | "duration"]
+ *   .mac-quicktime-player-speed        the speed shown while the movie scans
+ *   .mac-quicktime-player-status       the same, for assistive technology only
+ *   .mac-quicktime-player-proxy        the proxy icon's drawing
+ *
+ * States
+ *   [data-chrome="shown" | "hidden"]   on the window: whether the bar and the controller show
+ *   [data-float-on-top]                on the window: View > Float on Top is checked
+ *   [data-full-screen]                 on the window: it fills the screen (a real movie)
+ *   [data-elsewhere]                   on the picture: a real movie plays elsewhere
+ *   [data-scaling="fit" | "fill" | "panoramic"]
+ *                                      on the picture: how a real movie lies in its frame
+ *
+ * Hooks
+ *   --mac-quicktime-player-controller-bottom   the controller's distance from the window's
+ *                                              bottom edge (default 15.3%)
+ *   --mac-quicktime-player-controller-shift    its distance from the centre, to the right
+ *                                              (default 0px)
+ *
+ * Every measured length is a token in quicktime-player.tokens.css (--mac-quicktime-player-*).
+ * Literal here, as structure: zeros and the 0px default of the shift hook, the 100% and
+ * container-unit sizes of the picture, the 15.3% default of the bottom hook (a share of the
+ * window, not a length), the 1 pt box of the visually hidden status, and the 250 ms fade.
+ */
+.mac-quicktime-player {
+  outline: none;
+}
+
+.mac-quicktime-player-versions {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--mac-space-control-gap);
+  block-size: 320px;
+}
+
+.mac-quicktime-player-versions-list {
+  block-size: 100%;
+  min-block-size: 0;
+}
+
+.mac-quicktime-player-version {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-block-size: 0;
+}
+
+.mac-quicktime-player-version-page {
+  flex: 1;
+  min-block-size: 0;
+  inline-size: 100%;
+  background: var(--mac-quicktime-player-letterbox);
+}
+
+.mac-quicktime-player-version-note {
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-quicktime-player-movie {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--mac-quicktime-player-letterbox);
+}
+
+/* A poster or a movie of the caller's fills the window and keeps its shape. */
+.mac-quicktime-player-movie > :where(img, video, canvas, svg) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* The image view is the size container of what it holds, so the drawing takes its size in
+   container units. */
+.mac-quicktime-player-movie > .mac-quicktime-player-picture {
+  display: grid;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  background: none;
+}
+
+.mac-quicktime-player-frame {
+  display: block;
+  width: 100cqw;
+  height: 100cqh;
+}
+
+.mac-quicktime-player-note {
+  padding: 0 var(--mac-quicktime-player-note-padding-inline);
+  text-align: center;
+}
+
+/* A real movie (`src`) and the note shown over it share the picture's one cell; while the movie
+   plays elsewhere it stays in place, unseen, so that it goes on playing and being copied. */
+.mac-quicktime-player-movie > :where(.mac-quicktime-player-video, .mac-quicktime-player-note) {
+  grid-area: 1 / 1;
+}
+
+.mac-quicktime-player-movie:where([data-elsewhere]) > .mac-quicktime-player-video {
+  opacity: 0;
+}
+
+/* A real movie fits the window whatever its own size: the picture's one cell is the window's,
+   never grown to the movie's intrinsic size, and the movie keeps its shape inside it. */
+.mac-quicktime-player-movie:has(> .mac-quicktime-player-video) {
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+}
+
+.mac-quicktime-player-movie > .mac-quicktime-player-video {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  object-fit: contain;
+}
+
+/* View > Fill Screen: the picture covers the frame and what is left over is cropped. */
+.mac-quicktime-player-movie:where([data-scaling="fill"]) > .mac-quicktime-player-video {
+  object-fit: cover;
+}
+
+/* View > Panoramic: the element goes on playing, unseen, and the canvas draws its picture. */
+.mac-quicktime-player-movie:where([data-scaling="panoramic"]) > .mac-quicktime-player-video {
+  opacity: 0;
+}
+
+.mac-quicktime-player-movie > .mac-quicktime-player-panoramic {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  object-fit: fill;
+}
+
+/* The live copy of a real movie in the floating window. */
+.mac-quicktime-player-mirror {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* The Open panel's status (quicktime-player-app.tsx): what it is doing, with its progress. */
+.mac-quicktime-player-open-status {
+  display: grid;
+  gap: var(--mac-space-control-gap);
+  padding: var(--mac-quicktime-player-open-padding);
+}
+
+/* QuickTime Player's Open window (quicktime-player-app.tsx): a titled window around the Open
+   panel's browser, its status, and a bar of buttons as the Open panel's. */
+/* The Movie Inspector floats over the picture, clear of the controller. */
+.mac-quicktime-player-inspector {
+  position: absolute;
+  top: var(--mac-space-4);
+  right: var(--mac-space-4);
+  z-index: 3;
+}
+
+/* Window > Show Export Progress, below what the window says it is doing. */
+.mac-quicktime-player-exports {
+  position: absolute;
+  top: var(--mac-quicktime-player-exports-top);
+  left: var(--mac-space-4);
+  z-index: 3;
+}
+
+.mac-quicktime-player-exports-rows {
+  display: grid;
+  gap: var(--mac-space-2);
+  padding: var(--mac-space-4);
+}
+
+.mac-quicktime-player-exports-row {
+  display: grid;
+  gap: var(--mac-space-1);
+  justify-items: start;
+}
+
+.mac-quicktime-player-exports-row > :where([role="progressbar"]) {
+  justify-self: stretch;
+}
+
+/* The title opens the document's menu and looks like the title it is. */
+.mac-quicktime-player-title-button {
+  max-width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-quicktime-player-title-button:focus-visible {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+}
+
+/* The Open window's columns: Name, Date Modified and Size. */
+.mac-quicktime-player-open-row {
+  display: grid;
+  /* Across the whole of a list row, which has a grid of its own. */
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1fr) var(--mac-quicktime-player-open-date-width) var(
+      --mac-quicktime-player-open-size-width
+    );
+  gap: var(--mac-space-2);
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.mac-quicktime-player-open-row:where([data-header]) {
+  padding-inline-start: var(--mac-quicktime-player-open-heading-inset);
+  margin-inline-end: var(--mac-quicktime-player-open-heading-overhang);
+}
+
+.mac-quicktime-player-area {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-space-1);
+  padding: var(--mac-space-1);
+  background: var(--mac-color-window-background);
+}
+
+.mac-quicktime-player-area-picture {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.mac-quicktime-player-area-picture video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+}
+
+.mac-quicktime-player-area-box {
+  position: absolute;
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  pointer-events: none;
+}
+
+.mac-quicktime-player-area-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--mac-space-1);
+}
+
+.mac-quicktime-player-open-row > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-quicktime-player-open-row:where(:not([data-header])) > span:not(:first-child) {
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-quicktime-player-open-name {
+  display: flex;
+  gap: var(--mac-space-1);
+  align-items: center;
+  min-width: 0;
+}
+
+.mac-quicktime-player-open-folder {
+  flex: none;
+  width: 100%;
+  max-width: var(--mac-quicktime-player-open-folder-size);
+  height: auto;
+  fill: var(--mac-color-system-blue);
+}
+
+.mac-quicktime-player-inspector-rows {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--mac-space-1) var(--mac-space-2);
+  margin: 0;
+  padding: var(--mac-space-4);
+}
+
+.mac-quicktime-player-inspector-rows dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Edit > Trim: the movie's length with two yellow handles, over the controller's place. */
+.mac-quicktime-player-trim {
+  position: absolute;
+  inset-block-end: var(--mac-space-4);
+  inset-inline: var(--mac-space-4);
+  z-index: 3;
+}
+
+.mac-quicktime-player-trim-row {
+  display: flex;
+  gap: var(--mac-space-2);
+  align-items: center;
+}
+
+.mac-quicktime-player-trim-track {
+  position: relative;
+  flex: 1 1 auto;
+  height: var(--mac-quicktime-player-trim-height);
+  background: var(--mac-quicktime-player-letterbox);
+}
+
+.mac-quicktime-player-trim-kept {
+  position: absolute;
+  inset-block: 0;
+  border: var(--mac-quicktime-player-trim-edge) solid var(--mac-color-system-yellow);
+}
+
+.mac-quicktime-player-trim-handle {
+  position: absolute;
+  inset-block: 0;
+  width: var(--mac-quicktime-player-trim-handle-width);
+  margin-inline-start: calc(var(--mac-quicktime-player-trim-handle-width) / -2);
+  background: var(--mac-color-system-yellow);
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+.mac-quicktime-player-trim-handle:focus-visible {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+}
+
+/* View > Show Clips: the movie's clips along the window's bottom edge, the controller above them. */
+.mac-quicktime-player-clips {
+  position: absolute;
+  inset-block-end: var(--mac-space-4);
+  inset-inline: var(--mac-space-4);
+  z-index: 3;
+}
+
+.mac-quicktime-player:has(.mac-quicktime-player-clips) {
+  --mac-quicktime-player-controller-bottom: var(--mac-quicktime-player-clips-clearance);
+}
+
+.mac-quicktime-player-clips-row {
+  display: flex;
+  gap: var(--mac-space-2);
+  align-items: center;
+}
+
+.mac-quicktime-player-clips-track {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: var(--mac-quicktime-player-clips-height);
+  background: var(--mac-quicktime-player-letterbox);
+}
+
+.mac-quicktime-player-clip {
+  flex: 1 1 0;
+  min-width: var(--mac-quicktime-player-clip-least-width);
+  padding: 0;
+  border: var(--mac-quicktime-player-trim-edge) solid var(--mac-quicktime-player-letterbox);
+  background-color: transparent;
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  touch-action: none;
+}
+
+.mac-quicktime-player-clip:where([aria-pressed="true"]) {
+  border-color: var(--mac-color-system-yellow);
+}
+
+.mac-quicktime-player-clip:focus-visible {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+}
+
+.mac-quicktime-player-clips-playhead {
+  position: absolute;
+  inset-block: 0;
+  width: var(--mac-quicktime-player-trim-edge);
+  background: var(--mac-color-system-red);
+  pointer-events: none;
+}
+
+/* Where a clip being dragged would go. */
+.mac-quicktime-player-clips-gap {
+  position: absolute;
+  inset-block: 0;
+  width: var(--mac-quicktime-player-clips-gap-width);
+  margin-inline-start: calc(var(--mac-quicktime-player-clips-gap-width) / -2);
+  background: var(--mac-color-system-yellow);
+  pointer-events: none;
+}
+
+/* Add Clip to End's movies and Move To's folders. */
+.mac-quicktime-player-chooser {
+  display: grid;
+  height: var(--mac-quicktime-player-chooser-height);
+  margin-block-end: var(--mac-space-2);
+}
+
+/* What the window is doing with the movie, under the title bar. */
+.mac-quicktime-player-work {
+  position: absolute;
+  inset-block-start: var(--mac-quicktime-player-speed-top);
+  inset-inline-start: var(--mac-space-4);
+  z-index: 3;
+  display: grid;
+  gap: var(--mac-space-1);
+  min-width: var(--mac-quicktime-player-work-width);
+}
+
+.mac-quicktime-player-location {
+  display: grid;
+  gap: var(--mac-space-2);
+}
+
+/* A recording window (quicktime-player-recording.tsx): the picture, and the controls over it. */
+.mac-quicktime-player-click-ring {
+  position: fixed;
+  z-index: var(--mac-quicktime-player-click-ring-layer);
+  inline-size: var(--mac-quicktime-player-click-ring-size);
+  block-size: var(--mac-quicktime-player-click-ring-size);
+  border: var(--mac-quicktime-player-click-ring-width) solid var(--mac-quicktime-player-click-ring);
+  border-radius: 50%;
+  pointer-events: none;
+  translate: -50% -50%;
+}
+
+.mac-quicktime-player-recording {
+  display: flex;
+  flex-direction: column;
+}
+
+.mac-quicktime-player-recording-picture {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 0;
+  padding: var(--mac-space-2);
+  background: var(--mac-quicktime-player-letterbox);
+}
+
+.mac-quicktime-player-recording-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.mac-quicktime-player-recording-hud {
+  position: relative;
+  width: min(var(--mac-quicktime-player-recording-hud-width), 100%);
+}
+
+.mac-quicktime-player-recording-controls {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--mac-space-2);
+  align-items: center;
+}
+
+.mac-quicktime-player-recording-readout {
+  display: flex;
+  gap: var(--mac-space-2);
+  align-items: center;
+  min-width: 0;
+}
+
+.mac-quicktime-player-recording-meter {
+  flex: 1 1 auto;
+}
+
+.mac-quicktime-player-recording-options {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mac-quicktime-player-recording-status {
+  display: grid;
+  gap: var(--mac-space-1);
+  margin-block-end: var(--mac-space-2);
+  overflow-wrap: anywhere;
+}
+
+.mac-quicktime-player-record {
+  display: grid;
+  place-items: center;
+  width: var(--mac-quicktime-player-record-size);
+  height: var(--mac-quicktime-player-record-size);
+  border: var(--mac-quicktime-player-record-ring) solid currentcolor;
+  border-radius: 50%;
+}
+
+.mac-quicktime-player-record-mark {
+  width: var(--mac-quicktime-player-record-mark-size);
+  height: var(--mac-quicktime-player-record-mark-size);
+  border-radius: 50%;
+  background: var(--mac-color-system-red);
+}
+
+/* Stop is a square, a third smaller than the round mark it replaces. */
+.mac-quicktime-player-record[data-taking] .mac-quicktime-player-record-mark {
+  width: var(--mac-quicktime-player-record-stop-size);
+  height: var(--mac-quicktime-player-record-stop-size);
+  border-radius: var(--mac-quicktime-player-record-stop-corner);
+}
+
+.mac-quicktime-player-open {
+  display: flex;
+  flex-direction: column;
+}
+
+.mac-quicktime-player-open-browser {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.mac-quicktime-player-open-columns,
+.mac-quicktime-player-open-gallery {
+  height: 100%;
+  min-height: 0;
+}
+
+.mac-quicktime-player-preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-space-1);
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-width: 0;
+  padding: var(--mac-space-2);
+  text-align: center;
+}
+
+.mac-quicktime-player-preview-video {
+  max-width: 100%;
+  max-height: var(--mac-quicktime-player-preview-height);
+}
+
+.mac-quicktime-player-preview-icon {
+  display: block;
+  width: var(--mac-quicktime-player-preview-icon-size);
+}
+
+.mac-quicktime-player-preview dl {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0 var(--mac-space-2);
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-quicktime-player-preview dd {
+  margin: 0;
+}
+
+.mac-quicktime-player-open-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-space-control-gap);
+  padding: var(--mac-quicktime-player-open-padding);
+}
+
+.mac-quicktime-player-open-gap {
+  flex: 1 1 auto;
+}
+
+.mac-quicktime-player-open-unsaved {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--mac-quicktime-player-open-padding);
+}
+
+/* The bar lies over the top 22 pt of the picture; its translucent material is the library's. */
+.mac-quicktime-player > .mac-quicktime-player-title-bar {
+  position: absolute;
+  inset: 0 0 auto;
+  transition: opacity 250ms;
+}
+
+/* Centred, with its bottom edge 15.3% of the window's height above the window's (measured:
+   127.5 of 827 pt and 115.5 of 757 pt). */
+.mac-quicktime-player-controller {
+  position: absolute;
+  bottom: var(--mac-quicktime-player-controller-bottom, 15.3%);
+  left: calc(
+    50% -
+    var(--mac-quicktime-player-hud-width) /
+    2 +
+    var(--mac-quicktime-player-controller-shift, 0px)
+  );
+  width: var(--mac-quicktime-player-hud-width);
+  height: var(--mac-quicktime-player-hud-height);
+  transition: opacity 250ms;
+}
+
+.mac-quicktime-player-hud {
+  width: var(--mac-quicktime-player-hud-width);
+  height: var(--mac-quicktime-player-hud-height);
+}
+
+/* A playing movie that is left alone loses its bars. They stay while one of their controls
+   shows the keyboard focus, and hidden bars take no press: the first one brings them back. */
+.mac-quicktime-player:where([data-chrome="hidden"])
+> :where(.mac-quicktime-player-title-bar, .mac-quicktime-player-controller):where(
+  :not(:has(:focus-visible))
+) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The controller's items, where the captures have them (measured in both). */
+.mac-quicktime-player-control,
+.mac-quicktime-player-time {
+  position: absolute;
+}
+
+.mac-quicktime-player-control:where([data-control="mute"]) {
+  top: var(--mac-quicktime-player-mute-top);
+  left: var(--mac-quicktime-player-mute-left);
+  width: var(--mac-quicktime-player-mute-width);
+  height: var(--mac-quicktime-player-mute-height);
+}
+
+.mac-quicktime-player-control:where([data-control="volume"]) {
+  top: var(--mac-quicktime-player-volume-top);
+  left: var(--mac-quicktime-player-volume-left);
+  width: var(--mac-quicktime-player-volume-width);
+  height: var(--mac-quicktime-player-volume-height);
+}
+
+.mac-quicktime-player-control:where([data-control="full-volume"]) {
+  top: var(--mac-quicktime-player-full-volume-top);
+  left: var(--mac-quicktime-player-full-volume-left);
+  width: var(--mac-quicktime-player-full-volume-width);
+  height: var(--mac-quicktime-player-full-volume-height);
+}
+
+.mac-quicktime-player-control:where([data-control="rewind"]) {
+  top: var(--mac-quicktime-player-rewind-top);
+  left: var(--mac-quicktime-player-rewind-left);
+  width: var(--mac-quicktime-player-rewind-width);
+  height: var(--mac-quicktime-player-rewind-height);
+}
+
+.mac-quicktime-player-control:where([data-control="play"]) {
+  top: var(--mac-quicktime-player-play-top);
+  left: var(--mac-quicktime-player-play-left);
+  width: var(--mac-quicktime-player-play-width);
+  height: var(--mac-quicktime-player-play-height);
+}
+
+.mac-quicktime-player-control:where([data-control="fast-forward"]) {
+  top: var(--mac-quicktime-player-fast-forward-top);
+  left: var(--mac-quicktime-player-fast-forward-left);
+  width: var(--mac-quicktime-player-fast-forward-width);
+  height: var(--mac-quicktime-player-fast-forward-height);
+}
+
+.mac-quicktime-player-control:where([data-control="airplay"]) {
+  top: var(--mac-quicktime-player-airplay-top);
+  left: var(--mac-quicktime-player-airplay-left);
+  width: var(--mac-quicktime-player-airplay-width);
+  height: var(--mac-quicktime-player-airplay-height);
+}
+
+.mac-quicktime-player-control:where([data-control="share"]) {
+  top: var(--mac-quicktime-player-share-top);
+  left: var(--mac-quicktime-player-share-left);
+  width: var(--mac-quicktime-player-share-width);
+  height: var(--mac-quicktime-player-share-height);
+}
+
+.mac-quicktime-player-control:where([data-control="picture-in-picture"]) {
+  top: var(--mac-quicktime-player-picture-in-picture-top);
+  left: var(--mac-quicktime-player-picture-in-picture-left);
+  width: var(--mac-quicktime-player-picture-in-picture-width);
+  height: var(--mac-quicktime-player-picture-in-picture-height);
+}
+
+.mac-quicktime-player-control:where([data-control="timeline"]) {
+  top: var(--mac-quicktime-player-timeline-top);
+  left: var(--mac-quicktime-player-timeline-left);
+  width: var(--mac-quicktime-player-timeline-width);
+  height: var(--mac-quicktime-player-timeline-height);
+}
+
+.mac-quicktime-player-time {
+  top: var(--mac-quicktime-player-time-top);
+}
+
+.mac-quicktime-player-time:where([data-time="elapsed"]) {
+  left: var(--mac-quicktime-player-elapsed-left);
+}
+
+.mac-quicktime-player-time:where([data-time="duration"]) {
+  right: var(--mac-quicktime-player-duration-right);
+}
+
+/* The speed, under the title bar at the leading edge. */
+.mac-quicktime-player > .mac-quicktime-player-speed {
+  position: absolute;
+  top: var(--mac-quicktime-player-speed-top);
+  left: var(--mac-quicktime-player-speed-left);
+}
+
+.mac-quicktime-player-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.mac-quicktime-player-proxy {
+  display: block;
+}
+
+.mac-quicktime-player-proxy-paper {
+  fill: var(--mac-quicktime-player-proxy-paper);
+  stroke: var(--mac-quicktime-player-proxy-edge);
+}
+
+.mac-quicktime-player-proxy-fold {
+  fill: none;
+  stroke: var(--mac-quicktime-player-proxy-edge);
+}
+
+.mac-quicktime-player-proxy-mark {
+  fill: var(--mac-quicktime-player-proxy-mark);
+}
+
+.mac-quicktime-player-proxy-paper-mark {
+  fill: var(--mac-quicktime-player-proxy-paper);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-quicktime-player > .mac-quicktime-player-title-bar,
+  .mac-quicktime-player-controller {
+    transition: none;
+  }
+}

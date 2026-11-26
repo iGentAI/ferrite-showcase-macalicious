@@ -1,0 +1,200 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "selection-light",
+      "description": "The selected top hit of the search for \"OS X\", Aqua: the row \"macOS\" of the result list, 288 x 22 pt. The one comparison with the Aqua capture: that capture's window is translucent over the desktop picture, which is Apple's and is neither shipped nor imitated, so the rest of the window cannot be compared; the selection is an opaque fill and does not show the picture. Text is compared, set in the fallback font off Apple devices. Masked: the result's icon, which is Apple artwork replaced by an abstract placeholder.",
+      "example": "visual-selection",
+      "appearance": "light",
+      "masks": [{ "x": 18, "y": 1, "width": 20, "height": 20 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Spotlight.png",
+        "crop": { "x": 1000, "y": 570, "width": 576, "height": 44 }
+      },
+      "budget": { "1x": 0.0384, "2x": 0.0316 },
+      "deltaBudget": { "1x": 7.25, "2x": 7.66 }
+    },
+    {
+      "name": "check-window-light",
+      "description": "A check of pixels, not a comparison with a screenshot: the Aqua window over the demo's flat mid grey (#808080), which stands for nothing in the capture. It reads what the window's material gives over that grey in the field's row, in a category band and in the preview, and that the selected row is the opaque selection colour.",
+      "example": "visual-window",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 680, "height": 430 },
+        "pixels": [
+          {
+            "x": 500,
+            "y": 14,
+            "color": "#bfbebb",
+            "note": "the field's row: the material over the mid grey"
+          },
+          {
+            "x": 200,
+            "y": 65,
+            "color": "#a8a7a4",
+            "note": "the first category band, clear of its name"
+          },
+          {
+            "x": 6,
+            "y": 86,
+            "color": "#136fe6",
+            "note": "the selected first result: the opaque selection colour, --mac-color-sidebar-selection-emphasized in Aqua"
+          },
+          {
+            "x": 250,
+            "y": 274,
+            "color": "#bfbebb",
+            "note": "a plain result's row (the folder), clear of its title: the same material as the field's row"
+          },
+          {
+            "x": 600,
+            "y": 400,
+            "color": "#bfbebb",
+            "note": "the preview, under the entry: the same material"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-dark",
+      "description": "The whole Spotlight window searching the developer's index for \"OS X\", Dark Aqua: the Developer group first, its first file selected, the file's text in the preview. A window capture, opaque, over the capture's transparent margin (matte white). Text is compared, set in the fallback fonts off Apple devices; the previewed file's text is the demo's own, a property list of the capture's shape and line lengths, not the capture's letters. Masked: the result icons and the top hit's icon, which are Apple artwork replaced by abstract placeholders.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "masks": [
+        { "x": 627, "y": 11, "width": 34, "height": 34 },
+        { "x": 18, "y": 76, "width": 20, "height": 20 },
+        { "x": 18, "y": 102, "width": 20, "height": 20 },
+        { "x": 18, "y": 128, "width": 20, "height": 20 },
+        { "x": 18, "y": 154, "width": 20, "height": 20 },
+        { "x": 18, "y": 180, "width": 20, "height": 20 },
+        { "x": 18, "y": 222, "width": 20, "height": 20 },
+        { "x": 18, "y": 264, "width": 20, "height": 20 },
+        { "x": 18, "y": 290, "width": 20, "height": 20 },
+        { "x": 18, "y": 316, "width": 20, "height": 20 },
+        { "x": 18, "y": 342, "width": 20, "height": 20 },
+        { "x": 18, "y": 368, "width": 20, "height": 20 },
+        { "x": 18, "y": 410, "width": 20, "height": 20 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Spotlight.png",
+        "crop": { "x": 112, "y": 76, "width": 1360, "height": 860 }
+      },
+      "budget": { "1x": 0.1158, "2x": 0.0982 },
+      "deltaBudget": { "1x": 13.2, "2x": 13.92 }
+    },
+    {
+      "name": "window-dark-layout",
+      "description": "As window-dark with the text masked as well, to score what the window draws: its size, rim and corners, the field's row and the line under it, the four category bands, the selected row, the line between the list and the preview, and the text view's own background at the preview's edges. Masked: the query with its completion, the top hit's icon, the four category names, the icon and title of the twelve results, and the text of the preview (72% of the crop, most of it the preview). Not masked and not reproduced: the magnifying glass, an original drawing of the library's.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 48, "y": 10, "width": 490, "height": 38 },
+        { "x": 627, "y": 11, "width": 34, "height": 34 },
+        { "x": 18, "y": 59, "width": 100, "height": 12 },
+        { "x": 18, "y": 75, "width": 266, "height": 22 },
+        { "x": 18, "y": 101, "width": 266, "height": 22 },
+        { "x": 18, "y": 127, "width": 104, "height": 22 },
+        { "x": 18, "y": 153, "width": 108, "height": 22 },
+        { "x": 18, "y": 179, "width": 108, "height": 22 },
+        { "x": 18, "y": 205, "width": 100, "height": 12 },
+        { "x": 18, "y": 221, "width": 80, "height": 22 },
+        { "x": 18, "y": 247, "width": 100, "height": 12 },
+        { "x": 18, "y": 263, "width": 266, "height": 22 },
+        { "x": 18, "y": 289, "width": 232, "height": 22 },
+        { "x": 18, "y": 315, "width": 146, "height": 22 },
+        { "x": 18, "y": 341, "width": 176, "height": 22 },
+        { "x": 18, "y": 367, "width": 166, "height": 22 },
+        { "x": 18, "y": 393, "width": 100, "height": 12 },
+        { "x": 18, "y": 409, "width": 68, "height": 21 },
+        { "x": 296, "y": 58, "width": 383, "height": 372 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Spotlight.png",
+        "crop": { "x": 112, "y": 76, "width": 1360, "height": 860 }
+      },
+      "budget": { "1x": 0.0025, "2x": 0.0023 },
+      "deltaBudget": { "1x": 0.42, "2x": 0.45 }
+    },
+    {
+      "name": "check-collapsed-dark",
+      "description": "A check of four pixels, not a comparison with a screenshot: no capture shows the collapsed window. Escape in the field clears it, and the window is the field's row alone, Dark Aqua: where the list and the preview were, the example's white matte shows.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "actions": [{ "click": ".mac-spotlight-input" }, { "key": "Escape" }],
+      "expect": {
+        "size": { "width": 680, "height": 430 },
+        "pixels": [
+          {
+            "x": 500,
+            "y": 14,
+            "color": "#2b2c2d",
+            "note": "the field's row is still there: the window's base, measured in the dark capture (spec: spotlight)"
+          },
+          {
+            "x": 150,
+            "y": 300,
+            "color": "#ffffff",
+            "note": "where the list was (#2b2c2d): the example's matte, 244 pt under the collapsed window and clear of its shadow"
+          },
+          {
+            "x": 500,
+            "y": 300,
+            "color": "#ffffff",
+            "note": "where the preview's text view was (#1e1e1e): the example's matte"
+          },
+          {
+            "x": 6,
+            "y": 400,
+            "color": "#ffffff",
+            "note": "where a category band was (#4e4f50): the example's matte"
+          }
+        ]
+      }
+    },
+    {
+      "name": "check-selection-preview-dark",
+      "description": "A check of four pixels, not a comparison with a screenshot: no capture shows this state. Five presses of Down Arrow move the selection from the XML file to the definition, and the preview follows it: the text view with its own background gives way to the dictionary entry on the window's material, Dark Aqua.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "actions": [
+        { "click": ".mac-spotlight-input" },
+        { "key": "ArrowDown" },
+        { "key": "ArrowDown" },
+        { "key": "ArrowDown" },
+        { "key": "ArrowDown" },
+        { "key": "ArrowDown" }
+      ],
+      "expect": {
+        "size": { "width": 680, "height": 430 },
+        "pixels": [
+          {
+            "x": 6,
+            "y": 232,
+            "color": "#0772eb",
+            "tolerance": 3,
+            "note": "the sixth result, the definition, is selected: --mac-color-sidebar-selection-emphasized (measured on the first result of the dark capture: #0971ea)"
+          },
+          {
+            "x": 6,
+            "y": 86,
+            "color": "#2b2c2d",
+            "note": "the first result is no longer selected: the window's base (measured)"
+          },
+          {
+            "x": 600,
+            "y": 400,
+            "color": "#2b2c2d",
+            "note": "the preview shows the entry, which has no background of its own: the window's base (measured), where the text view was #1e1e1e"
+          },
+          {
+            "x": 293,
+            "y": 60,
+            "color": "#2b2c2d",
+            "note": "the preview's leading edge, beside the divider: the window's base, where the text view was #1e1e1e"
+          }
+        ]
+      }
+    }
+  ]
+}

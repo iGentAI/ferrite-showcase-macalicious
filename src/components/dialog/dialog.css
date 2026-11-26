@@ -1,0 +1,81 @@
+/*
+ * Dialog: a window frame (window, title-bar) placed over the page, with the dialog layout of
+ * Finder's Go to Folder: 20 pt margins on all four sides (20.5 pt to a control's visible
+ * edge), and the dismissing buttons at the bottom right, 12 pt apart (13 pt between bezels).
+ *
+ * States
+ *   [data-open] / [data-closed]        set by Base UI on the popup
+ *   [data-divider]                     on the button row: the line of a preferences dialog
+ *
+ * Hooks
+ *   --mac-dialog-top                   distance from the top of the viewport (default 20vh);
+ *                                      the height limit is computed from it. The component
+ *                                      turns a `top` given in `style` into this variable
+ *   --mac-dialog-button-min-width      least width of a dismissing button (default 84px: the
+ *                                      83 pt bezel of Finder's dialogs; 70px gives the 69 pt
+ *                                      of preferences dialogs)
+ */
+.mac-dialog {
+  position: fixed;
+  z-index: 900;
+  top: var(--mac-dialog-top, 20vh);
+  inset-inline: 0;
+  width: fit-content;
+  max-width: calc(100vw - 16px);
+  /* A dialog taller than the room below its top edge scrolls its body. */
+  max-height: calc(100vh - var(--mac-dialog-top, 20vh) - 8px);
+  margin-inline: auto;
+  outline: 0;
+}
+
+.mac-dialog-body {
+  padding: var(--mac-space-window-margin);
+}
+
+.mac-dialog-description {
+  margin: 0;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  letter-spacing: var(--mac-tracking-regular);
+}
+
+.mac-dialog-actions {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+  align-items: center;
+  /* 20.5 pt from the visible edge of the control above to the buttons' bezels: both boxes
+     reach half a point beyond what they draw. */
+  margin-top: calc(var(--mac-space-window-margin) - 0.5px);
+}
+
+.mac-dialog-actions:where(:first-child) {
+  margin-top: 0;
+}
+
+.mac-dialog-actions-leading,
+.mac-dialog-actions-trailing {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+  align-items: center;
+}
+
+.mac-dialog-actions-trailing {
+  margin-inline-start: auto;
+}
+
+.mac-dialog-actions-trailing > :where(*) {
+  min-width: var(--mac-dialog-button-min-width, 84px);
+}
+
+/* Preferences-style row: a 1 pt line from edge to edge, the buttons 18.5 pt below it. */
+.mac-dialog-actions:where([data-divider]) {
+  margin-inline: calc(-1 * var(--mac-space-window-margin));
+  padding: 18px var(--mac-space-window-margin) 0;
+  border-top: 1px solid var(--mac-dialog-divider);
+}
+
+@media (forced-colors: active) {
+  .mac-dialog-actions:where([data-divider]) {
+    border-top-color: CanvasText;
+  }
+}

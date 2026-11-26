@@ -1,0 +1,241 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "plain-light",
+      "description": "Plain 22 pt title bar of Finder's Get Info window, Aqua. Whole crop: stand-in proxy icon, title in the fallback font.",
+      "example": "visual-plain",
+      "appearance": "light",
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Get-Info.png",
+        "crop": { "x": 112, "y": 76, "width": 530, "height": 44 }
+      },
+      "budget": { "1x": 0.206, "2x": 0.1413 },
+      "deltaBudget": { "1x": 19.6, "2x": 19.2 }
+    },
+    {
+      "name": "plain-light-bar",
+      "description": "As plain-light with the proxy icon and the title masked, to score the bar and the window controls.",
+      "example": "visual-plain",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [{ "x": 66, "y": 2, "width": 180, "height": 18 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Get-Info.png",
+        "crop": { "x": 112, "y": 76, "width": 530, "height": 44 }
+      },
+      "budget": { "1x": 0.028, "2x": 0.0144 },
+      "deltaBudget": { "1x": 2.2, "2x": 2.1 }
+    },
+    {
+      "name": "plain-dark",
+      "description": "Plain 22 pt title bar of Finder's Get Info window, Dark Aqua. Whole crop: stand-in proxy icon, title in the fallback font.",
+      "example": "visual-plain",
+      "appearance": "dark",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Get-Info.png",
+        "crop": { "x": 112, "y": 76, "width": 530, "height": 44 }
+      },
+      "budget": { "1x": 0.206, "2x": 0.1371 },
+      "deltaBudget": { "1x": 22.7, "2x": 22.5 }
+    },
+    {
+      "name": "plain-dark-bar",
+      "description": "As plain-dark with the proxy icon and the title masked, to score the bar and the window controls.",
+      "example": "visual-plain",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [{ "x": 66, "y": 2, "width": 180, "height": 18 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Get-Info.png",
+        "crop": { "x": 112, "y": 76, "width": 530, "height": 44 }
+      },
+      "budget": { "1x": 0.024, "2x": 0.0078 },
+      "deltaBudget": { "1x": 6.2, "2x": 6 }
+    },
+    {
+      "name": "plain-leading-light",
+      "description": "Leading end of the plain 22 pt title bar of System Information, Aqua: corner, window controls and bar; nothing masked.",
+      "example": "visual-plain-leading",
+      "appearance": "light",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Information.png",
+        "crop": { "x": 112, "y": 76, "width": 530, "height": 44 },
+        "matte": "#ffffff"
+      },
+      "budget": { "1x": 0.014, "2x": 0.0066 },
+      "deltaBudget": { "1x": 1.5, "2x": 1.5 }
+    },
+    {
+      "name": "plain-leading-dark",
+      "description": "Leading end of the plain 22 pt title bar of System Information, Dark Aqua. The dark Get Info bar is tinted by the desktop picture, so the neutral bar is compared here instead.",
+      "example": "visual-plain-leading",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Information.png",
+        "crop": { "x": 112, "y": 76, "width": 530, "height": 44 },
+        "matte": "#ffffff"
+      },
+      "budget": { "1x": 0.01, "2x": 0.0024 },
+      "deltaBudget": { "1x": 4.1, "2x": 3.9 }
+    },
+    {
+      "name": "unified-surface-light",
+      "description": "Surface of the 55 pt unified bar of the key Finder window, Aqua: highlight rows, gradient, shadow row, separator.",
+      "example": "visual-unified-surface",
+      "appearance": "light",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Network.png",
+        "crop": { "x": 1096, "y": 76, "width": 200, "height": 110 }
+      },
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 1, "2x": 1.1 }
+    },
+    {
+      "name": "unified-surface-dark",
+      "description": "Surface of the 55 pt unified bar of the key Finder window, Dark Aqua.",
+      "example": "visual-unified-surface",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Network.png",
+        "crop": { "x": 1200, "y": 76, "width": 200, "height": 110 }
+      },
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.8, "2x": 0.9 }
+    },
+    {
+      "name": "line-surface-light",
+      "description": "Surface of Dictionary's 55 pt unified bar with divider=\"line\", Aqua, where the toolbar is empty: highlight rows, gradient, and the line at the bottom in its place. Dictionary's bar and the scope bar under it share one gradient, so the bar holds its upper part, --mac-title-bar-line-fill, measured in these captures.",
+      "example": "visual-line-surface",
+      "appearance": "light",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Light-Dictionary.png",
+        "crop": { "x": 392, "y": 76, "width": 200, "height": 110 }
+      },
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.9, "2x": 0.9 }
+    },
+    {
+      "name": "line-surface-dark",
+      "description": "As line-surface-light, Dark Aqua.",
+      "example": "visual-line-surface",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Dark-Dictionary.png",
+        "crop": { "x": 392, "y": 76, "width": 200, "height": 110 }
+      },
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.8, "2x": 0.9 }
+    },
+    {
+      "name": "line-rows-light",
+      "description": "Only the two bottom rows of the bar with divider=\"line\", Aqua, against rows 108 and 109 of the Dictionary window, at a strict threshold: the colour of the line. The pair of divider=\"bar\" is 7 and 15 levels from these rows.",
+      "example": "visual-line-rows",
+      "appearance": "light",
+      "threshold": 0.01,
+      "reference": {
+        "file": "10-15-Catalina-Light-Dictionary.png",
+        "crop": { "x": 392, "y": 184, "width": 200, "height": 2 }
+      },
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 1, "2x": 1 }
+    },
+    {
+      "name": "line-rows-dark",
+      "description": "As line-rows-light, Dark Aqua. The pair of divider=\"bar\" is 26 and 13 levels from these rows.",
+      "example": "visual-line-rows",
+      "appearance": "dark",
+      "threshold": 0.01,
+      "reference": {
+        "file": "10-15-Catalina-Dark-Dictionary.png",
+        "crop": { "x": 392, "y": 184, "width": 200, "height": 2 }
+      },
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 1, "2x": 1 }
+    },
+    {
+      "name": "inactive-light",
+      "description": "Inactive Safari window, Aqua: flat bar, grey controls, outlined buttons. The sidebar glyph is a stand-in and is masked.",
+      "example": "visual-inactive",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [{ "x": 138, "y": 12, "width": 22, "height": 14 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Picture-in-Picture.png",
+        "crop": { "x": 330, "y": 104, "width": 440, "height": 76 }
+      },
+      "budget": { "1x": 0.045, "2x": 0.0011 },
+      "deltaBudget": { "1x": 1.6, "2x": 0.6 }
+    },
+    {
+      "name": "inactive-dark",
+      "description": "Inactive Safari window, Dark Aqua. The sidebar glyph is masked.",
+      "example": "visual-inactive",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [{ "x": 138, "y": 12, "width": 22, "height": 14 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Picture-in-Picture.png",
+        "crop": { "x": 358, "y": 78, "width": 440, "height": 76 }
+      },
+      "budget": { "1x": 0.024, "2x": 0.0012 },
+      "deltaBudget": { "1x": 3, "2x": 2.5 }
+    },
+    {
+      "name": "inactive-light-whole",
+      "description": "As inactive-light with nothing masked (flat bar, grey controls, outlined buttons), so the stand-in sidebar glyph is scored too.",
+      "example": "visual-inactive",
+      "appearance": "light",
+      "reference": {
+        "file": "10-15-Catalina-Light-Safari-v13-Picture-in-Picture.png",
+        "crop": { "x": 330, "y": 104, "width": 440, "height": 76 }
+      },
+      "budget": { "1x": 0.007, "2x": 0.0046 },
+      "deltaBudget": { "1x": 1.7, "2x": 0.9 }
+    },
+    {
+      "name": "inactive-dark-whole",
+      "description": "As inactive-dark with nothing masked (flat bar, grey controls, outlined buttons), so the stand-in sidebar glyph is scored too.",
+      "example": "visual-inactive",
+      "appearance": "dark",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Safari-v13-Picture-in-Picture.png",
+        "crop": { "x": 358, "y": 78, "width": 440, "height": 76 }
+      },
+      "budget": { "1x": 0.007, "2x": 0.0045 },
+      "deltaBudget": { "1x": 2.8, "2x": 2.3 }
+    },
+    {
+      "name": "translucent-surface-light",
+      "description": "Surface of the translucent 22 pt bar of the QuickTime Player window in the Aqua capture, where the movie behind it is nearly black: highlight rows, tint, shadow row, separator. The window is dark in both captures; the stored tint is the mean of the two captures' fits, so each is a few levels off.",
+      "example": "visual-translucent-surface",
+      "appearance": "light",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Light-QuickTime.png",
+        "crop": { "x": 2412, "y": 76, "width": 400, "height": 44 }
+      },
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 3, "2x": 3 }
+    },
+    {
+      "name": "translucent-surface-dark",
+      "description": "Surface of the translucent 22 pt bar of the QuickTime Player window in the Dark Aqua capture, where the movie behind it is nearly black. The same dark bar as in Aqua.",
+      "example": "visual-translucent-surface",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "reference": {
+        "file": "10-15-Catalina-Dark-QuickTime.png",
+        "crop": { "x": 2112, "y": 76, "width": 400, "height": 44 }
+      },
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 2.1, "2x": 2.1 }
+    }
+  ]
+}

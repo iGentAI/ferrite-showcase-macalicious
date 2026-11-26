@@ -1,0 +1,223 @@
+---
+title: Gallery View
+description: A large preview of the selected item above a scrolling strip of thumbnails, with an optional inspector pane.
+---
+
+<Example name="basic" both />
+
+Finder's fourth view: the selected item shown large, the folder's other items as a strip of
+thumbnails under it, and optionally the Preview pane with the item's details beside both.
+AppKit has no public class for it; the strip is a horizontal list and scrolls in a
+[scroll view](/components/scroll-view).
+
+## Usage
+
+```tsx
+import { GalleryView } from "macalicious/gallery-view";
+import "macalicious/scroll-view.css";
+import "macalicious/gallery-view.css";
+
+const [value, setValue] = useState<(string | number)[]>([files[0].id]);
+
+<GalleryView
+  aria-label="Downloads"
+  count={files.length}
+  getItemId={(index) => files[index].id}
+  getItemLabel={(index) => files[index].name}
+  renderPreview={(index) => <img src={files[index].url} alt="" style={{ maxWidth: "100%", maxHeight: "100%" }} />}
+  renderThumbnail={(index) => <img src={files[index].thumbnail} alt="" width={48} />}
+  value={value}
+  onValueChange={setValue}
+  onItemAction={(index) => open(files[index])}
+  style={{ height: 480 }}
+/>
+```
+
+Or copy the source into your project: `npx macalicious add gallery-view`.
+
+The view asks for its items by index. `renderThumbnail` is called only for the thumbnails in
+view and `renderPreview` only for the selected item, so neither needs the whole list in the
+document. Keep `renderThumbnail`, `renderPreview` and `getItemLabel` stable (module-level
+functions or `useCallback`): then a selection change re-renders two thumbnails and scrolling
+the strip does not render the preview again.
+
+A thumbnail is at most 48 x 48 pt and is centred in its square: 48 x 36 for a 4:3 picture,
+48 x 27 for 16:9. The preview is centred in the stage, 32 pt from its sides; size it with
+`max-width: 100%` and `max-height: 100%` (or a width and an `aspect-ratio`) so that it fits.
+
+The selection is `value`, an array holding the selected item's id, as in the
+[list view](/components/list-view) and the other data views, so that one state can serve
+several views of the same items. A gallery selects one item: the array has one id, or none.
+Ids are the indexes unless `getItemId` gives others.
+
+### The inspector pane
+
+<Example name="inspector" />
+
+`inspector` puts your content in a 250 pt pane after a 1 pt divider, where Finder shows the
+Preview pane with the file's details and Quick Actions. The pane is a column flex container
+without padding; Finder insets its content by 20 pt. What is in it is yours: the component
+provides the pane, not the details.
+
+### Many items
+
+<Example name="large" />
+
+The strip renders the thumbnails in view and eight more on each side. Measured in Chromium
+with 5,000 items in a strip 620 pt wide (`examples/large`):
+
+| | |
+| --- | --- |
+| Thumbnail elements in the document | 18 at rest, at most 27 while scrolling |
+| Elements under the view, scroll bar included | 44 at rest, 60 after navigating |
+| 20 jumps of 15,469 pt through the strip, a frame after each | 321 to 322 ms in three runs, which is the 20 frames |
+| 20 Right Arrow presses in the middle of the items, a frame after each | 331 ms |
+| Event handlers | the view's own are on the root only; none on a thumbnail (0 listeners per thumbnail). The scroll view adds its own to the strip and its scroll bar |
+
+Scrolling by up to eight thumbnails a frame never shows an empty place. After a jump of
+thousands of items (End, or dragging the scroll bar's knob) the thumbnails there are painted
+one frame later. The arrow keys, Home, End and type-select scroll the selected thumbnail into
+view, also when it was not rendered; scrolling the strip away from the selection keeps the
+preview. With ids of your own, finding the selected item's index calls `getItemId` for up to
+every item when the selection changes.
+
+## Guidelines
+
+The Human Interface Guidelines have no page for the gallery view. Their
+[Finder page](https://web.archive.org/web/20200503170015/https://developer.apple.com/design/human-interface-guidelines/macos/system-capabilities/finder/)
+describes what Finder shows beside it:
+
+- The Preview pane shows information about the selected item and offers Quick Actions on it,
+  such as rotating a picture or marking up a document, without opening an application. Put
+  such details and actions in the `inspector`, and only those that apply to the selected item.
+- Use a gallery for items people recognise by looking at them (pictures, documents with a
+  meaningful first page). For items told apart by name or date, a list or a column view
+  serves better. This point is this library's advice, not Apple's text.
+
+## Variants and states
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Thumbnail | default | Centred in a 54 pt square at a 62 pt pitch; the first square is 8 pt from the strip's edge |
+| Selected thumbnail | `value` | A grey backdrop behind it (`#c0c0c0`, Dark Aqua `#565759`): the 54 pt square with corners rounded by 4 pt |
+| Strip with the keyboard | Tab into the strip | The same grey backdrop; a focus ring inside the edge of the gallery (stage and strip), in a key window only |
+| Window that is not key | `data-window-state` on an ancestor | The same grey backdrop, no focus ring |
+| Nothing selected | `value` empty | An empty stage |
+| Inspector | `inspector` | A 250 pt pane after a 1 pt divider (`#d5d5d5`, Dark Aqua black), on the same background |
+
+Catalina does not tint the backdrop with the accent colour: it is grey in the key window of
+both screenshots and in the inactive window of a third.
+
+Measured in Finder's Downloads window, in both appearances: the strip's height and position,
+the thumbnail pitch and inset, the backdrop's size, radius and colour, the preview's 32 pt
+side margins and its vertical centring, the pane's width, the divider and the background.
+Provisional (no screenshot shows them): the focus ring, which Finder does not draw; the 16 pt
+above and under a preview that is limited by the stage's height; the backdrop in an inactive
+Dark Aqua window. The backdrop is 54 x 54 pt with a 4 pt radius in the screenshots; the spec's
+table says 54 x 52 and about 3.
+
+Not done: selecting several items (Finder then shows a stack in the stage), Space for Quick
+Look, and file names under the stage. The preview does not animate when the selection changes.
+
+## Sizes
+
+A gallery view has no control sizes. It is as large as its root element: give it a height, or
+place it in a flex or grid cell that has one. The strip is 62 pt high and the stage takes the
+rest.
+
+## API
+
+<PropsTable name="GalleryViewProps" />
+
+The remaining props are those of a `div` and go to the root element with `ref`, `className`
+and `style`; `aria-label` and `aria-labelledby` name the root and the strip. Your `onKeyDown`,
+`onMouseDown` and `onDoubleClick` run before the view's own; `preventDefault()` in `onKeyDown`
+cancels the view's handling of that key.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `aria-selected` | thumbnail | `true`, `false` | The item is the selected one. |
+| `data-index` | thumbnail | number | The item's index. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-gallery-view-background` | `var(--mac-color-control-background)` | Background of the gallery and the inspector. |
+
+| Class | Part |
+| --- | --- |
+| `.mac-gallery-view` | Root |
+| `.mac-gallery-view-main` | The gallery: stage above strip |
+| `.mac-gallery-view-stage` | The preview's area, a `figure` |
+| `.mac-gallery-view-strip`, `.mac-gallery-view-list` | The strip (a scroll view) and its scrolling element, the listbox |
+| `.mac-gallery-view-items`, `.mac-gallery-view-item` | The row of thumbnails and one thumbnail's square |
+| `.mac-gallery-view-inspector` | The pane |
+
+## Accessibility
+
+- The root is a `group` and the strip a `listbox` with `aria-orientation="horizontal"`; both
+  take the name you give with `aria-label` or `aria-labelledby`, which is required. Each
+  thumbnail is an `option` named by `getItemLabel`, with its position among all items
+  (`aria-setsize`, `aria-posinset`), since most are not rendered.
+- The stage is a `figure` named after the selected item, and the strip points to it with
+  `aria-controls`. Give a picture in the preview an empty `alt` when the figure's name says
+  what it is, or a description of its own.
+- The strip is the view's one tab stop. It keeps focus and names the selected thumbnail with
+  `aria-activedescendant`. A thumbnail out of view is not in the document and cannot be
+  named, so the selected one is scrolled into view when it changes and when the keyboard
+  focus enters the strip.
+- Keys: Left and Right Arrow select the previous and the next item, Home and End the first
+  and the last, typing selects the next item whose name starts with what was typed. Return
+  calls `onItemAction`, as a double click does. In a right-to-left layout the strip runs
+  leftwards and the arrows change roles.
+- Keyboard focus draws one ring inside the edge of the gallery, in a key window only. The
+  selection looks the same with and without focus, as in Finder, so the ring is the only
+  sign of focus.
+- A thumbnail takes content that is not interactive: it is an `option`, and assistive
+  technology does not expose a button, checkbox, field or link inside one. Put controls in
+  the inspector, or use a [table view](/components/table-view) for rows that need them. As a
+  safeguard only, a press on such an element inside a thumbnail is left to it.
+- Content of the inspector is yours and keeps its own semantics and keys.
+- In forced-colours mode the backdrop is the system highlight colour.
+
+## Visual comparison
+
+The reference is Finder's Downloads window in gallery view. The two appearances were captured
+in windows of different sizes, so each has its own examples. Finder's content is artwork: the
+large preview and the thumbnails are Apple's desktop pictures, here replaced by gradients.
+
+`visual-finder` and `visual-finder-dark` reproduce the whole content area with the Preview
+pane. The preview alone is 42% of that crop, so the comparison is made with the preview, every
+thumbnail and the pane's texts and glyphs masked, at a colour distance of 0.05: it scores the
+background, the strip's position, the backdrop of the selected thumbnail around its
+thumbnail, the divider, the pane's width and the rules of the stand-in pane. `visual-strip`
+and `visual-strip-dark` are a 150 pt band across the gallery's bottom, small enough to be
+compared whole as well as with the thumbnails masked. `visual-strip-dark` is also compared in
+a window that is not key, against Finder behind a Quick Look panel, which has the same
+gallery width and the ninth thumbnail selected: the selected thumbnail's backdrop keeps its
+grey there. Results in Chromium on Linux:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Aqua, whole content, artwork and text masked | 0.00% of pixels differ, mean Δ 0.00 | 0.00%, mean Δ 0.00 |
+| Dark Aqua, whole content, artwork and text masked | 0.00%, mean Δ 0.00 | 0.00%, mean Δ 0.00 |
+| Aqua, strip band, whole crop | 14.90%, mean Δ 10.77 | 15.01%, mean Δ 10.86 |
+| Aqua, strip band, thumbnails masked | 0.00%, mean Δ 0.00 | 0.00%, mean Δ 0.00 |
+| Dark Aqua, strip band, whole crop | 14.74%, mean Δ 9.56 | 14.88%, mean Δ 9.67 |
+| Dark Aqua, strip band, thumbnails masked | 0.00%, mean Δ 0.00 | 0.00%, mean Δ 0.00 |
+| Dark Aqua, strip band, window not key, thumbnails masked | 0.00%, mean Δ 0.00 | 0.00%, mean Δ 0.00 |
+
+The whole-crop figures of the strip band are the stand-in thumbnails and nothing else. The
+whole content area compared without masks differs in 46.11% of its pixels in Aqua (mean
+Δ 30.45) and 49.87% in Dark Aqua (mean Δ 32.59) at 2x, which is the photograph against a
+gradient; that figure is above what a comparison may allow (30%), so it is reported here and
+not kept as a comparison. The crops stop short of the window's rounded corner, and in Dark
+Aqua of the lighter line around the window, which covers the view's last point.
+
+The states no screenshot shows are checked on `visual-states` with real input and pixel
+colours from the spec or computed from the tokens, in both appearances: the backdrop's place,
+size and rounded corner at rest; the backdrop moving to a clicked thumbnail without a focus
+ring (also with the purple accent, where the backdrop stays grey); Right Arrow from the keyboard with the focus ring inside the gallery's edge; a window
+that is not key (same backdrop, no ring); and End scrolling the strip to the last item. The
+strip's scrolling, the keyboard over 5,000 items, the inspector's geometry, right-to-left and
+the numbers under "Many items" come from `visual/output/b7/browser/gallery-view.mjs`, run in
+Chromium when the component was finished; that script is not part of `npm run check`.

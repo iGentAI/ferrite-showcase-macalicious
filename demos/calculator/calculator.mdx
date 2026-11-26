@@ -1,0 +1,229 @@
+---
+title: Calculator
+description: The Calculator of macOS 10.15, a small dark window with no title bar that does real arithmetic by pointer and by keyboard, with Scientific and Programmer layouts.
+order: 10
+---
+
+<Example name="basic" />
+
+Click the keys, or click the window and type. The calculator works: multiplication and
+division bind tighter than addition and subtraction, `=` pressed again repeats the last
+operation, `%` takes a percentage of the first number of a sum (`200 + 10 %` shows 20) and a
+hundredth otherwise, and the clear key clears the entry first (`C`) and everything on the
+second press (`AC`).
+
+## What it shows
+
+- A [Window](/components/window) with no title bar: the
+  [Window Controls](/components/window-controls) float over the content, 8 pt from the leading
+  edge and 5 pt from the top, where the capture has them. The window is drawn dark in both
+  appearances, as Calculator's is, by pinning its colour scheme.
+- A [Calculator Keypad](/components/calculator-keypad) that fills the window: the display, and
+  nineteen keys in three roles. The operator that waits for its second number is armed.
+- The arithmetic as a pure function of its state (`reduce` in `calculator-engine.ts`), with no
+  React in it; the component is that reducer, the key equivalents and the layout.
+
+| Key | Does |
+| --- | --- |
+| `0` to `9`, `.` or `,` | Types the number |
+| `+` `-` `*` `/` | The operators |
+| `=` or Return | The result; again, repeats the last operation |
+| `%` | Percent |
+| Option-minus | Changes the sign |
+| Escape or `C` | Clears the entry; again, clears everything |
+| Delete | Removes the last digit typed |
+
+The keys work while the keyboard focus is anywhere in the window. Keys pressed with Control or
+Command are left to the browser. A result has at most 15 significant digits, a number longer
+than the display is set smaller, and a division by zero shows "Not a number".
+
+## Hosting the window
+
+<Example name="hosted" />
+
+`Calculator` renders the library's `Window` as its root and passes every `Window` prop to it,
+so it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component hands to the window controls and to
+the display, which is this window's drag region, since it has no title bar. These are the props
+a [Managed Window](/components/managed-window)'s `render` form supplies, so the component can
+be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { app } from "./app";
+
+<ManagedWindow
+  id={app.id}
+  title={app.name}
+  resizable={app.resizable}
+  defaultFrame={{ x: 80, y: 60, ...app.defaultSize }}
+  render={(props) => <app.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. `zoomRole` is `"zoom"` by default: Calculator has no full screen. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | A press with the primary button, or a double click, on the display. |
+| `width`, `height` | `number \| string` | The frame; 232 by 321 by default, as captured. |
+| `onKeyDown` | function | Called before the calculator reads the key; `preventDefault()` keeps the key from it. |
+| the rest | `WindowProps` | `state`, `style`, `className`, `ref`, `aria-label`, pointer and focus events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `calculatorApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` and `minSize` (both 232 by 321), `resizable` (`false`) and
+`menus`, the menu titles after the Apple menu.
+
+A window manager disables the zoom button of a window it cannot resize, so the hosted
+calculator's green button is grey. On its own the demo leaves it enabled, as in the
+screenshots, where it does nothing: each layout has one size.
+
+## Edit and View
+
+On a desktop, Calculator fills the Edit and View menus; the keys work wherever the window
+has the keyboard. Copy, Cut, Paste, Undo and Redo act on the number in the display, and Paste takes
+any text that reads as one number (`1,234.5`, `2e3`). View switches between the layouts (Command-1,
+Command-2, Command-3), groups thousands (Shift-Command-T) and rounds results to Decimal Places.
+Decimal Places 15 leaves a number as it is; fewer round it without padding it with zeros, which is
+provisional.
+
+On the served desktop the layout, separators, places, angle unit, the number on the display and
+the memory are kept with the person's desktop values (`calculator.*`), so they survive a reload.
+A sum in progress is not: only the number shown comes back.
+
+## Scientific
+
+Command-2 widens the window to six more columns: parentheses, memory, powers, roots, logarithms,
+factorial, trigonometry in degrees or radians (the display says Rad in radians), and 2nd for the
+inverse faces. Functions of one number are in `calculator-science.ts`, tested against known
+values; a factorial of a number that is not whole uses the gamma function, good to about 14
+digits.
+
+## Programmer
+
+Command-3 shows 64 unsigned bits in a `BigInt` (`calculator-bits.ts`), so no bit is rounded: bases
+8, 10 and 16, the bit field to click, ASCII and Unicode, logic and shifts. Operations run left to
+right and results wrap at 64 bits; the number carries into and out of the other layouts by its
+whole part. The key layout is from memory of the real app and is provisional.
+
+## RPN Mode
+
+Command-R puts every layout in Reverse Polish Notation: the equals key and Return become Enter, a
+row of stack keys (`x↔y`, `R↓`, `R↑`, `drop`) appears under the display and the window grows by that
+row, and the registers above X show beside the window controls. Each two-number operation is written
+to the paper tape. The four registers (`calculator-rpn.ts`), the row and the mark are provisional:
+no capture shows this mode. The mode is kept; like a sum in progress, the stack is not.
+
+## Convert
+
+Each row of the Convert menu opens a sheet that hangs from the window: a category and two units, and
+Convert replaces the number on the display, which Undo brings back. The last five conversions are
+kept under Recent Conversions, which repeats one without a sheet. Factors are in
+`calculator-convert.ts`; the unit lists are from memory of the real app and provisional.
+
+Currency converts at the European Central Bank's daily reference rates, which the desktop's server
+reads and keeps (`GET /api/calculator/rates`, `calculator-rates.ts`). Its sheet says the rates' date
+and source, and when the bank and the server have no rates to give it says so and Convert is dimmed;
+no rate is made up. Update Currency Exchange Rates asks the bank now and says what came of it. When
+the bank does not answer, the rates last read stay in use under their own date. Off the served
+desktop both rows are dimmed and say why. The real app's source and its list of currencies are not
+the bank's; the list here is the 30 the bank publishes.
+
+In the Programmer layout the menu is dimmed too, since its numbers are whole.
+
+## Speech
+
+The browser's voice says the keys (Speech > Speaking Button Pressed) and each finished calculation's
+result (Speech > Speak Result); both choices are kept. Edit > Speech says the selection in the
+display, or its whole number. All of these are dimmed with the reason in a browser with no voice.
+
+## The paper tape on the Ferrite desktop
+
+The descriptor says `windows: true`, so a desktop page gives the component `DesktopWindow`.
+Calculator uses it only on the desktop that the `macalicious-desktop` Ferrite application
+serves (`ferrite-apps/desktop`, whose build sets `VITE_MACALICIOUS_API=1`). There it can open a
+Paper Tape window beside its own and keeps the session's tape on the server at
+`/api/calculator/tape`:
+
+- When the window opens, the tape loads with `GET`, so the calculations of earlier visits
+  show after a reload.
+- Each calculation that `=` finishes (`12 + 3`, `15`; `=` pressed again records the
+  repeated operation too) is shown at once and sent with `POST`, carrying a random
+  `idempotency-key` header of its own. A resend after a failure or a lost reply carries the
+  same key, so the server records it once. An expression longer than the server's 200
+  characters is recorded with its start cut to "…". A calculation the server still did not take is
+  logged and stays on the tape in the secondary label colour; it is not sent again.
+- Clear empties the tape with `DELETE`. A clear is never sent twice: it has no key, and a
+  second one would also clear what another tab added in between. When a clear fails, the tape
+  window says so and loads the tape again from the server, so it shows what the server holds.
+  Either way, lines marked unsaved go after a clear: a lost reply may hide a calculation the
+  server did store, and the server's copy is the one shown.
+- The Paper Tape starts closed. Window > Show Paper Tape (Command-T) shows and hides it, without
+  taking the keyboard from Calculator; a browser may keep Control-T for itself, and the menu row
+  works everywhere. Calculations go on the tape while it is closed. Whether it is open is kept
+  with the person's desktop values (`calculator.tapeOpen`), and closing Calculator's window quits
+  Calculator and takes the tape with it, so the tape is open again at the next launch.
+- File > Save Tape As (Shift-Command-S) writes the lines to a text file on the person's drive,
+  and File > Print Tape (Command-P) gives them to the browser's print dialog. Page Setup is dimmed
+  because that dialog sets the page.
+
+Everywhere else (this page, `npm run desktop:build`, the tests) nothing is fetched and no
+Paper Tape opens. Two tabs of one session share the tape, but a tab shows another's new
+calculations only after it opens Calculator again: the application's live route serves no
+session's own data, so the tape has no live feed.
+
+## Accessibility
+
+- The window is a `region` named "Calculator". It is not a tab stop, but a click anywhere in
+  it gives it the keyboard focus, so the keys above work at once.
+- The window controls are three buttons in a group named "Window controls".
+- The keys are a group named "Keys". Each is a button and a tab stop: "All clear" or "Clear",
+  "Negate", "Percent", "Divide", "Multiply", "Subtract", "Add", "Equals", "Decimal
+  point" and the ten digits. Return and Space on a focused key press that key; every other
+  key keeps its meaning from the table above.
+- The four operators are toggle buttons: `aria-pressed` tells which one waits for its second
+  number.
+- The display is an `output` named "Result", so each new value is announced politely.
+- The window stays dark in Aqua, and the keypad's contrast does not depend on the appearance:
+  white labels at 85% on the three fills.
+
+## Fidelity
+
+`calculator.visual.json` compares the demo with the two Calculator screenshots: the whole
+capture with the window's shadow, the frame alone, and the frame with its text masked. The
+Aqua capture shows `42`, so its comparisons click `4` and `2` first; the Dark Aqua capture
+shows the calculator as it opens. Scores from `npm run visual -- calculator/` in Chromium on
+Linux with the fallback font: the share of pixels that differ and the mean colour difference
+out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 0.98% | 1.27 | 0.81% | 1.53 |
+| `frame-light` | 1.97% | 2.06 | 1.63% | 2.02 |
+| `frame-light-layout` (masked) | 0.95% | 0.51 | 0.59% | 0.45 |
+| `window-dark` | 0.83% | 1.01 | 0.67% | 1.27 |
+| `frame-dark` | 1.66% | 1.53 | 1.34% | 1.51 |
+| `frame-dark-layout` (masked) | 0.96% | 0.51 | 0.59% | 0.46 |
+
+Measured in the screenshots and reproduced: the 232 by 321 pt frame with its 5 pt corners and
+dark-window rim, the two highlight rows along its top edge that a title bar would draw (the
+top line is white at 36% and 28% over the display in its two device rows, against 20% at the
+sides), the window controls 8, 28 and 48 pt from the edge and 5 pt from the top, the
+81 pt display, the four columns and five rows of keys with their 1 pt gaps, the fills of both
+captures, and the size and place of every label and symbol.
+
+What differs, and why:
+
+- **Text.** The display's thin digits and the keys' labels are set in the fallback font off
+  Apple devices. That is the difference between a frame comparison and its masked companion.
+- **Symbols.** The six symbols are original drawings to the measured sizes; their anti-aliased
+  edges differ from the capture's by a fraction of a pixel.
+- **Fills.** The captures carry a faint dither (neighbouring values differ by one level); the
+  demo's fills are flat.
+- **Not in a screenshot (provisional):** a pressed key, the armed operator's outline, the
+  keyboard focus ring, the window when it is not key, and a number too long for the display.
+  Two more comparisons check the armed outline and the keypad in a window that is not key
+  against the spec's inferred values.
+- **Not built:** nothing further here is in the reference set. The Scientific, Programmer and RPN
+  layouts have provisional metrics. The Paper Tape window exists on the Ferrite
+  desktop only and is not compared: no screenshot shows it, and its insets are provisional.

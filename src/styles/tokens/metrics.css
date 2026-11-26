@@ -1,0 +1,77 @@
+/*
+ * Spacing, radii and line widths. 1 AppKit point = 1 CSS px.
+ *
+ * Distances are between alignment rectangles, which are the CSS boxes of controls (see
+ * controls.css). The measured spec quotes some of them between visible edges; a bezel's
+ * visible edge is 0.5 pt inside its box, so those figures are 0.5 pt larger per edge.
+ */
+:root {
+  /*
+   * Hairline: one device pixel on a 2x display, as AppKit draws control borders. Browsers round
+   * a 0.5px border up to one device pixel at 1x, which is also what AppKit does. [measured]
+   */
+  --mac-hairline: 0.5px;
+
+  /* Layout spacing scale. A convenience ramp; only the steps tagged measured were read from
+     a screenshot. Prefer the named distances below where one fits. */
+  --mac-space-1: 2px; /*  [provisional] */
+  --mac-space-2: 4px; /*  [provisional] */
+  --mac-space-3: 6px; /*  [provisional] related controls, tight */
+  --mac-space-4: 8px; /*  [measured] form label to control */
+  --mac-space-5: 12px; /* [measured] gap between two push buttons (Go-To-Folder) */
+  --mac-space-6: 16px; /* [provisional] */
+  --mac-space-7: 20px; /* [measured] window content margin (Go-To-Folder) */
+  --mac-space-8: 24px; /* [provisional] */
+  --mac-space-9: 32px; /* [provisional] */
+
+  /* Named layout distances [measured] */
+  /* Between two regular push buttons: 13 pt between visible edges. Alerts use 14 (15 visible),
+     small controls 8 (9 visible). */
+  --mac-space-control-gap: 12px;
+  --mac-space-window-margin: 20px; /* window edge to a control: 20.5 pt to its visible edge */
+  --mac-space-label-gap: 8px; /* form label to its control: 7.5 to 9.5 by the control's edge */
+  --mac-space-form-row: 30px; /* row pitch of a label and control form: 20 pt control + 10 */
+  --mac-space-checkbox-row: 22px; /* pitch of stacked checkboxes or radio buttons */
+  --mac-space-section: 20px; /* above and below a separator between form sections */
+
+  /*
+   * Corner radii. [measured] ones without a fit in their comment are readings of a corner's
+   * pixel grid, good to about 1 pt.
+   *
+   * Control bezels (push, pop-up and toolbar buttons, segmented ends): AppKit's nominal radius
+   * is 4 pt, and the spec's fit to the corner pixels gives 3.75 pt on the outer edge of the
+   * border, with 3.5 to 3.75 within the measurement and 4 outside it. As a CSS border-radius
+   * on the bezel's outer edge 3.5px scores best: over the eight push-button bezel crops at 2x
+   * with titles masked and a per-pixel threshold of 0.05, the summed mismatch is 0.28 points
+   * at 3.5px, 0.39 at 3.625px, 0.98 at 3.75px and 1.61 at 4px. The token holds the CSS value
+   * that was fitted.
+   */
+  --mac-radius-control-regular: 3.5px;
+  /* [measured] the small bezel has the same corner as the regular one (Apple-ID,
+     Date-and-Time); 3.5px scores best on the small crops too (dark: 0.06% against 0.33% at
+     3.75px) */
+  --mac-radius-control-small: 3.5px;
+  /* [provisional] no screenshot shows a mini bezel, so no corner could be measured */
+  --mac-radius-control-mini: 2.5px;
+  --mac-radius-checkbox: 3px; /* [measured] */
+  --mac-radius-text-field: 0px; /* [measured] Catalina text fields are square */
+  --mac-radius-window: 5px; /* [measured] all four corners */
+  --mac-radius-menu: 5px; /* [measured] 5 to 5.5; top corners are square under the menu bar */
+  --mac-radius-popover: 5px; /* [measured] */
+  /* [measured, computed] NSBox and the tab view's pane, outer edge of the border. A
+     least-squares fit to all four corners of the box in System-Preferences-Sound gives 3.875
+     in Aqua and 4 in Dark Aqua (reference/spec/tokens.md, "Radii re-fitted"). The token held
+     2.5px until 2026-10-02, from a corner grid that took the last blended pixel of the arc
+     for the straight edge. */
+  --mac-radius-group: 4px;
+  --mac-radius-notification: 6px; /* [measured] */
+  --mac-radius-sheet: 0px; /* [measured] sheets are square on all four corners */
+
+  /* Keyboard focus ring geometry [measured] Go-To-Folder: 2.5 pt outside the control's edge
+     plus the 0.5 pt border it overlaps; the outer radius is the control radius + 2.5. On the
+     measured field the ring also tints the next 0.5 pt inside the border (a 3.5 pt band);
+     an outline drawn that far in would cover a control's content, so the token stops at the
+     border. */
+  --mac-focus-ring-width: 3px;
+  --mac-focus-ring-offset: 0px;
+}

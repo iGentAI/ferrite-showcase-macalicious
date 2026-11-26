@@ -1,0 +1,56 @@
+/*
+ * Desktop: the picture and the grid of icons.
+ *
+ * .mac-desktop           the desktop; give it a size. Its children are the grid's cells
+ * .mac-desktop-picture   the picture layer, behind the cells
+ *
+ * The grid is a wrapping column that starts at the trailing edge: items run down the first
+ * column and continue in the next one towards the leading edge, as Finder fills a desktop
+ * (and the other way round in a right-to-left page). The first tile is 7.5 pt from the top
+ * and the trailing edge of the usable area: its centre is 39.5 pt below the menu bar and
+ * 65.5 pt from the screen edge, as the stacks and labels of the Desktop-Stacks captures place it.
+ *
+ * Set by a consumer
+ *   --mac-desktop-inset-top      height of a menu bar above the icons (22px in Catalina)
+ *   --mac-desktop-inset-bottom   height of a Dock below them
+ *   --mac-desktop-picture        the background, when no picture element is given
+ */
+.mac-desktop {
+  --mac-desktop-inset-top: 0px;
+  --mac-desktop-inset-bottom: 0px;
+
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-flow: column wrap-reverse;
+  align-content: flex-start;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: calc(var(--mac-desktop-inset-top) + 7.5px) 7.5px var(--mac-desktop-inset-bottom);
+  background: var(--mac-desktop-picture) var(--mac-desktop-fill);
+}
+
+.mac-desktop-picture {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* An image or a video given as the picture covers the desktop, as "Fill Screen" does. */
+.mac-desktop-picture > * {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (forced-colors: active) {
+  .mac-desktop {
+    background: Canvas;
+  }
+
+  .mac-desktop-picture {
+    display: none;
+  }
+}

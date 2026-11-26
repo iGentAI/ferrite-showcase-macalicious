@@ -1,0 +1,271 @@
+/*
+ * Segmented control (NSSegmentedControl), rounded and separated styles.
+ *
+ * Rounded: the group's ::before is one push-button bezel. The segments lie inside its hairline,
+ * 1 pt apart; each gap holds a divider, the ::after of the segment that follows it. A selected
+ * or pressed segment fills its ::before, a piece of accent bezel over the hairline above and
+ * below it and over the dividers beside it. Separated: no group bezel; every segment's ::before
+ * is a whole bezel, so neighbours are 1 pt apart.
+ *
+ * Group    [data-variant] [data-size] [data-distribution="fit"] [data-disabled]
+ * Segment  [data-pressed] selected, :active pressed, :focus-visible, [data-disabled];
+ *          [data-force~="pressed" | "focus"] pins a transient state for docs and tests.
+ * In a window that is not key a selected segment is grey, a pressed one darkens and there is
+ * no focus ring.
+ */
+.mac-segmented-control {
+  --_radius: var(--mac-radius-control-regular);
+  --_padding: 10px;
+  --_edge: calc(var(--mac-bezel-inset) + var(--mac-bezel-border-width));
+  /* What a segment's ::before is made of. Rounded: nothing until a state fills it in. */
+  --_fill: none;
+  --_under: none;
+  --_border: transparent;
+  --_highlight: 0 0 transparent;
+  --_drop: 0 0 transparent;
+  --_accent-border: var(--mac-segmented-control-selected-border);
+  --_pressed: var(--mac-segmented-control-fill-pressed);
+  --_ring-offset: var(--mac-focus-ring-offset);
+
+  position: relative;
+  isolation: isolate;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 1px;
+  box-sizing: border-box;
+  height: var(--mac-control-height-regular);
+  padding: var(--_edge);
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-segmented-control:where([data-distribution="fit"]) {
+  grid-auto-columns: auto;
+}
+
+/* Sizes. The title padding is documented for regular only; small and mini are scaled. */
+.mac-segmented-control:where([data-size="small"]) {
+  --_radius: var(--mac-radius-control-small);
+  --_padding: 8px;
+  height: var(--mac-control-height-small);
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+/* The mini bezel on the Print sheet has the regular corner (Light-Print @ 278,868,10,10). */
+.mac-segmented-control:where([data-size="mini"]) {
+  --_padding: 6px;
+  height: var(--mac-control-height-mini);
+  font: var(--mac-font-control-mini);
+  letter-spacing: var(--mac-tracking-mini);
+}
+
+/* Stacking, back to front: group bezel, dividers, segment bezels */
+.mac-segmented-control::before,
+.mac-segmented-control-segment::before,
+.mac-segmented-control-segment:where(:not(:first-child))::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.mac-segmented-control::before {
+  z-index: -3;
+  inset: var(--mac-bezel-inset);
+  border: var(--mac-bezel-border-width) solid;
+  border-color: var(--mac-bezel-border-top) var(--mac-bezel-border-side)
+    var(--mac-bezel-border-bottom);
+  border-radius: var(--_radius);
+  background: var(--mac-bezel-fill) padding-box;
+  box-shadow: var(--mac-bezel-highlight), var(--mac-bezel-shadow);
+}
+
+.mac-segmented-control-segment {
+  position: relative;
+  /* A grid, not a flexbox: the content keeps its size and stays centred in a segment given a
+     width narrower than content plus padding (a 24 pt icon segment). */
+  display: grid;
+  grid-auto-flow: column;
+  place-content: center;
+  place-items: center;
+  gap: var(--mac-space-2);
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 0;
+  padding: 0 var(--_padding);
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  white-space: nowrap;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+/* Divider, in the gap before the segment */
+.mac-segmented-control-segment::after {
+  z-index: -2;
+  inset-block: 0;
+  inset-inline-start: -1px;
+  width: 1px;
+  background: var(--mac-segmented-control-divider);
+}
+
+/* It stays between two selected segments, drawn over the accent */
+.mac-segmented-control-segment:where([data-pressed])
++ .mac-segmented-control-segment:where([data-pressed])::after {
+  z-index: 0;
+}
+
+/* Bezel piece of a segment */
+.mac-segmented-control-segment::before {
+  inset: calc(-1 * var(--mac-bezel-border-width)) -1px;
+  border: solid;
+  border-width: var(--mac-bezel-border-width) 0;
+  border-color: var(--_border);
+  border-radius: inherit;
+  background:
+    var(--_fill) padding-box,
+    var(--_under) border-box;
+  box-shadow: var(--_highlight), var(--_drop);
+}
+
+/* The end segments follow the bezel's corners, so that their focus ring does too */
+.mac-segmented-control-segment:where(:first-child) {
+  border-start-start-radius: calc(var(--_radius) - var(--mac-bezel-border-width));
+  border-end-start-radius: calc(var(--_radius) - var(--mac-bezel-border-width));
+}
+
+.mac-segmented-control-segment:where(:last-child) {
+  border-start-end-radius: calc(var(--_radius) - var(--mac-bezel-border-width));
+  border-end-end-radius: calc(var(--_radius) - var(--mac-bezel-border-width));
+}
+
+.mac-segmented-control-segment:where(:first-child)::before {
+  inset-inline-start: calc(-1 * var(--mac-bezel-border-width));
+  border-inline-start-width: var(--mac-bezel-border-width);
+  border-start-start-radius: var(--_radius);
+  border-end-start-radius: var(--_radius);
+}
+
+.mac-segmented-control-segment:where(:last-child)::before {
+  inset-inline-end: calc(-1 * var(--mac-bezel-border-width));
+  border-inline-end-width: var(--mac-bezel-border-width);
+  border-start-end-radius: var(--_radius);
+  border-end-end-radius: var(--_radius);
+}
+
+/* Separated: every segment carries the standard bezel; no group bezel, no dividers */
+.mac-segmented-control:where([data-variant="separated"]) {
+  --_fill: var(--mac-bezel-fill);
+  --_border: var(--mac-bezel-border-top) var(--mac-bezel-border-side) var(--mac-bezel-border-bottom);
+  --_highlight: var(--mac-bezel-highlight);
+  --_drop: var(--mac-bezel-shadow);
+  --_accent-border: var(--mac-bezel-accent-border-top) var(--mac-bezel-accent-border-side)
+    var(--mac-bezel-accent-border-bottom);
+  --_pressed: var(--mac-bezel-fill-pressed);
+  --_ring-offset: calc(var(--mac-focus-ring-offset) - var(--_edge));
+  gap: 0;
+  padding: 0;
+}
+
+.mac-segmented-control:where([data-variant="separated"])::before,
+:where(.mac-segmented-control[data-variant="separated"]) > .mac-segmented-control-segment::after {
+  content: none;
+}
+
+:where(.mac-segmented-control[data-variant="separated"]) > .mac-segmented-control-segment {
+  border-radius: calc(var(--_radius) + var(--mac-bezel-inset));
+}
+
+:where(.mac-segmented-control[data-variant="separated"]) > .mac-segmented-control-segment::before {
+  inset: var(--mac-bezel-inset);
+  border-width: var(--mac-bezel-border-width);
+  border-radius: var(--_radius);
+}
+
+/* Selected, and any enabled segment while pressed: accent bezel. Only in the key window. */
+.mac-segmented-control-segment:where([data-pressed], :active, [data-force~="pressed"]):where(
+  :not([data-disabled])
+):where(:not(:where([data-window-state="main"], [data-window-state="inactive"]) *)) {
+  --_fill: var(--mac-bezel-accent-fill);
+  --_under: var(--mac-bezel-accent-under);
+  --_border: var(--_accent-border);
+  --_highlight: var(--mac-bezel-accent-highlight);
+  color: var(--mac-color-control-text-on-accent);
+}
+
+/* Selected while pressed: deeper accent */
+.mac-segmented-control-segment:where([data-pressed]):where(:active, [data-force~="pressed"]):where(
+  :not([data-disabled])
+):where(:not(:where([data-window-state="main"], [data-window-state="inactive"]) *)) {
+  --_fill: var(--mac-bezel-accent-fill-pressed);
+}
+
+/* Selected but disabled, or in a window that is not key: grey in place of the accent */
+.mac-segmented-control-segment:where([data-pressed]):where(
+  [data-disabled],
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  --_fill: var(--mac-segmented-control-selected-fill-inactive);
+}
+
+/* Pressed in a window that is not key: no accent, the standard bezel darkens instead */
+.mac-segmented-control-segment:where(:active, [data-force~="pressed"]):where(
+  :not([data-disabled])
+):where(:where([data-window-state="main"], [data-window-state="inactive"]) *) {
+  --_fill: var(--_pressed);
+}
+
+/* Disabled: a segment, or the whole control */
+.mac-segmented-control-segment:where([data-disabled]) {
+  color: var(--mac-color-control-text-disabled);
+}
+
+.mac-segmented-control:where([data-disabled])::before,
+.mac-segmented-control-segment:where([data-disabled])::before {
+  opacity: var(--mac-bezel-opacity-disabled);
+}
+
+/* Keyboard focus ring around the focused segment, only in the key window: from the bezel's
+   hairline to 2.5 pt beyond its edge */
+.mac-segmented-control-segment:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  z-index: 1;
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--_ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-segmented-control::before,
+  .mac-segmented-control-segment::before {
+    border-color: ButtonText;
+  }
+
+  .mac-segmented-control-segment::after {
+    background: ButtonText;
+  }
+
+  .mac-segmented-control-segment:where([data-pressed]) {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .mac-segmented-control-segment:where([data-disabled]) {
+    color: GrayText;
+  }
+}

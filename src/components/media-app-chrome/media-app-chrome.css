@@ -1,0 +1,330 @@
+/*
+ * Media app chrome: the player layout of Music and Podcasts. media-app-chrome.mdx lists the
+ * parts, states and hooks.
+ *
+ * The private variables are declared on the bar, not on the root: custom properties inherit,
+ * and the sidebar and the pane hold other components, whose own private variables a
+ * declaration on the root would overwrite (a Sidebar row lost its inset to one).
+ */
+.mac-media-app-chrome {
+  display: grid;
+  flex: 1 1 auto;
+  grid-template: 55px minmax(0, 1fr) / var(--mac-media-app-chrome-sidebar-width) minmax(0, 1fr);
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  cursor: default;
+}
+
+.mac-media-app-chrome-sidebar {
+  display: flex;
+  grid-row: 1 / -1;
+  grid-column: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.mac-media-app-chrome-sidebar > :where(:last-child) {
+  flex: 1 1 auto;
+}
+
+.mac-media-app-chrome-header {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  padding: 0 10px 7px;
+  background: var(--mac-material-sidebar);
+  -webkit-backdrop-filter: var(--mac-material-filter);
+  backdrop-filter: var(--mac-material-filter);
+}
+
+.mac-media-app-chrome-header:where([data-material="opaque"]) {
+  background: var(--mac-material-sidebar-opaque);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.mac-media-app-chrome-header:where([data-window-state="inactive"] *) {
+  background: var(--mac-media-app-chrome-bar-inactive);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.mac-media-app-chrome-window-controls {
+  display: flex;
+  align-items: center;
+  height: 54px;
+  margin-block-end: 9.5px;
+}
+
+/* The separator is a background, so the glyphs centre on the full 55 pt. Podcasts' lies half
+   a point higher. */
+.mac-media-app-chrome-bar {
+  --_bar: linear-gradient(
+    to bottom,
+    var(--mac-media-app-chrome-bar-top),
+    var(--mac-media-app-chrome-bar-middle) 50%,
+    var(--mac-media-app-chrome-bar-bottom)
+  );
+  --_line: var(--mac-media-app-chrome-bar-separator);
+  --_edge: transparent;
+  --_drop: 0px;
+  --_slider: 66px;
+  --_output: var(--mac-media-app-chrome-glyph-output);
+  --_pane: var(--mac-media-app-chrome-pane);
+  --_glyph: var(--mac-media-app-chrome-glyph);
+  --_off: var(--mac-media-app-chrome-glyph-disabled);
+  --_quiet: var(--mac-media-app-chrome-glyph-secondary);
+  --_speaker: var(--mac-media-app-chrome-speaker);
+  --_volume: var(--mac-media-app-chrome-volume-level);
+  --_start: var(--mac-media-app-chrome-display-start, 27.73%);
+  --_bias: 4.4px;
+  --_end: 20px;
+
+  display: grid;
+  grid-row: 1;
+  grid-column: 2;
+  grid-template-columns:
+    minmax(min-content, var(--_start)) minmax(0, 1fr)
+    minmax(min-content, calc(60% - var(--_start)));
+  align-items: center;
+  box-sizing: border-box;
+  min-width: 0;
+  border-inline-start: 1px solid var(--mac-media-app-chrome-divider);
+  background:
+    linear-gradient(var(--_line), var(--_line)) left 0 bottom var(--_drop) / 100%
+    var(--mac-hairline) no-repeat,
+    linear-gradient(var(--_edge), var(--_edge)) left 0 bottom
+    calc(var(--_drop) + var(--mac-hairline)) / 100% var(--mac-hairline) no-repeat,
+    var(--_bar) top / 100% calc(100% - var(--mac-hairline)) no-repeat var(--_pane);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+:where(.mac-media-app-chrome[data-variant="podcasts"]) .mac-media-app-chrome-bar {
+  --_bar: linear-gradient(
+    to bottom,
+    var(--mac-media-app-chrome-podcasts-bar),
+    var(--mac-media-app-chrome-podcasts-bar)
+  );
+  --_line: var(--mac-media-app-chrome-podcasts-separator);
+  --_edge: var(--mac-media-app-chrome-podcasts-separator-edge);
+  --_drop: var(--mac-hairline);
+  --_slider: 65px;
+  --_output: var(--mac-media-app-chrome-podcasts-glyph);
+  --_pane: var(--mac-media-app-chrome-podcasts-bar);
+  --_glyph: var(--mac-media-app-chrome-podcasts-glyph);
+  --_off: var(--mac-media-app-chrome-podcasts-glyph-disabled);
+  --_quiet: var(--mac-media-app-chrome-podcasts-glyph);
+  --_speaker: var(--mac-media-app-chrome-podcasts-speaker);
+  --_volume: var(--mac-media-app-chrome-podcasts-volume-level);
+  --_start: var(--mac-media-app-chrome-display-start, 27.57%);
+  --_bias: 8.1px;
+  --_end: 19px;
+}
+
+.mac-media-app-chrome-bar:where([data-window-state="inactive"] *) {
+  --_glyph: var(--_off);
+  --_quiet: var(--_off);
+  --_output: var(--_off);
+  --_speaker: var(--_off);
+
+  background:
+    linear-gradient(var(--_line), var(--_line)) left 0 bottom var(--_drop) / 100%
+    var(--mac-hairline) no-repeat,
+    var(--mac-media-app-chrome-bar-inactive);
+}
+
+.mac-media-app-chrome-transport {
+  --_quiet: var(--_glyph);
+
+  display: flex;
+  grid-column: 1;
+  gap: 12px;
+  align-items: center;
+  justify-self: center;
+}
+
+.mac-media-app-chrome-display {
+  grid-column: 2;
+  align-self: start;
+  min-width: 0;
+  padding-block-start: 4.5px;
+}
+
+/* The volume group floats between the display and the trailing buttons, a little before the
+   middle; its padding is the least space it keeps on either side. */
+.mac-media-app-chrome-controls {
+  display: flex;
+  grid-column: 3;
+  align-items: center;
+  min-width: 0;
+  padding-inline-end: var(--_end);
+}
+
+.mac-media-app-chrome-controls > .mac-media-app-chrome-button + .mac-media-app-chrome-button {
+  margin-inline-start: 15px;
+}
+
+.mac-media-app-chrome-button {
+  position: relative;
+  display: block;
+  flex: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: none;
+  color: var(--_quiet);
+  font: var(--mac-font-control-regular);
+  cursor: default;
+}
+
+.mac-media-app-chrome-button::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+}
+
+.mac-media-app-chrome-button:where([aria-pressed="true"]) {
+  color: var(--mac-color-accent);
+}
+
+.mac-media-app-chrome-button:where([aria-pressed="true"]):where([data-window-state="inactive"] *) {
+  color: var(--_off);
+}
+
+.mac-media-app-chrome-button:where(:active, [data-force~="pressed"]) {
+  filter: brightness(var(--mac-media-app-chrome-pressed));
+}
+
+.mac-media-app-chrome-button:where([data-disabled]) {
+  color: var(--_off);
+  filter: none;
+}
+
+.mac-media-app-chrome-glyph {
+  display: block;
+  font: inherit;
+}
+
+.mac-media-app-chrome-button:where(:focus-visible, [data-force~="focus"]),
+.mac-media-app-chrome-slider-knob:where(:has(:focus-visible), [data-force~="focus"]) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: 2px;
+}
+
+.mac-media-app-chrome-button:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+),
+.mac-media-app-chrome-slider-knob:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  outline: none;
+}
+
+.mac-media-app-chrome-volume {
+  --_quiet: var(--_output);
+
+  display: flex;
+  flex: none;
+  gap: 5px;
+  align-items: center;
+  margin-inline: auto;
+  padding: 1px calc(10px + var(--_bias)) 0 10px;
+  color: var(--_speaker);
+}
+
+.mac-media-app-chrome-volume > :where(.mac-media-app-chrome-glyph) {
+  margin-block-start: -1px;
+  margin-inline-end: 1px;
+}
+
+.mac-media-app-chrome-slider {
+  flex: none;
+  width: var(--_slider);
+}
+
+/* Padded by half a knob: the knob stops flush with the track's ends. */
+.mac-media-app-chrome-slider-control {
+  display: flex;
+  align-items: center;
+  height: 12px;
+  padding-inline: 5.5px;
+  touch-action: none;
+}
+
+.mac-media-app-chrome-slider-track {
+  flex: 1 1 auto;
+  height: 3px;
+  border-radius: 1.5px;
+}
+
+.mac-media-app-chrome-slider-track::before {
+  content: "";
+  position: absolute;
+  inset: 0 -5.5px;
+  border-radius: inherit;
+  background: var(--mac-media-app-chrome-volume-track);
+}
+
+.mac-media-app-chrome-slider-level {
+  box-sizing: content-box;
+  margin-inline-start: -5.5px;
+  padding-inline-start: 5.5px;
+  border-radius: inherit;
+  background: var(--_volume);
+}
+
+.mac-media-app-chrome-slider-knob {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--mac-media-app-chrome-volume-knob);
+  box-shadow:
+    0 0 0 var(--mac-hairline) var(--mac-media-app-chrome-volume-knob-rim),
+    0 var(--mac-hairline) 1px var(--mac-media-app-chrome-volume-knob-shadow);
+}
+
+.mac-media-app-chrome-slider:where([data-disabled]) {
+  opacity: 0.5;
+}
+
+.mac-media-app-chrome-pane {
+  grid-row: 2;
+  grid-column: 2;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  border-inline-start: 1px solid var(--mac-media-app-chrome-divider);
+  background: var(--mac-media-app-chrome-pane);
+}
+
+:where(.mac-media-app-chrome[data-variant="podcasts"]) .mac-media-app-chrome-pane {
+  background: var(--mac-media-app-chrome-podcasts-bar);
+}
+
+@media (forced-colors: active) {
+  .mac-media-app-chrome-bar {
+    border-block-end: 1px solid CanvasText;
+    background: Canvas;
+  }
+
+  .mac-media-app-chrome-button,
+  .mac-media-app-chrome-volume {
+    color: ButtonText;
+  }
+
+  .mac-media-app-chrome-button:where([data-disabled]) {
+    color: GrayText;
+  }
+
+  .mac-media-app-chrome-slider-level,
+  .mac-media-app-chrome-slider-knob {
+    background: ButtonText;
+  }
+}

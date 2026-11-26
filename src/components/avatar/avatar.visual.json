@@ -1,0 +1,190 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "find-my-light",
+      "description": "The disc of \"Me\" in Find My's People list, Aqua: 36 x 36 pt of the sidebar with the disc, its grey gradient and the white silhouette. Nothing is masked: the silhouette is the library's own drawing, placed and sized where the capture has the head and the shoulders.",
+      "example": "visual-find-my",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0548,
+        "2x": 0.033
+      },
+      "deltaBudget": {
+        "1x": 4.04,
+        "2x": 2.7
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Find-My.png",
+        "crop": {
+          "x": 128,
+          "y": 240,
+          "width": 72,
+          "height": 72
+        }
+      }
+    },
+    {
+      "name": "find-my-dark",
+      "description": "The disc of \"Me\" in Find My's People list, Dark Aqua, with the black hairline just outside the disc. Nothing is masked.",
+      "example": "visual-find-my",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.0556,
+        "2x": 0.0452
+      },
+      "deltaBudget": {
+        "1x": 4.86,
+        "2x": 3.71
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Find-My.png",
+        "crop": {
+          "x": 84,
+          "y": 216,
+          "width": 72,
+          "height": 72
+        }
+      }
+    },
+    {
+      "name": "sizes-light",
+      "description": "What the reference comparison cannot pin down, Aqua: the silhouette is white where the capture's is, the disc shows between its head and shoulders and at its rim, and a 48 pt avatar scales all of it.",
+      "example": "visual-sizes",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 108,
+          "height": 68
+        },
+        "pixels": [
+          {
+            "x": 24.5,
+            "y": 21.4,
+            "color": "#ffffff",
+            "note": "the middle of the head, 11.4 pt under the disc's top (spec: Geometry, silhouette, measured)"
+          },
+          {
+            "x": 24.5,
+            "y": 34,
+            "color": "#ffffff",
+            "note": "the middle of the shoulders, 24 pt under the disc's top"
+          },
+          {
+            "x": 24.5,
+            "y": 27.6,
+            "color": "#9297a1",
+            "tolerance": 3,
+            "note": "the disc between head and shoulders: the gradient at three fifths of its height"
+          },
+          {
+            "x": 11.5,
+            "y": 24.5,
+            "color": "#969aa5",
+            "tolerance": 3,
+            "note": "the disc at its leading rim, the middle of the gradient (spec: Colours, disc, measured)"
+          },
+          {
+            "x": 24.5,
+            "y": 11.5,
+            "color": "#a3a8b4",
+            "tolerance": 3,
+            "note": "the disc 1.5 pt under its top: the gradient's first colour, #a5aab6, less a twentieth of the way (spec: Colours, disc, top, measured)"
+          },
+          {
+            "x": 24.5,
+            "y": 37.5,
+            "color": "#888c95",
+            "tolerance": 3,
+            "note": "the disc 1.5 pt above its bottom, under the shoulders: nearly the gradient's last colour, #868a93 (spec: disc, bottom, measured)"
+          },
+          {
+            "x": 5,
+            "y": 5,
+            "color": "#f6f6f4",
+            "note": "the sidebar outside the disc"
+          },
+          {
+            "x": 74,
+            "y": 28.9,
+            "color": "#ffffff",
+            "note": "48 pt: the middle of the head, scaled"
+          },
+          {
+            "x": 74,
+            "y": 49.7,
+            "color": "#ffffff",
+            "note": "48 pt: the middle of the shoulders, scaled"
+          },
+          {
+            "x": 52.5,
+            "y": 34,
+            "color": "#969aa5",
+            "tolerance": 3,
+            "note": "48 pt: the disc at its leading rim"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sizes-dark",
+      "description": "The same in Dark Aqua: the disc and the silhouette do not change with the appearance.",
+      "example": "visual-sizes",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 108,
+          "height": 68
+        },
+        "pixels": [
+          {
+            "x": 24.5,
+            "y": 21.4,
+            "color": "#ffffff",
+            "note": "the middle of the head"
+          },
+          {
+            "x": 24.5,
+            "y": 34,
+            "color": "#ffffff",
+            "note": "the middle of the shoulders"
+          },
+          {
+            "x": 24.5,
+            "y": 27.6,
+            "color": "#9297a1",
+            "tolerance": 3,
+            "note": "the disc between head and shoulders"
+          },
+          {
+            "x": 11.5,
+            "y": 24.5,
+            "color": "#969aa5",
+            "tolerance": 3,
+            "note": "the disc at its leading rim: the same grey as in Aqua (spec: Colours, disc, measured)"
+          },
+          {
+            "x": 24.5,
+            "y": 11.5,
+            "color": "#a3a8b4",
+            "tolerance": 3,
+            "note": "the disc near its top: the same gradient as in Aqua"
+          },
+          {
+            "x": 24.5,
+            "y": 37.5,
+            "color": "#888c95",
+            "tolerance": 3,
+            "note": "the disc near its bottom"
+          },
+          {
+            "x": 5,
+            "y": 5,
+            "color": "#202124",
+            "note": "the sidebar outside the disc"
+          }
+        ]
+      }
+    }
+  ]
+}

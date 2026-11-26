@@ -1,0 +1,42 @@
+/*
+ * Now Playing display (reference/spec/components/now-playing-lcd.md). Evidence shorthand:
+ * LM, DM = the Light and Dark Music captures, LP, DP = the Podcasts ones. Text uses the shared
+ * label colours, which are the measured alphas (white at 0.85 and 0.55 over #404040, DP).
+ */
+:root {
+  /* [measured] Music body: LM @ 1300,130; DM col x=1300 y=86 and y=173 */
+  --mac-now-playing-lcd-body-top: light-dark(#ffffff, #494b4c);
+  --mac-now-playing-lcd-body-bottom: light-dark(#ffffff, #404143);
+  /* [measured] Music border, top / sides / bottom: LM and DM col x=1300 @ y=85, 174; row y=130 */
+  --mac-now-playing-lcd-border-top: light-dark(#dfdfdf, #222325);
+  --mac-now-playing-lcd-border-side: light-dark(#dddddd, #1d1f20);
+  --mac-now-playing-lcd-border-bottom: light-dark(#d9d9d9, #1a1b1d);
+  /* [measured] Podcasts body and border: LP @ 1500,95 and DP col x=1500; one colour all round */
+  --mac-now-playing-lcd-podcasts-body: light-dark(#ffffff, #404040);
+  --mac-now-playing-lcd-podcasts-border: light-dark(#cfcfcf, #181818);
+  /* [provisional] divider after the Podcasts well: #d1d1d1 is measured (LP @ 1205,130); the
+     dark capture shows artwork there and no divider */
+  --mac-now-playing-lcd-podcasts-divider: light-dark(#d1d1d1, transparent);
+  /* [measured] artwork well: LM @ 1150,95; DM @ 1150,95 */
+  --mac-now-playing-lcd-well: light-dark(#e9e9e9, #6e6e6e);
+  /* [measured] placeholder glyph, Music: LM and DM col x=1150 y=111..120 */
+  --mac-now-playing-lcd-placeholder: light-dark(#c6c6c6, #929296);
+  /* [provisional] placeholder glyph, Podcasts: #9c9c9c is measured (LP col x=1160); no dark
+     capture shows the idle Podcasts display, so dark takes the Music value */
+  --mac-now-playing-lcd-podcasts-placeholder: light-dark(#9c9c9c, #929296);
+  /* [measured] idle mark: LM col x=1550 y=116..147; DM col x=1550 */
+  --mac-now-playing-lcd-idle: light-dark(#999999, #8f9091);
+  /* [provisional] progress line: dark is measured and computed (#b3b3b3 and #575757 over
+     #404040, DP row y=171); no light capture shows a loaded item, the spec infers #7f7f7f
+     and #d9d9d9 */
+  --mac-now-playing-lcd-elapsed: light-dark(#7f7f7f, rgb(255 255 255 / 0.6));
+  --mac-now-playing-lcd-remaining: light-dark(#d9d9d9, rgb(255 255 255 / 0.12));
+}
+
+:root,
+[data-appearance] {
+  /* [provisional] Podcasts corner: 2px in Aqua is the fitted 1.875 rounded; the dark capture
+     fits 2.75 at its one measurable corner and is an open observation in the spec, 2.5px
+     stands in for it */
+  --mac-now-playing-lcd-podcasts-radius: calc(2px + 0.5px * var(--mac-appearance-dark));
+}

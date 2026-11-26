@@ -1,0 +1,163 @@
+---
+title: Drawer
+description: A panel that slides out from under one edge of its window and back. Not in the reference screenshots; every visual value is inferred.
+---
+
+<Example name="basic" both />
+
+A drawer (`NSDrawer`) holds options or information related to one window. It is hidden until a
+button or a menu command reveals it; then it slides out from one side of the window. It cannot
+be moved or detached.
+
+**No visual reference.** `NSDrawer` was deprecated in macOS 10.13 and no application in the
+294 reference screenshots uses one. The behaviour follows Apple's documentation; every
+measurement and colour on this page is inferred from `NSDrawer`'s defaults and from the
+measured window, and is provisional.
+
+The open and closed state is [Base UI's Collapsible](https://base-ui.com/react/components/collapsible):
+a button with `aria-expanded` that shows and hides a region of the same window. Base UI also
+has a component named Drawer; it is not used here, because it is a dialog that slides over the
+page from an edge of the screen, takes the focus and is rendered in a portal, whereas an
+`NSDrawer` is a part of its window: it does not take the focus, the window stays in use while
+it is open, and it lies under the window's edge.
+
+## Usage
+
+```tsx
+import { Drawer, DrawerPanel, DrawerTrigger } from "macalicious/drawer";
+import { PushButton } from "macalicious/push-button";
+import { TitleBar } from "macalicious/title-bar";
+import { Window, WindowBody } from "macalicious/window";
+import "macalicious/styles.css";
+
+<Drawer>
+  <Window width={260} height={180}>
+    <TitleBar title="Notes" />
+    <WindowBody>
+      <DrawerTrigger render={<PushButton />}>Details</DrawerTrigger>
+    </WindowBody>
+  </Window>
+  <DrawerPanel aria-label="Details" contentSize={150}>
+    …
+  </DrawerPanel>
+</Drawer>
+```
+
+Or copy the source into your project: `npx macalicious add drawer`.
+
+`Drawer` is the element that holds the window and its drawer, and the panel is placed against
+its edges: make the window its only other child, and position `Drawer`, not the window. The
+trigger can be anywhere inside. `DrawerTrigger` renders a plain `<button>`; pass the real
+control with `render`. To open the drawer from somewhere else, such as a menu command, control
+it with `open` and `onOpenChange`.
+
+The panel hangs outside the box of `Drawer` and takes no part in layout, like a shadow. Leave
+room for it.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[drawers](https://web.archive.org/web/20200503121040/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/drawers/):
+
+- **Avoid using drawers.** They are seldom used in modern applications and their use is
+  discouraged. Panels, popovers, [sidebars](/components/sidebar) and
+  [split views](/components/split-view) are preferred for supplementary window content.
+- A drawer contains options or information related to a specific window, is hidden by
+  default, and is revealed in response to a button, a menu or an action.
+- It cannot be moved separately or detached from its parent window.
+
+Use this component for a period interface, not for a new one.
+
+## Variants and states
+
+<Example name="edges" both />
+
+| `edge` | The drawer | Insets |
+| --- | --- | --- |
+| `right` (default), `left` | is `contentSize` wide and slides out sideways | 30 pt under the window's top, 8 pt above its bottom |
+| `bottom` | is `contentSize` high and slides down | 8 pt from each side |
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Closed | default | Not in the DOM (hidden with `keepMounted`) |
+| Opening, closing | the trigger, or `open` | The surface slides out from under the window's edge in 0.25 s; under reduced motion it fades instead |
+| Open | `defaultOpen`, `open` | Window background, 5 pt outer corners, the window's hairline and inner rim, the inactive window's shadow |
+| Disabled | `disabled` on `Drawer` | The trigger is `aria-disabled` and does nothing |
+| Window not key | `state` on `DrawerPanel` | The drawer looks the same; the controls inside follow the state |
+
+All of it is provisional.
+
+`DrawerPanel` writes its `state` to itself as `data-window-state`, because it is not inside the
+window's element. Pass it the window's own `state`.
+
+## Sizes
+
+A drawer has no control sizes. `contentSize` is its extent from the window's edge (200 pt
+without it); `leadingOffset` and `trailingOffset` are the distances from the window's corners,
+as on `NSDrawer`. Each is a number of points or any CSS length.
+
+## API
+
+`Drawer` takes Base UI's Collapsible Root props, `DrawerTrigger` its Trigger props and
+`DrawerPanel` its Panel props (`keepMounted`, `hiddenUntilFound`), plus these:
+
+<PropsTable name="DrawerProps" />
+
+<PropsTable name="DrawerTriggerProps" />
+
+<PropsTable name="DrawerPanelProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-edge` | panel | `left`, `right`, `bottom` | Reflects `edge`. |
+| `data-window-state` | panel | `key`, `main`, `inactive` | Reflects `state`; read by the controls inside. |
+| `data-open`, `data-closed` | root, panel | present or absent | Set by Base UI. |
+| `data-panel-open` | trigger | present or absent | Set by Base UI while the drawer is open. |
+| `data-starting-style`, `data-ending-style` | panel | present or absent | Set by Base UI while the drawer slides. |
+| `data-disabled` | root, trigger, panel | present or absent | Set by Base UI for `disabled`. |
+
+| CSS variable | On | Description |
+| --- | --- | --- |
+| `--mac-drawer-content-size` | panel | What `contentSize` sets; 200 pt without it. |
+| `--mac-drawer-leading-offset` | panel | What `leadingOffset` sets; 30 pt, or 8 pt at the bottom. |
+| `--mac-drawer-trailing-offset` | panel | What `trailingOffset` sets; 8 pt. |
+
+Classes: `.mac-drawer`, `.mac-drawer-trigger`, `.mac-drawer-panel` (the frame the drawer
+slides in, which clips at the window's edge) and `.mac-drawer-content` (the surface). The
+drawer has no padding; pad your content.
+
+## Accessibility
+
+- The trigger is a button with `aria-expanded`, and `aria-controls` while the drawer is open.
+  Space and Return toggle it. Give it a title that names the drawer.
+- The panel is a `group`; name it with `aria-label`. A window is already a named region, and
+  a drawer usually holds more of that window's controls, not a separate topic. Where its
+  content is supporting material in its own right (notes, a list of pages), pass
+  `role="complementary"`, as the spec proposes.
+- The drawer never takes the focus. Its content follows the window's in the tab order, and is
+  out of the DOM, or `hidden`, while the drawer is closed.
+- Under `prefers-reduced-motion` nothing moves: the surface fades in and out.
+- In forced-colours mode the surface has a border.
+
+## Visual comparison
+
+No comparison with a screenshot is possible: no drawer is in the reference set, which
+`drawer.visual.json` records as pending. `npm run visual -- drawer` instead renders a window
+with a drawer in a real browser and checks pixels against the values the spec infers. The
+checks pass in both appearances at 1x and 2x.
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| Open, right edge | The window background as fill, out to 120 pt from the window and from 30 pt under its top to 8 pt above its bottom; the page beyond | Inferred |
+| Closed with a click | Nothing is left where the drawer was | Inferred |
+| Closed from the keyboard | Tab to the trigger, Return: nothing is left | Inferred |
+| Reopened | Two clicks bring the fill back | Inferred |
+| Left and bottom edges | The fill at each drawer's far edge, and the page beyond it | Inferred |
+
+The checks run with reduced motion, as every visual check does, so they cover the fade and not
+the slide.
+
+Provisional: everything. In particular the fill, the corner radius, the shadow, the insets,
+the default size and the duration are the spec's inferences, not Catalina measurements. Not
+built: a drawer at the top edge, resizing the drawer by dragging its edge, and NSDrawer's
+choice of the opposite edge when the preferred one has no room on screen.

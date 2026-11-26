@@ -1,0 +1,234 @@
+/*
+ * Storage Management demo: the layout of the body, the places of the sidebar's rows and
+ * lines, the Recommendations pane and a category's pane. The window, the title bar, the
+ * sidebar, the split view, the separators, the labels, the buttons, the image views, the
+ * table and the scroll view are the library's own. The sidebar's row height, row spacing,
+ * glyph size and label gap are set with its documented custom properties (in the component);
+ * what is set here on its rows and lines are their insets and the measured colours of the
+ * rows that cannot be opened.
+ *
+ * Parts
+ *   .mac-storage-management                     the window
+ *   .mac-storage-management-body                its body: one split view that fills it
+ *   .mac-storage-management-split               the split view
+ *   .mac-storage-management-sidebar             the sidebar fills its 200 pt pane
+ *   .mac-storage-management-row                 a row: glyph 12 pt and size 9 pt from the edges
+ *   .mac-storage-management-rule                a line of the sidebar, 8 pt from each edge
+ *   .mac-storage-management-glyph               the stand-in glyph of a row
+ *   .mac-storage-management-size                a category's size: 11 pt
+ *   .mac-storage-management-content             the pane beside the sidebar
+ *   .mac-storage-management-scroll              the scroll view of the recommendations
+ *   .mac-storage-management-recommendations     their list
+ *   .mac-storage-management-recommendation      one recommendation and the line under it
+ *   .mac-storage-management-recommendation-row  artwork, text and button
+ *   .mac-storage-management-artwork             the stand-in for a 44 pt icon
+ *   .mac-storage-management-recommendation-text title over description
+ *   .mac-storage-management-recommendation-title  the heading: a box around its label
+ *   .mac-storage-management-recommendation-description  the 12 pt text, at most 320 pt wide
+ *   .mac-storage-management-action              the button, centred on the row
+ *   .mac-storage-management-completed           the mark and "Completed" in its place
+ *   .mac-storage-management-mark                the check in a green disc
+ *   .mac-storage-management-recommendation-rule the line under a recommendation
+ *   .mac-storage-management-category            a category's pane [provisional]
+ *   .mac-storage-management-category-description  the line above the files
+ *   .mac-storage-management-files               the table, or the text of an empty category
+ *   .mac-storage-management-table               the table fills it
+ *   .mac-storage-management-category-bar        the count and the Delete… button
+ *
+ * States
+ *   [aria-disabled="true"] on a row             a category that cannot be opened: dimmed name
+ *                                               and glyph, the size as in any row
+ */
+/* The body takes what the title bar leaves, whatever its content asks for. */
+.mac-storage-management-body {
+  display: flex;
+  flex-basis: 0;
+  overflow: hidden;
+}
+
+.mac-storage-management-split {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+}
+
+.mac-storage-management-sidebar {
+  height: 100%;
+}
+
+/* Measured in both captures: the glyphs start 12 pt from the window's edge and the sizes end
+   9 pt before the divider. */
+.mac-storage-management .mac-storage-management-row {
+  padding-inline: 12px 9px;
+}
+
+/* Recommendations starts directly under the title bar: the list's own 5 pt above its first
+   row is taken back. */
+.mac-storage-management .mac-storage-management-row:where(:first-child) {
+  margin-block-start: -5px;
+}
+
+/* System and Other: the name and the glyph are dimmed, the size is not (measured), where
+   the sidebar's disabled row dims all three alike. */
+.mac-storage-management .mac-storage-management-row:where([aria-disabled="true"]) {
+  opacity: 1;
+  color: var(--mac-storage-management-label-dimmed);
+}
+
+.mac-storage-management-row:where([aria-disabled="true"]) .mac-storage-management-glyph {
+  color: var(--mac-storage-management-glyph-dimmed);
+}
+
+/* A line of the sidebar: 3 pt under the row before it, 3 pt above the next, 8 pt from each
+   edge, in the colour measured over the sidebar. */
+.mac-storage-management .mac-storage-management-rule {
+  margin: 3px 8px;
+  background: var(--mac-storage-management-sidebar-separator);
+}
+
+.mac-storage-management-glyph {
+  display: block;
+}
+
+.mac-storage-management-size {
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+.mac-storage-management-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.mac-storage-management-scroll {
+  flex: 1 1 auto;
+  height: 100%;
+}
+
+/* The first recommendation starts a point above the content's edge (measured: its line is
+   127 pt under the title bar, and a recommendation with three lines of text takes 128 pt). */
+.mac-storage-management-recommendations {
+  margin: -1px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Measured in both captures: the artwork 35 pt from the pane's edge and 34 pt under the
+   line above, the text 18 pt after it, the button's bezel 34.5 pt from the window's edge (its
+   box 34 pt), and 112 pt between two lines around two lines of text. */
+.mac-storage-management-recommendation-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 128px;
+  column-gap: 18px;
+  align-items: start;
+  box-sizing: border-box;
+  min-height: 112px;
+  padding: 34px 34px 32px 35px;
+}
+
+.mac-storage-management-artwork {
+  border-radius: 10px;
+}
+
+/* The title's capitals start a point under the artwork's top edge, and the first line of the
+   text 18 pt under the title's baseline. */
+.mac-storage-management-recommendation-text {
+  display: grid;
+  gap: 2px;
+  justify-items: start;
+  margin-block-start: -2px;
+}
+
+/* The title's text is a label; the element only says that it is a heading. */
+.mac-storage-management-recommendation-title {
+  display: grid;
+  margin: 0;
+}
+
+/* The capture's longest line is 317.5 pt wide and its shortest break leaves 323 pt unused,
+   so the text is 318 to 322 pt wide; 320 pt breaks the lines where the capture does, in San
+   Francisco and in the fallback font. */
+.mac-storage-management-recommendation-description {
+  max-width: 320px;
+}
+
+/* Centred between the two lines of its row, which the row's padding is not. */
+.mac-storage-management-action,
+.mac-storage-management-completed {
+  align-self: center;
+  margin-block-end: 2px;
+}
+
+.mac-storage-management-completed {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+
+.mac-storage-management-mark {
+  display: block;
+  flex: none;
+  color: var(--mac-color-system-green);
+}
+
+.mac-storage-management-mark-check {
+  stroke: var(--mac-storage-management-mark-check);
+}
+
+/* The line under a recommendation: 21 pt from the pane's edge, 22 pt from the window's. */
+.mac-storage-management-recommendation-rule {
+  margin-inline: 21px 22px;
+}
+
+.mac-storage-management-recommendation:where(:last-child)
+  > .mac-storage-management-recommendation-rule {
+  display: none;
+}
+
+.mac-storage-management-category {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.mac-storage-management-category-description {
+  padding: 12px 20px;
+}
+
+.mac-storage-management-files {
+  flex: 1 1 0;
+  min-height: 0;
+  border-block: 1px solid var(--mac-color-separator);
+}
+
+.mac-storage-management-table {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+}
+
+.mac-storage-management-category-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+}
+
+@media (forced-colors: active) {
+  .mac-storage-management .mac-storage-management-row:where([aria-disabled="true"]) {
+    color: GrayText;
+  }
+
+  .mac-storage-management .mac-storage-management-rule {
+    background: CanvasText;
+  }
+}
+
+.mac-storage-management-table-frame {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+}

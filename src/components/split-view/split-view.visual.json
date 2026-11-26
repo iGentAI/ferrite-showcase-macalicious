@@ -1,0 +1,473 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "thick-dimple-light",
+      "description": "Thick divider with its dimple, between the two lists of the Sharing pane, Aqua.",
+      "example": "visual-thick-dimple",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.243,
+        "2x": 0.008
+      },
+      "deltaBudget": {
+        "1x": 5.43,
+        "2x": 0.8
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Sharing.png",
+        "crop": {
+          "x": 895,
+          "y": 739,
+          "width": 36,
+          "height": 48
+        }
+      }
+    },
+    {
+      "name": "thick-dimple-dark",
+      "description": "Thick divider with its dimple, between the two lists of the Sharing pane, Dark Aqua.",
+      "example": "visual-thick-dimple",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.2333,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 5.18,
+        "2x": 0.3
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Sharing.png",
+        "crop": {
+          "x": 895,
+          "y": 739,
+          "width": 36,
+          "height": 48
+        }
+      }
+    },
+    {
+      "name": "opaque-panes-light",
+      "description": "Thin divider between the two opaque panes of System Information, Aqua.",
+      "example": "visual-opaque-panes",
+      "appearance": "light",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.0005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.15,
+        "2x": 0.22
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Information.png",
+        "crop": {
+          "x": 416,
+          "y": 860,
+          "width": 44,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "opaque-panes-dark",
+      "description": "Thin divider between the two opaque panes of System Information, Dark Aqua.",
+      "example": "visual-opaque-panes",
+      "appearance": "dark",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.0005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.17,
+        "2x": 0.28
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Information.png",
+        "crop": {
+          "x": 416,
+          "y": 860,
+          "width": 44,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "stacked-light",
+      "description": "Horizontal thin divider between Console's table and detail pane, Aqua.",
+      "example": "visual-stacked",
+      "appearance": "light",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.0005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.15,
+        "2x": 0.15
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Console.png",
+        "crop": {
+          "x": 1800,
+          "y": 518,
+          "width": 80,
+          "height": 32
+        }
+      }
+    },
+    {
+      "name": "stacked-dark",
+      "description": "Horizontal thin divider between Console's table and detail pane, Dark Aqua.",
+      "example": "visual-stacked",
+      "appearance": "dark",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.0005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.15,
+        "2x": 0.15
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Console.png",
+        "crop": {
+          "x": 1800,
+          "y": 518,
+          "width": 80,
+          "height": 32
+        }
+      }
+    },
+    {
+      "name": "sidebar-divider-light",
+      "description": "Divider between the Notes sidebar and note list, Aqua, with the lighter divider colour measured beside a sidebar set through --mac-split-view-divider-color. The list's paper texture is noise in the screenshot and a flat mean colour in the example, so the threshold stays at the default.",
+      "example": "visual-sidebar-divider",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.93,
+        "2x": 1.36
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Notes.png",
+        "crop": {
+          "x": 470,
+          "y": 1140,
+          "width": 44,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "sidebar-divider-dark",
+      "description": "Divider between the Notes sidebar and note list, Dark Aqua.",
+      "example": "visual-sidebar-divider",
+      "appearance": "dark",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.0005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.15,
+        "2x": 0.15
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Notes.png",
+        "crop": {
+          "x": 470,
+          "y": 1140,
+          "width": 44,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "at-rest-light",
+      "description": "The interactive example before any input, Aqua: the divider is at 40 pt.",
+      "example": "visual-interactive",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 100,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 39.5,
+            "y": 20,
+            "color": "#ffffff",
+            "note": "last point of the 40 pt first pane"
+          },
+          {
+            "x": 40.5,
+            "y": 20,
+            "color": "#d5d5d5",
+            "note": "divider between opaque panes, measured (spec: split-view, System Information)"
+          },
+          {
+            "x": 41.5,
+            "y": 20,
+            "color": "#ececec",
+            "note": "second pane starts 1 pt after: the divider adds its thickness to the layout (measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "keyboard-light",
+      "description": "Tab to the divider and press Right Arrow twice: the pane grows by 10 pt per press to 60 pt, and the focused divider shows the focus ring. Aqua. No screenshot shows a focused divider (inferred).",
+      "example": "visual-interactive",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowRight"
+        },
+        {
+          "key": "ArrowRight"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 100,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 50,
+            "y": 20,
+            "color": "#ffffff",
+            "note": "the first pane now covers 50 pt"
+          },
+          {
+            "x": 60.5,
+            "y": 20,
+            "color": "#d5d5d5",
+            "note": "divider moved from 40 to 60 pt (two 10 pt steps); measured colour"
+          },
+          {
+            "x": 62.5,
+            "y": 20,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "3 pt focus ring over the window background: measured on the Go to Folder field (spec: focus-ring)"
+          },
+          {
+            "x": 66,
+            "y": 20,
+            "color": "#ececec",
+            "note": "window background beyond the ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "keyboard-limits-dark",
+      "description": "Tab to the divider and press End, then Left Arrow: End takes the pane to its 70 pt maximum and one step back gives 60 pt. Dark Aqua.",
+      "example": "visual-interactive",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "End"
+        },
+        {
+          "key": "ArrowLeft"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 100,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 50,
+            "y": 20,
+            "color": "#1e1e1e",
+            "note": "first pane (control background) now covers 50 pt"
+          },
+          {
+            "x": 60.5,
+            "y": 20,
+            "color": "#000000",
+            "note": "dark divider is black, measured (spec: split-view)"
+          },
+          {
+            "x": 75,
+            "y": 20,
+            "color": "#323232",
+            "note": "second pane: window background"
+          }
+        ]
+      }
+    },
+    {
+      "name": "not-key-light",
+      "description": "The same keyboard input in an inactive window: the divider still moves, without a focus ring (inferred, as for every control in a window that is not key).",
+      "example": "visual-interactive",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowRight"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 100,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 50.5,
+            "y": 20,
+            "color": "#d5d5d5",
+            "note": "divider at 50 pt after one step; measured colour"
+          },
+          {
+            "x": 52.5,
+            "y": 20,
+            "color": "#ececec",
+            "note": "no focus ring beside it in a window that is not key"
+          }
+        ]
+      }
+    },
+    {
+      "name": "at-rest-dark",
+      "description": "The interactive example before any input, Dark Aqua: the divider is at 40 pt.",
+      "example": "visual-interactive",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 100,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 39.5,
+            "y": 20,
+            "color": "#1e1e1e",
+            "note": "last point of the 40 pt first pane: the example's dark control background"
+          },
+          {
+            "x": 40.5,
+            "y": 20,
+            "color": "#000000",
+            "note": "divider between opaque panes: the dark divider is black, measured (spec: split-view, System Information)"
+          },
+          {
+            "x": 41.5,
+            "y": 20,
+            "color": "#323232",
+            "note": "second pane starts 1 pt after: the divider adds its thickness to the layout (measured); the example's dark window background"
+          }
+        ]
+      }
+    },
+    {
+      "name": "keyboard-dark",
+      "description": "Tab to the divider and press Right Arrow twice: the pane grows by 10 pt per press to 60 pt, and the focused divider shows the focus ring. Dark Aqua. No screenshot shows a focused divider (inferred).",
+      "example": "visual-interactive",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowRight"
+        },
+        {
+          "key": "ArrowRight"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 100,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 50,
+            "y": 20,
+            "color": "#1e1e1e",
+            "note": "the first pane (the example's dark control background) now covers 50 pt"
+          },
+          {
+            "x": 60.5,
+            "y": 20,
+            "color": "#000000",
+            "note": "divider moved from 40 to 60 pt (two 10 pt steps); the dark divider is black, measured (spec: split-view)"
+          },
+          {
+            "x": 62.5,
+            "y": 20,
+            "color": "#2f6d99",
+            "tolerance": 4,
+            "note": "3 pt focus ring over the dark window background: the dark focus ring token, rgb(43 168 255) at 50%, over #323232 (computed from the tokens; the spec's focus ring measures #2d6c99 on #2f3032)"
+          },
+          {
+            "x": 66,
+            "y": 20,
+            "color": "#323232",
+            "note": "window background beyond the ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "not-key-dark",
+      "description": "The same keyboard input in an inactive window, Dark Aqua: the divider still moves, without a focus ring (inferred, as for every control in a window that is not key).",
+      "example": "visual-interactive",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowRight"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 100,
+          "height": 40
+        },
+        "pixels": [
+          {
+            "x": 50.5,
+            "y": 20,
+            "color": "#000000",
+            "note": "divider at 50 pt after one step; the dark divider is black, measured (spec: split-view)"
+          },
+          {
+            "x": 52.5,
+            "y": 20,
+            "color": "#323232",
+            "note": "no focus ring beside it in a window that is not key: the dark window background"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,169 @@
+---
+title: Login Window
+description: The login screen. A user's picture and name over the desktop picture, a translucent password field, and round buttons for Cancel, Sleep, Restart and Shut Down.
+---
+
+<Example name="basic" both />
+
+The screen that `loginwindow` shows at start-up and when fast user switching moves to another
+account. It looks the same in Aqua and Dark Aqua: white text and translucent controls over the
+desktop picture. Nothing is authenticated by the component. It hands the typed password to
+`onSubmit` and shows the answer you give it through `invalid`, `busy` and `hint`.
+
+The round buttons, the arrow in the field and the password input are built on
+[Base UI's Button](https://base-ui.com/react/components/button),
+[Field](https://base-ui.com/react/components/field) and
+[Input](https://base-ui.com/react/components/input).
+
+## Usage
+
+```tsx
+import { LoginWindow, LoginWindowButton } from "macalicious/login-window";
+import "macalicious/progress-spinner.css"; // the spinner shown while busy; its stylesheet comes first
+import "macalicious/login-window.css";
+
+<LoginWindow
+  users={[{ value: "mh", name: "mhackett", picture: <img src={avatar} alt="" /> }]}
+  invalid={rejected}
+  busy={checking}
+  hint={rejected ? "Hint: your first pet" : undefined}
+  onSubmit={(password, user) => check(user, password)}
+  onCancel={leave}
+  actions={<LoginWindowButton onClick={leave}>Cancel</LoginWindowButton>}
+  style={{ height: "100vh", backgroundImage: `url(${desktopPicture})` }}
+>
+  <span>3:37 PM</span>
+</LoginWindow>
+```
+
+Or copy the source into your project: `npx macalicious add login-window`.
+
+- **`users`** has one entry for a password prompt and several for a list to choose from.
+  A picture is any element; make it fill its 93 pt box (`width: 100%; height: 100%;
+  object-fit: cover`). Without one a neutral silhouette is drawn.
+- **The children** are the status items at the top right: a clock, and whatever glyphs you
+  draw for battery and Wi-Fi.
+- **`actions`** is the row of `LoginWindowButton`s at the bottom: Cancel when switching users;
+  Sleep, Restart and Shut Down after a start.
+- **The desktop picture** is yours: the window paints a neutral dark placeholder. Give the
+  root a `background`, as above.
+
+Several users, and the buttons of the login window after a start:
+
+<Example name="users" />
+
+## Guidelines
+
+Paraphrased from the measured spec and from how macOS behaves; not checked against a published
+Human Interface Guidelines page.
+
+- Ask for one thing at a time: first the account, then its password. Do not show a name field
+  and a password field together unless the list of accounts is hidden on purpose.
+- Keep the keyboard in the password field. Return submits; Escape goes back to the list of
+  accounts, or cancels.
+- Reject a wrong password with the shake and an empty field, not with an alert. Show the
+  password hint under the field only after a few failures.
+- Never put the password back into the field, and do not say whether the name or the password
+  was wrong.
+
+## Variants and states
+
+<Example name="states" hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| One user | `users` with one entry | Picture, name and password field; the field is centred on the screen |
+| List of users | `users` with several entries and no selection | Pictures side by side, each a button; choosing one shows its prompt |
+| Empty field | – | Placeholder at 40% white; no arrow |
+| Typing | text in the field | An arrow in a ring appears at the end of the field and submits |
+| Rejected | `invalid` | The field shakes once (0.4 s) and is emptied; `aria-invalid` is set. With reduced motion it does not move |
+| Checking | `busy` | A spinner takes the arrow's place; the field is read-only and Return does nothing |
+| Hint | `hint` | 13 pt text under the field, which it describes |
+| Button pressed | `:active` | The disc behind the ring brightens |
+| Button disabled | `disabled` on a `LoginWindowButton` | The whole button at the disabled opacity |
+| Keyboard focus | `:focus-visible` | Focus ring round a button's disc, a user's picture or the arrow; the field shows only its insertion point, as in macOS |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No focus ring |
+
+Measured: the single-user prompt with an empty field and the Cancel button, the only state the
+two captures show. Provisional: the list of users (its spacing), the arrow, the spinner's
+place, the hint, the shake, the pressed and disabled buttons, the glyphs of Sleep, Restart and
+Shut Down and the distance between two buttons (40 pt), the text shadow, and the placeholder
+backdrop and silhouette.
+
+## Sizes
+
+The window fills the element it is in: give that element, or the window itself, a height. The
+field stays in the middle, the status items at the top right and the buttons 104 pt above the
+bottom (to the middle of their rings). The parts do not scale: the picture is 93 pt, the field
+160 by 28 pt, a ring 30 pt on a 39 pt disc. The prompt needs about 380 pt of height.
+
+## API
+
+<PropsTable name="LoginWindowProps" />
+
+`className`, `style`, `ref` and other attributes go to the root element. A user is
+`{ value: string; name: string; picture?: ReactNode }` (the type `LoginWindowUser`).
+
+<PropsTable name="LoginWindowButtonProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-appearance` | root | `dark` | Always set: the login window is light on dark in both appearances, and so is everything put inside it. |
+| `data-invalid` | `.mac-login-window-field` | present | The password was rejected (`invalid`); set by Base UI's Field. |
+| `data-glyph` | `LoginWindowButton` | `cancel`, `sleep`, `restart`, `shut-down` | Reflects `glyph`. |
+| `data-disabled` | `LoginWindowButton` | present | The button is disabled. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-login-window-backdrop` | `#3c2e2c` | What is painted behind everything when the root has no background of its own. |
+| `--mac-login-window-field` | white at 38% | Tint of the password field over the blurred picture. |
+| `--mac-login-window-disc` | white at 13.5% | Tint of the disc behind a round button. |
+
+## Accessibility
+
+- The prompt is a `form` named by the user's name. The password field is a real
+  `<input type="password">`; its accessible name is the placeholder, and the hint is its
+  description. A rejected password sets `aria-invalid`.
+- Return in the field submits, and so does the arrow button, which is in the tab order once
+  there is text and is named by `submitLabel`. While `busy` the spinner is a `progressbar`
+  named by `busyLabel`.
+- Escape returns from a prompt to the list of users, or calls `onCancel` when there is no list.
+  It is handled on the root, so it works from the field and from every button inside.
+- The list of users is a `group` named by `usersLabel`; each user is a button. Tab reaches
+  every one, and Left and Right move between them. Choosing a user moves the keyboard to the
+  password field; Escape moves it back to that user.
+- A `LoginWindowButton` is named by its title, the children. Give one without a title an
+  `aria-label`. Pictures and glyphs are hidden from assistive technology.
+- The window does not trap the keyboard and does not move it when it appears: focus the field
+  through `inputRef` when the window opens.
+- The shake is an animation of `transform` only and is switched off by
+  `prefers-reduced-motion`. The blur behind the field and the discs is switched off by
+  `prefers-reduced-transparency`, with the shared material tokens. In forced-colours mode the
+  field, the discs and the pictures get a border.
+
+## Visual comparison
+
+The reference is the fast user switching screen, captured once in a light and once in a dark
+session; the two show the same screen. Two parts of it can be compared, because the rest is the
+desktop picture and the account picture, which are not reproduced: `visual-field` is the empty
+password field, cropped to its own box, and `visual-cancel` the Cancel button on the dark water
+below it. Results in Chromium on Linux with the fallback font:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Field, light session | 3.22% of pixels differ | 2.75% |
+| Field, dark session | 2.86% | 2.39% |
+| Field with the placeholder masked, both sessions | 1.53% | 1.94% |
+| Cancel, both sessions | 3.99% | 4.79% |
+| Cancel with the title masked, both sessions | 3.88% | 5.23% |
+
+The masked comparisons count a pixel as different at a colour distance of 0.05, half the
+default. In the field what differs is its four corners, where the capture has rock and the
+example a flat colour; the backdrop of that example is solved from the colours at the field's
+two ends, so the comparison gates the field's size, corner radius and placeholder and not its
+tint. In the button it is the antialiasing round the disc and the ring and the ripples of the
+water. The placeholder and the title are set in the fallback font. Keyboard focus on the
+button is checked by pixel (`cancel-focus`), since no screenshot shows it.
+
+Not compared, because no flat backdrop exists for them: the position of the picture and the
+name above the field (laid out from the measured distances), and the status items.

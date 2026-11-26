@@ -1,0 +1,43 @@
+/*
+ * Time Machine browser (reference/spec/components/time-machine-browser.md). What is drawn on
+ * the blurred picture is light added to it: a button is the picture plus 60 levels on every
+ * channel, over four backdrops in the two captures; a tick is plus 76. These whites are
+ * blended with plus-lighter and are the same in Aqua and Dark Aqua.
+ */
+:root {
+  /* [provisional] stands in for the blurred desktop picture: the colours measured at its top
+     and bottom. Set it on the browser to put a picture behind it. */
+  --mac-time-machine-browser-backdrop: linear-gradient(
+    light-dark(#518db5, #2f4d76),
+    light-dark(#203d5b, #25303f)
+  );
+  /* [measured, computed] face, +60: #5e758e on #213952, #647186 on #28354a. Disabled: 60% */
+  --mac-time-machine-browser-control: rgb(255 255 255 / 0.235);
+  /* [measured, computed] the half-point line along its top, +100 in all */
+  --mac-time-machine-browser-control-edge: rgb(255 255 255 / 0.205);
+  /* [provisional] pressed face */
+  --mac-time-machine-browser-control-pressed: rgb(255 255 255 / 0.36);
+  /* [measured] title and chevron */
+  --mac-time-machine-browser-control-text: light-dark(#f5ffff, #f2fdff);
+  /* [measured, computed] disabled: #73889b on #475b6f, #7f8da0 on #526174 */
+  --mac-time-machine-browser-control-text-disabled: rgb(255 255 255 / 0.26);
+  /* [measured] date between the arrows */
+  --mac-time-machine-browser-date: light-dark(#e4e8ea, #e1e3e7);
+  /* [measured, computed] tick and label, +76: #7593b0 on #284864, #738196 on #26354b */
+  --mac-time-machine-browser-tick: rgb(255 255 255 / 0.3);
+  /* [measured, computed] ticks above the oldest backup, +24: #405f7d on #284864 */
+  --mac-time-machine-browser-tick-dim: rgb(255 255 255 / 0.094);
+  /* [measured] tick of the backup shown, in both captures */
+  --mac-time-machine-browser-tick-selected: #ff3b30;
+  /* [measured, computed] blank window of the stack: #cbd5db over #6293b1, #2d2f32 over
+     #384355, solved for an alpha of 0.8 */
+  --mac-time-machine-browser-layer-empty: light-dark(rgb(229 229 229 / 0.8), rgb(41 40 39 / 0.8));
+  /* [measured, computed] line along the top of a window of the stack */
+  --mac-time-machine-browser-layer-edge: light-dark(
+    rgb(255 255 255 / 0.3),
+    rgb(255 255 255 / 0.09)
+  );
+  /* [provisional] veil that darkens a window with its depth: fitted to the Aqua capture; the
+     Dark Aqua capture shows blank windows only */
+  --mac-time-machine-browser-layer-shade: #000;
+}

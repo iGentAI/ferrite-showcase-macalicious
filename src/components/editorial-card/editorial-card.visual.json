@@ -1,0 +1,367 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "panel-light",
+      "description": "The App Store's first editorial card, Aqua: the whole card with its text. The round illustration is Apple's artwork, so its square is masked.",
+      "example": "visual-panel",
+      "appearance": "light",
+      "masks": [{ "x": 277, "y": 30, "width": 170, "height": 170 }],
+      "budget": { "1x": 0.034, "2x": 0.0274 },
+      "deltaBudget": { "1x": 3.1, "2x": 3.2 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mac-App-Store.png",
+        "crop": { "x": 634, "y": 796, "width": 924, "height": 460 }
+      }
+    },
+    {
+      "name": "panel-light-masked",
+      "description": "As panel-light with the three texts masked too, which are set in the fallback font off Apple platforms: scores the card's fill, edges and corners.",
+      "example": "visual-panel",
+      "appearance": "light",
+      "masks": [
+        { "x": 277, "y": 30, "width": 170, "height": 170 },
+        { "x": 28, "y": 24, "width": 236, "height": 96 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.004, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.1, "2x": 0.1 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mac-App-Store.png",
+        "crop": { "x": 634, "y": 796, "width": 924, "height": 460 }
+      }
+    },
+    {
+      "name": "panel-dark",
+      "description": "The App Store's first editorial card, Dark Aqua: the whole card with its text; the illustration's square is masked.",
+      "example": "visual-panel",
+      "appearance": "dark",
+      "masks": [{ "x": 277, "y": 30, "width": 170, "height": 170 }],
+      "budget": { "1x": 0.033, "2x": 0.0272 },
+      "deltaBudget": { "1x": 2.8, "2x": 2.8 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mac-App-Store.png",
+        "crop": { "x": 634, "y": 796, "width": 924, "height": 460 }
+      }
+    },
+    {
+      "name": "panel-dark-masked",
+      "description": "As panel-dark with the three texts masked too: scores the card's fill, edges and corners.",
+      "example": "visual-panel",
+      "appearance": "dark",
+      "masks": [
+        { "x": 277, "y": 30, "width": 170, "height": 170 },
+        { "x": 28, "y": 24, "width": 236, "height": 96 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.004, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.1, "2x": 0.1 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mac-App-Store.png",
+        "crop": { "x": 634, "y": 796, "width": 924, "height": 460 }
+      }
+    },
+    {
+      "name": "hero-corner-light",
+      "description": "Bottom-left corner of the App Store's hero, Aqua: a flat edge with no shadow and a 6 pt corner. The photograph is replaced by its average colour there, so what is scored is the corner's shape.",
+      "example": "visual-hero-corner",
+      "appearance": "light",
+      "budget": { "1x": 0.029, "2x": 0.0312 },
+      "deltaBudget": { "1x": 4.7, "2x": 5.4 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mac-App-Store.png",
+        "crop": { "x": 622, "y": 732, "width": 40, "height": 36 }
+      }
+    },
+    {
+      "name": "hero-corner-dark",
+      "description": "Bottom-left corner of the App Store's hero, Dark Aqua.",
+      "example": "visual-hero-corner",
+      "appearance": "dark",
+      "budget": { "1x": 0.0235, "2x": 0.046 },
+      "deltaBudget": { "1x": 4.75, "2x": 5.35 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mac-App-Store.png",
+        "crop": { "x": 622, "y": 732, "width": 40, "height": 36 }
+      }
+    },
+    {
+      "name": "hero-text-light",
+      "description": "The eyebrow and the two-line title of the App Store's hero, Aqua, over the cloud of the photograph, which the fixture replaces by a gradient: scores where the text stands, in the fallback font.",
+      "example": "visual-hero-text",
+      "appearance": "light",
+      "budget": { "1x": 0.165, "2x": 0.152 },
+      "deltaBudget": { "1x": 22.3, "2x": 22.9 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mac-App-Store.png",
+        "crop": { "x": 660, "y": 160, "width": 480, "height": 180 }
+      }
+    },
+    {
+      "name": "hero-text-light-masked",
+      "description": "As hero-text-light with the eyebrow and the title masked: scores the stand-in for the photograph, so that the unmasked comparison's score is the text's.",
+      "example": "visual-hero-text",
+      "appearance": "light",
+      "masks": [
+        { "x": 12, "y": 7, "width": 82, "height": 12 },
+        { "x": 12, "y": 36, "width": 228, "height": 54 }
+      ],
+      "budget": { "1x": 0.0415, "2x": 0.04 },
+      "deltaBudget": { "1x": 7.2, "2x": 7.2 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mac-App-Store.png",
+        "crop": { "x": 660, "y": 160, "width": 480, "height": 180 }
+      }
+    },
+    {
+      "name": "hero-text-dark",
+      "description": "The eyebrow and the two-line title of the App Store's hero, Dark Aqua: the text keeps its colours, because it lies on the photograph.",
+      "example": "visual-hero-text",
+      "appearance": "dark",
+      "budget": { "1x": 0.144, "2x": 0.128 },
+      "deltaBudget": { "1x": 21.6, "2x": 22.2 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mac-App-Store.png",
+        "crop": { "x": 660, "y": 160, "width": 480, "height": 180 }
+      }
+    },
+    {
+      "name": "hero-text-dark-masked",
+      "description": "As hero-text-dark with the eyebrow and the title masked: scores the stand-in for the photograph.",
+      "example": "visual-hero-text",
+      "appearance": "dark",
+      "masks": [
+        { "x": 12, "y": 7, "width": 82, "height": 12 },
+        { "x": 12, "y": 36, "width": 228, "height": 54 }
+      ],
+      "budget": { "1x": 0.014, "2x": 0.0155 },
+      "deltaBudget": { "1x": 6.5, "2x": 6.5 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mac-App-Store.png",
+        "crop": { "x": 660, "y": 160, "width": 480, "height": 180 }
+      }
+    },
+    {
+      "name": "raised-corner-light",
+      "description": "Bottom-left corner of TV's hero, Aqua: the 12 pt corner, the hairline on both edges, and the shadow below and beside it. Nothing is masked.",
+      "example": "visual-raised-corner",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": { "1x": 0.032, "2x": 0.0148 },
+      "deltaBudget": { "1x": 1.9, "2x": 1.9 },
+      "reference": {
+        "file": "10-15-Catalina-Light-TV.png",
+        "crop": { "x": 180, "y": 1596, "width": 48, "height": 48 }
+      }
+    },
+    {
+      "name": "raised-corner-dark",
+      "description": "Bottom-left corner of TV's hero, Dark Aqua. Nothing is masked.",
+      "example": "visual-raised-corner",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": { "1x": 0.016, "2x": 0.007 },
+      "deltaBudget": { "1x": 1.7, "2x": 1.2 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-TV.png",
+        "crop": { "x": 180, "y": 1596, "width": 48, "height": 48 }
+      }
+    },
+    {
+      "name": "states-light",
+      "description": "What no screenshot shows, Aqua: a panel that is a button keeps the panel's layout. The disc is a circle at the trailing edge and the title stands at the top, where a plain panel has it.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 320, "height": 250 },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 125,
+            "color": "#f7f7f8",
+            "note": "panel fill (spec: Colours, panel fill, measured)"
+          },
+          {
+            "x": 210,
+            "y": 125,
+            "color": "#ffffff",
+            "note": "middle of the disc: the fixture's white artwork"
+          },
+          {
+            "x": 128,
+            "y": 43,
+            "color": "#f7f7f8",
+            "note": "corner of the disc's square: the artwork is clipped to a circle (spec: Geometry, artwork, measured)"
+          },
+          {
+            "x": 302,
+            "y": 125,
+            "color": "#f7f7f8",
+            "note": "the 15 pt between the disc and the card's trailing edge"
+          },
+          {
+            "x": 50,
+            "y": 52,
+            "color": "#ff00ff",
+            "note": "the title's line, 28.25 to 53.25 pt below the card's top: a button does not centre the text"
+          },
+          { "x": 50, "y": 35, "color": "#f7f7f8", "note": "above the title's line" },
+          {
+            "x": 5,
+            "y": 5,
+            "color": "#ffffff",
+            "note": "the page beside the card: no shadow, no border"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-dark",
+      "description": "What no screenshot shows, Dark Aqua: a panel that is a button keeps the panel's layout.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 320, "height": 250 },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 125,
+            "color": "#343538",
+            "note": "panel fill (spec: Colours, panel fill, measured)"
+          },
+          {
+            "x": 210,
+            "y": 125,
+            "color": "#ffffff",
+            "note": "middle of the disc: the fixture's white artwork"
+          },
+          {
+            "x": 128,
+            "y": 43,
+            "color": "#343538",
+            "note": "corner of the disc's square: the artwork is clipped to a circle"
+          },
+          {
+            "x": 50,
+            "y": 52,
+            "color": "#ff00ff",
+            "note": "the title's line: a button does not centre the text"
+          },
+          { "x": 5, "y": 5, "color": "#1e1f22", "note": "the page beside the card" }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "A panel that is a button, held down with the mouse, Aqua: dimmed by a tenth.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "press": "#card" }],
+      "expect": {
+        "size": { "width": 320, "height": 250 },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 125,
+            "color": "#dedede",
+            "tolerance": 3,
+            "note": "panel fill #f7f7f8 at 90% brightness (spec: States, pressed, inferred)"
+          },
+          {
+            "x": 210,
+            "y": 125,
+            "color": "#e6e6e6",
+            "tolerance": 3,
+            "note": "white artwork at 90% brightness"
+          },
+          { "x": 5, "y": 5, "color": "#ffffff", "note": "the page is not dimmed" }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "A panel that is a button, held down with the mouse, Dark Aqua: dimmed by a tenth.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "press": "#card" }],
+      "expect": {
+        "size": { "width": 320, "height": 250 },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 125,
+            "color": "#2f3032",
+            "tolerance": 3,
+            "note": "panel fill #343538 at 90% brightness (spec: States, pressed, inferred)"
+          },
+          { "x": 5, "y": 5, "color": "#1e1f22", "note": "the page is not dimmed" }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on a panel that is a button, reached with Tab, Aqua: a 3 pt ring around the card.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 320, "height": 250 },
+        "pixels": [
+          {
+            "x": 8.5,
+            "y": 125,
+            "color": "#8cb5fb",
+            "tolerance": 4,
+            "note": "focus ring token rgb(24 106 246 / 0.5) over the page #ffffff, 1.5 pt outside the card's leading edge"
+          },
+          { "x": 20, "y": 125, "color": "#f7f7f8", "note": "inside the ring the fill is unchanged" }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on a panel that is a button, reached with Tab, Dark Aqua: a 3 pt ring around the card.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 320, "height": 250 },
+        "pixels": [
+          {
+            "x": 8.5,
+            "y": 125,
+            "color": "#256491",
+            "tolerance": 4,
+            "note": "focus ring token rgb(43 168 255 / 0.5) over the page #1e1f22, 1.5 pt outside the card's leading edge"
+          },
+          { "x": 20, "y": 125, "color": "#343538", "note": "inside the ring the fill is unchanged" }
+        ]
+      }
+    },
+    {
+      "name": "focus-inactive-light",
+      "description": "Tab in a window that is not key, Aqua: the card takes the focus without a ring.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 320, "height": 250 },
+        "pixels": [
+          {
+            "x": 8.5,
+            "y": 125,
+            "color": "#ffffff",
+            "note": "no ring: the page reaches the card's edge (CONTRIBUTING, Window state)"
+          },
+          {
+            "x": 20,
+            "y": 125,
+            "color": "#f7f7f8",
+            "note": "the fill is unchanged in a window that is not key"
+          }
+        ]
+      }
+    }
+  ]
+}

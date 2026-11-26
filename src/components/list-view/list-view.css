@@ -1,0 +1,163 @@
+/*
+ * List view (single-column NSTableView without a header), inside a scroll view.
+ *
+ * Parts
+ *   .mac-list-view               the root: a scroll view, sized by the caller
+ *   .mac-list-view-viewport      the scrolling listbox (also .mac-scroll-view-viewport)
+ *   .mac-list-view-rows          as tall as all rows together; holds the rendered ones
+ *   .mac-list-view-row           one row: a grid of gutter | text lines | trailing accessory
+ *   .mac-list-view-row-title     primary line, 13 pt bold
+ *   .mac-list-view-row-detail    secondary line, 13 pt in the secondary label colour
+ *   .mac-list-view-row-detail-lead  its leading text in the primary colour (a date)
+ *   .mac-list-view-row-leading   accessory centred in the gutter before the text
+ *   .mac-list-view-row-trailing  accessory after the text
+ *
+ * States
+ *   [data-separator="inset"]     1 pt line under each row, from the text to the trailing edge
+ *   [data-empty-rows="separator"] the same line in each empty row below the last (Messages)
+ *   [aria-selected="true"]       on a row: grey (unemphasised) selection, or the accent with
+ *                                white text while the list holds focus in a key window
+ *   [data-emphasis="always"]     the accent selection also without focus and in a window that
+ *                                is not key (Messages)
+ *   [data-force~="focus"]        on the root: pins the emphasised selection (docs, tests)
+ *   :focus-visible               the scroll view draws the focus ring inside the list's edge
+ *
+ * Hooks
+ *   --mac-list-view-selected-background   the unemphasised selection (Notes has its own)
+ *   --mac-list-view-separator             the separator's colour (default: the shared
+ *                                         separator colour, the label colour at 10%)
+ *   --mac-list-view-separator-inset       where the separators start (default: the text inset)
+ *
+ * Private: --_height (row height), --_inset (text inset), --_end and --_period (top and
+ * height of the empty rows) come from props; --_line is the separator's thickness.
+ */
+.mac-list-view {
+  background: var(--mac-color-control-background);
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-list-view:where([data-separator="inset"]) {
+  --_line: 1px;
+}
+
+.mac-list-view-rows {
+  box-sizing: border-box;
+}
+
+/*
+ * The separator is the row's last point; the content is centred in what is above it. The
+ * first column has no width: a leading accessory hangs out of it into the inset. Rows are
+ * not positioned, so that the scroll view's focus ring is painted over them.
+ */
+.mac-list-view-row {
+  display: grid;
+  grid-template-columns: 0 minmax(0, 1fr) auto;
+  align-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  height: var(--_height);
+  padding-block-end: var(--_line, 0px);
+  padding-inline: var(--_inset) 7px;
+  overflow: hidden;
+  background:
+    linear-gradient(var(--mac-list-view-separator, var(--mac-color-separator)) 0 0) 100% 100% /
+    calc(100% - var(--mac-list-view-separator-inset, var(--_inset))) var(--_line, 0px) no-repeat;
+  white-space: nowrap;
+}
+
+/* Empty rows: the listbox's own background, from the rows' end to the bottom of the view.
+   With the rows taller than the view it has no height. */
+.mac-list-view:where([data-empty-rows="separator"]) > .mac-list-view-viewport {
+  background:
+    repeating-linear-gradient(
+      transparent 0 calc(var(--_period) - 1px),
+      var(--mac-list-view-separator, var(--mac-color-separator)) 0 var(--_period)
+    )
+    local 100% var(--_end) / calc(100% - var(--mac-list-view-separator-inset, var(--_inset)))
+    max(0px, 100% - var(--_end)) no-repeat;
+}
+
+.mac-list-view-row:where(:dir(rtl)),
+.mac-list-view:where([data-empty-rows="separator"]:dir(rtl)) > .mac-list-view-viewport {
+  background-position-x: 0;
+}
+
+/* The selection covers the whole row, separator included. */
+.mac-list-view-row:where([aria-selected="true"]) {
+  background: var(
+    --mac-list-view-selected-background,
+    var(--mac-color-selected-content-background-unemphasized)
+  );
+}
+
+.mac-list-view:where(:focus-within, [data-force~="focus"]):not(
+    :where([data-window-state="main"], [data-window-state="inactive"]) *
+  )
+  .mac-list-view-row:where([aria-selected="true"]),
+.mac-list-view:where([data-emphasis="always"]) .mac-list-view-row:where([aria-selected="true"]) {
+  --_lead: var(--mac-color-selected-content-text);
+  --_detail: var(--mac-list-view-detail-emphasized);
+
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-content-text);
+}
+
+.mac-list-view-row-title,
+.mac-list-view-row-detail {
+  grid-column: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mac-list-view-row-title {
+  font: var(--mac-font-body-emphasized);
+}
+
+/* 18 pt from the title's baseline to this line's, as in Notes. */
+.mac-list-view-row-detail {
+  margin-block: 2px;
+  color: var(--_detail, var(--mac-color-label-secondary));
+}
+
+.mac-list-view-row-detail-lead {
+  margin-inline-end: 7px;
+  color: var(--_lead, var(--mac-color-label));
+}
+
+/* They take no height of their own, so a tall accessory does not move the text lines. */
+.mac-list-view-row-leading,
+.mac-list-view-row-trailing {
+  display: flex;
+  grid-row: 1 / span 3;
+  align-items: center;
+  height: 0;
+}
+
+/* In the gutter that the text inset leaves, centred like the text. */
+.mac-list-view-row-leading {
+  grid-column: 1;
+  justify-content: center;
+  justify-self: end;
+  width: var(--_inset);
+}
+
+.mac-list-view-row-trailing {
+  grid-column: 3;
+  margin-inline-start: 8px;
+}
+
+/* As specific as the focused selection above, and after it: the system colours win. */
+@media (forced-colors: active) {
+  .mac-list-view .mac-list-view-row:where([aria-selected="true"]) {
+    --_lead: HighlightText;
+    --_detail: HighlightText;
+
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+}

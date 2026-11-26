@@ -1,0 +1,259 @@
+---
+title: Disk Utility
+description: The Disk Utility window of macOS 10.15 with its icon-and-label toolbar, the outline of disks, containers and volumes, and the selected row's capacity bar and information, over invented disks that First Aid, Erase, Restore, Unmount and the Volume buttons change.
+layout: full
+order: 90
+---
+
+<Example name="basic" />
+
+Select a disk, a container or a volume in the sidebar: the detail pane shows its size, how
+much of it is used and what is known about it, and the toolbar offers what can be done with
+it. The disks are data. Nothing is read from the machine the page runs on and no command
+changes anything but the window's own copy, so a reload brings the disks of the reference
+screenshots back. The sidebar icons, the large disk icon and five of the toolbar glyphs are
+original stand-in drawings.
+
+## What it shows
+
+- A [Window](/components/window) with a unified [Title Bar](/components/title-bar): the
+  [Window Controls](/components/window-controls), the title and a
+  [Toolbar](/components/toolbar) in its `icon-and-label` display mode on one surface, 70 pt
+  high.
+- The toolbar: eight [Toolbar Labelled Items](/components/toolbar-labelled-item). View is a
+  pull-down from [Toolbar Pop-Up](/components/toolbar-pop-up) whose menu holds two radio
+  [Menu Items](/components/menu-item); Volume is a momentary
+  [Toolbar Segmented Control](/components/toolbar-segmented-control) of two segments; the
+  other six are [Toolbar Buttons](/components/toolbar-button). Two flexible spaces of the
+  toolbar keep the group of five where the capture has it as the window is resized.
+- The outline: a [Sidebar](/components/sidebar) on its opaque material, three levels deep,
+  with [disclosure triangles](/components/disclosure-triangle), single selection that takes
+  the accent colour while the list has the keyboard focus, arrow-key navigation and
+  type-select. It sits in the leading pane of a [Split View](/components/split-view), whose
+  divider resizes it.
+- The detail pane: the capacity bar is a [Level Indicator](/components/level-indicator) in
+  its `storage` variant, the two rules are [Separators](/components/separator), and the
+  information table is a [Box](/components/box) in its `well` variant with two description
+  lists set in the [Label](/components/label)'s 12 pt `callout` style. The name, the capacity
+  box and the legend are the demo's own text, laid out in `disk-utility.css`.
+- The commands ask in a [Sheet](/components/sheet) that hangs from the title bar, with
+  [Push Buttons](/components/push-button), a [Default Button](/components/default-button),
+  a [Form](/components/form) with a [Text Field](/components/text-field) for a name and a
+  [Pop-Up Button](/components/pop-up-button) for a format or a source volume, and a
+  [Progress Bar](/components/progress-bar) for First Aid.
+- The standard glyphs are the library's [System Images](/components/system-image): the
+  sidebar mark of View, the plus and minus of Volume and the i of Info. The other five
+  toolbar glyphs are Disk Utility's own and are drawn for the demo.
+
+| Toolbar item | What it does | Available for |
+| --- | --- | --- |
+| View | Show All Devices, or Show Only Volumes: the volumes without their disks and containers. A selected disk or container then hands the selection to its first volume | always |
+| Volume + | Asks for a name and a format and adds an empty volume to the row's container | a container or a volume |
+| Volume − | Asks, then deletes the volume and returns its space to the container | a volume the machine did not start from |
+| First Aid | Asks, then reports line by line under a progress bar | every row |
+| Partition | Explains that APFS volumes share their container's space and offers Add Volume | every row |
+| Erase | Asks for a name and a format; the volume is empty afterwards. A container or a disk has all its volumes erased | a row that holds no startup volume |
+| Restore | Asks which other volume to copy onto this one; only volumes that fit are offered | a volume the machine did not start from |
+| Unmount, Mount | Unmounts the volume, which dims its name and takes its eject mark away, or mounts it again | a volume the machine did not start from |
+| Info | Lists the row's facts in a sheet | every row |
+
+Macintosh SSD and Macintosh SSD - Data are the volumes the machine of the screenshots started
+from (the first is mounted at `/`), which is why the capture shows Erase, Restore and Unmount
+dimmed. Select Time Machine or a volume of the internal disk to try them. While a sheet waits
+the window is main, not key, its toolbar and content are inert and its close button is
+disabled.
+
+The state is in three small pieces: the disks (a tree of plain objects), the selected row's
+identifier and the sheet that is open. Everything the commands do is a pure function in
+`disk-utility-data.ts` (`addVolume`, `deleteVolume`, `eraseVolume`, `restoreVolume`,
+`setMounted`), as is what the detail pane shows (`summarize`) and what the toolbar offers
+(`abilities`), so the window only maps data to components.
+
+## Hosting the window
+
+`DiskUtility` renders the library's `Window` as its root and passes every `Window` prop to it,
+so it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component hands to the window controls and
+the title bar. These are the props a [Managed Window](/components/managed-window)'s `render`
+form supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { diskUtilityApp } from "./app";
+
+<ManagedWindow
+  id={diskUtilityApp.id}
+  defaultFrame={{ x: 80, y: 60, ...diskUtilityApp.defaultSize }}
+  minWidth={diskUtilityApp.minSize.width}
+  minHeight={diskUtilityApp.minSize.height}
+  render={(props) => <diskUtilityApp.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `disks` | `DiskUtilityDisk[]` | The disks the window opens with; the default is the two disks of the screenshots. Read once. |
+| `selection`, `defaultSelection`, `onSelectionChange` | `string \| null` and a function | The selected row's identifier, controlled or not; `"macintosh-ssd"` at first. The function is called with `null` when a command leaves nothing selected. |
+| `defaultShowAllDevices` | `boolean` | Whether the sidebar opens with disks and containers above their volumes; `true` by default. |
+| `firstAidStepDuration` | `number` | Milliseconds First Aid spends on each line of its report; 350 by default. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 926 by 571 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+A disk is `{ id, name, device, location, connection, capacity, containers }`, a container
+`{ id, device, store, capacity, free, hiddenVolumes, volumes }` and a volume
+`{ id, name, device, used, purgeable, mountPoint, owners }` with the optional `system`,
+`startup`, `format` and `reserved`; sizes are numbers of gigabytes. `disk-utility-data.ts`
+documents each field.
+
+`app.ts` exports the descriptor a desktop page reads, as `diskUtilityApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (926 by 571), `minSize` (780 by 400), `resizable` and
+`menus`, the menu titles after the Apple menu. The [desktop demo](/demos/desktop) finds it
+there and lists Disk Utility among its applications.
+
+## Styling hooks
+
+The demo's measured lengths and font sizes are custom properties in `disk-utility.tokens.css`,
+declared on `:root`; set one on the window with `style` to change it. That file tags each
+with where it comes from: First Aid's progress bar and report are provisional, the rest is
+measured in the two captures. Left as literals in `disk-utility.css`, because they are
+structure rather than measurements: zeros, the 100% heights, the 1 pt borders and the
+divider's 1 pt width, the 282 : 283 ratio of the information box's columns, and the dimmed
+volume's opacity.
+
+| Property | Default | Controls |
+| --- | --- | --- |
+| `--mac-disk-utility-detail-padding-inline` | `32px` | The detail pane: inline padding |
+| `--mac-disk-utility-header-height` | `112px` | The header (icon, name and lines, capacity box): height |
+| `--mac-disk-utility-icon-margin-top` | `23px` | The stand-in disk icon: top margin |
+| `--mac-disk-utility-heading-padding-top` | `23.5px` | The name and lines beside the icon: top padding |
+| `--mac-disk-utility-heading-padding-start` | `18px` | The name and lines beside the icon: leading padding |
+| `--mac-disk-utility-heading-padding-end` | `12px` | The name and lines beside the icon: trailing padding |
+| `--mac-disk-utility-name-size` | `24px` | The bold name: font size |
+| `--mac-disk-utility-name-line-height` | `28px` | The bold name: line height |
+| `--mac-disk-utility-line-size` | `11px` | A grey line under the name: font size |
+| `--mac-disk-utility-line-line-height` | `15px` | A grey line under the name: line height |
+| `--mac-disk-utility-line-first-size` | `13px` | The first grey line: font size |
+| `--mac-disk-utility-line-first-line-height` | `17px` | The first grey line: line height |
+| `--mac-disk-utility-line-first-margin-top` | `-0.5px` | The first grey line: top margin |
+| `--mac-disk-utility-line-first-margin-bottom` | `0.85px` | The first grey line: bottom margin |
+| `--mac-disk-utility-capacity-width` | `120px` | The capacity column: width |
+| `--mac-disk-utility-capacity-padding-top` | `34.5px` | The capacity column: top padding |
+| `--mac-disk-utility-capacity-box-height` | `39px` | The outlined capacity box: height |
+| `--mac-disk-utility-capacity-box-radius` | `4px` | The outlined capacity box: corner radius |
+| `--mac-disk-utility-capacity-box-size` | `19px` | The outlined capacity box: font size |
+| `--mac-disk-utility-capacity-box-line-height` | `37px` | The outlined capacity box: line height |
+| `--mac-disk-utility-caption-margin-top` | `1px` | The capacity box's caption: top margin |
+| `--mac-disk-utility-caption-margin-inline` | `-20px` | The capacity box's caption: inline margin |
+| `--mac-disk-utility-caption-size` | `10px` | The capacity box's caption: font size |
+| `--mac-disk-utility-caption-line-height` | `13px` | The capacity box's caption: line height |
+| `--mac-disk-utility-usage-height` | `118px` | The capacity bar and its legend: height |
+| `--mac-disk-utility-usage-padding-top` | `26px` | The capacity bar and its legend: top padding |
+| `--mac-disk-utility-usage-padding-start` | `2px` | The capacity bar and its legend: leading padding |
+| `--mac-disk-utility-bar-inset-end` | `6px` | Room after the capacity bar's trailing end (and the legend's overhang) |
+| `--mac-disk-utility-legend-margin-top` | `9.75px` | The legend: top margin |
+| `--mac-disk-utility-legend-entry-padding-start` | `16.5px` | A legend entry: leading padding |
+| `--mac-disk-utility-legend-square-top` | `1.25px` | A legend entry's square: distance from the top |
+| `--mac-disk-utility-legend-square-size` | `10px` | A legend entry's square: width and height |
+| `--mac-disk-utility-legend-square-radius` | `2px` | A legend entry's square: corner radius |
+| `--mac-disk-utility-legend-size` | `12px` | The legend: font size |
+| `--mac-disk-utility-legend-line-height` | `15px` | The legend: line height |
+| `--mac-disk-utility-legend-value-margin-top` | `5px` | A legend entry's value line: top margin |
+| `--mac-disk-utility-facts-margin-top` | `24px` | The information box: top margin |
+| `--mac-disk-utility-columns-gap` | `20px` | The information box's two columns: gap between them |
+| `--mac-disk-utility-columns-padding-start` | `10px` | The information box's two columns: leading padding |
+| `--mac-disk-utility-columns-padding-end` | `11px` | The information box's two columns: trailing padding |
+| `--mac-disk-utility-divider-inset-top` | `10px` | The divider's distance from the box's top inner edge |
+| `--mac-disk-utility-divider-inset-bottom` | `9.5px` | The divider's distance from the box's bottom inner edge |
+| `--mac-disk-utility-divider-offset` | `9.5px` | The divider between the columns: its place past the start of the gap |
+| `--mac-disk-utility-fact-gap` | `8px` | A row of the information box: gap between label and value |
+| `--mac-disk-utility-fact-height` | `31px` | A row of the information box: height |
+| `--mac-disk-utility-fact-line-height` | `30.5px` | A row of the information box: line height |
+| `--mac-disk-utility-fact-first-height` | `32px` | The first row: height |
+| `--mac-disk-utility-fact-first-padding-top` | `1px` | The first row: top padding |
+| `--mac-disk-utility-fact-last-height` | `29px` | The last row: height |
+| `--mac-disk-utility-progress-margin-top` | `12px` | First Aid's progress bar: top margin |
+| `--mac-disk-utility-log-height` | `98px` | First Aid's report: height |
+| `--mac-disk-utility-log-margin-top` | `10px` | First Aid's report: top margin |
+
+## Accessibility
+
+- The window is a `region` named by its title. The toolbar is one tab stop; the arrow keys
+  move between its items. Each item's label is its control's accessible name; the two
+  segments of Volume show only a sign and are named "Add Volume" and "Delete Volume".
+- A toolbar item that does not apply to the selected row is disabled, and its label dims
+  with it.
+- The sidebar is a `tree` named "Devices" and one tab stop: the arrow keys move the
+  selection and open and close outline rows, and typing selects by name. The two headers
+  name their groups. The eject mark at the end of a row is decoration: Unmount in the
+  toolbar is the command.
+- The detail pane is a `region` named by the selected row's name, which is a heading. The
+  capacity bar is a `meter` named "Used space" whose value is spoken as a share of the
+  capacity. The legend and the two columns of the information box are description lists;
+  the legend's entries are told apart by their labels, the squares add colour only.
+- A sheet is a modal `dialog` named by its question. The keyboard stays inside it, Escape
+  cancels and Return presses the default button. First Aid's progress is a `progressbar`,
+  and its report is a list named "Details".
+- A name that is not mounted is dimmed; the Mount Point row says "Not Mounted" in words.
+- The values under the legend's labels keep the captures' grey (`#717171`), which on the
+  Dark Aqua pane is a contrast of about 2.7 to 1, below what small text should have. That is
+  the price of matching the screenshot; with `prefers-contrast: more` the values take the
+  label colour, and the same figures are in the information table at full contrast.
+
+## Fidelity
+
+`disk-utility.visual.json` compares the whole window with the two Disk Utility screenshots,
+each as captured and again with the text and the stand-in drawings masked. The dark capture
+shows less on the selected volume than the light one (10.9 GB used against 16.36 GB), so it
+has an example of its own with those figures. Scores from `npm run visual -- disk-utility/`
+in Chromium on Linux with the fallback font: the share of pixels that differ and the mean
+colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 4.20% | 4.47 | 3.59% | 4.57 |
+| `window-light-layout` (masked) | 0.49% | 0.52 | 0.03% | 0.34 |
+| `window-dark` | 4.23% | 4.54 | 3.54% | 4.58 |
+| `window-dark-layout` (masked) | 0.43% | 0.66 | 0.04% | 0.49 |
+
+Measured in the screenshots and reproduced: the 926 by 571 pt frame, the 70 pt chrome with
+every toolbar item where the capture has it, the 253 pt sidebar and its divider, the 32 pt
+margins of the detail pane, the 120 by 39 pt capacity box and its colour, the two rules, the
+600 by 24 pt capacity bar and the width of its used part in both captures (46 and 32 pt), the
+legend's 10 pt squares at a 204 pt pitch with their colours in both appearances, and the
+information box with its line, its rules at 32, 63 and 94 pt and its divider.
+
+What differs, and why:
+
+- **Text.** Set in the fallback font off Apple devices, which is nearly all of the unmasked
+  scores. The sizes are read from the captures: 24 pt bold for the name, 13 and 11 pt for
+  its two lines, 19 pt in the capacity box, 10 pt for its caption and 12 pt in the legend and
+  the table.
+- **Icons and glyphs.** The disk icon with the Finder face, the sidebar's drive icons and
+  the toolbar glyphs are Apple's artwork; all are replaced by original drawings.
+- **The bar's used part.** The captures draw it wider than the Used figure alone would be
+  (46 pt where 16.36 GB of 249.85 GB is 39 pt). The demo's data carries that difference as
+  the volume's `reserved` space so that both captures are matched; what Disk Utility really
+  counts there is not known.
+- **Other Volumes.** The captures print two dashes for it, and so does the demo, for every
+  volume.
+
+Provisional, because no screenshot shows them: every row but Macintosh SSD (the detail pane
+of a container and of a disk follow Disk Utility's layout with invented figures), the Show
+Only Volumes list, an unmounted volume's dimmed name, the Mount item, and all the sheets,
+whose wording follows Disk Utility's where it is remembered and is not checked against a
+running Catalina.
+
+Not built:
+
+- Partitioning. The Partition item explains APFS space sharing and offers Add Volume, as
+  Disk Utility does first; the partition pie that its Partition button opens is not built.
+- The Info window. Disk Utility opens a separate window with a longer table; the demo lists
+  the detail pane's facts in a sheet.
+- Clicking an eject mark in the sidebar, ejecting a whole disk, disk images, RAID, the
+  capacity bar's segments for the other volumes of a container, and reserve and quota sizes
+  when a volume is added.
+- Key equivalents and the menu bar's commands: the descriptor lists the menu titles, and a
+  page cannot take Command-key shortcuts from the browser.

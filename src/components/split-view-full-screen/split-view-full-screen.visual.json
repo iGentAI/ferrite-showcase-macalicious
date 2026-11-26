@@ -1,0 +1,304 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "divider-light",
+      "description": "The gutter and its handle at the middle of the screen, Aqua. The tiles hold application content (Notes' paper texture, a web page) and are masked except for the 2 pt beside the gutter.",
+      "example": "visual-divider",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 18,
+          "height": 150
+        },
+        {
+          "x": 34,
+          "y": 0,
+          "width": 18,
+          "height": 150
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.0015
+      },
+      "deltaBudget": {
+        "1x": 0.55,
+        "2x": 0.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Split-Screen-Apps.png",
+        "crop": {
+          "x": 1440,
+          "y": 900,
+          "width": 104,
+          "height": 300
+        }
+      }
+    },
+    {
+      "name": "divider-dark",
+      "description": "The gutter and its handle at the middle of the screen, Dark Aqua. The tiles hold application content and are masked except for the 2 pt beside the gutter.",
+      "example": "visual-divider",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 18,
+          "height": 150
+        },
+        {
+          "x": 34,
+          "y": 0,
+          "width": 18,
+          "height": 150
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.0015
+      },
+      "deltaBudget": {
+        "1x": 0.5,
+        "2x": 0.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Split-Screen-Apps.png",
+        "crop": {
+          "x": 1440,
+          "y": 900,
+          "width": 104,
+          "height": 300
+        }
+      }
+    },
+    {
+      "name": "toolbars-light",
+      "description": "The top of the gutter between the inactive leading toolbar and the active trailing one, Aqua. No toolbar item or text is in the crop; the 2 pt under the bars are flat stand-ins for application content.",
+      "example": "visual-toolbars",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 0.4,
+        "2x": 0.4
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Split-Screen-Apps.png",
+        "crop": {
+          "x": 1468,
+          "y": 0,
+          "width": 48,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "toolbars-dark",
+      "description": "The top of the gutter between the inactive leading toolbar and the active trailing one, Dark Aqua. The active bar is tinted by the page under it in the capture.",
+      "example": "visual-toolbars",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 1.8,
+        "2x": 1.8
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Split-Screen-Apps.png",
+        "crop": {
+          "x": 1468,
+          "y": 0,
+          "width": 48,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the divider, reached with Tab: the ring is drawn around the handle, Aqua. No screenshot shows it.",
+      "example": "visual-divider",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 52,
+          "height": 150
+        },
+        "pixels": [
+          {
+            "x": 22.5,
+            "y": 75,
+            "color": "#0c357b",
+            "tolerance": 4,
+            "note": "focus ring, 3 pt outside the handle: --mac-focus-ring-color (24 106 246 at 50%) over the black gutter; inferred"
+          },
+          {
+            "x": 29.5,
+            "y": 75,
+            "color": "#0c357b",
+            "tolerance": 4,
+            "note": "the ring on the other side of the handle; inferred"
+          },
+          {
+            "x": 26,
+            "y": 75,
+            "color": "#8c8c8c",
+            "note": "handle, measured in Split-Screen-Apps @ 1491,1050"
+          },
+          {
+            "x": 20.5,
+            "y": 75,
+            "color": "#000000",
+            "note": "gutter outside the ring, measured @ 1480,300"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the divider, Dark Aqua. No screenshot shows it.",
+      "example": "visual-divider",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 52,
+          "height": 150
+        },
+        "pixels": [
+          {
+            "x": 22.5,
+            "y": 75,
+            "color": "#165480",
+            "tolerance": 4,
+            "note": "focus ring: --mac-focus-ring-color (43 168 255 at 50%) over the black gutter; inferred"
+          },
+          {
+            "x": 26,
+            "y": 75,
+            "color": "#8c8c8c",
+            "note": "handle, measured in Split-Screen-Apps @ 1491,1050"
+          },
+          {
+            "x": 20.5,
+            "y": 75,
+            "color": "#000000",
+            "note": "gutter outside the ring, measured @ 1480,300"
+          }
+        ]
+      }
+    },
+    {
+      "name": "arrow-key-light",
+      "description": "The divider after Tab and one Left Arrow: 1% of the 1668 pt the tiles share, 16.7 pt to the left, Aqua.",
+      "example": "visual-divider",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowLeft"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 52,
+          "height": 150
+        },
+        "pixels": [
+          {
+            "x": 5,
+            "y": 20,
+            "color": "#000000",
+            "note": "gutter at its new place, x 3.3 to 15.3 of the capture: the share is 0.4336 of 1668 pt"
+          },
+          {
+            "x": 14,
+            "y": 20,
+            "color": "#000000",
+            "note": "gutter at its new place"
+          },
+          {
+            "x": 1.5,
+            "y": 20,
+            "color": "#faf9f7",
+            "note": "leading tile's stand-in fill, left of the gutter"
+          },
+          {
+            "x": 26,
+            "y": 75,
+            "color": "#ffffff",
+            "note": "trailing tile's fill where the handle was"
+          }
+        ]
+      }
+    },
+    {
+      "name": "arrow-key-dark",
+      "description": "The divider after Tab and one Right Arrow: 16.7 pt to the right, Dark Aqua.",
+      "example": "visual-divider",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowRight"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 52,
+          "height": 150
+        },
+        "pixels": [
+          {
+            "x": 38,
+            "y": 20,
+            "color": "#000000",
+            "note": "gutter at its new place, x 36.7 to 48.7 of the capture: the share is 0.4536 of 1668 pt"
+          },
+          {
+            "x": 47,
+            "y": 20,
+            "color": "#000000",
+            "note": "gutter at its new place"
+          },
+          {
+            "x": 26,
+            "y": 75,
+            "color": "#282828",
+            "note": "leading tile's stand-in fill where the handle was"
+          },
+          {
+            "x": 50.5,
+            "y": 20,
+            "color": "#ffffff",
+            "note": "trailing tile's fill, right of the gutter"
+          }
+        ]
+      }
+    }
+  ]
+}

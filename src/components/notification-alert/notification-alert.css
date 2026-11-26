@@ -1,0 +1,220 @@
+/*
+ * Notification, alert style (NSUserNotification shown as an alert).
+ *
+ * 344 pt wide and 63 pt high with a title and two lines of message; each further line adds
+ * 14 pt. Icon box, text column, then a 1 pt divider and the 70 pt button column. The dark
+ * alert has a 1 pt inner rim, painted over the content by ::after.
+ *
+ * Parts
+ *   .mac-notification-alert-icon       32 pt box for the application's icon
+ *   .mac-notification-alert-content    the text column
+ *   .mac-notification-alert-title      12 pt bold, one line
+ *   .mac-notification-alert-subtitle   11 pt bold, one line [provisional]
+ *   .mac-notification-alert-message    11 pt on a 14 pt pitch, at most four lines
+ *   .mac-notification-alert-actions    the button column
+ *   .mac-notification-alert-action     one button of it
+ * States
+ *   [data-material="opaque"]           the surface as captured, without the material
+ *   [data-starting-style], [data-ending-style]
+ *                                      off screen at the trailing side, for a caller that
+ *                                      animates arrival and departure [provisional]
+ * States of a button
+ *   :active, :focus-visible, [data-disabled], [data-force~="pressed" | "focus"]
+ *   [data-window-state="main" | "inactive"] *   no focus ring when the page is not key
+ */
+.mac-notification-alert {
+  /* Corner radius 8 pt, fitted to the corners of both captures: the outer line passes 5 px in
+     from each straight edge on the diagonal, a 17 px circle. With the panel's text masked and
+     a threshold of 0.05 the 2x mismatch is 0.00% (Aqua) and 0.10% (Dark Aqua) at 8px, against
+     0.16% and 0.28% at the 6px of --mac-radius-notification and 0.02% and 0.16% at 8.5px. */
+  --_radius: 8px;
+
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  box-sizing: border-box;
+  width: 344px;
+  min-height: 63px;
+  border-radius: var(--_radius);
+  background: var(--mac-material-notification);
+  -webkit-backdrop-filter: var(--mac-material-filter);
+  backdrop-filter: var(--mac-material-filter);
+  box-shadow: var(--mac-notification-alert-shadow);
+  color: var(--mac-notification-alert-text);
+  text-align: start;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  transition:
+    transform 0.3s ease-out,
+    opacity 0.3s ease-out;
+}
+
+.mac-notification-alert::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--mac-notification-alert-rim);
+  pointer-events: none;
+}
+
+.mac-notification-alert:where([data-material="opaque"]) {
+  background: var(--mac-notification-alert-fill-opaque);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Arrival and departure: the alert slides in from the trailing edge of the screen, 8 pt away. */
+.mac-notification-alert:where([data-starting-style], [data-ending-style]) {
+  transform: translateX(calc(100% + 8px));
+}
+
+.mac-notification-alert:where([data-starting-style], [data-ending-style]):where(:dir(rtl)) {
+  transform: translateX(calc(-100% - 8px));
+}
+
+.mac-notification-alert-icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-inline-start: 10px;
+}
+
+.mac-notification-alert-content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 0;
+  /* Text origin 51 pt from the alert's edge (ink from 52 pt); a line is at most 213 pt wide. */
+  padding: 7px 9px 10px 9px;
+}
+
+.mac-notification-alert-title,
+.mac-notification-alert-subtitle {
+  overflow: hidden;
+  font: var(--mac-font-weight-bold) 12px / 16px var(--mac-font-family-system);
+  letter-spacing: var(--mac-tracking-regular);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-notification-alert-subtitle {
+  font:
+    var(--mac-font-weight-bold) var(--mac-font-size-small) / var(--mac-line-height-small)
+    var(--mac-font-family-system);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+.mac-notification-alert-message {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-top: 2px;
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+  overflow-wrap: break-word;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+}
+
+.mac-notification-alert-actions {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 71px;
+  overflow: hidden;
+  border-inline-start: 1px solid var(--mac-notification-alert-divider);
+  border-start-end-radius: var(--_radius);
+  border-end-end-radius: var(--_radius);
+}
+
+.mac-notification-alert-action {
+  display: block;
+  flex: 1 1 0;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 1px 4px 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--mac-notification-alert-button-text);
+  font: var(--mac-font-weight-regular) 12px / 16px var(--mac-font-family-system);
+  letter-spacing: var(--mac-tracking-regular);
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+/* Two buttons share the column, with a 1 pt line between them. */
+.mac-notification-alert-action:where(:not(:first-child)) {
+  border-top: 1px solid var(--mac-notification-alert-divider);
+}
+
+.mac-notification-alert-action:where(:active, [data-force~="pressed"]):where(
+  :not([data-disabled])
+) {
+  background: var(--mac-notification-alert-button-fill-pressed);
+}
+
+.mac-notification-alert-action:where([data-disabled]) {
+  color: var(--mac-color-control-text-disabled);
+}
+
+/* Keyboard focus ring, drawn inside the button because the column clips at the alert's
+   corners; only while the page is key. */
+.mac-notification-alert-action:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-notification-alert {
+    transition-property: opacity;
+  }
+
+  .mac-notification-alert:where([data-starting-style], [data-ending-style]) {
+    transform: none;
+    opacity: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-notification-alert {
+    outline: 1px solid CanvasText;
+    outline-offset: -1px;
+    background: Canvas;
+  }
+
+  .mac-notification-alert-actions,
+  .mac-notification-alert-action {
+    border-color: CanvasText;
+  }
+
+  .mac-notification-alert-action {
+    color: ButtonText;
+  }
+
+  .mac-notification-alert-action:where([data-disabled]) {
+    color: GrayText;
+  }
+}

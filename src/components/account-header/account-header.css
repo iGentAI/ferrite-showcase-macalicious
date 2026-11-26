@@ -1,0 +1,122 @@
+/*
+ * Account header: the band at the top of System Preferences.
+ *
+ * Measured in System Preferences, both appearances (band 668 x 111 pt over a 1 pt separator):
+ *   avatar          64 pt circle, 25 pt from the leading edge, 23 pt from the top
+ *   name            19 pt regular, its capitals start 32 pt from the top; its ink starts 10.5 pt
+ *                   after the avatar, which is a 10 pt margin and the first letter's side bearing
+ *   subtitle        11 pt regular, its capitals start 54.5 pt from the top
+ *   destinations    82 pt column slots (preference-pane-icon), the last one ending 6.5 pt from
+ *                   the trailing edge, their 40 pt artwork squares 17 pt from the top
+ *
+ * The band has no fill of its own: the window's background shows through (#ececec in Aqua,
+ * #2f3031 in Dark Aqua in System Preferences). Nothing changes in a window that is not key.
+ *
+ * Parts
+ *   .mac-account-header-avatar         the circle; draws a silhouette while it is empty
+ *   .mac-account-header-text           name and subtitle
+ *   .mac-account-header-name
+ *   .mac-account-header-subtitle
+ *   .mac-account-header-destinations   the buttons at the trailing edge
+ */
+.mac-account-header {
+  display: flex;
+  align-items: flex-start;
+  box-sizing: border-box;
+  height: 112px;
+  padding: 23px 6.5px 0 25px;
+  border-bottom: 1px solid var(--mac-color-separator);
+  color: var(--mac-color-label);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-account-header-avatar {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+}
+
+/* No picture: a head and shoulders on a grey disc. */
+.mac-account-header-avatar:empty {
+  background: var(--mac-account-header-avatar-fill);
+}
+
+.mac-account-header-avatar:empty::before,
+.mac-account-header-avatar:empty::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  border-radius: 50%;
+  background: var(--mac-account-header-avatar-figure);
+  transform: translateX(-50%);
+}
+
+.mac-account-header-avatar:empty::before {
+  top: 13px;
+  width: 24px;
+  height: 24px;
+}
+
+.mac-account-header-avatar:empty::after {
+  top: 41px;
+  width: 48px;
+  height: 48px;
+}
+
+.mac-account-header-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  margin: 4.5px 12px 0 10px;
+}
+
+.mac-account-header-name {
+  overflow: hidden;
+  font: var(--mac-font-weight-regular) 19px / 23px var(--mac-font-family-system);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-account-header-subtitle {
+  overflow: hidden;
+  margin-top: 1px;
+  font: var(--mac-font-subheadline);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The slots keep 5 pt of clear space above their artwork, so they start 11 pt above the
+   avatar's top edge. */
+.mac-account-header-destinations {
+  display: flex;
+  flex: none;
+  align-items: flex-start;
+  margin-top: -11px;
+}
+
+@media (forced-colors: active) {
+  .mac-account-header {
+    border-bottom-color: CanvasText;
+    color: CanvasText;
+  }
+
+  .mac-account-header-avatar:empty {
+    box-sizing: border-box;
+    border: 1px solid CanvasText;
+    background: Canvas;
+  }
+
+  .mac-account-header-avatar:empty::before,
+  .mac-account-header-avatar:empty::after {
+    background: CanvasText;
+  }
+}

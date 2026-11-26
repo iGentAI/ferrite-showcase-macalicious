@@ -1,0 +1,796 @@
+/*
+ * Contacts demo: the layout of the window and the card, and what only Contacts has: the
+ * picture, the name, the label of a field and the rules between the fields.
+ *
+ * Every control is a library component as the library draws it. No selector here names a
+ * library class, and a demo class on a library control sets only its place and its size (a
+ * position, a margin, a width, a share of a flex or grid container). The colours and the type
+ * in this file belong to the demo's own elements. One of them, the label of a finished card,
+ * is the library's MenuTrigger, which is an unstyled button by design
+ * (src/components/menu/menu.mdx: "a menu has no bezel of its own").
+ *
+ * Parts
+ *   .mac-contacts                the window
+ *   .mac-contacts-split          the split view, filling it
+ *   .mac-contacts-sidebar-pane   the groups column
+ *   .mac-contacts-top            the strip over the groups, with the window controls
+ *   .mac-contacts-sidebar        the library sidebar, filling the column
+ *   .mac-contacts-controls-room  the demo's spacer before the first group, under that strip
+ *   .mac-contacts-list-pane      the names column
+ *   .mac-contacts-search-strip   the search field and the room around it
+ *   .mac-contacts-list           the list view; -entry, -sort and -me are a name's parts
+ *   .mac-contacts-card           the card column: a scroll view over the bar
+ *   .mac-contacts-head           picture, name, and the buttons or the Info and Picture control
+ *   .mac-contacts-phonetic       how the name sounds, over it; -phonetic-fields while edited
+ *   .mac-contacts-address        a postal address being edited; -address-line its city line
+ *   .mac-contacts-menu-area      what takes a secondary click: the groups, the names
+ *   .mac-contacts-group-name     the field a group's name is typed in
+ *   .mac-contacts-picture        the monogram disc
+ *   .mac-contacts-identity       the name and what is under it
+ *   .mac-contacts-actions        the four buttons of a finished card, with their captions
+ *   .mac-contacts-glyph          the demo's wrapper around a glyph of its own in a button
+ *   .mac-contacts-fields         the groups of fields
+ *   .mac-contacts-group          the fields of one kind, with a rule under them
+ *   .mac-contacts-row            one field: label, value, and a badge or a remove button
+ *   .mac-contacts-label          a field's label: a menu's trigger, or plain text
+ *   .mac-contacts-label-cell     the cell of a label's pop-up button, which it sets at its end
+ *   .mac-contacts-value          its value
+ *   .mac-contacts-badges         the cell of a row's round buttons, shown with the row
+ *   .mac-contacts-autosize       a field as wide as its text, sized by a hidden copy of it
+ *   .mac-contacts-bar            the add, Edit or Done and share buttons
+ *   .mac-contacts-hidden         text for assistive technology only
+ *
+ * Only on the desktop served by Ferrite
+ *   .mac-contacts-picture-image  a card's own picture, in its disc
+ *   .mac-contacts-picture-choices  the Picture pane's monogram choice and picture buttons
+ *   .mac-contacts-picture-commands the buttons that choose or remove a picture
+ *   .mac-contacts-sheet-form     a sheet's labels and controls; -label, -error are its parts
+ *   .mac-contacts-panel-layer    where the drive's Open panel stands, over the page
+ *
+ * States
+ *   [data-mode="view" | "edit"]  on the head, a row and the bar
+ *   [data-fixed]                 on a label that opens nothing
+ *   [data-tinted]                on a glyph's wrapper: the link colour
+ *   [data-popup-open]            on a label whose menu is open (set by Base UI)
+ */
+.mac-contacts-split {
+  flex: 1 1 auto;
+}
+
+/* Groups column: the strip with the window controls lies over the top of the sidebar, whose
+   first row starts 22 pt under the window's top: the 5 pt the sidebar's tree has above its
+   rows, and the 17 pt of the demo's spacer, the first thing in the tree. The sidebar is one
+   surface from the window's top down, in every material and window state, and is not padded. */
+.mac-contacts-sidebar-pane {
+  position: relative;
+}
+
+.mac-contacts-sidebar {
+  height: 100%;
+}
+
+.mac-contacts-controls-room {
+  height: var(--mac-contacts-controls-room-height);
+}
+
+.mac-contacts-top {
+  position: absolute;
+  z-index: 1;
+  inset: 0 0 auto;
+  height: var(--mac-contacts-top-height);
+}
+
+/* The window controls float over the sidebar: the close button's centre is 14 pt in and
+   11 pt down. */
+.mac-contacts-controls {
+  position: absolute;
+  inset-block-start: var(--mac-contacts-controls-inset-block-start);
+  inset-inline-start: var(--mac-contacts-controls-inset-inline-start);
+}
+
+/* Names column: a 21 pt search field 24.5 pt under the top, 14.5 pt from the left and
+   18.5 pt from the right; the first name starts at 54 pt. */
+.mac-contacts-list-pane {
+  display: flex;
+  flex-direction: column;
+  background: var(--mac-contacts-pane);
+}
+
+.mac-contacts-search-strip {
+  flex: none;
+  box-sizing: border-box;
+  height: var(--mac-contacts-search-strip-height);
+  padding: var(--mac-contacts-search-strip-padding);
+}
+
+.mac-contacts-search {
+  width: 100%;
+}
+
+/* The list view fills the rest of the column, on its own background. */
+.mac-contacts-list {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.mac-contacts-empty {
+  flex: 1 1 auto;
+}
+
+/* Under the count of several cards: the commands that take them. */
+.mac-contacts-several-bar {
+  display: flex;
+  flex: none;
+  justify-content: flex-end;
+  padding: var(--mac-space-control-gap);
+}
+
+/* The name a card is sorted by is semibold. */
+.mac-contacts-preferences-body {
+  margin: var(--mac-space-window-margin);
+}
+
+.mac-contacts-preferences-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.mac-contacts-preferences-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mac-contacts-preferences-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px var(--mac-space-control-gap);
+  margin-top: 8px;
+}
+
+.mac-contacts-sort {
+  font-weight: 600;
+}
+
+/* The mark of the user's own card, 10 pt after the name. */
+.mac-contacts-me {
+  display: inline-flex;
+  margin-inline-start: var(--mac-contacts-me-margin-inline-start);
+  color: var(--mac-color-label-secondary);
+  vertical-align: var(--mac-contacts-me-vertical-align);
+}
+
+/* Card column */
+.mac-contacts-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--mac-contacts-pane);
+}
+
+.mac-contacts-scroll,
+.mac-contacts-none {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* The head of a finished card is 155 pt high and that of a card being edited 141 pt. The
+   picture is 70 pt from the card's edge and 24 pt under the window's top. A card with more
+   lines in its head (a nickname, a job title) grows by those lines: --_head-lines, set on the
+   head by the card, moves the buttons and the Info and Picture control down with it. */
+.mac-contacts-head {
+  position: relative;
+  box-sizing: border-box;
+  height: calc(
+    var(--mac-contacts-head-height) +
+    var(--_head-lines, 0) *
+    var(--mac-contacts-head-line-height)
+  );
+}
+
+.mac-contacts-head:where([data-mode="edit"]) {
+  height: calc(
+    var(--mac-contacts-head-edit-height) +
+    var(--_head-lines, 0) *
+    var(--mac-contacts-head-edit-line-height)
+  );
+}
+
+.mac-contacts-picture {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(
+    to bottom,
+    var(--mac-contacts-picture-top),
+    var(--mac-contacts-picture-bottom)
+  );
+  color: var(--mac-contacts-picture-text);
+  font-weight: 500;
+  font-family: var(--mac-font-family-system);
+  line-height: 1;
+}
+
+.mac-contacts-head > .mac-contacts-picture {
+  position: absolute;
+  inset-block-start: var(--mac-contacts-picture-inset-block-start);
+  inset-inline-start: var(--mac-contacts-picture-inset-inline-start);
+}
+
+/* The name: 18 pt, its ink 133.5 pt from the card's edge. On a finished card its baseline is
+   53.5 pt under the top; on a card being edited the line is at the picture's top, with the
+   company and the Company checkbox under it. */
+.mac-contacts-identity {
+  position: absolute;
+  inset-block-start: var(--mac-contacts-identity-inset-block-start);
+  inset-inline: var(--mac-contacts-identity-inset-inline);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.mac-contacts-head:where([data-mode="edit"]) > .mac-contacts-identity {
+  inset-block-start: var(--mac-contacts-identity-edit-inset-block-start);
+  inset-inline-start: var(--mac-contacts-identity-edit-inset-inline-start);
+}
+
+.mac-contacts-name {
+  display: flex;
+  gap: var(--mac-contacts-name-gap);
+  max-width: 100%;
+  margin: 0;
+  overflow: hidden;
+  color: var(--mac-color-label);
+  font:
+    400 var(--mac-contacts-name-font-size) / var(--mac-contacts-name-line-height)
+    var(--mac-font-family-system);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A card being edited has two text fields in the name's line. They are the library's fields
+   in the name's own 18 pt type, which the fields are given (contacts-card.tsx); without a
+   bezel a field is as high as its line, the 22 pt of the name. The hidden copy that sizes
+   each is set in the same type. */
+.mac-contacts-head:where([data-mode="edit"]) .mac-contacts-name {
+  align-items: center;
+  height: var(--mac-contacts-name-line-height);
+}
+
+.mac-contacts-name > .mac-contacts-autosize {
+  font: inherit;
+}
+
+.mac-contacts-company {
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-body);
+}
+
+/* How the name sounds: small, over the name. */
+.mac-contacts-phonetic {
+  color: var(--mac-color-label-secondary);
+  font:
+    400 var(--mac-contacts-caption-font-size) / var(--mac-contacts-head-line-height)
+    var(--mac-font-family-system);
+}
+
+.mac-contacts-phonetic-fields {
+  display: flex;
+  gap: var(--mac-contacts-name-gap);
+  max-width: 100%;
+  margin-block-end: var(--mac-contacts-company-margin-block-start);
+}
+
+.mac-contacts-value.mac-contacts-address {
+  flex-direction: column;
+  gap: var(--mac-contacts-company-margin-block-start);
+  align-items: flex-start;
+  padding-block: var(--mac-contacts-company-margin-block-start);
+}
+
+.mac-contacts-address-line {
+  display: flex;
+  gap: var(--mac-contacts-name-gap);
+  max-width: 100%;
+}
+
+.mac-contacts-identity > .mac-contacts-autosize {
+  margin-block-start: var(--mac-contacts-company-margin-block-start);
+}
+
+/* The 12 pt box is 133 pt from the card's edge and 65.5 pt under the top. */
+.mac-contacts-company-box {
+  margin: var(--mac-contacts-company-box-margin);
+}
+
+/* Four round buttons 56 pt apart, centred where the captured 24 pt discs are: 178.5 pt from
+   the card's edge and 115 pt under the top. They are the library's regular round button, a
+   20 pt disc in a 21 pt box. An 11 pt caption is centred under each, where the capture has
+   it. */
+.mac-contacts-actions {
+  position: absolute;
+  inset-block-start: calc(
+    var(--mac-contacts-actions-inset-block-start) +
+    var(--_head-lines, 0) *
+    var(--mac-contacts-head-line-height)
+  );
+  inset-inline-start: var(--mac-contacts-actions-inset-inline-start);
+  display: flex;
+}
+
+.mac-contacts-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--mac-contacts-action-width);
+}
+
+.mac-contacts-caption {
+  margin-block-start: var(--mac-contacts-caption-margin-block-start);
+  color: var(--mac-contacts-caption);
+  font:
+    400 var(--mac-contacts-caption-font-size) / var(--mac-contacts-caption-line-height)
+    var(--mac-font-family-system);
+}
+
+/* A glyph of the demo's own in a round button. The wrapper is the demo's element: tinted, it
+   gives the drawing the link colour; untinted, the drawing takes the button's colour. */
+.mac-contacts-glyph {
+  display: flex;
+}
+
+.mac-contacts-glyph:where([data-tinted]) {
+  color: var(--mac-contacts-link);
+}
+
+/* Info and Picture: a 215 pt control centred in the card, 106 pt under the top. */
+.mac-contacts-panes {
+  position: absolute;
+  inset-block-start: calc(
+    var(--mac-contacts-panes-inset-block-start) +
+    var(--_head-lines, 0) *
+    var(--mac-contacts-head-edit-line-height)
+  );
+  inset-inline: 0;
+  width: var(--mac-contacts-panes-width);
+  margin-inline: auto;
+}
+
+.mac-contacts-picture-pane {
+  display: flex;
+  gap: var(--mac-contacts-picture-pane-gap);
+  align-items: center;
+  padding: var(--mac-contacts-picture-pane-padding);
+}
+
+/*
+ * The fields: 35 pt from each side of the card. A row is 24 pt; a group has 2 pt over its
+ * rows, 2 pt and a 1 pt rule under them, so one row and its rule are 29 pt and two are 53.
+ */
+.mac-contacts-fields {
+  padding-inline: var(--mac-contacts-fields-padding-inline);
+}
+
+.mac-contacts-group {
+  padding-block: var(--mac-contacts-group-padding-block);
+  border-block-end: 1px solid var(--mac-contacts-rule);
+}
+
+.mac-contacts-group:where([data-last]) {
+  border-block-end-color: transparent;
+}
+
+/* A finished card: the labels end 124 pt from the card's edge, in a column whose capsule
+   reaches 132 pt, and the values start at 133.5 pt. */
+.mac-contacts-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--mac-contacts-row-label-width) minmax(0, 1fr) auto;
+  column-gap: var(--mac-contacts-row-column-gap);
+  align-items: center;
+  box-sizing: border-box;
+  min-height: var(--mac-contacts-row-height);
+}
+
+/* A postal address: as many lines as it has, its label on the first of them. */
+.mac-contacts-row:where([data-tall]) {
+  align-items: start;
+}
+
+/* A card being edited: the label column is 90.5 pt and starts half a point in, and the
+   field's box starts 131 pt from the card's edge. */
+.mac-contacts-row:where([data-mode="edit"]) {
+  grid-template-columns: var(--mac-contacts-row-edit-label-width) minmax(0, 1fr);
+  column-gap: var(--mac-contacts-row-edit-column-gap);
+  height: var(--mac-contacts-row-height);
+  padding-inline-start: var(--mac-contacts-row-edit-padding-inline-start);
+}
+
+.mac-contacts-row:where([data-mode="edit"][data-tall]) {
+  height: auto;
+}
+
+/* The label's pop-up button stands at the end of its column, so its arrows are where the
+   capture has them, 116 to 121 pt from the card's edge. The button is as wide as its title
+   and its arrows; a title too long for the column is cut short by the button itself, which
+   shrinks as a flex item does. Beside a remove button the column's first 15 pt are that
+   button's. */
+.mac-contacts-label-cell {
+  display: flex;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.mac-contacts-remove + .mac-contacts-label-cell {
+  padding-inline-start: var(--mac-contacts-remove-room);
+}
+
+/* The 14 pt disc is 35 pt from the card's edge, at the start of the label column. */
+.mac-contacts-remove {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: var(--mac-contacts-remove-inset-block-start);
+  inset-inline-start: var(--mac-contacts-remove-inset-inline-start);
+}
+
+.mac-contacts-custom {
+  width: 100%;
+}
+
+/* The title of a pop-up button without a bezel starts 2 pt before a field's text would. */
+.mac-contacts-choice {
+  margin-inline-start: var(--mac-contacts-choice-margin-inline-start);
+}
+
+.mac-contacts-label {
+  justify-self: end;
+  box-sizing: border-box;
+  max-width: 100%;
+  height: var(--mac-contacts-label-height);
+  margin: 0;
+  padding: 0 var(--mac-contacts-label-padding-inline);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--mac-contacts-label-radius);
+  background: none;
+  color: var(--mac-contacts-label);
+  font:
+    400 var(--mac-contacts-label-font-size) / var(--mac-contacts-label-line-height)
+    var(--mac-font-family-system);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+  outline: none;
+  appearance: none;
+}
+
+/* The fixed label of a card being edited ends over the pop-up buttons' arrows, 116.5 pt
+   from the card's edge. */
+.mac-contacts-row:where([data-mode="edit"]) > .mac-contacts-label {
+  padding-inline: 0 var(--mac-contacts-label-edit-padding-inline-end);
+}
+
+/* On a finished card the capsule starts 8 pt before the label and ends 7 pt after it, and
+   sits half a point over the middle of the row. */
+.mac-contacts-row:where([data-mode="view"]) > .mac-contacts-label {
+  margin-block-end: var(--mac-contacts-label-view-margin-block-end);
+  padding-inline: var(--mac-contacts-label-view-padding-inline);
+}
+
+/* A label that opens a menu is set in a capsule while its row is under the pointer, while
+   it has the keyboard focus and while its menu is open. */
+.mac-contacts-row:where(:hover) > .mac-contacts-label:where(:not([data-fixed])),
+.mac-contacts-label:where(:focus-visible, [data-popup-open]) {
+  background: var(--mac-contacts-capsule);
+  color: var(--mac-contacts-capsule-text);
+}
+
+.mac-contacts-label:where(:focus-visible):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+}
+
+.mac-contacts-value {
+  display: flex;
+  gap: var(--mac-contacts-value-gap);
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-contacts-row:where([data-mode="view"]) > .mac-contacts-value {
+  display: block;
+  padding-block-start: var(--mac-contacts-value-view-padding-block-start);
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* A note keeps its lines. */
+.mac-contacts-value:where([data-wrap]) {
+  padding-block: var(--mac-contacts-value-wrap-padding-block);
+  white-space: pre-wrap;
+}
+
+.mac-contacts-service {
+  color: var(--mac-color-label-secondary);
+}
+
+/* A row's round buttons: the cell ends where the rules end, and is shown while the row is
+   under the pointer, holds the keyboard focus or has its menu open. The cell is the demo's;
+   the buttons in it are the library's regular round button, the 20 pt disc of the capture. */
+.mac-contacts-badges {
+  display: flex;
+  gap: var(--mac-contacts-badges-gap);
+  margin-inline-end: var(--mac-contacts-badges-margin-inline-end);
+  opacity: 0;
+}
+
+.mac-contacts-row:where(:hover, :focus-within, :has([data-popup-open])) > .mac-contacts-badges {
+  opacity: 1;
+}
+
+/* A field as wide as its text: the hidden copy sizes the cell and the field fills it. The
+   copy is set in the field's own type and has the field's 2 pt of padding, and a point more
+   for the insertion point. */
+.mac-contacts-autosize {
+  display: inline-grid;
+  min-width: 0;
+  max-width: 100%;
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+}
+
+.mac-contacts-autosize-text {
+  grid-area: 1 / 1;
+  padding-inline: var(--mac-contacts-autosize-padding-inline);
+  overflow: hidden;
+  white-space: pre;
+  visibility: hidden;
+}
+
+.mac-contacts-field {
+  grid-area: 1 / 1;
+  width: 100%;
+}
+
+/* The bar: 51 pt. The bezels are 20 pt high, 35.5 pt from each side of the card and 13 pt
+   over the window's bottom; the share button follows Edit or Done after 10 pt. A card being
+   edited has a rule over the bar. The buttons are the library's push buttons: this places
+   them and nothing more. */
+.mac-contacts-bar {
+  display: flex;
+  flex: none;
+  gap: var(--mac-contacts-bar-gap);
+  align-items: flex-start;
+  box-sizing: border-box;
+  height: var(--mac-contacts-bar-height);
+  padding: var(--mac-contacts-bar-padding);
+}
+
+.mac-contacts-bar:where([data-mode="edit"]) {
+  padding-block-start: var(--mac-contacts-bar-edit-padding-block-start);
+  border-block-start: 1px solid var(--mac-contacts-rule);
+}
+
+.mac-contacts-bar-space {
+  flex: 1 1 auto;
+}
+
+.mac-contacts-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* A web address on a finished card: it opens when clicked, and reads as the values around it until
+   the pointer is on it. */
+.mac-contacts-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.mac-contacts-link:hover {
+  color: var(--mac-contacts-link);
+  text-decoration: underline;
+}
+
+/* What takes a secondary click, the groups or the names: no box of its own, so the pane inside
+   keeps its layout. */
+.mac-contacts-menu-area {
+  display: contents;
+}
+
+/* A card in a window of its own: the card's column, filling the window under its title bar. */
+.mac-contacts-card-window .mac-contacts-card {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* A window without the groups, or with the card only: the window controls lie over the first
+   pane that is left. */
+.mac-contacts-list-pane,
+.mac-contacts-card {
+  position: relative;
+}
+
+/* A group's name while it is typed, in the group's own row. */
+.mac-contacts-group-name {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 0 var(--mac-space-2);
+  border: 0;
+  border-radius: var(--mac-space-2);
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  background: var(--mac-color-control-background);
+  color: var(--mac-color-label);
+  font: inherit;
+}
+
+/* A group that takes the cards being dragged over it. */
+.mac-contacts-sidebar [data-drop-target] {
+  outline: var(--mac-focus-ring-width) solid var(--mac-accent);
+  outline-offset: calc(var(--mac-focus-ring-width) * -1);
+}
+
+/*
+ * Only on the desktop served by Ferrite (contacts-desktop.tsx); the documentation's window has
+ * none of these.
+ */
+
+/* A card's own picture fills its disc. */
+.mac-contacts-picture-image {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+
+/* The Picture pane: the monogram choice, and under it the buttons that choose a picture. */
+.mac-contacts-picture-choices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-space-control-gap);
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.mac-contacts-picture-commands {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-space-4);
+  align-items: flex-start;
+}
+
+/* The square a picture is framed in while it is moved and zoomed. */
+.mac-contacts-picture-frame {
+  overflow: hidden;
+  margin-block-end: var(--mac-space-control-gap);
+  margin-inline: auto;
+  cursor: grab;
+  touch-action: none;
+}
+
+.mac-contacts-picture-frame > img {
+  display: block;
+  max-width: none;
+  user-select: none;
+}
+
+.mac-contacts-birthday {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+  align-items: center;
+}
+
+/* As bare as the other fields of a card being edited. */
+.mac-contacts-note-field {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  color: inherit;
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  background: transparent;
+  resize: none;
+}
+
+/* Spelling and Substitutions, by the window's leading corner. */
+.mac-contacts-floating-panel {
+  position: absolute;
+  z-index: var(--mac-contacts-panel-layer-z-index);
+  inset-block-end: var(--mac-contacts-panel-layer-margin);
+  inset-inline-start: var(--mac-contacts-panel-layer-margin);
+}
+
+/* A sheet's rows: each label at the end of its column, its control after it. */
+.mac-contacts-sheet-form {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--mac-space-4) var(--mac-space-label-gap);
+  align-items: center;
+  margin-block: var(--mac-space-control-gap);
+}
+
+.mac-contacts-rules {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-contacts-rule-gap);
+  margin: var(--mac-contacts-rule-gap) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-contacts-rule {
+  display: grid;
+  grid-template-columns: var(--mac-contacts-rule-field-width) var(--mac-contacts-rule-test-width) 1fr auto auto;
+  align-items: center;
+  gap: var(--mac-contacts-rule-gap);
+}
+
+.mac-contacts-rule-value {
+  width: 100%;
+  min-width: 0;
+}
+
+.mac-contacts-sheet-label {
+  justify-self: end;
+}
+
+.mac-contacts-sheet-error {
+  margin: 0;
+  color: var(--mac-color-system-red);
+  font: var(--mac-font-body);
+}
+
+/* The drive's Open panel is a window of its own, centred over the page, in front of the
+   windows and under any menu. */
+.mac-contacts-panel-layer {
+  position: fixed;
+  z-index: var(--mac-contacts-panel-layer-z-index);
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  pointer-events: none;
+}
+
+.mac-contacts-panel-layer > * {
+  max-width: calc(100% - var(--mac-contacts-panel-layer-margin));
+  max-height: calc(100% - var(--mac-contacts-panel-layer-margin));
+  pointer-events: auto;
+}
+
+@media (forced-colors: active) {
+  .mac-contacts-picture {
+    border: 1px solid CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .mac-contacts-group {
+    border-block-end-color: CanvasText;
+  }
+
+  .mac-contacts-row:where(:hover) > .mac-contacts-label:where(:not([data-fixed])),
+  .mac-contacts-label:where(:focus-visible, [data-popup-open]) {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+}

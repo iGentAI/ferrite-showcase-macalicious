@@ -1,0 +1,258 @@
+---
+title: TextEdit
+description: The TextEdit document window of macOS 10.15 with its format bar and ruler over a rich text view, a plain text mode, and the Open, Save and Print dialogs built from the library's open, save and print panels.
+layout: full
+order: 50
+---
+
+<Example name="basic" />
+
+Type in the document, select some text and use the format bar, and drag the ruler's markers.
+The File menu opens the three dialogs: Open… is a window of its own, Save… and Print… are
+sheets on the document. Format turns the document into plain text and back. The document is
+the one of the reference screenshots; the files behind the Open dialog are made up around the
+five it shows. Nothing is read from or written to a disk and nothing is printed, so a reload
+brings everything back.
+
+## What it shows
+
+- A [Window](/components/window) with a unified [Title Bar](/components/title-bar): the
+  document's name with a proxy icon, the [Window Controls](/components/window-controls), whose
+  close button carries the dot of an edited document, and the format bar on the same surface.
+- The format bar: a [Toolbar](/components/toolbar) of
+  [Toolbar Pop-Ups](/components/toolbar-pop-up) (paragraph styles, font family, typeface, size,
+  line spacing, lists), a [Color Well](/components/color-well) in its toolbar variant for the
+  text colour, a [Toolbar Button](/components/toolbar-button) that opens a
+  [Menu](/components/menu) of highlight colours, and two
+  [Toolbar Segmented Controls](/components/toolbar-segmented-control): bold, italic and
+  underline, which toggle on their own, and the four alignments, of which one is selected.
+- A [Ruler](/components/ruler) whose markers are sliders: the first-line, head and tail
+  indents move the selected paragraphs (the document's, before there is an insertion point), and so do the tab stops: a click adds one, the ruler's menu chooses left, centre, right or decimal, and dragging one off the ruler removes it.
+- The document: a rich [Text View](/components/text-view) that the browser edits in place,
+  in Helvetica 12 as TextEdit sets it, or the plain text view in Menlo 11, TextEdit's plain
+  text font.
+- The Open dialog: an [Open Panel](/components/open-panel) with a
+  [Sidebar](/components/sidebar) of places and [Tag Dots](/components/tag-dot), and the
+  folder in the view its view button names: a [Column View](/components/column-view) with a
+  preview column, a [List View](/components/list-view), an [Icon View](/components/icon-view)
+  or a [Gallery View](/components/gallery-view). TextEdit's own two
+  [Push Buttons](/components/push-button) stand in its bar, and Options shows the accessory
+  view with a [Checkbox](/components/checkbox).
+- The Save dialog: a [Save Panel](/components/save-panel) in a [Sheet](/components/sheet),
+  with a File Format [Pop-Up Button](/components/pop-up-button) as its accessory row and the
+  same browser when it is expanded.
+- The Print dialog: a [Print Panel](/components/print-panel) in a sheet, in its detailed
+  form, with the document's pages in the preview and TextEdit's pane of two checkboxes.
+- A [Menu Bar](/components/menu-bar) of [Menu Items](/components/menu-item) with their key
+  equivalents, for a page that shows the window on a desktop.
+
+| Command | Where | What it does |
+| --- | --- | --- |
+| New | File menu; New Document in the Open dialog | An empty rich text document, "Untitled", replaces the one in the window. |
+| Open… | File menu; Command-O | Shows the Open dialog. A document is opened by the Open button, a double click or Return; a folder is entered; a file of another application is listed and cannot be opened. With "Ignore rich text commands" a rich text document opens as plain text. |
+| Save… | File menu; Command-S | Shows the Save sheet. Saving names the document, clears its edited state and files it in the place chosen, or in the folder the expanded browser shows, where the Open dialog then lists it. A rich text document is saved with its formats and its ruler. Saving as Plain Text makes the document plain text. |
+| Print… | File menu; Command-P | Shows the Print sheet with the document's pages, 46 lines to a page. "Print header and footer" draws the name and the page number on the previewed page. Print hands the settings to `onPrint` and closes the sheet; "Save as PDF…" goes on to the Save sheet. |
+| Make Plain Text, Make Rich Text | Format menu; Shift-Command-T | Converts the document, keeping its lines. Making it plain asks first, because it loses the formats. Plain text has no format bar and no ruler. |
+| Prevent Editing, Allow Editing | Format menu | Holds the document against changes and dims the commands that change it. Kept with the document's draft on the desktop. |
+| Allow Hyphenation, Disallow Hyphenation | Format menu | Lets words break at line ends. Saved with the person's account on the desktop. |
+| Wrap to Page, Wrap to Window | Format menu; Shift-Command-W | Shows the text as a US Letter page, or to the window's width. Saved with the person's account on the desktop. |
+| Hide Ruler, Show Ruler | Format > Text; Command-R | The same setting as Preferences' Show ruler. |
+| Outline, Kern, Ligatures, Baseline, Copy Style, Paste Style | Format > Font on the desktop; Option-Command-C and V | Act on selected text, one step of Undo; the browsers cannot keep them for what is typed next, so at an insertion point they do nothing. Kept in the draft. Saved into an RTF file, only Superscript and Subscript survive. |
+| Insert > Line Break, Paragraph Break, Page Break | Edit on the desktop | At the selection. A page break takes effect when printed; a form feed in plain text. An RTF file does not keep a page break. |
+| Add Link… | Edit on the desktop; Command-K | A sheet asks for a web address, made a link on the selected text, or inserted as text at an insertion point. Command-click opens it, as does a click while the document is held. Saved into an RTF file, a link is plain text. |
+| Actual Size, Zoom In, Zoom Out | View menu; Command-0, Shift-Command-., Shift-Command-, | Magnifies the text from 50% to 400%. Saved with the person's account on the desktop. |
+| Format bar | in the window | Paragraph formats (alignment, line spacing, list style) are applied to every paragraph the selection touches; character formats (font, typeface, size, colours, bold, italic, underline) to the selected text, by the browser's own editing commands, so they can be undone like typing. The styles menu's Default removes them. |
+| Show Fonts, Bold, Italic, Underline, Bigger, Smaller, Show Colors | Format > Font; Command-T, Command-B, Command-I, Command-U, Command-+ (or Command-=), Command--, Shift-Command-C | The styles toggle on the selected text, or on what is typed next, and the format bar shows them wherever the insertion point is. Bigger and Smaller change the size by a point. Show Fonts opens the [Font Panel](/components/font-panel), which sets the family, typeface, size, underline, strikethrough and colour of the selection and follows the insertion point; Show Colors opens the [Color Panel](/components/color-panel). Each closes again with its command or its close button. Rich text only. |
+| Align Left, Center, Justify, Align Right | Format > Text; `Command-{`, `Command-\|`, `Command-}` | Aligns the paragraphs the selection touches, as the format bar does. Rich text only. |
+
+Off Apple devices Command is the Control key. The key equivalents work while the document
+has the keyboard; a browser keeps Command-N for itself, so New has none.
+
+## Hosting the window
+
+`TextEdit` renders the library's `Window` as its root and passes every `Window` prop to it, so
+it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component hands to the window controls and
+the title bar. These are the props a [Managed Window](/components/managed-window)'s `render`
+form supplies, so the component can be spread with them as they come.
+
+<Example name="hosted" />
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { texteditApp } from "./app";
+
+<ManagedWindow
+  id={texteditApp.id}
+  defaultFrame={{ x: 80, y: 60, ...texteditApp.defaultSize }}
+  minWidth={texteditApp.minSize.width}
+  minHeight={texteditApp.minSize.height}
+  render={(props) => <texteditApp.component {...props} panelContainer={desktop} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `defaultDocument` | `TextEditDocument` | The document the window opens with: a name, `rich` or `plain`, and its lines; a saved rich text document also holds its formatted paragraphs (`content`) and its `ruler`. "512 Pixels" by default. |
+| `defaultPlaces` | `TextEditPlace[]` | The places of the two panels' sidebar with their files. Saving and New Folder add to them. |
+| `dialog`, `defaultDialog`, `onDialogChange` | `"open" \| "save" \| "print" \| "save-as" \| "rename" \| null` | The dialog that is shown, controlled or not, and its changes. Save As and Rename are sheets of the desktop served by Ferrite. |
+| `actionsRef` | `Ref<TextEditActions>` | Receives the app's commands for a menu bar: `newDocument()`, `show(dialog)`, `setFormat("rich" \| "plain")` and `format(command)` for Format > Font and Format > Text; served by Ferrite, also `file`, the File menu's commands on the person's drive. |
+| `onStatusChange` | function | Called with the document's `name`, `format` and `edited` state when one changes; served by Ferrite, also `file`: whether the document has a file and the recent documents. |
+| `onSave`, `onPrint` | functions | Called with the saved document, its place and the folders in it, and with the Print sheet's settings. |
+| `panelContainer` | `HTMLElement \| null` | Where the Open panel is rendered: it is centred on that element, or on the viewport when it is left out. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 624 by 537 by default, as in the Aqua capture. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `texteditApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (624 by 537), `minSize` (552 by 160, the width of the format
+bar), `resizable`, `menus`, the menu titles after the Apple menu, and `menuBar`, the
+`TextEditMenuBar` component, which takes the `actionsRef` object as `actions` and the last
+status as `status`.
+
+While a dialog is shown the document's window is main, not key, its content is inert and
+its close button is disabled; the dialog is the key window. The text view is left to the
+browser once it is filled: React renders a document's lines once, and the app reads them back
+on every `input` event, so the insertion point never jumps. A control of the format bar takes
+the focus when it is used, so the app remembers the selection inside the document and gives
+it back before a format is applied.
+
+Served by the macalicious-desktop Ferrite application (`ferrite-apps/desktop`), documents are
+files of the person's drive, the files Finder shows: Open and Save use the drive's Open and
+Save dialogs, rich text is saved as an RTF file and plain text as a text file (written and read
+in the browser, formats included), a document that has a file is written into that same file
+a moment after each change. The
+desktop's menu bar shows TextEdit's File menu (New, Open, Open Recent, Save, Duplicate,
+Rename, Save As, Export as PDF, Print), and a double click on a text file in Finder
+opens it here. Export as PDF prints the document through the browser's print dialog. Elsewhere
+(this site, a copy of the demo) the panels show the made-up folders of the captures and nothing
+is stored.
+
+TextEdit on Ferrite opens text files in UTF-8 or with a byte order mark, RTF files in any code page
+the browser decodes, and Word (`.docx`), OpenDocument (`.odt`) and Web Archive files. A text file
+in another encoding opens when Plain Text Encoding in the Open panel names it, and is written back
+in that encoding. An RTF file with text in a code page the browser does not decode, or text the
+reader does not read (`\upr`, `\ud`, `\dbch`), is not opened, nor is other text that is not UTF-8. An
+alert says "This document uses a text encoding TextEdit on Ferrite can't open yet.", and the
+file is left as it is: nothing is guessed or rewritten.
+
+Every save into a file is made from the version of the file the window read or last saved. When
+the file was saved over elsewhere meanwhile (another window, another browser), the save is
+refused, autosave stops for that file, and a sheet says "This document's file has been changed by
+another application since you opened or saved it." Save Anyway writes the window's document over
+it; Cancel keeps the changes in the window, and the next Save asks again. A file read in several
+requests is read whole from one version: a save in between makes the read start again.
+
+The drive keeps what a save into a file replaced, up to 20 versions of a file, counted in the
+person's storage and freed when the file is erased; the oldest give way when anything else needs
+the room. While autosave writes, about one version per five minutes stays, and each File > Save
+stays. File > Revert To > Browse All Versions… is a sheet listing them by date, the chosen one's
+text beside the document's, with Restore and Done, not the real app's Time Machine star field.
+Restore makes that version the file's bytes and keeps what it replaced, as does Previous Save, which
+goes back to the save before the last.
+
+The open draft works differently: when two windows change its text at once, the version saved
+first stays and the other window shows a banner with Keep Mine and OK. Its version is kept in this
+browser's storage until the person chooses, across reloads, under the session it was made in, each
+such version in a record of its own, offered one at a time, the next once the last is stored. When
+storage refuses it, the banner says
+that a reload loses it, and Keep Mine still restores it.
+Someone else signing in on the same browser does not see it and cannot remove it, so one person's
+text can stay in a shared browser's storage. Signing in again starts a new session, which does not
+see the copy made under the old one.
+
+## Accessibility
+
+- The window is a `region` named by the document's name, with "Edited" once it has changed.
+  The format bar is a `toolbar` named "Format" and one tab stop; the arrow keys move between
+  its controls. Every control that shows a glyph or a value only is named: "Font family",
+  "Text color", "Bold", "Align left", "Line spacing" and so on.
+- Bold, italic and underline are toggle buttons in a group named "Text style"; the alignments
+  are toggle buttons in a group named "Alignment". The lists and the highlight colours are
+  menus of radio items.
+- The ruler is a group named "Ruler" whose markers are sliders named for what they move; the
+  arrow keys move one by an eighth of an inch, and its value is spoken in inches.
+- The document is a multi-line `textbox` named "Document". As in AppKit it has no focus ring:
+  the insertion point shows the focus.
+- The Open panel is a `dialog` named "Open"; Return opens and Escape cancels. The Save and
+  Print sheets are modal dialogs named "Save" and "Print" that keep the focus inside. When a
+  dialog is dismissed the focus returns to the document.
+- The key equivalents are announced with the menu bar's items (`aria-keyshortcuts`).
+
+## Fidelity
+
+`textedit.visual.json` compares the whole window, shadow included, with the two TextEdit
+screenshots, each as captured and again with the text and the stand-in drawings masked; the
+Open panel on the Documents folder with the two Open screenshots; and the Print sheet with
+its Presets menu open with the two Print screenshots, as captured and again with its two ends
+masked. The Dark Aqua window was captured at 597 by 507 pt, so it has an example of its own.
+Scores from `npm run visual -- textedit/` in Chromium on Linux with the fallback font: the
+share of pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 0.81% | 0.79 | 0.60% | 1.02 |
+| `window-drawing-light` (masked) | 0.39% | 0.35 | 0.30% | 0.58 |
+| `window-dark` | 0.75% | 1.05 | 0.68% | 1.38 |
+| `window-drawing-dark` (masked) | 0.27% | 0.54 | 0.25% | 0.86 |
+| `open-light` | 4.23% | 6.86 | 3.65% | 6.97 |
+| `open-dark` | 4.84% | 6.96 | 4.27% | 7.06 |
+| `print-light` | 5.91% | 7.67 | 5.14% | 7.86 |
+| `print-drawing-light` (ends masked) | 4.71% | 5.48 | 4.16% | 5.83 |
+| `print-dark` | 4.29% | 5.83 | 3.89% | 6.40 |
+| `print-drawing-dark` (ends masked) | 4.86% | 5.66 | 4.59% | 6.51 |
+
+Measured in the screenshots and reproduced: the 624 by 537 pt and 597 by 507 pt frames; the
+22 pt title strip and the 26 pt format bar on one surface; the ten controls of the bar, 16 pt
+high, at their measured places and widths, 3 pt apart within a group and 7 pt between
+groups; the colour well, black in Aqua and white in Dark Aqua because it shows the text's
+colour; the 32 pt ruler with its origin 5 pt from the window's edge, five tab stops an inch
+apart and the tail indent at the end of the text container; the text in Helvetica 12, 5 pt
+from the edge; the 914 by 615 pt Open panel with its sidebar, the "Shared Folder" band, the
+204 pt file column and the preview; and the 756 by 419 pt Print sheet with the page, the form
+and the open menu.
+
+What differs, and why:
+
+- **Format bar controls.** TextEdit's bar uses a small, 16 pt form of the toolbar controls.
+  The library has it for the toolbar combo box only: the font size control is
+  [Toolbar Combo Box](/components/toolbar-combo-box) at its `"small"` size, with no style of
+  its own. The other toolbar controls are 22 pt with 13 pt text, so the demo still gives each
+  of them its measured box and the small control font through `style`, and leaves the bezel,
+  colours and states to the library. The font family, typeface and line spacing buttons
+  therefore show the toolbar pop-up's single chevron where TextEdit shows a pair of arrows.
+- **Font size.** As in TextEdit, the size is a combo box: type any size and press Return (or
+  leave the field), or choose one of AppKit's sizes from its list.
+- **Highlight colour.** TextEdit shows a colour well with a struck-through "a". A colour well
+  cannot show "no colour", so the demo uses a toolbar button with a drawing of its own that
+  opens a menu of five colours and No Color.
+- **Text.** Set in the fallback font off Apple devices; Helvetica falls back to Arial.
+- **Glyphs and icons.** The proxy icon, the file and sidebar icons and the bar's glyphs are
+  original drawings.
+- **Open panel.** The preview's "Show More" link is left out. The Dark Aqua screenshot lists
+  one more disk, "Macintosh HD"; the demo's sidebar is the Aqua one in both appearances.
+- **Print sheet.** A sheet's material shows the desktop picture behind its window, which
+  colours both ends of the sheet in the screenshots. The demo has no desktop; the comparison's
+  example lays a plain stand-in for the picture behind the sheet, and a second comparison
+  masks the two ends. The backdrop is a plain gradient of three colours standing in for the
+  wallpaper, not a drawing of it. The Copies and Pages rows are hidden by the menu in both
+  screenshots.
+- **Save sheet (not compared).** No reference screenshot shows a Save dialog, so there is
+  nothing to compare it with; its layout is the Save Panel's, which is inferred.
+- **Not in a screenshot (provisional):** the plain text window, the edited title, the
+  window when it is not key, every menu's items, the Open panel's other three views, its
+  accessory view and its search results, and the expanded Save sheet.
+- **Indents and tab stops** apply to the selected paragraphs. A paragraph keeps its own stops in
+  `data-tabs` and in an RTF file's `\tx`, `\tqc`, `\tqr` and `\tqdec`. CSS has one `tab-size`
+  for an element, so each tab character stands in its own inline element, whose `tab-size` the view
+  sets to where the tab must end, measured after each change (`textedit-tab-stops.ts`). A centred,
+  right-aligned or right-to-left paragraph, and a table's cell, keep one width.
+- **Several windows.** File > New and Open make a window of their own on the desktop. The first
+  keeps its document on the server; each further window keeps at most 32 KB among the person's
+  desktop values, and at most eight do, with a banner past that.
+- **Pictures and attachments.** A PNG or JPEG is held in the text and in the RTF, Word and
+  OpenDocument file; a Rich Text With Graphics document (`.rtfd`) is a folder of the drive holding
+  `TXT.rtf` and the pictures, as on a Mac. Any other file is attached as a link to the drive file,
+  so the document holds no copy of it.

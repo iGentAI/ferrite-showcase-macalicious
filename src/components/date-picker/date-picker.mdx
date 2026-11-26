@@ -1,0 +1,270 @@
+---
+title: Date Picker
+description: A field of date and time elements with a stepper, a month calendar and an analogue clock.
+order: 53
+---
+
+<Example name="basic" both />
+
+AppKit calls this control a *date picker* (`NSDatePicker`). It comes in two styles: textual,
+a field whose elements (month, day, year, hour, minute, second, AM or PM) are selected and
+changed one at a time, by default with a stepper beside it; and graphical, a month calendar
+and a clock face. The library has one component for each form:
+
+| Component | AppKit | What it is |
+| --- | --- | --- |
+| `DatePicker` | `.textFieldAndStepper`, `.textField` | The field of elements, with or without the stepper. |
+| `DatePickerCalendar` | `.clockAndCalendar`, date elements | One month as a grid of days. |
+| `DatePickerClock` | `.clockAndCalendar`, time elements | The clock face. It displays a time and is not operated. |
+
+Base UI has no date primitive, so the elements are written here after the WAI-ARIA Authoring
+Practices: each element of the field is a
+[spin button](https://www.w3.org/WAI/ARIA/apg/patterns/spinbutton/) and the calendar is a
+[date grid](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/). The
+field's edge and the calendar's frame are the library's text field bezel, the stepper is the
+library's [Stepper](/components/stepper), and props are merged with Base UI's `mergeProps`.
+The value is a JavaScript `Date` in local time; there is no date library.
+
+## Usage
+
+```tsx
+import { DatePicker, DatePickerCalendar, DatePickerClock } from "macalicious/date-picker";
+import "macalicious/stepper.css";
+import "macalicious/text-field.css";
+import "macalicious/date-picker.css";
+
+<DatePicker aria-label="Due" elements="yearMonthDay" defaultValue={new Date(2019, 9, 3)} />
+<DatePicker aria-label="From" elements="hourMinute" value={from} onValueChange={setFrom} />
+<DatePickerCalendar aria-label="Due" value={due} onValueChange={setDue} />
+<DatePickerClock value={now} />
+```
+
+Or copy the source into your project: `npx macalicious add date-picker`. See
+[Installation](/installation).
+
+`value` with `onValueChange` controls a picker; `defaultValue` only starts it. A picker with
+neither starts at 1 January 2001, midnight (the reference date of AppKit's `NSDate`), on the
+server and in the browser alike: the components never read the clock while rendering. For a
+picker that starts now, pass `new Date()` from the client, as state or from an effect.
+
+`elements` names what the field shows, with AppKit's names: `yearMonthDay` or `yearMonth`,
+`hourMinute` or `hourMinuteSecond`, or one of each separated by a space.
+
+<Example name="elements" />
+
+The forms combine by sharing one value. This is the arrangement of the Date & Time
+preference pane: the date field 10 pt above the calendar, the time field 26.5 pt above the
+clock, each centred.
+
+<Example name="date-and-time" both />
+
+`min` and `max` keep the date inside a range (`NSDatePicker.minDate`, `maxDate`). A result
+outside it is replaced by the bound; the calendar dims the days it cannot select.
+
+<Example name="min-max" />
+
+The clock shows the time it is given. To make it run, give it the current time from a timer:
+
+<Example name="clock-running" />
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[date pickers](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/selectors/date-pickers/),
+as the project's measured specification records them (the archived page itself could not be
+opened again when this page was written):
+
+- A date picker lets people choose a date, a time, both, or a range of dates.
+- Use the textual style where space is constrained and people enter a specific date or time.
+  People select an element, then type, press Up or Down, or use the stepper.
+- Use the graphical style where browsing days in a calendar helps, for a range of dates, or
+  where a clock face suits the interface.
+- The order of the elements follows the user's locale.
+
+## Variants and states
+
+A selected element is transient, so this gallery pins it. In an application it appears when
+the element has the keyboard, together with the focus ring around the field.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | White field (near black in Dark Aqua) with a square hairline edge; the stepper 4 pt beside it |
+| Element selected | `:focus` on an element | The element on the selection colour with white text; focus ring around the field |
+| Disabled | `disabled` | Fainter edge, text at 25%; the calendar dims its title and its three glyphs and keeps its days and its selected day |
+| Day selected | `aria-selected="true"` | A 19 x 16 pt tile in the selection colour with white text |
+| Day of another month | `data-outside` | Text at 25% |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | Grey selection with the label colour; no focus ring |
+
+The selection follows the accent colour: set `data-accent` on any ancestor. See
+[Theming](/theming). The window state is not a prop; a window component sets
+`data-window-state` on itself.
+
+Not in this component: the range mode (`NSDatePicker.Mode.range`), the era and time zone
+elements, a 24-hour clock and other orders of the elements. The field is set as the
+screenshots show it: month, day and year, a 12-hour clock.
+
+## Sizes
+
+<Example name="sizes" />
+
+| Size | Field | Stepper |
+| --- | --- | --- |
+| `regular` | 23 pt high, 13 pt text (measured) | 13 x 22 pt |
+| `small` | 20 pt high, 11 pt text (provisional) | 11 x 19 pt |
+| `mini` | 17 pt high, 9 pt text (provisional) | 10 x 16 pt |
+
+The field is as wide as its text: the text starts 2.25 pt inside the edge and ends 3.5 pt
+before it. Set a `width` on the picker to make the field wider; the stepper keeps its size.
+The calendar is 137.5 x 147 pt and the clock 120 pt across; they have one size.
+
+## API
+
+<PropsTable name="DatePickerProps" />
+
+<PropsTable name="DatePickerCalendarProps" />
+
+<PropsTable name="DatePickerClockProps" />
+
+Each component also takes every `<div>` attribute; `className`, `style` and event handlers
+are merged with its own.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-size` | `DatePicker` | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-disabled` | `DatePicker`, `DatePickerCalendar` | present or absent | Present while disabled. |
+| `aria-valuenow`, `aria-valuemin`, `aria-valuemax`, `aria-valuetext` | an element | numbers, text | The element's value, its bounds and what it shows. |
+| `aria-selected` | a day | `true`, `false` | The selected day. |
+| `aria-disabled` | an element, a day | `true` or absent | Disabled, or a day outside `min` and `max`. |
+| `data-outside` | a day | present or absent | A day of the previous or the next month. |
+| `data-force` | `DatePicker` | `focus` | Documentation and visual tests only: shows the first element as selected, without the focus ring. |
+
+| Class | Element |
+| --- | --- |
+| `mac-date-picker` | The textual picker, a `role="group"`. |
+| `mac-date-picker-field` | The field, a text field bezel. |
+| `mac-date-picker-segment` | An element of the field, a `role="spinbutton"`. |
+| `mac-date-picker-calendar` | The calendar, a `role="group"` and a text field bezel. |
+| `mac-date-picker-calendar-button` | Previous month, today and next month, each a `<button>`. |
+| `mac-date-picker-calendar-grid` | The `<table role="grid">`; its `<caption>` is the title. |
+| `mac-date-picker-clock` | The clock, a `role="img"`. |
+| `mac-date-picker-clock-period` | AM or PM on the clock face. |
+
+| CSS variable | Values | Description |
+| --- | --- | --- |
+| `--mac-date-picker-background` | a colour | Fill of the field and of the calendar. Default: white, `#2a2a2a` in Dark Aqua. |
+| `--mac-date-picker-background-disabled` | a colour | Their fill while disabled. Default: white, `#232323` in Dark Aqua. |
+
+Set them on an ancestor of the picker. The field and the calendar are text field bezels; the
+components hand the fill to the bezel through its `--mac-text-field-background`.
+
+## Accessibility
+
+- The textual picker is a `role="group"`; name it with `aria-label` or `aria-labelledby`.
+  Each element is a `role="spinbutton"` named Month, Day, Year, Hour, Minute, Second or
+  AM/PM, with `aria-valuenow`, its bounds and `aria-valuetext` (the day's upper bound is the
+  length of the month).
+- Tab, Left and Right move between the elements. Up and Down step the selected element; it
+  wraps inside its own range and does not carry (December steps to January of the same
+  year), and the day is held back to the last one of a shorter month. Digits type a value: a
+  digit joins the ones typed before it while the result fits, and the next element takes the
+  keyboard when no further digit could. A and P set AM and PM. Keys held with Command,
+  Control or Option are left to the page.
+- The stepper changes the selected element, or the first one while none is selected, and
+  gives that element the keyboard. It is out of the tab order, because the keys work on the
+  elements; its halves stay reachable as buttons named Increment and Decrement.
+- The calendar is a `role="group"` holding three buttons (Previous month, Today, Next month)
+  and a `role="grid"` named by its title, with a column header for each weekday (named in
+  full, shown as two letters) and a `role="gridcell"` for each day. The selected day has
+  `aria-selected="true"` and is the grid's one tab stop.
+- In the grid the arrow keys move the selection by a day or a week, and Page Up and Page
+  Down by a month, to the same day or the last one of a shorter month. While the focus is in
+  the grid it stays on the selected day, also when a click on a day of another month turns
+  the month. The calendar shows the month of its date and no other, as `NSDatePicker` does:
+  the buttons and the keys change the date, the Today button to the current date and time.
+  Home and End are not handled.
+- The focus ring is drawn around the field or the calendar while something inside has the
+  keyboard; a focused button also shows a ring of its own.
+- A disabled picker has `aria-disabled` on its elements or days and disabled buttons, and
+  nothing in it is in the tab order.
+- The clock is a `role="img"` named with its time on a 24-hour clock ("22:56:59"); pass
+  `aria-label` for another name. Its hands cannot be dragged: change the time with a textual
+  picker that shares its value.
+- The names (Month, Previous month, the weekday names) are English and cannot be replaced
+  yet.
+- In forced-colours mode the selection uses the system highlight colours and the calendar's
+  glyphs the button text colour; the clock keeps its own colours.
+
+## Visual comparison
+
+`npm run visual -- date-picker` compares five examples with the reference screenshots in
+both appearances (`date-picker.visual.json`): the enabled time field of the Notifications
+pane, and the disabled date field, time field, calendar and clock of Date & Time. Each crop
+is scored twice: whole, and with its text masked at a colour distance of 0.05, half the
+default, which scores the drawing alone. Share of pixels that differ and mean difference per
+channel out of 255, in Chromium on Linux, at 2x:
+
+| Crop | Aqua, whole | Aqua, drawing | Dark Aqua, whole | Dark Aqua, drawing |
+| --- | --- | --- | --- | --- |
+| Notifications, time field (`@ 814,540,174,56`) | 6.76%, Δ 6.78 | 0.26%, Δ 0.27 | 6.35%, Δ 6.07 | 0.33%, Δ 0.51 |
+| Date & Time, date field (`@ 468,388,204,56`) | 7.91%, Δ 5.04 | 0.00%, Δ 0.45 | 7.94%, Δ 4.75 | 0.00%, Δ 0.60 |
+| Date & Time, time field (`@ 904,386,216,56`) | 3.69%, Δ 2.85 | 0.00%, Δ 0.42 | 3.49%, Δ 2.70 | 0.00%, Δ 0.59 |
+| Date & Time, calendar (`@ 426,452,286,304`) | 7.64%, Δ 8.09 | 0.10%, Δ 0.25 | 7.14%, Δ 7.07 | 0.17%, Δ 0.45 |
+| Date & Time, clock (`@ 886,484,252,250`) | 4.08%, Δ 5.78 | 1.74%, Δ 1.38 | 4.25%, Δ 5.79 | 2.11%, Δ 1.44 |
+
+And at 1x:
+
+| Crop | Aqua, whole | Aqua, drawing | Dark Aqua, whole | Dark Aqua, drawing |
+| --- | --- | --- | --- | --- |
+| Notifications, time field | 25.00%, Δ 18.78 | 21.93%, Δ 10.12 | 15.89%, Δ 13.97 | 13.37%, Δ 6.08 |
+| Date & Time, date field | 12.11%, Δ 8.63 | 17.51%, Δ 5.66 | 10.96%, Δ 6.63 | 7.01%, Δ 3.47 |
+| Date & Time, time field | 11.08%, Δ 8.21 | 15.89%, Δ 5.28 | 9.26%, Δ 5.97 | 6.56%, Δ 3.23 |
+| Date & Time, calendar | 13.36%, Δ 13.86 | 8.48%, Δ 4.77 | 13.32%, Δ 12.48 | 4.55%, Δ 3.76 |
+| Date & Time, clock | 8.03%, Δ 8.91 | 5.87%, Δ 3.73 | 8.83%, Δ 9.47 | 7.43%, Δ 4.26 |
+
+What remains in the whole crops is text: it is San Francisco in the screenshots and the
+fallback font here, whose 1 has a foot, whose slash is wider and whose colon sits on the
+baseline where San Francisco centres it between digits. What remains in the drawing of the
+clock is the edge of the hands and of the rim, and the shade under the rim, which is one
+blurred edge here and is about ten levels lighter at the sides than the screenshot's. At 1x
+the scores are higher, and the drawing can score above the whole crop (its threshold is half
+as large), because there is no 1x reference: the 2x screenshot is averaged down, and
+half-point hairlines, which the small field crops are full of, cannot match their averaged
+counterparts ([Fidelity limits](/fidelity)).
+
+No screenshot shows a selected element, an enabled calendar, keyboard focus, the small and
+mini sizes or a picker in a window that is not key. Those are checked in a real browser
+against values from the spec instead (the `expect` comparisons): the example is focused with
+Tab, clicked or sent a key, and chosen pixels must have the expected colour.
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| Element selected | Selection colour behind the month, focus ring around the field; both appearances | Colours measured (the calendar's selected day, a text field's ring); that an element takes them is inferred |
+| Main and inactive window | Grey selection, no focus ring | Ring documented by AppKit; the grey inferred |
+| Stepper clicked, nothing selected | The first element is selected and has the keyboard | Inferred |
+| Small and mini | Field heights 20 and 17 pt | Inferred |
+| Calendar enabled | Selected day, background, the today disc at the secondary label colour; both appearances | Selection measured; glyph colour and the dark background inferred |
+| Calendar, day focused | Focus ring around the calendar | Inferred |
+| Calendar, Page Down | The selection moves to the same day of the next month and keeps the keyboard | The key is the date grid's |
+| Calendar, button focused | A ring inside the button | Inferred |
+| Calendar, inactive window | Grey selection | Inferred |
+
+Provisional, and checked nowhere against Catalina:
+
+- the look of a selected element (the selection colour with white text, a 2 pt corner) and
+  everything about a window that is not key;
+- the enabled calendar: its edge (a text field's), its Dark Aqua background (the field's
+  `#2a2a2a`), its title at the label colour and its glyphs at the secondary label colour;
+- the dimming of days outside `min` and `max`, and the focus ring of a button;
+- the small and mini sizes;
+- that the previous, today and next glyphs change the date (as `NSDatePicker`, which has no
+  displayed month apart from its date, is taken to do), and that the stepper selects the
+  first element;
+- the text inset of the field (2.25 pt before, 3.5 pt after), fitted to three fields whose
+  text is San Francisco.
+
+Measured, with a known difference: the numerals of the clock are placed by a rule fitted to
+the screenshot (within 0.75 pt of each numeral's place), not by the artwork; the rim is 5.5 pt
+all round, where the screenshot's is 5.25 pt at the sides; the screenshot's spec calls the
+numerals bold, and their stems measure as regular, which is what is drawn.

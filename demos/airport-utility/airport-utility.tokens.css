@@ -1,0 +1,31 @@
+/*
+ * Colours of the AirPort Utility demo that no shared token and no component token holds. The
+ * window is dark in both appearances, so none of them uses light-dark(). Read from
+ * 10-15-Catalina-Light-Airport-Utility.png and 10-15-Catalina-Dark-AirPort-Utility.png, which
+ * show the same dark window (frame at 112,76 in both).
+ */
+:root,
+[data-appearance] {
+  /* [measured] The window's content, top to bottom: col 1300 at y=130, 400, 700, 1000 and
+     1130, with the stops fitted to those rows. */
+  --mac-airport-utility-backdrop: linear-gradient(
+    to bottom,
+    #2d333d 0%,
+    #3e454e 27%,
+    #515760 57%,
+    #616972 86%,
+    #697079 100%
+  );
+  /* [measured] The name under a picture: @ 767,560. */
+  --mac-airport-utility-name: #ffffff;
+  /* [provisional] The line from the Internet to the base stations; no capture shows one. */
+  --mac-airport-utility-link: #9aa1aa;
+  /* [provisional] Colours of the abstract placeholders that stand in for Apple's globe and
+     base station pictures; they take nothing from that artwork. */
+  --mac-airport-utility-placeholder-field: #7b8794;
+  --mac-airport-utility-placeholder-line: #c9d1da;
+  --mac-airport-utility-placeholder-mark: #e9c46a;
+  /* [measured] What the visual examples paint behind the window: the comparison's matte
+     behind the capture's transparent margin, which the harness composites over white. */
+  --mac-airport-utility-visual-matte: #ffffff;
+}

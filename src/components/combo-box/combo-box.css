@@ -1,0 +1,170 @@
+/*
+ * Combo box (NSComboBox, isButtonBordered).
+ *
+ * The root is the text field's bezel (TextFieldBezel, class mac-text-field); its box is the
+ * control's outer edge, 20 pt high. Inside are the text field's input and the button, the
+ * last 17.5 pt. The field's bezel stops at the button, which draws the shared control bezel:
+ * the accent one while enabled in the key window, the standard one otherwise. The focus ring
+ * is the text field's, around both.
+ *
+ * States
+ *   [data-size="small" | "mini"]       control size
+ *   :focus-within                      focus ring, in the key window only
+ *   :active on the button,
+ *   [data-popup-open]                  pressed, or the list is open: the button darkens
+ *   [data-disabled]                    set by Base UI for `disabled`
+ *   [data-window-state="main" | "inactive"] *
+ *                                      window that is not key: no accent, no focus ring
+ *   [data-force~="pressed" | "focus"]  static previews, read from the input
+ */
+.mac-combo-box {
+  /* The button, from the divider to the outer hairline. */
+  --_cap: 17.5px;
+  --_cap-radius: var(--mac-radius-control-regular);
+  --_fill: var(--mac-bezel-fill);
+  --_fill-pressed: var(--mac-bezel-fill-pressed);
+  --_under: var(--mac-bezel-under);
+  --_edge: var(--mac-bezel-border-top) var(--mac-bezel-border-side) var(--mac-bezel-border-bottom);
+  --_highlight: var(--mac-bezel-highlight);
+  --_arrow: var(--mac-color-control-text);
+  --_divider: var(--mac-combo-box-divider);
+}
+
+/* The field's bezel ends where the button begins, without an edge of its own there. */
+.mac-combo-box::before {
+  inset: var(--mac-combo-box-field-inset);
+  right: calc(var(--_cap) - 1px);
+  clip-path: inset(0 1px 0 0);
+}
+
+/* The focus ring's outer corners, measured: 3.25 pt at the field's end, 6.25 pt at the
+   button's. */
+.mac-combo-box::after {
+  --_ring-radius: calc(var(--mac-focus-ring-width) + 0.25px);
+  --_ring-cap-radius: calc(var(--_cap-radius) + var(--mac-focus-ring-width) - 0.25px);
+
+  border-radius: var(--_ring-radius) var(--_ring-cap-radius) var(--_ring-cap-radius)
+    var(--_ring-radius);
+}
+
+.mac-combo-box-button {
+  position: relative;
+  flex: none;
+  align-self: stretch;
+  box-sizing: border-box;
+  width: var(--_cap);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--_arrow);
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+/* The button's bezel: the trailing end of a control bezel. */
+.mac-combo-box-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  border: var(--mac-bezel-border-width) solid;
+  border-left-width: 0;
+  border-color: var(--_edge);
+  border-radius: 0 var(--_cap-radius) var(--_cap-radius) 0;
+  background:
+    var(--_fill) padding-box,
+    var(--_under) border-box;
+  box-shadow: var(--_highlight), var(--mac-bezel-shadow), var(--_divider);
+  /* The bezel's shadow does not fall on the field; the divider may lie on it. */
+  clip-path: inset(-2px -2px -2px calc(-1 * var(--mac-combo-box-divider-outset)));
+}
+
+/* The chevron's box is the button's; in a smaller button the drawing is scaled to fit. */
+.mac-combo-box-button > svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+/* Sizes. Small and mini are provisional: no screenshot shows them. */
+.mac-combo-box:where([data-size="small"]) {
+  --_cap: 15.5px;
+  --_cap-radius: var(--mac-radius-control-small);
+}
+
+.mac-combo-box:where([data-size="mini"]) {
+  --_cap: 13.5px;
+  --_cap-radius: var(--mac-radius-control-mini);
+}
+
+/* The tinted button: only on an enabled control in the key window. */
+.mac-combo-box:where(:not([data-disabled])):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  --_fill: var(--mac-bezel-accent-fill);
+  --_fill-pressed: var(--mac-bezel-accent-fill-pressed);
+  --_under: var(--mac-bezel-accent-under);
+  --_edge: var(--mac-bezel-accent-border-top) var(--mac-bezel-accent-border-side)
+    var(--mac-bezel-accent-border-bottom);
+  --_highlight: var(--mac-bezel-accent-highlight);
+  --_arrow: var(--mac-color-control-text-on-accent);
+}
+
+/* Pressed, or with the list open: the button deepens. */
+.mac-combo-box-button:where(:active, [data-popup-open]):where(:not([data-disabled]))::before,
+.mac-combo-box:where(:has(> [data-force~="pressed"]):not([data-disabled]))
+  > .mac-combo-box-button::before {
+  background:
+    var(--_fill-pressed) padding-box,
+    var(--_under) border-box;
+}
+
+/* Disabled: the field at half strength, the button's bezel at half opacity. */
+.mac-combo-box:where([data-disabled]) {
+  --_arrow: var(--mac-combo-box-arrow-disabled);
+  --_divider: var(--mac-combo-box-divider-disabled);
+}
+
+.mac-combo-box:where([data-disabled])::before {
+  background: var(--mac-combo-box-background-disabled) padding-box;
+  box-shadow: var(--mac-combo-box-inner-shadow-disabled);
+}
+
+.mac-combo-box-button:where([data-disabled])::before {
+  opacity: var(--mac-bezel-opacity-disabled);
+}
+
+/* The list (menu.css draws it) is at least as wide as the control; its items line up with
+   the field's text. */
+.mac-combo-box-menu {
+  min-width: max(var(--anchor-width), var(--mac-menu-min-width, 0px));
+}
+
+.mac-combo-box-item {
+  padding: 0 3.5px;
+}
+
+@media (forced-colors: active) {
+  .mac-combo-box-button {
+    color: ButtonText;
+  }
+
+  .mac-combo-box-button::before {
+    border-color: ButtonText;
+  }
+
+  .mac-combo-box-button:where([data-disabled]) {
+    color: GrayText;
+  }
+
+  .mac-combo-box-button:where([data-disabled])::before {
+    border-color: GrayText;
+    opacity: 1;
+  }
+}

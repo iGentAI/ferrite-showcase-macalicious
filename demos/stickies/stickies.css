@@ -1,0 +1,100 @@
+/*
+ * Stickies: the desktop the notes lie on. The notes, the menu bar, the menus, the desktop and
+ * its icons and the window manager are the library's and are not restyled here; this places
+ * them and paints the stand-in for the desktop picture.
+ *
+ * Parts
+ *   .mac-stickies            the desktop the app runs on, a window manager: give it a size
+ *   .mac-stickies-desktop    the layer under the notes that holds the library's desktop
+ *   .mac-stickies-picture    the stand-in for the desktop picture
+ *   .mac-stickies-menu-bar   the layer above the notes that holds the library's menu bar
+ *   .mac-stickies-note       a note; [data-unsaved] when its changes are not saved
+ *   .mac-stickies-note-text  a note's text, the library's note text
+ *   .mac-stickies-panels     the Fonts and Colors panels of a note shown outside any window
+ *                            manager, over the page
+ *   .mac-stickies-panel-layer  where Import Text's Open panel stands, centred over the page
+ */
+.mac-stickies {
+  height: 480px;
+}
+
+.mac-stickies-desktop {
+  position: absolute;
+  inset: 0;
+}
+
+.mac-stickies-picture {
+  background: linear-gradient(
+    var(--mac-stickies-sky),
+    var(--mac-stickies-haze) 58%,
+    var(--mac-stickies-sea) 58%
+  );
+}
+
+.mac-stickies-menu-bar {
+  position: absolute;
+  z-index: var(--mac-window-manager-layer-chrome);
+  top: 0;
+  right: 0;
+  left: 0;
+}
+
+/* A note takes the keyboard focus from its window manager and hands it to its text: the
+   insertion point shows it, as in Stickies. */
+.mac-stickies-note {
+  outline: none;
+}
+
+/* Changes that could not be saved fill the close box, where a window's close button shows a
+   dot. */
+.mac-stickies-note[data-unsaved] [data-widget="close"]::after {
+  background: var(--_widget);
+}
+
+/* The note sets Helvetica 12 on a 14 pt line. A line of bigger text (Font > Bigger, the Fonts
+   panel) is taller in proportion, as AppKit lays it out, so the pitch is a ratio of the font
+   size: 14 / 12, rounded up so that a 12 pt line stays 14 pt in every engine. */
+.mac-stickies-note-text {
+  line-height: 1.16667;
+}
+
+.mac-stickies-note-text img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: bottom;
+}
+
+/* A collapsed note is its title bar: the find bar goes with its text, and there is nothing to
+   resize. */
+.mac-stickies-note[data-collapsed] search {
+  display: none;
+}
+
+[data-window-id]:has(.mac-stickies-note[data-collapsed]) > [data-edge] {
+  display: none;
+}
+
+/* A note's own panels, when no window manager hosts them: at the top right of the page. */
+.mac-stickies-panel-layer {
+  position: fixed;
+  z-index: 800;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.mac-stickies-panel-layer > * {
+  pointer-events: auto;
+}
+
+.mac-stickies-panels {
+  position: fixed;
+  z-index: 1000;
+  top: 32px;
+  right: 20px;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: flex-start;
+  gap: 12px;
+}

@@ -1,0 +1,219 @@
+/*
+ * Home: what the app adds to the library's controls. The window, the Catalyst chrome with its
+ * toolbar and sidebar, the tiles and their grids, the menus and the sheet are the library's and
+ * are not restyled here; this file lays the content out over the wallpaper.
+ *
+ * Positions are measured on the Home captures, in points from the window's top-left corner:
+ * title cap top 84.5, status lines 22 pt apart from 136.5, "and 1 More" at 205.5, the first
+ * section header at 310.5 with its tiles from 326, everything from 15.5 pt off the left edge.
+ *
+ * Parts
+ *   .mac-home                 the window
+ *   .mac-home-view            the content: the wallpaper, which stays while the content scrolls
+ *   .mac-home-summary         the title and what is under it, down to the first section
+ *   .mac-home-title           the large title: the home's or the room's name
+ *   .mac-home-status          the status lines
+ *   .mac-home-status-line     one of them
+ *   .mac-home-more            the line of "and 1 More", a borderless button of the library
+ *                             that shows the rest of the lines
+ *   .mac-home-section         a header with its grid of tiles
+ *   .mac-home-heading         the header
+ *   .mac-home-empty           the room an empty state fills
+ *   .mac-home-empty-offer     what an empty home offers: its words and its button
+ *   .mac-home-simulated       the line that says nothing here is real
+ *   .mac-home-automations     the Automation tab's list
+ *   .mac-home-automation      one automation in it
+ *   .mac-home-automation-text its name and what sets it off
+ *   .mac-home-room-row        a room's row in the sidebar, with its contextual menu
+ *   .mac-home-note            what a badge means, for assistive technology only
+ *   .mac-home-sheet-anchor    the line under the toolbar that the sheet hangs from
+ *   .mac-home-form            the labelled controls of the sheet
+ *   .mac-home-sets            a scene editor's list of accessories
+ *   .mac-home-reason          why something in a sheet is dimmed
+ *   .mac-home-remove          the sheet's Remove button, away from Cancel and Done
+ */
+.mac-home-view {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden auto;
+  padding: calc(var(--mac-catalyst-chrome-toolbar-inset, 0px) + 40px) 15.5px 24px;
+  background: var(--mac-home-wallpaper);
+  color: var(--mac-home-text);
+  scrollbar-color: rgb(from var(--mac-home-text) r g b / 0.45) transparent;
+  scrollbar-width: thin;
+}
+
+/* The first section starts 229 pt under the title's line, however few status lines there are. */
+.mac-home-summary {
+  flex: none;
+  box-sizing: border-box;
+  min-height: 228.5px;
+  padding-inline-start: 0.5px;
+}
+
+/* The headings and the paragraph are named under the window, so that a page's own rules for
+   h2, h3 and p (the documentation site has them) do not reach into it. */
+.mac-home .mac-home-title {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: var(--mac-catalyst-chrome-font-large-title);
+  letter-spacing: normal;
+}
+
+.mac-home .mac-home-status {
+  margin: 23px 0 0;
+  padding: 0;
+  font: var(--mac-catalyst-chrome-font-title);
+}
+
+.mac-home-status-line {
+  display: block;
+}
+
+/* The button takes the line's font. */
+.mac-home-more {
+  display: flex;
+  margin: 4px 0 0;
+  font: var(--mac-catalyst-chrome-font-subheadline);
+}
+
+.mac-home-section {
+  flex: none;
+}
+
+.mac-home-section + .mac-home-section {
+  margin-top: 23px;
+}
+
+.mac-home .mac-home-heading {
+  margin: 0 0 4.5px;
+  padding: 0;
+  padding-inline-start: 0.5px;
+  border: 0;
+  font: var(--mac-catalyst-chrome-font-subheadline);
+}
+
+.mac-home-empty {
+  display: flex;
+  flex: 1 0 auto;
+  min-height: 160px;
+}
+
+.mac-home-view[data-wallpaper="dusk"] {
+  background: var(--mac-home-wallpaper-dusk);
+}
+
+.mac-home-view[data-wallpaper="forest"] {
+  background: var(--mac-home-wallpaper-forest);
+}
+
+.mac-home-empty-offer {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  max-width: 460px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.mac-home-empty-offer > .mac-home-empty-title {
+  flex: none;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  color: var(--mac-home-text);
+}
+
+.mac-home-empty-offer p,
+.mac-home-simulated {
+  margin: 0;
+}
+
+.mac-home-simulated {
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+.mac-home-automations {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.mac-home-automation {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.mac-home-automation-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mac-home-room-row {
+  display: block;
+}
+
+.mac-home-sets {
+  overflow: hidden auto;
+  max-height: 220px;
+}
+
+.mac-home-reason {
+  margin: 8px 0 0;
+  color: var(--mac-color-label-secondary);
+  font-size: 11px;
+}
+
+.mac-home-remove {
+  margin-inline-end: auto;
+}
+
+.mac-home-note {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.mac-home-sheet-anchor {
+  position: absolute;
+  top: 38px;
+  inset-inline: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.mac-home-form {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  margin-top: 14px;
+}
+
+/* The tile a selection holds: the same ring the keyboard's focus draws. */
+.mac-home [data-home-selected] {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-home-view {
+    background: Canvas;
+    color: CanvasText;
+    scrollbar-color: auto;
+  }
+}

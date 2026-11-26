@@ -1,0 +1,417 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "finder-copy-light",
+      "description": "The bar of Finder’s Copy window at 3%, on the window background, Aqua. At 1x about 6.5% of the pixels differ, which is one row of the bar: in the capture the bar lies on a half point (4.5 pt below the crop’s top), so the 1x reference, an average of 2x2 blocks, spreads each of its hairlines over two rows, while a browser at 1x must draw the bar on whole pixels. The bar is not off at 1x; the 2x comparison gates its drawing.",
+      "example": "visual-finder-copy-light",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0727,
+        "2x": 0.0008
+      },
+      "deltaBudget": {
+        "1x": 5.3,
+        "2x": 0.15
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Copy.png",
+        "crop": {
+          "x": 216,
+          "y": 148,
+          "width": 634,
+          "height": 30
+        }
+      }
+    },
+    {
+      "name": "finder-copy-dark",
+      "description": "The bar of Finder's Copy window at 8%, Dark Aqua.",
+      "example": "visual-finder-copy-dark",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.0123,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 2.59,
+        "2x": 0.37
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Copy.png",
+        "crop": {
+          "x": 216,
+          "y": 148,
+          "width": 634,
+          "height": 30
+        }
+      }
+    },
+    {
+      "name": "time-machine-light",
+      "description": "The backup bar of the Time Machine pane at 64%, on a box, Aqua. The dark capture shows no backup in progress. At 1x about 10.5% of the pixels differ for the reason given for finder-copy-light: the bar lies on a half point in the capture; here the fill makes two rows differ over 64% of the width.",
+      "example": "visual-time-machine",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.1158,
+        "2x": 0.0018
+      },
+      "deltaBudget": {
+        "1x": 7.08,
+        "2x": 0.37
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Time-Machine.png",
+        "crop": {
+          "x": 904,
+          "y": 344,
+          "width": 418,
+          "height": 30
+        }
+      }
+    },
+    {
+      "name": "track-end-light",
+      "description": "The trailing, empty end of the bar of Finder's Copy window alone, Aqua: a 15 pt square in which the rounded end of the track is a large share, so that a change of its radius shows in the score. The 1x score is high for the reason given for finder-copy-light.",
+      "example": "visual-track-end",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.1223,
+        "2x": 0.0072
+      },
+      "deltaBudget": {
+        "1x": 3.31,
+        "2x": 0.36
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Copy.png",
+        "crop": {
+          "x": 820,
+          "y": 148,
+          "width": 30,
+          "height": 30
+        }
+      }
+    },
+    {
+      "name": "track-end-dark",
+      "description": "The trailing, empty end of the bar of Finder's Copy window alone, Dark Aqua.",
+      "example": "visual-track-end",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0734,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 1.56,
+        "2x": 0.43
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Copy.png",
+        "crop": {
+          "x": 820,
+          "y": 148,
+          "width": 30,
+          "height": 30
+        }
+      }
+    },
+    {
+      "name": "fill-start-light",
+      "description": "The leading, filled end of the backup bar of the Time Machine pane alone, Aqua: a 15 pt square in which the rounded end of the fill is a large share.",
+      "example": "visual-fill-start",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.1565,
+        "2x": 0.0128
+      },
+      "deltaBudget": {
+        "1x": 5.79,
+        "2x": 0.59
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Time-Machine.png",
+        "crop": {
+          "x": 904,
+          "y": 344,
+          "width": 30,
+          "height": 30
+        }
+      }
+    },
+    {
+      "name": "fill-start-dark",
+      "description": "The leading, filled end of the bar of Finder's Copy window alone, Dark Aqua: a 15 pt square in which the rounded end of the fill is a large share. The dark Time Machine capture shows no bar, so the dark fill is taken from this window.",
+      "example": "visual-fill-start-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.1027,
+        "2x": 0.0094
+      },
+      "deltaBudget": {
+        "1x": 4.16,
+        "2x": 0.4
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Copy.png",
+        "crop": {
+          "x": 216,
+          "y": 148,
+          "width": 30,
+          "height": 30
+        }
+      }
+    },
+    {
+      "name": "rest-light",
+      "description": "Half full in a key window, Aqua: the fixture of the state checks below, at rest.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 22
+        },
+        "pixels": [
+          {
+            "x": 30,
+            "y": 11,
+            "color": "#3b89fd",
+            "tolerance": 3,
+            "note": "fill, measured on the Time Machine bar (spec: progress-bar, Fill)"
+          },
+          {
+            "x": 90,
+            "y": 11,
+            "color": "#dbdbdb",
+            "note": "empty track on #ececec, measured on Finder's Copy window"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rest-dark",
+      "description": "Half full in a key window, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 22
+        },
+        "pixels": [
+          {
+            "x": 30,
+            "y": 11,
+            "color": "#1869e6",
+            "note": "fill, measured on Finder's Copy window (spec: progress-bar, Fill)"
+          },
+          {
+            "x": 90,
+            "y": 11,
+            "color": "#4f4f4f",
+            "note": "empty track: white at 14% (computed from #4b4f52 on #2e3235 in Finder's Copy window) over the fixture's #323232"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-main-light",
+      "description": "In a main window that is not key, Aqua: the fill is grey and has no hairline. Inferred; no screenshot shows a bar in such a window.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "main",
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 22
+        },
+        "pixels": [
+          {
+            "x": 30,
+            "y": 11,
+            "color": "#9b9b9b",
+            "note": "grey fill, inferred (spec: progress-bar, States, inactive window)"
+          },
+          {
+            "x": 90,
+            "y": 11,
+            "color": "#dbdbdb",
+            "note": "the empty track does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-light",
+      "description": "In an inactive window, Aqua: grey fill. Inferred.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 22
+        },
+        "pixels": [
+          {
+            "x": 30,
+            "y": 11,
+            "color": "#9b9b9b",
+            "note": "grey fill, inferred (spec: progress-bar, States, inactive window)"
+          },
+          {
+            "x": 90,
+            "y": 11,
+            "color": "#dbdbdb",
+            "note": "the empty track does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-main-dark",
+      "description": "In a main window that is not key, Dark Aqua: grey fill. Inferred.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "main",
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 22
+        },
+        "pixels": [
+          {
+            "x": 30,
+            "y": 11,
+            "color": "#6a6a6a",
+            "note": "grey fill, inferred (spec: progress-bar, States, inactive window)"
+          },
+          {
+            "x": 90,
+            "y": 11,
+            "color": "#4f4f4f",
+            "note": "the empty track does not change: white at 14% over #323232"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-dark",
+      "description": "In an inactive window, Dark Aqua: grey fill. Inferred.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 22
+        },
+        "pixels": [
+          {
+            "x": 30,
+            "y": 11,
+            "color": "#6a6a6a",
+            "note": "grey fill, inferred (spec: progress-bar, States, inactive window)"
+          },
+          {
+            "x": 90,
+            "y": 11,
+            "color": "#4f4f4f",
+            "note": "the empty track does not change: white at 14% over #323232"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-purple-light",
+      "description": "With the purple accent, Aqua. Inferred: the fill is the middle stop of the accent's bezel, as the measured blue fill is of the blue bezel; no screenshot shows a bar in another accent.",
+      "example": "visual-states",
+      "appearance": "light",
+      "accent": "purple",
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 22
+        },
+        "pixels": [
+          {
+            "x": 30,
+            "y": 11,
+            "color": "#be63b3",
+            "note": "middle stop of the purple bezel, measured on the purple checkbox of General (token sheet, accent tables); inferred for the bar"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-purple-dark",
+      "description": "With the purple accent, Dark Aqua. Inferred: the fill is the top stop of the accent's bezel, as the measured blue fill is of the blue bezel.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "accent": "purple",
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 22
+        },
+        "pixels": [
+          {
+            "x": 30,
+            "y": 11,
+            "color": "#a541a3",
+            "note": "top stop of the purple bezel in Dark Aqua (token sheet, accent tables); inferred for the bar"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-graphite-inactive-dark",
+      "description": "With the graphite accent in an inactive window, Dark Aqua: the grey of a window that is not key, not the accent's grey.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "accent": "graphite",
+      "windowState": "inactive",
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 22
+        },
+        "pixels": [
+          {
+            "x": 30,
+            "y": 11,
+            "color": "#6a6a6a",
+            "note": "grey fill of a window that is not key, inferred (spec: progress-bar); the graphite fill would be #999999"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-graphite-inactive-light",
+      "description": "With the graphite accent in an inactive window, Aqua: the grey of a window that is not key, not the accent's grey.",
+      "example": "visual-states",
+      "appearance": "light",
+      "accent": "graphite",
+      "windowState": "inactive",
+      "expect": {
+        "size": {
+          "width": 120,
+          "height": 22
+        },
+        "pixels": [
+          {
+            "x": 30,
+            "y": 11,
+            "color": "#9b9b9b",
+            "note": "grey fill of a window that is not key, inferred (spec: progress-bar); the graphite fill would be #a2a2a7"
+          }
+        ]
+      }
+    }
+  ]
+}

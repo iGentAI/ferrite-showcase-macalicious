@@ -1,0 +1,1433 @@
+/*
+ * Photos demo: where the toolbar's controls stand, the album's header, and the thumbnail of
+ * a picture. The window, the toolbar's controls, the sidebar, the split view, the icon view,
+ * the labels and the menus are the library's own.
+ *
+ * Measured on 10-15-Catalina-Light-Photos.png (frame 1200 x 720 pt at x=112, y=76 of the 2x
+ * image; the dark capture agrees). Distances are points from the window's top-left corner.
+ *
+ *   toolbar   38 pt. Fills: Back x 79..111; zoom glyphs x 126..135 and 208.5..220.5, the
+ *             slider's track x 141..204 with an 11 pt knob; Info, Share, Favorite and Rotate
+ *             40 pt each from x 824, 874, 924 and 974; the search field x 1025..1192
+ *   sidebar   179 pt and a 1 pt divider; rows of 24 pt at a 26 pt pitch, icons from x 18,
+ *             labels from x 41; the album's row one level in: thumbnail x 34..52, label x 57
+ *   header    y 38..113: the title's capitals y 56..76, from x 193; the line of the date
+ *             range on a baseline at y 103.5; "Showing" ends at x 1185; a half-point rule
+ *             x 191..1189 in the last half point
+ *   grid      from y 113: cells of 128 pt, 144.25 pt apart, the first from x 193
+ *
+ * Parts
+ *   .mac-photos-back            the Back button
+ *   .mac-photos-zoom            the zoom slider between its two glyphs
+ *   .mac-photos-tool            Info, Share, Favorite and Rotate
+ *   .mac-photos-search          the search field
+ *   .mac-photos-source-icon     a drawing in a sidebar row
+ *   .mac-photos-content         the pane beside the sidebar
+ *   .mac-photos-header          the title, the line under it and the rule
+ *   .mac-photos-grid            the icon view of pictures, or of a folder's albums
+ *   .mac-photos-thumbnail       a picture in its cell, with its badges
+ *   .mac-photos-viewer          the pane while one picture is open
+ *
+ * States
+ *   [data-selected]             on a thumbnail: the ring of the selection, in the accent
+ *                               colour, and grey in a window that is not key
+ *
+ * Every measured length and font size is a token in photos.tokens.css (--mac-photos-*).
+ * Literal here, as structure: zeros, the 100% heights and positions, the flex factors, the
+ * open picture's container units (cqw, cqh) and its aspect hook's fallback of 1, and the 1 pt
+ * forced-colours rule.
+ */
+
+/* The Back button's fill starts 79 pt from the window's edge, 1 pt after the toolbar's inset. */
+.mac-photos-back {
+  width: var(--mac-photos-back-width);
+  margin-inline-start: var(--mac-photos-back-margin-start);
+}
+
+/* The small glyph starts 15 pt after Back, 5 pt more than the toolbar's gap; the track
+   starts 6 pt after it and ends 4.5 pt before the large glyph. */
+.mac-photos-zoom {
+  display: flex;
+  flex: none;
+  gap: var(--mac-photos-zoom-gap);
+  align-items: center;
+  height: var(--mac-photos-zoom-height);
+  margin-inline-start: var(--mac-photos-zoom-margin-start);
+  color: var(--mac-photos-zoom-glyph);
+}
+
+.mac-photos-zoom-slider {
+  flex: none;
+  width: var(--mac-photos-zoom-slider-width);
+}
+
+.mac-photos-zoom-glyph {
+  flex: none;
+}
+
+.mac-photos-zoom-glyph:last-child {
+  margin-inline-start: var(--mac-photos-zoom-glyph-large-margin-start);
+}
+
+.mac-photos-tool {
+  width: var(--mac-photos-tool-width);
+  padding: 0;
+}
+
+/* Wraps the toolbar for its menu, and takes no room of its own. */
+.mac-photos-toolbar-frame {
+  display: contents;
+}
+
+/* The Customize Toolbar sheet. Not measured: no reference screenshot shows it. */
+.mac-photos-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-photos-tools-gap);
+  margin-block: var(--mac-photos-tools-gap);
+  padding: 0;
+  border: 0;
+}
+
+.mac-photos-tools-now {
+  min-height: var(--mac-photos-tools-row);
+  padding: var(--mac-photos-tools-gap);
+  border: 1px solid var(--mac-color-separator);
+  border-radius: var(--mac-photos-tools-radius);
+  list-style: none;
+}
+
+.mac-photos-tools-item {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mac-photos-tools-gap);
+  padding: var(--mac-photos-tools-item-padding);
+  border: 1px solid var(--mac-color-separator);
+  border-radius: var(--mac-photos-tools-radius);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: grab;
+}
+
+.mac-photos-tools-item:disabled {
+  opacity: var(--mac-photos-tools-used);
+  cursor: default;
+}
+
+.mac-photos-tools-part {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+/* A sidebar row's name while it is being changed in place. */
+.mac-photos-row-name {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding-inline: var(--mac-photos-row-name-padding);
+  border: 0;
+  border-radius: var(--mac-photos-row-name-radius);
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  background: var(--mac-color-text-background);
+  color: var(--mac-color-text);
+  font: inherit;
+}
+
+/* The search field's list, hanging under the field. */
+.mac-photos-suggest-area {
+  position: relative;
+  height: 0;
+}
+
+.mac-photos-suggest {
+  position: absolute;
+  z-index: 20;
+  inset-block-start: var(--mac-photos-suggest-gap);
+  inset-inline-end: var(--mac-photos-suggest-margin);
+  display: flex;
+  flex-direction: column;
+  width: var(--mac-photos-suggest-width);
+  padding-block: var(--mac-photos-suggest-padding);
+  border-radius: var(--mac-photos-suggest-radius);
+  background: var(--mac-color-control-background);
+  box-shadow: var(--mac-photos-suggest-shadow);
+}
+
+.mac-photos-suggest-kind {
+  padding: var(--mac-photos-suggest-padding) var(--mac-photos-suggest-row-padding);
+  color: var(--mac-color-secondary-label);
+  font: var(--mac-font-small);
+  font-weight: var(--mac-font-weight-semibold);
+}
+
+.mac-photos-suggest-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--mac-photos-suggest-row-padding);
+  padding: var(--mac-photos-suggest-row-block) var(--mac-photos-suggest-row-padding);
+  border: 0;
+  background: none;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  text-align: start;
+}
+
+.mac-photos-suggest-row:where([aria-selected="true"], :hover) {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-content-text);
+}
+
+.mac-photos-suggest-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-photos-suggest-count {
+  flex: none;
+  opacity: var(--mac-photos-suggest-count-opacity);
+}
+
+/* The search field keeps the capture's width, 11 pt after Rotate. */
+.mac-photos-search {
+  flex: 0 1 var(--mac-photos-search-width);
+  width: var(--mac-photos-search-width);
+  margin-inline-start: var(--mac-photos-search-margin-start);
+}
+
+.mac-photos-info {
+  width: var(--mac-photos-info-width);
+}
+
+.mac-photos-info-line {
+  display: block;
+}
+
+.mac-photos-body {
+  display: flex;
+  overflow: hidden;
+}
+
+.mac-photos-split {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.mac-photos-sidebar {
+  height: 100%;
+}
+
+/* Photos keeps its icons 18 pt from the window's edge; the icon box of a sidebar with
+   outline rows starts at 24 pt. The drawing hangs 6 pt to the left of the box. */
+.mac-photos-source-icon {
+  position: relative;
+  inset-inline-start: var(--mac-photos-source-icon-shift);
+  flex: none;
+}
+
+.mac-photos-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--mac-photos-background);
+}
+
+/* 75 pt, the last half point of it the rule, which stops 11 pt from both edges. It grows
+   when its row wraps in a narrow pane: 11 + 34 + 8.5 + 16 + 5.5 on one line. */
+.mac-photos-header {
+  flex: none;
+  box-sizing: border-box;
+  min-height: var(--mac-photos-header-min-height);
+  padding: var(--mac-photos-header-padding-top) var(--mac-photos-header-padding-right)
+    var(--mac-photos-header-padding-bottom) var(--mac-photos-header-padding-left);
+  background:
+    linear-gradient(var(--mac-photos-rule), var(--mac-photos-rule)) var(--mac-photos-rule-inset)
+    100% / calc(100% - 2 * var(--mac-photos-rule-inset)) var(--mac-hairline) no-repeat;
+}
+
+/* About 28 pt of the bold face: capitals 20 pt high. One line, cut with an ellipsis. */
+.mac-photos-title {
+  margin: 0;
+  overflow: hidden;
+  color: var(--mac-photos-title);
+  font:
+    var(--mac-font-weight-bold) var(--mac-photos-title-size) / var(--mac-photos-title-line-height)
+    var(--mac-font-family-system);
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* The date range, the count and the two links are 15 pt apart on one baseline. A pane too
+   narrow for them wraps the row, in lines of 16 pt 4 pt apart, rather than letting them
+   overlap. */
+.mac-photos-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-photos-meta-row-gap) var(--mac-photos-meta-column-gap);
+  align-items: baseline;
+  min-height: var(--mac-photos-meta-min-height);
+  margin-block-start: var(--mac-photos-meta-margin-top);
+  font: var(--mac-font-body);
+  white-space: nowrap;
+}
+
+/* The date range is what gives way in a narrow window: it is cut with an ellipsis. */
+.mac-photos-range {
+  flex: 0 1 auto;
+  min-width: 0;
+  font-weight: var(--mac-font-weight-semibold);
+}
+
+.mac-photos-count,
+.mac-photos-link {
+  flex: none;
+}
+
+/* "Showing:" and the menu's title stand at the trailing edge; the title is semibold. The
+   menu's button is 21 pt high, 2.5 pt over the line at each side: it does not make the line
+   taller. */
+.mac-photos-showing {
+  display: flex;
+  flex: none;
+  gap: var(--mac-photos-showing-gap);
+  align-items: baseline;
+  margin-block: var(--mac-photos-showing-margin-block);
+  margin-inline-start: auto;
+}
+
+.mac-photos-filter {
+  font-weight: var(--mac-font-weight-semibold);
+}
+
+.mac-photos-grid {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.mac-photos-empty {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+/* The Retouch and Red-eye tools' layer over the picture, and the Curves graph. */
+.mac-photos-spot-layer {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: crosshair;
+}
+
+.mac-photos-histogram {
+  display: block;
+  width: 100%;
+  height: var(--mac-photos-histogram-height);
+  margin-block: var(--mac-space-2);
+  border: 1px solid var(--mac-color-separator);
+  background: var(--mac-color-control-background);
+  color: var(--mac-color-secondary-label);
+}
+
+.mac-photos-histogram[data-channel="red"],
+.mac-photos-curve[data-channel="red"] {
+  color: var(--mac-color-system-red);
+}
+
+.mac-photos-histogram[data-channel="green"],
+.mac-photos-curve[data-channel="green"] {
+  color: var(--mac-color-system-green);
+}
+
+.mac-photos-histogram[data-channel="blue"],
+.mac-photos-curve[data-channel="blue"] {
+  color: var(--mac-color-system-blue);
+}
+
+.mac-photos-curve {
+  position: relative;
+  height: var(--mac-photos-curve-size);
+  margin-block-end: var(--mac-space-2);
+  border: 1px solid var(--mac-color-separator);
+  background: var(--mac-color-control-background);
+  color: var(--mac-color-label);
+  cursor: crosshair;
+}
+
+.mac-photos-curve-area {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: crosshair;
+}
+
+.mac-photos-curve > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.mac-photos-curve-point {
+  position: absolute;
+  width: var(--mac-photos-curve-point);
+  height: var(--mac-photos-curve-point);
+  padding: 0;
+  border: 1px solid var(--mac-photos-on-picture);
+  border-radius: 50%;
+  background: var(--mac-color-selected-content-background);
+  transform: translate(-50%, 50%);
+  cursor: grab;
+  touch-action: none;
+}
+
+/* Import's review: a tile per chosen file; a tile not chosen is dimmed. */
+.mac-photos-import-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--mac-photos-import-size), 1fr));
+  gap: var(--mac-space-2);
+  max-height: var(--mac-photos-panel-height);
+  overflow: auto;
+}
+
+.mac-photos-import-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-space-1);
+  align-items: center;
+  min-width: 0;
+  padding: var(--mac-space-1);
+  border: var(--mac-photos-place-border) solid transparent;
+  border-radius: var(--mac-photos-tile-radius);
+  background: none;
+  color: inherit;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.mac-photos-import-item[aria-pressed="true"] {
+  border-color: var(--mac-color-selected-content-background);
+  opacity: 1;
+}
+
+.mac-photos-import-item > img {
+  width: var(--mac-photos-import-size);
+  height: var(--mac-photos-import-size);
+  object-fit: cover;
+}
+
+.mac-photos-import-name {
+  overflow: hidden;
+  max-width: 100%;
+  font: var(--mac-font-control-small);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The People row: a round face over a name. */
+.mac-photos-people {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--mac-photos-person-size), 1fr));
+  gap: var(--mac-photos-memory-gap);
+  padding: var(--mac-photos-memory-gap);
+}
+
+.mac-photos-person {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--mac-space-1);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.mac-photos-person-face {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  width: var(--mac-photos-person-size);
+  height: var(--mac-photos-person-size);
+  border-radius: 50%;
+  background: var(--mac-color-control-background);
+}
+
+.mac-photos-person-face > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Placed by `faceCrop`, in percentages of the round tile. */
+.mac-photos-person-face > .mac-photos-face-image,
+.mac-photos-info-face-crop > .mac-photos-face-image {
+  position: absolute;
+  max-width: none;
+  object-fit: fill;
+}
+
+.mac-photos-face-open {
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+
+.mac-photos-face-name {
+  width: 100%;
+}
+
+.mac-photos-info-faces {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-space-1);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.mac-photos-info-face {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-space-2);
+}
+
+.mac-photos-info-face > .mac-photos-face-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.mac-photos-info-face-crop {
+  position: relative;
+  flex: none;
+  overflow: hidden;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--mac-color-control-background);
+}
+
+.mac-photos-person-name {
+  font: var(--mac-font-control-small);
+  font-weight: var(--mac-font-weight-semibold);
+}
+
+.mac-photos-memory-heading {
+  padding-block-start: var(--mac-photos-memory-gap);
+  padding-inline: var(--mac-photos-memory-gap);
+}
+
+/* The Memories row: a large tile per memory, its title over the first photo. */
+.mac-photos-memories {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--mac-photos-memory-width), 1fr));
+  gap: var(--mac-photos-memory-gap);
+  padding: var(--mac-photos-memory-gap);
+}
+
+.mac-photos-memory {
+  position: relative;
+  height: var(--mac-photos-memory-height);
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: var(--mac-photos-tile-radius);
+  background: var(--mac-color-control-background);
+  cursor: pointer;
+}
+
+.mac-photos-memory > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mac-photos-memory-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--mac-photos-on-picture);
+  text-shadow: 0 0 var(--mac-photos-place-shadow) var(--mac-photos-badge-shade);
+}
+
+.mac-photos-memory-title {
+  font: var(--mac-font-title-2);
+}
+
+/* A tile with no picture yet, or none to show: an empty album, a memory still loading. */
+.mac-photos-memory:not(:has(img)) .mac-photos-memory-text {
+  color: var(--mac-color-label);
+  text-shadow: none;
+}
+
+.mac-photos-hues {
+  display: flex;
+  gap: var(--mac-space-2);
+  margin: 0 0 var(--mac-space-2);
+  padding: 0;
+  border: 0;
+}
+
+.mac-photos-hue {
+  width: var(--mac-photos-hue-size);
+  height: var(--mac-photos-hue-size);
+  margin: 0;
+  border-radius: 50%;
+  appearance: none;
+  cursor: pointer;
+}
+
+.mac-photos-hue:checked {
+  outline: 2px solid var(--mac-color-label);
+  outline-offset: 1px;
+}
+
+.mac-photos-hue[data-band="red"] {
+  background: var(--mac-color-system-red);
+}
+
+.mac-photos-hue[data-band="yellow"] {
+  background: var(--mac-color-system-yellow);
+}
+
+.mac-photos-hue[data-band="green"] {
+  background: var(--mac-color-system-green);
+}
+
+.mac-photos-hue[data-band="cyan"] {
+  background: var(--mac-color-system-teal);
+}
+
+.mac-photos-hue[data-band="blue"] {
+  background: var(--mac-color-system-blue);
+}
+
+.mac-photos-hue[data-band="magenta"] {
+  background: var(--mac-color-system-pink);
+}
+
+.mac-photos-section-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.mac-photos-memory-detail {
+  font: var(--mac-font-control-small);
+}
+
+/* The Info window's map, and the place on it. */
+.mac-photos-info-map {
+  position: relative;
+  height: var(--mac-photos-info-map-height);
+  overflow: hidden;
+  border-radius: var(--mac-photos-tile-radius);
+}
+
+.mac-photos-info-pin {
+  position: absolute;
+  width: var(--mac-photos-info-pin);
+  height: var(--mac-photos-info-pin);
+  border: var(--mac-photos-place-border) solid var(--mac-photos-on-picture);
+  border-radius: 50%;
+  background: var(--mac-color-system-red);
+  box-shadow: 0 1px var(--mac-photos-place-shadow) var(--mac-photos-badge-shade);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* The Places row's map, and a pin on it: a square of the place's first photo. */
+.mac-photos-places {
+  position: relative;
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.mac-photos-place {
+  position: absolute;
+  width: var(--mac-photos-place-size);
+  height: var(--mac-photos-place-size);
+  padding: 0;
+  border: var(--mac-photos-place-border) solid var(--mac-photos-on-picture);
+  border-radius: var(--mac-photos-tile-radius);
+  background: var(--mac-photos-background);
+  box-shadow: 0 1px var(--mac-photos-place-shadow) var(--mac-photos-badge-shade);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+.mac-photos-place > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+
+.mac-photos-place-count {
+  position: absolute;
+  inset-block-start: calc(-1 * var(--mac-photos-place-border) * 3);
+  inset-inline-end: calc(-1 * var(--mac-photos-place-border) * 3);
+  min-width: var(--mac-photos-place-count);
+  height: var(--mac-photos-place-count);
+  padding-inline: var(--mac-space-1);
+  border-radius: var(--mac-photos-place-count);
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-photos-on-picture);
+  font: var(--mac-font-control-small);
+  line-height: var(--mac-photos-place-count);
+}
+
+/* A picture in its cell: the placeholder, and over it the badges. */
+.mac-photos-thumbnail {
+  position: relative;
+  display: block;
+  flex: none;
+}
+
+.mac-photos-thumbnail > svg:first-child {
+  display: block;
+}
+
+/* The selection is a 3 pt ring round the picture, in the accent colour; grey in a window
+   that is not key. Photos keeps the keyboard in its grid while a toolbar button is pressed,
+   so the ring does not follow the focus as a list's selection does.
+   [provisional: no capture shows a selection] */
+.mac-photos-thumbnail:where([data-selected]) {
+  outline: var(--mac-photos-selection-width) solid var(--mac-color-selected-content-background);
+}
+
+.mac-photos-thumbnail:where([data-selected]):where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  outline-color: var(--mac-color-selected-content-background-unemphasized);
+}
+
+.mac-photos-favorite {
+  position: absolute;
+  inset-block-end: var(--mac-photos-favorite-inset);
+  inset-inline-start: var(--mac-photos-favorite-inset);
+  color: var(--mac-photos-badge);
+  filter: drop-shadow(0 0 var(--mac-photos-favorite-shade-blur) var(--mac-photos-badge-shade));
+}
+
+.mac-photos-duration {
+  position: absolute;
+  inset-block-end: var(--mac-photos-duration-inset-bottom);
+  inset-inline-end: var(--mac-photos-duration-inset-end);
+  color: var(--mac-photos-badge);
+  font: var(--mac-font-control-small);
+  font-weight: var(--mac-font-weight-semibold);
+  text-shadow: 0 0 var(--mac-photos-duration-shade-blur) var(--mac-photos-badge-shade);
+}
+
+/* An album's tile in a folder: its first picture, cropped square. */
+.mac-photos-tile {
+  display: block;
+  border-radius: var(--mac-photos-tile-radius);
+}
+
+/* An open picture is as large as fits the pane, 20 pt inside its edges. */
+.mac-photos-viewer {
+  display: grid;
+  flex: 1 1 0;
+  place-items: center;
+  box-sizing: border-box;
+  min-height: 0;
+  padding: var(--mac-photos-viewer-padding);
+  container-type: size;
+}
+
+.mac-photos-picture {
+  width: min(100cqw, 100cqh * var(--mac-photos-aspect, 1));
+  max-width: none;
+  aspect-ratio: var(--mac-photos-aspect, 1);
+}
+
+/* The image view is a size container: the drawing fills it. */
+.mac-photos-picture-art {
+  display: block;
+  width: 100cqw;
+  height: 100cqh;
+}
+
+@media (forced-colors: active) {
+  .mac-photos-header {
+    border-block-end: 1px solid CanvasText;
+    background: none;
+  }
+
+  .mac-photos-thumbnail:where([data-selected]) {
+    outline-color: Highlight;
+  }
+}
+
+/*
+ * The library served by the desktop's Ferrite application (photos-desktop.tsx,
+ * photos-editor.tsx). No capture shows these parts, so their sizes are provisional tokens in
+ * photos.tokens.css.
+ *
+ * Parts
+ *   .mac-photos-pane            the content pane: the right-click and drop target
+ *   .mac-photos-groups          the Days, Months or Years view
+ *   .mac-photos-group           one day, month or year: its heading over its photos
+ *   .mac-photos-cell            a photo of a group, cropped square, as a button
+ *   .mac-photos-days-left       days before a photo in Recently Deleted goes for good
+ *   .mac-photos-busy            the spinner and line of an import or a save
+ *   .mac-photos-notice          what an action that failed says
+ *   .mac-photos-edit            the editor: the stage beside the inspector
+ *   .mac-photos-crop            the crop over the whole picture, with its corners
+ *   .mac-photos-edit-panel      the Adjust, Filters or Crop pane
+ *
+ * States
+ *   [data-dropping]             on the pane: pictures are dragged over it
+ *   [data-drop-target]          on an album's sidebar row: photos are dragged over it
+ *   [data-selected]             on a cell or a filter: chosen
+ */
+
+.mac-photos-pane {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.mac-photos-pane:where([data-dropping]) {
+  outline: var(--mac-photos-drop-width) solid var(--mac-color-selected-content-background);
+  outline-offset: calc(-1 * var(--mac-photos-drop-width));
+}
+
+/* An album's row while photos are dragged over it: ringed, as the pane is for files.
+   [provisional: no capture shows a drag] */
+.mac-photos-sidebar :where([data-drop-target]) {
+  outline: var(--mac-photos-drop-width) solid var(--mac-color-selected-content-background);
+  outline-offset: calc(-1 * var(--mac-photos-drop-width));
+}
+
+.mac-photos-busy {
+  display: inline-flex;
+  flex: none;
+  gap: var(--mac-space-2);
+  align-items: center;
+}
+
+.mac-photos-notice {
+  display: block;
+  margin-block-start: var(--mac-space-2);
+  color: var(--mac-color-system-red);
+}
+
+.mac-photos-groups {
+  flex: 1 1 0;
+  min-height: 0;
+  background: var(--mac-photos-background);
+}
+
+.mac-photos-group {
+  padding: var(--mac-photos-group-padding-top) var(--mac-photos-header-padding-right) 0
+    var(--mac-photos-header-padding-left);
+}
+
+.mac-photos-group-heading {
+  display: flex;
+  gap: var(--mac-space-4);
+  align-items: baseline;
+  margin-block-end: var(--mac-space-4);
+}
+
+.mac-photos-group-title {
+  margin: 0;
+  color: var(--mac-photos-title);
+  font: var(--mac-font-headline);
+  font-size: var(--mac-photos-group-title-size);
+  line-height: var(--mac-photos-group-title-line-height);
+}
+
+.mac-photos-group-link {
+  font: inherit;
+}
+
+.mac-photos-group-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, var(--mac-photos-cell, var(--mac-photos-cell-default)));
+  gap: var(--mac-photos-cell-gap);
+}
+
+.mac-photos-cell {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  background: var(--mac-color-group-background);
+  cursor: default;
+}
+
+.mac-photos-cell img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mac-photos-cell:where([data-selected]) {
+  outline: var(--mac-photos-selection-width) solid var(--mac-color-selected-content-background);
+  outline-offset: calc(-1 * var(--mac-photos-selection-width));
+}
+
+.mac-photos-cell:focus-visible {
+  outline: var(--mac-photos-selection-width) solid var(--mac-color-selected-content-background);
+  outline-offset: calc(-1 * var(--mac-photos-selection-width));
+}
+
+.mac-photos-thumbnail > img {
+  display: block;
+}
+
+.mac-photos-grid-keywords {
+  position: absolute;
+  inset-block-start: var(--mac-photos-duration-inset-bottom);
+  inset-inline: var(--mac-photos-duration-inset-end);
+  overflow: hidden;
+  color: var(--mac-photos-badge);
+  font: var(--mac-font-control-small);
+  text-overflow: ellipsis;
+  text-shadow: 0 0 var(--mac-photos-duration-shade-blur) var(--mac-photos-badge-shade);
+  white-space: nowrap;
+}
+
+.mac-photos-days-left {
+  position: absolute;
+  inset-block-end: var(--mac-photos-duration-inset-bottom);
+  inset-inline-end: var(--mac-photos-duration-inset-end);
+  color: var(--mac-photos-badge);
+  font: var(--mac-font-control-small);
+  font-weight: var(--mac-font-weight-semibold);
+  text-shadow: 0 0 var(--mac-photos-duration-shade-blur) var(--mac-photos-badge-shade);
+}
+
+.mac-photos-picture:where(img) {
+  object-fit: contain;
+}
+
+.mac-photos-viewer-note {
+  position: absolute;
+  inset-block-end: var(--mac-space-4);
+  inset-inline: 0;
+  text-align: center;
+}
+
+.mac-photos-viewer {
+  position: relative;
+}
+
+.mac-photos-sidebar-footer {
+  padding: var(--mac-space-3) var(--mac-space-5);
+}
+
+.mac-photos-new-album {
+  display: inline-flex;
+  gap: var(--mac-space-2);
+  align-items: center;
+}
+
+.mac-photos-name {
+  width: var(--mac-photos-name-width);
+}
+
+/* The floating Info and Keyword Manager windows, and what else the served library adds. */
+.mac-photos-info-window,
+.mac-photos-preferences,
+.mac-photos-keyword-window {
+  position: absolute;
+  top: var(--mac-space-4);
+  right: var(--mac-space-4);
+  z-index: 3;
+}
+.mac-photos-keyword-window {
+  right: auto;
+  left: var(--mac-photos-panel-inset);
+}
+.mac-photos-info-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-space-2);
+  padding: var(--mac-space-4);
+  max-height: var(--mac-photos-panel-height);
+  overflow-y: auto;
+}
+.mac-photos-info-field {
+  width: 100%;
+}
+.mac-photos-info-date {
+  align-self: flex-start;
+}
+.mac-photos-info-heart {
+  align-self: flex-start;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+}
+.mac-photos-keyword-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mac-photos-keyword-row {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-space-2);
+}
+.mac-photos-keyword-name {
+  flex: 1;
+}
+.mac-photos-keyword-key {
+  width: var(--mac-photos-keyword-key-width);
+}
+.mac-photos-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-space-3);
+  padding: var(--mac-space-5);
+}
+.mac-photos-sheet-row {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-space-2);
+}
+.mac-photos-split:where([data-sidebar="hidden"]) > .mac-photos-sidebar-pane,
+.mac-photos-split:where([data-sidebar="hidden"]) > [role="separator"] {
+  display: none;
+}
+.mac-photos-sidebar-frame {
+  display: contents;
+}
+.mac-photos-row-photo {
+  width: var(--mac-photos-row-photo);
+  height: var(--mac-photos-row-photo);
+  object-fit: cover;
+}
+.mac-photos-band {
+  position: fixed;
+  z-index: 4;
+  border: 1px solid var(--mac-color-accent, Highlight);
+  background: color-mix(in srgb, var(--mac-color-accent, Highlight) 20%, transparent);
+  pointer-events: none;
+}
+.mac-photos-duration {
+  position: absolute;
+  right: var(--mac-photos-duration-inset-end);
+  bottom: var(--mac-photos-duration-inset-bottom);
+  color: var(--mac-photos-on-picture);
+  font-size: var(--mac-photos-duration-size);
+}
+.mac-photos-cell-wrap {
+  display: inline-flex;
+  flex-direction: column;
+}
+.mac-photos-cell-title,
+.mac-photos-cell-keywords {
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--mac-photos-duration-size);
+}
+.mac-photos-cell-keywords {
+  opacity: 0.7;
+}
+.mac-photos-thumbnail:where([data-square]) img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mac-photos-viewer:where([data-zoomed]) {
+  overflow: hidden;
+  cursor: grab;
+}
+[data-photos-window]:focus {
+  outline: none;
+}
+
+.mac-photos-strip {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  gap: var(--mac-space-1);
+  padding: var(--mac-space-2);
+  overflow: hidden;
+  background: var(--mac-photos-background);
+}
+.mac-photos-strip-item {
+  flex: none;
+  width: var(--mac-photos-strip-size);
+  height: var(--mac-photos-strip-size);
+  border: 0;
+  padding: 0;
+  background: none;
+  opacity: 0.7;
+}
+.mac-photos-strip-item:where([aria-current]) {
+  opacity: 1;
+  outline: var(--mac-photos-selection-width) solid var(--mac-color-accent, Highlight);
+}
+.mac-photos-strip-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* The full-screen viewer and the slideshow. */
+.mac-photos-stage {
+  font-family: var(--mac-font-family-system);
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--mac-photos-stage-background);
+  outline: none;
+}
+.mac-photos-stage-picture {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  animation: mac-photos-stage-in 0.6s ease;
+}
+.mac-photos-stage:where([data-theme="cut"]) .mac-photos-stage-picture {
+  animation: none;
+}
+.mac-photos-stage:where([data-theme="ken-burns"]) .mac-photos-stage-picture:where([data-playing]) {
+  animation: mac-photos-stage-pan 6s linear both;
+}
+@keyframes mac-photos-stage-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes mac-photos-stage-pan {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mac-photos-stage-picture {
+    animation: none;
+  }
+}
+.mac-photos-stage-controls {
+  position: absolute;
+  bottom: var(--mac-photos-stage-controls-inset);
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: var(--mac-space-2);
+  translate: -50% 0;
+  border-radius: var(--mac-photos-tile-radius);
+  padding: var(--mac-space-2) var(--mac-space-3);
+  background: var(--mac-photos-stage-controls);
+  color: var(--mac-photos-on-picture);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.mac-photos-stage:where([data-controls]) .mac-photos-stage-controls {
+  opacity: 1;
+}
+.mac-photos-stage-button {
+  min-width: var(--mac-photos-stage-button);
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+}
+.mac-photos-stage-button:disabled {
+  opacity: 0.4;
+}
+.mac-photos-stage-place {
+  font-size: var(--mac-photos-duration-size);
+}
+
+.mac-photos-name-form {
+  display: grid;
+  gap: var(--mac-space-4);
+  justify-items: end;
+  margin-block-start: var(--mac-space-4);
+}
+
+.mac-photos-name-form > :first-child {
+  justify-self: stretch;
+}
+
+.mac-photos-edit {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  min-height: 0;
+  background: var(--mac-photos-edit-background);
+}
+
+.mac-photos-edit-stage {
+  display: grid;
+  flex: 1 1 0;
+  place-items: center;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--mac-photos-viewer-padding);
+  container-type: size;
+}
+
+.mac-photos-edit-stage[data-zoomed] {
+  overflow: hidden;
+}
+
+.mac-photos-edit-stage[data-panning] {
+  cursor: grab;
+}
+
+.mac-photos-mark-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.mac-photos-people-note {
+  display: block;
+  padding: var(--mac-space-3) var(--mac-space-5) 0;
+}
+
+.mac-photos-place-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-space-1);
+}
+
+.mac-photos-place-result {
+  padding: var(--mac-space-1) var(--mac-space-2);
+  border: 0;
+  border-radius: var(--mac-photos-tile-radius);
+  background: none;
+  color: var(--mac-color-label);
+  font: var(--mac-font-control-small);
+  text-align: start;
+}
+
+.mac-photos-place-result:hover {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-text);
+}
+
+/* The + on My Albums: the header's row, with the button at its far end. */
+.mac-photos-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* The crop's shade covers only the picture: the frame clips it, and the corners sit inside the
+   crop so the clip leaves them whole. */
+.mac-photos-edit-frame {
+  position: relative;
+  overflow: hidden;
+  width: min(100cqw, 100cqh * var(--mac-photos-aspect, 1));
+  aspect-ratio: var(--mac-photos-aspect, 1);
+}
+
+.mac-photos-edit-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mac-photos-crop {
+  position: absolute;
+  box-sizing: border-box;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: var(--mac-photos-crop-line) solid var(--mac-photos-crop-color);
+  box-shadow: 0 0 0 100vmax var(--mac-photos-crop-shade);
+}
+
+.mac-photos-crop-area {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: move;
+  touch-action: none;
+}
+
+.mac-photos-crop-handle {
+  position: absolute;
+  width: var(--mac-photos-crop-handle);
+  height: var(--mac-photos-crop-handle);
+  padding: 0;
+  border: var(--mac-photos-crop-line) solid var(--mac-photos-crop-color);
+  background: var(--mac-photos-crop-shade);
+  touch-action: none;
+}
+
+.mac-photos-crop-handle:where([data-corner="nw"]) {
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  cursor: nwse-resize;
+}
+
+.mac-photos-crop-handle:where([data-corner="ne"]) {
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  cursor: nesw-resize;
+}
+
+.mac-photos-crop-handle:where([data-corner="sw"]) {
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  cursor: nesw-resize;
+}
+
+.mac-photos-crop-handle:where([data-corner="se"]) {
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  cursor: nwse-resize;
+}
+
+.mac-photos-crop-handle:where([data-corner="n"]) {
+  inset-block-start: 0;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  cursor: ns-resize;
+}
+
+.mac-photos-crop-handle:where([data-corner="s"]) {
+  inset-block-end: 0;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  cursor: ns-resize;
+}
+
+.mac-photos-crop-handle:where([data-corner="w"]) {
+  inset-block-start: 50%;
+  inset-inline-start: 0;
+  translate: 0 -50%;
+  cursor: ew-resize;
+}
+
+.mac-photos-crop-handle:where([data-corner="e"]) {
+  inset-block-start: 50%;
+  inset-inline-end: 0;
+  translate: 0 -50%;
+  cursor: ew-resize;
+}
+
+.mac-photos-edit-panel {
+  flex: none;
+  width: var(--mac-photos-edit-panel-width);
+  border-inline-start: var(--mac-hairline) solid var(--mac-color-separator);
+  background: var(--mac-color-window-background);
+}
+
+.mac-photos-edit-pane {
+  display: grid;
+  gap: var(--mac-space-6);
+  padding: var(--mac-space-5);
+}
+
+.mac-photos-edit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-space-3);
+}
+
+.mac-photos-edit-section {
+  display: grid;
+  gap: var(--mac-space-3);
+}
+
+.mac-photos-edit-heading {
+  margin: 0;
+  color: var(--mac-color-label);
+  font: var(--mac-font-headline);
+}
+
+.mac-photos-adjust-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  row-gap: var(--mac-space-1);
+  align-items: baseline;
+}
+
+.mac-photos-adjust-slider {
+  grid-column: 1 / -1;
+}
+
+.mac-photos-filters {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--mac-space-4);
+}
+
+.mac-photos-filter-choice:where([data-selected]) {
+  outline: var(--mac-photos-selection-width) solid var(--mac-color-selected-content-background);
+  outline-offset: var(--mac-space-1);
+}
+
+.mac-photos-filter-preview {
+  display: block;
+  width: var(--mac-photos-filter-preview);
+  height: var(--mac-photos-filter-preview);
+  object-fit: cover;
+}
+
+/* After the rules above, so these colours win over their outlines. */
+@media (forced-colors: active) {
+  .mac-photos-cell:where([data-selected]),
+  .mac-photos-cell:focus-visible,
+  .mac-photos-filter-choice:where([data-selected]),
+  .mac-photos-pane:where([data-dropping]),
+  .mac-photos-sidebar :where([data-drop-target]) {
+    outline-color: Highlight;
+  }
+
+  .mac-photos-crop {
+    outline-color: CanvasText;
+  }
+}

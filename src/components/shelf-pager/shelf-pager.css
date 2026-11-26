@@ -1,0 +1,83 @@
+/*
+ * Shelf pager: two chevrons in the side margins of what they page.
+ *
+ * A chevron is a 13 x 29 pt box holding two 1 pt strokes that meet at the outer middle; its
+ * outer edge is 13.5 pt from the pager's edge and it is level with the pager's middle.
+ *
+ * States
+ *   [data-direction="previous" | "next"]   side; the leading chevron is the trailing one mirrored
+ *   [data-disabled]                        dimmed, inert, still focusable
+ *   :active                                70% opaque (provisional)
+ *   :focus-visible                         focus ring, in the key window only
+ *
+ * Consumer variables
+ *   --mac-shelf-pager-inset     distance of a chevron's outer edge from the pager's edge (13.5px)
+ *   --mac-shelf-pager-offset    moves the chevrons down from the pager's middle (0px)
+ */
+.mac-shelf-pager {
+  position: relative;
+}
+
+.mac-shelf-pager-chevron {
+  position: absolute;
+  top: calc(50% - 14.5px + var(--mac-shelf-pager-offset, 0px));
+  z-index: 1;
+  box-sizing: border-box;
+  display: block;
+  width: 13px;
+  height: 29px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  overflow: hidden;
+  background: none;
+  color: var(--mac-shelf-pager-chevron);
+  cursor: default;
+  inset-inline-end: var(--mac-shelf-pager-inset, 13.5px);
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-shelf-pager-chevron:where([data-direction="previous"]) {
+  inset-inline: var(--mac-shelf-pager-inset, 13.5px) auto;
+}
+
+/* The drawing holds both ways a chevron can point, side by side, and is twice as wide as the
+   button, which shows the half at its start edge: the one that points outwards, in either
+   direction of writing, with nothing to select on. */
+.mac-shelf-pager-chevron > svg {
+  display: block;
+  width: 26px;
+  height: 29px;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1px;
+}
+
+.mac-shelf-pager-chevron:where([data-disabled]) {
+  color: var(--mac-shelf-pager-chevron-disabled);
+}
+
+.mac-shelf-pager-chevron:where(:not([data-disabled]):active) {
+  opacity: 0.7;
+}
+
+/* Keyboard focus ring; key window only */
+.mac-shelf-pager-chevron:where(:focus-visible):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-shelf-pager-chevron {
+    color: ButtonText;
+  }
+
+  .mac-shelf-pager-chevron:where([data-disabled]) {
+    color: GrayText;
+  }
+}

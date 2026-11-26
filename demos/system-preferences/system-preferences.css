@@ -1,0 +1,378 @@
+/*
+ * System Preferences: the grid of panes, the account header above it and the box a pane is
+ * rendered in. Every control is a library component; this file only places them. Distances are
+ * the measured ones of reference/spec/apps/system-preferences.md, in points.
+ *
+ *   .mac-system-preferences-body            the window body
+ *   .mac-system-preferences-grid            the Show All view: account header and two bands
+ *   .mac-system-preferences-band            a band of two rows of icons; [data-band="upper"]
+ *   .mac-system-preferences-pane-button     a pane's icon; [data-dimmed] while a search does
+ *                                           not match its pane
+ *   .mac-system-preferences-pane            the open pane, 668 pt wide
+ *   .mac-system-preferences-effects         on a served desktop, the note under a pane that says
+ *                                           which of its settings take effect (effects.ts)
+ *   .mac-system-preferences-served, -facts, -actions   a page of served-pages.tsx
+ *   .mac-system-preferences-form, -row, -row-label, -at, -footer   helpers for panes (form.tsx)
+ */
+.mac-system-preferences-body {
+  background: var(--mac-system-preferences-band);
+}
+
+.mac-system-preferences-grid,
+.mac-system-preferences-pane {
+  position: relative;
+  box-sizing: border-box;
+  width: 668px;
+  outline: none;
+}
+
+/* Bands behind the library's grid of pane icons (eight columns at an 82 pt pitch, rows at a
+   91 pt pitch), which starts at x = 5. The first icon canvas starts 17 pt (upper) and 26 pt
+   (lower) below the band's top edge; the icon keeps 5 pt of that as its own padding. */
+.mac-system-preferences-band {
+  box-sizing: border-box;
+  height: 211px;
+  padding: 21px 0 0 5px;
+}
+
+.mac-system-preferences-band:where([data-band="upper"]) {
+  height: 192px;
+  padding-top: 12px;
+  background: var(--mac-system-preferences-band-upper);
+}
+
+/* A search fades the panes it does not match, as the spotlight of System Preferences does. */
+.mac-system-preferences-pane-button:where([data-dimmed]) {
+  opacity: 0.3;
+}
+
+/* The note under a pane on a served desktop: two lines of small text over the pane's width, set
+   off from the pane by a separator. Its height is the window's extra height (effects.ts). */
+.mac-system-preferences-effects {
+  box-sizing: border-box;
+  width: 668px;
+  margin: 0;
+  padding: 7px 20px;
+  overflow: hidden;
+  border-top: 1px solid var(--mac-color-separator);
+}
+
+/* The search field's list of matching panes, under the field. */
+.mac-system-preferences-suggestions {
+  position: absolute;
+  z-index: 1;
+  top: 4px;
+  right: 8px;
+  width: 200px;
+  max-height: 300px;
+  margin: 0;
+  padding: 4px 0;
+  overflow: auto;
+  border-radius: var(--mac-radius-menu);
+  background: var(--mac-color-window-background);
+  box-shadow: var(--mac-shadow-menu);
+  font: var(--mac-font-body);
+  list-style: none;
+}
+
+.mac-system-preferences-suggestions button {
+  display: block;
+  width: 100%;
+  padding: 2px 12px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+}
+
+.mac-system-preferences-suggestions button:where([data-selected], :hover) {
+  background: var(--mac-accent-menu-selection);
+  color: var(--mac-color-selected-menu-item-text);
+}
+
+/* View > Customize…: a checkbox under each pane's icon. */
+.mac-system-preferences-customize {
+  position: relative;
+  display: inline-flex;
+}
+
+.mac-system-preferences-customize > :last-child {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+}
+
+/* A page of served-pages.tsx: what is true of this desktop, in place of a captured Mac's facts. */
+.mac-system-preferences-served {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 20px 24px;
+}
+
+.mac-system-preferences-served :where(h2, p, dl, dd) {
+  margin: 0;
+}
+
+.mac-system-preferences-served-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.mac-system-preferences-served-facts > div {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  column-gap: 8px;
+}
+
+.mac-system-preferences-served-facts dt {
+  text-align: end;
+}
+
+.mac-system-preferences-served-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+/* Users & Groups' picture and card. */
+.mac-system-preferences-served-account {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.mac-system-preferences-served-account > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mac-system-preferences-served-account p {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+/* Users & Groups' Login Items. */
+.mac-system-preferences-served-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.mac-system-preferences-served-list ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  max-height: 120px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.mac-system-preferences-served-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Screen Time's seven days. */
+.mac-system-preferences-served-chart {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.mac-system-preferences-served-chart > [role="group"] {
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  height: 90px;
+}
+
+.mac-system-preferences-served-chart [role="group"] button {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: stretch;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: center;
+}
+
+.mac-system-preferences-served-chart [role="group"] button > span:first-child {
+  min-height: 1px;
+  background: var(--mac-color-separator);
+}
+
+.mac-system-preferences-served-chart [role="group"] button[aria-pressed="true"] > span:first-child {
+  background: var(--mac-accent-menu-selection);
+}
+
+.mac-system-preferences-served-form {
+  display: grid;
+  flex: 1;
+  gap: 8px;
+}
+
+.mac-system-preferences-served-form > div {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+
+.mac-system-preferences-served-form > div:last-child {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/*
+ * Hot Corners on the served desktop (panes/mission-control/served-hot-corners.tsx): a panel above its
+ * button, its four corners two by two.
+ */
+.mac-system-preferences-hot-corners {
+  position: absolute;
+  z-index: 1;
+  inset-block-end: 100%;
+  inset-inline-start: 0;
+  display: grid;
+  justify-items: end;
+  gap: 12px;
+  width: 420px;
+  padding: 16px 20px;
+  background: var(--mac-color-window-background);
+  box-shadow: var(--mac-shadow-sheet);
+}
+
+.mac-system-preferences-hot-corners > :not(button) {
+  justify-self: stretch;
+}
+
+.mac-system-preferences-hot-corners-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
+}
+
+.mac-system-preferences-hot-corner {
+  display: grid;
+  gap: 2px;
+}
+
+/*
+ * General's Use font smoothing, which the page honours (setting-effects.ts). The other settings
+ * the page honours are in the stylesheet of the part they change.
+ */
+:root[data-mac-font-smoothing="off"] {
+  -webkit-font-smoothing: none;
+}
+
+/* Announces the number of search matches; not drawn. */
+.mac-system-preferences-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/*
+ * Helpers for panes (form.tsx). A pane is a frame of fixed size, as in AppKit, so a row is
+ * placed at its measured distance from the top of the pane and holds a right-aligned label
+ * column and a control column.
+ */
+.mac-system-preferences-form {
+  --_label-width: 238px;
+  --_gap: 12px;
+
+  position: absolute;
+  inset: 0;
+  /*
+   * The form is only a frame that places its rows: it fills the pane, so a pane that has a form
+   * after a tab view (its footer buttons) would otherwise lie over the whole tab view and take
+   * every press meant for the tabs and controls under it. Only what is placed in it takes the
+   * pointer.
+   */
+  pointer-events: none;
+}
+
+.mac-system-preferences-form > * {
+  pointer-events: auto;
+}
+
+/* A row spans the pane's width, and its content column is as wide as what is left: their empty
+   space must not take a press meant for a list or control placed under it (Network's services).
+   The content column's rule names the row too, so it outranks the row's reset of its children. */
+.mac-system-preferences-form > .mac-system-preferences-row {
+  pointer-events: none;
+}
+
+.mac-system-preferences-row > * {
+  pointer-events: auto;
+}
+
+.mac-system-preferences-row > .mac-system-preferences-row-content {
+  pointer-events: none;
+}
+
+.mac-system-preferences-row-content > * {
+  pointer-events: auto;
+}
+
+.mac-system-preferences-row {
+  position: absolute;
+  right: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: var(--_label-width) minmax(0, 1fr);
+  column-gap: var(--_gap);
+  align-items: start;
+}
+
+.mac-system-preferences-row-label {
+  grid-column: 1;
+  justify-self: end;
+  white-space: nowrap;
+}
+
+.mac-system-preferences-row-content {
+  display: flex;
+  grid-column: 2;
+  align-items: center;
+  min-width: 0;
+}
+
+.mac-system-preferences-rule {
+  position: absolute;
+  right: 20px;
+  left: 20px;
+}
+
+.mac-system-preferences-at {
+  position: absolute;
+  display: flex;
+}
+
+.mac-system-preferences-footer {
+  position: absolute;
+  display: flex;
+  align-items: center;
+}

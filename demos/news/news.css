@@ -1,0 +1,558 @@
+/*
+ * News: what the app adds to the library's controls. The window, the Catalyst chrome with its
+ * toolbar and sidebar, the toolbar's buttons and search field, the card grids, the menu and the
+ * empty state are the library's; this file lays the feed out and draws the
+ * app's own elements: the masthead, a story, and the line that leads to more stories.
+ *
+ * Positions are measured on the News captures, in points from the window's top-left corner:
+ * an 820 pt column centred on the pane; the masthead's two lines with cap tops at 58 and 86; a
+ * line at 127; "Top Stories" with its cap top at 169; two 399 x 300 pt pictures at 213, 22 pt
+ * apart; the publisher at 525, the headline's cap top at 556 on a 24 pt pitch, the age at 637;
+ * three smaller stories at 670 on a 280.5 pt pitch, each with an 88 pt picture after its text;
+ * a line at 783 and "MORE TOP STORIES" under it; the section's tinted background to 817.
+ *
+ * Parts
+ *   .mac-news                     the window
+ *   .mac-news-pane                the scrolling view beside the sidebar
+ *   .mac-news-section             Today's tinted section, as wide as the pane
+ *   .mac-news-column              the 820 pt column: in the section, or a list or a story
+ *   .mac-news-masthead            the mark, "News" and, on its second line, the date
+ *   .mac-news-mark                the mark before "News"
+ *   .mac-news-masthead-date       the date
+ *   .mac-news-section-title       "Top Stories"
+ *   .mac-news-secondary           the block of the three smaller stories
+ *   .mac-news-more-row            the row under the stories, with a half-point line over it
+ *   .mac-news-more                the button in it; -tint is its red part
+ *   .mac-news-title               the title of a list or of an opened story
+ *   .mac-news-empty               what a list without stories says
+ *   .mac-news-story               a story; -art, -text, -publisher, -headline, -link and -age
+ *                                 are its parts
+ *   .mac-news-picture-mark        the placeholder's mark
+ *   .mac-news-play                the play mark of a video story; -disc, -triangle
+ *   .mac-news-paragraph           a paragraph of an opened story
+ *   .mac-news-article-heading     a heading of an article read from its page; -code, its code
+ *   .mac-news-status              the desktop app's line saying when the stories were read
+ *   .mac-news-actions             the desktop app's buttons of a channel or a story
+ *   .mac-news-discover            the desktop app's Discover Channels list; -row, -name
+ *   .mac-news-find                the desktop app's find bar over a story; -count, -match
+ *   .mac-news-suggested           the desktop app's Suggested For You on Today
+ *   .mac-news-widget              the desktop app's widget in Notification Center's Today view;
+ *                                 -list, -story, -publisher, -headline, -age and -note
+ *
+ * States
+ *   [data-layout] on .mac-news-story       "lead" or "beside"
+ *   [data-view] on .mac-news-column        "list" or "reader"
+ *   :focus-visible on .mac-news-story-link and .mac-news-more   focus ring, key window only
+ */
+.mac-news-pane {
+  position: absolute;
+  inset: 0;
+  overflow: hidden auto;
+  background: var(--mac-news-pane);
+  scrollbar-color: var(--mac-catalyst-chrome-scroll-indicator) transparent;
+  scrollbar-width: thin;
+}
+
+/* The tint begins under the masthead's line and deepens to the section's foot. */
+.mac-news-section {
+  box-sizing: border-box;
+  height: var(--mac-news-section-height);
+  background: linear-gradient(
+    to bottom,
+    var(--mac-news-pane) var(--mac-news-section-stop-0),
+    var(--mac-news-section-1) var(--mac-news-section-stop-1),
+    var(--mac-news-section-2) var(--mac-news-section-stop-2),
+    var(--mac-news-section-3) var(--mac-news-section-stop-3),
+    var(--mac-news-section-4) var(--mac-news-section-stop-4),
+    var(--mac-news-section-5) var(--mac-news-section-stop-5)
+  );
+}
+
+/* The column is 820 pt and centred on the pane; a narrow pane keeps 24 pt beside it. */
+.mac-news-column {
+  box-sizing: border-box;
+  width: min(var(--mac-news-column-width), 100% - var(--mac-news-column-margin-double));
+  margin-inline-start: max(var(--mac-news-column-margin), 50% - var(--mac-news-column-half-width));
+  cursor: default;
+}
+
+.mac-news-column:where([data-view]) {
+  padding: var(--mac-news-list-padding);
+}
+
+/* The headings and paragraphs are named under the window, so that a page's own rules for h2,
+   h3, h4 and p (the documentation site has them) do not reach into it. */
+.mac-news .mac-news-masthead {
+  display: block;
+  margin: 0;
+  /* The half-point line under the masthead is the masthead's own edge. */
+  padding: var(--mac-news-masthead-padding);
+  border: 0;
+  box-shadow: 0 var(--mac-hairline) 0 var(--mac-news-rule);
+  color: var(--mac-news-masthead);
+  font:
+    800 var(--mac-news-masthead-font-size) / var(--mac-news-masthead-line-height)
+    var(--mac-font-family-system);
+  letter-spacing: -0.01em;
+}
+
+.mac-news-mark {
+  margin-inline-end: var(--mac-news-mark-margin);
+  vertical-align: var(--mac-news-mark-offset);
+}
+
+.mac-news-masthead-date {
+  display: block;
+  color: var(--mac-news-masthead-date);
+}
+
+.mac-news .mac-news-section-title {
+  margin: var(--mac-news-section-title-margin);
+  padding: var(--mac-news-section-title-padding);
+  border: 0;
+  color: var(--mac-news-section-title);
+  font:
+    800 var(--mac-news-masthead-font-size) / var(--mac-news-masthead-line-height)
+    var(--mac-font-family-system);
+  letter-spacing: -0.01em;
+}
+
+.mac-news .mac-news-title {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  color: var(--mac-news-masthead);
+  font:
+    800 var(--mac-news-masthead-font-size) / var(--mac-news-title-line-height)
+    var(--mac-font-family-system);
+  letter-spacing: -0.01em;
+}
+
+/* A channel of the sidebar, dragged to reorder: a line says where it would land. */
+.mac-news-channel-row[data-drop="before"] {
+  box-shadow: 0 calc(-1 * var(--mac-news-drop-line)) 0 var(--mac-color-selected-content-background);
+}
+
+.mac-news-channel-row[data-drop="after"] {
+  box-shadow: 0 var(--mac-news-drop-line) 0 var(--mac-color-selected-content-background);
+}
+
+/* A story: the picture, then the publisher, the headline and its age. */
+.mac-news-row-menu {
+  display: contents;
+}
+
+.mac-news-story {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mac-news-story-art {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: var(--mac-news-art-aspect-width) / var(--mac-news-art-aspect-height);
+  overflow: hidden;
+  background: var(--mac-news-picture-fill);
+  color: var(--mac-news-picture-mark);
+}
+
+.mac-news-picture-mark {
+  display: block;
+  flex: none;
+  max-width: 50%;
+  max-height: 50%;
+}
+
+/* The play mark is in the picture's centre, over the placeholder's mark. */
+.mac-news-play {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+}
+
+.mac-news-play-disc {
+  fill: var(--mac-news-play-disc);
+}
+
+.mac-news-play-triangle {
+  fill: var(--mac-news-play-triangle);
+}
+
+.mac-news-story-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mac-news-story-publisher {
+  overflow: hidden;
+  color: var(--mac-news-publisher);
+  font:
+    var(--mac-font-weight-bold) var(--mac-news-publisher-font-size) /
+    var(--mac-news-publisher-line-height) var(--mac-font-family-system);
+  letter-spacing: 0.02em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.mac-news .mac-news-story-headline {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: var(--mac-news-headline);
+  letter-spacing: normal;
+}
+
+/* The headline is the story's button; its area is the whole story. */
+.mac-news-story-link {
+  display: -webkit-box;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: default;
+  appearance: none;
+  outline: none;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-news-story-link::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+}
+
+/* A story chosen by Command-click or Shift-click. */
+.mac-news-story-link[aria-pressed="true"]::after {
+  outline: var(--mac-focus-ring-width) solid var(--mac-color-selected-content-background);
+  outline-offset: var(--mac-news-picked-offset);
+}
+
+.mac-news-story-link:where(:focus-visible):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+)::after,
+.mac-news-more:where(:focus-visible):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-news-focus-offset);
+}
+
+.mac-news-story-age {
+  color: var(--mac-news-timestamp);
+  font:
+    var(--mac-font-weight-bold) var(--mac-news-age-font-size) / var(--mac-news-age-line-height)
+    var(--mac-font-family-system);
+}
+
+/* A lead: a 399 x 300 pt picture, the publisher 12 pt under it, a headline of up to three
+   lines and the age at the same place whatever the headline's length. */
+.mac-news-story:where([data-layout="lead"]) .mac-news-story-publisher {
+  margin-top: var(--mac-news-lead-publisher-margin-top);
+}
+
+.mac-news .mac-news-story:where([data-layout="lead"]) .mac-news-story-headline {
+  min-height: var(--mac-news-lead-headline-min-height);
+  margin-top: var(--mac-news-lead-headline-margin-top);
+  font:
+    var(--mac-font-weight-bold) var(--mac-news-lead-headline-font-size) /
+    var(--mac-news-lead-headline-line-height) var(--mac-font-family-system);
+}
+
+.mac-news-story:where([data-layout="lead"]) .mac-news-story-age {
+  margin-top: var(--mac-news-lead-age-margin-top);
+}
+
+/* The text with an 88 pt picture after it. */
+.mac-news-story:where([data-layout="beside"]) {
+  flex-direction: row-reverse;
+  gap: var(--mac-news-beside-gap);
+}
+
+.mac-news-story:where([data-layout="beside"]) > .mac-news-story-art {
+  width: var(--mac-news-art-beside-size);
+  height: var(--mac-news-art-beside-size);
+  aspect-ratio: auto;
+  border-radius: var(--mac-news-art-beside-radius);
+}
+
+.mac-news-story:where([data-layout="beside"]) > .mac-news-story-text {
+  flex: 1;
+}
+
+.mac-news-story:where([data-layout="beside"]) .mac-news-story-publisher {
+  font-size: var(--mac-news-beside-publisher-font-size);
+  line-height: var(--mac-news-beside-publisher-line-height);
+}
+
+.mac-news .mac-news-story:where([data-layout="beside"]) .mac-news-story-headline {
+  min-height: var(--mac-news-beside-headline-min-height);
+  margin-top: var(--mac-news-beside-headline-margin-top);
+  font:
+    var(--mac-font-weight-bold) var(--mac-news-beside-headline-font-size) /
+    var(--mac-news-beside-headline-line-height) var(--mac-font-family-system);
+}
+
+.mac-news-story:where([data-layout="beside"]) .mac-news-story-age {
+  margin-top: var(--mac-news-beside-age-margin-top);
+}
+
+/* A card grid keeps 32 pt of room under its cards. The smaller stories stand 24 pt under the
+   leads and the line 24 pt under the smaller stories, so each of the two blocks begins 8 pt
+   inside the room of the grid before it. The line is the row's own edge. */
+.mac-news-secondary,
+.mac-news-more-row {
+  margin-top: var(--mac-news-block-margin-top);
+}
+
+.mac-news-more-row {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--mac-news-more-row-padding-top);
+  box-shadow: inset 0 var(--mac-hairline) 0 var(--mac-news-section-rule);
+}
+
+/* "MORE TOP STORIES" and its triangle, at the column's trailing edge. */
+.mac-news-more {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--mac-news-more);
+  font:
+    var(--mac-font-weight-bold) var(--mac-news-more-font-size) / var(--mac-news-more-line-height)
+    var(--mac-font-family-system);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: default;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-news-more-tint {
+  color: var(--mac-news-more-tint);
+}
+
+.mac-news-more-tint::after {
+  display: inline-block;
+  margin-inline-start: var(--mac-news-more-triangle-margin);
+  border-block: var(--mac-news-more-triangle-half-height) solid transparent;
+  border-inline-start: var(--mac-news-more-triangle-width) solid currentColor;
+  content: "";
+}
+
+/* A list: the title with a half-point line under it, then the stories two to a row. */
+.mac-news-column:where([data-view="list"]) > .mac-news-title {
+  margin-bottom: var(--mac-news-list-title-margin-bottom);
+  padding-bottom: var(--mac-news-list-title-padding-bottom);
+  box-shadow: 0 var(--mac-hairline) 0 var(--mac-news-rule);
+}
+
+.mac-news-empty {
+  min-height: var(--mac-news-empty-min-height);
+}
+
+/* An opened story, in a narrower measure. */
+.mac-news-column:where([data-view="reader"]) {
+  display: flex;
+  flex-direction: column;
+  width: min(var(--mac-news-reader-width), 100% - var(--mac-news-column-margin-double));
+  margin-inline-start: max(var(--mac-news-column-margin), 50% - var(--mac-news-reader-half-width));
+}
+
+.mac-news-column:where([data-view="reader"]) > .mac-news-title {
+  margin-top: var(--mac-news-reader-title-margin-top);
+}
+
+.mac-news-column:where([data-view="reader"]) > .mac-news-story-age {
+  margin-top: var(--mac-news-reader-age-margin-top);
+}
+
+.mac-news-column:where([data-view="reader"]) > .mac-news-story-art {
+  margin-block: var(--mac-news-reader-art-margin);
+}
+
+.mac-news .mac-news-paragraph {
+  margin: var(--mac-news-paragraph-margin-top) 0 0;
+  color: var(--mac-news-body);
+  font:
+    var(--mac-font-weight-regular) var(--mac-news-paragraph-font-size) /
+    var(--mac-news-paragraph-line-height) var(--mac-font-family-system);
+}
+
+/* An article read from its publisher's page, in a story's reader. */
+.mac-news .mac-news-article-heading {
+  margin: var(--mac-news-paragraph-margin-top) 0 0;
+  color: var(--mac-news-body);
+  font:
+    var(--mac-font-weight-bold) var(--mac-news-paragraph-font-size) /
+    var(--mac-news-paragraph-line-height) var(--mac-font-family-system);
+}
+
+.mac-news .mac-news-article-code {
+  margin: var(--mac-news-paragraph-margin-top) 0 0;
+  overflow-x: auto;
+  color: var(--mac-news-body);
+  font-family: var(--mac-font-family-monospace);
+  font-size: var(--mac-news-status-font-size);
+}
+
+/* The desktop app's News (news-live-window.tsx): a line saying when the stories were read, the
+   buttons of a channel or a story, and the channels of Discover. */
+.mac-news .mac-news-status {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-news-status-gap);
+  min-height: var(--mac-news-status-min-height);
+  margin: 0 0 var(--mac-news-status-margin-bottom);
+  color: var(--mac-news-timestamp);
+  font:
+    var(--mac-font-weight-regular) var(--mac-news-status-font-size) /
+    var(--mac-news-status-line-height) var(--mac-font-family-system);
+}
+
+.mac-news-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-space-control-gap);
+  margin: var(--mac-news-actions-margin);
+}
+
+/* Find in Story: the bar stays at the top of the pane while the story scrolls under it. */
+.mac-news-find {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--mac-space-control-gap);
+  margin: 0 0 var(--mac-space-control-gap);
+  padding: var(--mac-news-find-padding) 0;
+  background: var(--mac-news-pane);
+}
+
+.mac-news-find-count {
+  flex: 1;
+  color: var(--mac-news-timestamp);
+  font:
+    var(--mac-font-weight-regular) var(--mac-news-status-font-size) /
+    var(--mac-news-status-line-height) var(--mac-font-family-system);
+}
+
+.mac-news-find-match {
+  border-radius: var(--mac-news-find-radius);
+  background: var(--mac-news-find-match);
+  color: var(--mac-news-find-text);
+}
+
+.mac-news-find-match[data-current] {
+  background: var(--mac-news-find-current);
+}
+
+.mac-news-suggested {
+  margin-top: var(--mac-news-block-margin-top);
+}
+
+.mac-news .mac-news-discover {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-news-discover-row {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-space-control-gap);
+  padding-block: var(--mac-news-discover-row-padding);
+  box-shadow: 0 var(--mac-hairline) 0 var(--mac-news-rule);
+}
+
+.mac-news-discover-name {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mac-news-headline);
+  font:
+    var(--mac-font-weight-bold) var(--mac-news-beside-headline-font-size) /
+    var(--mac-news-beside-headline-line-height) var(--mac-font-family-system);
+  text-align: start;
+  cursor: default;
+  appearance: none;
+}
+
+.mac-news-discover-name:where(:focus-visible) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-news-focus-offset);
+}
+
+/* The widget in Notification Center's Today view: a headline a row, under its publisher. */
+.mac-news-widget .mac-news-widget-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-news-widget-story {
+  display: grid;
+  width: 100%;
+  margin: 0;
+  padding: var(--mac-news-widget-row-padding);
+  border: 0;
+  background: none;
+  color: var(--mac-color-label);
+  text-align: start;
+  cursor: default;
+  appearance: none;
+}
+
+.mac-news-widget-story:where(:focus-visible) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(0px - var(--mac-focus-ring-width));
+}
+
+.mac-news-widget-publisher,
+.mac-news-widget-age {
+  color: var(--mac-color-label-secondary);
+  font:
+    var(--mac-font-weight-bold) var(--mac-news-widget-small-font-size) /
+    var(--mac-news-widget-small-line-height) var(--mac-font-family-system);
+}
+
+.mac-news-widget-publisher {
+  text-transform: uppercase;
+}
+
+.mac-news-widget-headline {
+  font:
+    var(--mac-font-weight-semibold) var(--mac-news-widget-font-size) /
+    var(--mac-news-widget-line-height) var(--mac-font-family-system);
+}
+
+.mac-news-widget .mac-news-widget-note {
+  margin: 0;
+  padding: var(--mac-news-widget-row-padding);
+  color: var(--mac-color-label-secondary);
+  font:
+    var(--mac-font-weight-regular) var(--mac-news-widget-font-size) /
+    var(--mac-news-widget-line-height) var(--mac-font-family-system);
+}

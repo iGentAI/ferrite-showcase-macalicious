@@ -1,0 +1,157 @@
+---
+title: Search Field
+description: A rounded field with a magnifying glass, placeholder and cancel button for searching inside a window's content or a sidebar.
+order: 33
+---
+
+<Example name="basic" both />
+
+The AppKit control is `NSSearchField`. `SearchField` is built on Base UI's
+[Input](https://base-ui.com/react/components/input) with `type="search"`. This is the field
+for a window's content and for sidebars; the field of a toolbar is the
+separate `ToolbarSearchField` component.
+
+## Usage
+
+```tsx
+import { SearchField } from "macalicious/search-field";
+import "macalicious/search-field.css";
+
+<SearchField value={query} onValueChange={setQuery} />
+<SearchField variant="sidebar" size="small" placeholder="Name" style={{ width: "100%" }} />
+```
+
+Or copy the source into your project: `npx macalicious add search-field`.
+
+Input attributes (`value`, `defaultValue`, `onValueChange`, `disabled`, `name`) go to the
+`<input>`; `className`, `style` and `ref` go to the root. The field is 160 pt wide unless
+`style` sets its width.
+
+<Example name="filtering" />
+
+### Search menu
+
+An `NSSearchField` can carry a menu of recent searches on its magnifying glass. `searchMenu`
+draws the small chevron beside the glass and turns the glass into a button; a click on it, or
+Down Arrow in the field, calls `onSearchMenu` with the field's root element to anchor a menu
+to. The field does not draw the menu and does not remember searches: which searches are
+recent, and whether to keep them at all, is the application's decision (AppKit stores them
+under `recentsAutosaveName`). The example opens a bare Base UI menu; use the library's menu
+component where it is available.
+
+<Example name="search-menu" />
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for search fields:
+
+- Use a search field, not a plain text field, for searching a large collection.
+- Do not give it an introductory label; use placeholder text to say what is searched.
+- Keep the cancel button: it clears the text and ends the search.
+- Start searching while people type when results come fast, otherwise on Return.
+- Think about privacy before showing recent searches.
+
+## Variants and states
+
+<Example name="sidebar" both />
+
+| `variant` | Look | Status |
+| --- | --- | --- |
+| `standard` | Text-field fill and edge with rounded corners | provisional: no screenshot shows it unfocused in content |
+| `sidebar` | Translucent grey fill (black at 9%, white at 7%), 23 pt high at the regular size | measured (Music, Automator) |
+| `store` | The App Store's sidebar field: 26 pt high, a 1 pt edge in one colour (`#aaacac`, `#68696c` in Dark Aqua) on an opaque fill, 12 pt text, placeholder in the edge's colour. While it is empty and does not have the keyboard, the glass and the placeholder are centred together (not with `searchMenu`, whose glass is a button and stays at the leading edge) | measured at rest (App Store, both appearances); with the keyboard or with text provisional |
+
+<Example name="store" both />
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look | Status |
+| --- | --- | --- | --- |
+| Empty | – | Placeholder after the glass | measured |
+| With text | the field holds text | Cancel button, a 14 pt disc 4 pt from the trailing edge | provisional: not shown in content |
+| Focused | the field has the keyboard | Focus ring 3 pt outside the edge and over the edge | measured (Automator) |
+| Disabled | `disabled` | Whole field at half opacity | provisional |
+| Read-only | `readOnly` | As enabled, without the cancel button; Escape does not clear it | provisional |
+| With a search menu | `searchMenu` | Chevron beside the glass; the text starts 6 pt later | provisional: documented by Apple, not in the screenshots |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No focus ring; selected text turns grey | provisional |
+
+## Sizes
+
+<Example name="sizes" both />
+
+| `size` | Height (standard / sidebar) | Text | Glass | Status |
+| --- | --- | --- | --- | --- |
+| `regular` | 22 / 23 pt | 13 pt | 12.5 pt | sidebar measured (Music); standard provisional |
+| `small` | 18 pt | 11 pt | 11 pt | measured (Automator) |
+| `mini` | 15 pt | 9 pt | 9 pt | provisional |
+
+## API
+
+<PropsTable name="SearchFieldProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-variant` | root | `standard`, `sidebar`, `store` | Reflects `variant`. |
+| `data-size` | root | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-disabled` | root | present or absent | Reflects `disabled`. |
+| `data-readonly` | root | present or absent | Reflects `readOnly`. |
+| `data-search-menu` | root | present or absent | Reflects `searchMenu`. |
+| `data-force` | input | `focus` | Documentation and visual tests only: pins the focus ring. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-search-field-height` | the height of the variant and size | Height of the field, for a window that draws it a point taller or shorter: Reminders' sidebar field is 21 pt (`21px`; measured in both Reminders captures, the column at x 300 from y 181 to 222), where Music's is the default 23 pt. The glass and the cancel button stay centred. Compared with the Reminders captures in `reminders-light` and `reminders-dark` (0.00% and 0.04% of pixels differ at 2x, glass and placeholder masked). |
+
+Classes: `.mac-search-field`, `.mac-search-field-glyph`, `.mac-search-field-input`,
+`.mac-search-field-clear`, `.mac-search-field-menu`, and in the store field
+`.mac-search-field-rest`, the centred copy of the glass and the placeholder that shows while
+the field is empty and at rest.
+
+## Accessibility
+
+- The control is a native `<input type="search">`, announced as a search box. Wrap it in a
+  `<search>` element or `role="search"` when it searches the page or the app.
+- A search field has no visible label, so give it a name with `aria-label` (“Search
+  podcasts”). The placeholder alone is a fallback that not every screen reader announces.
+- Escape clears the text; a second Escape gives up the keyboard focus. Return submits the
+  enclosing form. While an input method is composing, Escape and Down Arrow are left to it.
+- With `searchMenu`, the glass is a button named by `searchMenuLabel` with
+  `aria-haspopup="menu"`. It is not in the tab order, because Down Arrow in the field asks
+  for the same menu. Return the focus to the field when the menu closes.
+- The cancel button is a real button named by `clearLabel`. It is not in the tab order,
+  because Escape does the same from the keyboard; it returns focus to the field.
+- In forced-colours mode the edge uses `FieldText` and a disabled field `GrayText`.
+
+## Visual comparison
+
+`npm run visual -- search-field` compares three fields in both appearances. Scores from the run
+that accompanied this component (Chromium on Linux, fallback font Inter; 2x, whole crop and
+with the placeholder masked):
+
+| Comparison (reference crop, 2x pixels) | Aqua, whole crop | Aqua, text masked | Dark Aqua, whole crop | Dark Aqua, text masked |
+| --- | --- | --- | --- | --- |
+| `automator`: small, focused (Automator `412,212,456,48`) | 1.26% | 0.79% | 1.31% | 0.80% |
+| `music`: sidebar, regular (Music `128,198,408,56`) | 1.58% | 0.36% | 1.83% | 0.49% |
+| `store`: store field at rest (App Store `140,162,384,76`) | 1.26% | 0.04% | 0.83% | 0.06% |
+
+The store field is compared with the App Store's sidebar in both appearances; its masked
+comparisons leave out the glass and the placeholder and score the bezel alone. Its corner is
+fitted to them: 4 pt scores 0.04% and 0.06%, 4.5 pt 0.17% and 0.11%, 5 pt 0.41% and 0.32%.
+The capture has a few pixels of another colour outside each corner, which the field does not
+draw. What the field does once it has the keyboard is in no screenshot: pixel checks after a
+click hold it to the glass at the leading edge, an empty centre and the focus ring, and to no
+ring in a window that is not key. That the glass and placeholder move to the leading edge is
+inferred from `NSSearchField`, which centres a placeholder only while the field is at rest.
+
+The masked comparisons use a threshold of 0.05. What remains is the magnifying glass, an
+original drawing whose ring and handle land within a pixel of Apple's, and on Automator the
+corners of the focus ring. The standard field, its focus ring, the cancel button and the
+window that is not key have no screenshot and are checked pixel by pixel after real input.
+
+Provisional, because no screenshot shows them: the whole standard variant, the cancel button
+in content, the search menu's chevron and its inset, the mini size, and the disabled and
+read-only looks. The corner of the small field is drawn at
+4 pt, the radius at which the rendered bezel is closest to the Automator pixels: the masked 2x
+scores are 1.42% at 2.5 pt (the spec's first reading), 1.05 to 1.10% at 3.5 pt, 0.79 to 0.81% at
+3.75 and 4 pt, and 0.91 to 0.97% at 4.25 pt (the spec's later fit). It is the field's own value,
+not the shared small control radius.

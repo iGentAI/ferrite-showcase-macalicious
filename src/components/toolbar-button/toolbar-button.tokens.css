@@ -1,0 +1,91 @@
+/*
+ * Toolbar button tokens: the textured rounded bezel. Measured on the Back button of
+ * Light-/Dark-Finder-Network (column x=135, row y=150), the selected view segment of the same
+ * captures (column x=590 light, x=524 dark) and, for the inactive window, the Back button of
+ * Light-/Dark-Safari-v13-Picture-in-Picture (column x=480 light, x=520 dark).
+ *
+ * Aqua draws an opaque near-white gradient inside a hairline border; Dark Aqua draws no border
+ * and a translucent white fill, so the bezel differs with the bar under it.
+ */
+:root {
+  /*
+   * Fill, top to bottom: two device-pixel rows, the gradient, one last row.
+   * Aqua #f8f8f8, #fcfcfc, #fafafa to #f2f2f2, #ececec [measured].
+   * Dark Aqua #777879, #676869, #616162 to #5c5d5e, #595a5b on a #343536 to #2f3031 bar, as
+   * white at 33%, 25%, 22.2% to 21.7% and 20% [measured, computed].
+   */
+  --mac-toolbar-button-fill: linear-gradient(
+    light-dark(#f8f8f8, rgb(255 255 255 / 0.33)) 0 0.5px,
+    light-dark(#fcfcfc, rgb(255 255 255 / 0.251)) 0.5px 1px,
+    light-dark(#fafafa, rgb(255 255 255 / 0.222)) 1px,
+    light-dark(#f2f2f2, rgb(255 255 255 / 0.217)) calc(100% - 0.5px),
+    light-dark(#ececec, rgb(255 255 255 / 0.2)) calc(100% - 0.5px)
+  );
+  /* Hairline border, Aqua only: #c5c5c5 on #d9d9d9, #bdbdbd on #d3d3d3, #a1a1a1 on #d0d0d0
+     [measured, computed] */
+  --mac-toolbar-button-border-top: light-dark(rgb(0 0 0 / 0.092), transparent);
+  --mac-toolbar-button-border-side: light-dark(rgb(0 0 0 / 0.104), transparent);
+  --mac-toolbar-button-border-bottom: light-dark(rgb(0 0 0 / 0.226), transparent);
+  /* The row under the border: #c7c7c7 on #cecece [measured, computed] */
+  --mac-toolbar-button-shadow: light-dark(rgb(0 0 0 / 0.034), transparent);
+
+  /* On (a toggle that is pressed) [measured] on the selected Finder view segment; the side
+     border is [provisional]. */
+  --mac-toolbar-button-fill-on: linear-gradient(
+    light-dark(#6d6d6d, #d8d9da) 0 0.5px,
+    light-dark(#6d6d6d, #c9cacb) 0.5px 1px,
+    light-dark(#6d6d6d, #c5c6c7) 1px,
+    light-dark(#646464, #c0c1c2)
+  );
+  --mac-toolbar-button-border-top-on: light-dark(#676767, transparent);
+  --mac-toolbar-button-border-side-on: light-dark(#616161, transparent);
+  --mac-toolbar-button-border-bottom-on: light-dark(#5b5b5b, transparent);
+
+  /* Pressed [measured, computed]: Safari's Share button while its menu is open, without the
+     menu's shadow; the border is the resting one. Values: the spec. */
+  --mac-toolbar-button-fill-pressed: linear-gradient(
+    light-dark(#f2f2f2, rgb(255 255 255 / 0.48)) 0 0.5px,
+    light-dark(#ebebeb, rgb(255 255 255 / 0.39)) 0.5px 1px,
+    light-dark(#e5e5e5, rgb(255 255 255 / 0.366)) 1px,
+    light-dark(#e1e1e1, rgb(255 255 255 / 0.356)) 45%,
+    light-dark(#dfdfdf, rgb(255 255 255 / 0.356)) 75% calc(100% - 0.5px),
+    light-dark(#d9d9d9, rgb(255 255 255 / 0.356)) calc(100% - 0.5px)
+  );
+
+  /* Inactive window [measured, computed]. Aqua: no fill, a #dbdbdb hairline with a fainter
+     #ececec row inside it on a #f6f6f6 bar. Dark Aqua: #4d4e51, #3e3f42, then #3a3b3e on
+     #2b2c2f, as white at 16%, 9% and 7%. */
+  --mac-toolbar-button-fill-inactive: linear-gradient(
+    light-dark(transparent, rgb(255 255 255 / 0.16)) 0 0.5px,
+    light-dark(transparent, rgb(255 255 255 / 0.09)) 0.5px 1px,
+    light-dark(transparent, rgb(255 255 255 / 0.071)) 1px
+  );
+  --mac-toolbar-button-border-inactive: light-dark(rgb(0 0 0 / 0.11), transparent);
+  --mac-toolbar-button-ring-inactive: light-dark(rgb(0 0 0 / 0.04), transparent);
+
+  /* Glyph and title. Enabled: #565656 on #f6f6f6, #f2f2f2 on #5e5f60 [measured, computed].
+     Disabled: #aaaaaa, #8e9090. On: #ffffff, #363638 [measured]. Inactive window: #b1b1b1 on
+     #f6f6f6, #7b7c7f on #3a3b3e [measured, computed]. */
+  --mac-toolbar-button-text: light-dark(rgb(0 0 0 / 0.65), rgb(255 255 255 / 0.92));
+  /* Pressed [measured]: #222222 on #e3e3e3 */
+  --mac-toolbar-button-text-pressed: light-dark(rgb(0 0 0 / 0.85), rgb(255 255 255 / 0.92));
+  --mac-toolbar-button-text-disabled: light-dark(rgb(0 0 0 / 0.31), rgb(255 255 255 / 0.3));
+  --mac-toolbar-button-text-on: light-dark(#ffffff, #363638);
+  --mac-toolbar-button-text-inactive: light-dark(rgb(0 0 0 / 0.28), rgb(255 255 255 / 0.33));
+  /* Disabled in an inactive window: #d3d3d3 on #f6f6f6, #535457 on #3a3b3e
+     [measured, computed] */
+  --mac-toolbar-button-text-inactive-disabled: light-dark(
+    rgb(0 0 0 / 0.142),
+    rgb(255 255 255 / 0.127)
+  );
+
+  /* Tint [measured] on Console's Info disc; not the accent colour. */
+  --mac-toolbar-button-text-tint: light-dark(#417eee, #5190f0);
+  --mac-toolbar-button-tint-mark: light-dark(#ffffff, transparent);
+}
+
+:root,
+[data-appearance] {
+  /* [measured] Aqua's border outside the fill; Dark Aqua has none (Keychain Access) */
+  --mac-toolbar-button-border-room: calc(var(--mac-hairline) * (1 - var(--mac-appearance-dark)));
+}

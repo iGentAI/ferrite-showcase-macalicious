@@ -1,0 +1,30 @@
+/*
+ * Today widget (reference/spec/components/today-widget.md). The card is a translucent overlay
+ * on the Notification Center material; Catalina blends it with vibrancy, so one tint cannot
+ * reproduce every backdrop: over the sky of the default picture the light card measures
+ * #dcf5ff on #b7def8, lower down #b6cce0. Text colours are the vibrant colours as measured over
+ * the default picture.
+ */
+:root {
+  /* [measured, computed] fit of the card over the panel, Notification-Center-Today: #dcf7ff on
+     #b7def8 takes a tint lighter in green and blue than in red; #15253d on #1b3355 */
+  --mac-today-widget-fill: light-dark(rgb(240 255 255 / 0.65), rgb(0 0 0 / 0.19));
+  /* [measured, computed] 1 px edge: #c5dee9 beside #dcf5ff, #0c192b beside #12233c (col 3000) */
+  --mac-today-widget-edge: light-dark(rgb(0 0 0 / 0.105), rgb(0 0 0 / 0.33));
+  /* [measured, computed] header band against the body (col 3000, y=901..960) */
+  --mac-today-widget-header-fill: light-dark(rgb(0 0 0 / 0.04), rgb(0 0 0 / 0.12));
+  /* [measured, computed] row divider: #c4dfe9 on #dbf6ff, #354963 on #122640 (row 250) */
+  --mac-today-widget-divider: light-dark(rgb(0 0 0 / 0.105), rgb(255 255 255 / 0.155));
+  /* [measured] event title and stock symbol */
+  --mac-today-widget-text: light-dark(#0d2336, #ffffff);
+  /* [measured] prices and hour labels */
+  --mac-today-widget-text-secondary: light-dark(#374d62, #95a3b5);
+  /* [measured] header title */
+  --mac-today-widget-title: light-dark(#3f4a51, #99a6b7);
+  /* [measured] labels of the switch rows */
+  --mac-today-widget-row-label: light-dark(#26414d, #ffffff);
+  /* [measured] date block */
+  --mac-today-widget-date: light-dark(#3e6478, #a1b9df);
+  /* [measured] summary text */
+  --mac-today-widget-summary: light-dark(#0d2336, #ffffff);
+}

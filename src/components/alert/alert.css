@@ -1,0 +1,193 @@
+/*
+ * Alert (NSAlert): a 420 pt window with an empty 22 pt title bar, a 64 pt icon at 24 pt from
+ * the left and the text column at 106 pt, measured on Finder's Empty Trash. The small size is
+ * Finder's compact conflict alert (Replace): 399 pt, no title bar, a 32 pt icon, text at 56 pt.
+ *
+ * States
+ *   [data-size="regular" | "small"]
+ *   [data-style="warning" | "informational" | "critical"]   critical badges the icon
+ *   [data-open] / [data-closed]                               set by Base UI
+ *
+ * Hooks
+ *   --mac-alert-top                    distance from the top of the viewport (default 20vh);
+ *                                      the height limit is computed from it. The component
+ *                                      turns a `top` given in `style` into this variable
+ *   --mac-alert-button-min-width       least width of a button (default 84px, small 85.5px)
+ */
+.mac-alert {
+  --_icon: 64px;
+  --_gap: 14px;
+  --_min: 84px;
+
+  position: fixed;
+  z-index: 900;
+  top: var(--mac-alert-top, 20vh);
+  inset-inline: 0;
+  width: 420px;
+  max-width: calc(100vw - 16px);
+  /* An alert taller than the room below its top edge scrolls its body. */
+  max-height: calc(100vh - var(--mac-alert-top, 20vh) - 8px);
+  margin-inline: auto;
+  outline: 0;
+}
+
+.mac-alert:where([data-size="small"]) {
+  --_icon: 32px;
+  --_gap: 8.5px;
+  --_min: 85.5px;
+
+  width: 399px;
+}
+
+/* Window controls of the compact alert: on the window background, 8 pt in and 5 pt down. */
+.mac-alert-controls {
+  position: absolute;
+  top: 5px;
+  left: 8px;
+  display: flex;
+}
+
+/* Without a title bar the frame's top edge has the title bar's highlight itself: 1 pt, in
+   two steps, under the window's rim. */
+.mac-alert:where([data-size="small"])::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(
+    to bottom,
+    var(--mac-alert-top-highlight) 50%,
+    var(--mac-alert-top-highlight-fade) 50%
+  );
+  pointer-events: none;
+}
+
+.mac-alert-body {
+  display: grid;
+  grid-template-columns: var(--_icon) minmax(0, 1fr);
+  column-gap: 18px;
+  min-height: 0;
+  padding: 15.5px var(--mac-space-window-margin) 18px 24px;
+  overflow-y: auto;
+}
+
+.mac-alert:where([data-size="small"]) > .mac-alert-body {
+  column-gap: 7.5px;
+  padding: 22px 12px 10px 16.5px;
+}
+
+.mac-alert-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--_icon);
+  height: var(--_icon);
+}
+
+.mac-alert:where([data-size="small"]) .mac-alert-icon {
+  margin-top: 6px;
+}
+
+/* Caution badge over the icon's lower right quadrant: a drawing of ours, not Apple's. */
+.mac-alert-badge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 50%;
+  height: 50%;
+}
+
+.mac-alert-badge::before,
+.mac-alert-badge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  mask: var(--_shape) center / contain no-repeat;
+}
+
+.mac-alert-badge::before {
+  /* raw-color-ok: mask alpha */
+  --_shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.2c.6 0 1.1.3 1.4.8l5.9 10.6c.6 1.1-.2 2.4-1.4 2.4H2.100c-1.200 0-2-1.300-1.400-2.400L6.600 2c.3-.5.8-.8 1.400-.8z' fill='black'/%3E%3C/svg%3E");
+
+  background: var(--mac-alert-badge-fill);
+}
+
+.mac-alert-badge::after {
+  /* raw-color-ok: mask alpha */
+  --_shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M7.1 5.200h1.800l-.3 5H7.400zM8 11.200a1 1 0 1 1 0 2 1 1 0 0 1 0-2z' fill='black'/%3E%3C/svg%3E");
+
+  background: var(--mac-alert-badge-mark);
+}
+
+.mac-alert-content {
+  min-width: 0;
+  padding-top: 1.5px;
+}
+
+.mac-alert:where([data-size="small"]) .mac-alert-content {
+  padding-top: 0;
+}
+
+.mac-alert-message {
+  margin: 0;
+  color: var(--mac-color-label);
+  font: var(--mac-font-alert-title);
+  letter-spacing: var(--mac-tracking-regular);
+}
+
+.mac-alert-informative-text {
+  margin: 7px 0 0;
+  color: var(--mac-color-label);
+  font: var(--mac-font-alert-message);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+/* Finder's compact alert sets its one text in the small font, regular weight. */
+.mac-alert:where([data-size="small"]) .mac-alert-message {
+  font: var(--mac-font-alert-message);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+.mac-alert:where([data-size="small"]) .mac-alert-informative-text {
+  margin-top: 4px;
+}
+
+.mac-alert-accessory {
+  margin-top: 8px;
+}
+
+.mac-alert-buttons {
+  display: flex;
+  gap: var(--_gap);
+  align-items: center;
+  margin-top: 20px;
+}
+
+.mac-alert:where([data-size="small"]) .mac-alert-buttons {
+  margin-top: 8px;
+}
+
+.mac-alert-buttons-leading,
+.mac-alert-buttons-trailing {
+  display: flex;
+  gap: var(--_gap);
+  align-items: center;
+}
+
+.mac-alert-buttons-trailing {
+  margin-inline-start: auto;
+}
+
+.mac-alert-buttons-trailing > :where(*) {
+  min-width: var(--mac-alert-button-min-width, var(--_min));
+}
+
+@media (forced-colors: active) {
+  .mac-alert-badge::before {
+    background: Mark;
+  }
+
+  .mac-alert-badge::after {
+    background: MarkText;
+  }
+}

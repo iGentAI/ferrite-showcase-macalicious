@@ -1,0 +1,156 @@
+---
+title: AirPort Utility
+description: The AirPort Utility window of macOS 10.15, dark in both appearances, with the graph of the network on its blue-grey gradient, a popover of details for the Internet and for each base station, and a sheet that sets up one of the invented Wi-Fi devices found nearby.
+layout: full
+order: 88
+---
+
+AirPort Utility is not part of the Ferrite build: this page shows its interface, and the window changes nothing
+outside itself.
+
+<Example name="basic" />
+
+Press the Internet for the connection's details. Other Wi-Fi Devices lists two devices that
+wait to be set up: choose one, name the network and the base station, give a password twice,
+and the device joins the graph under the Internet, where its own popover shows its details and
+renames it. Nothing is scanned or configured: every device, address and serial number is
+invented, and the pictures are abstract placeholders.
+
+## What it shows
+
+- A [Window](/components/window) with `data-appearance="dark"`: both captures show the same
+  dark window, the one named Light too, so the demo is dark in Aqua and in Dark Aqua alike and
+  the attribute gives everything inside its Dark Aqua look.
+- A plain 22 pt [Title Bar](/components/title-bar) with the
+  [Window Controls](/components/window-controls). It is the window's drag region.
+- The graph is the window's body with the measured gradient as its background
+  (`--mac-airport-utility-backdrop`). Its nodes are placed in `airport-utility.css`.
+- Other Wi-Fi Devices is a [Push Button](/components/push-button) that opens a
+  [Menu](/components/menu) of [Menu Items](/components/menu-item), one for each device. It is
+  disabled when no device waits.
+- A node is an [Image Button](/components/image-button): the picture, and under it a
+  [Status Dot](/components/status-dot) and the name. The gap between the two is set through
+  `--mac-image-button-gap`. The name's 17 pt bold text is the demo's own.
+- A node opens a [Popover](/components/popover) beside it. Its keys and values are a
+  [Form](/components/form) of `value` rows in the small size, rendered without a `<form>`. A
+  base station's popover has an Edit button: the name becomes a
+  [Text Field](/components/text-field), which takes the keyboard focus, and Cancel and Done
+  are a push button and a [Default Button](/components/default-button). The base stations
+  are one row that scrolls sideways when it is wider than the window; a line runs from the
+  Internet to a branch over the row and down to each of them, and a long name ends with an
+  ellipsis. The line from the Internet is not part of the row and stays under the Internet
+  when the row is scrolled. The graph is never narrower than the widest base station with
+  24 pt on either side (208 pt), so that in a narrower window the line still meets the
+  branch; the window cuts off what it cannot show.
+- Setting a device up asks in a [Sheet](/components/sheet) that hangs from the title bar: a
+  form of two text fields and two [Secure Text Fields](/components/secure-text-field), a
+  [Label](/components/label) that says what is still missing, and Cancel and Done. While the
+  sheet is open the window is main, not key, and its content is inert.
+
+With eight base stations the row is wider than the window:
+
+<Example name="stations" />
+
+### The source
+
+| File | What is in it |
+| --- | --- |
+| `airport-utility.tsx` | `AirPortUtility`: the window, the graph, the menu of nearby devices, the nodes with their popovers and the setup sheet. `Station` is one base station's node; it owns its popover and the draft of a new name. |
+| `airport-utility-data.ts` | The types of a base station, a nearby device and a setup, the two invented devices, and the rules as pure functions: `proposeSetup`, `setupProblem`, `setUp`, `nextAddress`, `renameStation`, `statusWords`. The tests call them directly. |
+| `airport-utility-artwork.tsx` | The two abstract placeholders: `NetworkMark` for the Internet and `BaseStationMark` for a base station. |
+| `airport-utility.css`, `airport-utility.tokens.css` | Where the nodes lie, and the colours the demo adds, each tagged measured or provisional. |
+| `app.ts` | The descriptor the desktop demo reads. |
+
+The state is small: the base stations, the devices still waiting, the device the sheet is
+about with the four fields of its setup, and the last announcement. `setupProblem` returns
+the first thing that keeps a setup from being finished, in the order of the fields; the sheet
+shows that sentence and disables Done while there is one, and `setUp` refuses the same setup,
+so the rule is in one place.
+
+## Hosting the window
+
+`AirPortUtility` renders the library's `Window` as its root and passes every prop it does not
+use to it, so a window manager can place, size and activate it.
+
+| Prop | Type | What it does |
+| --- | --- | --- |
+| `defaultStations` | `AirPortBaseStation[]` | The base stations when the window opens. Default: none, as captured. |
+| `defaultNearbyDevices` | `AirPortNearbyDevice[]` | The devices Other Wi-Fi Devices lists. Default: two invented devices. One that is a base station already is not listed. |
+| `onStationsChange` | `(stations) => void` | Called with the base stations after one was set up or renamed. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 696 by 532 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+A base station is `{ id, name, model, network, address, serial, version, status }` and a
+nearby device `{ id, model, label, serial, version }`; `airport-utility-data.ts` documents
+each field.
+
+`app.ts` exports the descriptor a desktop page reads, as `airportUtilityApp` and as `app`:
+`id`, `name`, `component`, `defaultSize` (696 by 532), `minSize` (560 by 440), `resizable`
+and `menus`, the menu titles after the Apple menu. The [desktop demo](/demos/desktop) finds it
+there and lists AirPort Utility among its applications.
+
+## Accessibility
+
+- The window is a `region` named by its title.
+- A node is a button named by its name and its state in words, such as “Internet, Connected”:
+  the status dot adds colour only. The base stations are a list named “Base stations”.
+- A popover is a `dialog` named by its title. It takes the keyboard focus when it opens,
+  Escape closes it and the focus returns to its node. Its keys and values are a description
+  list.
+- Other Wi-Fi Devices opens a `menu`; the arrow keys move in it and Return chooses.
+- The sheet is a modal `dialog` named by its question. Each field is named by its label, the
+  keyboard stays inside, Escape cancels and Return presses Done when nothing is missing. What
+  is missing is said in a sentence under the fields, which is a polite live region.
+- A device that joins the network and a base station that is renamed are announced in a
+  `status` region.
+
+## Fidelity
+
+`airport-utility.visual.json` compares the whole window with the two AirPort Utility
+screenshots. **Both show a dark window**: the file named Light has the same dark title bar and
+gradient as its Dark twin (the two differ only by noise of up to 13 levels), so no Aqua
+rendering of this application exists in the captures. The demo is therefore dark in both
+appearances, and each capture is compared as it is with the demo in the appearance its file
+name gives.
+
+**Masked in every comparison:** the globe with its ground shadow, 128.5 by 138.5 pt from
+(284.5, 82). It is Apple's artwork in the captures; the demo shows an abstract placeholder in
+its place, a flat hexagon with three spokes, which takes nothing from that artwork, so there
+is nothing to compare. No budget was raised for it.
+
+Scores from `npm run visual -- airport-utility/` in Chromium on Linux with the fallback font:
+the share of pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` (globe masked) | 0.63% | 1.41 | 0.54% | 1.52 |
+| `window-light-layout` (globe and text masked) | 0.15% | 0.96 | 0.13% | 1.05 |
+| `window-dark` (globe masked) | 0.63% | 1.24 | 0.54% | 1.34 |
+| `window-dark-layout` (globe and text masked) | 0.15% | 0.80 | 0.13% | 0.88 |
+
+Measured in the screenshots and reproduced: the 696 by 532 pt frame and its 22 pt title bar;
+the gradient with its five stops; the button's 134 pt width and its place, 24 pt from the left
+edge and 20.5 pt under the title bar; the place of the picture's box, 60 pt under the title
+bar and centred; the status dot and the name centred as one, 8 pt apart, with the name in
+17 pt bold white.
+
+What differs, and why:
+
+- **Artwork.** The globe is Apple's; an abstract placeholder stands in its place and its
+  region is masked in every comparison.
+- **The button.** AirPort Utility draws its own dark pill, 19 pt high with a fill of
+  `#646870`. The demo uses the library's push button in its Dark Aqua look as it is: 21 pt
+  high with its own fill, at the captured width. It is most of the masked score.
+- **The status dot.** The capture's dot is 12 pt across (`#4bd964`); the library's regular
+  status dot is 10 pt with its own green.
+- **The title bar.** The capture's bar is a little lighter (`#4d4f4f` falling to `#49494b`)
+  than the library's Dark Aqua title bar.
+- **Text.** Set in the fallback font off Apple devices.
+- **Not in a screenshot (provisional):** the popovers, the menu of devices, the setup sheet,
+  the base stations with their line to the Internet, the window when it is not key, and every
+  size other than the captured one.
+- **Not built:** scanning for devices, the pages of a base station's settings beyond its
+  name, restarting or restoring a base station, and the menus beyond their titles.

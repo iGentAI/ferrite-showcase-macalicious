@@ -1,0 +1,275 @@
+---
+title: Visual comparison
+description: Render an example in a real browser and score it against a crop of a reference screenshot.
+group: Foundations
+order: 3
+---
+
+The harness in `visual/` answers one question: how close is this component to the Catalina
+screenshot? It renders an example in a real browser at 1x and 2x, crops the matching region out
+of a file in `reference/screenshots/`, and writes a diff image and two scores. For a state no
+screenshot shows (pressed, keyboard focus, a window that is not key) it checks the colours of
+chosen pixels instead.
+
+```bash
+npm run visual:install        # once: downloads the browser
+npm run reference:fetch       # once: downloads the reference screenshots, which are not committed
+npm run visual                # every comparison, 1x and 2x
+npm run visual -- push-button # only comparisons whose id contains the text
+npm run visual -- --scale 2   # one device scale
+npm run visual -- --no-budget # report the scores without failing on them
+npm run visual -- --out <dir> # write the results somewhere else
+```
+
+Results go to `visual/output/` (not committed):
+
+```text
+visual/output/report.html                                   side-by-side viewer
+visual/output/report.json                                   scores, for scripts
+visual/output/<folder>/<name>@2x.actual.png                 the browser capture
+visual/output/<folder>/<name>@2x.expected.png               the reference crop
+visual/output/<folder>/<name>@2x.diff.png                   differing pixels in red
+visual/output/<folder>/<name>@2x.compare.png                expected | actual | diff, enlarged
+```
+
+A run replaces the reports and the images of the folders it runs, and deletes nothing else in
+the output directory, so other files kept there, or a mistyped `--out`, are safe.
+
+The command exits with an error when a comparison exceeds a budget, when the capture and the
+crop differ in size, when an expected pixel is off, or when a `*.visual.json` file breaks the
+rules below. A file that breaks the rules is not run at all: a comparison that cannot fail must
+not be reported as one that passed.
+
+## Adding a comparison
+
+**1. Find the reference.** `reference/manifest.json` catalogues every screenshot. Inspect one
+with the crop tool; all coordinates are image pixels, and the screenshots are 2x, so two pixels
+are one point:
+
+```bash
+npm run visual:crop -- --file 10-15-Catalina-Light-Finder-Go-To-Folder.png --size
+npm run visual:crop -- --file <png> --crop 540,270,420,76 --zoom 4   # writes an enlarged PNG
+npm run visual:crop -- --file <png> --row 306,560,740                # colours along a row
+npm run visual:crop -- --file <png> --col 650,280,332                # colours down a column
+npm run visual:crop -- --file <png> --at 650,306                     # the colour of one pixel
+```
+
+`--row` and `--col` collapse runs of equal pixels, which makes borders, gradients and shadows
+easy to read off. The tool converts colours to sRGB, so the values it prints can go straight
+into CSS.
+
+**2. Write an example that reproduces the crop.** Add `examples/visual-<what>.tsx` to the
+component. Its outermost element must be exactly the size of the crop in points, with the
+screenshot's background, and place the component where the screenshot has it:
+
+```tsx
+export default function VisualDialogButtons() {
+  return (
+    <div style={{ width: 210, height: 38, padding: "8px 0 0 15px", boxSizing: "border-box",
+                  display: "flex", gap: 12, background: "light-dark(#ececec, #303031)" }}>
+      <PushButton style={{ width: 84 }}>Cancel</PushButton>
+      <PushButton variant="primary" style={{ width: 84 }}>Go</PushButton>
+    </div>
+  );
+}
+```
+
+Choose a crop with an even origin and even size, a few points larger than the control, so
+shadows are inside it.
+
+**3. Declare the comparison** in the component's `<name>.visual.json`, once per appearance:
+
+```json
+{
+  "name": "dialog-buttons-light",
+  "description": "Cancel (standard) and Go (primary) in Finder's Go to Folder dialog, Aqua.",
+  "example": "visual-dialog-buttons",
+  "appearance": "light",
+  "budget": { "1x": 0.06, "2x": 0.02 },
+  "deltaBudget": { "1x": 4.9, "2x": 2 },
+  "reference": {
+    "file": "10-15-Catalina-Light-Finder-Go-To-Folder.png",
+    "crop": { "x": 540, "y": 270, "width": 420, "height": 76 }
+  }
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `example` | File name in the folder's `examples/`, without extension. |
+| `appearance` | `light` or `dark`. |
+| `accent`, `highlight` | Optional accent and highlight colour for this run. |
+| `windowState` | `key` (the default), `main` or `inactive`: the state of the window the example is rendered in, set as `data-window-state` on the page. |
+| `actions` | Real input before the capture: `hover`, `press` (hold the mouse button), `click` with a selector, `tab` with a count, `key`. Before the actions the pointer is taken out of the window, so nothing in the example is hovered unless an action hovers it; after them the runner waits for the page to settle (two frames, fonts, images), so a popup is captured where it is positioned. |
+| `forcedColors` | `true` renders with the browser's forced-colours mode on (`forced-colors: active`, as Windows High Contrast). Only with `expect`: no screenshot shows forced colours. |
+| `selector` | Element to capture; default is the example's own box. |
+| `reference.file` | File name of the screenshot in `reference/screenshots/`. |
+| `reference.crop` | Region of the screenshot in image pixels. Its width and height must be multiples of `reference.scale`. |
+| `reference.scale` | Image pixels per point in the screenshot: `2` (the default; every Catalina screenshot is a 2x capture) or `1`. |
+| `reference.matte` | Colour behind transparent screenshot pixels (window captures have transparent margins); default white. |
+| `masks` | Rectangles, in points relative to the capture, left out of the score: for text, which is set in the fallback font off Apple platforms. Say why in `description`. At most 75% of the crop's pixels, counted as the runner rounds the masks to device pixels at 1x and 2x. |
+| `threshold` | Colour distance above which a pixel counts as differing: a number from 0.01 to 0.1; default 0.1. Use `0.05` when the text is masked and the drawing alone is scored. |
+| `budget` | Highest accepted mismatch per scale, as a fraction. Required for `1x` and `2x`. The 2x value must stay within the slack of the score: see [Budgets](#budgets). |
+| `deltaBudget` | Highest accepted mean Δ per scale, out of 255. Required for `1x` and `2x`. |
+| `expect` | Used instead of `reference` for a state no screenshot shows: see [States without a screenshot](#states-without-a-screenshot). |
+
+The schema is `visual/visual.schema.json`; editors that read `$schema` will complete the
+fields. The runner and `npm run lint` apply the same rules (`visual/lib/spec.mjs`), and an
+unknown or misspelt key is an error.
+
+### Budgets
+
+A comparison exists to fail when the component changes, so every one has both budgets for both
+scales, set just above the scores measured when the component was finished:
+
+- `budget` gates shape: the share of pixels that differ visibly.
+- `deltaBudget` gates colour: a fill that is a few levels off everywhere leaves the mismatch at
+  0% and only moves the mean Δ.
+
+Two tiers keep a budget from being so large that anything passes:
+
+| Tier | `budget` 1x / 2x | `deltaBudget` 1x / 2x | For |
+| --- | --- | --- | --- |
+| Tight | 0.25 / 0.10 | 16 / 8 | The drawing: bezels, borders, fills, with any text masked. |
+| Loose | 0.30 / 0.30 | 32 / 32 | A crop that includes text. Accepted only beside a tight comparison of the same example and crop that masks the text (everything the loose one masks, and more). |
+
+For the tight comparison of a control's drawing, set `threshold` to `0.05` and the 2x budget
+about 0.05 percentage points above the measured score. At the default threshold a corner
+radius of 4px instead of 3.5px on the push button passes; at 0.05 with such a budget it fails.
+
+The run holds a 2x budget to its score. A budget that is more than **0.10 percentage points**
+above the score, or more than three tenths of the score when that is larger, fails the run as
+`SLACK`, and the output names the highest budget the score allows:
+
+| 2x score | Highest 2x `budget` |
+| --- | --- |
+| 0.00% | 0.0010 (0.10%) |
+| 0.08% | 0.0018 (0.18%) |
+| 1.65% | 0.02145 (2.145%) |
+| 9.08% | 0.11804 (11.804%) |
+
+A budget a flat 0.30 points above a score of 0.00% looks strict and is not: a corner radius
+that is 1px off moves a bezel's score by 0.2 to 0.5 points and passes under it. The caps in
+the table of tiers cannot see that, because they do not know the score; the run does.
+
+The rule fails the run in the calibration run only: **Chromium on Linux**, where budgets are
+set. Another browser or platform scores the same drawing differently, and a file holds one
+budget. On the same machine the push button's 2x bezels score 0.00 to 0.08% in Chromium and 2
+to 5% in Firefox; on a Mac, text in San Francisco scores below the budget its fallback-font
+score needs. A budget held to one of those scores is over budget or slack against the others,
+so everywhere else a slack budget is printed with each result ("not enforced") and does not
+fail. Nothing else is relaxed: a score above its budget fails in every browser, as before.
+When a change improves a score, lower the budget with it. `--no-budget` switches the rule off
+together with the budgets.
+
+**The 1x run is not a gate for geometry.** Its reference is the 2x screenshot averaged down,
+its scores are several per cent whatever the drawing, and its budgets are as wide; a 1px
+change of a corner radius passes at 1x. Corner radii, hairlines and border alphas are gated by
+the 2x comparison with the text masked and by expected pixels. The 1x run catches a wrong
+size, a wrong colour and a layout that breaks at a different pixel density.
+
+A folder is compared with a screenshot in each appearance. While it is not, say so in the
+file and lint lists it as unfinished instead of failing:
+
+```json
+{ "pending": "Scaffolded: no reference crop chosen yet.", "comparisons": [] }
+```
+
+If the screenshots show the control in one appearance only, compare that one and name the
+other: `"noReference": { "dark": "The dark capture of the pane has no new item." }`.
+
+**4. Run it and iterate.** `npm run visual -- <component> --no-budget` while exploring, open
+`report.html`, adjust tokens or CSS, repeat. Then set the budgets from the final scores and
+record the scores in the component's docs page.
+
+## States without a screenshot
+
+The reference set shows no pressed button, no keyboard focus on a button, no mini control and
+no default button in a window that is not key. Those states still have known values: the spec
+measures the accent gradient, the focus ring and the standard bezel elsewhere. A comparison
+with `expect` instead of `reference` puts the example into the state with real input and checks
+pixels against those values:
+
+```json
+{
+  "name": "focus-ring-light",
+  "description": "Keyboard focus on the standard button, reached with Tab, Aqua.",
+  "example": "visual-state-buttons",
+  "appearance": "light",
+  "actions": [{ "tab": 1 }],
+  "expect": {
+    "size": { "width": 196, "height": 37 },
+    "pixels": [
+      { "x": 7, "y": 18.5, "color": "#82abf1", "tolerance": 4,
+        "note": "ring over the window background, measured on the Go to Folder field (spec: focus-ring)" },
+      { "x": 5.25, "y": 18.5, "color": "#ececec",
+        "note": "page just outside the ring: it ends 2.5 pt beyond the bezel's edge" }
+    ]
+  }
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `expect.size` | Size of the capture in points. A wrong size fails. Declare it: it also sizes the browser window for the example. |
+| `pixels[].x`, `y` | Points from the capture's top-left corner; the device pixel containing the point is read. Keep away from text and from edges unless the edge is what you check. |
+| `pixels[].color` | Expected sRGB colour, `#rrggbb`. Take it from the spec or compute it from the tokens; never copy it from the output. |
+| `pixels[].tolerance` | Accepted difference per channel, 0 to 8; default 2. |
+| `pixels[].scale` | Check at one scale only: a hairline is half a point, which only 2x shows. At least one pixel must apply at each scale, so that neither run checks nothing. |
+| `pixels[].note` | Required: where the value comes from, and whether it is measured or inferred. |
+
+These checks do not replace the comparison with a screenshot in each appearance, and they
+prove less: a handful of pixels, and for an inferred state only that the component does what
+the spec infers. Use `actions` (`press`, `tab`) rather than `data-force`, so the real
+`:active` and `:focus-visible` rules are what is tested.
+
+## Full screens and demos
+
+A demo is compared the same way: put `<app>.visual.json` and an `examples/visual-*.tsx` in
+`demos/<app>/`, and crop the whole window from its screenshot. Window captures in the reference
+set have a transparent background and include the window's shadow; set `reference.matte` to
+the colour your example paints behind the window, and size the example to the whole image.
+
+## How the score is computed
+
+- **Colour.** The screenshots embed a Display P3 profile. The harness converts each crop to
+  sRGB before comparing, and runs the browser with an sRGB output profile.
+- **Scale.** At 2x the capture is compared with the crop pixel for pixel. At 1x there is no
+  reference, so each 2×2 block of the crop is averaged into one pixel; expect a higher score,
+  because a half-point hairline that the browser draws as a full pixel cannot match its
+  averaged counterpart.
+  Chromium is launched with a true device scale factor for each scale, because an emulated one
+  lays hairlines out on a 1x grid.
+- **Mismatch** is the fraction of compared pixels whose colour distance (pixelmatch's
+  perceptual YIQ metric) exceeds the threshold, 0.1 unless the comparison sets its own. That
+  ignores differences nobody can see and still catches a border that is one step too dark; at
+  0.05 it also catches a hairline whose alpha is off by a tenth.
+- **Mean Δ** is the mean absolute difference per colour channel, out of 255. It moves when a
+  large area is slightly off, which the mismatch percentage does not show: a hue shift of 8°
+  on the push button bezel left the mismatch unchanged and raised mean Δ from 0.26 to 2.00.
+  `deltaBudget` fails the run on it.
+- **Text** is rendered with greyscale antialiasing and no hinting. Off Apple platforms it is
+  set in the fallback font, which is the largest remaining term; add a second comparison with
+  `masks` over the text to score the drawing alone.
+- **Masks** leave their pixels out of both scores. The `actual` and `expected` images in the
+  output are the capture and the crop as they are; the `diff` image paints the masked pixels
+  magenta.
+- **Readiness.** The capture is taken once the example has rendered and the page has settled:
+  two frames, the web fonts the text asked for, and every `<img>` loaded or failed (an example
+  may show a missing image on purpose). A font face that is still loading after 10 seconds
+  stops the comparison with a message that names it.
+
+## Other browsers
+
+`npm run visual -- --browser webkit` (or `firefox`) runs the same comparisons after
+`npx playwright install webkit`. Those engines have no true device-scale switch in Playwright,
+so their 2x runs use emulation and hairlines may be laid out differently; budgets are defined
+against Chromium, and the rule that holds a 2x budget to its score is enforced only there.
+WebKit on Linux runs the comparisons too, now that the fallback font has no `local()` sources
+(one face failed to load from them in that build, and the screenshot waited for fonts for ever).
+Its scores differ from Chromium's as Firefox's do: on the desktop folder (22 October 2026), 21
+of the 28 comparisons scored above their Chromium budgets in WebKit and 18 in Firefox, from text
+rasterisation and antialiasing and from colour management (Chromium alone runs with the sRGB
+profile the references were converted to). Playwright moves WebKit's pointer without movement,
+which Base UI's menus ignore in WebKit, so its captures of a hovered menu row show no
+highlight. Safari on macOS is the WebKit to test with.

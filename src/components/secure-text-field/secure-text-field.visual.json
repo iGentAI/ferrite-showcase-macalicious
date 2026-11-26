@@ -1,0 +1,344 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "pending": "No reference: the spec marks the standard secure text field as not seen in any of the 294 screenshots (the only password fields shown are the login window's, a different control). Its bezel is compared with the plain text field of System Preferences > Sharing, which AppKit draws with the same cell; the checks below hold the rest to the text field's measured values and focus ring.",
+  "comparisons": [
+    {
+      "name": "bezel-sharing-light",
+      "description": "The empty field's bezel against the Computer Name text field of Sharing, a plain text field because no screenshot shows a secure one; the screenshot's text is masked, Aqua.",
+      "example": "visual-sharing",
+      "appearance": "light",
+      "masks": [{ "x": 5, "y": 5, "width": 52, "height": 15 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.14, "2x": 0.0005 },
+      "deltaBudget": { "1x": 6.5, "2x": 0.16 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Sharing.png",
+        "crop": { "x": 424, "y": 198, "width": 928, "height": 50 }
+      }
+    },
+    {
+      "name": "bezel-sharing-dark",
+      "description": "The empty field's bezel against the Computer Name text field of Sharing, Dark Aqua.",
+      "example": "visual-sharing",
+      "appearance": "dark",
+      "masks": [{ "x": 5, "y": 5, "width": 52, "height": 15 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.09, "2x": 0.0006 },
+      "deltaBudget": { "1x": 3.3, "2x": 0.42 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Sharing.png",
+        "crop": { "x": 424, "y": 198, "width": 928, "height": 50 }
+      }
+    },
+    {
+      "name": "edges-light",
+      "description": "The field at rest: the text field's bezel, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 8.25,
+            "y": 18,
+            "color": "#b1b1b1",
+            "scale": 2,
+            "tolerance": 1,
+            "note": "side edge, black at 25% over #ececec (spec: secure-text-field inherits text-field, Border, measured #b1b1b1)"
+          },
+          {
+            "x": 68,
+            "y": 8.25,
+            "color": "#b1b1b1",
+            "scale": 2,
+            "tolerance": 1,
+            "note": "top edge, black at 25% over #ececec (spec: secure-text-field inherits text-field, Border, measured)"
+          },
+          {
+            "x": 68,
+            "y": 27.75,
+            "color": "#b1b1b1",
+            "scale": 2,
+            "tolerance": 1,
+            "note": "bottom edge, black at 25% over #ececec (spec: secure-text-field inherits text-field, Border, measured)"
+          },
+          {
+            "x": 8.75,
+            "y": 18,
+            "color": "#f0f0f0",
+            "scale": 2,
+            "tolerance": 1,
+            "note": "inner line (spec: secure-text-field inherits text-field, Inner line, measured #f0f0f0)"
+          },
+          {
+            "x": 68,
+            "y": 18,
+            "color": "#ffffff",
+            "note": "fill (spec: secure-text-field inherits text-field, Fill, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "edges-dark",
+      "description": "The field at rest: the text field's bezel, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 8.25,
+            "y": 18,
+            "color": "#444444",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "side edge, white at 9% over the untinted window background #323232 (spec: secure-text-field inherits text-field: #424344 on #2f3031)"
+          },
+          {
+            "x": 68,
+            "y": 8.25,
+            "color": "#4b4b4b",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "top edge, white at 12% over #323232 (spec: secure-text-field inherits text-field: #474849 on #2f3031)"
+          },
+          {
+            "x": 68,
+            "y": 27.75,
+            "color": "#656565",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "bottom edge, white at 25% over #323232 (spec: secure-text-field inherits text-field: #636465 on #2f3031)"
+          },
+          {
+            "x": 68,
+            "y": 18,
+            "color": "#3c3c3c",
+            "note": "fill, white at 5% over #323232 (spec: secure-text-field inherits text-field: #393a3b on #2f3031)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus, given by a click in the field, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#enabled"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 6.75,
+            "y": 18,
+            "color": "#82abf1",
+            "tolerance": 3,
+            "note": "focus ring over the window background: #82abf1 on #ececec, measured on the Go to Folder field (spec: focus-ring)"
+          },
+          {
+            "x": 4.75,
+            "y": 18,
+            "color": "#ececec",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the field's edge"
+          },
+          {
+            "x": 8.25,
+            "y": 18,
+            "color": "#658ed4",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "ring over the field's edge: the ring colour over black at 25% on #ececec (spec: focus-ring measures #638cd2)"
+          },
+          {
+            "x": 8.75,
+            "y": 18,
+            "color": "#84adf3",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "ring over the inner line (spec: focus-ring, Overlap into the control, measured #84adf3)"
+          },
+          {
+            "x": 68,
+            "y": 18,
+            "color": "#ffffff",
+            "note": "fill, untouched by the ring beyond 1 pt inside the edge"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus, given by a click in the field, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#enabled"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 6.75,
+            "y": 18,
+            "color": "#2e6d98",
+            "tolerance": 3,
+            "note": "focus ring, rgb(43 168 255 / 0.5), over the untinted window background #323232 (spec: focus-ring measures #2d6c99 on #2f3032)"
+          },
+          {
+            "x": 4.75,
+            "y": 18,
+            "color": "#323232",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the field's edge"
+          },
+          {
+            "x": 8.25,
+            "y": 18,
+            "color": "#3876a2",
+            "scale": 2,
+            "tolerance": 4,
+            "note": "ring over the field's side edge, white at 9% on #323232 (spec: focus-ring measures #3a78a5 on a tinted window)"
+          },
+          {
+            "x": 8.75,
+            "y": 18,
+            "color": "#33729e",
+            "scale": 2,
+            "tolerance": 4,
+            "note": "ring over the half point inside the edge: the ring colour over the fill, white at 5% on #323232 (inferred from the measured light overlap)"
+          },
+          {
+            "x": 68,
+            "y": 18,
+            "color": "#3c3c3c",
+            "note": "fill, untouched by the ring beyond 1 pt inside the edge"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bullets-light",
+      "description": "Typed text is drawn as bullets in the text colour, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#enabled"
+        },
+        {
+          "key": "a"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 14.75,
+            "y": 18.25,
+            "color": "#262626",
+            "note": "centre of the bullet, solid in the text colour: black at 85% on the white fill. A letter 'a' has its counter here, and an empty field its fill (the bullet's place is the browser's, read from the capture)"
+          },
+          {
+            "x": 15.25,
+            "y": 15.75,
+            "color": "#ffffff",
+            "note": "fill above the bullet, where a letter 'a' has its top stroke"
+          },
+          {
+            "x": 17.25,
+            "y": 21.75,
+            "color": "#ffffff",
+            "note": "fill below and right of the bullet, where a letter 'a' has the foot of its stem"
+          },
+          {
+            "x": 100,
+            "y": 18,
+            "color": "#ffffff",
+            "note": "fill right of the single bullet: nothing but the bullet is drawn"
+          },
+          {
+            "x": 6.75,
+            "y": 18,
+            "color": "#82abf1",
+            "tolerance": 3,
+            "note": "focus ring over the window background: #82abf1 on #ececec, measured on the Go to Folder field (spec: focus-ring)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bullets-dark",
+      "description": "Typed text is drawn as bullets in the text colour, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#enabled"
+        },
+        {
+          "key": "a"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 316,
+          "height": 36
+        },
+        "pixels": [
+          {
+            "x": 14.75,
+            "y": 18.25,
+            "color": "#e2e2e2",
+            "note": "centre of the bullet, solid in the text colour: white at 85% on the fill #3c3c3c. A letter 'a' has its counter here, and an empty field its fill"
+          },
+          {
+            "x": 15.25,
+            "y": 15.75,
+            "color": "#3c3c3c",
+            "note": "fill above the bullet, where a letter 'a' has its top stroke"
+          },
+          {
+            "x": 17.25,
+            "y": 21.75,
+            "color": "#3c3c3c",
+            "note": "fill below and right of the bullet, where a letter 'a' has the foot of its stem"
+          },
+          {
+            "x": 100,
+            "y": 18,
+            "color": "#3c3c3c",
+            "note": "fill right of the single bullet"
+          },
+          {
+            "x": 6.75,
+            "y": 18,
+            "color": "#2e6d98",
+            "tolerance": 3,
+            "note": "focus ring, rgb(43 168 255 / 0.5), over the untinted window background #323232 (spec: focus-ring measures #2d6c99 on #2f3032)"
+          }
+        ]
+      }
+    }
+  ]
+}

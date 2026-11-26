@@ -1,0 +1,163 @@
+/*
+ * Progress bar (NSProgressIndicator, bar style).
+ *
+ * Parts
+ *   .mac-progress-bar            the root (role=progressbar), a block as wide as its container
+ *   .mac-progress-bar-track      the capsule; its ::before paints the track and its hairline
+ *   .mac-progress-bar-indicator  the fill; Base UI sets its width from the value
+ *
+ * States
+ *   [data-progressing], [data-complete]   determinate (Base UI)
+ *   [data-indeterminate]                  a band sweeps along the track (Base UI)
+ *   [data-animating]                      the sweep runs; without it the track is empty
+ *   [data-offscreen]                      outside the viewport (lib/offscreen): the sweep is
+ *                                         paused
+ *   [data-size="small"]                   4 pt instead of 6 pt
+ *   [data-window-state="main" | "inactive"] *
+ *                                         window that is not key: grey fill
+ *                                         (CONTRIBUTING, Window state)
+ *
+ * Cost. The sweep animates transform only, so it runs on the compositor. While the bar is off
+ * screen the sweep is paused, and a paused animation produces no frames. With
+ * prefers-reduced-motion the band stays still and fades. (content-visibility: auto is not
+ * used: it takes the animation off the compositor and makes an off-screen bar tick on the main
+ * thread at the display rate.)
+ */
+.mac-progress-bar {
+  --_height: 6px;
+
+  display: block;
+  box-sizing: border-box;
+  min-width: 0;
+  height: var(--_height);
+}
+
+.mac-progress-bar:where([data-size="small"]) {
+  --_height: 4px;
+}
+
+.mac-progress-bar-track {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  border-radius: calc(var(--_height) / 2);
+}
+
+/* Track fill and hairline. They are a pseudo-element, not the track's own border, so that
+   the fill can cover the hairline: in the screenshots the fill's edge replaces the track's. */
+.mac-progress-bar-track::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  border: var(--mac-hairline) solid var(--mac-progress-bar-track-border);
+  border-radius: inherit;
+  background: var(--mac-progress-bar-track) padding-box;
+}
+
+/* Determinate fill: rounded at the leading end, square at the trailing end. */
+.mac-progress-bar-indicator {
+  --_fill: var(--mac-progress-bar-fill);
+  --_dir: 1;
+
+  position: absolute;
+  inset-block: 0;
+  box-sizing: border-box;
+  border: var(--mac-hairline) solid var(--mac-progress-bar-fill-border);
+  border-inline-end-width: 0;
+  border-start-start-radius: calc(var(--_height) / 2);
+  border-end-start-radius: calc(var(--_height) / 2);
+  background: var(--_fill);
+  /* AppKit animates a change of value over about a quarter of a second. Width rather than a
+     transform: scaling would distort the hairline and the rounded end. The element is out of
+     flow, so the layout it causes is its own box. */
+  transition: width 0.25s linear;
+}
+
+.mac-progress-bar-indicator:where([data-complete]) {
+  border-inline-end-width: var(--mac-hairline);
+  border-radius: calc(var(--_height) / 2);
+}
+
+/* Window that is not key */
+.mac-progress-bar-indicator:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  --_fill: var(--mac-progress-bar-fill-inactive);
+
+  border-color: transparent;
+  background: var(--_fill) padding-box;
+}
+
+/* Right to left: the band starts off the right end and travels left. */
+.mac-progress-bar-indicator:where(:dir(rtl)) {
+  --_dir: -1;
+}
+
+/* Indeterminate: a band 30% of the track wide, soft at both ends, crossing every 1.5 s. */
+.mac-progress-bar-indicator:where([data-indeterminate]) {
+  inset-inline-start: 0;
+  width: 30%;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(to right, transparent, var(--_fill) 30% 70%, transparent);
+  transform: translateX(calc(-100% * var(--_dir)));
+  transition: none;
+}
+
+.mac-progress-bar:where([data-animating]) .mac-progress-bar-indicator:where([data-indeterminate]) {
+  animation: mac-progress-bar-sweep 1.5s linear infinite;
+}
+
+@keyframes mac-progress-bar-sweep {
+  from {
+    transform: translateX(calc(-100% * var(--_dir)));
+  }
+
+  to {
+    transform: translateX(calc(334% * var(--_dir)));
+  }
+}
+
+/* No movement: the band covers the track and fades in and out instead. */
+@keyframes mac-progress-bar-pulse {
+  from {
+    opacity: 0.35;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-progress-bar-indicator {
+    transition: none;
+  }
+
+  .mac-progress-bar:where([data-animating])
+    .mac-progress-bar-indicator:where([data-indeterminate]) {
+    width: 100%;
+    background: var(--_fill);
+    transform: none;
+    animation: mac-progress-bar-pulse 1.2s ease-in-out infinite alternate;
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-progress-bar-track::before {
+    border-color: CanvasText;
+  }
+
+  /* Two classes, to outweigh the reduced-motion rule above, which sets the band's own colour. */
+  .mac-progress-bar .mac-progress-bar-indicator {
+    border-color: Highlight;
+    background: Highlight;
+    forced-color-adjust: none;
+  }
+}
+
+/* Off screen: paused. Last in the file, after every rule that sets `animation`. */
+.mac-progress-bar:where([data-offscreen]) .mac-progress-bar-indicator:where([data-indeterminate]) {
+  animation-play-state: paused;
+}

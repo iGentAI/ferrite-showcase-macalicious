@@ -1,0 +1,213 @@
+---
+title: Siri
+description: The Siri window of macOS 10.15 answering with the Weather result of the reference screenshots, with a small assistant of canned requests behind it, typed, chosen among examples or "heard" by the orb after a moment of listening.
+layout: full
+order: 114
+---
+
+<Example name="basic" />
+
+Click the orb: it listens for a moment and then answers. Click the question mark for requests
+to choose from, or type one in the field. The window opens on the Weather result of the
+reference screenshots. It is a demo, not an assistant: nothing is listened to, no microphone
+is asked for, and nothing is looked up. The requests and their answers are data, and the orb
+"hears" the next request of its list when its time is up.
+
+## What it shows
+
+- The library's [Siri](/components/siri) window: the dark translucent panel with its close
+  button, the scrolling results, the help button and the orb, which gives way to a waveform
+  while it listens. The demo supplies the prompt, the results and the listening state.
+- The result as a `SiriCard`: the Weather snippet of the captures, with its summary block (a
+  glyph, the city, three lines and the large temperature) and one row for each hour, and
+  smaller cards for a calculation and the time.
+- A [Borderless Button](/components/borderless-button) for each example request, in the text
+  colour of the window.
+- With `typeToSiri`, a [Text Field](/components/text-field) under the prompt, drawn in Dark
+  Aqua because the window is dark in both appearances.
+
+| Request | How it is asked | What answers |
+| --- | --- | --- |
+| “What’s the weather like today?” | typed text with "weather" or "forecast" | The Weather card: Memphis, as captured. |
+| “What’s 18 percent of 240?” | typed text with "18" and "240" | A Calculator card: 43.2. |
+| “What time is it in Cupertino?” | typed text with "time" | A Clock card: 9:41 AM, a fixed time. |
+| “Open Calculator” | typed text with "open" and "calculator" | Words only; a host hears of it through `onAnswer` and opens the application. Nothing opens by itself. |
+| anything else typed | | “I’m not sure I understand.” and the examples. |
+
+Every request can also be chosen among the examples, and the orb "hears" them in this order,
+starting after the one answered last.
+
+| Control | What it does |
+| --- | --- |
+| The orb | Starts listening: the prompt is Siri's own, “What can I help you with?”, and the orb is a waveform. After `listenDuration` (2.4 seconds) the next request is answered. A second click stops listening without an answer. |
+| The question mark | Lists the example requests under “Some things you can ask me:”; a second click puts them away. A chosen example is answered at once. |
+| The field (`typeToSiri`) | Return asks for what was typed. |
+| The close button, Escape | Close the window; Escape while the keyboard is in the window. A window that is shown again starts over, listening, and takes the keyboard. |
+
+The request that was understood stands at the top of the results, Siri's reply under it and the
+card under that. An answer taller than the results is scrolled until its card is at the top,
+which is where both captures show the Weather card; the request is then above it, a scroll
+away. The card is placed again when the window or the card changes size, and results without
+a card (the examples, listening, an answer in words) go back to the top. With `typeToSiri` the
+results are not scrolled, so the field stays in view.
+
+## Using the window
+
+`SiriAssistant` renders the library's `Siri` as its root and passes every prop it does not
+use itself on to it, so `style`, `className`, `ref`, `level`, `animated` and the accessible
+names work as they do on `Siri`. It is 344 by 600 pt; `--mac-siri-width` and
+`--mac-siri-height`, or a size in `style`, change that.
+
+```tsx
+import { SiriAssistant } from "./siri";
+
+<SiriAssistant capture="dark" typeToSiri onAnswer={(request) => open(request.opens)} />;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `capture` | `"light" \| "dark"` | Which reference capture's forecast the Weather card shows: 95° and the hours from 4 PM, or 73° and the hours from 12 PM. `"light"` by default. The window is the same in both. |
+| `requests` | `SiriRequest[]` | The requests the window can answer, in the order the orb "hears" them; the four above by default. |
+| `defaultRequest` | `string \| null` | The request answered when the window is first shown; `"weather"`, as captured. `null` shows Siri's own prompt. |
+| `typeToSiri` | `boolean` | Shows the field to type a request in. `false` by default, as the setting of macOS is. |
+| `listenDuration` | `number` | How long the orb listens, in milliseconds; 2400 by default. |
+| `open`, `defaultOpen`, `onOpenChange` | `boolean`, `boolean`, `(open) => void` | Whether the window is shown, controlled or not. A window that is not shown renders nothing. |
+| `onAnswer` | `(request) => void` | Called when a request is answered. |
+| `onClose` | `() => void` | Called when the close button or Escape closes the window, after `onOpenChange`. |
+| the rest | `SiriProps` | Without `prompt`, `listening`, `onListen`, `onHelp` and `children`, which the demo supplies. |
+
+A request is `{ id, phrase, reply, keywords, card?, opens? }`. The rules are plain functions in
+`siri-data.ts`: `understand()` gives the request typed text asks for, `nextRequest()` the one
+the orb hears next, and `answerScrollTop()` where an answer is scrolled to.
+
+## On the desktop
+
+The demo has no `app.ts`, so the [Desktop](/demos/desktop) does not list it. The desktop hosts
+a component whose root is a window of the library that takes what a
+[Managed Window](/components/managed-window) hands it, and the library's `Siri` cannot take
+two of those things:
+
+- **The window state.** The manager gives `state`, which a window writes to its own root as
+  `data-window-state`; the desktop's test of every hosted demo looks for that attribute on the
+  root. `Window`, `HudWindow`, `QuickLookPanel` and `Drawer` have a `state` prop for it.
+  `Siri` has none: it reads the state from an ancestor. The demo could only write the
+  attribute through `Siri`'s pass-through of unknown props, and the attribute is a window
+  component's to set, not a demo's.
+- **A drag region.** The manager moves a window from a press on its title bar, through
+  `onDragRegionPointerDown`. `Siri` has no title bar and no part or callback for it; its top
+  strip is padding of the root.
+
+The rest fits as it is: the root takes `style`, `ref` and `tabIndex`, fills a frame it is
+given the size of, and `onClose` closes it from its close button and from Escape.
+
+## Accessibility
+
+- The window is a `dialog` named "Siri". It is not modal. The window that is there when the
+  page loads leaves the keyboard focus where it is; one that is shown again takes it, so that
+  Escape closes it. When it closes it renders nothing, and the host puts the focus back, as the
+  example above does with its button.
+- The results are a `group` named "Results" and a polite live region, so the request, the
+  reply and the card are announced when an answer arrives. The region is a tab stop and scrolls
+  with the arrow keys.
+- A card is an `article` named by its title. The placeholder in its header and the large
+  placeholder of the summary are decorative; the summary's first line names the condition.
+- The hourly rows are a list named "Hourly forecast". In a row the condition is shown by a
+  shape only, so the shape is an image named after the condition ("Partly cloudy", "Clear
+  night").
+- The example requests are a list named "Example requests" of buttons.
+- The field is a text box named "Type to Siri"; Return submits it.
+- The orb is a button named "Listen" that is announced as pressed while it listens; the close
+  and help buttons are named "Close" and "Help". These are the library's.
+- The waveform stands still with `prefers-reduced-motion`; that is the library's too.
+
+## Fidelity
+
+`siri.visual.json` compares the whole window, shadow included, with the two Siri screenshots:
+`10-15-Catalina-Light-Siri.png` with `capture="light"` and `10-15-Catalina-Dark-Siri.png` with
+`capture="dark"`, each twice. The window was captured with the desktop picture blended into its
+materials and nothing behind it, so each example puts a grey element with the capture's casts
+behind the window and sets `--mac-siri-card-glow` for the tints in the card, as the library's
+own comparison of the window does. Scores from `npm run visual -- siri/answer` in Chromium on
+Linux with the fallback font: the share of pixels that differ and the mean colour difference
+out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `answer-light` (artwork masked) | 2.54% | 3.60 | 1.99% | 3.46 |
+| `answer-light-layout` (artwork and text masked) | 0.03% | 1.02 | 0.03% | 1.01 |
+| `answer-dark` (artwork masked) | 2.50% | 4.46 | 1.92% | 4.28 |
+| `answer-dark-layout` (artwork and text masked) | 0.02% | 2.08 | 0.02% | 2.06 |
+
+What is left in the two comparisons that keep the text is the text itself, set in the fallback
+font off Apple devices. What is left in the two layout comparisons is the desktop picture's
+tint, which the gradients follow only roughly, more so in the Dark Aqua capture, whose casts
+are stronger.
+
+Measured in the screenshots and reproduced by the demo's own layout: the 109.5 pt summary block
+of the Aqua capture and the 94.5 pt one of the Dark Aqua capture; the city 87 pt inside the
+card with its three lines under it, a label that breaks continuing after 15 pt and the next
+label starting 15.75 pt after a label's last line; the temperature's digits centred 4 pt under
+the middle of the block; the 39 pt hourly rows with their label, glyph column and degrees; and
+the card standing at the top of the results, where an answer taller than the results is
+scrolled to. The window, the card, its header band and the two strips are the library's.
+The demo's sizes are tokens in `siri.tokens.css` (`--mac-siri-demo-*`), each tagged with where
+it comes from: the summary, the city, the lines, the temperature and the hourly rows are
+measured; the value cards, the example requests and the header placeholder are provisional.
+The large numerals use the shared thin weight, `--mac-font-weight-thin`.
+
+### What is masked
+
+Masks are in points from the top-left corner of the capture; the window is at 19, 18.
+
+| Mask | Aqua capture | Dark Aqua capture | Why | In |
+| --- | --- | --- | --- | --- |
+| The icon in the card's header | 38, 50, 18 by 18 | the same | Siri's icon is Apple's artwork; the demo shows a plain disc. | all four |
+| The glyph of the summary | 50, 93, 52 by 52 | the same | The sun is Apple's artwork; the demo shows a plain disc. | all four |
+| The column of hourly glyphs | 171, 182, 40 by 377 | 171, 167, 40 by 392 | The weather glyphs are Apple's artwork; the demo shows a plain shape for each condition. | all four |
+| The orb | 170, 566, 42 by 42 | the same | Siri's orb is Apple's artwork; the window shows the library's own drawing. | all four |
+| The card's title | 38, 50, 100 by 18 (with the icon) | the same | Text in the fallback font. | the two layout comparisons |
+| The summary's text | 46, 86, 292 by 88 (with the glyph) | 46, 86, 292 by 74 | Text in the fallback font: the city, the three lines and the temperature. | the two layout comparisons |
+| The hour labels | 47, 182, 52 by 377 | 47, 167, 52 by 392 | Text in the fallback font. | the two layout comparisons |
+| The degrees | 305, 182, 28 by 377 | 305, 167, 28 by 392 | Text in the fallback font. | the two layout comparisons |
+
+The masks cover 7% of the Aqua capture and 8% of the Dark Aqua capture in the comparisons that
+keep the text, and 28% of each in the layout comparisons. The placeholders are abstract: a disc
+for a clear day, a ring for a clear night, a rounded square for clouds by day and its outline
+for clouds by night, in the card's text colour at a third of its strength. None is a drawing of
+the glyph it stands for.
+
+### What is not compared with a screenshot
+
+The two captures show one state: the Weather answer. Nothing else on this page can be compared
+with a screenshot, and it is provisional:
+
+- **Listening.** `answer-listening-light` is not a comparison with a capture. It clicks the orb
+  in a real browser and checks three pixels, which shows that the click starts listening and
+  nothing about how Siri looks while it listens; the waveform is the library's own drawing.
+- **The prompt, the reply and the examples**, their wording, type sizes and places, and the
+  Calculator and Clock cards: the demo's own, after the way Siri answers.
+- **The Type to Siri field**: the library's rounded text field in Dark Aqua, not a
+  reproduction of the field macOS shows.
+- **The scrolling to the card** is inferred from the card's place in both captures; the request
+  and the reply above the card are not in either.
+- **The last two hourly rows** of each forecast are invented. The captured card runs on under
+  the bottom strip, so the demo's does too; the first ten rows are the captures'.
+- **The window when it is not key**, its pressed buttons and its focus rings are the library's
+  and are checked on its own page.
+
+What differs from the captures, and why:
+
+- **Text.** Set in the fallback font off Apple devices, which is nearly all of the two scores
+  that keep the text. The second line of the Aqua capture, “Chance of Rain: 20%”, breaks after
+  “of” there. That break is in the data, because where a line breaks by itself depends on the
+  font: “Chance of Rain: 0%” is 109 pt wide in the Dark Aqua capture and about 121 pt in the
+  fallback font, so no one width breaks the same lines in both.
+- **The artwork**: the header icon, the weather glyphs and the orb, as listed above.
+- **The desktop picture's tint** in the chrome and the card, for which gradients stand in.
+- **Three values of the blueprint** (`reference/spec/apps/siri.md`) were measured again and
+  differ. The sun is 42 pt across, not 48 (x=110..193 of the 2x capture), and centred 57 pt
+  from the window's left edge; 75 pt is its place in the capture, whose window starts at 19.
+  The temperature's ink ends 312 pt from the window's left edge (x=662 of the capture), not at
+  290.5. In the Aqua capture the hourly rows start 181.5 pt under the capture's top (y=363;
+  the first row's text is at y=393..411 and a row is 78 px), where the blueprint says about
+  y=372.

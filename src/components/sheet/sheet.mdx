@@ -1,0 +1,197 @@
+---
+title: Sheet
+description: A dialog attached to one window, sliding out from under its title bar or toolbar and holding that window until it is answered.
+---
+
+<Example name="basic" both />
+
+A sheet (`NSWindow.beginSheet`) asks something about one window, usually a document: save,
+export, print, confirm. It hangs from the bottom edge of the window's title bar or toolbar, has
+no title bar of its own and square corners, and may be wider or narrower than its window. The
+parts are built on Base UI's [Popover](https://base-ui.com/react/components/popover), whose
+positioner keeps the sheet attached to its window wherever the window is, and keep its anatomy;
+`SheetPopup` combines Base UI's portal, positioner and popup, because a sheet is always
+assembled the same way.
+
+## Usage
+
+```tsx
+import { useState } from "react";
+import { DefaultButton } from "macalicious/default-button";
+import { Sheet, SheetActions, SheetClose, SheetDescription, SheetPopup, SheetTitle } from "macalicious/sheet";
+import { TitleBar } from "macalicious/title-bar";
+import { Window, WindowBody } from "macalicious/window";
+import { WindowControls } from "macalicious/window-controls";
+import "macalicious/styles.css";
+
+const [open, setOpen] = useState(false);
+const [titleBar, setTitleBar] = useState<HTMLDivElement | null>(null);
+
+<Window state={open ? "main" : "key"}>
+  <TitleBar ref={setTitleBar} title="Untitled" controls={<WindowControls closeDisabled={open} />} />
+  <WindowBody inert={open}>…</WindowBody>
+</Window>
+<Sheet open={open} onOpenChange={setOpen}>
+  <SheetPopup anchor={titleBar} width={360}>
+    <SheetTitle>Do you want to keep this new document “Untitled”?</SheetTitle>
+    <SheetDescription>You can choose to save your changes, or delete this document.</SheetDescription>
+    <SheetActions leading={<SheetClose onClick={discard}>Delete</SheetClose>}>
+      <SheetClose>Cancel</SheetClose>
+      <SheetClose render={<DefaultButton />} onClick={save}>Save</SheetClose>
+    </SheetActions>
+  </SheetPopup>
+</Sheet>
+```
+
+Or copy the source into your project: `npx macalicious add sheet`.
+
+- `anchor` is what the sheet hangs from: the window's `TitleBar` (which holds the toolbar of a
+  unified window), as an element or a ref. The sheet's top edge follows that element's bottom
+  edge and the sheet is centred on it, also while the window moves.
+- The window is yours to hold: while the sheet is open give it `state="main"`, make its body
+  `inert` and disable its close button, as the example does. The sheet itself is a window of
+  its own and is key. Other windows on the page stay usable.
+- Open it with `open` and `onOpenChange`, or put a `SheetTrigger` inside `Sheet`.
+- `SheetClose` is a [Push Button](/components/push-button) that closes the sheet;
+  `render={<DefaultButton />}` makes it the [Default Button](/components/default-button), which
+  Return activates. Give it an `onClick` for what the button does.
+- A sheet's content is yours: `SheetTitle` and `SheetDescription` are the message and the
+  informative text of an alert-like sheet, and anything else, such as a form, goes beside or
+  instead of them.
+
+<Example name="form" />
+
+## Guidelines
+
+From the Human Interface Guidelines for macOS,
+[Sheets](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/sheets/):
+
+- Use a sheet for a request that concerns one window, so that people can still work in other
+  windows while it waits. A request that concerns the whole application is a dialog or an alert.
+- Attach sheets only to windows that have a frame, and do not open a sheet from a sheet: close
+  the first one before the second opens.
+- Keep a sheet small enough to leave its window recognisable behind it, and include a way to
+  dismiss it without doing anything: a Cancel button, which Escape presses.
+- In a tabbed window a sheet belongs to the tab that was active when it opened.
+
+## Variants and states
+
+| State | Look | Source |
+| --- | --- | --- |
+| Open | The sheet material, a 0.5 pt edge on the sides and the bottom (Dark Aqua: darker, with a 1 pt lighter rim inside it), a shadow on the sides and below, nothing above the line it hangs from | Measured on the Print sheet in both appearances |
+| Opening, closing | Slides down from under the line in 0.25 s and back up | Provisional: the screenshots are stills; AppKit's duration is about 0.2 to 0.25 s |
+| Reduced motion | Fades in under the line instead of sliding | Provisional |
+| Page in the background | The controls inside lose their accent, as in any window that is not key | Provisional |
+
+`modal` is `"trap-focus"` by default: the keyboard stays in the sheet while the pointer still
+reaches everything else, which is what document-modal means; the window underneath is held by
+its own `inert` body. `modal={true}` also blocks the pointer everywhere else. A sheet is never
+non-modal, so `false` is not accepted. `dismissible`
+lets a click outside close the sheet, which Catalina never does.
+
+## Sizes
+
+A sheet takes the width its content needs, or `width`; its height follows its content, up to
+the room between the line it hangs from and the bottom of the viewport, beyond which it
+scrolls. The
+margins are the window's 20 pt on all four sides, the button row sits 20 pt below the content
+with the buttons 12 pt apart, and each dismissing button is at least 84 pt wide
+(`--mac-sheet-button-min-width`). The Print sheet in the reference is 756 pt wide on a 460 pt
+window.
+
+## API
+
+`Sheet` takes Base UI's Popover Root props, `SheetTrigger` its Trigger props, `SheetPopup` its
+Popup props, `SheetTitle`, `SheetDescription` and `SheetClose` the props of the parts they are
+named after, and `SheetActions` those of a `<div>`, plus these:
+
+### Sheet
+
+<PropsTable name="SheetProps" />
+
+### SheetTrigger
+
+<PropsTable name="SheetTriggerProps" />
+
+### SheetPopup
+
+<PropsTable name="SheetPopupProps" />
+
+### SheetTitle
+
+<PropsTable name="SheetTitleProps" />
+
+### SheetDescription
+
+<PropsTable name="SheetDescriptionProps" />
+
+### SheetActions
+
+<PropsTable name="SheetActionsProps" />
+
+### SheetClose
+
+<PropsTable name="SheetCloseProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-open`, `data-closed` | popup | present or absent | Set by Base UI. |
+| `data-starting-style`, `data-ending-style` | popup | present or absent | Set by Base UI while the sheet slides. |
+| `data-instant` | popup | present or absent | Set by Base UI when the sheet is shown or hidden without the slide. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-sheet-width` | content | Width of the sheet; the `width` prop sets it on the positioner. |
+| `--mac-sheet-button-min-width` | `84px` | Least width of a dismissing button in `SheetActions`. |
+
+Classes: `.mac-sheet` (the popup), `.mac-sheet-positioner`, `.mac-sheet-title`,
+`.mac-sheet-description`, `.mac-sheet-actions`, `.mac-sheet-actions-leading` and
+`.mac-sheet-actions-trailing`.
+
+## Accessibility
+
+- The sheet is a `dialog` with `aria-modal="true"`, named by its `SheetTitle` and described by
+  its `SheetDescription`. A sheet without a title needs an `aria-label`.
+- When it opens, the focus goes to the element marked `data-autofocus`, else to the first text
+  field, else to the sheet itself, as in AppKit without full keyboard access; `initialFocus`
+  overrides that. Checkboxes, buttons and disabled controls are passed over. Tab stays inside
+  the sheet, and when it closes the focus returns to the control that opened it.
+- Escape closes it, which is what Cancel does; Return activates the default button. A click
+  outside does not close it.
+- While it is open, the rest of the page is hidden from assistive technology. The window it
+  belongs to must also be unusable with the pointer: set `inert` on its body, as the examples
+  do. `aria-modal` promises that.
+- With reduced motion the sheet fades instead of sliding. In forced colours it has a border on
+  the sides and the bottom, since its shadow and material are gone.
+
+## Visual comparison
+
+The reference shows one sheet, the Print dialog on a TextEdit window, in both appearances. Its
+content is the print panel, a component of its own; `sheet.visual.json` compares what the sheet
+draws: its bottom edge where it lies over the page of the window behind, with the material, the
+edge, the rim and the shadow. No text is in the crop, so there is no masked twin. The sheet's
+sides lie over the desktop picture in the captures and cannot be compared.
+
+Scores from `npm run visual -- sheet` in Chromium on Linux: the share of pixels that differ by
+more than the threshold (0.05), and the mean colour difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `print-bottom-edge-light` | Light-Print (700, 1012, 200, 80) | 0.00% | 4.25 | 0.00% | 4.28 |
+| `print-bottom-edge-dark` | Dark-Print (700, 982, 200, 80) | 0.00% | 3.62 | 0.00% | 3.54 |
+
+The mean difference is in two shared tokens that the sheet uses as they are: the fitted sheet
+shadow is darker close to the edge than the capture's (`#d1d1d1` against `#dcdcdc` 2.5 pt below
+it), and the dark sheet material comes out as `#262626` over the dark page where the capture has
+`#2d2d2d`.
+
+`attachment-light` and `attachment-dark` check pixels of a whole sheet instead: the page above
+the line it hangs from is untouched (a sheet casts no shadow there), the fill is the material
+over the page, and the edge and the dark rim have the measured colours. `tall-light` and
+`tall-dark` give a sheet more content than fits below its line and check that its bottom edge
+stays inside the page, so the sheet scrolls. All pass at 1x and 2x.
+
+Measured: the square corners, the edge and its colours, the dark rim, the material over a known
+background, the shadow below, the margins. Provisional: the slide and its duration, the
+reduced-motion and forced-colours looks, the minimum button width (taken from Finder's
+dialogs), and a sheet while the page is in the background.

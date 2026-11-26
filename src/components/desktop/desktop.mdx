@@ -1,0 +1,130 @@
+---
+title: Desktop
+description: The bottom layer of the screen, a desktop picture with Finder's grid of icons, filled from the top of the trailing edge downward.
+order: 82
+---
+
+<Example name="basic" both />
+
+The desktop is Finder's own window behind every other one: the picture, and on it the mounted
+volumes and the files of the Desktop folder. `Desktop` draws the picture and lays its children,
+[`DesktopIcon`](/components/desktop-icon)s and [`DesktopStack`](/components/desktop-stack)s, out
+as Finder does at the default icon size: down the trailing edge first, then in columns towards
+the leading edge. It also keeps their selection, so an application has nothing to wire up.
+Base UI has no primitive for an icon grid; the element is a labelled group of toggle buttons.
+
+## Usage
+
+```tsx
+import { Desktop } from "macalicious/desktop";
+import { DesktopIcon } from "macalicious/desktop-icon";
+import "macalicious/desktop-icon.css";
+import "macalicious/desktop.css";
+
+<Desktop style={{ height: "100vh" }} picture={<img src="/my-picture.jpg" alt="" />}>
+  <DesktopIcon icon={<img src="/drive.png" alt="" />}>Macintosh SSD</DesktopIcon>
+  <DesktopIcon icon={<img src="/drive.png" alt="" />}>Time Machine</DesktopIcon>
+</Desktop>
+```
+
+Or copy the source into your project: `npx macalicious add desktop`.
+
+Give the desktop a size; it does not take one from its icons. Other children are allowed:
+position them yourself (`position: absolute`), as the output line of the example below is.
+Only the `DesktopIcon`s and `DesktopStack`s that are direct children take part in the grid's
+keyboard order; a window, a Dock or a button of your own keeps its keys.
+
+**The picture.** `picture` is any element: an image, a video, a `div` with a gradient. It is
+stretched over the whole desktop behind the icons and hidden from assistive technology. Without
+one the desktop paints `--mac-desktop-picture`, a plain gradient of its own near the sky and
+sea colours of Catalina's Day and Night pictures. Catalina's desktop pictures are Apple's
+artwork and are not part of this library.
+
+**Under a menu bar and a Dock.** The picture runs under both, the icons do not. Say how much
+room they take with `--mac-desktop-inset-top` (22px for a Catalina menu bar) and
+`--mac-desktop-inset-bottom`.
+
+**With the window manager.** A [`WindowManager`](/components/window-manager) is the element the
+windows move in; put the `Desktop` behind it, or inside it as its first child, at the full size
+of the screen. Everything that shows through a translucent surface (the menu bar, the Dock, a
+sidebar) must be in the same page as that surface, so the desktop picture is an element of
+the page and never a screenshot of one.
+
+<Example name="selection" />
+
+## Guidelines
+
+What Finder does, which is what people expect of anything that looks like it:
+
+- Fill from the top of the trailing edge: volumes first, then files in the order they arrived.
+- A click selects one item and deselects the rest; Command-click adds an item or takes it out;
+  a click on the picture deselects everything.
+- A double click opens. Do not open on a single click: that is the Dock's behaviour, not the
+  desktop's.
+- Keep names short enough for two lines; Finder truncates longer ones in the middle.
+
+## Variants and states
+
+| What | How | Status |
+| --- | --- | --- |
+| Picture | `picture`, or `--mac-desktop-picture` | measured positions over a stand-in picture |
+| Icon grid | children; 112 pt vertical pitch, first tile centred 39.5 pt below the top inset and 65.5 pt from the trailing edge | measured (Desktop and Desktop-Stacks captures) |
+| Column pitch | 116 pt | provisional: every capture shows a single column |
+| Stacks | [`DesktopStack`](/components/desktop-stack) children | measured |
+| Selection | `value`, `defaultValue`, `onValueChange` | provisional: no capture shows a selected desktop icon |
+| Rubber-band selection | not implemented | no capture shows it |
+
+The desktop has no window state of its own. Its icons lose the accent and the focus ring under
+an ancestor whose `data-window-state` is `main` or `inactive`, as every control does.
+
+## Sizes
+
+The grid is Finder's at its default 64 pt icon size. `--mac-desktop-icon-size` on a
+`DesktopIcon` changes the tile; the cell stays 116 by 112 pt.
+
+## API
+
+<PropsTable name="DesktopProps" />
+
+Other props go to the root `div`.
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-desktop-inset-top` | `0px` | Room for a menu bar above the icons. |
+| `--mac-desktop-inset-bottom` | `0px` | Room for a Dock below them. |
+| `--mac-desktop-picture` | a gradient | The background when no `picture` is given. |
+
+Classes: `.mac-desktop` (the desktop) and `.mac-desktop-picture` (the picture layer).
+
+## Accessibility
+
+- The desktop is a `group` named “Desktop”; pass `aria-label` to name it in another language.
+  Each icon is a toggle button named by its label, with `aria-pressed` for its selection.
+- Every icon is in the tab order, as with macOS full keyboard access. The arrow keys move
+  through the grid as it is laid out, Home and End go to its ends, and typing goes to the icon
+  whose name starts with what was typed. Each moves the keyboard focus and, as in Finder, the
+  selection with it. Space toggles the focused icon; Return, Command-O and Command-Down open it.
+- The picture is decorative and hidden from assistive technology. Text over a picture of your
+  own depends on that picture for its contrast; the icon labels carry a dark shadow for that
+  reason.
+- In forced-colours mode the picture, your own included, is replaced by `Canvas`.
+
+## Visual comparison
+
+`npm run visual -- desktop/` compares the trailing 140 pt of the Desktop captures, from the top
+of the screen down to 240 pt: the room left for the menu bar and the first two cells of the
+grid. Scores from the run that accompanied this component (Chromium on Linux, fallback font
+Inter; 2x):
+
+| Comparison (reference crop, 2x pixels) | Aqua, whole crop | Aqua, masked | Dark Aqua, whole crop | Dark Aqua, masked |
+| --- | --- | --- | --- | --- |
+| `grid` (Desktop `3080,0,280,480`) | 2.67% | 0.00% | 3.07% | 0.04% |
+
+The masked comparisons leave out the two labels, which are set in the fallback font, the two
+volume icons, which are Apple's artwork (the example's tiles are empty), and the menu bar's
+strip, which is another component. What they gate is the example's stand-in for the picture;
+the position of the cells is held by the whole-crop comparisons, where each label sits under
+its tile.
+
+Provisional, because no screenshot shows it: the column pitch, the selection, and the
+desktop's own gradient.

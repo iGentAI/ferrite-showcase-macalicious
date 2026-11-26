@@ -1,0 +1,38 @@
+/*
+ * Family Sharing pane. Every control is a library component placed by form.tsx; this file draws
+ * the region to the right of the divider, which is one step darker than the column with the
+ * picture, and lays out the list of what a family shares.
+ *
+ *   .mac-system-preferences-family-sharing-detail     the introduction's column
+ *   .mac-system-preferences-family-sharing-benefits   the list: rows 19 pt apart, each with a
+ *                                                     5 pt bullet 15 pt before its text
+ */
+.mac-system-preferences-family-sharing-detail {
+  position: absolute;
+  inset: 0 0 0 195px;
+  background: var(--mac-color-group-background);
+}
+
+.mac-system-preferences-family-sharing-benefits {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-system-preferences-family-sharing-benefits > li {
+  position: relative;
+  height: 19px;
+  padding-left: 14.5px;
+  white-space: nowrap;
+}
+
+.mac-system-preferences-family-sharing-benefits > li::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--mac-color-label);
+}

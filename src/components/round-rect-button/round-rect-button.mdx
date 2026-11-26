@@ -1,0 +1,104 @@
+---
+title: Round Rect Button
+description: A small outlined button without a fill, 18 pt high, for an action that belongs to the content beside it, such as Connect As under a server in Finder.
+---
+
+<Example name="basic" both />
+
+AppKit's round-rect bezel (`NSButton` with `bezelStyle = .roundRect`) is a thin outline around
+an 11 pt title, with no fill and no shadow. Finder uses it for "Connect As…" and "Share
+Screen…" under a selected server, and for Save and the plus button of a search's scope bar.
+It is built on [Base UI's Button](https://base-ui.com/react/components/button).
+
+## Usage
+
+```tsx
+import { RoundRectButton } from "macalicious/round-rect-button";
+import "macalicious/round-rect-button.css";
+
+<RoundRectButton onClick={connect}>Connect As…</RoundRectButton>
+```
+
+Or copy the source into your project: `npx macalicious add round-rect-button`.
+
+The button is as wide as its title plus 7 pt on each side; set a `width` to give several the
+same width, as Finder does (114 pt). In a [scope bar](/components/scope-bar) use
+`ScopeBarAction`, which is this bezel laid out for the bar.
+
+## Guidelines
+
+- Use a round-rect button for an action on the content it sits in or beside: a preview, a
+  scope bar, a row. In a dialog or a preferences pane use a [push button](/components/push-button).
+- Do not make it the default button; it has no accent-coloured form.
+- End the title with an ellipsis when the action opens a dialog that asks for more.
+
+These paraphrase Apple's Human Interface Guidelines for macOS; they are not verified against
+the archived guideline text.
+
+## Variants and states
+
+<Example name="states" both />
+
+| State | Appearance |
+| --- | --- |
+| Normal | 1 pt outline at 30% of the label colour, no fill, title in the control text colour |
+| Pressed | A faint tint inside the outline |
+| Disabled | Outline at half strength, title in the disabled control text colour |
+| Inactive window | Fainter outline and content: black at 9.3% and 51.6% in Aqua, white at 16.7% and 59% in Dark Aqua (measured on the add button of Books' sidebar) |
+| Focused | The focus ring, only in the key window |
+
+In a main window that is not key the button looks as in the key window; no capture shows it
+there. It can hold a
+[system image](/components/system-image) in place of a title; give it an `aria-label` then,
+and `style={{ width: 18, padding: 0 }}` for the square add button of a sidebar.
+
+## Sizes
+
+One size: 18 pt high with an 11 pt medium title, the size Catalina draws it at everywhere it
+appears. There is no `size` prop.
+
+## API
+
+<PropsTable name="RoundRectButtonProps" />
+
+It also accepts every prop of Base UI's Button: `disabled`, `focusableWhenDisabled`, `render`,
+`nativeButton` and the attributes of a `<button>`.
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-disabled` | present | The button is disabled. |
+
+## Accessibility
+
+- A native `<button>`: focusable with Tab, pressed with Return or Space.
+- `disabled` removes it from the tab order; `focusableWhenDisabled` keeps it there and sets
+  `aria-disabled` instead.
+- A button that shows only an image needs `aria-label`.
+- In forced-colours mode the outline and title take the system button text colour, and the
+  disabled state the system's disabled text colour.
+
+## Visual comparison
+
+`visual-finder-network` reproduces "Connect As…" and "Share Screen…" in the preview column of
+Finder's Network window. Results in Chromium on Linux:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Finder Network, Aqua | 4.31% of pixels differ | 9.94% |
+| Finder Network, Aqua, titles masked | 0.06% | 0.00% |
+| Finder Network, Dark Aqua | 4.31% | 9.88% |
+| Finder Network, Dark Aqua, titles masked | 0.03% | 0.00% |
+| Books add button, inactive window, Aqua (colour distance 0.05) | 2.95% | 2.78% |
+| Books add button, inactive window, Dark Aqua (colour distance 0.05) | 3.13% | 3.47% |
+
+`visual-books-add` is the square add button under Collections in Books' sidebar, in an inactive
+window, with nothing masked: an 18 pt square around the add image drawn at 10 pt, as Books'
+plus is. What differs is at the corners and the ends of the plus.
+
+The masked comparisons score the outlines: 114 x 18 pt, 1 pt wide, with corners of 4.25 pt, in
+the measured colour. The unmasked ones differ in the titles, which are set in the fallback
+font off Apple platforms.
+
+Measured: the height, the outline's width, colour and corner radius, the title's size and
+colour, and the outline and content in an inactive window. Provisional: the pressed tint and the disabled outline, which no capture shows, and
+the 7 pt horizontal padding, which Finder's fixed-width buttons do not reveal.

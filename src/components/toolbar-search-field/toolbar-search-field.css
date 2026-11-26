@@ -1,0 +1,283 @@
+/*
+ * Toolbar search field (NSSearchField in a toolbar).
+ *
+ * The root's box is the bezel's fill, 22 pt high; ::before is the bezel, one hairline larger on
+ * every side for Aqua's border. The input fills the root and is transparent.
+ *
+ * [data-variant="bright"]             Console's brighter Dark Aqua fill
+ * [data-menu]                         a search menu button replaces the magnifier
+ * [data-tokens]                       search tokens before the text
+ * :focus-within                       focus ring, in the key window only
+ * [data-disabled]                     dimmed glyph and text
+ * [data-window-state="inactive"] *    flat outlined bezel [provisional]
+ * [data-force~="focus"]               static preview of the focus ring
+ *
+ * Hook: --mac-toolbar-search-field-text-inset, from the fill's leading edge to the text
+ * (default 23px; Finder's placeholder sits at 27px).
+ */
+.mac-toolbar-search-field {
+  --_fill: var(--mac-toolbar-search-field-fill);
+  --_border-top: var(--mac-toolbar-search-field-border-top);
+  --_border-side: var(--mac-toolbar-search-field-border-side);
+  --_border-bottom: var(--mac-toolbar-search-field-border-bottom);
+  --_shadow: 0 var(--mac-hairline) 0 var(--mac-toolbar-search-field-shadow);
+  --_placeholder: var(--mac-toolbar-search-field-placeholder);
+  --_cross: var(--mac-toolbar-search-field-clear-cross);
+  --_inset: var(--mac-toolbar-search-field-text-inset, 23px);
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  box-sizing: border-box;
+  width: 160px;
+  min-width: 60px;
+  height: 22px;
+  border-radius: var(--mac-radius-control-regular);
+  color: var(--mac-toolbar-search-field-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  vertical-align: middle;
+}
+
+.mac-toolbar-search-field::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: calc(-1 * var(--mac-hairline));
+  box-sizing: border-box;
+  border: var(--mac-hairline) solid;
+  border-color: var(--_border-top) var(--_border-side) var(--_border-bottom);
+  border-radius: calc(var(--mac-radius-control-regular) + var(--mac-hairline));
+  background: var(--_fill) padding-box;
+  box-shadow: var(--_shadow);
+  pointer-events: none;
+}
+
+.mac-toolbar-search-field:where([data-variant="bright"]) {
+  --_fill: var(--mac-toolbar-search-field-fill-bright);
+  --_placeholder: var(--mac-toolbar-search-field-placeholder-bright);
+  --_cross: var(--mac-toolbar-search-field-clear-cross-bright);
+}
+
+/* With a search menu the text starts 4 pt later (Font Book). */
+.mac-toolbar-search-field:where([data-menu]) {
+  --_inset: calc(var(--mac-toolbar-search-field-text-inset, 23px) + 4px);
+}
+
+.mac-toolbar-search-field:where([data-window-state="inactive"] *) {
+  --_fill: var(--mac-toolbar-search-field-fill-inactive);
+  --_border-top: var(--mac-toolbar-search-field-border-inactive);
+  --_border-side: var(--mac-toolbar-search-field-border-inactive);
+  --_border-bottom: var(--mac-toolbar-search-field-border-inactive);
+  --_shadow: inset 0 0 0 var(--mac-hairline) var(--mac-toolbar-search-field-ring-inactive);
+}
+
+.mac-toolbar-search-field-glyph {
+  position: absolute;
+  inset-block-start: 5.5px;
+  inset-inline-start: 5.5px;
+  width: 13px;
+  height: 13px;
+  color: var(--mac-toolbar-search-field-glyph);
+  pointer-events: none;
+}
+
+/* Search menu button: the magnifier and a chevron, 25 pt of the field's leading end. */
+.mac-toolbar-search-field-menu {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  box-sizing: border-box;
+  width: 25px;
+  margin: 0;
+  /* A button centres its content: 2 pt above the 13 pt glyph puts it 5.5 pt under the top. */
+  padding: 2px 0 0 5.5px;
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  color: var(--mac-toolbar-search-field-glyph);
+  cursor: default;
+  appearance: none;
+  outline: none;
+}
+
+.mac-toolbar-search-field-menu > svg {
+  display: block;
+  width: 19px;
+  height: 13px;
+}
+
+.mac-toolbar-search-field-input {
+  flex: 1 1 auto;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  padding-block: 0 1px;
+  padding-inline: var(--_inset) 20px;
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  appearance: none;
+  outline: none;
+}
+
+.mac-toolbar-search-field-input::placeholder {
+  color: var(--_placeholder);
+  opacity: 1;
+}
+
+.mac-toolbar-search-field-input::-webkit-search-cancel-button,
+.mac-toolbar-search-field-input::-webkit-search-decoration {
+  appearance: none;
+}
+
+/* Clear button: 14 pt disc, 3 pt from the trailing edge of the fill. */
+.mac-toolbar-search-field-clear {
+  position: absolute;
+  inset-block-start: 4px;
+  inset-inline-end: 3px;
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--mac-toolbar-search-field-clear);
+  cursor: default;
+  appearance: none;
+  outline: none;
+}
+
+.mac-toolbar-search-field-clear > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mac-toolbar-search-field-clear-cross {
+  fill: none;
+  stroke: var(--_cross);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.mac-toolbar-search-field-input:where(:placeholder-shown, :read-only)
+  ~ .mac-toolbar-search-field-clear {
+  display: none;
+}
+
+/* Tokens: the first starts 26 pt from the fill's edge, 3 pt after where typed text does, and
+   the insertion point follows 3 pt after the last (Dark-Finder-Search: fill from x 1362,
+   token x 1414 to 1577, caret at x 1584). A token is 15 pt high, 4 pt under the fill's top. */
+.mac-toolbar-search-field-tokens {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 3px;
+  /* Tokens that do not fit are cut at 60% of the field: the rest stays the input's. */
+  min-width: 0;
+  max-width: 60%;
+  overflow: hidden;
+  border-radius: 3.5px;
+  margin-block-start: 1px;
+  margin-inline-start: calc(var(--_inset) + 3px);
+}
+
+:where(.mac-toolbar-search-field-tokens) + .mac-toolbar-search-field-input {
+  flex: 1 1 0;
+  padding-inline-start: 3px;
+}
+
+.mac-toolbar-search-field-token {
+  display: inline-flex;
+  flex: none;
+  gap: 1px;
+  height: 15px;
+  overflow: hidden;
+  border-radius: 3.5px;
+  color: var(--mac-toolbar-search-field-token-text);
+  white-space: nowrap;
+}
+
+.mac-toolbar-search-field-token-criterion,
+.mac-toolbar-search-field-token-value {
+  display: flex;
+  align-items: center;
+  padding-inline: 5.5px;
+}
+
+/* The criterion: 9 pt semibold capitals and a 6 pt chevron, as a pull-down's title. */
+.mac-toolbar-search-field-token-criterion {
+  gap: 3px;
+  padding-inline: 4.5px 2.5px;
+  background: var(--mac-toolbar-search-field-token-criterion);
+  font-weight: var(--mac-font-weight-semibold);
+  font-size: var(--mac-font-size-mini);
+  text-transform: uppercase;
+}
+
+.mac-toolbar-search-field-token-criterion::after {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 3.5px;
+  background: currentColor;
+  clip-path: polygon(0 0.75px, 0.75px 0, 3px 2.25px, 5.25px 0, 6px 0.75px, 3px 3.5px);
+}
+
+.mac-toolbar-search-field-token-value {
+  background: var(--mac-toolbar-search-field-token-value);
+  color: var(--mac-toolbar-search-field-token-value-text);
+}
+
+/* Disabled */
+.mac-toolbar-search-field:where([data-disabled]) > .mac-toolbar-search-field-clear {
+  display: none;
+}
+
+.mac-toolbar-search-field:where([data-disabled])
+  > :where(.mac-toolbar-search-field-glyph, .mac-toolbar-search-field-menu) {
+  color: inherit;
+}
+
+/* Focus: a text field shows its ring for pointer focus too; only in the key window. The ring
+   lies over the border. */
+.mac-toolbar-search-field:where(:focus-within, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  --_shadow:
+    0 var(--mac-hairline) 0 var(--mac-toolbar-search-field-shadow),
+    inset 0 0 0 var(--mac-hairline) var(--mac-focus-ring-color);
+
+  color: var(--mac-toolbar-search-field-text-focused);
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+.mac-toolbar-search-field:where([data-disabled]) {
+  color: var(--mac-toolbar-search-field-disabled);
+}
+
+@media (forced-colors: active) {
+  .mac-toolbar-search-field::before {
+    border: 1px solid FieldText;
+  }
+
+  .mac-toolbar-search-field:where([data-disabled])::before {
+    border-color: GrayText;
+  }
+
+  .mac-toolbar-search-field-token {
+    outline: 1px solid FieldText;
+    outline-offset: -1px;
+  }
+}

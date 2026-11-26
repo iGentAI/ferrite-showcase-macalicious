@@ -1,0 +1,486 @@
+---
+title: Finder
+description: The Finder window of macOS 10.15 on a file system held in memory, with a sidebar, a toolbar, icon, list, column and gallery views, window tabs, search with a scope bar, a path bar and a status bar, the Get Info window and Quick Look with Markup, and Finder's alerts, dialogs, Copy window and eject notification, built from the library alone.
+layout: full
+order: 20
+---
+
+<Example name="basic" />
+
+Pick a place in the sidebar, open folders with a double click, go back and forward, switch
+between the four views, open a second tab from the Action menu, type in the search field. The
+files are a small tree held in memory: nothing reads or writes a real disk, and a reload
+brings the tree back as it was. The names are those of the reference screenshots or invented,
+and every icon is an original stand-in drawing.
+
+## What it shows
+
+- A [Window](/components/window) with a unified [Title Bar](/components/title-bar) and
+  [Toolbar](/components/toolbar): Back and Forward and the view switcher are
+  [Toolbar Segmented Controls](/components/toolbar-segmented-control), Group and Action are
+  [Toolbar Pull-Downs](/components/toolbar-pop-up), Share and Tags are
+  [Toolbar Buttons](/components/toolbar-button) that open a [Menu](/components/menu),
+  and the search field is a [Toolbar Search Field](/components/toolbar-search-field). Their
+  glyphs are the library's [System Images](/components/system-image), the tag glyph included.
+  Rotate Left in Quick Look, in its Markup bar and in the gallery's Preview pane is a system
+  image too; Quick Look's Markup button and the tools of its Markup bar are demo-local
+  drawings.
+- A [Split View](/components/split-view) of a [Sidebar](/components/sidebar) and the content.
+  The sidebar lists Favorites, iCloud Drive, the disks, the computer and the network, and the
+  tags with their [Tag Dots](/components/tag-dot). Recents, a tag and the computer are places
+  that gather items from all over the tree; AirDrop shows an
+  [Empty State](/components/empty-state).
+- The four views of a folder, on the same items and the same selection:
+  [Icon View](/components/icon-view); [Outline View](/components/outline-view) as the list,
+  with Name, Date Modified, Size and Kind columns that sort, and folders that expand in place;
+  [Column View](/components/column-view), with a preview column for a file and the connection
+  panel for a computer on the network; [Gallery View](/components/gallery-view) with the
+  Preview pane as its inspector.
+- A [Window Tab Bar](/components/window-tab-bar) from the second tab on. Each tab has its own
+  folder, history, view, selection and search.
+- Search: typing in the field lists the items whose name contains the text, in the folder that
+  was shown when the search began (in column view the deepest folder selected) or on the whole
+  disk, as chosen in the [Scope Bar](/components/scope-bar). The plus button
+  adds a criterion row with a [Token Field](/components/token-field): every token is a word the
+  name must contain as well. Save keeps the search as a row of the sidebar.
+- A [Path Bar](/components/path-bar) with the folders from the disk down to the selected item
+  (a double click opens one), and a [Status Bar](/components/status-bar) with the item count
+  and, in icon view, a [Slider](/components/slider) for the icon size. A shared folder has a
+  [Window Banner](/components/window-banner).
+- Get Info, from the Action menu: an [Inspector Panel](/components/inspector-panel) about the
+  selected item, or about the folder shown when nothing is selected. It is a window of its own
+  that stays with its item; its tags field changes the item's tags.
+- Quick Look, with the space bar: a [Quick Look Panel](/components/quick-look-panel) that shows
+  the selected item and follows the selection. A picture can be turned and marked up with the
+  [Markup Toolbar](/components/markup-toolbar).
+- Copy and Paste, from the Action menu: the copy runs behind Finder's Copy window, a
+  [Progress Window](/components/progress-window), and a folder that already has an item of
+  the name brings the compact [Alert](/components/alert) with Keep Both, Stop and Replace.
+- The Trash, the hidden folder `~/.Trash`: its window has a
+  [Window Banner](/components/window-banner) with an Empty button, and Empty Trash asks first
+  with an [Alert](/components/alert).
+- Go to Folder: a [Dialog](/components/dialog) whose path field is a
+  [Combo Box](/components/combo-box) that lists the paths typed before.
+- Connect to Server: a modeless [Dialog](/components/dialog) with window controls, a
+  [Combo Box](/components/combo-box) for the address, the favorite servers in a
+  [Bordered List](/components/bordered-list), add, remove and Action in a
+  [Segmented Control](/components/segmented-control), a
+  [Help Button](/components/help-button), Browse and Connect.
+- “Disk Not Ejected Properly”, when a disk is disconnected without having been ejected: a
+  [Notification Alert](/components/notification-alert).
+
+## What the controls do
+
+| Control | Effect |
+| --- | --- |
+| Sidebar row | Shows the place, ends a search and clears the selection. |
+| Double click or Return on a folder | Opens it in the same tab. On a file it calls `onOpen`. |
+| Back, Forward | Step through the places the tab has shown; a new visit drops the way forward. |
+| View switcher | Icons, List, Columns, Gallery. In column view the window is named after the deepest folder selected. The selection goes along as far as the new view shows it: the columns open on the selected item, and an item the new view does not show is deselected. |
+| Group menu | None, or sections by Name, Kind, Date Last Opened, Date Modified, Date Created, Size or Tags in the icon and list views. A section of icons is one row that scrolls sideways until Show All; a list's section is a heading row. The list's column headings sort. |
+| Action menu | New Folder (named `untitled folder`, then `untitled folder 2`), New Tab, Get Info, Quick Look of the selected item, Copy and Paste, Go to Folder, Connect to Server, Empty Trash, and showing or hiding the path bar and the status bar. |
+| Share menu | Enabled with a selection; calls `onShare` with the destination and the selected paths. |
+| Tags menu | Enabled with a selection; sets or removes a tag on every selected item. The tag's row in the sidebar then lists them. |
+| Connect As... | In a network computer's panel: connects, after which the computer lists its shared folders. Share Screen... calls `onShareScreen` and is disabled without it. |
+| Preview pane | Rotate Left turns a picture a quarter turn; the Tags field adds and removes the item's tags. |
+| Get Info window | Shows the item's facts in Finder's sections. The tags field changes the item's tags. On the served desktop's drive the name, the comments, Stationery pad, Locked, Hide extension and Open with are kept, and a locked item cannot be renamed, moved, trashed or saved over; the permissions are dimmed with their reason, since the drive is the person's alone. A picture pasted while the header has the keyboard becomes the item's icon, kept on the drive, and Delete gives the item its own icon back. Without a drive they work and are kept while the window is open. The close button closes it. |
+| Quick Look panel | Rotate Left turns a picture; Markup swaps the title for the drawing tools and Done swaps them back; Open calls `onOpen` and Share calls `onShare` with the item (each is disabled without its callback). The close button, Escape, or the space bar in the Finder window close it. |
+| Copy, Paste | Copy takes the selected items; Paste copies them into the folder shown, where there is one. The Copy window shows how far the copy is, and its stop button ends it with nothing copied. Pasted beside its original, an item is named after it (`Budget copy.txt`). One copy runs at a time. A name the folder took while the copy ran is not written over: the copy arrives beside it under the next free name. |
+| Replace alert | For each item pasted or, on the drive, dragged whose name the folder already has: Keep Both copies it under the next free name (`Budget 2.txt`), Replace puts it in the item's place, Stop or Escape ends the paste with nothing copied. It has no default button. |
+| Empty Trash | Dimmed while the Trash is empty. Cancel or Escape leaves the Trash as it is; Empty Trash, which Return activates, erases its items. The Empty button of the Trash's banner asks the same. |
+| Go to Folder | Go, which Return activates, shows the folder the path leads to, or the folder of a file with the file selected. `~` is the home folder, and a path without a leading slash starts at the folder shown. A path that leads nowhere keeps the dialog open with “The folder can’t be found.” Cancel or Escape closes it. |
+| Connect to Server | Connect, which Return activates, connects the computer of the network that the address names (`smb://castle.local`, or the name alone) and shows its shared folders; an address no computer has ends in an alert. The add button puts the address into Favorite Servers, the remove button takes the selected favorite out, and the Action button's menu holds the same two commands. A selected favorite is the address in the field, and a double click on it connects. Browse shows the network. The help button calls `onHelp` and is disabled without it. The close button or Escape closes the dialog. |
+| Disk Not Ejected Properly | Close dismisses the notification; so does Escape while the focus is in it. |
+
+Keyboard, while the focus is in the window, with Command or Control: `1` to `4` choose the
+view, `[` and `]` go back and forward, Up Arrow opens the enclosing folder, `F` moves the
+focus to the search field, `I` opens Get Info and `Y` opens or closes Quick Look. The space
+bar on an item opens or closes Quick Look as well. `C` copies the selected items and `V` pastes
+(in a field both are the text's own), `K` opens Connect to Server, and with Shift as well `G`
+opens Go to Folder and Delete asks to empty the Trash. Inside a view the library's own keys
+apply: the arrow keys, typing a name, Return to open.
+
+## Get Info and Quick Look
+
+<Example name="get-info" />
+
+<Example name="quick-look" />
+
+The two panels are components of their own, `FinderInfo` in `finder-info.tsx` and
+`FinderQuickLook` in `finder-quick-look.tsx`, shown above on their own. Each takes the tree
+and a path and reports changes through callbacks; the Finder window gives them its tree and
+puts them over itself. They are windows beside the Finder window, not parts of it: the one
+with the keyboard focus is the key window, and the Finder window is then the main window, as
+in macOS. A press in the Finder window makes it the key window again; the panels stay open.
+A panel is only ever key while the host has the Finder window as its key window: given a
+`state` of `main` or `inactive`, the window's panels are inactive too. The focus in a panel
+is reported through the window's `onFocusCapture`, as the focus in the window itself is.
+
+In the Info window the minimize and zoom buttons are disabled, the name cannot be edited without
+a drive, the
+privileges are plain text and the action button under the permissions list is left out. In
+Markup, on the in-memory tree, Sign, Text Style and Crop are disabled, and what is drawn is kept
+per picture while the panel is open. On the person's drive Done saves it into the file; Sign stays
+disabled, with its reason.
+
+## Alerts, dialogs and the Copy window
+
+The windows Finder puts up for a moment are components of their own in `finder-dialogs.tsx`:
+`FinderEmptyTrash`, `FinderReplace`, `FinderGoToFolder`, `FinderConnectToServer`,
+`FinderCopyProgress` and `FinderEjectWarning` (and `FinderConnectionFailed`, the alert a
+connection that fails ends in). Each is the library's component with Finder's words and the
+demo's stand-in icons in it, takes what it shows as props and reports the answer through
+callbacks; the Finder window keeps their state and carries the answers out on its tree.
+
+Where each opens from: the Action menu has the commands that are in Finder's own Finder, Edit
+and Go menus, because the menu bar belongs to the desktop page. Empty Trash is also the Empty
+button of the Trash's window, as in Finder. Nothing in Finder asks for the eject warning: macOS
+posts it when a disk goes without having been ejected, so the page tells the window which
+disks went, through `disconnected`:
+
+<Example name="eject-warning" />
+
+An alert or a dialog that waits for an answer is the key window, and the Finder window is the
+main window until it is answered. Connect to Server and the Copy window do not stop the Finder
+window from being used: the Finder window is main while one of them has the keyboard focus and
+key again after a press in it. Connect to Server is then drawn as an inactive window: the demo
+passes the library's dialog its window state. The alerts and
+dialogs stand over the page where the library
+puts them, the Copy window stands near the top of the page and the notifications in the corner
+under the menu bar; `panelContainer` names another element to hold those two.
+
+A copy is played, not carried out: nothing is read or written, every copy takes two seconds
+whatever its size, and its items arrive together at the end. The minimize buttons of the Copy
+window, the Replace alert and Connect to Server are drawn as in the captures and do nothing,
+and a desktop page does not host these windows as windows of its own. The Action button's menu
+in Connect to Server is shown in no capture; it holds the two commands the buttons beside it
+carry out.
+
+## Not in the demo yet
+
+On the tree held in memory, items cannot be moved, renamed or put in the Trash; on the person's
+drive (below) they can. The Preview pane has no More Quick Action and no Show More, and the
+Finder and Go menus of the menu bar belong to the desktop page.
+
+## On the person's drive
+
+In the desktop that the Macalicious Ferrite application serves (`ferrite-apps/desktop`), Finder
+shows the person's drive instead of the tree held in memory: real folders and files kept in
+Ferrite storage through `demos/desktop/desktop-files.ts`. The home folder holds Desktop,
+Documents, Downloads, Movies, Music and Pictures, and the Trash; the startup disk keeps the
+Applications folder, the desktop's apps. Other disks, the network and iCloud Drive are not shown,
+because the drive does not have them. The `drive` prop turns this off; every other build, the
+documentation's included, has no drive and shows the tree held in memory.
+
+On the drive the Action menu adds these commands, each carried out by the drive and read back from it:
+
+- **Upload Files…** puts files from the computer into the folder shown, and so does a drop of
+  files dragged in from the computer. A file goes up in pieces of 192 KiB, under the gateway's
+  256 KiB request limit, behind an Uploading window with its progress and a stop button.
+- **Download** saves the selected files to the computer, behind a Downloading window.
+- **Rename** edits the name in place, as Return and a slow second click on a selected item's name do. Return keeps the name and Escape the old one. With several selected, **Rename N Items…** replaces text, adds text or formats the names. A name the drive refuses is told in an alert, and the item keeps its old name.
+- **Duplicate** (Command-D) puts a copy beside each selected item. A copy, like Paste, shares the
+  bytes of its original, so it is instant and takes no space.
+- **Move to Trash** (Command-Delete) and, in the Trash, **Put Back**. Empty Trash deletes for
+  good and frees the space.
+- **Move Item Here** (Option-Command-V) moves the items copied with Copy into the folder shown.
+
+New Folder, tags, Paste and Empty Trash change the drive too. A double click on a file opens
+Quick Look, which shows the file's own bytes: a picture, a movie or a sound that plays, a PDF in
+the browser's viewer, or the text of a text file, with a Download button. Recents lists the
+files last opened or changed, and the status bar shows the space left of the person's quota.
+The six home folders cannot be renamed, moved or trashed. Rotate Left turns a picture in the
+window only. A change the drive refuses (a full quota, a name already taken) is told in an alert.
+
+## Hosting the window
+
+<Example name="managed" />
+
+`Finder` renders the library's `Window` as its root and passes every `Window` prop to it, so it
+does not assume it fills the page. The Info window and Quick Look are rendered through a portal, each placed over the window
+where it stood when that panel opened. They go where the host ranks the window, so that they
+stay with it: into the element that holds the outermost element around the window that sets a
+z-index (a [Managed Window](/components/managed-window)'s own element, or the window itself
+when `style` gives it one), in a group at that same z-index that comes after it in the
+document. There they stand over the Finder window and under whatever the host ranks higher.
+A window that nothing ranks has its panels in the page's body, and `panelContainer` names
+another element to hold them. Place
+the window with `style`; a window manager gives it `state`,
+the size, and eight more props that the component takes out before the rest goes to the
+`Window`. These are the props a [Managed Window](/components/managed-window)'s `render` form
+supplies, so the component can be spread with them as they come, as the example above does:
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { finderApp } from "./app";
+
+<ManagedWindow
+  id={finderApp.id}
+  defaultFrame={{ x: 80, y: 60, ...finderApp.defaultSize }}
+  render={(props) => <finderApp.component {...props} />}
+/>;
+```
+
+A press on the title bar or the toolbar that is not on a control calls
+`onDragRegionPointerDown`, and a double click there calls `onDragRegionDoubleClick`.
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `fileSystem` | `FinderNode` | The tree the window opens with; the default is `createFileSystem()` from `finder-data.ts`. The window keeps and changes its own copy, so a tree given later is not taken up. |
+| `drive` | `boolean` | Whether the window shows the person's drive (see "On the person's drive"); on by default in the desktop Ferrite serves when no `fileSystem` is given, and without effect anywhere else. |
+| `defaultTabs`, `defaultActiveTab` | `string[]`, `number` | The locations of the tabs at first and the one shown; the home folder in one tab by default. |
+| `defaultView` | `"icons" \| "list" \| "columns" \| "gallery"` | The view at first; icons by default. |
+| `defaultSelection`, `defaultColumns` | `string[]` | The paths selected at first, and in column view the path selected in each column. |
+| `defaultQuery` | `string` | Text in the search field at first. |
+| `defaultIconSize` | `number` | Side of the icons in icon view; 64 by default. |
+| `defaultPathBar`, `defaultStatusBar` | `boolean` | Whether the two bars are shown at first; both are by default. |
+| `sidebarWidth` | `number` | Width of the sidebar at first; 164 by default. |
+| `material` | `"translucent" \| "opaque"` | The sidebar's surface: vibrant over a desktop (the default), or opaque on a plain page. |
+| `onOpen`, `onShare`, `onShareScreen` | functions | Called when a file is opened, a Share destination is chosen, or Share Screen is pressed. |
+| `onHelp` | function | Called by the help button of Connect to Server, which is disabled without it. |
+| `disconnected` | `string[]` | Paths of disks under `/Volumes` that were disconnected without being ejected: each leaves the sidebar and the tree, a tab that showed it shows the computer, no tab keeps a place on it in its history, a copy into it ends, and the window posts the notification for it. A path taken out later does not bring its disk back. |
+| `panelContainer` | `HTMLElement` | The element the Info window and Quick Look are put into; by default beside the window where its host ranks it, or the page's body. The Copy window and the notifications go into it too, or else into the page's body. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `controlsProps` | `WindowControlsProps` | Further props for the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`. |
+| the rest | `WindowProps` | `state`, `width`, `height`, `fullScreen`, `style`, `className`, `ref` and so on. While a panel, an alert or a dialog is the key window, a `state` of `key` is shown as `main`. |
+
+`app.ts` exports the descriptor a desktop page reads, as `finderApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (1080 by 756, the frame of the Applications capture),
+`minSize` (720 by 320), `resizable` and `menus`, the menu titles after the Apple menu.
+
+## Styling hooks
+
+The demo's measured lengths are custom properties in `finder.tokens.css`, each tagged measured
+or provisional with the place it was read; the three stylesheets read them with `var()`.
+Set one on the window or an ancestor to change that measure. Hairlines and 1 pt borders stay
+literal in the stylesheets.
+
+| Property | Default | Controls |
+| --- | --- | --- |
+| `--mac-finder-view-columns-padding-inline` | `5px 6px` | View switcher: padding of the Column segment |
+| `--mac-finder-menu-button-width` | `46px` | Toolbar pull-downs: width |
+| `--mac-finder-item-button-width` | `38px` | Share and Tags: width |
+| `--mac-finder-search-width` | `323px` | Search field: flex basis |
+| `--mac-finder-search-min-width` | `120px` | Search field: min width |
+| `--mac-finder-criterion-number-width` | `56px` | A criterion row's number field: width |
+| `--mac-finder-icon-size-width` | `80px` | Icon size slider: width |
+| `--mac-finder-name-gap` | `6px` | List view Name column: gap |
+| `--mac-finder-server-panel-height` | `172px` | Network computer panel: height |
+| `--mac-finder-server-padding-block-start` | `22px` | Network computer panel: padding above the content |
+| `--mac-finder-server-name-margin-block` | `9px 3px` | Network computer panel: margin of the name |
+| `--mac-finder-server-button-width` | `114px` | Network computer panel: button width |
+| `--mac-finder-server-button-margin-block-start` | `8px` | Network computer panel: margin above the button |
+| `--mac-finder-file-gap` | `4px` | Column view file preview: gap |
+| `--mac-finder-file-padding` | `24px 12px` | Column view file preview: padding |
+| `--mac-finder-file-name-margin-block-start` | `8px` | Column view file preview: margin above the name |
+| `--mac-finder-preview-padding` | `0 20px 14px` | Gallery Preview pane: padding |
+| `--mac-finder-preview-header-gap` | `10px` | Preview pane header: gap |
+| `--mac-finder-preview-header-min-height` | `94px` | Preview pane header: min height |
+| `--mac-finder-preview-heading-padding-block` | `9px 6px` | Preview pane section heading: padding |
+| `--mac-finder-preview-facts-margin` | `0 0 14px` | Preview pane facts: margin |
+| `--mac-finder-preview-fact-gap` | `8px` | Preview pane fact row: gap |
+| `--mac-finder-preview-fact-min-height` | `19px` | Preview pane fact row: min height |
+| `--mac-finder-go-path-margin` | `7.5px 0.5px 0` | Go to Folder: margin of the field |
+| `--mac-finder-go-missing-margin-block-start` | `6px` | Go to Folder: margin above the missing-path line |
+| `--mac-finder-connect-address-margin` | `-0.5px 0.5px 0` | Connect to Server: margin of the field |
+| `--mac-finder-connect-label-margin-block` | `12px 7.5px` | Connect to Server: margin of the list's title |
+| `--mac-finder-connect-favorites-height` | `87px` | Connect to Server: list height |
+| `--mac-finder-connect-edit-width` | `27px` | Connect to Server: add and remove segment width |
+| `--mac-finder-connect-action-width` | `41px` | Connect to Server: Action segment width |
+| `--mac-finder-copy-inset-block-start` | `96px` | Copy window: distance from the page's top |
+| `--mac-finder-notices-inset-block-start` | `30px` | Notifications: distance from the page's top |
+| `--mac-finder-notices-inset-inline-end` | `8px` | Notifications: distance from the page's end |
+| `--mac-finder-notices-gap` | `8px` | Notifications: gap |
+| `--mac-finder-info-tags-field-min-height` | `33px` | Get Info tags field: min height |
+| `--mac-finder-info-checks-gap` | `6px` | Get Info General checkboxes: gap |
+| `--mac-finder-info-checks-margin` | `14.5px 0 0 42.5px` | Get Info General checkboxes: margin |
+| `--mac-finder-info-facts-padding-block-end` | `0.5px` | Get Info More Info: padding under the list |
+| `--mac-finder-info-name-gap` | `9.5px` | Get Info Name & Extension: gap |
+| `--mac-finder-info-name-padding-block-start` | `1px` | Get Info Name & Extension: padding above |
+| `--mac-finder-info-name-check-margin-inline-start` | `4px` | Get Info Name & Extension: checkbox indent |
+| `--mac-finder-info-comments-height` | `62px` | Get Info Comments: frame height |
+| `--mac-finder-info-open-with-padding` | `0.5px 2.5px 0` | Get Info Open with: padding |
+| `--mac-finder-info-open-with-help-margin-top` | `4px` | Get Info Open with: margin above the help text |
+| `--mac-finder-info-open-with-change-margin-block-start` | `8px` | Get Info Open with: margin above Change All |
+| `--mac-finder-info-preview-padding-block` | `6px` | Get Info Preview: padding |
+| `--mac-finder-info-permissions-padding-inline` | `2.5px` | Get Info Permissions: inline padding |
+| `--mac-finder-info-permissions-summary-margin` | `0 0 8.5px` | Get Info Permissions: margin of the text |
+| `--mac-finder-info-permissions-list-height` | `113px` | Get Info Permissions: list height |
+| `--mac-finder-info-permissions-name-gap` | `4px` | Get Info Permissions: gap in the name cell |
+| `--mac-finder-info-permissions-bar-margin-block` | `4px -3px` | Get Info Permissions: margin of the button bar |
+| `--mac-finder-info-permissions-lock-margin-inline-end` | `2.5px` | Get Info Permissions: lock margin |
+| `--mac-finder-quick-look-text-padding` | `1px 4px` | Quick Look: padding of a text annotation |
+| `--mac-finder-quick-look-chip-width` | `16px` | Quick Look: colour chip width |
+| `--mac-finder-quick-look-chip-height` | `12px` | Quick Look: colour chip height |
+| `--mac-finder-quick-look-icon-padding` | `40px` | Quick Look: padding round a non-picture icon |
+| `--mac-finder-quick-look-file-min-height` | `240px` | Quick Look of a drive file: least height of its preview |
+| `--mac-finder-quick-look-sound-width` | `360px` | Quick Look of a drive file: width of the sound player |
+| `--mac-finder-quick-look-plain-padding` | `16px 20px` | Quick Look of a drive file: margin round a text file's text |
+
+Quick Look of a drive file draws its preview in `.mac-finder-quick-look-file`, which holds a
+`.mac-finder-quick-look-media` (a movie), `.mac-finder-quick-look-sound` (a sound),
+`.mac-finder-quick-look-document` (a PDF) or `.mac-finder-quick-look-plain` (a text file's
+text). The window is `aria-busy` while the drive first loads and while an upload or a download
+runs.
+
+## Accessibility
+
+- The window is a `region` named by its title, which follows the folder shown. The toolbar is
+  a `toolbar` with one tab stop; its menus are Base UI menus with their own keyboard handling.
+- The sidebar is a `tree`. The icon, column and gallery views are `listbox`es of `option`s and
+  the list is a `treegrid`, each named after the folder shown; the arrow keys move the
+  selection, typing selects by name and Return opens.
+- With two tabs or more the content is the `tabpanel` of the selected `tab`. A tab closes with
+  Delete or Backspace while it has the focus, or with the close button under the pointer.
+- The status bar is a `status` element, so a change of the item count or of the selection is
+  announced. The path bar is a `navigation` landmark named “Path”.
+- A view that a key switches away takes the keyboard focus with it; the window then holds the
+  focus itself, so that the next Command or Control key still reaches it.
+- Command-T and Command-W are the browser's own and are not bound: tabs open from the Action
+  menu and the plus button.
+- The Info window is a `region` named after its item and Quick Look is a `dialog` named after
+  the item it shows. A panel takes the keyboard focus when it opens, and closing it gives the
+  focus back to the Finder window. Quick Look is not modal: the Finder window stays in reach.
+- Markup draws with the pointer only; shapes and texts are added with buttons and need none.
+- The Empty Trash, Replace and connection alerts are `alertdialog`s named by their message;
+  Go to Folder and Connect to Server are `dialog`s named by their title. The alerts and Go to
+  Folder are modal: the page behind them is inert until they are answered. The keyboard focus
+  starts in the path or address field of a dialog and on the window of an alert, and goes to
+  the Finder window when the alert or dialog closes, as it does from a panel. Return activates
+  the default button and Escape cancels; the Replace alert has no default button, so there
+  Return does nothing.
+- “The folder can’t be found.” is an `alert`, read when it appears, and describes the field.
+- The Copy window is a `region` named “Copy”; its row is a `group` named by what is copied,
+  with a `progressbar` whose value text is the status line, and a Stop button.
+- The notification is an `alert` named by its title and described by its message. It never
+  takes the focus.
+
+## Fidelity
+
+`finder.visual.json` compares the whole window with six of the Finder screenshots in both
+appearances: Finder-Home, Applications, Applications-Utilities, Finder-Network,
+Finder-Gallery-View and Finder-Search; the whole Info window with Finder-Get-Info; and the
+38 pt bar of the Quick Look panel with Finder-Quick-Look and Finder-Quick-Look-Markup (the
+picture under the bar is most of those captures, more than a comparison may mask); and the
+whole capture of each window Finder puts up for a moment, with its shadow: Finder-Empty-Trash,
+Finder-Copy-Replace, Finder-Go-To-Folder, Finder-Connect-to-Server, Finder-Copy and
+Finder-Eject-Warning. Each crop
+is scored as captured and again with the
+stand-in artwork and the text masked; the gallery crops are scored masked only, because their
+large picture is a gradient where the capture has a desktop picture. Scores from
+`npm run visual -- finder/` in Chromium on Linux with the fallback font: the share of pixels
+that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `home-light` | 3.45% | 3.29 | 3.17% | 3.32 |
+| `home-light-layout` (masked) | 0.87% | 0.83 | 0.68% | 0.75 |
+| `home-dark` | 8.23% | 8.34 | 7.88% | 8.46 |
+| `home-dark-layout` (masked) | 0.91% | 2.43 | 0.66% | 2.35 |
+| `applications-light` | 14.79% | 12.89 | 14.37% | 13.03 |
+| `applications-light-layout` (masked) | 0.36% | 0.28 | 0.05% | 0.16 |
+| `applications-dark` | 15.53% | 15.60 | 15.06% | 15.94 |
+| `applications-dark-layout` (masked) | 0.28% | 2.04 | 0.09% | 1.96 |
+| `utilities-light` | 7.89% | 7.15 | 7.54% | 7.24 |
+| `utilities-light-layout` (masked) | 0.32% | 0.23 | 0.11% | 0.16 |
+| `utilities-dark` | 8.47% | 9.65 | 8.09% | 9.87 |
+| `utilities-dark-layout` (masked) | 0.30% | 2.17 | 0.18% | 2.15 |
+| `network-light` | 2.19% | 2.03 | 1.78% | 2.01 |
+| `network-light-layout` (masked) | 0.33% | 0.26 | 0.48% | 0.19 |
+| `network-dark` | 2.95% | 2.38 | 2.68% | 2.39 |
+| `network-dark-layout` (masked) | 0.80% | 0.48 | 0.71% | 0.44 |
+| `gallery-light-layout` (masked) | 0.39% | 0.35 | 0.15% | 0.26 |
+| `gallery-dark-layout` (masked) | 0.31% | 0.92 | 0.16% | 0.86 |
+| `search-light` | 3.76% | 3.48 | 3.29% | 3.46 |
+| `search-light-layout` (masked) | 0.06% | 0.08 | 0.03% | 0.08 |
+| `search-dark` | 4.01% | 4.94 | 3.58% | 4.98 |
+| `search-dark-layout` (masked) | 0.05% | 1.27 | 0.03% | 1.27 |
+| `get-info-light` | 11.93% | 14.10 | 9.60% | 13.58 |
+| `get-info-light-layout` (masked) | 3.40% | 1.25 | 1.15% | 0.62 |
+| `get-info-dark` | 11.88% | 15.81 | 9.71% | 15.20 |
+| `get-info-dark-layout` (masked) | 2.09% | 2.99 | 0.91% | 2.75 |
+| `quick-look-bar-light` | 5.74% | 7.59 | 4.86% | 7.92 |
+| `quick-look-bar-light-layout` (masked) | 0.02% | 1.23 | 0.03% | 1.74 |
+| `quick-look-bar-dark` | 6.92% | 7.50 | 6.08% | 7.77 |
+| `quick-look-bar-dark-layout` (masked) | 0.01% | 1.57 | 0.03% | 2.03 |
+| `quick-look-markup-bar-light` | 6.36% | 7.52 | 5.26% | 7.65 |
+| `quick-look-markup-bar-light-layout` (masked) | 0.03% | 1.09 | 0.06% | 1.67 |
+| `quick-look-markup-bar-dark` | 7.98% | 8.90 | 7.12% | 9.17 |
+| `quick-look-markup-bar-dark-layout` (masked) | 0.02% | 1.51 | 0.04% | 1.98 |
+| `empty-trash-light` | 2.71% | 3.17 | 2.17% | 3.49 |
+| `empty-trash-light-layout` (masked) | 0.61% | 0.57 | 0.01% | 0.71 |
+| `empty-trash-dark` | 2.70% | 2.99 | 2.20% | 3.36 |
+| `empty-trash-dark-layout` (masked) | 0.15% | 0.55 | 0.03% | 0.83 |
+| `copy-replace-light` | 4.40% | 5.15 | 3.03% | 4.42 |
+| `copy-replace-light-layout` (masked) | 0.94% | 0.63 | 0.07% | 0.81 |
+| `copy-replace-dark` | 4.36% | 4.66 | 3.08% | 4.12 |
+| `copy-replace-dark-layout` (masked) | 0.34% | 0.57 | 0.07% | 0.85 |
+| `go-to-folder-light` | 1.94% | 1.98 | 0.94% | 1.79 |
+| `go-to-folder-light-layout` (masked) | 1.37% | 0.77 | 0.01% | 0.65 |
+| `go-to-folder-dark` | 1.36% | 1.76 | 0.95% | 1.72 |
+| `go-to-folder-dark-layout` (masked) | 0.81% | 0.68 | 0.03% | 0.76 |
+| `connect-to-server-light` | 1.54% | 1.51 | 0.83% | 1.51 |
+| `connect-to-server-light-layout` (masked) | 1.35% | 0.70 | 0.05% | 0.58 |
+| `connect-to-server-dark` | 1.08% | 1.45 | 0.83% | 1.55 |
+| `connect-to-server-dark-layout` (masked) | 0.77% | 0.73 | 0.04% | 0.74 |
+| `copy-progress-light` | 7.87% | 7.75 | 5.67% | 6.75 |
+| `copy-progress-light-layout` (masked) | 3.43% | 1.17 | 0.15% | 0.58 |
+| `copy-progress-dark` | 7.41% | 7.66 | 5.98% | 7.05 |
+| `copy-progress-dark-layout` (masked) | 2.44% | 0.72 | 0.19% | 0.57 |
+| `eject-warning-light` | 4.91% | 5.05 | 3.89% | 4.61 |
+| `eject-warning-light-layout` (masked) | 0.02% | 0.46 | 0.00% | 0.43 |
+| `eject-warning-dark` | 5.59% | 6.47 | 4.48% | 6.12 |
+| `eject-warning-dark-layout` (masked) | 0.19% | 0.50 | 0.10% | 0.48 |
+
+What the scores hold, and what differs from the screenshots:
+
+- Every icon is a stand-in: folders are one plain shape without emblems, applications are
+  lettered tiles, pictures are gradients, and the sidebar glyphs are line drawings. Every
+  glyph of the main Finder toolbar, the tag glyph included, and Rotate Left (in Quick Look,
+  its Markup bar and the gallery's Preview pane) are the library's system images; Quick Look's
+  Markup button and the tools of its Markup bar (Sketch, Draw, Shapes, Text, Highlight, Sign,
+  Shape Style, Text Style and Crop) remain demo-local drawings.
+  The unmasked Applications scores are almost all application icons.
+- In Dark Aqua the icon view's canvas is the library's control background, `#1e1e1e`, where
+  the captures have it tinted by the desktop, `#1e2022`: that is the mean Δ of about 2 in the
+  masked Dark Aqua rows of the icon-view windows. The column and gallery views take the tinted
+  token through their background variables; the icon view has no such variable.
+- The three tabs of the Home window are equally wide; the capture caught them at 372, 361 and
+  349 pt.
+- The Dark Aqua search capture has the keyboard focus in the search field and a NAME token
+  before the text. The toolbar search field holds text only, so the demo's tokens are in the
+  criterion row instead.
+- The Back button is enabled in the captures whose window had a history; the comparison
+  windows open on their folder and have none.
+- No screenshot shows the list view, a path bar with a path, the status bar's text, the
+  criterion row or an open toolbar menu: those are built from the library's components as
+  they are and are not compared.
+- In the Info window the permissions list has the library's 23 pt header where Finder's small
+  list has 17 pt, the gradient buttons under it are 21 pt high where Finder's are 17 pt, and
+  the tags field has the library's bezel. The comparison window gives its document a longer
+  size so that the Size row wraps as in the capture.
+- The Quick Look bar's buttons stand about 3 pt to the right of the capture's. Behind the
+  panel the comparison's example paints a plain gradient standing in for the wallpaper, so
+  that the bar's material has something to tint; it is not a drawing of the picture.
+- The icons of the six small windows are Apple's artwork, and each comparison of them, masked
+  or not, leaves its icon out: the Trash of Empty Trash (the demo's folder stands in, 70 by
+  70 pt), the movie with its caution badge in the Replace alert (the demo's document with the
+  library's badge, 36 by 42 pt), the gear of the Action button in Connect to Server (the
+  library's `action` image, 16 by 16 pt) and the Finder icon of the notification (the demo's
+  lettered tile, 32 by 33 pt). The movie's icon in the Copy window (the demo's document, 32 by
+  33 pt) is left out of the masked comparison only. The masked rows leave out the text as well:
+  titles, messages, button titles, the text of the two fields with their insertion point, and
+  the Copy window's title and status line.
+- The Replace alert says “the one you’re copying” where the capture, of an item being moved,
+  says “moving”.
+- The Copy window's bar is as far as its numbers say, 3.2% and 8.2%, where the captures' bars
+  stand at about 2.9% and 7.9%.
+- In the fallback font Browse is 1 pt wider than in the capture, and the notification's first
+  line in Dark Aqua ends a word later than the capture's.
+- The dark captures' window backgrounds are tinted by the desktop picture behind them
+  (`#303031`, `#303235`, `#2e3235`); the comparison examples set those colours.
+
+Two Finder screenshots of the build plan are not compared here: Finder-Menu and Finder-Go-Menu
+show the menu bar, which the desktop page owns.

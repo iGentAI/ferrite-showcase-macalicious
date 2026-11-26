@@ -1,0 +1,384 @@
+/*
+ * Preview demo: the layout of the window, the rows of the sidebar and the pages of a PDF.
+ * Every control is a library component; this file places them and sets the demo's own
+ * surfaces: the sidebar's rows and the document.
+ */
+
+.mac-preview-body {
+  display: flex;
+  overflow: hidden;
+}
+
+.mac-preview-split {
+  flex: 1;
+  min-width: 0;
+}
+
+/* The found count of the find bar: 11 pt regular. */
+.mac-preview-found {
+  font: var(--mac-font-subheadline);
+}
+
+/* The markup bar: a strip of the window's own surface under the toolbar. */
+.mac-preview-markup {
+  display: flex;
+  flex: none;
+  align-items: center;
+  box-sizing: border-box;
+  height: 29px;
+  padding-inline: 8px;
+  border-block-end: var(--mac-hairline) solid var(--mac-color-separator);
+}
+
+/* Sidebar: the file's name on a 20 pt strip, 4 pt, then rows of 82 pt. */
+.mac-preview-sidebar {
+  display: flex;
+  flex-direction: column;
+  background: var(--mac-preview-sidebar);
+}
+
+.mac-preview-file {
+  flex: none;
+  box-sizing: border-box;
+  height: 20px;
+  margin-block-end: 4px;
+  padding-inline: 9px;
+  overflow: hidden;
+  background: var(--mac-preview-file);
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-subheadline);
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-preview-rows {
+  flex: 1;
+  min-height: 0;
+}
+
+/* A row: the thumbnail, 36 x 27 pt and 15 pt from the edge, then the page's name 62 pt from
+   the edge, with the number of matches at the trailing edge and the words found under them.
+   Its last two points are an etched line, 14 pt from either edge of the sidebar: the list
+   view's own separator is one line and runs to the trailing edge. */
+.mac-preview-row {
+  display: flex;
+  grid-column: 2;
+  align-self: stretch;
+  height: 82px;
+  background:
+    linear-gradient(var(--mac-preview-row-separator) 0 0) 0 calc(100% - 1px) / calc(100% - 7.5px)
+    1px no-repeat,
+    linear-gradient(var(--mac-preview-row-separator-highlight) 0 0) 0 100% / calc(100% - 7.5px) 1px
+    no-repeat;
+}
+
+.mac-preview-row:where([data-selected]) {
+  background: none;
+}
+
+/* Beside the words found the thumbnail sits 28 pt under the row's top (Dark Aqua capture);
+   beside the page's name alone, 16 pt (Aqua capture). */
+.mac-preview-row:where(:not([data-found])) .mac-preview-thumbnail {
+  margin-block-start: 16px;
+}
+
+.mac-preview-thumbnail {
+  display: grid;
+  flex: none;
+  align-self: flex-start;
+  box-sizing: border-box;
+  width: 36px;
+  height: 27px;
+  margin-block-start: 28px;
+  margin-inline: 1px 11px;
+  outline: var(--mac-hairline) solid var(--mac-preview-thumbnail-border);
+  background: var(--mac-preview-paper);
+}
+
+.mac-preview-thumbnail > * {
+  width: 100%;
+  height: 100%;
+}
+
+.mac-preview-thumbnail:where([data-turns="1"]) {
+  rotate: -90deg;
+}
+
+.mac-preview-thumbnail:where([data-turns="2"]) {
+  rotate: 180deg;
+}
+
+.mac-preview-thumbnail:where([data-turns="3"]) {
+  rotate: 90deg;
+}
+
+.mac-preview-row-text {
+  display: block;
+  flex: 1;
+  align-self: flex-start;
+  min-width: 0;
+  margin-inline-end: 7.5px;
+  padding-block-start: 9px;
+  font: var(--mac-font-subheadline);
+  line-height: 13px;
+}
+
+.mac-preview-row-head {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.mac-preview-row-title {
+  overflow: hidden;
+  font-weight: var(--mac-font-weight-bold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-preview-row-count {
+  flex: none;
+  opacity: 0.75;
+}
+
+.mac-preview-row-snippet {
+  display: -webkit-box;
+  margin-block-start: 5px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  white-space: normal;
+}
+
+/*
+ * The document. The pane is a size container, so a page is as wide as 98.5% of the view and
+ * an image fills it, each times the zoom, without a measurement in script.
+ */
+.mac-preview-content {
+  container-type: size;
+}
+
+.mac-preview-canvas {
+  --_aspect: 1.3703;
+  --_fit: 98.5cqw;
+  --_width: calc(var(--_fit) * var(--mac-preview-zoom, 1));
+  --_height: calc(var(--_width) / var(--_aspect));
+
+  width: 100%;
+  height: 100%;
+  background: var(--mac-preview-canvas);
+}
+
+.mac-preview-canvas:where([data-kind="image"]) {
+  --_aspect: var(--mac-preview-aspect, 1.6);
+  --_fit: max(100cqw, 100cqh * var(--_aspect));
+}
+
+/* The pages, one under the other, 4 pt under the bar and 0.92% of their width apart. Under
+   the last page the canvas runs on for what is left of the view's height beside a page and
+   the 4 pt over it, so that the last page comes to the top of the view like any other. */
+.mac-preview-leaves {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--_width) * 0.0092);
+  align-items: center;
+  box-sizing: border-box;
+  width: max-content;
+  min-width: 100%;
+  padding-block: 4px max(4px, 100cqh - var(--_height) - 4px);
+}
+
+.mac-preview-canvas:where([data-kind="image"]) .mac-preview-leaves {
+  padding-block: 0;
+}
+
+.mac-preview-leaf {
+  position: relative;
+  flex: none;
+  width: var(--_width);
+  aspect-ratio: var(--_aspect);
+  overflow: hidden;
+}
+
+.mac-preview-canvas:where([data-turns="1"], [data-turns="3"]) {
+  --_height: calc(var(--_width) * var(--_aspect));
+}
+
+.mac-preview-canvas:where([data-turns="1"], [data-turns="3"]) .mac-preview-leaf {
+  aspect-ratio: calc(1 / var(--_aspect));
+}
+
+/* A page or a picture fills its leaf; turned by a quarter it is as wide as the leaf is high. */
+.mac-preview-page,
+.mac-preview-picture {
+  --_page: var(--_width);
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  box-sizing: border-box;
+  width: var(--_page);
+  aspect-ratio: var(--_aspect);
+  translate: -50% -50%;
+}
+
+.mac-preview-canvas:where([data-turns="1"], [data-turns="3"])
+  :where(.mac-preview-page, .mac-preview-picture) {
+  --_page: calc(var(--_width) * var(--_aspect));
+}
+
+.mac-preview-canvas:where([data-turns="1"]) :where(.mac-preview-page, .mac-preview-picture) {
+  rotate: -90deg;
+}
+
+.mac-preview-canvas:where([data-turns="2"]) :where(.mac-preview-page, .mac-preview-picture) {
+  rotate: 180deg;
+}
+
+.mac-preview-canvas:where([data-turns="3"]) :where(.mac-preview-page, .mac-preview-picture) {
+  rotate: 90deg;
+}
+
+/*
+ * A page of a PDF, set from its text. One em is a 58th of the page's width (16 pt on the
+ * 927 pt page of the Aqua capture), and every length inside is in em, so the page scales as
+ * one picture.
+ */
+.mac-preview-page {
+  overflow: hidden;
+  background: var(--mac-preview-paper);
+  color: var(--mac-preview-ink);
+  font-size: calc(var(--_page) / 58);
+  line-height: 1.6;
+}
+
+.mac-preview-page p {
+  margin: 0;
+}
+
+.mac-preview-page-banner {
+  box-sizing: border-box;
+  height: 7.95em;
+  padding: 2.35em 2.8em 0;
+  background: linear-gradient(
+    100deg,
+    var(--mac-preview-banner-start) 55%,
+    var(--mac-preview-banner-end) 75%
+  );
+  color: var(--mac-preview-ink-secondary);
+}
+
+.mac-preview-page-section {
+  padding-block-end: 0.35em;
+  border-block-end: 0.06em solid var(--mac-preview-rule);
+  font-size: 1em;
+  font-weight: var(--mac-font-weight-semibold);
+  line-height: 1.25;
+}
+
+.mac-preview-page-title {
+  margin-block-start: 0.2em;
+  font-size: 2.05em;
+  font-weight: var(--mac-font-weight-bold);
+  line-height: 1.25;
+}
+
+.mac-preview-page-heading,
+.mac-preview-page-aside-heading {
+  color: var(--mac-preview-ink-secondary);
+  font-size: 1em;
+  font-weight: var(--mac-font-weight-bold);
+  line-height: 1.3;
+}
+
+.mac-preview-page-aside {
+  position: absolute;
+  top: 9.9em;
+  left: 2.8em;
+  width: 17.6em;
+  color: var(--mac-preview-ink-secondary);
+  font-size: 1em;
+}
+
+.mac-preview-page-aside-heading {
+  padding-block-end: 0.25em;
+  border-block-end: 0.06em solid var(--mac-preview-rule);
+}
+
+.mac-preview-page-aside p:where(:not(.mac-preview-page-aside-heading)) {
+  margin-block-start: 0.6em;
+  padding-inline-start: 1.25em;
+  font-size: 0.82em;
+  font-weight: var(--mac-font-weight-semibold);
+  line-height: 1.32;
+}
+
+/* The text of a page that opens a section: the wide column beside the aside. */
+.mac-preview-page-text {
+  position: absolute;
+  top: 9.9em;
+  right: 2.8em;
+  left: 23.8em;
+}
+
+/* The text of any other page: two columns across the page. */
+.mac-preview-page:where(:not([data-opener])) .mac-preview-page-text {
+  top: 3.4em;
+  left: 2.8em;
+  column-gap: 2.5em;
+  column-count: 2;
+}
+
+.mac-preview-page-text p:where(:not(.mac-preview-page-heading)) {
+  margin-block-end: 0.75em;
+  font-size: 0.85em;
+}
+
+.mac-preview-page-number {
+  position: absolute;
+  right: 2.8em;
+  bottom: 1.6em;
+  font-size: 0.7em;
+}
+
+/* The text found, in the colour of the Highlight button's menu. */
+.mac-preview-match {
+  background: transparent;
+  color: inherit;
+}
+
+.mac-preview-canvas:where([data-highlight]) .mac-preview-match {
+  background: var(--_highlight);
+  color: var(--mac-preview-highlight-text);
+}
+
+.mac-preview-canvas:where([data-highlight="yellow"]) {
+  --_highlight: var(--mac-preview-highlight-yellow);
+}
+
+.mac-preview-canvas:where([data-highlight="green"]) {
+  --_highlight: var(--mac-preview-highlight-green);
+}
+
+.mac-preview-canvas:where([data-highlight="blue"]) {
+  --_highlight: var(--mac-preview-highlight-blue);
+}
+
+.mac-preview-canvas:where([data-highlight="pink"]) {
+  --_highlight: var(--mac-preview-highlight-pink);
+}
+
+.mac-preview-canvas:where([data-highlight="purple"]) {
+  --_highlight: var(--mac-preview-highlight-purple);
+}
+
+@media (forced-colors: active) {
+  .mac-preview-canvas:where([data-highlight]) .mac-preview-match {
+    background: Highlight;
+    color: HighlightText;
+  }
+}

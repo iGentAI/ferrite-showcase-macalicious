@@ -1,0 +1,215 @@
+---
+title: Toolbar Combo Box
+description: The combo box of a toolbar or a format bar. A text field and a button with a down chevron in one toolbar bezel, such as TextEdit's font size control.
+order: 65
+---
+
+<Example name="basic" both />
+
+AppKit's `NSComboBox` placed in a toolbar or a format bar: the textured rounded bezel of a
+[toolbar button](/components/toolbar-button) holding a text field and, after a hairline, a
+button that opens a list of suggested values. It is the [combo box](/components/combo-box) in
+another bezel: built on Base UI's
+[Autocomplete](https://base-ui.com/react/components/autocomplete) in the same way, with the
+same props except `size`, the same items and the same list. The value is the text in the
+field: an item is
+a suggestion, and text that is not in the list is as valid as text that is. Unlike the combo
+box of a window's content, the button has no accent colour.
+
+## Usage
+
+```tsx
+import { ComboBoxItem, ComboBoxSeparator } from "macalicious/combo-box";
+import { ToolbarComboBox } from "macalicious/toolbar-combo-box";
+import "macalicious/styles.css";
+
+<ToolbarComboBox size="small" aria-label="Font size" value={size} onValueChange={setSize}>
+  <ComboBoxItem>9</ComboBoxItem>
+  <ComboBoxItem>12</ComboBoxItem>
+  <ComboBoxSeparator />
+  <ComboBoxItem value="288">Poster</ComboBoxItem>
+</ToolbarComboBox>
+```
+
+Or copy the source into your project: `npx macalicious add toolbar-combo-box`.
+
+- The children are `ComboBoxItem` and `ComboBoxSeparator` elements from
+  `macalicious/combo-box`. Choosing an item puts its `value` in the field; without `value`
+  its children are used, when they are a string or a number.
+- `value`, `defaultValue` and `onValueChange` hold the text; `open`, `defaultOpen` and
+  `onOpenChange` the list. `className`, `style` and `ref` go to the root element, which draws
+  the bezel; `inputRef` reaches the `<input>`; every other prop, `id`, `aria-label` and
+  `placeholder` included, goes to the `<input>`.
+- `mode` says what typing and the arrow keys do, as on the combo box. The default,
+  `"inline"`, is AppKit's: the list always shows every item, opens only with the button or
+  Down Arrow, and moving through it puts the highlighted item in the field.
+- The control has a width of its own, 60 pt, or 43 pt at the small size; set another with
+  `style`. Its box is the bezel's fill, as a toolbar button's: Aqua's hairline border is drawn
+  outside it, so TextEdit's control measures 44 x 16 pt over its border and is 43 x 15 pt here.
+- Inside a [`Toolbar`](/components/toolbar) the field is one of the toolbar's items: the
+  arrow keys reach it, and inside the text they move the insertion point.
+
+<Example name="in-toolbar" />
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[combo boxes](https://web.archive.org/web/20200503142537/https://developer.apple.com/design/human-interface-guidelines/macos/fields-and-labels/combo-boxes/)
+and
+[toolbars](https://web.archive.org/web/20200503121036/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/toolbars/):
+
+- Show a meaningful default value from the list in the field, not an empty field.
+- Keep the list to relevant choices, and no item wider than the field: a longer one is cut
+  off in the field.
+- A typed value is not added to the list. Add it yourself if people expect to find it there
+  again.
+- A toolbar holds the commands people use most; every one of them should also be in a menu,
+  because a toolbar can be hidden or customised.
+
+## Variants and states
+
+Focus and the pressed button are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look | Status |
+| --- | --- | --- | --- |
+| Normal | – | The toolbar bezel under the field and the button, a 1 pt divider (black at 10%), a chevron in black at 65% (white at 85% in Dark Aqua), text in the control text colour | measured (TextEdit, small size) |
+| Main window, not key | an ancestor has `data-window-state="main"`, as a window that shows a sheet | As normal: bezel, divider, chevron and text unchanged. No focus ring | the look measured (TextEdit under its Print sheet, small size); that the ring is absent provisional |
+| Focused | the field has the keyboard | Focus ring around the whole control | provisional |
+| Button pressed | `:active` on the button | The button's part of the bezel takes the toolbar button's pressed fill | provisional |
+| List open | button, Down Arrow, `open` | Button as pressed; the list is the combo box's, 3 pt under the control | provisional |
+| Disabled | `disabled` | Text and chevron in the toolbar button's disabled ink; the bezel stays | provisional |
+| Read-only | `readOnly` | As enabled; the text can be selected, not changed | provisional |
+| Inactive window | an ancestor has `data-window-state="inactive"` | The toolbar button's inactive bezel and ink; no focus ring | provisional |
+
+The window state is not a prop: see [Building a window](/building-a-window). The list is
+rendered in a portal and counts as a key window of its own.
+
+## Sizes
+
+<Example name="sizes" both />
+
+| `size` | Fill | Button | Text | List text | Status |
+| --- | --- | --- | --- | --- | --- |
+| `regular` | 22 pt high, 60 pt wide | 18 pt | 13 pt | 13 pt | provisional |
+| `small` | 15 pt high, 43 pt wide | 18 pt | 9 pt | 12 pt | measured, but for the list |
+
+The sizes are a toolbar's, not the three control sizes: `regular` matches the other toolbar
+controls, which are 22 pt high, and `small` is the control of TextEdit's format bar. There is
+no `"mini"`, so this is the one prop of the [combo box](/components/combo-box) that does not
+carry over unchanged: a combo box with `size="mini"` has no toolbar counterpart. No
+screenshot shows the regular one.
+
+## API
+
+<PropsTable name="ToolbarComboBoxProps" />
+
+The items are the combo box's: see [`ComboBoxItem` and `ComboBoxSeparator`](/components/combo-box).
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-size` | root, list | `regular`, `small` | Reflects `size`. |
+| `data-disabled` | root, input, button | present or absent | Set by Base UI for `disabled`. |
+| `data-readonly` | root, input, button | present or absent | Set by Base UI for `readOnly`. |
+| `data-popup-open` | root, input, button | present or absent | Set by Base UI while the list is open. |
+| `data-force` | input | `focus`, `pressed` | Documentation and visual tests only: pins the focus ring or the pressed button. |
+
+| CSS variable | Values | Description |
+| --- | --- | --- |
+| `--mac-menu-min-width` | a length | Minimum width of the list, when it should be wider than the control. Set it on an ancestor of the list: the page, or the `container`. |
+
+Classes: `.mac-toolbar-combo-box` on the root, `.mac-toolbar-combo-box-input` and
+`.mac-toolbar-combo-box-button`; the list has the combo box's `.mac-combo-box-menu` next to
+`.mac-menu`.
+
+## Accessibility
+
+- The field is a native `<input>` with the `combobox` role, `aria-expanded`,
+  `aria-controls` and `aria-autocomplete` (the value of `mode`); the list is a `listbox` of
+  `option` elements. The highlighted item is announced through `aria-activedescendant`, and
+  the keyboard focus stays in the field.
+- Keys: typing edits the field; Down Arrow opens the list; the arrows move through it; Return
+  puts the highlighted item in the field; Escape closes the list and brings the typed text
+  back. In a toolbar, Left and Right Arrow move to the neighbouring item once the insertion
+  point is at that end of the text.
+- The control has no visible label. Name the input with `aria-label`, or with a label
+  element and `id`.
+- The button is not in the tab order, as in AppKit: the field's Down Arrow does what it does.
+  It is a real `<button>` for the pointer and for assistive technology, named by
+  `buttonLabel`; translate that string with the rest of the interface.
+- `disabled` uses the real attribute on the input and on the button, so the control leaves the
+  tab order.
+- The focus ring shows whenever the field has the keyboard, for pointer focus too, and only
+  in the key window.
+- In forced-colours mode the bezel's edge, the divider and the chevron use `ButtonText`, the
+  text `FieldText`, a disabled control `GrayText` and the ring `Highlight`.
+
+## Visual comparison
+
+`npm run visual -- toolbar-combo-box` compares the small size with the font size control of
+TextEdit's format bar in both appearances, in the two states the screenshots show: in the key
+window (reference crop `544,126,98,40` of the two TextEdit screenshots, 2x pixels) and in a
+window that is main and not key, under its Print sheet (crop `869,158,98,40` of the Aqua Print
+screenshot and `783,128,98,40` of the Dark Aqua one). Share of pixels that differ, in Chromium
+on Linux with the fallback font:
+
+| Comparison | Aqua, 2x | Aqua, 1x | Dark Aqua, 2x | Dark Aqua, 1x |
+| --- | --- | --- | --- | --- |
+| `textedit`, whole crop | 1.76% | 13.37% | 1.79% | 8.88% |
+| `textedit-drawing`, text masked | 0.81% | 13.88% | 0.88% | 13.25% |
+| `print-sheet`, whole crop | 1.79% | 13.47% | 1.84% | 8.98% |
+| `print-sheet-drawing`, text masked | 0.91% | 13.75% | 0.88% | 13.50% |
+
+The masked comparisons use a threshold of 0.05 and gate the drawing; each has a budget
+0.05 percentage points above its score. What the whole crop adds is the text, set in the
+fallback font instead of San Francisco. What remains with the text masked is the ends of the
+chevron's arms, which Catalina cuts a little differently, and single pixels on the corners.
+There is no 1x reference, so the 2x screenshot is averaged down, and a half-point hairline
+that the browser must draw as a full pixel cannot match its averaged counterpart
+([Fidelity limits](/fidelity)).
+
+Measured from those crops: the 43 x 15 pt fill and Aqua's border around it, the fill's
+gradient in both appearances (in Dark Aqua a little lighter than the toolbar button's, which
+is measured on Finder), the 24 pt field, the 1 pt divider and its colour, the 18 pt button,
+the chevron's shape, place and colour, and the 9 pt text with its colour and baseline. Under
+the Print sheet the fill, the border, the divider, the chevron and the text read the same
+values as in the key window, in both appearances: the control at rest does not change when
+its window becomes main and stops being key. An inactive window is another state, which no
+screenshot shows. The two Dictation screenshots show the control a third time, at rest in a
+key window with the same values; they are not compared.
+
+The regular size and the states no screenshot shows are checked pixel by pixel against the
+spec's values (the `expect` comparisons of `toolbar-combo-box.visual.json`):
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| Regular size, at rest | The box of three controls; the fill at mid-height, the divider 18 pt before the trailing edge, the chevron's ink | Fill, divider and chevron measured on the small size; that the regular size keeps them inferred |
+| Button pressed | The toolbar button's pressed fill on the button, the resting fill on the field | Inferred |
+| Disabled | The chevron in the toolbar button's disabled ink | Inferred |
+
+These checks hold the component to the spec; where the spec infers a value, they do not show
+that Catalina looks that way.
+
+### What no screenshot shows
+
+Six screenshots show this control, all at the small size and all with the value 12: the two of
+the TextEdit window, the two of its Print sheet and the two of Dictation. The record of the
+review of all 294 screenshots lists no other combo box in a toolbar bezel: the others it lists
+(Go to Folder, Connect to Server, Date & Time, Font Book) are the combo box of a window's
+content. So two states are
+measured, at rest in the key window and at rest in a main window, and everything else on this
+page is provisional because no screenshot shows it:
+
+- the regular size, in every state;
+- the focus ring, and that it is absent in a window that is not key;
+- the pressed button;
+- the open list, which is the combo box's and provisional there too;
+- the disabled control, and a read-only one;
+- the control in an inactive window;
+- placeholder text, and an empty field.
+
+The corner radius is the toolbar button's and was not fitted on this control. The small size
+sets its text in the 9 pt system font, which is what the digits in the screenshots measure;
+the list of the small size uses 12 pt text.

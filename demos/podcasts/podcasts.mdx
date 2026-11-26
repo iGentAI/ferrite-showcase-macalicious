@@ -1,0 +1,223 @@
+---
+title: Podcasts
+description: The Podcasts window of macOS 10.15 with its full-height sidebar, playback bar and shelves of shows and episodes; episodes play on a simulated transport, shows can be browsed, searched and subscribed to, and Preferences set what the player does.
+layout: full
+order: 70
+---
+
+<Example name="basic" />
+
+Click the episode under Up Next: the display names it, the play button becomes a pause button
+and the progress line starts to move. Nothing is heard. The transport is a clock that advances
+one second per second, and the line can be dragged. Choose a place in the sidebar, open a
+show from Browse and subscribe to it, or type in the search field. Every show and episode is
+invented for the demo, and the covers and icons are original stand-in drawings.
+
+On the desktop served by the `macalicious-desktop` Ferrite application (`ferrite-apps/desktop`),
+`app.ts`'s component is a real podcast player for the person signed in
+(`podcasts-desktop.tsx`, through `podcasts-server.ts`). The search field asks Apple's podcast
+directory, Browse and Top Charts list Apple's chart, and a show's page lists the episodes of
+its own feed, which the server reads. A show whose feed is on a host the server cannot reach
+says why, and cannot be followed. Episodes play in the browser from their publisher, and the
+bar's buttons, progress line, volume and speed act on that audio. An episode's menu has Go to
+Episode, its own page with the feed's notes. While the window is open the server looks for new
+episodes and delivers each to Notification Center once (`GET /api/podcasts/watch`). The shows followed, the
+episodes played, Up Next, the episode loaded, the speed and the settings come back after a
+reload; episodes published since the person last looked are marked and announced. The place in
+an episode is kept only while the window is open: an episode opened again after a reload
+starts at 0:00.
+No episode is downloaded there: Downloaded and Preferences say so. Everywhere else the window
+is this demo, and nothing is kept.
+
+## What it shows
+
+- A [Window](/components/window) without a title bar, filled by a
+  [Media App Chrome](/components/media-app-chrome) in its `podcasts` variant: the sidebar
+  column runs the height of the window and holds the
+  [Window Controls](/components/window-controls) and a sidebar
+  [Search Field](/components/search-field); the 55 pt playback bar sits over the pane.
+- The bar: skip back, play or pause and skip forward; a
+  [Now Playing Lcd](/components/now-playing-lcd) whose progress line is a slider; the volume
+  slider; and two toggle buttons that open the loaded episode's notes or the queue beside the
+  content.
+- The places: a [Sidebar](/components/sidebar) of two sections, each row with an icon.
+- The content: a [Scroll View](/components/scroll-view) of
+  [Card Grids](/components/card-grid). Listen Now is a shelf of `episode` cards, Browse and
+  the library's shows are `square` cards, and the charts and episode lists are `lockup` rows
+  whose accessory is a [Store Pill Button](/components/store-pill-button). The section headers
+  take Podcasts' type through the card grid's variables. An
+  [Empty State](/components/empty-state) stands in when a search finds nothing.
+- Preferences: a [Preferences Window](/components/preferences-window) with a
+  [Preferences Toolbar](/components/preferences-toolbar) of three panes, whose rows are
+  [Pop-Up Buttons](/components/pop-up-button) and [Checkboxes](/components/checkbox).
+
+| Place | What it lists |
+| --- | --- |
+| Listen Now | Up Next: the new episodes of the shows you follow, and every episode you have started and not finished. A click on a card plays it; See All goes to Episodes. |
+| Browse | Four featured shows on a shelf, then every show. A click on a show opens its page, with its episodes and a Subscribe button. |
+| Top Charts | The shows ranked, each with a button that follows or unfollows it, and the newest episode of each. |
+| Recently Updated, Shows | The shows you follow, by their newest episode or by name. |
+| Episodes | Every episode of the shows you follow, the newest first, each with a Play button. |
+| Downloaded | What the General preference says to download: only the new episodes, every unplayed one, or none. Nothing is stored; the list follows the setting. |
+
+| Control | What it does |
+| --- | --- |
+| Skip back, skip forward | Move the position by the seconds shown in the glyph, 15 and 30 unless the Playback preferences say otherwise. Unavailable while nothing is loaded. |
+| Play, Pause | Runs or stops the clock. With nothing loaded, Play starts Up Next. |
+| Progress line | Drag it, or focus it and use the arrow keys, to move the position. |
+| Volume | Kept, and applied to nothing. The audio-output button is unavailable: there is no output to choose. |
+| Episode Notes | Opens a panel with the loaded episode's description; again closes it. |
+| Up Next | Opens a panel with the episodes that follow in the queue. |
+| Search | Lists the shows whose name, publisher or category contains the text, and the episodes whose title or description does. |
+
+An episode that reaches its end is marked as played and leaves Up Next. With Continuous
+Playback on, the next episode of the list it was started from begins; otherwise the player
+empties. An episode that was left part of the way is taken up where it was left.
+
+## Preferences
+
+<Example name="preferences" />
+
+Podcasts' Preferences are modeless: the window opens beside the player, which stays usable and
+becomes the main window while Preferences are key. A press on either window brings it to the
+front, over the other; Preferences that the player covers come back with the command that
+opens them. Command-comma or Control-comma in the
+Podcasts window opens them, and `preferencesOpen` lets a menu command do it. The settings take
+effect at once: the Downloaded row follows Automatically Download Episodes, the skip buttons
+follow the two pop-up buttons of the Playback pane, and Continuous Playback decides what
+happens when an episode ends. Refresh Podcasts and the Advanced pane's checkbox are kept and
+change nothing, since nothing is fetched.
+
+## Hosting the window
+
+<Example name="hosted" />
+
+`Podcasts` renders the library's `Window` as its root and passes every `Window` prop to it, so
+it does not assume it fills the page. Place it with `style`; a window manager gives it `state`,
+the size, and eight more props that the component hands to the window controls and to its drag
+region: the playback bar and the top of the sidebar, since the window has no title bar. These
+are the props a [Managed Window](/components/managed-window)'s `render` form supplies, so the
+component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { app } from "./app";
+
+<ManagedWindow
+  id={app.id}
+  title={app.name}
+  resizable={app.resizable}
+  defaultFrame={{ x: 80, y: 60, ...app.defaultSize }}
+  minWidth={app.minSize.width}
+  minHeight={app.minSize.height}
+  render={(props) => <app.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `shows`, `episodes` | `PodcastsShow[]`, `PodcastsEpisode[]` | The catalogue; the eight invented shows and their sixteen episodes by default. A show's `subscribed` and an episode's `unplayed` say how the library starts. |
+| `defaultSection`, `onSectionChange` | `PodcastsSection`, function | The sidebar row selected at first, `"listen-now"` by default, and a report of each choice. |
+| `defaultEpisode` | `string` | The `id` of an episode that is loaded at first, paused at its start, as in the Dark Aqua screenshot. |
+| `defaultVolume` | `number` | The volume at first, 0 to 100. |
+| `material` | `"translucent" \| "opaque"` | The sidebar's surface: vibrant over a desktop, or opaque on a plain page. |
+| `defaultSettings` | `PodcastsSettings` | What Preferences start with; the settings of the screenshots by default. |
+| `preferencesOpen`, `defaultPreferencesOpen`, `onPreferencesOpenChange` | `boolean`, `boolean`, function | The Preferences window, controlled or not. |
+| `preferencesContainer` | `HTMLElement` | Where the Preferences window is rendered; the Podcasts window's offset parent by default. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled`, `controlsProps` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | A press with the primary button, or a double click, on the playback bar or the top of the sidebar, not on a control in them. |
+| `width`, `height` | `number \| string` | The frame; 1137 by 764 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `podcastsApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (1137 by 764), `minSize` (900 by 420), `resizable` and
+`menus`, the menu titles after the Apple menu. It also exports `PodcastsPreferences`, the
+Preferences window on its own, which holds its settings or takes them with `settings` and
+`onSettingsChange`.
+
+The library, the queue and the positions live in the component's state for as long as it is
+mounted; a reload brings the catalogue back as it was. `DesktopPodcasts`, the component
+`app.ts` names, is this demo except on the Ferrite desktop.
+
+## Accessibility
+
+- The window is a `region` named "Podcasts". The playback bar is a `toolbar` named "Playback
+  controls" and one tab stop; the arrow keys move between its buttons.
+- Every button of the bar shows only a glyph and is named with `aria-label`. The skip
+  buttons' names carry their seconds, and Play becomes Pause with the glyph. Episode Notes and
+  Up Next are toggle buttons.
+- The display is a `group` named "Now Playing"; its progress line is a `slider` named
+  "Playback position" whose value is read as the position and the length.
+- The sidebar is a `tree` named "Podcasts": one tab stop, the arrow keys move the selection
+  and typing selects by name. The search field is a `searchbox`; Escape clears it.
+- Each section of the content is a `region` named by its heading, and its cards are a list.
+  An episode card of a shelf and a show's card are buttons. A lockup is not: its Play or
+  Subscribe button is, named with the episode or the show it acts on.
+- A search without results is announced through a `status`.
+- The Preferences window is a `region` named after its pane; its toolbar is a `tablist`.
+- The position is not announced while it advances: a live region that spoke every second
+  would be noise. The progress line gives it on request.
+
+## Fidelity
+
+`podcasts.visual.json` compares the whole window, shadow included, with the Podcasts
+screenshots in both appearances, and the Preferences window with its two screenshots, each as
+captured and again with the text and the stand-in drawings masked. The Aqua capture shows the
+player with nothing loaded; the Dark Aqua capture shows the Up Next episode loaded and paused,
+so it has an example of its own. Scores from `npm run visual -- podcasts/` in Chromium on
+Linux with the fallback font: the share of pixels that differ and the mean colour difference
+out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 1.39% | 1.81 | 1.17% | 1.94 |
+| `window-light-layout` (masked) | 0.34% | 0.46 | 0.14% | 0.54 |
+| `window-dark` | 1.70% | 1.87 | 1.43% | 2.01 |
+| `window-dark-layout` (masked) | 0.44% | 0.39 | 0.31% | 0.47 |
+| `preferences-light` | 3.01% | 3.57 | 2.38% | 3.81 |
+| `preferences-light-layout` (masked) | 1.01% | 0.74 | 0.14% | 0.82 |
+| `preferences-dark` | 3.01% | 3.80 | 2.37% | 3.99 |
+| `preferences-dark-layout` (masked) | 0.63% | 1.29 | 0.11% | 1.40 |
+
+Artwork is masked in every comparison, the ones that keep the text included: the show's 252 pt
+cover, the column of the seven sidebar icons and the display's well in the window, and the
+three toolbar items' icons in Preferences (their labels are compared; the layout comparisons
+mask the labels too, with the rest of the text). The demo's artwork is abstract
+placeholders, not drawn after the pictures in the captures, so comparing it would say nothing.
+
+Measured in the screenshots and reproduced: the 1137 by 764 pt frame; the 260 pt sidebar with
+the window controls, the search field, the two headers and the seven rows in their 26 pt
+pitch under a 28 pt selection; the playback bar and everything in it, which is the media app
+chrome's own measured layout; the large title 40 pt from the pane's edge with the line under
+it; the shelf's header; the 252 pt episode card with its caption, title, three lines of
+description and duration; and in Preferences the 383 by 176 pt frame and the two pop-up
+buttons, 117.5 pt wide and 27 pt apart, 25.5 pt from the right edge.
+
+What differs, and why:
+
+- **Artwork.** The show's cover, the seven sidebar icons, the mark in the display's empty
+  well and the three Preferences icons are abstract placeholders: a gradient between two
+  system colours with a broadcast mark, plain glyphs on a rounded square, plain shapes. None
+  is drawn after the capture's artwork, and all are masked. The Apple logo that the idle
+  display shows in the capture is not drawn.
+- **Text.** Set in the fallback font off Apple devices, and the show and its episode are
+  invented, so the strings differ from the capture's. The Aqua capture has text typed into
+  the search field while Listen Now is still shown; the demo searches as you type, so its
+  field is empty there.
+- **Paging chevrons.** Podcasts draws a dimmed chevron in each margin of a shelf. The card
+  grid does not, and the demo does not add a control of its own; a shelf scrolls with the
+  pointer and with the arrow keys.
+- **Audio output.** The capture shows the AirPlay button enabled. The demo has no output to
+  choose and disables it, and the drawing is not Apple's mark.
+- **Sidebar rows.** The library's rows are 24 pt high with 2 pt under them; Podcasts'
+  selection is 28 pt high in the same 26 pt pitch, which the demo sets through the rows'
+  `style`.
+- **Not in a screenshot (provisional):** every place but Listen Now, a show's page, the
+  search results, the two side panels, the Playback and Advanced panes, the caption of a
+  started episode in Aqua, the window when it is not key, and every size other than the
+  captured one.
+- **Not built in the demo:** sound, downloads, the Account and Controls menus' commands,
+  episode notes with links, playback speed, the sleep timer, sharing, stations and the mini
+  player. The Ferrite desktop's Podcasts plays sound and has a speed button; it offers no
+  downloads either.

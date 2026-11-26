@@ -1,0 +1,49 @@
+/*
+ * Smart Search field. light-dark(<Aqua>, <Dark Aqua>), measured on the Safari v13 captures;
+ * translucent values are solved over what is behind them. The docs page has the pixels.
+ */
+:root {
+  /* [measured, computed] fill; Dark Aqua is white at 40%, 27.8%, then 25.3% */
+  --mac-smart-search-field-fill: linear-gradient(
+    light-dark(#fdfdfd, rgb(255 255 255 / 0.4)) 0 0.5px,
+    light-dark(#fcfcfc, rgb(255 255 255 / 0.278)) 0.5px 1px,
+    light-dark(#fbfbfb, rgb(255 255 255 / 0.253)) 1px,
+    light-dark(#f3f3f3, rgb(255 255 255 / 0.253))
+  );
+  /* [measured, computed] hairline border and the row under it, Aqua only */
+  --mac-smart-search-field-border-top: light-dark(rgb(0 0 0 / 0.101), transparent);
+  --mac-smart-search-field-border-side: light-dark(rgb(0 0 0 / 0.104), transparent);
+  --mac-smart-search-field-border-bottom: light-dark(rgb(0 0 0 / 0.235), transparent);
+  --mac-smart-search-field-shadow: light-dark(rgb(0 0 0 / 0.055), transparent);
+  /* [measured, computed] inactive window: an outline in Aqua, a fainter fill in Dark Aqua */
+  --mac-smart-search-field-fill-inactive: linear-gradient(
+    light-dark(transparent, rgb(255 255 255 / 0.17)) 0 0.5px,
+    light-dark(transparent, rgb(255 255 255 / 0.099)) 0.5px 1px,
+    light-dark(transparent, rgb(255 255 255 / 0.0755)) 1px
+  );
+  --mac-smart-search-field-border-inactive: light-dark(rgb(0 0 0 / 0.11), transparent);
+  --mac-smart-search-field-ring-inactive: light-dark(rgb(0 0 0 / 0.04), transparent);
+  /* [measured, computed] text #4c4c4c; glyphs #7a7a79, #e9e9ea; padlock #9f9e9e */
+  --mac-smart-search-field-text: light-dark(rgb(0 0 0 / 0.69), #ffffff);
+  --mac-smart-search-field-glyph: light-dark(rgb(0 0 0 / 0.506), rgb(255 255 255 / 0.85));
+  --mac-smart-search-field-lock: light-dark(rgb(0 0 0 / 0.358), rgb(255 255 255 / 0.85));
+  /* [measured, computed] inactive window: glyphs #b3b3b3, #7f7f81; padlock #cacaca */
+  --mac-smart-search-field-glyph-inactive: light-dark(rgb(0 0 0 / 0.272), rgb(255 255 255 / 0.347));
+  --mac-smart-search-field-lock-inactive: light-dark(rgb(0 0 0 / 0.179), rgb(255 255 255 / 0.347));
+  /* [measured, computed] placeholder #b8b8b7, #8f9091; magnifier #9e9e9e, #acacad */
+  --mac-smart-search-field-placeholder: light-dark(rgb(0 0 0 / 0.25), rgb(255 255 255 / 0.25));
+  --mac-smart-search-field-search: light-dark(rgb(0 0 0 / 0.36), rgb(255 255 255 / 0.46));
+  /* [measured] Reader button on; its glyph shows the field's fill */
+  --mac-smart-search-field-on-fill: linear-gradient(
+    light-dark(#676767, #e9e9e9) 0 0.5px,
+    light-dark(#676767, #e4e4e4) 0.5px,
+    light-dark(#636363, #e3e3e3)
+  );
+  --mac-smart-search-field-on-glyph: light-dark(#f7f7f7, #6c6d6e);
+  /* [measured] the bezel is 22 pt high (Safari toolbar) */
+  --mac-smart-search-field-height: 22px;
+  /* [measured, computed] corner of the fill: 4.25 pt on the border in Aqua */
+  --mac-smart-search-field-radius: 3.75px;
+  /* [provisional] the narrowest the field gets: room for a short host between two buttons */
+  --mac-smart-search-field-min-width: 120px;
+}

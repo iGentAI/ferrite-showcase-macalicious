@@ -1,0 +1,113 @@
+/*
+ * System Information demo: the layout of the body and of the report's text. The window, the
+ * title bar, the outline, the split views, the table, the text view and the bottom bar are the
+ * library's own; nothing here restyles them beyond the text view's padding and font, which a
+ * text view leaves to its content.
+ *
+ * Parts
+ *   .mac-system-information-body      the window's body: one split view that fills it
+ *   .mac-system-information-split     a split view that fills its container
+ *   .mac-system-information-outline   the outline fills its pane
+ *   .mac-system-information-table     the table of a report that lists things fills its pane
+ *   .mac-system-information-report    the report's text: 11 pt on a 13 pt pitch
+ *   .mac-system-information-section   a headed block; the next one follows a line below
+ *   .mac-system-information-heading   its bold heading
+ *   .mac-system-information-entries   its lines: labels in one column, values in the next
+ *   .mac-system-information-message   the line of a report with nothing to show
+ *   .mac-system-information-computer  the stand-in computer icon of the path
+ */
+/* The body takes what the title bar and the bottom bar leave, whatever its content asks for. */
+.mac-system-information-body {
+  display: flex;
+  flex-basis: 0;
+  overflow: hidden;
+}
+
+.mac-system-information-split {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+}
+
+.mac-system-information-outline,
+.mac-system-information-table {
+  height: 100%;
+}
+
+/* Measured in both captures: the heading starts 15.5 pt from the pane's edge with its cap top
+   12 pt under the title bar, and the lines follow on a 13 pt pitch. */
+.mac-system-information-report {
+  padding: var(--mac-system-information-report-padding-top)
+    var(--mac-system-information-report-padding-inline)
+    var(--mac-system-information-report-padding-bottom);
+  font: var(--mac-font-control-small);
+  line-height: var(--mac-system-information-line-height);
+  letter-spacing: var(--mac-tracking-small);
+  white-space: normal;
+  cursor: default;
+}
+
+.mac-system-information-section:where(:not(:first-child)) {
+  margin-block-start: var(--mac-system-information-section-gap);
+}
+
+.mac-system-information-heading {
+  margin: 0;
+  font-weight: var(--mac-font-weight-bold);
+}
+
+/* The first line's baseline is 27 pt under the heading's: an empty line and one point more.
+   The labels start 22 pt from the pane's edge and the values 185.5 pt from it; a longer
+   label moves the values of its block along. */
+.mac-system-information-entries {
+  display: grid;
+  grid-template-columns: minmax(var(--mac-system-information-entries-label-width), max-content) minmax(
+      0,
+      1fr
+    );
+  column-gap: var(--mac-system-information-entries-gap);
+  margin: var(--mac-system-information-entries-margin-top) 0 0;
+  padding-inline-start: var(--mac-system-information-entries-padding-start);
+}
+
+.mac-system-information-entry {
+  display: contents;
+}
+
+.mac-system-information-entry-label,
+.mac-system-information-entry-value {
+  min-height: var(--mac-system-information-line-height);
+  margin: 0;
+}
+
+.mac-system-information-entry-label {
+  white-space: nowrap;
+}
+
+.mac-system-information-message {
+  margin: 0;
+}
+
+/* The secondary-click area adds no box of its own. */
+.mac-system-information-menu-frame {
+  display: contents;
+}
+
+/* The served desktop's find bar, over the path bar. */
+.mac-system-information-find {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--mac-space-control-gap);
+  padding: var(--mac-system-information-find-padding);
+  background: var(--mac-color-window-background);
+}
+
+/* The icon starts 7 pt from the window's edge, a point before the bar's own inset, and the
+   name 26.5 pt from it (measured). */
+.mac-system-information-computer {
+  display: block;
+  flex: none;
+  margin-inline: var(--mac-system-information-computer-margin-start)
+    var(--mac-system-information-computer-margin-end);
+}

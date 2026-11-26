@@ -1,0 +1,129 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "window-light",
+      "description": "The whole Activity Monitor window, Aqua: the CPU view sorted by % CPU, the first row selected while the table has the keyboard focus (a click on the selected row), updates paused. Whole crop: the text is set in the fallback font, the process icons are stand-in drawings and the three toolbar glyphs are the library's system images.",
+      "example": "visual-window",
+      "appearance": "light",
+      "actions": [{ "click": ".mac-table-view-row[aria-selected='true']" }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Activity-Monitor.png",
+        "crop": { "x": 112, "y": 76, "width": 1678, "height": 1268 }
+      },
+      "budget": { "1x": 0.073, "2x": 0.0628 },
+      "deltaBudget": { "1x": 7.3, "2x": 8.1 }
+    },
+    {
+      "name": "window-light-layout",
+      "description": "As window-light with the text and the stand-in drawings masked (the title, the toolbar glyphs, the five view titles, the search placeholder, the nine headings, the icon column and the text of every column of the rows, the statistics' labels and values, the graph's title and the graph's rise), to score the frame, the title bar and its controls' bezels, the header with its separators and sort indicator, the stripes, the selection, the footer panel and its line, and the summary box with its dividers and rules.",
+      "example": "visual-window",
+      "appearance": "light",
+      "threshold": 0.05,
+      "actions": [{ "click": ".mac-table-view-row[aria-selected='true']" }],
+      "masks": [
+        { "x": 300, "y": 2, "width": 240, "height": 18 },
+        { "x": 15, "y": 27, "width": 106, "height": 18 },
+        { "x": 264, "y": 28, "width": 40, "height": 16 },
+        { "x": 316, "y": 28, "width": 64, "height": 16 },
+        { "x": 391, "y": 28, "width": 57, "height": 16 },
+        { "x": 459, "y": 28, "width": 40, "height": 16 },
+        { "x": 511, "y": 28, "width": 66, "height": 16 },
+        { "x": 637, "y": 28, "width": 80, "height": 16 },
+        { "x": 76, "y": 59, "width": 90, "height": 16 },
+        { "x": 250, "y": 59, "width": 66, "height": 16 },
+        { "x": 324, "y": 59, "width": 64, "height": 16 },
+        { "x": 397, "y": 59, "width": 54, "height": 16 },
+        { "x": 462, "y": 59, "width": 88, "height": 16 },
+        { "x": 570, "y": 59, "width": 50, "height": 16 },
+        { "x": 642, "y": 59, "width": 64, "height": 16 },
+        { "x": 720, "y": 59, "width": 30, "height": 16 },
+        { "x": 780, "y": 59, "width": 34, "height": 16 },
+        { "x": 17, "y": 81, "width": 20, "height": 436 },
+        { "x": 44, "y": 81, "width": 190, "height": 436 },
+        { "x": 286, "y": 81, "width": 32, "height": 436 },
+        { "x": 352, "y": 81, "width": 39, "height": 436 },
+        { "x": 430, "y": 81, "width": 24, "height": 436 },
+        { "x": 540, "y": 81, "width": 15, "height": 436 },
+        { "x": 608, "y": 81, "width": 25, "height": 436 },
+        { "x": 678, "y": 81, "width": 33, "height": 436 },
+        { "x": 718, "y": 81, "width": 36, "height": 436 },
+        { "x": 757, "y": 81, "width": 52, "height": 436 },
+        { "x": 139, "y": 536, "width": 70, "height": 58 },
+        { "x": 262, "y": 536, "width": 56, "height": 58 },
+        { "x": 390, "y": 536, "width": 60, "height": 12 },
+        { "x": 494, "y": 606, "width": 16, "height": 13 },
+        { "x": 520, "y": 536, "width": 80, "height": 38 },
+        { "x": 656, "y": 536, "width": 44, "height": 38 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Activity-Monitor.png",
+        "crop": { "x": 112, "y": 76, "width": 1678, "height": 1268 }
+      },
+      "budget": { "1x": 0.0067, "2x": 0.0014 },
+      "deltaBudget": { "1x": 0.66, "2x": 0.55 }
+    },
+    {
+      "name": "window-dark",
+      "description": "The whole Activity Monitor window, Dark Aqua: the dark capture's process list with Finder, its seventh row, selected while the table has the keyboard focus, updates paused. Whole crop: fallback font, stand-in icons, and the library's system images as the toolbar glyphs.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "actions": [{ "click": ".mac-table-view-row[aria-selected='true']" }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Activity-Monitor.png",
+        "crop": { "x": 112, "y": 76, "width": 1678, "height": 1268 }
+      },
+      "budget": { "1x": 0.0715, "2x": 0.0615 },
+      "deltaBudget": { "1x": 6.79, "2x": 7.39 }
+    },
+    {
+      "name": "window-dark-layout",
+      "description": "As window-dark with the same regions masked as window-light-layout. Scores the frame, the title bar and its controls' bezels, the header, the stripes, the selection of the seventh row, the footer panel and its line, and the summary box with its dividers and rules.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "actions": [{ "click": ".mac-table-view-row[aria-selected='true']" }],
+      "masks": [
+        { "x": 300, "y": 2, "width": 240, "height": 18 },
+        { "x": 15, "y": 27, "width": 106, "height": 18 },
+        { "x": 264, "y": 28, "width": 40, "height": 16 },
+        { "x": 316, "y": 28, "width": 64, "height": 16 },
+        { "x": 391, "y": 28, "width": 57, "height": 16 },
+        { "x": 459, "y": 28, "width": 40, "height": 16 },
+        { "x": 511, "y": 28, "width": 66, "height": 16 },
+        { "x": 637, "y": 28, "width": 80, "height": 16 },
+        { "x": 76, "y": 59, "width": 90, "height": 16 },
+        { "x": 250, "y": 59, "width": 66, "height": 16 },
+        { "x": 324, "y": 59, "width": 64, "height": 16 },
+        { "x": 397, "y": 59, "width": 54, "height": 16 },
+        { "x": 462, "y": 59, "width": 88, "height": 16 },
+        { "x": 570, "y": 59, "width": 50, "height": 16 },
+        { "x": 642, "y": 59, "width": 64, "height": 16 },
+        { "x": 720, "y": 59, "width": 30, "height": 16 },
+        { "x": 780, "y": 59, "width": 34, "height": 16 },
+        { "x": 17, "y": 81, "width": 20, "height": 436 },
+        { "x": 44, "y": 81, "width": 190, "height": 436 },
+        { "x": 286, "y": 81, "width": 32, "height": 436 },
+        { "x": 352, "y": 81, "width": 39, "height": 436 },
+        { "x": 430, "y": 81, "width": 24, "height": 436 },
+        { "x": 540, "y": 81, "width": 15, "height": 436 },
+        { "x": 608, "y": 81, "width": 25, "height": 436 },
+        { "x": 678, "y": 81, "width": 33, "height": 436 },
+        { "x": 718, "y": 81, "width": 36, "height": 436 },
+        { "x": 757, "y": 81, "width": 52, "height": 436 },
+        { "x": 139, "y": 536, "width": 70, "height": 58 },
+        { "x": 262, "y": 536, "width": 56, "height": 58 },
+        { "x": 390, "y": 536, "width": 60, "height": 12 },
+        { "x": 494, "y": 606, "width": 16, "height": 13 },
+        { "x": 520, "y": 536, "width": 80, "height": 38 },
+        { "x": 656, "y": 536, "width": 44, "height": 38 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Activity-Monitor.png",
+        "crop": { "x": 112, "y": 76, "width": 1678, "height": 1268 }
+      },
+      "budget": { "1x": 0.0069, "2x": 0.0011 },
+      "deltaBudget": { "1x": 0.77, "2x": 0.56 }
+    }
+  ]
+}

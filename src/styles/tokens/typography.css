@@ -1,0 +1,106 @@
+/*
+ * Typography.
+ *
+ * Catalina's system font is San Francisco (SF Pro Text below 20 pt, SF Pro Display from 20 pt).
+ * Apple does not license it for redistribution, so the library never ships it. Instead:
+ *
+ *   - Apple platforms resolve -apple-system / BlinkMacSystemFont to the real San Francisco,
+ *     with the system's own optical sizing and tracking. Tracking tokens must therefore stay
+ *     at `normal` for the system font.
+ *   - Other platforms fall through to "Mac System Fallback", a metric-adjusted alias of Inter
+ *     that an application declares by importing macalicious/fallback-font.css (see that file
+ *     and the Typography guide), then to locally installed Inter, Helvetica Neue and Arial.
+ *
+ * Sizes are computed from cap heights and line pitches in the screenshots [measured, computed]
+ * unless tagged otherwise; 1 pt = 1 CSS px. Catalina's emphasised text is Bold (stems of 3 to
+ * 4 px at 2x), not Semibold.
+ */
+:root {
+  /* [catalog] San Francisco is the system font (NSFont.systemFont), reached through
+     -apple-system. The names after "SF Pro Text" are the library's fallbacks for other
+     platforms, not Catalina values. */
+  --mac-font-family-system:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Mac System Fallback", "Inter Variable",
+    "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  /* [catalog] the fixed-pitch system font is SF Mono; Menlo is Catalina's monospaced user
+     font. The names after Monaco are the library's fallbacks. */
+  --mac-font-family-monospace:
+    ui-monospace, "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+
+  /* Weights used by AppKit [catalog]: the NSFont.Weight names on the CSS weight scale. Which
+     weight a text style uses is measured per token below. Thin is the light numerals of
+     large values, such as the temperature of a Siri weather card. */
+  --mac-font-weight-thin: 200;
+  --mac-font-weight-regular: 400;
+  --mac-font-weight-medium: 500;
+  --mac-font-weight-semibold: 600;
+  --mac-font-weight-bold: 700;
+
+  /* Control text, by control size: size / line height */
+  --mac-font-size-regular: 13px; /* systemFontSize       [measured, computed] cap height 9 pt */
+  --mac-font-size-small: 11px; /*   smallSystemFontSize  [measured, computed] */
+  --mac-font-size-mini: 9px; /*     miniSystemFontSize   [catalog] */
+  --mac-line-height-regular: 16px; /* [measured] alert message line pitch */
+  --mac-line-height-small: 14px; /*   [measured] small text in panes and notifications */
+  --mac-line-height-mini: 13px; /*    [measured, computed] 10 pt label text on a 13 pt line */
+
+  /* Shorthands: `font: var(--mac-font-control-regular)` */
+  --mac-font-control-regular:
+    var(--mac-font-weight-regular) var(--mac-font-size-regular) / var(--mac-line-height-regular)
+    var(--mac-font-family-system);
+  --mac-font-control-small:
+    var(--mac-font-weight-regular) var(--mac-font-size-small) / var(--mac-line-height-small)
+    var(--mac-font-family-system);
+  --mac-font-control-mini:
+    var(--mac-font-weight-regular) var(--mac-font-size-mini) / var(--mac-line-height-mini)
+    var(--mac-font-family-system);
+
+  /* Role fonts [measured, computed] */
+  --mac-font-body: 400 13px / 16px var(--mac-font-family-system);
+  --mac-font-body-emphasized: 700 13px / 16px var(--mac-font-family-system);
+  --mac-font-label: 400 10px / 13px var(--mac-font-family-system); /* labelFont */
+  /* menuFont [measured] 19 pt rows in Apple-Menu: row height is font size + 5 */
+  --mac-font-menu: 400 14px / 19px var(--mac-font-family-system);
+  /* menuBarFont; the application menu title is 700 */
+  --mac-font-menu-bar: 400 14px / 22px var(--mac-font-family-system);
+  /* titleBarFont; baseline 16 pt below the window top in a 22 pt bar */
+  --mac-font-window-title: 400 13px / 16px var(--mac-font-family-system);
+  /* Utility panel title, in a 16 pt title strip */
+  --mac-font-window-title-small: 400 11px / 14px var(--mac-font-family-system);
+  --mac-font-tooltip:
+    400 11px / 14px var(--mac-font-family-system); /* toolTipsFont [catalog] none is shown */
+  --mac-font-alert-title: 700 13px / 16px var(--mac-font-family-system); /* [measured] */
+  /* NSAlert informativeText [measured, computed] */
+  --mac-font-alert-message: 400 11px / 14px var(--mac-font-family-system);
+  --mac-font-headline: 700 13px / 16px var(--mac-font-family-system);
+  --mac-font-subheadline: 400 11px / 14px var(--mac-font-family-system);
+  /* Source list section header; weight judged from stem width */
+  --mac-font-sidebar-header: 600 11px / 14px var(--mac-font-family-system);
+  --mac-font-table-header: 400 11px / 14px var(--mac-font-family-system);
+  --mac-font-toolbar-label: 400 11px / 14px var(--mac-font-family-system); /* under an item */
+  --mac-font-tab-bar: 400 11px / 14px var(--mac-font-family-system); /* window tab titles */
+  /* Finder icon and preference pane labels. Desktop icon labels are 700 with a shadow. */
+  --mac-font-icon-label: 400 12px / 14px var(--mac-font-family-system);
+  /* The same label wrapped onto two lines: the icon-view line pitch is 16 pt [measured], the
+     size 12 pt [measured, computed]. Single-line labels keep the 14 pt line above. */
+  --mac-font-icon-label-wrapped: 400 12px / 16px var(--mac-font-family-system);
+  /* Title sizes [provisional]: AppKit text styles are not public in 10.15, no Apple source
+     gives these values for Catalina, and large display text differs per app (the Spotlight
+     query is about 27 pt Light, the Notification Center date about 34 pt Thin). Check against
+     the app blueprint before relying on these. */
+  --mac-font-title-1: 400 22px / 26px var(--mac-font-family-system);
+  --mac-font-title-2: 400 17px / 22px var(--mac-font-family-system);
+  --mac-font-title-3: 400 15px / 20px var(--mac-font-family-system);
+  --mac-font-large-title: 400 26px / 32px var(--mac-font-family-system);
+
+  /*
+   * Tracking [catalog]. `normal` on Apple platforms: the system font tracks itself by Apple's
+   * table, and a fixed value would be added on top. That table gives -0.08 px at 13 pt,
+   * 0.06 px at 11 pt and 0.12 px at 10 pt for SF Pro Text; an application that renders with a
+   * fallback font may set these tokens to those values. The fallback stylesheet does not need
+   * them because its size-adjust already matches San Francisco's average advance.
+   */
+  --mac-tracking-regular: normal;
+  --mac-tracking-small: normal;
+  --mac-tracking-mini: normal;
+}

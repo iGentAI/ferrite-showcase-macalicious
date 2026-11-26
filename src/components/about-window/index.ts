@@ -1,0 +1,28 @@
+export type {
+  AboutWindowActionsProps,
+  AboutWindowDetailProps,
+  AboutWindowDetailsProps,
+  AboutWindowFooterProps,
+  AboutWindowLinkProps,
+  AboutWindowOverviewProps,
+  AboutWindowPanelProps,
+  AboutWindowProps,
+  AboutWindowTabProps,
+  AboutWindowTabsProps,
+  AboutWindowTitleProps,
+  AboutWindowVersionProps,
+} from "./about-window";
+export {
+  AboutWindow,
+  AboutWindowActions,
+  AboutWindowDetail,
+  AboutWindowDetails,
+  AboutWindowFooter,
+  AboutWindowLink,
+  AboutWindowOverview,
+  AboutWindowPanel,
+  AboutWindowTab,
+  AboutWindowTabs,
+  AboutWindowTitle,
+  AboutWindowVersion,
+} from "./about-window";

@@ -1,0 +1,122 @@
+/*
+ * Circular slider (NSSlider, circular type). No reference screenshot shows one: the metrics
+ * are the spec's inferred values. The root has role="slider"; its box is the dial, or with
+ * tick marks the dial and the ring of dots around it.
+ *
+ *   .mac-circular-slider::before    the dial: a disc with a hairline and a shadow
+ *   .mac-circular-slider-thumb      the dot, turned to the value with --_a
+ *   .mac-circular-slider-tick       one tick dot, turned with --_a
+ *
+ * States: [data-disabled]; [data-size]; [data-tick-marks]; :active; :focus-visible; a window
+ * that is not key (no focus ring); [data-force~="pressed" | "focus"] pin the transient states
+ * for docs and visual tests.
+ */
+.mac-circular-slider {
+  --_d: 24px;
+  --_dot: 4px;
+  --_in: 4.5px;
+  --_pad: 0px;
+  --_fill: var(--mac-circular-slider-fill);
+
+  position: relative;
+  display: inline-block;
+  flex: none;
+  box-sizing: border-box;
+  inline-size: calc(var(--_d) + var(--_pad) * 2);
+  block-size: calc(var(--_d) + var(--_pad) * 2);
+  border-radius: 50%;
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+  outline: none;
+}
+
+.mac-circular-slider::before {
+  content: "";
+  position: absolute;
+  inset: var(--_pad);
+  box-sizing: border-box;
+  border: var(--mac-hairline) solid transparent;
+  border-radius: 50%;
+  background:
+    linear-gradient(var(--_fill), var(--_fill)) padding-box,
+    var(--mac-circular-slider-outline) border-box;
+  box-shadow: var(--mac-circular-slider-highlight), var(--mac-circular-slider-shadow);
+}
+
+.mac-circular-slider-thumb,
+.mac-circular-slider-tick {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  inline-size: var(--_dot);
+  block-size: var(--_dot);
+  margin: calc(var(--_dot) / -2);
+  border-radius: 50%;
+  background: var(--mac-circular-slider-thumb);
+  transform: rotate(var(--_a)) translateY(calc(var(--_in) - var(--_d) / 2));
+  pointer-events: none;
+}
+
+/* Tick dots: 2 pt, centred 3 pt outside the rim */
+.mac-circular-slider-tick {
+  --_dot: 2px;
+  --_in: -3px;
+  background: var(--mac-circular-slider-tick);
+}
+
+.mac-circular-slider:where([data-tick-marks]) {
+  --_pad: 4px;
+}
+
+/* Sizes */
+.mac-circular-slider:where([data-size="small"]) {
+  --_d: 18px;
+}
+
+.mac-circular-slider:where([data-size="mini"]) {
+  --_d: 14px;
+  --_dot: 3px;
+  --_in: 3.5px;
+}
+
+/* Pressed */
+.mac-circular-slider:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  --_fill: var(--mac-circular-slider-fill-pressed);
+}
+
+/* Disabled */
+.mac-circular-slider:where([data-disabled]) {
+  opacity: var(--mac-bezel-opacity-disabled);
+}
+
+/* Focus ring around the dial, from its hairline to 2.5 pt beyond; only in the key window. */
+.mac-circular-slider:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+)::before {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(var(--mac-focus-ring-offset) - var(--mac-hairline));
+}
+
+@media (forced-colors: active) {
+  .mac-circular-slider::before {
+    border-color: ButtonText;
+    background: ButtonFace;
+  }
+
+  .mac-circular-slider-thumb,
+  .mac-circular-slider-tick {
+    background: ButtonText;
+  }
+
+  .mac-circular-slider:where([data-disabled]) {
+    opacity: 1;
+  }
+
+  .mac-circular-slider:where([data-disabled])::before {
+    border-color: GrayText;
+  }
+}

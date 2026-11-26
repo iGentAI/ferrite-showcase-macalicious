@@ -1,0 +1,192 @@
+---
+title: Map Controls
+description: The controls that float over a map in Maps and Find My, with a zoom pair, a compass with a 3D toggle, single buttons and a map-type switch, pinned to a corner of the map.
+---
+
+<Example name="basic" both />
+
+Maps and Find My draw a few small controls over the map itself: a minus and a plus button that
+zoom, a compass whose middle toggles 3D, a button that shows the current location, a "Show"
+pull-down and, in Find My, a segmented switch between Map, Hybrid and Satellite. They stay in
+the map's bottom corners while it pans. In AppKit they belong to `MKMapView`
+(`showsZoomControls`, `showsCompass`); here they are separate components that an application
+places over its own map with `MapControls`. The buttons are Base UI's Button and Toggle, the
+map-type switch is its Radio Group.
+
+## Usage
+
+```tsx
+import {
+  MapButton,
+  MapCompass,
+  MapControls,
+  MapTypeControl,
+  MapTypeOption,
+  MapZoomControl,
+} from "macalicious/map-controls";
+import "macalicious/map-controls.css";
+
+<div style={{ position: "relative" }}>
+  <MyMap zoom={zoom} heading={heading} type={type} />
+
+  <MapControls placement="bottom-leading" aria-label="Map type">
+    <MapTypeControl value={type} onValueChange={setType} aria-label="Map type">
+      <MapTypeOption value="map">Map</MapTypeOption>
+      <MapTypeOption value="hybrid">Hybrid</MapTypeOption>
+      <MapTypeOption value="satellite">Satellite</MapTypeOption>
+    </MapTypeControl>
+  </MapControls>
+
+  <MapControls orientation="vertical" aria-label="Map controls">
+    <MapCompass heading={heading} onNorthUp={() => setHeading(0)} />
+    <MapZoomControl
+      onZoomIn={() => setZoom(zoom + 1)}
+      onZoomOut={() => setZoom(zoom - 1)}
+      zoomInDisabled={zoom === MAX}
+    />
+  </MapControls>
+</div>
+```
+
+Or copy the source into your project: `npx macalicious add map-controls`.
+
+The library has no map: the controls report what the user asked for and the application moves
+its own map (a tile provider, an image). `MapControls` pins a group to a corner of the nearest
+positioned ancestor, 15 pt from its edges (`--mac-map-controls-margin`). A vertical group
+stacks the compass over the zoom pair; nest it in a horizontal one, with `placement="none"`,
+to put a button beside the stack as Find My does.
+
+`MapButton` is a single button: `bordered` is the small button of Maps and `rounded` the
+borderless one of Find My. With `chevron` it is the "Show" pull-down; pass it as the `render`
+of a menu's trigger to open a menu.
+
+## Guidelines
+
+The Human Interface Guidelines for macOS 10.15 have no entry for map controls. What follows is
+how Maps and Find My use them in the screenshots (not verified against a published guideline):
+
+- Keep the controls in the map's bottom corners and do not scale them with the window.
+- The zoom pair and the compass belong together at the trailing edge; choices about what the
+  map shows go at the leading edge.
+- Every control has a menu command or a gesture as well: Command-plus and Command-minus zoom.
+- Where 3D is not offered, show the 3D button dimmed, as Find My does; do not remove it.
+- The glyph of a button is the application's own drawing. The library ships none of Apple's.
+
+## Variants and states
+
+<Example name="states" both />
+
+| Variant or state | Look | Status |
+| --- | --- | --- |
+| Bordered face | `#ffffff`, Dark Aqua `#666869`, with a half-point edge that is darker at the bottom, 4 pt corners and a short shadow | measured (Maps) |
+| Dark Aqua highlight | Half a point of white at 20% under the top edge | measured (Maps) |
+| Rounded face | `#ffffff`, Dark Aqua `#67676a`, 6 pt corners, no edge, a soft shadow | measured (Find My) |
+| Zoom glyphs | 11 x 1 pt bars, `#262626`, Dark Aqua `#e8e8e8` | measured |
+| Compass | 53 pt disc, a 1 pt gap around the 29 pt 3D button that shows the map, red north mark (white in Dark Aqua) | measured (Maps); the rose is an original drawing |
+| Map type | Translucent grey track, the selected segment a raised pill, a hairline between the other two | measured (Find My) |
+| Pressed | The face about a tenth darker (lighter in Dark Aqua) | provisional |
+| Disabled | Glyph or title at 30% | provisional; the dimmed 3D of Find My is shown but not compared |
+| 3D on | The title in the accent colour | provisional |
+| Compass turned | The rose turns against `heading` | provisional |
+| Keyboard focus | Focus ring, key window only | provisional |
+| Window not key | No change | provisional (inferred) |
+
+## Sizes
+
+One size. A bordered button and each half of the zoom pair are 20 pt tall; the pair is two
+28 pt buttons side by side. The rounded button is 34.5 x 21 pt. The compass is 53 pt across
+with a 14 pt title. The map-type control is 22.25 pt tall and at least 231 pt wide; its
+segments share the width, the pill stands 2 pt inside its segment, and the titles are 10.5 pt,
+the iPad's size scaled to 77% as in every Mac Catalyst app, tracked 0.35 pt tighter, as the
+scaled 13 pt type is (Find My's People, Devices, Map, Hybrid and Satellite). Controls in a row stand 12 pt
+apart, in a column 6 pt.
+
+## API
+
+<PropsTable name="MapControlsProps" />
+
+<PropsTable name="MapButtonProps" />
+
+<PropsTable name="MapZoomControlProps" />
+
+<PropsTable name="MapCompassProps" />
+
+<PropsTable name="MapTypeControlProps" />
+
+<PropsTable name="MapTypeOptionProps" />
+
+`MapControls`, `MapZoomControl` and `MapCompass` take the props of a `<div>`; `MapButton`
+those of Base UI's Button; `MapTypeControl` and `MapTypeOption` those of Base UI's Radio Group
+and Radio (`value`, `defaultValue`, `onValueChange`, `disabled`, `name`).
+
+| Attribute or variable | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-placement` | `MapControls` | `bottom-trailing`, `bottom-leading`, `top-trailing`, `top-leading`, `none` | Reflects `placement`. |
+| `data-orientation` | `MapControls` | `horizontal`, `vertical` | Reflects `orientation`. |
+| `data-variant` | `MapButton` | `bordered`, `rounded` | Reflects `variant`. |
+| `data-zoom` | zoom button | `out`, `in` | Which half a button is. |
+| `data-plain` | `MapCompass` | present or absent | Reflects `hidePitch`. |
+| `data-pressed` | 3D button | present or absent | 3D is on. |
+| `data-checked` | `MapTypeOption` | present or absent | The selected map type. |
+| `data-disabled` | any button or option | present or absent | The control is disabled. |
+| `--mac-map-controls-margin` | `MapControls` or an ancestor | a length, default `15px` | Distance from the map's edges. |
+| `--mac-map-controls-face`, `-rounded-face` | any ancestor | a colour | Faces of the bordered and the rounded controls. |
+| `--mac-map-controls-glyph` | any ancestor | a colour | Glyphs and titles. |
+| `--mac-map-controls-track`, `-segment` | any ancestor | a colour | Track and pill of the map-type control. |
+
+Classes: `.mac-map-controls`, `.mac-map-controls-button`, `.mac-map-controls-button-chevron`, `.mac-map-controls-zoom`,
+`.mac-map-controls-zoom-button`, `.mac-map-controls-compass`, `.mac-map-controls-compass-ring`, `.mac-map-controls-compass-rose`,
+`.mac-map-controls-compass-north`, `.mac-map-controls-compass-tick`, `.mac-map-controls-compass-pitch`, `.mac-map-controls-type`,
+`.mac-map-controls-type-segment` and `.mac-map-controls-type-option`.
+
+## Accessibility
+
+- `MapControls` is a `group`; name each one with `aria-label`.
+- The zoom pair is a group named "Zoom" with two buttons, "Zoom out" and "Zoom in". A half
+  that is disabled because the map reached a limit stays focusable (`aria-disabled`), so
+  keyboard focus is not thrown away while zooming.
+- The compass is a group named "Compass": its ring is a button named "Face north" and its
+  middle a toggle button named "3D" whose `aria-pressed` says whether 3D is on. The rose is
+  decoration; announce the heading elsewhere if it matters.
+- The map-type control is a `radiogroup`; give it an `aria-label`. It is one Tab stop, and the
+  arrow keys move the selection among its radios.
+- A button that holds only a glyph needs an `aria-label`.
+- The map under the controls is the application's: give it its own keyboard commands for
+  panning and zooming, and do not rely on the controls alone.
+- In forced-colours mode every control is outlined in the system's button text colour and the
+  selected map type uses the highlight colours.
+
+## Visual comparison
+
+`npm run visual -- map-controls` compares five controls with the Maps and Find My screenshots
+in both appearances. The controls lie on map tiles, which the library cannot reproduce: each
+example draws its control on the flat land colour of the capture, so streets, street names and
+park edges that pass behind or beside a control count as differences, and the larger ones are
+masked. Share of pixels that differ at 2x, in Chromium on Linux with the fallback font:
+
+| Crop | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Zoom pair, Maps, 61 x 22 pt (`1968,1405,122,44`; Dark `1968,1387`) | 0.63% | 1.29% |
+| Compass, Maps, 56 x 56 pt (`1974,1284,112,112`; Dark `1974,1266`) | 2.01% | 1.76% |
+| Compass, 3D title masked, stricter threshold | 4.52% | 4.22% |
+| Show pull-down, Maps, 112 x 24 pt (`136,1402,224,48`; Dark `136,1384`) | 6.88% | 6.09% |
+| Show pull-down, title masked | 4.75% | 2.27% |
+| Location button, Find My, 39 x 27 pt (`2141,1445,78,54`; Dark `2097,1421`) | 5.67% | 6.20% |
+| Location button, glyph masked | 5.95% | 6.79% |
+| Map type, Find My, 236 x 25 pt (`662,1445,472,50`; Dark `618,1421`) | 7.53% | 8.02% |
+| Map type, titles masked | 6.10% | 8.27% |
+
+The masked rows use a stricter threshold (0.05 in place of 0.1), which is why some score
+higher than the rows above them. Measured: the faces, edges, corners and shadows of the
+bordered controls, the glyph bars, the compass's disc, gap, marks and 3D button, the rounded
+button's size and face, and the map-type control's track, pill, hairline and title size.
+
+What the remaining differences are: the map around and behind the controls; the translucent
+dark faces, which take a little of the map's colour in the screenshots and are flat here; the
+edge of the map-type control's track, which is a tone darker than its middle in the capture;
+text in the fallback font; and the location glyph, a stand-in drawing.
+
+Provisional, because no screenshot shows them: the pressed and disabled looks, 3D on, a turned
+compass and the focus ring. Selecting another map type with a click, a pressed zoom half and
+keyboard focus are checked in a real browser against the token values (`expect` comparisons).
+The Find My zoom pair, compass and dimmed 3D button are not compared here.

@@ -1,0 +1,30 @@
+/*
+ * New-item dot: a flat 6 pt disc with no rim, glyph or shadow.
+ *
+ * States
+ *   [data-visible]   drawn; without it the dot keeps its box and is invisible
+ *
+ * Not interactive, so there is no hover, pressed, focus or disabled look, and the dot does not
+ * react to the window state.
+ */
+.mac-new-item-dot {
+  display: inline-block;
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mac-new-item-dot-fill);
+  vertical-align: middle;
+}
+
+.mac-new-item-dot:where(:not([data-visible])) {
+  visibility: hidden;
+}
+
+/* Forced colours replace backgrounds; the fill is the whole control. */
+@media (forced-colors: active) {
+  .mac-new-item-dot {
+    background: Highlight;
+    forced-color-adjust: none;
+  }
+}

@@ -1,0 +1,116 @@
+/*
+ * Preview: the colours no shared token holds (reference/spec/apps/preview.md). The sidebar,
+ * its rows and the canvas are measured in the Preview-Search captures; a page and the
+ * highlights are documents and annotations, which keep their colours in both appearances.
+ */
+:root,
+[data-appearance] {
+  /* [measured] the sidebar under the file name (Light- and Dark-Preview-Search @ 150,740) */
+  --mac-preview-sidebar: light-dark(#e7e9ea, #2c2e30);
+  /* [measured] the strip with the file's name over the rows (@ 150,260) */
+  --mac-preview-file: light-dark(#d0d2d3, #4f5153);
+  /* [measured] the row of the page shown ($M col … 515 248 650) */
+  --mac-preview-row-selected: light-dark(#c7c9ca, #505254);
+  /* [measured] the etched line under a row: a line and the lighter (Dark Aqua: darker) line
+     under it (Light- and Dark-Preview-Search, column 312 of the image, rows 620 to 623) */
+  --mac-preview-row-separator: light-dark(#d4d4d4, #39393a);
+  --mac-preview-row-separator-highlight: light-dark(#e8e8e9, #262728);
+  /* [measured] the line between the sidebar and the document (@ 523,300) */
+  --mac-preview-divider: light-dark(#cfd1d2, #000000);
+  /* [measured] the canvas around the pages, the same in both appearances (@ 525,300) */
+  --mac-preview-canvas: #ececec;
+  /* [measured] a page: white in both appearances (@ 700,1200) */
+  --mac-preview-paper: #ffffff;
+  /* [measured] the text of a page and of its grey headings (Light-Preview-Search @
+     1300,620,200,30 and @ 630,575,340,30) */
+  --mac-preview-ink: #1d1d1d;
+  --mac-preview-ink-secondary: #5f5f5f;
+  /* [provisional] the rule under a heading */
+  --mac-preview-rule: #b5b5b5;
+  /* [provisional] the banner of a page that opens a section: an abstract placeholder where
+     the capture has a photograph, in no colour of it */
+  --mac-preview-banner-start: #dfe2e6;
+  --mac-preview-banner-end: #c9ced4;
+  /* [measured] the highlight of the text found, and its text (Dark-Preview-Search @
+     2032,584,72,40) */
+  --mac-preview-highlight-green: #b1d832;
+  --mac-preview-highlight-text: #181e09;
+  /* [provisional] the other colours of the Highlight menu */
+  --mac-preview-highlight-yellow: #fbe04d;
+  --mac-preview-highlight-blue: #8fc7f7;
+  --mac-preview-highlight-pink: #f7a6c8;
+  --mac-preview-highlight-purple: #cdb0f2;
+  /* [measured] the frame of a thumbnail (Light-Preview-Search @ 142,327,72,54) */
+  --mac-preview-thumbnail-border: light-dark(#c9cbcc, #000000);
+
+  /* The window on the Ferrite desktop (preview-app.css), which shows real files. No capture
+     shows it with a file of the person's own, so every value here is [provisional]. */
+  /* the gap between two pages, and the margin around them */
+  --mac-preview-app-page-gap: 12px;
+  --mac-preview-app-page-margin: 16px;
+  --mac-preview-app-contact-radius: 6px;
+  /* the shadow under a page or a picture */
+  --mac-preview-app-page-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+  /* the search field, narrower than the capture's 239 pt to leave room for Open and File */
+  --mac-preview-app-search-width: 180px;
+  /* a thumbnail fits a 96 pt square, with its page number 4 pt under it */
+  --mac-preview-app-thumbnail-box: 96px;
+  --mac-preview-app-thumbnail-gap: 4px;
+  /* the frame of the thumbnail of the page shown */
+  --mac-preview-app-thumbnail-selected: light-dark(#8e8e93, #d1d1d6);
+  /* [provisional] the line a drag of pages shows between thumbnails: no capture shows it */
+  --mac-preview-app-thumbnails-line-width: 2px;
+  /* a row of the pages found */
+  --mac-preview-app-result-padding: 9px 14px;
+  /* the status line under the document, and the gap of its parts */
+  --mac-preview-app-status-height: 22px;
+  --mac-preview-app-status-gap: 8px;
+  --mac-preview-app-status-padding: 0 12px;
+  /* the progress bar in the status line */
+  --mac-preview-app-progress-width: 160px;
+  /* the sheets: their padding and the gap of their rows */
+  --mac-preview-app-sheet-padding: 20px;
+  --mac-preview-app-sheet-gap: 12px;
+  --mac-preview-app-field-width: 90px;
+  /* the signature pad: white paper with a hairline frame, in both appearances */
+  --mac-preview-app-pad-height: 150px;
+  --mac-preview-app-pad-border: #c7c7cc;
+  --mac-preview-app-camera-background: #000000;
+  --mac-preview-app-camera-line: #0a84ff;
+  /* the text being typed on a page: a dashed frame in the accent colour */
+  --mac-preview-app-typing-frame: 1px dashed var(--mac-accent);
+  --mac-preview-app-typing-min-width: 120px;
+  --mac-preview-app-typing-line-height: 1.2;
+  /* a form field of a PDF: a pale tint over the page, in both appearances, as a page is paper */
+  --mac-preview-app-field-background: #e4ecf9;
+  /* where Spelling and Substitutions open */
+  --mac-preview-app-tool-panels-top: 60px;
+  --mac-preview-app-tool-panels-end: 24px;
+  /* the Highlight button in the toolbar */
+  --mac-preview-app-highlight-width: 34px;
+  /* a note being written, and a spot of an annotation's colour in the sidebar */
+  --mac-preview-app-note-editor-width: 200px;
+  --mac-preview-app-note-editor-height: 140px;
+  --mac-preview-app-note-editor-padding: 6px;
+  --mac-preview-app-annotation-spot: 9px;
+  --mac-preview-app-annotation-spot-gap: 5px;
+  /* a table of contents' row, and how far each level stands in */
+  --mac-preview-app-contents-padding: 14px;
+  --mac-preview-app-contents-indent: 14px;
+  /* the magnifier */
+  --mac-preview-app-magnifier-side: 160px;
+  --mac-preview-app-magnifier-border: 3px solid rgb(255 255 255 / 0.9);
+  --mac-preview-app-magnifier-shadow: 0 2px 10px rgb(0 0 0 / 0.5);
+  /* the slideshow: pages on black, above the desktop's windows and menu bar */
+  --mac-preview-app-slideshow-background: #000000;
+  --mac-preview-app-slideshow-layer: 100000;
+  --mac-preview-app-slideshow-controls-bottom: 24px;
+  /* the inspector's Annotations list */
+  --mac-preview-app-inspector-marks-height: 200px;
+  /* [provisional] the title's chevron and pop-over; Adjust Color's panel. No capture shows them. */
+  --mac-preview-app-chevron-gap: 4px;
+  --mac-preview-app-title-field-width: 220px;
+  --mac-preview-app-levels-height: 48px;
+  --mac-preview-app-adjust-label-width: 88px;
+  --mac-preview-app-adjust-slider-width: 140px;
+}

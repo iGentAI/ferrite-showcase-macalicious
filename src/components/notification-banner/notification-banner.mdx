@@ -1,0 +1,111 @@
+---
+title: Notification Banner
+description: A delivered notification as Notification Center lists it, a translucent card with the app, the time, a title and the message.
+---
+
+<Example name="basic" both />
+
+One notification in the Notifications view of a
+[Notification Center](/components/notification-center). The banner that slides in at the top
+right of the screen when a notification arrives is another component, the notification alert.
+
+## Usage
+
+```tsx
+import { NotificationBanner } from "macalicious/notification-banner";
+import "macalicious/notification-banner.css";
+
+<NotificationBanner
+  app="Music"
+  icon={<MusicIcon />}
+  time="now"
+  title="Every Breaking Wave"
+  onOpen={showInMusic}
+  onClear={remove}
+>
+  U2 — Songs of Innocence
+</NotificationBanner>
+```
+
+Or copy the source into your project: `npx macalicious add notification-banner`.
+
+The children are the message. The card has no blur of its own: it is an overlay on the
+material of the panel behind it, so put it on a Notification Center or on a backdrop of your
+own.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[Notifications](https://web.archive.org/web/20200503160812/https://developer.apple.com/design/human-interface-guidelines/macos/system-capabilities/notifications/):
+
+- Write a short title that says what happened and a message that adds the detail; do not
+  repeat the app's name, which the header shows.
+- Make a click open the item the notification is about, not just the app.
+- Do not put anything in a notification that people should not see on a locked or shared
+  screen.
+
+## Variants and states
+
+<Example name="actions" both hideCode />
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Header | `app`, `icon`, `time` | 26 pt band: a 14 pt icon, the app's name in upper case, the time at the trailing edge in 11 pt |
+| Title, subtitle, message | `title`, `subtitle`, children | Bold title, subtitle in the title's colour, message in the secondary colour on up to four lines |
+| Thumbnail | `thumbnail` | 32 pt box at the trailing edge of the text |
+| Can be opened | `onOpen` | The text is a button |
+| Pressed | pointer down on the text | The text's area darkens by a tenth |
+| Clear button | `onClear`, with the pointer over the card or the focus in it | A 14 pt disc with a cross takes the icon's place |
+| Keyboard focus | Tab | Focus ring inside the text's area, or around the clear button |
+
+Catalina blends the card with vibrancy, so one tint cannot reproduce every backdrop: the fill
+is fitted to the card as captured over the sky of the default picture.
+
+Measured: the card, its edge, corner, header band and the text colours and positions, in both
+appearances. The corner is drawn with 7 pt, which matches the captured corner; the spec's
+figure of 4 pt was read from a smaller crop. Provisional: the pressed look, the clear button
+on a card (its colour is the one measured on a day heading's clear button), the thumbnail's
+size and the subtitle; no capture shows them.
+
+## Sizes
+
+One size: 322 pt wide; a title and one line of message make 77 pt.
+`--mac-notification-banner-width` changes the width.
+
+## API
+
+<PropsTable name="NotificationBannerProps" />
+
+`className`, `style`, `ref` and other attributes go to the root element.
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-notification-banner-width` | `322px` | Width of the card. |
+
+## Accessibility
+
+- The root is an `<article>`. Give it an `aria-label` when a list of notifications needs each
+  one named.
+- With `onOpen` the title, subtitle and message are one `<button>`, named by their text;
+  Return and Space open the notification.
+- The clear button comes before the text in the tab order and is named by `clearLabel`. It is
+  shown under the pointer and whenever the focus is inside the card, so it is never focused
+  while invisible.
+- The icon is decorative and hidden from assistive technology. A thumbnail that carries
+  information needs a text alternative of its own.
+- Focus rings show only in the key window. In forced-colours mode the card has a border.
+
+## Visual comparison
+
+`visual-banner` reproduces the notification of the Notifications view over the panel colours
+measured around it. Text is masked (the fallback font off Apple platforms) together with the
+app icon, which is Apple artwork. Results in Chromium on Linux, at a colour distance of 0.05:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Notification, Aqua | 0.17% of pixels differ | 0.16% |
+| Notification, Dark Aqua | 0.06% | 0.00% |
+
+What differs is the glow of the desktop picture under the card, which the backdrop follows
+along one row only. A state check moves the pointer over the card and reads the colour of the
+clear button's disc.

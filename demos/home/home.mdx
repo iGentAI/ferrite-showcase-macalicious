@@ -1,0 +1,189 @@
+---
+title: Home
+description: The Home app of macOS 10.15, an iPad app in a Mac window with a translucent toolbar over a wallpaper and the home's scenes and accessories as tiles that switch, built from the library alone.
+layout: full
+order: 70
+---
+
+<Example name="basic" />
+
+Click an accessory to switch it and a scene to run it; the status lines under the title follow.
+The toolbar changes the view and the home. Nothing is connected to a real home: the
+accessories are invented, they live in the page for as long as it is open, and a reload brings
+the screenshot's state back. The wallpaper is a drawn gradient and every glyph an original
+stand-in drawing.
+
+## What it shows
+
+- A [Window](/components/window) that holds a [Catalyst Chrome](/components/catalyst-chrome)
+  with `underToolbar`: the content starts at the window's top edge and the 38 pt toolbar row
+  is the translucent material that shows the wallpaper through. The row holds the
+  [Window Controls](/components/window-controls) and a [Toolbar](/components/toolbar), and is
+  the window's drag region. The window has no title; the `Window` is named with `aria-label`.
+- The toolbar: the homes as a pull-down of the [Toolbar Pop Up](/components/toolbar-pop-up)
+  family, with a house glyph and a chevron, whose [Menu Items](/components/menu-item) are a
+  radio group; the three views as a
+  [Toolbar Segmented Control](/components/toolbar-segmented-control) that two flexible spaces
+  keep centred on the window; and the add button, a
+  [Toolbar Button](/components/toolbar-button) that opens a [Menu](/components/menu).
+- The tiles: a [HomeKit Tile](/components/homekit-tile) for each accessory and each scene, in
+  the tile grids of the same component, each grid named by the header above it. An accessory
+  tile toggles. A scene tile does not: the demo marks a scene as active while every accessory
+  it sets is in the state it sets, so running Recording also lights Studio On, and switching
+  one of its lights by hand ends both.
+- The Rooms tab: the rooms in a Catalyst sidebar, the parts `CatalystSidebar`,
+  `CatalystSidebarGroup` and `CatalystSidebarItem` of the chrome; the room chosen there is the
+  title and its accessories, favourites or not, are the tiles.
+- The Automation tab: an [Empty State](/components/empty-state), in the Dark Aqua text colour
+  because the wallpaper is dark in both appearances.
+- Add Accessory… and Add Scene… open a [Sheet](/components/sheet) that hangs under the
+  toolbar, with a [Text Field](/components/text-field), [Pop Up Buttons](/components/pop-up-button),
+  [Labels](/components/label) and a [Default Button](/components/default-button). While it is
+  open the window is main, not key, and its content is inert.
+- The type of the content is the chrome's: its large title, title and subheadline styles
+  (`--mac-catalyst-chrome-font-*`), which are the iPad's text styles at 77%.
+
+| Control | What it does |
+| --- | --- |
+| Accessory tile | Switches the accessory. Its last line says the state in the accessory's own words: `On` and `Off` for a light or an outlet, a percentage for a dimmable light that is on, `Playing` and `Paused` for an Apple TV or a HomePod, `Open` and `Closed` for the garage door, and how far open blinds are. A sensor only reports and is not switched. Command-click adds a tile to a selection and Shift-click reaches from the last one chosen; a secondary click on the selection switches, moves or removes them together, and dragging one to a room takes them all. |
+| Scene tile | Puts each accessory the scene names in the state the scene sets. |
+| and 1 More | Shows the status lines beyond the third; Show Less hides them again. |
+| Home, Rooms, Automation | The view. |
+| A room in the sidebar | Shows that room. |
+| Homes | A menu of the homes; each keeps its own state. Home Settings… changes its name and wallpaper and removes it; Room Settings… renames and removes the room. Sharing is dimmed with its reason. |
+| Add | A menu: Add Accessory… adds a light with the name and in the room the sheet asks for, as a favourite; Add Scene… adds a scene that sets one room's lights and any other accessories chosen. |
+
+The status lines are computed from the accessories (`statusLines` in `home-data.ts`): how many
+lights are on, what the humidity sensor reads, the rooms whose every light is on, and what is
+playing, open or switched on. With the screenshot's state they read as the screenshot does,
+with a fourth line behind "and 1 More".
+
+## Hosting the window
+
+<Example name="hosted" />
+
+`Home` renders the library's `Window` as its root and passes every `Window` prop to it, so it
+does not assume it fills the page. Place it with `style`; a window manager gives it `state`,
+the size, and eight more props that the component hands to the window controls and to the
+toolbar row, which is this window's drag region. These are the props a
+[Managed Window](/components/managed-window)'s `render` form supplies, so the component can be
+spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { app } from "./app";
+
+<ManagedWindow
+  id={app.id}
+  title={app.name}
+  resizable={app.resizable}
+  minWidth={app.minSize.width}
+  minHeight={app.minSize.height}
+  defaultFrame={{ x: 80, y: 60, ...app.defaultSize }}
+  render={(props) => <app.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `CatalystChrome`: a press with the primary button, or a double click, on the toolbar row that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 914 by 768 by default, as captured. |
+| `state` | `"key" \| "main" \| "inactive"` | The window's state. While the add sheet is open a key window shows itself as main. |
+| the rest | `WindowProps` | `fullScreen`, `style`, `className`, `ref`, `aria-label`, pointer and focus events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `homeApp` and as `app`: `id`, `name`,
+`component`, `defaultSize` (914 by 768), `minSize` (600 by 400, the width at which the
+toolbar's items still fit), `resizable` and `menus`, the menu titles after the Apple menu.
+
+At other sizes the segmented control stays centred on the window, the tiles keep their size
+and wrap, and the content scrolls over the wallpaper, which stays in place.
+
+## Accessibility
+
+- The window is a `region` named "Home". The toolbar is one tab stop; the arrow keys move
+  between the Homes button, the three views and the Add button.
+- The Homes and Add buttons show only a glyph and are named with `aria-label`. The views are
+  toggle buttons in a group named "View".
+- The title is a heading and each section header a heading one level below it; a header names
+  the `group` of tiles under it.
+- An accessory tile is a toggle button named by its three lines, "Master Corner Light On":
+  `aria-pressed` and the last line both say its state, and Space or Return switches it. The
+  badge on the Studio HomePod's glyph is hidden from assistive technology, so its meaning is
+  added to that tile's state line as text that is not shown: "Paused, microphone off".
+- The sensor's tile is a toggle button too, because the library's tile has no other form for
+  an accessory, and it stays unpressed when activated.
+- A scene tile is a plain button. That a scene is in effect is shown by its white fill alone;
+  it is not announced.
+- "and 1 More" is a [Borderless Button](/components/borderless-button) with `aria-expanded`.
+  The status lines are not a live region: the
+  tile that was switched already announces its own state.
+- The Rooms sidebar is a `navigation` landmark named "Rooms"; the room shown has
+  `aria-current="page"`.
+- The sheet is a modal `dialog` named by its title; its text field takes the focus, Return
+  adds and Escape cancels.
+- The content's text is white on the wallpaper in both appearances. The text of a tile that is
+  off is tone on tone by the library's design and low in contrast in Aqua (see
+  [HomeKit Tile](/components/homekit-tile)).
+
+## Fidelity
+
+`home.visual.json` compares the demo with the two Home screenshots, the whole capture with the
+window's shadow in each appearance: once as it is (`window-light`, `window-dark`), and once
+with the text and the stand-in glyphs masked (`window-layout-light`, `window-layout-dark`).
+The masks cover the title, the status lines, the section headers, the glyph and the lines of
+every tile, the three segment titles and the two toolbar glyphs; the wallpaper, the toolbar,
+the bezels, the tiles' fills and the shadow are scored.
+
+Scores from `npm run visual -- home/` (Chromium on Linux, fallback font), share of pixels that
+differ and mean colour distance out of 255:
+
+| Comparison | 1x | 2x |
+| --- | --- | --- |
+| `window-light` | 2.4%, 7.3 | 2.4%, 7.6 |
+| `window-layout-light` | 0.9%, 5.9 | 1.0%, 6.1 |
+| `window-dark` | 3.3%, 7.6 | 3.1%, 7.9 |
+| `window-layout-dark` | 1.1%, 5.8 | 1.1%, 6.0 |
+
+The budgets in `home.visual.json` are set just above these. The mean distance is nearly all
+wallpaper, which no mask covers.
+
+Taken from the spec's measurements of the screenshots and laid out to them: the 914 by 768 pt
+frame; the 38 pt toolbar row with the window controls, the 47 pt pull-down from 77.5 pt, the
+290 pt segmented control centred on the window with its dividers 96.5 pt apart, and the 39 pt
+add button 7.5 pt from the trailing edge; the title, the three status lines 22 pt apart, "and
+1 More" and the two section headers at the capture's heights; the scene tiles from 326 pt and
+the accessory tiles from 484 pt, both from 15.5 pt off the leading edge, four scenes and eight
+accessories to a row. The colours that are the app's own are in `home.tokens.css`, each with
+the place it was measured.
+
+What differs, and why:
+
+- **Wallpaper.** Home's is a blurred photograph, an image asset that is not reproduced. The
+  demo draws gradients in its colours: lighter under the toolbar, darker towards the leading
+  edge and the bottom. The photograph's streaks are not there. The backdrop is a plain
+  gradient standing in for the wallpaper, not a drawing of it. It is not masked, so it is the
+  largest term of every comparison.
+- **Toolbar controls in Aqua.** Home's buttons and its segmented control let the wallpaper
+  tint them (the selected segment measures `#596c70`). The library's toolbar controls are
+  opaque in Aqua, so they stay neutral grey; in Dark Aqua they are translucent and take the
+  tint. The demo does not restyle them.
+- **Tile pitch.** The capture's accessory tiles are 109.4 pt apart. The library's tiles are
+  101.5 pt with a 7.5 pt gap, 109 pt, so the eighth tile of a row stands 3 pt before the
+  capture's. The demo does not change the grid's gap.
+- **Glyphs.** Every glyph is an original drawing to the measured size: a bulb, an outlet, a
+  box for the Apple TV (Home draws its logo), a garage door, a lamp, a sensor, a speaker, the
+  two houses of the scenes and the toolbar's house. They are masked in the layout comparisons.
+- **Text.** Set in the fallback font off Apple devices, so a long name is cut a letter or two
+  from where the screenshot cuts it.
+- **Badge.** The mark on the Studio HomePod's glyph is drawn as a microphone that is struck
+  out; the capture's mark is too small to read, and the library's badge has no ring.
+- **Not in a screenshot (provisional):** the Rooms and Automation tabs, both menus, the
+  sheet, the second home, an accessory in any state other than the captured one (the glyph
+  colours of a speaker, an outlet and a door that are on), the window when it is not key and
+  every size other than the captured one. In Home the rooms are pages of the Rooms tab; the
+  demo lists them in a sidebar, as the Catalyst guidelines ask of an iPad app on the Mac.
+- **Not built:** a double click or a long press on a tile (a secondary click opens its menu),
+  cameras, location triggers, and any connection to HomeKit: on the served desktop every accessory
+  is a simulated record, and the window says so.

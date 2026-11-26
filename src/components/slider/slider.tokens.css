@@ -1,0 +1,38 @@
+/* Slider colours: translucent blacks and whites recovered from the Displays, Sound and
+   Trackpad panes. slider.mdx gives the pixels. */
+:root {
+  /* [measured, computed] Unfilled track; tick marks */
+  --mac-slider-track: light-dark(rgb(0 0 0 / 0.22), rgb(255 255 255 / 0.14));
+  --mac-slider-tick: light-dark(rgb(0 0 0 / 0.35), rgb(255 255 255 / 0.25));
+  /* [measured] */
+  --mac-slider-thumb-fill: light-dark(#ffffff, #cccccc);
+  /* [measured, computed] Hairline of the round knob */
+  --mac-slider-thumb-outline: linear-gradient(
+    to bottom,
+    light-dark(rgb(0 0 0 / 0.14), rgb(0 0 0 / 0.09)),
+    light-dark(rgb(0 0 0 / 0.165), rgb(0 0 0 / 0.11)) 50%,
+    light-dark(rgb(0 0 0 / 0.26), rgb(0 0 0 / 0.2))
+  );
+  /* Hairline of the pointed thumb, less what its shadow adds underneath */
+  --mac-slider-thumb-outline-ticks: linear-gradient(
+    to bottom,
+    light-dark(rgb(0 0 0 / 0.13), rgb(0 0 0 / 0.065)),
+    light-dark(rgb(0 0 0 / 0.13), rgb(0 0 0 / 0.08)) 25%,
+    light-dark(rgb(0 0 0 / 0.14), rgb(0 0 0 / 0.08)) 50%,
+    light-dark(rgb(0 0 0 / 0.17), rgb(0 0 0 / 0.1)) 72%,
+    light-dark(rgb(0 0 0 / 0.1), rgb(0 0 0 / 0.08))
+  );
+  /* Dark: lighter first rows */
+  --mac-slider-thumb-highlight:
+    inset 0 0.5px 0 0 light-dark(transparent, rgb(255 255 255 / 0.16)),
+    inset 0 1px 0 0 light-dark(transparent, rgb(255 255 255 / 0.07));
+  --mac-slider-thumb-highlight-ticks:
+    inset 0 0.5px 0 0 light-dark(transparent, rgb(255 255 255 / 0.17)),
+    inset 0 1px 0 0 light-dark(transparent, rgb(255 255 255 / 0.035));
+  /* Shadow of the round knob, and of the pointed thumb */
+  --mac-slider-thumb-shadow:
+    0 0 0 0.5px rgb(0 0 0 / 0.02), 0 0.5px 0 0 rgb(0 0 0 / 0.06), 0 1px 0 0 rgb(0 0 0 / 0.035);
+  --mac-slider-thumb-drop-shadow: drop-shadow(0 0.5px 0.5px rgb(0 0 0 / 0.2));
+  /* [provisional] Pressed: no screenshot shows a drag */
+  --mac-slider-thumb-fill-pressed: light-dark(#f0f0f0, #e0e0e0);
+}

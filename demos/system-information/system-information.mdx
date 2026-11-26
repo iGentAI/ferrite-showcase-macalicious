@@ -1,0 +1,145 @@
+---
+title: System Information
+description: The System Information window of macOS 10.15 with its outline of categories, the report of the selected one as label and value lines or as a sortable table over the details of its selected row, and the path of the selection at the bottom.
+layout: full
+order: 23
+---
+
+<Example name="basic" />
+
+Select a category in the outline, collapse a group with its triangle, and open Software >
+Applications for a report that is a table. The Hardware overview is the one of the reference
+screenshots; every other report is invented, and nothing is read from the machine the page
+runs on. The computer icon of the path is an original stand-in drawing.
+
+## What it shows
+
+- A [Window](/components/window) with the plain 22 pt [Title Bar](/components/title-bar): the
+  [Window Controls](/components/window-controls) and the model's name as the title.
+- The categories: an [Outline View](/components/outline-view) of two levels on the content
+  background, with 16 pt rows at the mini size, a
+  [Disclosure Triangle](/components/disclosure-triangle) on every group, single selection that
+  is emphasised while the outline has the keyboard focus in the key window, and type-select by
+  name. The window always has a selected category: a click that would clear the selection is
+  ignored.
+- A [Split View](/components/split-view) with a thin divider between the outline, which opens
+  163 pt wide, and the report.
+- The report: a read-only rich [Text View](/components/text-view), so its text can be selected
+  and copied. A report is one or more bold headings, each over a description list of label and
+  value lines whose values start in a common column; or a single line when the computer has
+  nothing in a category.
+- A report that lists things (Software > Applications, Extensions and Installations): a second,
+  vertical split view with a [Table View](/components/table-view) of 16 pt alternating rows,
+  whose every heading sorts, over the details of the selected row. Versions sort as numbers and
+  dates by time. Each of these reports keeps its order and its selected row while another
+  category is shown.
+- The path at the bottom: a [Status Bar](/components/status-bar) in its `breadcrumb` variant,
+  with the computer's name, the selected category under its group and, in a table report, the
+  selected row.
+
+<Example name="applications" />
+
+System Information has no toolbar and no search field, so this demo has none either: the
+outline is the only way to move between reports, and the table headings are the only controls
+in a report.
+
+## Hosting the window
+
+`SystemInformation` renders the library's `Window` as its root and passes every `Window` prop
+to it, so it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component hands to the window controls and the
+title bar. These are the props a [Managed Window](/components/managed-window)'s `render` form
+supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { systemInformationApp } from "./app";
+
+<ManagedWindow
+  id={systemInformationApp.id}
+  defaultFrame={{ x: 80, y: 60, ...systemInformationApp.defaultSize }}
+  minWidth={systemInformationApp.minSize.width}
+  minHeight={systemInformationApp.minSize.height}
+  render={(props) => <systemInformationApp.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `items` | `SystemInformationItem[]` | The categories, each with its report; the default is the report of the light screenshot. |
+| `modelName` | `string` | The window's title; "MacBook Pro" by default. |
+| `computerName` | `string` | The first component of the path; "ismh15" by default. |
+| `selectedId`, `defaultSelectedId`, `onSelectedIdChange` | `string` and a function | The selected category, controlled or not; `"hardware"` at first. |
+| `defaultExpanded` | `string[]` | The groups expanded at first; every top-level group by default. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 751 by 520 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `systemInformationApp` and as `app`:
+`id`, `name`, `component`, `defaultSize` (751 by 520), `minSize` (420 by 240), `resizable` and
+`menus`, the menu titles after the Apple menu. The [Desktop](/demos/desktop) finds it there and
+launches the window from its Dock.
+
+The reports are data (`system-information-data.ts`): an item of the outline has an `id`, a
+`name`, optional `children` and a `report`, which is `{ kind: "properties", sections }`,
+`{ kind: "table", columns, rows }` or `{ kind: "empty", message }`. `createItems()` builds the
+default tree, `pathTo()` finds the way to a category, and `sortRows()` orders a table.
+
+## Accessibility
+
+- The window is a `region` named by its title.
+- The outline is a `treegrid` named "Categories" and one tab stop: the up and down arrow keys
+  move the selection, the right and left ones expand and collapse a group or move to its first
+  item and back to it, and typing selects by name. Each row reports its level and, for a group,
+  whether it is expanded.
+- The report is a read-only multi-line `textbox` named after the category ("Hardware report"),
+  in the tab order so that its text can be reached, selected and copied with the keyboard. Its
+  lines are a description list: each value belongs to its label.
+- A table report is a `grid` named after the category and one tab stop; each heading is a
+  button, and its column reports the order with `aria-sort`. The details under it are a second
+  read-only `textbox` ("Applications details").
+- Both dividers are focusable `separator`s that the arrow keys move; each names what it
+  resizes.
+- The path is a `group` named "Path" that holds the location as text; its icon is decorative.
+
+## Fidelity
+
+`system-information.visual.json` compares the whole window with the System Information
+screenshots in both appearances, each as captured and again with the text and the stand-in
+drawing masked. The dark screenshot names a later firmware, so it has an example of its own.
+Scores from `npm run visual -- system-information/` in Chromium on Linux with the fallback
+font: the share of pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 4.92% | 5.89 | 3.70% | 5.11 |
+| `window-light-layout` (masked) | 0.04% | 0.06 | 0.02% | 0.16 |
+| `window-dark` | 4.95% | 5.64 | 3.65% | 4.72 |
+| `window-dark-layout` (masked) | 0.05% | 0.24 | 0.03% | 0.41 |
+
+A fifth comparison, `applications-light`, checks a state no screenshot shows: the Applications
+report after a click on its first row, by the colours of three pixels (the emphasised
+selection, the details pane and the bottom bar).
+
+Measured in the screenshots and reproduced: the 751 by 520 pt frame, the 22 pt title bar, the
+163 pt outline with its 16 pt rows and the 1 pt divider, the report's heading 15.5 pt from the
+pane's edge with its cap top 12 pt under the title bar, the lines 22 pt from the edge on a
+13 pt pitch with their values 185.5 pt from it, and the 21 pt bottom bar with its icon 7 pt
+and its text 26.5 pt from the window's edge.
+
+What differs, and why:
+
+- **Text.** Set in the fallback font off Apple devices, which is nearly all of the unmasked
+  scores.
+- **The computer icon** of the path is application artwork, replaced by an original drawing of
+  the same size.
+- **The value column.** System Information starts the values after the longest label of the
+  whole report; here each block of lines has a column of its own, at the captured position
+  unless a label is longer.
+- **Not in a screenshot (provisional):** every report other than the Hardware overview, the
+  line of a category with nothing to show, the table reports with their columns and the
+  height of their table, the Software group and the last two Network categories, the outline
+  when it does not have the keyboard focus, the window when it is not key, and every size
+  other than the captured one.

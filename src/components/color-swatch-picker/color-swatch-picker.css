@@ -1,0 +1,198 @@
+/*
+ * Colour swatch picker (the accent colour and appearance rows of System Preferences › General):
+ * a radio group of 16 pt discs 8 pt apart, or of 67 x 44 pt thumbnails.
+ *
+ * Swatch: [data-color] is one of the eight measured accents; any other colour comes in as
+ * --mac-color-swatch-picker-color. [data-checked], [data-disabled] from Base UI; :active;
+ * :focus-visible; [data-force~="pressed" | "focus"] pin the transient states. In a window that
+ * is not key there is no focus ring; the swatches and the dot keep their colours.
+ */
+.mac-color-swatch-picker {
+  display: inline-flex;
+  gap: 8px;
+  vertical-align: middle;
+}
+
+.mac-color-swatch-picker-swatch {
+  --_fill: var(--mac-color-swatch-picker-color, transparent);
+  --_ring: var(--mac-color-swatch-picker-ring);
+
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--_ring);
+  border-radius: 50%;
+  background: var(--_fill);
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.mac-color-swatch-picker-swatch:where([data-color="blue"]) {
+  --_fill: var(--mac-color-swatch-picker-blue);
+  --_ring: var(--mac-color-swatch-picker-blue-ring);
+}
+
+.mac-color-swatch-picker-swatch:where([data-color="purple"]) {
+  --_fill: var(--mac-color-swatch-picker-purple);
+  --_ring: var(--mac-color-swatch-picker-purple-ring);
+}
+
+.mac-color-swatch-picker-swatch:where([data-color="pink"]) {
+  --_fill: var(--mac-color-swatch-picker-pink);
+  --_ring: var(--mac-color-swatch-picker-pink-ring);
+}
+
+.mac-color-swatch-picker-swatch:where([data-color="red"]) {
+  --_fill: var(--mac-color-swatch-picker-red);
+  --_ring: var(--mac-color-swatch-picker-red-ring);
+}
+
+.mac-color-swatch-picker-swatch:where([data-color="orange"]) {
+  --_fill: var(--mac-color-swatch-picker-orange);
+  --_ring: var(--mac-color-swatch-picker-orange-ring);
+}
+
+.mac-color-swatch-picker-swatch:where([data-color="yellow"]) {
+  --_fill: var(--mac-color-swatch-picker-yellow);
+  --_ring: var(--mac-color-swatch-picker-yellow-ring);
+}
+
+.mac-color-swatch-picker-swatch:where([data-color="green"]) {
+  --_fill: var(--mac-color-swatch-picker-green);
+  --_ring: var(--mac-color-swatch-picker-green-ring);
+}
+
+.mac-color-swatch-picker-swatch:where([data-color="graphite"]) {
+  --_fill: var(--mac-color-swatch-picker-graphite);
+  --_ring: var(--mac-color-swatch-picker-graphite-ring);
+}
+
+/* The dot of the chosen swatch: a disc of 5.5 pt, which puts its edge on half a device pixel
+   at 2x as measured. It is painted as gradients in a whole-pixel box because a 5.5 pt box
+   would be snapped to whole pixels; the lower layer is the dot's soft shadow. */
+.mac-color-swatch-picker-swatch:where([data-checked])::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 8px;
+  height: 8px;
+  margin: auto;
+  background:
+    radial-gradient(circle, var(--mac-color-swatch-picker-dot) 2.5px, transparent 3px),
+    radial-gradient(
+      circle at 50% calc(50% + 1px),
+      var(--mac-color-swatch-picker-dot-shadow) 1.75px,
+      transparent 3.5px
+    );
+}
+
+/* Pressed: the swatch or the picture darkens, as an image button does */
+.mac-color-swatch-picker-swatch:where(:active, [data-force~="pressed"]):where(
+  :not([data-disabled], [data-readonly])
+),
+.mac-color-swatch-picker-thumbnail:where(:active, [data-force~="pressed"]):where(
+    :not([data-disabled], [data-readonly])
+  )
+  .mac-color-swatch-picker-thumbnail-image {
+  filter: brightness(0.88);
+}
+
+:where(.mac-color-swatch-picker-swatch, .mac-color-swatch-picker-thumbnail):where([data-disabled]) {
+  opacity: 0.5;
+}
+
+/* Keyboard focus ring, 2.5 pt beyond the swatch or around a thumbnail's ring; key window only */
+.mac-color-swatch-picker-swatch:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+),
+.mac-color-swatch-picker-thumbnail:where(:focus-visible, [data-force~="focus"]):where(
+    :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+  )
+  .mac-color-swatch-picker-thumbnail-image {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--_ring-offset, calc(var(--mac-focus-ring-offset) - var(--mac-hairline)));
+}
+
+/*
+ * Thumbnails (Light, Dark, Auto): a 67 x 44 pt picture and a caption. The frame's ::after is
+ * the hairline around an unchosen picture or the 1.5 pt accent ring around the chosen one, both
+ * outside the picture. In a window that is not key the ring is grey.
+ */
+.mac-color-swatch-picker:where(:has(> .mac-color-swatch-picker-thumbnail)) {
+  gap: 19px;
+}
+
+.mac-color-swatch-picker-thumbnail {
+  --_ring-offset: 1.5px;
+
+  display: inline-grid;
+  justify-items: center;
+  gap: 6px;
+  width: 67px;
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  outline: none;
+}
+
+.mac-color-swatch-picker-thumbnail-image {
+  position: relative;
+  width: 67px;
+  height: 44px;
+  border-radius: 4px;
+}
+
+.mac-color-swatch-picker-thumbnail-image > * {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  overflow: hidden;
+  object-fit: cover;
+}
+
+.mac-color-swatch-picker-thumbnail-image::after {
+  content: "";
+  position: absolute;
+  inset: calc(var(--mac-hairline) * -1);
+  border: var(--mac-hairline) solid;
+  border-color: var(--mac-color-swatch-picker-thumbnail-border);
+  border-radius: calc(4px + var(--mac-hairline));
+  box-shadow: var(--mac-color-swatch-picker-thumbnail-shadow);
+  pointer-events: none;
+}
+
+.mac-color-swatch-picker-thumbnail:where([data-checked])
+  .mac-color-swatch-picker-thumbnail-image::after {
+  inset: -1.5px;
+  border: 1.5px solid var(--mac-color-swatch-picker-thumbnail-ring-inactive);
+  border-radius: 5.5px;
+  box-shadow: none;
+}
+
+.mac-color-swatch-picker-thumbnail:where([data-checked]):where(
+    :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+  )
+  .mac-color-swatch-picker-thumbnail-image::after {
+  border-color: var(--mac-color-swatch-picker-thumbnail-ring);
+}
+
+/* Forced colours: swatch colours and pictures are content and are kept. */
+@media (forced-colors: active) {
+  .mac-color-swatch-picker-swatch,
+  .mac-color-swatch-picker-thumbnail-image > * {
+    forced-color-adjust: none;
+    outline-color: Highlight;
+  }
+
+  .mac-color-swatch-picker-thumbnail[data-checked] .mac-color-swatch-picker-thumbnail-image::after {
+    border-color: Highlight;
+  }
+}

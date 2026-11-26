@@ -1,0 +1,101 @@
+/*
+ * Colour wheel and spectrum (the wheel and image-palette pickers of NSColorPanel).
+ *
+ * The area is drawn with gradients: the hues, white fading out with the saturation, and a
+ * black layer whose opacity is the missing brightness. The marker is a pseudo-element placed
+ * with the custom properties the component sets: --_x and --_y, fractions of the area's width
+ * and height, and --_v, the brightness.
+ *
+ * States
+ *   [data-shape="wheel" | "spectrum"]  the disc, or the rectangle
+ *   [data-disabled]                    dimmed; ignores input
+ *   :focus-visible                     keyboard focus ring on the area
+ *   :where([data-window-state="main"], [data-window-state="inactive"]) *
+ *                                      not the key window: no focus ring
+ */
+.mac-color-wheel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+  inline-size: 200px;
+  max-inline-size: 100%;
+}
+
+.mac-color-wheel-area {
+  position: relative;
+  box-sizing: border-box;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, var(--mac-color-wheel-white), var(--mac-color-wheel-white-clear)),
+    conic-gradient(from 90deg, var(--mac-color-wheel-hues-around));
+  box-shadow: 0 0 0 var(--mac-hairline) var(--mac-color-wheel-edge);
+  cursor: crosshair;
+  touch-action: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-color-wheel:where([data-shape="spectrum"]) > .mac-color-wheel-area {
+  aspect-ratio: 2;
+  border-radius: 0;
+  background:
+    linear-gradient(
+      var(--mac-color-wheel-white),
+      var(--mac-color-wheel-white-clear) 50%,
+      var(--mac-color-wheel-black-clear) 50%,
+      var(--mac-color-wheel-black)
+    ),
+    linear-gradient(to right, var(--mac-color-wheel-hues-across));
+}
+
+/* The brightness, over the whole disc. The spectrum holds its own black. */
+.mac-color-wheel:where([data-shape="wheel"]) > .mac-color-wheel-area::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--mac-color-wheel-black);
+  opacity: calc(1 - var(--_v));
+}
+
+/* The marker: a 9 pt ring centred on the chosen point. */
+.mac-color-wheel-area::after {
+  content: "";
+  position: absolute;
+  /* Physical sides, like the pointer's coordinates and the gradients: the hues do not turn
+     round in a right-to-left page, and neither may the marker. */
+  left: calc(var(--_x) * 100% - 4.5px);
+  top: calc(var(--_y) * 100% - 4.5px);
+  box-sizing: border-box;
+  inline-size: 9px;
+  block-size: 9px;
+  border: 1.5px solid var(--mac-color-wheel-marker);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 0.5px var(--mac-color-wheel-marker-edge),
+    inset 0 0 0 0.5px var(--mac-color-wheel-marker-edge);
+  pointer-events: none;
+}
+
+.mac-color-wheel:where([data-disabled]) > .mac-color-wheel-area {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Keyboard focus ring; only in the key window. */
+.mac-color-wheel-area:where(:focus-visible):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: 1px;
+}
+
+@media (forced-colors: active) {
+  /* The colours are the content: keep them, and give the area an edge that survives. */
+  .mac-color-wheel-area {
+    border: 1px solid ButtonText;
+    forced-color-adjust: none;
+  }
+}

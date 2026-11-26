@@ -1,0 +1,177 @@
+---
+title: Toolbar Button
+description: The 22 pt textured rounded button of a toolbar, holding a glyph or a short title, momentary by default and optionally a toggle.
+order: 15
+---
+
+<Example name="basic" both />
+
+AppKit's push button in the textured rounded bezel style, which is reserved for toolbars. It is
+Base UI's [Button](https://base-ui.com/react/components/button), or its
+[Toggle](https://base-ui.com/react/components/toggle) when `pressed` or `defaultPressed` is
+given. Inside a [Toolbar](/components/toolbar) it joins the toolbar's arrow-key navigation; on
+its own it is an ordinary button.
+
+## Usage
+
+```tsx
+import { ToolbarButton } from "macalicious/toolbar-button";
+import "macalicious/toolbar-button.css";
+
+<ToolbarButton aria-label="Share" onClick={share}>
+  {/* a 16 pt glyph drawn with currentColor */}
+</ToolbarButton>
+<ToolbarButton onClick={done}>Done</ToolbarButton>
+```
+
+The button is as wide as its content plus padding; set `style={{ width: 38 }}` for the fixed
+widths the screenshots show (25 pt Back and Forward, 36 to 38 pt single glyphs).
+
+## Guidelines
+
+Not verified: this section paraphrases Apple's Human Interface Guidelines and was not checked
+against Apple's text.
+
+- A toolbar button acts immediately and does not stay highlighted. Make it a toggle only for a
+  real on and off state, such as Safari's Reader button.
+- Prefer a template glyph to text. Draw it with `currentColor` so it follows the state.
+- Use this style only in a toolbar; in the window body use a [Push Button](/components/push-button).
+- A Back and Forward pair is a [Toolbar Segmented Control](/components/toolbar-segmented-control)
+  with `variant="navigation"`.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | Aqua: white-to-light-grey gradient in a half-point border, darker at the bottom, with a faint shadow row. Dark Aqua: flat grey with a lighter top row, no border |
+| Pressed | `:active` | Darker in Aqua, lighter in Dark Aqua, with a darker glyph in Aqua; the border is the resting one. Measured on Safari's Share button while its menu is open |
+| On | `pressed`, or a toggle that is on | Dark bezel with a white glyph in Aqua; light bezel with a dark glyph in Dark Aqua |
+| On, tinted | a toggle that is on, with `pressedStyle="tint"` | The plain bezel with a blue glyph; a mark inside the glyph is white in Aqua and a hole in Dark Aqua. Grey like any glyph in an inactive window |
+| Disabled | `disabled` | Dimmed glyph; the bezel stays |
+| Keyboard focus | `:focus-visible` | Focus ring, in the key window only (provisional) |
+| Main window | `data-window-state="main"` on an ancestor | As in the key window, without the focus ring |
+| Inactive window | `data-window-state="inactive"` on an ancestor | Flat outlined bezel on the flat bar, grey glyph |
+
+<Example name="toggle" />
+
+### A toggle that tints its glyph
+
+Console's Now and Info buttons keep the plain bezel while they are on and show their state in
+the glyph: `pressedStyle="tint"`. A glyph that is a solid shape with a mark in it (the letter
+of Info) cuts the mark out and draws it again filled with
+`var(--mac-toolbar-button-glyph-mark)`, which the button sets: transparent while it is off,
+and the mark's colour while it is on and tinted.
+
+<Example name="tint" both />
+
+### Laying buttons out by their bezels
+
+The button's box is the bezel's fill, so a gap between two buttons is the distance between
+their fills, and Aqua's hairline border is drawn in the gap. Keychain Access counts the border
+as part of the button instead: its two buttons stand 8 pt apart from border to border in Aqua
+and from fill to fill in Dark Aqua, which has no border. `frame="bezel"` gives a button that
+box: a margin of one hairline on each side in Aqua and none in Dark Aqua, from the token
+`--mac-toolbar-button-border-room`. With it the same toolbar inset and gap put the buttons
+where the captures have them in both appearances. Console and Finder do not lay their buttons
+out this way, which is why it is not the default.
+
+## Sizes
+
+One size: the button is 22 pt high, as wide as its content plus 8 pt of padding on each side,
+and at least 25 pt wide. Set `style={{ width }}` for an exact width, with `minWidth` too for
+one under 25 pt (Keychain Access's are 24 pt).
+
+## API
+
+<PropsTable name="ToolbarButtonProps" />
+
+| Attribute or variable | Values | Description |
+| --- | --- | --- |
+| `data-pressed` | present or absent | Set by Base UI on a toggle that is on. |
+| `data-pressed-style` | `tint` or absent | Reflects `pressedStyle="tint"`. |
+| `data-frame` | `bezel` or absent | Reflects `frame="bezel"`. |
+| `data-disabled` | present or absent | Set by Base UI while the button is disabled. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only. |
+| `--mac-toolbar-button-glyph-mark` | a colour, set by the button | For a mark inside a solid glyph: transparent, and the mark's colour while a tinted toggle is on. |
+
+## Accessibility
+
+- A native `<button>`. Space and Return activate it.
+- A button that shows only a glyph needs an `aria-label`, or a
+  [Toolbar Labelled Item](/components/toolbar-labelled-item) around it, whose label names it.
+- A toggle exposes `aria-pressed`. A tinted toggle shows its state by colour alone to the eye;
+  in forced colours the glyph takes the system highlight colour.
+- Inside a toolbar the button is reached with the arrow keys and the toolbar is one tab stop;
+  a disabled button stays reachable there, as Base UI's toolbar keeps disabled items focusable.
+  On its own, a disabled button leaves the tab order.
+- The focus ring shows only in the key window.
+
+## Visual comparison
+
+`toolbar-button.visual.json` compares Finder's Back (enabled) and Forward (disabled) buttons in
+both appearances (Finder Network), the buttons of an inactive Safari window (behind Picture
+in Picture), the middle of Console's Info button (a tinted toggle that is on), the two
+buttons of Keychain Access laid out by their bezels, the last two each whole and with the
+stand-in glyph drawings masked, and a pressed button: Safari's Share button while its menu is
+open. The scores are in the table below.
+
+Scores from `npm run visual -- toolbar-button` in Chromium on Linux with the fallback font: the share of
+pixels that differ by more than the comparison's threshold, and the mean colour difference out
+of 255. A masked comparison leaves out stand-in artwork and fallback-font text.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `back-forward-light` | Light-Finder-Network (124, 122, 110, 52) | 11.75% | 5.67 | 1.24% | 1.54 |
+| `back-forward-dark` | Dark-Finder-Network (124, 122, 110, 52) | 7.48% | 7.48 | 1.33% | 5.02 |
+| `inactive-light` (masked) | Light-Safari-v13-Picture-in-Picture (466, 116, 180, 52) | 10.58% | 3.14 | 0.24% | 0.33 |
+| `inactive-dark` (masked) | Dark-Safari-v13-Picture-in-Picture (494, 90, 180, 52) | 5.73% | 2.86 | 0.27% | 1.62 |
+| `inactive-light-whole` | Light-Safari-v13-Picture-in-Picture (466, 116, 180, 52) | 1.54% | 3.72 | 1.45% | 1.24 |
+| `inactive-dark-whole` | Dark-Safari-v13-Picture-in-Picture (494, 90, 180, 52) | 1.54% | 3.56 | 1.43% | 2.45 |
+| `console-info-light` | Light-Console (722, 118, 68, 60) | 10.98% | 8.10 | 0.93% | 3.03 |
+| `console-info-light-disc` (masked) | Light-Console (722, 118, 68, 60) | 12.79% | 6.94 | 0.66% | 2.14 |
+| `console-info-dark` | Dark-Console (722, 118, 68, 60) | 7.06% | 7.52 | 1.79% | 4.76 |
+| `console-info-dark-disc` (masked) | Dark-Console (722, 118, 68, 60) | 8.49% | 6.51 | 0.00% | 3.43 |
+| `keychain-buttons-light` | Light-Keychain-Access (256, 84, 140, 60) | 7.38% | 7.81 | 0.70% | 3.19 |
+| `keychain-buttons-light-bezels` (masked) | Light-Keychain-Access (256, 84, 140, 60) | 11.66% | 5.25 | 0.06% | 2.64 |
+| `keychain-buttons-dark` | Dark-Keychain-Access (256, 84, 140, 60) | 10.29% | 9.28 | 0.71% | 4.09 |
+| `keychain-buttons-dark-bezels` (masked) | Dark-Keychain-Access (256, 84, 140, 60) | 6.32% | 5.37 | 0.26% | 2.71 |
+| `pressed-light` (masked) | Light-Safari-v13-Sharing (2274, 37, 100, 36) | 6.75% | 3.34 | 0.00% | 0.76 |
+| `pressed-dark` (masked) | Dark-Safari-v13-Sharing (2292, 21, 100, 36) | 7.67% | 5.48 | 0.07% | 0.87 |
+
+The two `-whole` rows score the inactive crop with nothing masked, at the default threshold, so
+they include the stand-in sidebar glyph; the masked rows use the stricter threshold 0.05.
+
+The two `pressed` rows compare the upper 18 pt of the toolbar, the bar and the upper half of
+the bezel: the capture is of a button whose menu is open, and the menu's shadow darkens the
+capture below that. The fill's lower half is the capture's with that shadow taken out; the
+[Share Menu](/components/share-menu) page compares the whole bezel with its menu open.
+
+Measured: the 22 pt fill, the gradient stops, the three border colours and the shadow row, the
+corner, the enabled, disabled, on and inactive glyph colours, the Back chevron, and the pressed
+fill and glyph. Provisional: the focus ring, which no screenshot shows, and a pressed button
+in a window that is not key, which keeps the pressed fill here. The dark fill differs by a few
+levels between apps on a Mac (wallpaper tinting, and lighter where light content scrolls under
+the bar); the Finder values are used.
+
+The tint is read on the disc of Console's Info button (Light-/Dark-Console, x=741 to 770,
+y=133 to 162: 553 pixels of `#417eee` and of `#5190f0`) and on the disc of Now. The letter in
+the disc is white in Aqua; in Dark Aqua it has the bezel's colour (`#6e6f70`), a hole. The
+captures are taken with the blue accent, and the tint is not the accent's blue, so the token
+does not follow the accent colour; whether Console's does is not known.
+
+The bezel frame is read on row 114 of the Keychain Access captures: the two 24 pt fills start
+at x=269 and x=335 behind a border pixel at x=268 and x=334 in Aqua, and at x=268 and x=332 in
+Dark Aqua; the window's edge is x=112, so the buttons start 78 pt from it and are 8 pt apart
+once Aqua's border counts as part of the button. In Console the six buttons are 44 pt from
+border to border in Aqua (fills from x=129 to 214) and 44 pt of fill in Dark Aqua (x=128 to
+215), in the same place; neither box of this component is that one, and the Console comparison
+above leaves the button's ends out.
+
+The bezel's corner is built at 4 pt on the border's outer edge: the shared control radius plus
+the hairline border. The spec's fit of the light Finder corner gives 4.25 pt. Rendered at 3.75,
+4, 4.25 and 4.5 pt against the same corners, 4 and 4.25 pt tie in Aqua (rms 1.93 and 1.98
+levels on the Back button's top-left corner) and 4 pt is closer in Dark Aqua (5.27 against
+5.36), with 3.75 and 4.5 pt clearly worse in both, so the radius stays on the shared token. This
+is the adopted value as built, not a new measurement.

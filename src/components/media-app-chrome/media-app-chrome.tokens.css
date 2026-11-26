@@ -1,0 +1,43 @@
+/* Evidence for every value: reference/spec/components/media-app-chrome.md, "Colours and fills". */
+:root {
+  /* [measured] Music bar, pane and separator */
+  --mac-media-app-chrome-bar-top: light-dark(#ffffff, #2b2d2f);
+  --mac-media-app-chrome-bar-middle: light-dark(#fafafa, #252729);
+  --mac-media-app-chrome-bar-bottom: light-dark(#f4f4f4, #1e2022);
+  --mac-media-app-chrome-bar-separator: light-dark(#cfcfcf, #000000);
+  --mac-media-app-chrome-pane: light-dark(#ffffff, #1e2022);
+  /* [measured] Podcasts bar and pane, separator and the line over it in Dark Aqua */
+  --mac-media-app-chrome-podcasts-bar: light-dark(#ffffff, #1e1e1e);
+  --mac-media-app-chrome-podcasts-separator: light-dark(#dedede, #1a1a1a);
+  --mac-media-app-chrome-podcasts-separator-edge: light-dark(transparent, #353535);
+  /* [measured, computed] sidebar divider: black at 0.2 over the bar and the pane */
+  --mac-media-app-chrome-divider: light-dark(rgb(0 0 0 / 0.2), #000000);
+  /* [measured] inactive window (Books): the bar; the sidebar header takes it too */
+  --mac-media-app-chrome-bar-inactive: light-dark(#f6f6f6, #2b2d2f);
+  /* [measured] Music glyphs: transport, disabled, trailing, output, speaker */
+  --mac-media-app-chrome-glyph: light-dark(#555555, #d8d8d8);
+  --mac-media-app-chrome-glyph-disabled: light-dark(#b7b7b7, #6c6d6f);
+  --mac-media-app-chrome-glyph-secondary: light-dark(#7d7d7d, #7c7e7f);
+  --mac-media-app-chrome-glyph-output: light-dark(#7d7d7d, #9d9e9e);
+  --mac-media-app-chrome-speaker: light-dark(#aaaaaa, #aaaaaa);
+  /* [measured] Podcasts glyphs and speaker */
+  --mac-media-app-chrome-podcasts-glyph: light-dark(#4c4c4c, #ffffff);
+  --mac-media-app-chrome-podcasts-speaker: light-dark(#999999, #787878);
+  /* [provisional] Aqua is measured; no dark capture shows it, so dark is the Music value */
+  --mac-media-app-chrome-podcasts-glyph-disabled: light-dark(#a6a6a6, #6c6d6f);
+  /* [measured] volume track up to the knob, and the knob */
+  --mac-media-app-chrome-volume-level: light-dark(#6a6a6a, #b5b6b6);
+  --mac-media-app-chrome-podcasts-volume-level: light-dark(#7f7f7f, #a5a5a5);
+  --mac-media-app-chrome-volume-knob: light-dark(#ffffff, #cacaca);
+  /* [measured, computed] knob rim and shadow */
+  --mac-media-app-chrome-volume-knob-rim: light-dark(rgb(0 0 0 / 0.15), rgb(0 0 0 / 0.2));
+  --mac-media-app-chrome-volume-knob-shadow: light-dark(rgb(0 0 0 / 0.25), rgb(0 0 0 / 0.4));
+  /* [provisional] track after the knob: every capture has the volume at its maximum */
+  --mac-media-app-chrome-volume-track: light-dark(rgb(0 0 0 / 0.15), rgb(255 255 255 / 0.2));
+}
+
+:root,
+[data-appearance] {
+  /* [provisional] pressed glyph: darker in Aqua, lighter in Dark Aqua */
+  --mac-media-app-chrome-pressed: calc(0.8 + 0.4 * var(--mac-appearance-dark));
+}

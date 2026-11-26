@@ -1,0 +1,164 @@
+/*
+ * Managed window: a window placed, sized and stacked by the window manager.
+ *
+ * .mac-managed-window          placed with a transform, sized inline, stacked with z-index;
+ *                              holds the window (its only child that is not a handle)
+ *                              and the resize handles
+ * .mac-managed-window-resize   the eight resize handles, [data-edge] by compass point
+ *
+ * States of .mac-managed-window
+ *   [data-minimized]     in the Dock: shrunk towards the minimize target, hidden and inert
+ *   [data-away]          on a desktop that is not showing: hidden and inert
+ *   [data-zoomed]        filling the manager inside its insets
+ *   [data-full-screen]   covering the manager
+ *   [data-dragging]      while the pointer moves or resizes it (set without a render)
+ */
+.mac-managed-window {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+}
+
+/* Zoomed: the space the manager's insets leave. A drag from here writes its own transform. */
+.mac-managed-window:where([data-zoomed]) {
+  width: calc(
+    100% -
+    var(--mac-window-manager-inset-left, 0px) -
+    var(--mac-window-manager-inset-right, 0px)
+  );
+  height: calc(
+    100% -
+    var(--mac-window-manager-inset-top, 0px) -
+    var(--mac-window-manager-inset-bottom, 0px)
+  );
+  transform: translate3d(
+    var(--mac-window-manager-inset-left, 0px),
+    var(--mac-window-manager-inset-top, 0px),
+    0
+  );
+}
+
+.mac-managed-window:where([data-full-screen]) {
+  width: 100%;
+  height: 100%;
+  transform: none;
+}
+
+.mac-managed-window > :not(.mac-managed-window-resize) {
+  width: 100%;
+  height: 100%;
+  transition:
+    transform 0.28s ease-in,
+    opacity 0.28s ease-in,
+    visibility 0s;
+}
+
+/* A touch on the title bar moves the window; it does not pan the page. */
+.mac-managed-window :where([data-window-drag-region]) {
+  touch-action: none;
+}
+
+/* Focus given to the frame by the manager; the key state is what shows it. */
+.mac-managed-window > :not(.mac-managed-window-resize):focus {
+  outline: none;
+}
+
+.mac-managed-window:where([data-away]) {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* The scale effect of the Dock preference "Minimize windows using". */
+.mac-managed-window:where([data-minimized]) {
+  pointer-events: none;
+}
+
+.mac-managed-window:where([data-minimized]) > :not(.mac-managed-window-resize) {
+  /* Without a minimize target: straight down, towards where a Dock would be. */
+  transform: translate(var(--_minimize-x, 0), var(--_minimize-y, 60vh))
+    scale(var(--mac-managed-window-minimize-scale, 0.08))
+    skewX(var(--mac-managed-window-minimize-skew, 0deg));
+  opacity: 0;
+  visibility: hidden;
+  transition-delay: 0s, 0s, 0.28s;
+}
+
+/* While a window follows the pointer, nothing in it selects. */
+.mac-managed-window:where([data-dragging]) > :not(.mac-managed-window-resize) {
+  user-select: none;
+}
+
+/*
+ * Resize handles: 4 pt outside the frame and 2 pt over it, as in AppKit; corners reach 10 pt
+ * along each edge. For pointers only: the keyboard resizes with Control-Option-Shift and the
+ * arrow keys.
+ */
+.mac-managed-window-resize {
+  --_out: -4px;
+  --_thick: 6px;
+  --_corner: 10px;
+
+  position: absolute;
+  z-index: 2;
+  touch-action: none;
+}
+
+.mac-managed-window-resize:where([data-edge="n"], [data-edge="s"]) {
+  right: var(--_corner);
+  left: var(--_corner);
+  height: var(--_thick);
+  cursor: ns-resize;
+}
+
+.mac-managed-window-resize:where([data-edge="e"], [data-edge="w"]) {
+  top: var(--_corner);
+  bottom: var(--_corner);
+  width: var(--_thick);
+  cursor: ew-resize;
+}
+
+.mac-managed-window-resize:where(
+  [data-edge="ne"],
+  [data-edge="se"],
+  [data-edge="sw"],
+  [data-edge="nw"]
+) {
+  width: calc(var(--_corner) - var(--_out));
+  height: calc(var(--_corner) - var(--_out));
+}
+
+.mac-managed-window-resize:where([data-edge="ne"], [data-edge="sw"]) {
+  cursor: nesw-resize;
+}
+
+.mac-managed-window-resize:where([data-edge="nw"], [data-edge="se"]) {
+  cursor: nwse-resize;
+}
+
+.mac-managed-window-resize:where([data-edge^="n"]) {
+  top: var(--_out);
+}
+
+.mac-managed-window-resize:where([data-edge^="s"]) {
+  bottom: var(--_out);
+}
+
+.mac-managed-window-resize:where([data-edge$="e"]) {
+  right: var(--_out);
+}
+
+.mac-managed-window-resize:where([data-edge$="w"]) {
+  left: var(--_out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-managed-window > :not(.mac-managed-window-resize) {
+    transition-property: opacity, visibility;
+  }
+
+  .mac-managed-window:where([data-minimized]) > :not(.mac-managed-window-resize) {
+    transform: none;
+    transition-delay: 0s, 0.28s;
+  }
+}

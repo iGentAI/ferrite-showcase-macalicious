@@ -1,0 +1,153 @@
+/*
+ * Gesture option row: a checkbox against two lines of text, and a pointed callout behind the
+ * row whose gesture the preview shows.
+ *
+ * Measured in the Mouse pane, both appearances; the Trackpad pane agrees. Distances are from
+ * the row's box, which is 50 pt tall (the pitch of the rows):
+ *   checkbox        14 pt, 10 pt from the leading edge, 17.5 pt from the top
+ *   title           13 pt regular, 35 pt from the leading edge, baseline 19.5 pt from the top
+ *   detail          11 pt regular, secondary label colour, baseline 16 pt under the title's
+ *   callout         as wide as the row and 53 pt tall, so 1.5 pt beyond the row above and
+ *                   below; 5.5 pt leading corners; the tip is the last 24 pt: shoulders
+ *                   rounded with a 10 pt radius, slopes that bow in by a fifth of a point,
+ *                   the point 26.5 pt from the top
+ *
+ * The callout is two layers cut with one outline: ::before in the edge colour and ::after,
+ * half a point smaller, in the fill. --_d and --_t move the smaller outline's shoulders and
+ * point so that the edge is half a point wide along the slopes too.
+ *
+ * Parts
+ *   .mac-gesture-option-row-checkbox  the checkbox (also .mac-checkbox)
+ *   .mac-gesture-option-row-text      title and detail
+ *   .mac-gesture-option-row-title
+ *   .mac-gesture-option-row-detail
+ *
+ * States: [data-highlighted] (the callout), [data-disabled]. The checkbox brings its own.
+ * Nothing here changes in a window that is not key.
+ */
+.mac-gesture-option-row {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-start;
+  box-sizing: border-box;
+  height: 50px;
+  padding: 0 31px 0 10px;
+  color: var(--mac-color-label);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-gesture-option-row-checkbox {
+  flex: none;
+  margin: 17.5px 11px 0 0;
+}
+
+.mac-gesture-option-row-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  padding-top: 7px;
+}
+
+.mac-gesture-option-row-title,
+.mac-gesture-option-row-detail {
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-gesture-option-row-title {
+  font: var(--mac-font-body);
+}
+
+.mac-gesture-option-row-detail {
+  margin-top: 1.5px;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-subheadline);
+}
+
+/* Disabled [provisional]: no screenshot shows a disabled row. */
+.mac-gesture-option-row:where([data-disabled]) .mac-gesture-option-row-title,
+.mac-gesture-option-row:where([data-disabled]) .mac-gesture-option-row-detail {
+  color: var(--mac-color-label-tertiary);
+}
+
+/* The callout */
+.mac-gesture-option-row:where([data-highlighted])::before,
+.mac-gesture-option-row:where([data-highlighted])::after {
+  --_d: 0px;
+  --_t: 0.2px;
+
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -1.5px 0;
+  border-radius: 5.5px 0 0 5.5px;
+  background: var(--mac-gesture-option-row-callout-edge);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 27.9px + var(--_d)) 0,
+    calc(100% - 25.7px + var(--_d)) 0.25px,
+    calc(100% - 23.9px + var(--_d)) 0.75px,
+    calc(100% - 23.06px + var(--_d)) 1.25px,
+    calc(100% - 22.4px + var(--_d)) 1.75px,
+    calc(100% - 21.8px + var(--_d)) 2.25px,
+    calc(100% - 21.25px + var(--_d)) 2.75px,
+    calc(100% - 20.67px + var(--_d)) 3.37px,
+    calc(100% - 10.7px + var(--_d)) 14.93px,
+    calc(100% - var(--_t)) 50%,
+    calc(100% - 10.7px + var(--_d)) calc(100% - 14.93px),
+    calc(100% - 20.67px + var(--_d)) calc(100% - 3.37px),
+    calc(100% - 21.25px + var(--_d)) calc(100% - 2.75px),
+    calc(100% - 21.8px + var(--_d)) calc(100% - 2.25px),
+    calc(100% - 22.4px + var(--_d)) calc(100% - 1.75px),
+    calc(100% - 23.06px + var(--_d)) calc(100% - 1.25px),
+    calc(100% - 23.9px + var(--_d)) calc(100% - 0.75px),
+    calc(100% - 25.7px + var(--_d)) calc(100% - 0.25px),
+    calc(100% - 27.9px + var(--_d)) 100%,
+    0 100%
+  );
+  pointer-events: none;
+}
+
+.mac-gesture-option-row:where([data-highlighted])::after {
+  --_d: 0.275px;
+  --_t: 0.367px;
+
+  inset: -1px 0.5px;
+  border-radius: 5px 0 0 5px;
+  background: var(--mac-gesture-option-row-callout-fill);
+  box-shadow: inset 0 1px 0 var(--mac-gesture-option-row-callout-highlight);
+}
+
+@media (forced-colors: active) {
+  .mac-gesture-option-row {
+    color: CanvasText;
+  }
+
+  .mac-gesture-option-row-detail {
+    color: CanvasText;
+  }
+
+  .mac-gesture-option-row:where([data-disabled]) .mac-gesture-option-row-title,
+  .mac-gesture-option-row:where([data-disabled]) .mac-gesture-option-row-detail {
+    color: GrayText;
+  }
+
+  .mac-gesture-option-row:where([data-highlighted])::before,
+  .mac-gesture-option-row:where([data-highlighted])::after {
+    forced-color-adjust: none;
+    background: CanvasText;
+  }
+
+  .mac-gesture-option-row:where([data-highlighted])::after {
+    inset: -0.5px 1px;
+    background: Canvas;
+    box-shadow: none;
+  }
+}

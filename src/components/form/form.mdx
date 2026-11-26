@@ -1,0 +1,206 @@
+---
+title: Form
+description: A column of right-aligned labels and a column of controls on the same baselines, the layout of every Catalina preferences pane.
+---
+
+<Example name="basic" both />
+
+AppKit has no form control: a pane is laid out with an `NSGridView` (or by hand in Interface
+Builder) so that every label ends just before the control it names and sits on its baseline.
+`Form` is that grid. It is built on [Base UI's Form](https://base-ui.com/react/components/form),
+a `<form>` that collects the values of its fields; a row is Base UI's
+[Field](https://base-ui.com/react/components/field) or
+[Fieldset](https://base-ui.com/react/components/fieldset), which give the control its name and
+description.
+
+## Usage
+
+```tsx
+import { Form, FormRow, FormSeparator } from "macalicious/form";
+import "macalicious/separator.css";
+import "macalicious/form.css";
+
+<Form onFormSubmit={(values) => save(values)}>
+  <FormRow label="Computer Name:" description="Shown on your local network.">
+    <TextField name="computer" />
+  </FormRow>
+  <FormSeparator />
+  <FormRow label="Application:" kind="group" orientation="vertical">
+    <Checkbox>Play sound effects</Checkbox>
+    <Checkbox>Save history</Checkbox>
+  </FormRow>
+</Form>
+```
+
+Or copy the source into your project: `npx macalicious add form`.
+
+Children of a `Form` are `FormRow` and `FormSeparator` elements. Anything else, a
+[box](/components/box) or a paragraph, spans both columns. Inside another `<form>`, or where
+nothing is submitted, render a `<div>`: `<Form render={<div />}>`.
+
+A [preferences window](/components/preferences-window) has the same two columns built in
+(`PreferencesWindowForm`), centred in its pane. Use `Form` everywhere else: in a System
+Preferences pane, a sheet, a popover or an inspector.
+
+## Guidelines
+
+- End every label with a colon and write it in title-style or sentence-style capitalisation as
+  the rest of the window does. Right-align the labels, so that each ends at its control.
+- Line the controls up on their leading edges and give related pop-up buttons and fields one
+  width.
+- Divide a long form into groups with a `FormSeparator` or with extra space, not with a box
+  around every group.
+- Put a checkbox in the control column without a label of its own in the label column, unless
+  several checkboxes belong to one heading ("Application:").
+- Keep explanatory text short and put it under the control it explains, in the small system
+  font.
+
+## Variants and states
+
+<Example name="groups" both />
+
+A row's `kind` says what its label names:
+
+| `kind` | The label names | Semantics |
+| --- | --- | --- |
+| `field` (default) | The one control of the row | Base UI Field: the label names the control and `description` describes it |
+| `group` | Several controls: a stack of checkboxes, a pop-up button followed by text | Base UI Fieldset: the row is a `group` named by the label; each control keeps its own name |
+| `value` | Text that is not a control | The label is a `term` and the content its `definition` |
+
+A row without a `label` keeps its controls in the control column. `orientation="vertical"`
+stacks the controls of a row; `align` lines the label up with the centre or the top of a
+control that has no text.
+
+<Example name="values" both />
+
+With `kind="value"` the same grid is a list of keys and values. `labelAlign="start"` sets the
+keys against the leading edge, as System Information does.
+
+<Example name="states" both />
+
+A `disabled` row draws its label and description in the disabled label colour and, in a
+`field` row, disables the control. A form looks the same in a window that is not key: label
+colours do not change with the window state.
+
+### A slider with labels at its ends
+
+Catalina's panes name the two ends of a slider ("Small" and "Large", "Slow" and "Fast") with
+ordinary labels under the end tick marks. AppKit has no slider property for them: they are
+text fields the pane lays out, so here they are [labels](/components/label) in the row, 11 pt
+text centred on the first and the last mark, which sit half a thumb (7.5 pt) in from the ends
+of the track. In the Dock pane the labels' boxes start 2 pt under the slider's box, which puts
+their capitals 6 pt under the marks. A label is never wider than its container, so one that
+is centred on a point needs `max-width: none`. Use `align="start"`
+so that the row's label lines up with the slider and not with the text under it.
+
+<Example name="slider-labels" both />
+
+## Sizes
+
+`size` sets the label font and the space between rows; give the controls inside the same
+`size`.
+
+| Size | Label | Row gap | Notes |
+| --- | --- | --- | --- |
+| `regular` | 13 / 16 | 9 pt: rows of 21 pt pop-up buttons are 30 pt apart | Measured |
+| `small` | 11 / 14 | 7 pt | Provisional: no capture shows rows of small controls with labels |
+| `mini` | 9 / 11 | 5 pt | Provisional: no capture shows a form of mini controls |
+
+A list of keys and values has no controls to set its pitch, and Catalina spaces each one by
+hand: set `--mac-form-row-gap`. Measured: 8 pt between the 11 pt rows of a printer's Location,
+Kind and Status (a 22 pt pitch), and none between the rows of Finder's Get Info and of System
+Information.
+
+## API
+
+<PropsTable name="FormProps" />
+
+`Form` also accepts every prop of Base UI's Form: `onFormSubmit`, `errors`, `validationMode`,
+`actionsRef`, `render` and the props of a `<form>`.
+
+<PropsTable name="FormRowProps" />
+
+<PropsTable name="FormSeparatorProps" />
+
+`FormSeparator` is a [Separator](/components/separator) and takes its props.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-size` | `Form` | `regular`, `small`, `mini` | Control size. |
+| `data-label-align` | `Form` | `end`, `start` | Edge the labels are set against. |
+| `data-kind` | `FormRow` | `field`, `group`, `value` | What the label names. |
+| `data-orientation` | `FormRow` | `horizontal`, `vertical` | Layout of the row's controls. |
+| `data-align` | `FormRow` | `baseline`, `center`, `start` | How label and controls line up. |
+| `data-disabled` | `FormRow` | present | The row is disabled. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-form-label-width` | `max-content` | Width of the label column; set by `labelWidth`. |
+| `--mac-form-row-gap` | `9px` | Space between two rows. |
+| `--mac-form-label-gap` | `var(--mac-space-label-gap)` (8 pt) | Space between a label and its control. |
+| `--mac-form-control-gap` | `var(--mac-space-label-gap)` | Space between two controls of a row. |
+| `--mac-form-description-indent` | `0` | Inset of the description from the controls' leading edge; `20px` puts it under a checkbox's title. |
+
+Parts: `.mac-form`, `.mac-form-row`, `.mac-form-label`, `.mac-form-controls`,
+`.mac-form-description`, `.mac-form-separator`.
+
+## Accessibility
+
+- In a `field` row the label names the control and the description describes it, through Base
+  UI's Field. The label is not a native `<label>`: as in AppKit, clicking it does nothing, and
+  it does not press a pop-up button.
+- A `group` row has `role="group"` and is named by its label. Give each control in it a name
+  of its own: a checkbox has its title; a pop-up button followed by text needs `aria-label`.
+- A `value` row marks its label as a `term` and its content as the `definition`.
+- A row without a label adds no semantics: its control needs its own name.
+- Labels and descriptions are text; they are not focusable. In forced-colours mode a disabled
+  row is drawn in the system's disabled text colour.
+
+## Visual comparison
+
+`visual-calendar-preferences` reproduces the first seven rows and the two separators of
+Calendar Preferences > General; `visual-sharing-name` the Computer Name row of the Sharing
+pane, with its two lines of explanatory text; `visual-calendar-checkboxes` the two stacked
+checkboxes of Calendar Preferences; `visual-dock-size` the Dock pane's Size slider with the
+labels under its ends; `visual-printer-values` the Location, Kind and Status of a printer.
+Results in Chromium on Linux:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Calendar Preferences, Aqua | 3.21% of pixels differ | 5.11% |
+| Calendar Preferences, Aqua, text masked | 0.07% | 5.66% |
+| Calendar Preferences, Dark Aqua | 3.20% | 4.95% |
+| Calendar Preferences, Dark Aqua, text masked | 0.08% | 2.14% |
+| Sharing, Computer Name, Aqua | 8.14% | 14.00% |
+| Sharing, Computer Name, Aqua, text masked | 0.00% | 7.06% |
+| Sharing, Computer Name, Dark Aqua | 8.45% | 10.26% |
+| Sharing, Computer Name, Dark Aqua, text masked | 0.00% | 4.55% |
+| Calendar Preferences checkboxes, Aqua | 19.53% | 24.89% |
+| Calendar Preferences checkboxes, Aqua, titles masked | 0.38% | 4.52% |
+| Calendar Preferences checkboxes, Dark Aqua | 19.71% | 24.79% |
+| Calendar Preferences checkboxes, Dark Aqua, titles masked | 0.36% | 3.97% |
+| Dock, Size slider and its labels, Aqua | 2.27% | 3.20% |
+| Dock, Size slider, Aqua, labels masked | 0.01% | 7.31% |
+| Dock, Size slider and its labels, Dark Aqua | 2.32% | 3.11% |
+| Dock, Size slider, Dark Aqua, labels masked | 0.05% | 7.34% |
+| Printer values, Aqua | 6.20% | 8.83% |
+| Printer values, Aqua, text masked | 0.00% | 0.00% |
+| Printer values, Dark Aqua | 6.36% | 8.64% |
+| Printer values, Dark Aqua, text masked | 0.00% | 0.00% |
+
+The comparisons with the text masked score the layout: where the label column ends, where the
+controls start, the 30 pt row pitch and the 20 pt above and below a separator. The unmasked
+ones differ in the text, which is set in the fallback font off Apple platforms, and in the
+Calendar icon of the first pop-up button, which is not drawn. The two checkbox titles are the
+largest share of their small crop, which is why that comparison differs most; with the titles
+masked it scores the 20 pt pitch of the boxes. The printer comparison with the text masked
+leaves only the pane's fill, so it shows that nothing else is drawn; the rows' pitch and the
+position of both columns are scored by the unmasked one, where the ink of every row starts
+within half a point of the capture's.
+
+Measured: the 8 pt between a label's box and its control, the 30 pt pitch of rows of pop-up
+buttons, the separator's spacing, the position of the explanatory text under a text field
+(first line box 4.5 pt under the field, flush with its edge), the 6 pt between the stacked
+controls of a `vertical` row, the 2 pt between a slider's box and the labels under its ends,
+and the spacing of a printer's `value` rows. Provisional: the row gaps of the `small` and
+`mini` sizes and the disabled colour of a description, which no capture shows.

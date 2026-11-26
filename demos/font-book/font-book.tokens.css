@@ -1,0 +1,37 @@
+/*
+ * Font Book: the colours of the app that no shared token holds, from
+ * reference/spec/apps/font-book.md and the two Font Book captures
+ * (10-15-Catalina-Light-Font-Book.png, 10-15-Catalina-Dark-Font-Book.png).
+ */
+:root {
+  /* [measured] the preview pane: Light- and Dark-Font-Book @ 1000,900,100,100 */
+  --mac-font-book-preview-background: light-dark(#ffffff, #1e1f21);
+  /* [measured] the font's name above its sample: Light- and Dark-Font-Book @ 1292,287,388,37 */
+  --mac-font-book-title: light-dark(#808080, #9a9a9b);
+  /* [measured] divider beside the sidebar: Light- and Dark-Font-Book @ 512,700 */
+  --mac-font-book-sidebar-divider: light-dark(#cecfcf, #000000);
+  /* [measured] the plus under the collections: Light- and Dark-Font-Book @ 147,1223,22,22 */
+  --mac-font-book-add: light-dark(#676868, #a8a9ab);
+  /* [measured] "Size:", the label colour in Aqua and plain white in Dark Aqua: Light- and
+     Dark-Font-Book @ 1949,220,48,30 */
+  --mac-font-book-size-label: light-dark(#272727, #ffffff);
+  /* [provisional] how far the validation and duplicates sheets' lists grow before they scroll */
+  --mac-font-book-sheet-list-height: 180px;
+  /* [provisional] between the controls of a smart collection's rule, and between rules */
+  --mac-font-book-smart-rule-gap: 6px;
+  /* [provisional] the text everyone shares when the Custom view shows several fonts */
+  --mac-font-book-several-custom-height: 64px;
+  /* [provisional] the sample in the sheet of a font file opened from Finder */
+  --mac-font-book-install-sample-size: 28px;
+}
+
+/*
+ * [measured] The space between the segmented control and the two toolbar buttons. The Aqua
+ * capture has the buttons from 205 pt and the Dark Aqua capture from 160 pt, with everything
+ * else in the bar in the same place, so the space follows the appearance: 46 pt, less 45 pt in
+ * Dark Aqua. Light-Font-Book @ 521,148; Dark-Font-Book @ 431,148.
+ */
+:root,
+[data-appearance] {
+  --mac-font-book-button-space: calc(46px - 45px * var(--mac-appearance-dark));
+}

@@ -1,0 +1,193 @@
+/*
+ * Bordered list with a gradient button bar (a preference pane's source list).
+ *
+ * Parts
+ *   .mac-bordered-list               the root: frame and footer stacked
+ *   .mac-bordered-list-frame         1 pt square border around the list
+ *   .mac-bordered-list-footer        the gradient button group under the frame
+ *   .mac-bordered-list-rows          the listbox: a scroll view and one tab stop
+ *   .mac-bordered-list-content       everything that scrolls
+ *   .mac-bordered-list-row           one row: leading content, text lines, trailing content
+ *   .mac-bordered-list-row-leading, -text, -title, -subtitle, -trailing
+ *   .mac-bordered-list-group-row     a 23 pt group heading
+ *
+ * States
+ *   [data-footer="attached" | "detached"]   on the root
+ *   [data-alternating]                 on the rows: striped
+ *   [aria-selected="true"] on a row    selected: grey, the whole row
+ *   :focus-within in a key window      the selection is emphasised: accent, white text
+ *   :focus-visible                     keyboard focus ring inside the list's edge
+ *   [aria-disabled="true"] on a row    dimmed text; cannot be selected
+ *   :where([data-window-state="main"], [data-window-state="inactive"]) *
+ *                                      not the key window: grey selection, no ring
+ *   [data-force~="focus"]              on the rows: static preview of the emphasised selection
+ *
+ * Hooks
+ *   --mac-bordered-list-border   colour of the frame (default: the list border token)
+ */
+.mac-bordered-list {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* A one-cell grid, so that the list inside fills the frame whatever element it is. */
+.mac-bordered-list-frame {
+  display: grid;
+  flex: 1 1 auto;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  box-sizing: border-box;
+  min-height: 0;
+  border: 1px solid var(--mac-bordered-list-border, var(--mac-color-list-border));
+  background: var(--mac-bordered-list-background);
+}
+
+/* Attached: the bar's top line lies over the frame's bottom border, so one line separates
+   them, and the bar shares the frame's side borders. */
+.mac-bordered-list-footer {
+  display: flex;
+  flex: none;
+  margin-block-start: -1px;
+}
+
+.mac-bordered-list:where([data-footer="detached"]) > .mac-bordered-list-footer {
+  align-self: flex-start;
+  margin-block-start: 8px;
+}
+
+.mac-bordered-list-rows {
+  --_selection: var(--mac-color-selected-content-background-unemphasized);
+
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  outline: none;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-bordered-list-content {
+  box-sizing: border-box;
+  min-height: 100%;
+}
+
+.mac-bordered-list-rows:where([data-alternating]) .mac-bordered-list-content {
+  background: repeating-linear-gradient(
+    transparent 0 var(--_row),
+    var(--mac-color-content-background-alternate) 0 calc(2 * var(--_row))
+  );
+}
+
+.mac-bordered-list-row {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: var(--_row);
+  padding-inline: 7px 11px;
+}
+
+.mac-bordered-list-row:where([aria-selected="true"]) {
+  background: var(--_selection);
+}
+
+.mac-bordered-list-rows:where(:focus-within, [data-force~="focus"]):not(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  --_selection: var(--mac-color-selected-content-background);
+}
+
+.mac-bordered-list-rows:where(:focus-within, [data-force~="focus"]):not(
+    :where([data-window-state="main"], [data-window-state="inactive"]) *
+  )
+  .mac-bordered-list-row:where([aria-selected="true"]) {
+  --_secondary: var(--mac-color-selected-content-text);
+
+  color: var(--mac-color-selected-content-text);
+}
+
+.mac-bordered-list-rows:where(:focus-visible) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+.mac-bordered-list-rows:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  outline: none;
+}
+
+/* Leading content is centred in a 10 pt column (a status dot's width), 6.5 pt before the text. */
+.mac-bordered-list-row-leading {
+  display: flex;
+  flex: none;
+  justify-content: center;
+  min-width: 10px;
+  margin-inline-end: 6.5px;
+}
+
+.mac-bordered-list-row-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mac-bordered-list-row-title,
+.mac-bordered-list-row-subtitle {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mac-bordered-list-row-subtitle {
+  color: var(--_secondary, var(--mac-color-label-secondary));
+  font: var(--mac-font-control-small);
+}
+
+.mac-bordered-list-row-trailing {
+  display: flex;
+  flex: none;
+  margin-inline-start: 6px;
+}
+
+.mac-bordered-list-row:where([aria-disabled="true"]) {
+  --_secondary: var(--mac-color-label-tertiary);
+
+  color: var(--mac-color-label-tertiary);
+}
+
+.mac-bordered-list-group-row {
+  box-sizing: border-box;
+  height: 23px;
+  padding-inline: 10px;
+  overflow: hidden;
+  color: var(--mac-color-label-tertiary);
+  font: var(--mac-font-control-small);
+  line-height: 23px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@media (forced-colors: active) {
+  .mac-bordered-list-frame {
+    border-color: CanvasText;
+  }
+
+  /* As specific as the focused selection above, and after it: the system colours win. */
+  .mac-bordered-list-rows .mac-bordered-list-row:where([aria-selected="true"]) {
+    --_secondary: HighlightText;
+
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  .mac-bordered-list-row:where([aria-disabled="true"]),
+  .mac-bordered-list-group-row {
+    --_secondary: GrayText;
+
+    color: GrayText;
+  }
+}

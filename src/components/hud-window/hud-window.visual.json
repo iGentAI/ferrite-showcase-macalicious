@@ -1,0 +1,433 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "quicktime-light",
+      "description": "QuickTime Player's floating controller laid out as in the Aqua capture (880 x 150 px at 1143, 1325 of Light-QuickTime), over one flat grey, #707070. No comparison with the capture is made: the panel is a vibrant material and its glyphs add light to it, so in the capture every pixel of it is partly a third party's movie, which the library does not reproduce, and with the movie masked nothing is left to score. Over a flat grey the panel's colours follow from the tokens, and these pixels hold them: the panel's size, its 4 pt corners, its edges without a border, seven glyphs, the volume knob and the timeline at the places measured in the capture. The time codes are text in the fallback font and the Share glyph is a thin outline: neither is checked.",
+      "example": "visual-quicktime",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 440, "height": 75 },
+        "pixels": [
+          {
+            "x": 0.5,
+            "y": 0.5,
+            "color": "#707070",
+            "note": "backdrop outside the 4 pt top-left corner (radius measured in the capture)"
+          },
+          {
+            "x": 439.5,
+            "y": 74.5,
+            "color": "#707070",
+            "note": "backdrop outside the bottom-right corner"
+          },
+          {
+            "x": 2.5,
+            "y": 2.5,
+            "color": "#606060",
+            "note": "panel inside the corner: --mac-hud-window-controller-material, #1e1e1e at 20%, over the grey; computed from the tokens"
+          },
+          {
+            "x": 0.25,
+            "y": 37.5,
+            "color": "#606060",
+            "note": "panel at its left edge: no border (measured), computed colour"
+          },
+          {
+            "x": 439.75,
+            "y": 37.5,
+            "color": "#606060",
+            "note": "panel at its right edge: no border"
+          },
+          {
+            "x": 220,
+            "y": 0.25,
+            "color": "#606060",
+            "note": "panel at its top edge: no border or highlight"
+          },
+          {
+            "x": 220,
+            "y": 74.75,
+            "color": "#606060",
+            "note": "panel at its bottom edge: no border"
+          },
+          {
+            "x": 16,
+            "y": 24.75,
+            "color": "#dadada",
+            "note": "mute glyph at its measured place: --mac-hud-window-vibrant, white at 48% (measured strength), added to the panel; computed"
+          },
+          {
+            "x": 76.5,
+            "y": 24.75,
+            "color": "#dad6ce",
+            "note": "volume knob at the slider's maximum, --mac-hud-window-slider-knob, measured"
+          },
+          {
+            "x": 92,
+            "y": 24.75,
+            "color": "#dadada",
+            "note": "full-volume glyph, computed as the mute glyph"
+          },
+          { "x": 161, "y": 24.75, "color": "#dadada", "note": "rewind glyph, computed" },
+          {
+            "x": 190,
+            "y": 24.75,
+            "color": "#606060",
+            "note": "panel between the rewind and the play glyph, computed"
+          },
+          { "x": 216, "y": 24.75, "color": "#dadada", "note": "play glyph, computed" },
+          { "x": 267, "y": 24.75, "color": "#dadada", "note": "fast-forward glyph, computed" },
+          {
+            "x": 339,
+            "y": 30.75,
+            "color": "#dadada",
+            "note": "AirPlay glyph, its triangle; computed"
+          },
+          {
+            "x": 422,
+            "y": 30,
+            "color": "#dadada",
+            "note": "Picture in Picture glyph, its filled screen; computed"
+          },
+          {
+            "x": 120,
+            "y": 56.7,
+            "color": "#adadad",
+            "note": "timeline where the movie has played: the track's white at 12.5% under 20.6%, 30.5% in all (measured strengths), added to the panel; computed"
+          },
+          {
+            "x": 157.5,
+            "y": 51.7,
+            "color": "#ececec",
+            "note": "the timeline's bar at 00:03:16:12 of 00:12:49:22, where the capture has it: white at 55% added to the panel; computed"
+          },
+          {
+            "x": 250,
+            "y": 56.7,
+            "color": "#808080",
+            "note": "timeline still to play: white at 12.5% added to the panel; computed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "quicktime-dark",
+      "description": "The controller laid out as in the Dark Aqua capture (880 x 150 px at 1018, 1209 of Dark-QuickTime): the same dark panel, with the timeline's bar at 00:04:40:02. Held with expected pixels over the same flat grey for the reason given in quicktime-light, in the Dark Aqua page. Fewer pixels than quicktime-light: the panel's size, its top-left corner, its left and bottom edges, the mute and play glyphs, the volume knob and the timeline. The other corners and edges and the other five glyphs are held in quicktime-light only.",
+      "example": "visual-quicktime-dark",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 440, "height": 75 },
+        "pixels": [
+          {
+            "x": 0.5,
+            "y": 0.5,
+            "color": "#707070",
+            "note": "backdrop outside the 4 pt top-left corner"
+          },
+          {
+            "x": 2.5,
+            "y": 2.5,
+            "color": "#606060",
+            "note": "panel inside the corner, computed from the tokens as in quicktime-light: the HUD is the same in both appearances"
+          },
+          { "x": 0.25, "y": 37.5, "color": "#606060", "note": "panel at its left edge: no border" },
+          {
+            "x": 220,
+            "y": 74.75,
+            "color": "#606060",
+            "note": "panel at its bottom edge: no border"
+          },
+          {
+            "x": 16,
+            "y": 24.75,
+            "color": "#dadada",
+            "note": "mute glyph, white at 48% added to the panel; computed"
+          },
+          {
+            "x": 76.5,
+            "y": 24.75,
+            "color": "#dad6ce",
+            "note": "volume knob, --mac-hud-window-slider-knob, measured"
+          },
+          { "x": 216, "y": 24.75, "color": "#dadada", "note": "play glyph, computed" },
+          {
+            "x": 120,
+            "y": 56.7,
+            "color": "#adadad",
+            "note": "timeline where the movie has played, computed"
+          },
+          {
+            "x": 157.5,
+            "y": 56.7,
+            "color": "#adadad",
+            "note": "played too where the Aqua capture has its bar: the bar has moved"
+          },
+          {
+            "x": 185.5,
+            "y": 51.7,
+            "color": "#ececec",
+            "note": "the timeline's bar at 00:04:40:02, where the capture has it: white at 55% added to the panel; computed"
+          },
+          { "x": 250, "y": 56.7, "color": "#808080", "note": "timeline still to play, computed" }
+        ]
+      }
+    },
+    {
+      "name": "quicktime-light-knob",
+      "description": "The one part of the controller that is opaque, compared with the Aqua capture: the volume knob at the slider's maximum, 11 by 11 pt at 71, 19 pt of the panel, with a 2 pt border of its box masked (the corners outside the circle and its edge, which lie over the movie). Nothing else of the controller is compared with the capture: everything else in it is the panel's material or a glyph that adds light to it, over a third party's movie which the library does not reproduce (see quicktime-light). The score covers the colour of the knob's opaque interior only: the crop is the knob's own box, so the knob's place in the controller is held by the expected pixels of quicktime-light, not here.",
+      "example": "visual-quicktime",
+      "appearance": "light",
+      "selector": ".mac-hud-window-slider[data-variant='knob'] .mac-hud-window-slider-thumb",
+      "masks": [
+        { "x": 0, "y": 0, "width": 11, "height": 2 },
+        { "x": 0, "y": 9, "width": 11, "height": 2 },
+        { "x": 0, "y": 2, "width": 2, "height": 7 },
+        { "x": 9, "y": 2, "width": 2, "height": 7 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.001, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.9, "2x": 0.95 },
+      "reference": {
+        "file": "10-15-Catalina-Light-QuickTime.png",
+        "crop": { "x": 1285, "y": 1363, "width": 22, "height": 22 }
+      }
+    },
+    {
+      "name": "quicktime-dark-knob",
+      "description": "As quicktime-light-knob, against the Dark Aqua capture: the colour of the volume knob's interior, with the border of its box masked.",
+      "example": "visual-quicktime-dark",
+      "appearance": "dark",
+      "selector": ".mac-hud-window-slider[data-variant='knob'] .mac-hud-window-slider-thumb",
+      "masks": [
+        { "x": 0, "y": 0, "width": 11, "height": 2 },
+        { "x": 0, "y": 9, "width": 11, "height": 2 },
+        { "x": 0, "y": 2, "width": 2, "height": 7 },
+        { "x": 9, "y": 2, "width": 2, "height": 7 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.001, "2x": 0.0005 },
+      "deltaBudget": { "1x": 1.35, "2x": 1.4 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-QuickTime.png",
+        "crop": { "x": 1160, "y": 1247, "width": 22, "height": 22 }
+      }
+    },
+    {
+      "name": "material-two-tone-light",
+      "description": "The controller's translucency over a backdrop of two flat abstract tones that meet under the middle of the panel: slate blue #5a6e82 left of 220 pt, sand #a08c6e right of it. No screenshot is compared: the tones are taken from no picture. Every expected colour is computed from the tokens: the backdrop blurred by 30 pt (a Gaussian whose standard deviation is 30 pt, mirrored at the panel's edges), saturated to 180% (--mac-material-filter, provisional), under --mac-hud-window-controller-material, #1e1e1e at 20% (provisional); a glyph adds white at 48% (--mac-hud-window-vibrant, measured strength). The pixels show that the panel lets its backdrop through, saturates it, tints it and blurs it by about the token's radius, and that a glyph adds light to a coloured fill. They do not show that these values are Catalina's: over a real picture the recipe is still unverified.",
+      "example": "visual-two-tone",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 440, "height": 75 },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 56,
+            "color": "#43607d",
+            "note": "panel over the blue, 160 pt from the seam: #5a6e82 saturated to 180% is #4c7094, under #1e1e1e at 20%; computed. An opaque panel would be #1e1e1e, an untinted clear one #5a6e82"
+          },
+          {
+            "x": 380,
+            "y": 56,
+            "color": "#917549",
+            "note": "panel over the sand, 160 pt from the seam: #a08c6e saturated to 180% is #ae8a54, under the tint; computed"
+          },
+          {
+            "x": 220,
+            "y": 56,
+            "color": "#6a6a63",
+            "tolerance": 4,
+            "note": "at the seam the blur has mixed the two tones evenly: #7d7d78 saturated and tinted; computed. Without a blur this pixel would be one of the two fills above"
+          },
+          {
+            "x": 190,
+            "y": 56,
+            "color": "#4f6375",
+            "tolerance": 6,
+            "note": "30 pt left of the seam, one standard deviation of blur(30px): 15.9% sand in the blue; computed. Half the radius would give about #45607b here and twice the radius about #5b666d"
+          },
+          {
+            "x": 250,
+            "y": 56,
+            "color": "#857152",
+            "tolerance": 6,
+            "note": "30 pt right of the seam: 15.9% blue in the sand; computed"
+          },
+          {
+            "x": 18,
+            "y": 24,
+            "color": "#bddaf7",
+            "note": "glyph over the blue fill: white at 48% added to #43607d, channel by channel; computed. An ordinary blend would give #9dacbb"
+          },
+          {
+            "x": 422,
+            "y": 24,
+            "color": "#ffefc4",
+            "note": "glyph over the sand fill: white at 48% added to #917549, the red channel clipping at 255; computed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "material-two-tone-dark",
+      "description": "As material-two-tone-light in the Dark Aqua page: the HUD is the same dark panel in both appearances and the backdrop covers the page, so the same pixels are held to the same colours.",
+      "example": "visual-two-tone",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 440, "height": 75 },
+        "pixels": [
+          {
+            "x": 60,
+            "y": 56,
+            "color": "#43607d",
+            "note": "panel over the blue, computed as in material-two-tone-light"
+          },
+          { "x": 380, "y": 56, "color": "#917549", "note": "panel over the sand, computed" },
+          {
+            "x": 220,
+            "y": 56,
+            "color": "#6a6a63",
+            "tolerance": 4,
+            "note": "the seam, the two tones mixed evenly; computed"
+          },
+          {
+            "x": 190,
+            "y": 56,
+            "color": "#4f6375",
+            "tolerance": 6,
+            "note": "one standard deviation left of the seam; computed"
+          },
+          {
+            "x": 250,
+            "y": 56,
+            "color": "#857152",
+            "tolerance": 6,
+            "note": "one standard deviation right of the seam; computed"
+          },
+          { "x": 18, "y": 24, "color": "#bddaf7", "note": "glyph over the blue fill, computed" },
+          { "x": 422, "y": 24, "color": "#ffefc4", "note": "glyph over the sand fill, computed" }
+        ]
+      }
+    },
+    {
+      "name": "materials-light",
+      "description": "The two materials and the glyph colours at rest over the Aqua page background #ececec. No screenshot shows a titled HUD panel, and none shows either material over a known backdrop, so every value is computed from the tokens: the panel is --mac-material-hud (#1e1e1e at 70%), the controller #1e1e1e at 20%; a panel glyph is the Dark Aqua label colour (white at 85%) over the panel, a disabled one is drawn at 30%; a controller glyph adds white at 48% and clips to white here.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 300, "height": 120 },
+        "pixels": [
+          { "x": 100, "y": 80, "color": "#5c5c5c", "note": "panel over the page, inferred" },
+          { "x": 30, "y": 43, "color": "#e6e6e6", "note": "panel glyph, inferred" },
+          { "x": 58, "y": 43, "color": "#858585", "note": "disabled glyph, inferred" },
+          { "x": 270, "y": 30, "color": "#c3c3c3", "note": "controller over the page, inferred" },
+          { "x": 170, "y": 30, "color": "#ffffff", "note": "controller glyph, clipped" },
+          { "x": 295, "y": 115, "color": "#ececec", "note": "page, away from the panels" }
+        ]
+      }
+    },
+    {
+      "name": "materials-dark",
+      "description": "The two materials and the glyph colours at rest over the Dark Aqua page background #323232: the HUD is the same in both appearances, only what is behind it differs. Computed from the tokens as in materials-light. Here the controller glyph does not clip: white at 48% added to the controller fill #2e2e2e is #a8a8a8, where an ordinary blend would give #929292.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 300, "height": 120 },
+        "pixels": [
+          { "x": 100, "y": 80, "color": "#242424", "note": "panel over the page, inferred" },
+          { "x": 30, "y": 43, "color": "#dedede", "note": "panel glyph, inferred" },
+          { "x": 58, "y": 43, "color": "#5c5c5c", "note": "disabled glyph, inferred" },
+          { "x": 270, "y": 30, "color": "#2e2e2e", "note": "controller over the page, inferred" },
+          { "x": 170, "y": 30, "color": "#a8a8a8", "note": "controller glyph adds light, measured" }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The first glyph button of the panel held down with the mouse, over the Aqua page: the glyph is drawn at 50% (spec: hud-window, States, inferred), half way between #e6e6e6 and the panel's #5c5c5c.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "press": ".mac-hud-window-button" }],
+      "expect": {
+        "size": { "width": 300, "height": 120 },
+        "pixels": [
+          { "x": 30, "y": 43, "color": "#a1a1a1", "note": "pressed glyph at 50%, inferred" },
+          { "x": 100, "y": 80, "color": "#5c5c5c", "note": "panel unchanged" }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "The first glyph button of the panel held down with the mouse, over the Dark Aqua page: half way between #dedede and the panel's #242424.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "press": ".mac-hud-window-button" }],
+      "expect": {
+        "size": { "width": 300, "height": 120 },
+        "pixels": [
+          { "x": 30, "y": 43, "color": "#818181", "note": "pressed glyph at 50%, inferred" },
+          { "x": 100, "y": 80, "color": "#242424", "note": "panel unchanged" }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the first glyph button, the second Tab stop after the close button, over the Aqua page: the 3 pt ring starts 1 pt outside the button, in the Dark Aqua focus ring colour (blue accent, #2ba8ff at 50%) over the panel's #5c5c5c. Inferred: no screenshot shows it.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 2 }],
+      "expect": {
+        "size": { "width": 300, "height": 120 },
+        "pixels": [
+          { "x": 40.5, "y": 43, "color": "#4382ad", "note": "ring over the panel, inferred" },
+          { "x": 44, "y": 43, "color": "#5c5c5c", "note": "panel beyond the ring" }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the first glyph button over the Dark Aqua page: the same ring over the panel's #242424.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "tab": 2 }],
+      "expect": {
+        "size": { "width": 300, "height": 120 },
+        "pixels": [
+          { "x": 40.5, "y": 43, "color": "#286692", "note": "ring over the panel, inferred" },
+          { "x": 44, "y": 43, "color": "#242424", "note": "panel beyond the ring" }
+        ]
+      }
+    },
+    {
+      "name": "focus-inactive-light",
+      "description": "Keyboard focus on the first glyph button while the page is in the background: no ring outside the key window (CONTRIBUTING, Window state; inferred).",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [{ "tab": 2 }],
+      "expect": {
+        "size": { "width": 300, "height": 120 },
+        "pixels": [
+          { "x": 40.5, "y": 43, "color": "#5c5c5c", "note": "no ring: panel, inferred" },
+          { "x": 30, "y": 43, "color": "#e6e6e6", "note": "glyph unchanged" }
+        ]
+      }
+    },
+    {
+      "name": "focus-inactive-dark",
+      "description": "Keyboard focus on the first glyph button while the page is in the background, Dark Aqua: no ring outside the key window, so both pixels are those of materials-dark at rest (inferred).",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [{ "tab": 2 }],
+      "expect": {
+        "size": { "width": 300, "height": 120 },
+        "pixels": [
+          { "x": 40.5, "y": 43, "color": "#242424", "note": "no ring: panel, inferred" },
+          { "x": 30, "y": 43, "color": "#dedede", "note": "glyph unchanged" }
+        ]
+      }
+    }
+  ]
+}

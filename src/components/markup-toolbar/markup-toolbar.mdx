@@ -1,0 +1,146 @@
+---
+title: Markup Toolbar
+description: The row of annotation tools that Quick Look and Preview show in Markup mode, borderless glyph buttons with separators between groups.
+---
+
+<Example name="basic" both />
+
+The tools of the Markup extension: sketch, draw, shapes, text, highlight, sign, then shape
+style, border colour, fill colour and text style, then rotate and crop. A tool is a borderless
+glyph; the active drawing tool is tinted with the accent colour; a tool that opens choices
+carries a small chevron. The toolbar is built on
+[Base UI's Toolbar](https://base-ui.com/react/components/toolbar) and has no background: it
+sits on the bar of a [Quick Look Panel](/components/quick-look-panel) or on any bar.
+
+## Usage
+
+```tsx
+import {
+  MarkupToolbar,
+  MarkupToolbarSeparator,
+  MarkupToolbarSwatch,
+  MarkupToolbarTool,
+} from "macalicious/markup-toolbar";
+import "macalicious/styles.css";
+
+<MarkupToolbar aria-label="Markup">
+  <MarkupToolbarTool aria-label="Sketch" selected={tool === "sketch"} onClick={() => setTool("sketch")}>
+    <SketchGlyph />
+  </MarkupToolbarTool>
+  <MarkupToolbarTool aria-label="Shapes" menu>
+    <ShapesGlyph />
+  </MarkupToolbarTool>
+  <MarkupToolbarSeparator />
+  <MarkupToolbarTool aria-label="Fill Colour" menu>
+    <MarkupToolbarSwatch color={fill} />
+  </MarkupToolbarTool>
+</MarkupToolbar>
+```
+
+- Glyphs are yours to supply, about 16 pt, drawn with `currentColor` so that they take the
+  tool's colour. Markup's own glyphs are Apple artwork and are not part of the library; the
+  examples use stand-in drawings.
+- `selected` marks the drawing tool in use. Which tool that is, is your state: set `selected`
+  to `true` or `false` on the tools that are modes and leave it out on the others.
+- `menu` only draws the chevron and sets `aria-haspopup`. To open a menu or a popover, give
+  the tool to the trigger of the library's menu or popover with `render`.
+- `MarkupToolbarSwatch` stands for the glyph in the colour tools; without a `color` it shows
+  "none".
+- In a Quick Look panel, pass the toolbar as the panel's `tools`.
+
+## Guidelines
+
+Apple publishes no guideline for the Markup toolbar itself. From what the screenshots show
+(not verified against a source):
+
+- Keep the order: drawing tools, then style tools, then tools that change the whole image,
+  with a separator between the groups.
+- Exactly one drawing tool is active at a time.
+- A tool that needs a selection is disabled, not hidden, while nothing is selected.
+
+## Variants and states
+
+<Example name="states" both />
+
+| State | Look | Source |
+| --- | --- | --- |
+| Normal | Glyph in the bar's label colour | Measured (Quick Look Markup), stored as a neutral equivalent |
+| Selected | Accent colour | Measured (Sketch) |
+| With a menu | Chevron 4 pt after the glyph | Measured by inspection |
+| Pressed | Darker by a fifth | Provisional: no screenshot |
+| Disabled | 35% opacity | Provisional: no screenshot |
+| Keyboard focus | Focus ring inside the tool | Provisional: no screenshot |
+| Window not key | The selected tool loses its accent colour | Provisional: no screenshot |
+
+## Sizes
+
+One size: tools are 22 pt high and as wide as their glyph plus 8 pt on each side; a separator
+is 1 pt wide and 20 pt high with 8 pt on each side. `--mac-markup-toolbar-gap` adds space
+between tools.
+
+## API
+
+### MarkupToolbar
+
+<PropsTable name="MarkupToolbarProps" />
+
+### MarkupToolbarTool
+
+<PropsTable name="MarkupToolbarToolProps" />
+
+### MarkupToolbarSeparator
+
+<PropsTable name="MarkupToolbarSeparatorProps" />
+
+### MarkupToolbarSwatch
+
+<PropsTable name="MarkupToolbarSwatchProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-selected` | tool | present | The active drawing tool. |
+| `data-disabled` | tool | present | A disabled tool (Base UI). |
+| `data-variant` | swatch | `fill`, `border` | Reflects `variant`. |
+| `data-none` | swatch | present | The swatch has no colour. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-markup-toolbar-gap` | `0px` | Space between tools. |
+
+Classes: `.mac-markup-toolbar`, `.mac-markup-toolbar-tool`, `.mac-markup-toolbar-tool-chevron`,
+`.mac-markup-toolbar-separator` and `.mac-markup-toolbar-swatch`.
+
+## Accessibility
+
+- The bar is a horizontal `toolbar`; give it an `aria-label`. It is one tab stop, and Left and
+  Right Arrow move between its tools.
+- A tool is a `button` and needs an `aria-label`, because it shows only a glyph. A tool with
+  `selected` set announces whether it is pressed; a tool with `menu` announces that it opens a
+  menu.
+- The swatch is decorative; say the colour in the tool's label if it matters
+  ("Fill Colour: none").
+- In forced-colours mode glyphs use the button text colour, the selected tool the highlight
+  colour, and the swatch keeps its own colour.
+
+## Visual comparison
+
+`markup-toolbar.visual.json` compares the leading 600 pt of Quick Look's bar in Markup mode
+with the reference screenshots in both appearances. Every glyph is Apple artwork, left out of
+the example and masked, so what is scored is the bar, the close disc and the two separators,
+with the tools sized so that the separators stand where the capture has them. As for the Quick
+Look panel, the example paints a flat colour behind the panel in place of the desktop picture.
+
+Scores from `npm run visual -- markup-toolbar` in Chromium on Linux with the fallback font: the
+share of pixels that differ by more than the comparison's threshold, and the mean colour
+difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `quick-look-markup-light` (masked) | Light-Finder-Quick-Look-Markup (1480, 90, 1200, 76) | 1.07% | 4.40 | 0.88% | 4.43 |
+| `quick-look-markup-dark` (masked) | Dark-Finder-Quick-Look-Markup (964, 118, 1200, 76) | 5.53% | 6.88 | 5.08% | 7.00 |
+
+Measured: the separators' size, position and colour, the selected tool's colour, the glyph
+height and the tools' pitch. Provisional: the neutral glyph colour (the real one is vibrant),
+the swatch's drawing, the chevron's exact shape, and the pressed, disabled, focused and
+not-key looks. The Preview host, a second toolbar row under the window's toolbar, is not shown
+in any screenshot; the same parts serve it.

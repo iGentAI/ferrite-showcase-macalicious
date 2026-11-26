@@ -1,0 +1,141 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "field-light",
+      "description": "The empty password field in the capture of the light session, cropped to its own box: the rock around it cannot be matched. The backdrop of the example is solved from the colours at the field's two ends, so the score gates the size, the corner radius and the placeholder, not the tint. The budgets allow for the placeholder in the fallback font and for the insertion point, which the capture shows.",
+      "example": "visual-field",
+      "appearance": "light",
+      "budget": { "1x": 0.033, "2x": 0.038 },
+      "deltaBudget": { "1x": 3.24, "2x": 3.33 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Fast-User-Switching.png",
+        "crop": { "x": 1520, "y": 1022, "width": 320, "height": 56 }
+      }
+    },
+    {
+      "name": "field-drawing-light",
+      "description": "The same with the placeholder and the insertion point masked: the field's fill, edges and corners. The four corners show the flat backdrop of the example where the capture has rock, which is the remaining difference.",
+      "example": "visual-field",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [{ "x": 4, "y": 4, "width": 100, "height": 20 }],
+      "budget": { "1x": 0.0214, "2x": 0.0159 },
+      "deltaBudget": { "1x": 1.78, "2x": 1.71 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Fast-User-Switching.png",
+        "crop": { "x": 1520, "y": 1022, "width": 320, "height": 56 }
+      }
+    },
+    {
+      "name": "field-dark",
+      "description": "The empty password field in the capture of the dark session, which shows the same screen: the login window does not follow the appearance. The budgets allow for the placeholder in the fallback font.",
+      "example": "visual-field",
+      "appearance": "dark",
+      "budget": { "1x": 0.029, "2x": 0.034 },
+      "deltaBudget": { "1x": 3.06, "2x": 3.15 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Fast-User-Switching.png",
+        "crop": { "x": 1520, "y": 1022, "width": 320, "height": 56 }
+      }
+    },
+    {
+      "name": "field-drawing-dark",
+      "description": "The same with the placeholder masked: the field's fill, edges and corners in the dark session.",
+      "example": "visual-field",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [{ "x": 4, "y": 4, "width": 100, "height": 20 }],
+      "budget": { "1x": 0.0214, "2x": 0.0159 },
+      "deltaBudget": { "1x": 1.78, "2x": 1.71 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Fast-User-Switching.png",
+        "crop": { "x": 1520, "y": 1022, "width": 320, "height": 56 }
+      }
+    },
+    {
+      "name": "cancel-light",
+      "description": "The Cancel button in the capture of the light session: disc, ring, cross and title on the dark water, which the example paints flat (#080c15). The budgets allow for the title in the fallback font.",
+      "example": "visual-cancel",
+      "appearance": "light",
+      "budget": { "1x": 0.055, "2x": 0.046 },
+      "deltaBudget": { "1x": 6.12, "2x": 6.08 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Fast-User-Switching.png",
+        "crop": { "x": 1620, "y": 1840, "width": 120, "height": 140 }
+      }
+    },
+    {
+      "name": "cancel-drawing-light",
+      "description": "The same with the title masked: the disc, the ring and the cross. What remains is the antialiasing of the ring and the ripples of the water.",
+      "example": "visual-cancel",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [{ "x": 4, "y": 49, "width": 52, "height": 16 }],
+      "budget": { "1x": 0.0575, "2x": 0.0394 },
+      "deltaBudget": { "1x": 3.8, "2x": 3.7 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Fast-User-Switching.png",
+        "crop": { "x": 1620, "y": 1840, "width": 120, "height": 140 }
+      }
+    },
+    {
+      "name": "cancel-dark",
+      "description": "The Cancel button in the capture of the dark session. The budgets allow for the title in the fallback font.",
+      "example": "visual-cancel",
+      "appearance": "dark",
+      "budget": { "1x": 0.055, "2x": 0.046 },
+      "deltaBudget": { "1x": 6.12, "2x": 6.08 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Fast-User-Switching.png",
+        "crop": { "x": 1620, "y": 1840, "width": 120, "height": 140 }
+      }
+    },
+    {
+      "name": "cancel-drawing-dark",
+      "description": "The same with the title masked: the disc, the ring and the cross in the dark session.",
+      "example": "visual-cancel",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [{ "x": 4, "y": 49, "width": 52, "height": 16 }],
+      "budget": { "1x": 0.0575, "2x": 0.0394 },
+      "deltaBudget": { "1x": 3.8, "2x": 3.7 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Fast-User-Switching.png",
+        "crop": { "x": 1620, "y": 1840, "width": 120, "height": 140 }
+      }
+    },
+    {
+      "name": "cancel-focus",
+      "description": "Keyboard focus on the Cancel button, reached with Tab past the password field. No screenshot shows it: the ring is the shared focus ring, in the Dark Aqua colour because the login window is always dark.",
+      "example": "visual-cancel",
+      "appearance": "light",
+      "actions": [{ "tab": 2 }],
+      "expect": {
+        "size": { "width": 60, "height": 70 },
+        "pixels": [
+          {
+            "x": 9,
+            "y": 26,
+            "color": "#1a5a8a",
+            "tolerance": 4,
+            "note": "the 3 pt ring outside the disc, at its left end: --mac-focus-ring-color in Dark Aqua, rgb(43 168 255 / 0.5), over the example's backdrop #080c15; computed from the tokens (inferred state)"
+          },
+          {
+            "x": 5,
+            "y": 26,
+            "color": "#080c15",
+            "note": "backdrop outside the ring, which ends 3 pt beyond the disc (7.5 pt from the left)"
+          },
+          {
+            "x": 30,
+            "y": 8,
+            "color": "#2b2c33",
+            "tolerance": 4,
+            "note": "the disc between its edge and the ring: #2b2c33 measured in the capture (10-15-Catalina-Light-Fast-User-Switching.png @ 1641,1892,9,1)"
+          }
+        ]
+      }
+    }
+  ]
+}

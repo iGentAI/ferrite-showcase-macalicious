@@ -1,0 +1,32 @@
+/*
+ * Open panel tokens (reference/spec/components/open-panel.md). Measured on
+ * Light-/Dark-Finder-Open, converted to sRGB: the toolbar and the bottom bar down column
+ * x=600 and x=700, the header band down column x=1500, the dividers along row y=500.
+ */
+:root {
+  /* The toolbar, 42 pt under the window's top rim: #e6e6e6 to #cdcdcd; #3e3f41 to #333335
+     [measured] */
+  --mac-open-panel-toolbar: linear-gradient(
+    light-dark(#e6e6e6, #3e3f41),
+    light-dark(#cdcdcd, #333335)
+  );
+  /* The 1 pt line under it lies over what follows: #d8d8d8 over the band #f0f0f0, #d1d1d0
+     over the sidebar #e8e8e7 and #e6e6e6 over a white browser are black at 10%; #404143 over
+     #2b2c2f is white at 10% [measured, computed] */
+  --mac-open-panel-toolbar-line: light-dark(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.1));
+  /* [provisional] the toolbar of a panel that is not key: flat, as an inactive title bar */
+  --mac-open-panel-toolbar-inactive: light-dark(#f6f6f6, #2d2d2d);
+  /* The band over the browser ("Shared Folder") and the two device-pixel rows that end it
+     [measured] */
+  --mac-open-panel-header: light-dark(#f0f0f0, #2b2c2f);
+  --mac-open-panel-header-line: light-dark(#e1e1e1, #3a3b3e);
+  --mac-open-panel-header-edge: light-dark(#cecece, #4d4e51);
+  /* Its text: #717171 [measured]; Dark Aqua is [provisional], the secondary label there */
+  --mac-open-panel-header-text: light-dark(#717171, #9a9a9b);
+  /* The divider after the sidebar [measured] */
+  --mac-open-panel-divider: light-dark(#d0d0cf, #000000);
+  /* The bottom bar, 41 pt: #ececec to #d4d4d4; #323232 to #2a2a2a, and the 1 pt line over it
+     [measured] */
+  --mac-open-panel-bar: linear-gradient(light-dark(#ececec, #323232), light-dark(#d4d4d4, #2a2a2a));
+  --mac-open-panel-bar-line: light-dark(#bfbfbf, #3f3f3f);
+}

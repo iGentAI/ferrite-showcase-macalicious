@@ -1,0 +1,386 @@
+---
+title: Find My
+description: The Find My window of macOS 10.15, a Mac Catalyst app without a title bar, with a full-height sidebar that switches between People and Devices, the list it selects and Share My Location, beside a map with the dot of the current location, the map types, the location button and the compass over the zoom pair, over an abstract placeholder map and three invented devices.
+layout: full
+order: 115
+---
+
+<Example name="basic" />
+
+Switch between People and Devices, select a row to bring its marker to the middle of the map,
+change the map type, zoom, show the current location or share it. The map is an abstract
+placeholder and the devices are invented; nothing is located or shared anywhere.
+
+## What it shows
+
+- A [Window](/components/window) with no title bar: `topHighlight` draws the two highlight
+  rows along its top edge. Inside it, [Catalyst Chrome](/components/catalyst-chrome) with
+  `bar="none"`: the [Window Controls](/components/window-controls) float over the sidebar
+  where a 22 pt title bar would have them, in the chrome's strip, which is the drag region.
+- The sidebar: the chrome's `CatalystSidebar`, 261 pt wide with its plain one-point line, in
+  Find My's own lighter fill.
+- People and Devices: the [Catalyst Segmented Control](/components/catalyst-segmented-control),
+  a radio group whose selected segment is a raised pill.
+- A [Separator](/components/separator), then a [List View](/components/list-view) of 48 pt
+  rows with an inset line, each a disc (an [Avatar](/components/avatar) for a person, an
+  [Image View](/components/image-view) with a glyph for a device), a name and a second line;
+  an [Empty State](/components/empty-state) stands in for a list without rows.
+- "Share My Location": an [Image Button](/components/image-button) in its row layout, used as
+  a toggle.
+- The map, held by an Image View that names it, with the map controls over it: the map types
+  at the leading corner, and at the trailing one a `MapButton` in its `rounded` variant beside
+  the `MapCompass`, whose 3D button is dimmed as in Find My, over the `MapZoomControl`.
+- The Legal link, a [Borderless Button](/components/borderless-button), and the map's note, a
+  [Label](/components/label) that is a `status`.
+
+| Command | Where | What it does |
+| --- | --- | --- |
+| People, Devices | the sidebar | Shows one list or the other. Each keeps its own selection. |
+| Select a row | the list | Moves the map so that the row's marker is in its middle and sets its name under the marker; the map's note names it. "Me" is the dot of the current location. |
+| Share My Location | the sidebar's foot | Switches sharing: the second line of "Me" says so, the dot gets a halo, and the note reports the change. |
+| Map, Hybrid, Satellite | the map | The map type: the satellite view darkens the placeholder's ground and takes its bands away, the hybrid view lays them over the dark ground. |
+| Current location | the map | Moves the map so that the dot is in its middle. |
+| Compass | the map | The ring turns the map north up. The 3D button is unavailable. |
+| Zoom | the map | Nine zoom levels, from 25% to 400%; a half at its limit is unavailable. |
+| Legal | the map | Says that the map is a drawing of the demo's own; a second click takes the note away. |
+
+## Source walkthrough
+
+The demo is six files in `demos/find-my/`.
+
+**`find-my-data.ts`** is what the demo knows: the user ("Me", "Memphis, TN", the two lines of
+the captures), three invented devices, a point of the abstract map for each, the captured
+middle of the view, the zoom limits, and `project(point, center, scale, heading)`, which says
+how far from the middle of the view a point of the map is drawn.
+
+**`find-my-artwork.tsx`** holds the drawings, all of them original and all placeholders: the
+map, the glyph of the location button, the plus on a disc of "Share My Location" and the three
+device glyphs. The map is one tile repeated in every direction and placed by the view's
+middle, scale and heading, so it needs no measuring:
+
+```tsx
+<pattern id={id} patternUnits="userSpaceOnUse" width={560} height={420}
+         patternTransform={`rotate(${-heading}) scale(${scale}) translate(${-center.x} ${-center.y})`}>
+  {/* two wide and two narrow bands, a disc, two blocks, a stripe and two short bars */}
+</pattern>
+```
+
+**`find-my.tsx`** is the window. Its state is the list shown, the selection of each list, the
+map's type, middle, zoom and heading, whether the location is shared, and the map's note:
+
+```tsx
+const items = list === "people" ? people : devices;
+const selected = items.find((item) => item.id === selection[list]) ?? null;
+const scale = scaleOf(zoom);
+```
+
+Find My draws no title bar and no toolbar. `CatalystChrome` with `bar="none"` holds the
+window controls in a 22 pt strip, the sidebar for the window's whole height, and the map as
+its content:
+
+```tsx
+<Window aria-label="Find My" topHighlight width={1135} height={723}>
+  <CatalystChrome
+    bar="none"
+    controls={<WindowControls onClose={onClose} onMinimize={onMinimize} onZoom={onZoom} />}
+    onDragRegionPointerDown={onDragRegionPointerDown}
+    onDragRegionDoubleClick={onDragRegionDoubleClick}
+    sidebar={
+      <CatalystSidebar aria-label="People and devices" width={261} divider="plain" style={SIDEBAR}>
+        {/* the switch, the rule, the list, Share My Location */}
+      </CatalystSidebar>
+    }
+  >
+    <div className="mac-find-my-map" data-map-type={mapType}>{/* the map */}</div>
+  </CatalystChrome>
+</Window>
+```
+
+The sidebar's fill and line are Find My's own colours. A demo's stylesheet may not set
+another component's variables, so they go in the sidebar's `style`:
+
+```tsx
+const SIDEBAR = {
+  "--mac-catalyst-chrome-sidebar-fill": "var(--mac-find-my-sidebar)",
+  "--mac-catalyst-chrome-sidebar-divider": "var(--mac-find-my-divider)",
+};
+
+<CatalystSegmentedControl aria-label="Show" value={list} onValueChange={showList}>
+  <CatalystSegment value="people">People</CatalystSegment>
+  <CatalystSegment value="devices">Devices</CatalystSegment>
+</CatalystSegmentedControl>
+```
+
+The list is the library's, with a row drawn from its parts:
+
+```tsx
+<ListView aria-label="People" count={items.length} rowHeight={48}
+          separator="inset" separatorInset={49.5} renderRow={renderRow}
+          value={selected ? [selected.id] : []} onValueChange={([id]) => select(id)} />
+
+// renderRow
+<ListViewRowLeading>
+  {"kind" in item ? (
+    <ImageView mask="circle" width={29} height={29}><DeviceGlyph kind={item.kind} /></ImageView>
+  ) : (
+    <Avatar>{isMe(item) ? undefined : initialsOf(item.name)}</Avatar>
+  )}
+</ListViewRowLeading>
+<ListViewRowTitle>{item.name}</ListViewRowTitle>
+<ListViewRowDetail>{detailOf(item, sharing)}</ListViewRowDetail>
+```
+
+The map controls are the library's too. The cluster at the trailing corner is a vertical group
+nested in a horizontal one, as the Map Controls page describes for Find My:
+
+```tsx
+<MapControls placement="none" aria-label="Map controls" className="mac-find-my-controls">
+  <MapButton variant="rounded" aria-label="Show Your Current Location" onClick={locate}>
+    <LocationGlyph />
+  </MapButton>
+  <MapControls placement="none" orientation="vertical" aria-label="Compass and zoom">
+    <MapCompass heading={heading} onNorthUp={() => setHeading(0)} pitchDisabled />
+    <MapZoomControl onZoomIn={zoomIn} onZoomOut={zoomOut}
+                    zoomInDisabled={zoom >= MAX_ZOOM} zoomOutDisabled={zoom <= MIN_ZOOM} />
+  </MapControls>
+</MapControls>
+```
+
+A marker is a point moved from the middle of the map by `project`; a device has a disc with
+its glyph, and the selected row's marker has the name under it. The user has no marker: the
+dot of the current location, which is part of the drawing, is theirs.
+
+**`find-my.css`** places the strip, the sidebar's column and what lies over the map, and
+colours the placeholder by the map's type. **`find-my.tokens.css`** holds the colours no
+shared token has: the measured ones (the sidebar's fill and line, the land, the track of the
+switch, the dot and its ring) and the demo's own for the placeholders.
+
+**`app.ts`** is the descriptor the [Desktop](/demos/desktop) reads.
+
+## Hosting the window
+
+`FindMy` renders the library's `Window` as its root and passes every `Window` prop to it, so
+it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component hands to the window controls and
+to the strip along its top edge. These are the props a
+[Managed Window](/components/managed-window)'s `render` form supplies, so the component can be
+spread with them as they come.
+
+<Example name="hosted" />
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `people` | `FindMyPerson[]` | The rows of the People list; the user alone by default. The person with the id `"me"` is the user: the dot of the current location stands at their coordinate. A device with that id is a device like any other. |
+| `devices` | `FindMyDevice[]` | The rows of the Devices list; the demo's three by default. |
+| `defaultList` | `"people" \| "devices"` | The list shown at first; `"people"`, as in the captures. |
+| `defaultSelectedId` | `string \| null` | The row of that list selected at first; `null`, as in the captures. |
+| `defaultMapType` | `"map" \| "hybrid" \| "satellite"` | The map type selected at first; `"map"`. |
+| `defaultCenter` | `{ x, y }` | The point of the abstract map at the middle of the view at first; the captures'. |
+| `defaultZoom` | `number` | The zoom level at first, from -4 to 4; `0`. |
+| `defaultHeading` | `number` | The direction that is up at first, in degrees clockwise from north; `0`. |
+| `defaultSharing` | `boolean` | Whether the location is shared at first; `false`. |
+| `onSelectionChange` | `(item: FindMyPerson \| FindMyDevice \| null) => void` | Called with the person or device whose row is selected when it changes, also when a person and a device have the same id. |
+| `onSharingChange` | `(sharing: boolean) => void` | Called when "Share My Location" is switched. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | A press or a double click on the 22 pt strip along the top edge that is not on a window control. |
+| `width`, `height` | `number \| string` | The frame; 1135 by 723 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `findMyApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (1135 by 723), `minSize` (680 by 360), `resizable` and
+`menus`, the menu titles after the Apple menu. Its `component` is `DesktopFindMy`
+(`find-my-desktop.tsx`), which renders `FindMy` in every build but one, described next.
+
+## On the desktop's Ferrite application
+
+When the `macalicious-desktop` Ferrite application serves the desktop
+(`ferrite-apps/desktop`), `DesktopFindMy` shows a working Find My instead of the demo. Nothing
+of it runs on this documentation site, which asks no server anything.
+
+- **The map** is OpenStreetMap's standard map, the same one Maps shows
+  (`../maps/maps-tiles.tsx`), with this browser's location as the blue dot.
+- **This browser** asks for its location with the Geolocation API when the window opens, and
+  reports it to the `find-my` module as one of the person's devices, again after a minute or
+  after moving 50 m. A refusal is explained in the window. Each report carries the time this
+  browser made it, and the module keeps a device's newest report by that time: a report that
+  reaches the server after a later one (a retry, or a second tab of the same browser) changes
+  nothing, so a device never moves back to an older position. A report dated more than ten
+  minutes ahead of the server's clock is refused, which bounds how long a fast clock that is
+  then set right can hold its device.
+- **Devices** lists the person's browsers, read every ten seconds while the window is open,
+  each with its last position and when it was seen. Play Sound asks a device for its sound;
+  that device's own browser plays it with Web Audio the next time it reads the list, and
+  clears the request. Remove This Device forgets another browser; this one cannot remove
+  itself while it reports.
+- **People** shows the person and the accounts they share their location with or follow, with a
+  card for each: Contact, Message, Directions, Share or Stop Sharing My Location, Ask To Follow
+  Location, a notification when they arrive at or leave your current location or a place you name, a notification to them when you do, and Remove.
+
+Devices are kept per person: every browser signed in to an account is one of its devices, and
+before anyone signs in, the browser's own session is the person. Nobody sees or changes another
+person's devices, even by naming one's id. An account sees another's newest position, with no
+device name or history, only while that account shares it with them; stopping takes effect at
+once.
+
+## Styling hooks
+
+The demo's measured lengths and font sizes are custom properties in `find-my.tokens.css`,
+declared on `:root`; set one on the window with `style` to change it. That file tags each with
+where it comes from: the sidebar's column, Legal, the map types and the map controls are
+measured; the column's least height, a device's marker and the note, which no capture shows,
+are provisional. Left as literals in `find-my.css`, because they are structure rather than
+measurements: zeros, the 100% and 50% sizes and places, flex factors, z-index, the marker
+disc's 50% radius, its line height of 1 and its name's -50% translation, the stroke widths of
+the SVG drawings, and the 1 pt border in forced colours.
+
+| Property | Default | Controls |
+| --- | --- | --- |
+| `--mac-find-my-switch-margin-top` | `15px` | The People and Devices switch: top margin |
+| `--mac-find-my-switch-margin-right` | `8px` | The People and Devices switch: right margin |
+| `--mac-find-my-switch-margin-left` | `7.5px` | The People and Devices switch: left margin |
+| `--mac-find-my-rule-margin-top` | `14.5px` | The rule under the switch: top margin |
+| `--mac-find-my-avatar-margin-start` | `2px` | A row's disc: leading margin |
+| `--mac-find-my-place-offset` | `0.5px` | A row's second line: vertical shift |
+| `--mac-find-my-place-size` | `12px` | A row's second line: font size |
+| `--mac-find-my-share-gap` | `5.5px` | "Share My Location": gap between glyph and title |
+| `--mac-find-my-share-padding-start` | `16.5px` | "Share My Location": leading padding |
+| `--mac-find-my-share-padding-end` | `8px` | "Share My Location": trailing padding |
+| `--mac-find-my-share-title-offset` | `-1px` | The title of "Share My Location": vertical shift |
+| `--mac-find-my-legal-bottom` | `42px` | The Legal link: distance from the map's bottom |
+| `--mac-find-my-legal-left` | `16px` | The Legal link: distance from the map's left |
+| `--mac-find-my-legal-size` | `7.5px` | The Legal link: font size |
+| `--mac-find-my-legal-line-height` | `10px` | The Legal link: line height |
+| `--mac-find-my-types-bottom` | `14.75px` | The map types: distance from the map's bottom |
+| `--mac-find-my-types-left` | `15px` | The map types: distance from the map's left |
+| `--mac-find-my-controls-right` | `18px` | The location button, compass and zoom pair: distance from the map's right |
+| `--mac-find-my-controls-bottom` | `15.5px` | The location button, compass and zoom pair: distance from the map's bottom |
+| `--mac-find-my-compass-offset` | `0.5px` | The compass: inline shift |
+| `--mac-find-my-column-min-height` | `240px` | The sidebar's column: least height |
+| `--mac-find-my-marker-size` | `26px` | A marker's disc: width and height (it is centred by half of it) |
+| `--mac-find-my-marker-glyph-size` | `10px` | A marker's glyph: font size |
+| `--mac-find-my-marker-selected-ring` | `2px` | A selected marker's ring: width |
+| `--mac-find-my-marker-name-top` | `16px` | A marker's name: distance under the marker's point |
+| `--mac-find-my-marker-name-size` | `10px` | A marker's name: font size |
+| `--mac-find-my-marker-name-line-height` | `13px` | A marker's name: line height |
+| `--mac-find-my-marker-halo-blur` | `2px` | A marker name's halo: blur of the two inner shadows |
+| `--mac-find-my-marker-halo-blur-wide` | `3px` | A marker name's halo: blur of the outer shadow |
+| `--mac-find-my-note-top` | `30px` | The note of the last action: distance from the map's top |
+| `--mac-find-my-note-left` | `14px` | The note of the last action: distance from the map's left |
+| `--mac-find-my-note-padding-block` | `2px` | The note of the last action: block padding |
+| `--mac-find-my-note-padding-inline` | `8px` | The note of the last action: inline padding |
+| `--mac-find-my-note-radius` | `4px` | The note of the last action: corner radius |
+
+## Accessibility
+
+- The window has no title, so it is a `region` named "Find My" by `aria-label`. The window
+  controls come first in it; the strip that holds them is a pointer-only drag region.
+- The sidebar is a `navigation` landmark named "People and devices".
+- People and Devices is a `radiogroup` named "Show": one Tab stop, and the arrow keys move
+  the selection.
+- The list is a `listbox` named "People" or "Devices"; it keeps the focus and names the
+  current row, the arrow keys move the selection and typing selects a row by its name. A row
+  reads as its name and its second line; its disc is decorative.
+- "Share My Location" is a toggle button whose `aria-pressed` says whether the location is
+  shared.
+- The map is an image whose text alternative says that it is a placeholder, and names the map
+  type, the zoom and the heading, so a change of any of them can be read.
+- What the map does is reported in a `status`: the row that was selected with its second
+  line, "Current Location", the change of sharing, and what the Legal link says. While it has
+  nothing to say the status is empty and without its plate, but it stays in the page, so that
+  its first message is announced.
+- The map types are a `radiogroup` named "Map type". The groups of map controls are named "Map
+  options", "Map controls" and "Compass and zoom", and their buttons "Show Your Current
+  Location", "Face north", "3D" (disabled), "Zoom out" and "Zoom in". A zoom button at its
+  limit stays reachable.
+- The map has no keyboard commands of its own for panning: the rows, the location button and
+  the zoom pair move it.
+- The placeholder drawings are decorative; the elements around them name what they stand for.
+
+## Fidelity
+
+`find-my.visual.json` compares two regions of the window with the Find My screenshots in both
+appearances: the sidebar with its line over the window's whole height, with its text and
+with the text masked, and the band along the window's bottom edge that holds every map
+control. The Dark Aqua capture was taken while another window was key, so its example gives
+the window `state="inactive"`. Scores from `npm run visual -- find-my/` in Chromium on Linux
+with the fallback font: the share of pixels that differ and the mean colour difference out of
+255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `sidebar-light` (with text) | 0.67% | 1.37 | 0.63% | 1.38 |
+| `sidebar-light-layout` (text masked) | 0.12% | 0.79 | 0.14% | 0.79 |
+| `controls-light` | 3.44% | 1.60 | 3.25% | 1.71 |
+| `sidebar-dark` (with text) | 0.73% | 1.34 | 0.63% | 1.35 |
+| `sidebar-dark-layout` (text masked) | 0.16% | 0.80 | 0.09% | 0.79 |
+| `controls-dark` | 3.07% | 1.89 | 2.55% | 1.90 |
+
+There is no comparison of the whole window. The map is 77% of it and is a placeholder, and a
+mask may cover at most 75% of a crop: a whole-window comparison would have to score the
+demo's drawing against Apple's map. What the map's mask hides is checked as pixels instead
+(`map-light`, `map-dark`): the dot of the current location and its ring, at the captured
+place and in the captured colours, on the land colour. Two states no capture shows are checked
+the same way after a real click: Devices selected in the switch (`devices-*`) and Satellite
+selected in the map types (`satellite-*`).
+
+### Placeholders and masks
+
+The captures show Apple's map and Apple's avatar. Neither is reproduced or imitated: the
+owner of the project decided that these are abstract placeholders, flat fills and simple
+shapes that are not fitted to the pictures in the screenshots. Every one of them is masked in
+every comparison that contains it, so what is scored is the chrome and the layout around
+them. Masks are in points from the corner of the compared region.
+
+| Placeholder | What the capture has | What the demo draws | Mask |
+| --- | --- | --- | --- |
+| The map | Apple's map of Memphis: roads, shields, parks, water and place names | One tile repeated: bands, a disc, two blocks, a stripe and two short bars on the measured land colour | In `controls-*`, everything on the map but the four controls and 2 pt around each: seven rectangles (872 x 6 at 263, 0; 797 x 58 at 263, 6; 17 x 58 at 1118, 6; 12 x 26 at 263, 64; 504 x 26 at 510, 64; 15 x 26 at 1120, 64; 872 x 13 at 263, 90). The sidebar comparisons end at the sidebar's line and contain no map. |
+| The Legal link | "Legal", small and underlined, over the map | The same word, a button of the demo's | Inside the map's mask |
+| The avatar | Apple's silhouette on a grey disc, 29 pt | The library's [Avatar](/components/avatar): its own silhouette on the measured disc | 32 x 33 at 10, 84, in the four sidebar comparisons; the Avatar page compares the disc unmasked |
+| The location button's glyph | Apple's arrowhead | A stand-in arrowhead | 16 x 16 at 1026, 69, in `controls-*` |
+| The glyph of "Share My Location" | Apple's plus on a disc | A stand-in plus on a disc | With the title, 145 x 18 at 15, 693 in `sidebar-*-layout` and at 15, 73 in `controls-*`; not masked in `sidebar-light` and `sidebar-dark` |
+
+The layout comparisons mask the text as well, which is set in the fallback font off Apple
+devices. In `sidebar-*-layout`: the titles of People (42 x 14 at 48, 43) and Devices (46 x 14
+at 170, 43), and the two lines of the row (100 x 33 at 48, 85). In `controls-*`: the titles
+of Map, Hybrid and Satellite (30, 40 and 48 x 14 at 300, 372 and 445, 70) and the compass's 3D
+title (24 x 16 at 1078, 27). The masks cover 0.6% of the crop in `sidebar-light` and
+`sidebar-dark`, 4.3% in the two layout comparisons and 70.6% in `controls-light` and
+`controls-dark`, nearly all of which is the map.
+
+### Measured and reproduced
+
+The 1135 by 723 pt frame; the window controls 8 pt from the edge and centred 11 pt under the
+top; the 261 pt sidebar with its fill and its one-point line; the switch's track and pill;
+the rule at 76 pt and the 48 pt row with its line from 49.5 pt; the disc, the name and the
+second line of the row within a point of where the captures have them; "Share My Location"
+with its glyph; the land colour; the dot of the current location, its ring and its place; the
+map types 15 pt from the map's leading edge; the location button and the zoom pair's trailing
+edge 18 pt from the window's; and the compass 6 pt above the pair.
+
+### Known differences
+
+- **The switch's titles and shadow.** People and Devices is the library's
+  [Catalyst Segmented Control](/components/catalyst-segmented-control), measured on these
+  captures: its titles are 10.5 pt Medium in the fallback font off Apple devices, and the
+  pill's shadow is fitted to the Aqua capture.
+- **The sidebar is flat.** The captures' sidebar is a translucent material that lets a little
+  of what is behind the window through; here it is the colour it has in the captures.
+- **The row's selection.** Catalyst lists select in grey; the library's list selects in the
+  accent colour while it has the keyboard. No capture shows a selected row.
+- **The zoom pair** is 56 by 20 pt in the library, as measured in Maps; Find My's is 54 by
+  19 pt. The demo keeps the pair's trailing edge and the location button where the captures
+  have them, so the pair's leading edge and its divider stand 1 to 2 pt further left.
+- **The compass** is the library's original drawing: its ticks, the gap about the 3D button
+  and, in Dark Aqua, its face (a few levels lighter than the captures' translucent one)
+  differ from Find My's.
+- **The map about the controls.** `controls-*` leaves 2 pt of the map around each control and
+  the corners of the compass's square unmasked: the captures have a park, a road and water
+  there, the demo its flat land. That and the two items above are most of its scores.
+- **Text** is set in the fallback font off Apple devices: the difference between the sidebar
+  comparisons with and without their text.
+- **Not in a screenshot (provisional):** the Devices list, its rows and their markers; a
+  selected row and the name under its marker; sharing, its halo and the row's second line
+  while it is on; the hybrid and satellite views; a map that is not north up; the zoom
+  levels; the map's note; what the Legal link does; the minimum size; and the Aqua window when
+  it is not key or the Dark Aqua one when it is.

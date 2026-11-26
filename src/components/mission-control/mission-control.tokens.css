@@ -1,0 +1,30 @@
+/*
+ * Mission Control colours (reference/spec/components/mission-control.md). The captures show
+ * it over a desktop picture the library does not have, so the Spaces bar's material could
+ * not be solved: its recipe is the spec's estimate. Positions are pixels of the captures.
+ */
+:root {
+  /* [provisional] stand-in for the desktop picture; an application sets its own */
+  --mac-mission-control-desktop: light-dark(#7aabd2, #2f4c76);
+  /* [provisional] the spec's recipe: how much lighter (Aqua) or darker (Dark Aqua) the bar
+     is than the picture under it, @ 300,288 and 300,296 */
+  --mac-mission-control-bar-fill: light-dark(rgb(255 255 255 / 0.25), rgb(0 0 0 / 0.15));
+  --mac-mission-control-bar-filter: blur(60px) saturate(180%);
+  /* [measured] the bar as captured, for reduced transparency, @ 1040,262 and 300,0 */
+  --mac-mission-control-bar-opaque: light-dark(#82d0fc, #24426c);
+  /* [measured, computed] the picture is 15% darker in the half point under the bar and 6%
+     in the next, @ 300,292; the dark capture shows no edge */
+  --mac-mission-control-bar-shadow: 0 0.5px 1px light-dark(rgb(0 0 0 / 0.25), transparent);
+  /* [measured] the names of the spaces, @ 1110,256 */
+  --mac-mission-control-label: light-dark(#001a48, #ffffff);
+  /* [measured] the plus, @ 3292,146 */
+  --mac-mission-control-glyph: light-dark(#4c4c4c, #e5e5e5);
+  /* [measured] the ring of the current space in both captures, @ 2058,140 and 1002,140 */
+  --mac-mission-control-ring: #3b98fc;
+  /* [measured, computed] the darkening around a space: 6% beside it, 10% under it, 4%
+     above it, gone after 4 pt, @ 1000,140 and 1150,236 */
+  --mac-mission-control-space-shadow: 0 1px 3.5px rgb(0 0 0 / 0.14);
+  /* [provisional] a window's title plate; no capture shows a window under the pointer */
+  --mac-mission-control-caption-fill: rgb(0 0 0 / 0.6);
+  --mac-mission-control-caption-text: #ffffff;
+}

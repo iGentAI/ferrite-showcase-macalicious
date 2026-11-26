@@ -1,0 +1,691 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "time-light",
+      "description": "The enabled From time field of the Notifications pane with its stepper, Aqua. The text is San Francisco in the screenshot and the fallback font here.",
+      "example": "visual-time",
+      "appearance": "light",
+      "budget": { "1x": 0.255, "2x": 0.073 },
+      "deltaBudget": { "1x": 19.2, "2x": 7.2 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Notifications.png",
+        "crop": { "x": 814, "y": 540, "width": 174, "height": 56 }
+      }
+    },
+    {
+      "name": "time-drawing-light",
+      "description": "As time-light with the text masked, to score the field and the stepper alone.",
+      "example": "visual-time",
+      "appearance": "light",
+      "masks": [{ "x": 5, "y": 8.5, "width": 60.5, "height": 11.5 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.225, "2x": 0.0031 },
+      "deltaBudget": { "1x": 10.6, "2x": 0.37 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Notifications.png",
+        "crop": { "x": 814, "y": 540, "width": 174, "height": 56 }
+      }
+    },
+    {
+      "name": "time-dark",
+      "description": "The enabled From time field of the Notifications pane with its stepper, Dark Aqua.",
+      "example": "visual-time",
+      "appearance": "dark",
+      "budget": { "1x": 0.164, "2x": 0.069 },
+      "deltaBudget": { "1x": 14.4, "2x": 6.5 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Notifications.png",
+        "crop": { "x": 814, "y": 540, "width": 174, "height": 56 }
+      }
+    },
+    {
+      "name": "time-drawing-dark",
+      "description": "As time-dark with the text masked, to score the field and the stepper alone.",
+      "example": "visual-time",
+      "appearance": "dark",
+      "masks": [{ "x": 5, "y": 8.5, "width": 60.5, "height": 11.5 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.139, "2x": 0.0038 },
+      "deltaBudget": { "1x": 6.5, "2x": 0.61 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Notifications.png",
+        "crop": { "x": 814, "y": 540, "width": 174, "height": 56 }
+      }
+    },
+    {
+      "name": "date-light",
+      "description": "The disabled date field of the Date & Time pane with its stepper, Aqua.",
+      "example": "visual-date",
+      "appearance": "light",
+      "budget": { "1x": 0.127, "2x": 0.085 },
+      "deltaBudget": { "1x": 9.1, "2x": 5.5 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Date-and-Time.png",
+        "crop": { "x": 468, "y": 388, "width": 204, "height": 56 }
+      }
+    },
+    {
+      "name": "date-drawing-light",
+      "description": "As date-light with the text masked, to score the field and the stepper alone.",
+      "example": "visual-date",
+      "appearance": "light",
+      "masks": [{ "x": 5.5, "y": 8.5, "width": 76, "height": 13 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.181, "2x": 0.0005 },
+      "deltaBudget": { "1x": 6.1, "2x": 0.55 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Date-and-Time.png",
+        "crop": { "x": 468, "y": 388, "width": 204, "height": 56 }
+      }
+    },
+    {
+      "name": "date-dark",
+      "description": "The disabled date field of the Date & Time pane with its stepper, Dark Aqua.",
+      "example": "visual-date-dark",
+      "appearance": "dark",
+      "budget": { "1x": 0.115, "2x": 0.085 },
+      "deltaBudget": { "1x": 7.1, "2x": 5.2 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Date-and-Time.png",
+        "crop": { "x": 468, "y": 388, "width": 204, "height": 56 }
+      }
+    },
+    {
+      "name": "date-drawing-dark",
+      "description": "As date-dark with the text masked, to score the field and the stepper alone.",
+      "example": "visual-date-dark",
+      "appearance": "dark",
+      "masks": [{ "x": 5.5, "y": 8.5, "width": 76, "height": 13 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.076, "2x": 0.0005 },
+      "deltaBudget": { "1x": 3.9, "2x": 0.7 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Date-and-Time.png",
+        "crop": { "x": 468, "y": 388, "width": 204, "height": 56 }
+      }
+    },
+    {
+      "name": "time-seconds-light",
+      "description": "The disabled time field of the Date & Time pane with its stepper, Aqua.",
+      "example": "visual-time-seconds",
+      "appearance": "light",
+      "budget": { "1x": 0.116, "2x": 0.042 },
+      "deltaBudget": { "1x": 8.7, "2x": 3.3 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Date-and-Time.png",
+        "crop": { "x": 904, "y": 386, "width": 216, "height": 56 }
+      }
+    },
+    {
+      "name": "time-seconds-drawing-light",
+      "description": "As time-seconds-light with the text masked, to score the field and the stepper alone.",
+      "example": "visual-time-seconds",
+      "appearance": "light",
+      "masks": [{ "x": 5.5, "y": 8.5, "width": 81, "height": 11.5 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.164, "2x": 0.0005 },
+      "deltaBudget": { "1x": 5.7, "2x": 0.52 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Date-and-Time.png",
+        "crop": { "x": 904, "y": 386, "width": 216, "height": 56 }
+      }
+    },
+    {
+      "name": "time-seconds-dark",
+      "description": "The disabled time field of the Date & Time pane with its stepper, Dark Aqua.",
+      "example": "visual-time-seconds-dark",
+      "appearance": "dark",
+      "budget": { "1x": 0.098, "2x": 0.04 },
+      "deltaBudget": { "1x": 6.4, "2x": 3.1 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Date-and-Time.png",
+        "crop": { "x": 904, "y": 386, "width": 216, "height": 56 }
+      }
+    },
+    {
+      "name": "time-seconds-drawing-dark",
+      "description": "As time-seconds-dark with the text masked, to score the field and the stepper alone.",
+      "example": "visual-time-seconds-dark",
+      "appearance": "dark",
+      "masks": [{ "x": 5.5, "y": 8.5, "width": 81, "height": 11.5 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.071, "2x": 0.0005 },
+      "deltaBudget": { "1x": 3.7, "2x": 0.69 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Date-and-Time.png",
+        "crop": { "x": 904, "y": 386, "width": 216, "height": 56 }
+      }
+    },
+    {
+      "name": "calendar-light",
+      "description": "The disabled calendar of the Date & Time pane, 3 October 2019 selected, Aqua.",
+      "example": "visual-calendar",
+      "appearance": "light",
+      "budget": { "1x": 0.139, "2x": 0.082 },
+      "deltaBudget": { "1x": 14.3, "2x": 8.5 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Date-and-Time.png",
+        "crop": { "x": 426, "y": 452, "width": 286, "height": 304 }
+      }
+    },
+    {
+      "name": "calendar-drawing-light",
+      "description": "As calendar-light with the title, the weekday names and the digits of each row masked, to score the frame, the divider, the three glyphs and the selected day's highlight above and below its digit.",
+      "example": "visual-calendar",
+      "appearance": "light",
+      "masks": [
+        { "x": 4.5, "y": 6.5, "width": 60, "height": 11 },
+        { "x": 6.5, "y": 26, "width": 127, "height": 10 },
+        { "x": 6.5, "y": 44.5, "width": 127.5, "height": 9.5 },
+        { "x": 6.5, "y": 62.5, "width": 127.5, "height": 9.5 },
+        { "x": 6.5, "y": 80.5, "width": 127.5, "height": 9.5 },
+        { "x": 6.5, "y": 98.5, "width": 127.5, "height": 9.5 },
+        { "x": 6.5, "y": 116.5, "width": 127.5, "height": 9.5 },
+        { "x": 6.5, "y": 134.5, "width": 127.5, "height": 9.5 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.09, "2x": 0.0015 },
+      "deltaBudget": { "1x": 5.2, "2x": 0.35 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Date-and-Time.png",
+        "crop": { "x": 426, "y": 452, "width": 286, "height": 304 }
+      }
+    },
+    {
+      "name": "calendar-dark",
+      "description": "The disabled calendar of the Date & Time pane, 4 October 2019 selected, Dark Aqua.",
+      "example": "visual-calendar-dark",
+      "appearance": "dark",
+      "budget": { "1x": 0.139, "2x": 0.077 },
+      "deltaBudget": { "1x": 12.9, "2x": 7.5 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Date-and-Time.png",
+        "crop": { "x": 426, "y": 452, "width": 286, "height": 304 }
+      }
+    },
+    {
+      "name": "calendar-drawing-dark",
+      "description": "As calendar-dark with the title, the weekday names and the digits of each row masked.",
+      "example": "visual-calendar-dark",
+      "appearance": "dark",
+      "masks": [
+        { "x": 4.5, "y": 6.5, "width": 60, "height": 11 },
+        { "x": 6.5, "y": 26, "width": 127, "height": 10 },
+        { "x": 6.5, "y": 44.5, "width": 127.5, "height": 9.5 },
+        { "x": 6.5, "y": 62.5, "width": 127.5, "height": 9.5 },
+        { "x": 6.5, "y": 80.5, "width": 127.5, "height": 9.5 },
+        { "x": 6.5, "y": 98.5, "width": 127.5, "height": 9.5 },
+        { "x": 6.5, "y": 116.5, "width": 127.5, "height": 9.5 },
+        { "x": 6.5, "y": 134.5, "width": 127.5, "height": 9.5 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.051, "2x": 0.0022 },
+      "deltaBudget": { "1x": 4.2, "2x": 0.55 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Date-and-Time.png",
+        "crop": { "x": 426, "y": 452, "width": 286, "height": 304 }
+      }
+    },
+    {
+      "name": "clock-light",
+      "description": "The clock of the Date & Time pane at 10:56:59 AM, Aqua.",
+      "example": "visual-clock",
+      "appearance": "light",
+      "budget": { "1x": 0.086, "2x": 0.046 },
+      "deltaBudget": { "1x": 9.4, "2x": 6.2 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Date-and-Time.png",
+        "crop": { "x": 886, "y": 484, "width": 252, "height": 250 }
+      }
+    },
+    {
+      "name": "clock-drawing-light",
+      "description": "As clock-light with the twelve numerals and AM masked, to score the rim, the face, its shade, the hands and the hub.",
+      "example": "visual-clock",
+      "appearance": "light",
+      "masks": [
+        { "x": 54.5, "y": 13, "width": 16.5, "height": 12.5 },
+        { "x": 82, "y": 19, "width": 8, "height": 13 },
+        { "x": 97, "y": 35, "width": 10, "height": 13 },
+        { "x": 103, "y": 56, "width": 10, "height": 13 },
+        { "x": 96, "y": 78, "width": 11, "height": 13 },
+        { "x": 80.5, "y": 93.5, "width": 10, "height": 13.5 },
+        { "x": 58, "y": 100, "width": 10, "height": 13 },
+        { "x": 35.5, "y": 93.5, "width": 10.5, "height": 13.5 },
+        { "x": 19, "y": 78, "width": 11, "height": 13 },
+        { "x": 13, "y": 56, "width": 10, "height": 13 },
+        { "x": 18, "y": 34.5, "width": 16, "height": 13.5 },
+        { "x": 34.5, "y": 18.5, "width": 16, "height": 13.5 },
+        { "x": 51, "y": 74, "width": 23, "height": 13 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.064, "2x": 0.0179 },
+      "deltaBudget": { "1x": 4.2, "2x": 1.48 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Date-and-Time.png",
+        "crop": { "x": 886, "y": 484, "width": 252, "height": 250 }
+      }
+    },
+    {
+      "name": "clock-dark",
+      "description": "The clock of the Date & Time pane at 10:30:38 AM, Dark Aqua: the same white face on the dark box.",
+      "example": "visual-clock-dark",
+      "appearance": "dark",
+      "budget": { "1x": 0.094, "2x": 0.048 },
+      "deltaBudget": { "1x": 9.9, "2x": 6.2 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Date-and-Time.png",
+        "crop": { "x": 886, "y": 484, "width": 252, "height": 250 }
+      }
+    },
+    {
+      "name": "clock-drawing-dark",
+      "description": "As clock-dark with the twelve numerals and AM masked.",
+      "example": "visual-clock-dark",
+      "appearance": "dark",
+      "masks": [
+        { "x": 54.5, "y": 13, "width": 16.5, "height": 12.5 },
+        { "x": 82, "y": 19, "width": 8, "height": 13 },
+        { "x": 97, "y": 35, "width": 10, "height": 13 },
+        { "x": 103, "y": 56, "width": 10, "height": 13 },
+        { "x": 96, "y": 78, "width": 11, "height": 13 },
+        { "x": 80.5, "y": 93.5, "width": 10, "height": 13.5 },
+        { "x": 58, "y": 100, "width": 10, "height": 13 },
+        { "x": 35.5, "y": 93.5, "width": 10.5, "height": 13.5 },
+        { "x": 19, "y": 78, "width": 11, "height": 13 },
+        { "x": 13, "y": 56, "width": 10, "height": 13 },
+        { "x": 18, "y": 34.5, "width": 16, "height": 13.5 },
+        { "x": 34.5, "y": 18.5, "width": 16, "height": 13.5 },
+        { "x": 51, "y": 74, "width": 23, "height": 13 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.08, "2x": 0.0216 },
+      "deltaBudget": { "1x": 4.7, "2x": 1.54 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Date-and-Time.png",
+        "crop": { "x": 886, "y": 484, "width": 252, "height": 250 }
+      }
+    },
+    {
+      "name": "element-selected-light",
+      "description": "The month selected with Tab in the key window: the selection colour behind it and the focus ring around the field. Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 112, "height": 39 },
+        "pixels": [
+          {
+            "x": 11,
+            "y": 13,
+            "color": "#0164e1",
+            "tolerance": 4,
+            "note": "selection colour in the corner of the month, above its digits: measured on the selected day of the calendar (spec: #0362e1); that a selected element takes it is inferred"
+          },
+          {
+            "x": 60,
+            "y": 13,
+            "color": "#ffffff",
+            "note": "fill of the field beside the selection (spec: Textual field fill, measured)"
+          },
+          {
+            "x": 7,
+            "y": 19.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "focus ring over the window background, 1 pt outside the field's edge, measured on the Go to Folder field (spec: focus-ring)"
+          },
+          {
+            "x": 5,
+            "y": 19.5,
+            "color": "#ececec",
+            "note": "window background outside the ring, which ends 2.5 pt beyond the edge"
+          }
+        ]
+      }
+    },
+    {
+      "name": "element-selected-dark",
+      "description": "The month selected with Tab in the key window, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 112, "height": 39 },
+        "pixels": [
+          {
+            "x": 11,
+            "y": 13,
+            "color": "#0158d0",
+            "tolerance": 4,
+            "note": "selection colour, measured on the selected day of the dark calendar (spec: #0057cf); inferred for an element"
+          },
+          {
+            "x": 60,
+            "y": 14,
+            "color": "#2a2a2a",
+            "note": "fill of the field (spec: Textual field fill, dark, measured)"
+          },
+          {
+            "x": 7,
+            "y": 19.5,
+            "color": "#2d6c99",
+            "tolerance": 4,
+            "note": "focus ring over the #2f3032 window background, measured in Automator (spec: focus-ring)"
+          },
+          { "x": 5, "y": 19.5, "color": "#2f3032", "note": "window background outside the ring" }
+        ]
+      }
+    },
+    {
+      "name": "element-selected-inactive",
+      "description": "The month selected with Tab in an inactive window: the unemphasised selection and no focus ring. Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 112, "height": 39 },
+        "pixels": [
+          {
+            "x": 11,
+            "y": 13,
+            "color": "#dcdcdc",
+            "note": "unemphasised selection (--mac-color-selected-content-background-unemphasized, measured in Keychain Access); inferred for an element"
+          },
+          {
+            "x": 7,
+            "y": 19.5,
+            "color": "#ececec",
+            "note": "window background where the ring would be: AppKit removes the ring when the window is not key (spec: focus-ring, States, documented)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "element-selected-main",
+      "description": "The month selected with Tab in a main window that is not key: as in an inactive window. Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "main",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 112, "height": 39 },
+        "pixels": [
+          { "x": 11, "y": 13, "color": "#dcdcdc", "note": "unemphasised selection; inferred" },
+          {
+            "x": 7,
+            "y": 19.5,
+            "color": "#ececec",
+            "note": "no focus ring (spec: focus-ring, States, documented)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "stepper-selects-light",
+      "description": "A click on the stepper while nothing is selected: the first element, the month, is selected and takes the keyboard. Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "click": ".mac-stepper-increment" }],
+      "expect": {
+        "size": { "width": 112, "height": 39 },
+        "pixels": [
+          {
+            "x": 11,
+            "y": 13,
+            "color": "#0164e1",
+            "tolerance": 4,
+            "note": "selection colour in the corner of the month; that the stepper selects the first element is inferred from AppKit's behaviour"
+          },
+          {
+            "x": 7,
+            "y": 19.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "focus ring: the element has the keyboard"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sizes-light",
+      "description": "Regular, small and mini: fields 23, 20 and 17 pt high. Aqua.",
+      "example": "visual-sizes",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 98, "height": 92 },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 28,
+            "color": "#ffffff",
+            "note": "fill of the regular field 3 pt above its bottom edge at y 31"
+          },
+          {
+            "x": 12,
+            "y": 29.5,
+            "color": "#ffffff",
+            "scale": 2,
+            "note": "fill of the regular field 1.5 pt above its bottom edge, just above the inner line (height measured, 23 pt)"
+          },
+          {
+            "x": 12,
+            "y": 32.5,
+            "color": "#ececec",
+            "note": "window background below the regular field"
+          },
+          {
+            "x": 12,
+            "y": 56,
+            "color": "#ffffff",
+            "note": "fill of the small field 3 pt above its bottom edge at y 59"
+          },
+          {
+            "x": 12,
+            "y": 57.5,
+            "color": "#ffffff",
+            "scale": 2,
+            "note": "fill of the small field 1.5 pt above its bottom edge (height inferred, 20 pt)"
+          },
+          {
+            "x": 12,
+            "y": 60.5,
+            "color": "#ececec",
+            "note": "window background below the small field"
+          },
+          {
+            "x": 12,
+            "y": 81,
+            "color": "#ffffff",
+            "note": "fill of the mini field 3 pt above its bottom edge at y 84"
+          },
+          {
+            "x": 12,
+            "y": 82.5,
+            "color": "#ffffff",
+            "scale": 2,
+            "note": "fill of the mini field 1.5 pt above its bottom edge (height inferred, 17 pt)"
+          },
+          {
+            "x": 12,
+            "y": 85.5,
+            "color": "#ececec",
+            "note": "window background below the mini field"
+          }
+        ]
+      }
+    },
+    {
+      "name": "calendar-enabled-light",
+      "description": "The enabled calendar in the key window, 3 October 2019 selected, nothing focused. Aqua.",
+      "example": "visual-states-calendar",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 154, "height": 163 },
+        "pixels": [
+          {
+            "x": 88,
+            "y": 48.5,
+            "color": "#0164e1",
+            "tolerance": 4,
+            "note": "selected day, left of its digit (spec: Calendar selected day, sRGB #0362e1, measured on the disabled calendar)"
+          },
+          {
+            "x": 18,
+            "y": 63.5,
+            "color": "#ffffff",
+            "note": "background between the first two rows (spec: Calendar background, measured)"
+          },
+          {
+            "x": 122.5,
+            "y": 18,
+            "color": "#808080",
+            "tolerance": 3,
+            "note": "centre of the today disc: secondary label colour, black at 50% on white (spec: navigation glyphs, enabled, inferred)"
+          },
+          {
+            "x": 7,
+            "y": 80,
+            "color": "#ececec",
+            "note": "no focus ring while nothing in the calendar has the keyboard"
+          }
+        ]
+      }
+    },
+    {
+      "name": "calendar-enabled-dark",
+      "description": "The enabled calendar in the key window, Dark Aqua.",
+      "example": "visual-states-calendar",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 154, "height": 163 },
+        "pixels": [
+          {
+            "x": 88,
+            "y": 48.5,
+            "color": "#0158d0",
+            "tolerance": 4,
+            "note": "selected day (spec: Calendar selected day, dark, sRGB #0057cf, measured)"
+          },
+          {
+            "x": 18,
+            "y": 63.5,
+            "color": "#2a2a2a",
+            "note": "background of the enabled calendar: the field's fill, inferred (the disabled one measures #232323)"
+          },
+          {
+            "x": 122.5,
+            "y": 18,
+            "color": "#9f9f9f",
+            "tolerance": 3,
+            "note": "centre of the today disc: secondary label colour, white at 55% on #2a2a2a (inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "calendar-day-focus-light",
+      "description": "The selected day focused with Tab (after the three buttons): the focus ring is around the calendar. Aqua.",
+      "example": "visual-states-calendar",
+      "appearance": "light",
+      "actions": [{ "tab": 4 }],
+      "expect": {
+        "size": { "width": 154, "height": 163 },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 80,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "focus ring over the window background, 1 pt outside the calendar's edge (spec: focus-ring; that the calendar draws it is inferred)"
+          },
+          {
+            "x": 88,
+            "y": 48.5,
+            "color": "#0164e1",
+            "tolerance": 4,
+            "note": "the focused day is the selected one"
+          }
+        ]
+      }
+    },
+    {
+      "name": "calendar-next-month-light",
+      "description": "Page Down on the focused day: the selection moves to 3 November, in the second row and first column of the next month. Aqua.",
+      "example": "visual-states-calendar",
+      "appearance": "light",
+      "actions": [{ "tab": 4 }, { "key": "PageDown" }],
+      "expect": {
+        "size": { "width": 154, "height": 163 },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 66.5,
+            "color": "#0164e1",
+            "tolerance": 4,
+            "note": "selected day, 3 November 2019, a Sunday in the second row (selection colour measured; the key is the WAI-ARIA date grid's)"
+          },
+          {
+            "x": 88,
+            "y": 48.5,
+            "color": "#ffffff",
+            "note": "background where 3 October was selected"
+          },
+          {
+            "x": 7,
+            "y": 80,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "the new day keeps the keyboard: the focus ring stays"
+          }
+        ]
+      }
+    },
+    {
+      "name": "calendar-button-focus-light",
+      "description": "The previous month button focused with Tab: a ring inside the button's box. Aqua.",
+      "example": "visual-states-calendar",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 154, "height": 163 },
+        "pixels": [
+          {
+            "x": 102,
+            "y": 18,
+            "color": "#8cb5fb",
+            "tolerance": 4,
+            "note": "the focus ring colour at 50% over the white background, in the 2 pt band inside the button's left edge at x 101.125 (inferred: AppKit does not focus the glyphs separately)"
+          },
+          {
+            "x": 122.5,
+            "y": 18,
+            "color": "#808080",
+            "tolerance": 3,
+            "note": "the today disc beside it is unchanged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "calendar-inactive-light",
+      "description": "The enabled calendar in an inactive window: the unemphasised selection. Aqua.",
+      "example": "visual-states-calendar",
+      "appearance": "light",
+      "windowState": "inactive",
+      "expect": {
+        "size": { "width": 154, "height": 163 },
+        "pixels": [
+          {
+            "x": 88,
+            "y": 48.5,
+            "color": "#dcdcdc",
+            "note": "unemphasised selection (measured in Keychain Access); inferred for the calendar"
+          }
+        ]
+      }
+    }
+  ]
+}

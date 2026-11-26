@@ -1,0 +1,131 @@
+---
+title: Share Menu
+description: A Share button that opens the menu of sharing services, each with its icon, ending with More…. The share picker of Safari, Finder and Preview.
+order: 65
+---
+
+<Example name="basic" both />
+
+AppKit's `NSSharingServicePicker`, shown from a Share toolbar button. In Catalina the picker is
+an ordinary menu, so this is the library's [menu](/components/menu) on
+[Base UI's Menu](https://base-ui.com/react/components/menu), with rows that are
+[menu items](/components/menu-item) laid out as the picker lays them out. The button is a
+[toolbar button](/components/toolbar-button) unless you pass another control.
+
+## Usage
+
+```tsx
+import { ShareMenu, ShareMenuItem } from "macalicious/share-menu";
+import "macalicious/styles.css";
+
+<ShareMenu onMore={openExtensionsPane}>
+  <ShareMenuItem image={mailIcon} onClick={shareByMail}>Mail</ShareMenuItem>
+  <ShareMenuItem image={messagesIcon} onClick={shareByMessage}>Messages</ShareMenuItem>
+  <ShareMenuItem image={notesIcon} onClick={addToNotes}>Notes</ShareMenuItem>
+</ShareMenu>
+```
+
+Or copy the source into your project: `npx macalicious add share-menu`.
+
+The list is yours: the library does not know which services exist, and the browser's Web Share
+API cannot fill a menu. Each `ShareMenuItem` takes an `image` and an `onClick` that shares.
+With `onMore` the menu ends with a separator and More…, which in Catalina opens the Extensions
+preference pane. No application icons are included: pass images of your own.
+
+<Example name="custom-trigger" />
+
+`trigger` replaces the Share button with another control, which then keeps its own name.
+`popupProps` reaches the menu: a `width`, a `container`, another `sideOffset`.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines,
+[Share Extensions](https://web.archive.org/web/20200503180050/https://developer.apple.com/design/human-interface-guidelines/macos/extensions/share-extensions/):
+
+- Offer sharing through a Share button in the toolbar, and through a Share item in a
+  contextual menu, so that people find it where they expect it.
+- List the services that make sense for the current content, most used first.
+- Sharing should need little more than the choice of a service: show a compose view only when
+  the service needs input.
+
+## Variants and states
+
+| State | How it is triggered | Look | Basis |
+| --- | --- | --- | --- |
+| Closed | – | The Share button: a toolbar button with a share glyph drawn for this library | Bezel measured (toolbar button); the glyph is a stand-in |
+| Open | click, Space, Return or Down Arrow | The menu, 3 pt below the button and left-aligned with it. The menu's own Share button has the toolbar button's pressed bezel while the menu is open: a darker fill in Aqua, a lighter one in Dark Aqua, and a darker glyph in Aqua. A `trigger` of yours keeps its own look | Measured in both Safari captures: `#e5e5e5` to `#d6d6d6` beside a resting `#f9fafa` in Aqua, `#838486` to `#767779` beside `#656768` in Dark Aqua. The menu's shadow lies over the button's lower half in the captures, and the fill is the capture's without it |
+| Row | – | Icon 17 pt from the menu's edge, title 5 pt after its 16 pt column; a row is 5 pt higher than its icon: 21 pt with a 16 pt icon, 20 pt with a 15 pt glyph | Measured |
+| Highlighted row | pointer or arrow keys | The menu item's accent highlight, from edge to edge | Measured; its colour depends on what is behind the menu |
+| Disabled row | `disabled` on an item | Dimmed, passed over by the arrow keys | As the menu item |
+| More… | `onMore` | A separator, then a 21 pt row with an ellipsis in a circle | Measured; the glyph is a stand-in |
+
+## Sizes
+
+The menu uses the 14 pt menu font, like every menu that does not belong to a pop-up button. It
+is as wide as its widest row (182 pt in Safari); `popupProps={{ style: { width } }}` fixes the
+width.
+
+## API
+
+`ShareMenu` takes the props below; every other prop goes to the button, Base UI's Menu.Trigger.
+
+<PropsTable name="ShareMenuProps" />
+
+`ShareMenuItem` takes the props of [`MenuItem`](/components/menu-item) (`onClick`, `disabled`,
+`keyEquivalent`, `closeOnClick`) and:
+
+<PropsTable name="ShareMenuItemProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-popup-open` | button | present or absent | Set by Base UI while the menu is open; the menu's own Share button draws the toolbar button's pressed bezel from it. |
+| `data-highlighted`, `data-disabled` | item | present or absent | As the menu item. |
+
+Classes: `.mac-share-menu` on the button, with `.mac-share-menu-button` when it is the menu's
+own Share button and not a `trigger` of yours, `.mac-share-menu-item` beside `.mac-menu-item` on a
+row, `.mac-share-menu-image` on an icon's column.
+
+## Accessibility
+
+- The button is a `<button>` with `aria-haspopup="menu"` and `aria-expanded`, named "Share"
+  unless you pass an `aria-label` or a `trigger` of your own; the popup has `role="menu"` and
+  the services are `menuitem`s.
+- Down Arrow, Return or Space opens the menu; the arrow keys move and pass over disabled
+  services, typing the start of a title selects it, Return or Space chooses, Escape closes and
+  returns focus to the button.
+- Icons are decoration: give an image no text alternative of its own, because the title names
+  the service.
+- While the menu is open the page behind it takes no clicks, as in AppKit; `modal={false}`
+  switches that off.
+
+## Visual comparison
+
+`npm run visual -- share-menu/` compares the open menu with the Safari Sharing screenshots in
+both appearances (`share-menu.visual.json`), with Messages highlighted, and the Share button
+while its menu is open. Icons, titles and the button's glyph are masked: they are stand-ins
+for Apple's artwork, and the text is set in the fallback font.
+A pixel counts as differing at a colour distance of 0.05. At 2x, in Chromium on Linux:
+
+| Crop | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Safari Share menu, pixels that differ | 6.13% | 0.18% |
+| Safari Share menu, mean Δ of 255 | 4.77 | 5.50 |
+| Share button, menu open, 50 x 30 pt (`2274,37,100,60`; Dark Aqua `2292,21,100,60`), pixels that differ | 0.10% | 0.06% |
+| Share button, menu open, mean Δ of 255 | 1.04 | 0.92 |
+
+At 1x the button's row scores 8.58% and 6.27%: the bezel's half-point border and its first
+rows fall on fractions of a pixel.
+
+The comparison holds the geometry: the menu's 182 x 186 pt, the 20 and 21 pt rows, the
+highlight's place, the separator and the rim. It does not hold the colours of the material:
+
+- **The backdrop** is a stand-in. In the screenshot the menu lies over a web page and, for its
+  last 67 pt, over the desktop picture; the example paints gradients chosen so that the menu
+  material comes out near the captured values.
+- **The highlight** in Aqua is the largest difference: over the page Catalina's vibrant
+  highlight is darker (#0c66d7) than the menu item's fixed colour over the same backdrop
+  (#3380ec).
+- **The Share button** has the captures' bezel while the menu is open (a trigger of your own
+  keeps its own look). The comparison draws it on the library's title bar, 1 pt below the
+  bar's top edge, with the menu hanging below the crop; the [Safari](/demos/safari) demo
+  compares it in the whole toolbar.

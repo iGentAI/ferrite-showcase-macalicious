@@ -1,0 +1,276 @@
+/*
+ * Pop-up button (NSPopUpButton, rounded bezel, pullsDown = false).
+ *
+ * The element's box is the AppKit alignment rectangle. The visible bezel is the push button's,
+ * drawn by ::before one hairline inside the box; the trailing 16 pt of it is the cap, a piece
+ * of the accent bezel with the double arrow. Where the cap is tinted the standard bezel stops
+ * at the cap, so that the two translucent borders of Dark Aqua never overlap; where it is not
+ * (disabled, a window that is not key, no bezel) the standard bezel runs the whole width and
+ * the cap only holds the arrows.
+ *
+ * States
+ *   [data-size="small" | "mini"]       control size
+ *   [data-bordered="false"]            no bezel: title and arrows only
+ *   :active, [data-popup-open]         pressed, or its menu is open: the cap darkens
+ *   :focus-visible                     keyboard focus ring
+ *   [data-disabled]                    set by Base UI for `disabled`
+ *   [data-window-state="main" | "inactive"] *
+ *                                      window that is not key: no accent on the cap and no
+ *                                      focus ring (CONTRIBUTING, Window state)
+ *   [data-force~="pressed" | "focus"]  static previews of transient states (docs, visual tests)
+ */
+.mac-pop-up-button {
+  --_height: var(--mac-control-height-regular);
+  --_radius: var(--mac-radius-control-regular);
+  /* Edge to title box: the ink starts 9.5 pt from the bezel's edge. */
+  --_inset: 9.5px;
+  /* The cap with its outer hairline: 16.5 pt (33 px). */
+  --_cap: 16.5px;
+  /* How much of the trailing end the standard bezel leaves to a tinted cap. */
+  --_cut: 0px;
+  --_cut-radius: var(--_radius);
+  --_cut-border: var(--mac-bezel-border-width);
+  --_cap-fill: none;
+  --_arrow: var(--mac-color-control-text);
+  /* The title of a button without a bezel; a pull-down button has its own. */
+  --_plain: var(--mac-color-control-text);
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-width: calc(var(--_cap) + 2 * var(--_inset));
+  height: var(--_height);
+  margin: 0;
+  padding: 0 calc(var(--_cap) + var(--mac-bezel-inset) + 4px) 0 var(--_inset);
+  border: 0;
+  border-radius: calc(var(--_radius) + var(--mac-bezel-inset));
+  background: none;
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  text-align: start;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+/* The standard bezel, up to a tinted cap. */
+.mac-pop-up-button::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: var(--mac-bezel-inset);
+  right: calc(var(--mac-bezel-inset) + var(--_cut));
+  box-sizing: border-box;
+  border: var(--mac-bezel-border-width) solid;
+  border-right-width: var(--_cut-border);
+  border-color: var(--mac-bezel-border-top) var(--mac-bezel-border-side)
+    var(--mac-bezel-border-bottom);
+  border-radius: var(--_radius) var(--_cut-radius) var(--_cut-radius) var(--_radius);
+  background:
+    var(--mac-bezel-fill) padding-box,
+    var(--mac-bezel-under) border-box;
+  box-shadow: var(--mac-bezel-highlight), var(--mac-bezel-shadow);
+  pointer-events: none;
+}
+
+/* The title: the selected item's image and text. It truncates before the cap. Its box starts
+   a point before the text, so that the image's first point is inside what it clips. */
+.mac-pop-up-button-title {
+  flex: 1;
+  min-width: 0;
+  margin-left: -1px;
+  padding-left: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* A leading image or colour chip: 16 pt high, 8.5 pt from the edge, the text 5 pt after it. */
+.mac-pop-up-button-image {
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+  margin: -2px 5px 0 -1px;
+  vertical-align: middle;
+}
+
+/* The cap: the trailing end of an accent bezel, with the arrows. */
+.mac-pop-up-button-cap {
+  position: absolute;
+  z-index: -1;
+  top: var(--mac-bezel-inset);
+  right: var(--mac-bezel-inset);
+  bottom: var(--mac-bezel-inset);
+  box-sizing: border-box;
+  width: var(--_cap);
+  border: var(--mac-bezel-border-width) solid transparent;
+  border-left-width: 0;
+  border-radius: 0 var(--_radius) var(--_radius) 0;
+  background: var(--_cap-fill);
+  color: var(--_arrow);
+  pointer-events: none;
+}
+
+/* The arrows' box is the cap's border box. */
+.mac-pop-up-button-cap > svg {
+  position: absolute;
+  top: calc(-1 * var(--mac-bezel-border-width));
+  left: 0;
+  display: block;
+  width: var(--_cap);
+  height: calc(100% + 2 * var(--mac-bezel-border-width));
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+}
+
+/* The small chevron after the title of a pull-down button without a bezel has round ends. */
+.mac-pop-up-button:where([data-bordered="false"][data-arrows="down"])
+  > .mac-pop-up-button-cap
+  > svg {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Sizes */
+.mac-pop-up-button:where([data-size="small"]) {
+  --_height: var(--mac-control-height-small);
+  --_radius: var(--mac-radius-control-small);
+  --_inset: 7.5px;
+  --_cap: 14.5px;
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+.mac-pop-up-button:where([data-size="mini"]) {
+  --_height: var(--mac-control-height-mini);
+  --_radius: var(--mac-radius-control-mini);
+  --_inset: 6.5px;
+  --_cap: 12.5px;
+  font: var(--mac-font-control-mini);
+  letter-spacing: var(--mac-tracking-mini);
+}
+
+/* The tinted cap: accent bezel and white arrows. Only on an enabled, bordered button in the
+   key window. */
+.mac-pop-up-button:where(:not([data-disabled], [data-bordered="false"])):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  --_cut: var(--_cap);
+  --_cut-radius: 0px;
+  --_cut-border: 0px;
+  --_cap-fill: var(--mac-bezel-accent-fill) padding-box, var(--mac-bezel-accent-under) border-box;
+  --_arrow: var(--mac-color-control-text-on-accent);
+}
+
+.mac-pop-up-button:where(:not([data-disabled], [data-bordered="false"])):where(
+    :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+  )
+  > .mac-pop-up-button-cap {
+  border-color: var(--mac-bezel-accent-border-top) var(--mac-bezel-accent-border-side)
+    var(--mac-bezel-accent-border-bottom);
+  box-shadow: var(--mac-bezel-accent-highlight), var(--mac-bezel-shadow);
+  /* Neither piece shades the other where they meet. */
+  clip-path: inset(-2px -2px -2px 0);
+}
+
+.mac-pop-up-button:where(:not([data-disabled], [data-bordered="false"])):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+)::before {
+  clip-path: inset(-2px 0 -2px -2px);
+}
+
+/* Pressed, or with its menu open: the cap deepens. */
+.mac-pop-up-button:where(:active, [data-popup-open], [data-force~="pressed"]):where(
+  :not([data-disabled], [data-bordered="false"])
+):where(:not(:where([data-window-state="main"], [data-window-state="inactive"]) *)) {
+  --_cap-fill:
+    var(--mac-bezel-accent-fill-pressed) padding-box, var(--mac-bezel-accent-under) border-box;
+}
+
+/* Pressed where the cap is not tinted: the standard bezel darkens instead. */
+.mac-pop-up-button:where(:active, [data-popup-open], [data-force~="pressed"]):where(
+  :not([data-disabled], [data-bordered="false"])
+):where(:where([data-window-state="main"], [data-window-state="inactive"]) *)::before {
+  background:
+    var(--mac-bezel-fill-pressed) padding-box,
+    var(--mac-bezel-under) border-box;
+}
+
+/* Without a bezel: the title, then the arrows in the title's colour. */
+.mac-pop-up-button:where([data-bordered="false"]) {
+  --_inset: 0px;
+  padding-right: var(--_cap);
+}
+
+/* Its two colours can be set from outside, for an application that tints it (Contacts). */
+.mac-pop-up-button:where([data-bordered="false"]:not([data-disabled])) {
+  --_title: var(--mac-pop-up-button-borderless-color, var(--_plain));
+  --_arrow: var(--mac-pop-up-button-borderless-arrow-color, var(--_title));
+  color: var(--_title);
+}
+
+.mac-pop-up-button:where([data-bordered="false"])::before {
+  content: none;
+}
+
+/* Disabled */
+.mac-pop-up-button:where([data-disabled]) {
+  --_arrow: var(--mac-pop-up-button-arrow-disabled);
+  color: var(--mac-color-control-text-disabled);
+}
+
+.mac-pop-up-button:where([data-disabled])::before {
+  opacity: var(--mac-bezel-opacity-disabled);
+}
+
+/* Keyboard focus ring; only in the key window. */
+.mac-pop-up-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(
+    var(--mac-focus-ring-offset) -
+    var(--mac-bezel-inset) -
+    var(--mac-bezel-border-width)
+  );
+}
+
+/* The menu (menu.css draws it). In Catalina it is 4.5 pt wider than the button's box (the
+   Presets menu of the Print sheet: 244 pt over a 239.5 pt button), or as wide as its widest
+   item. */
+.mac-pop-up-button-menu {
+  min-width: calc(var(--anchor-width) + 4.5px);
+}
+
+/* An item's image may be wider than an icon: the 24 pt colour chips of the General pane. This
+   stylesheet comes after the menu item's, whose image box it widens. */
+.mac-pop-up-button-item-image {
+  width: auto;
+  min-width: 16px;
+}
+
+@media (forced-colors: active) {
+  .mac-pop-up-button::before {
+    border-color: ButtonText;
+  }
+
+  .mac-pop-up-button-cap {
+    color: ButtonText;
+  }
+
+  .mac-pop-up-button:where([data-disabled])::before {
+    border-color: GrayText;
+    opacity: 1;
+  }
+
+  .mac-pop-up-button:where([data-disabled]) > .mac-pop-up-button-cap {
+    color: GrayText;
+  }
+}

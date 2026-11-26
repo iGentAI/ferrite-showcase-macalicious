@@ -1,0 +1,50 @@
+/* Card grid values no shared token holds (spec: card-grid); see the docs page. */
+:root {
+  /* [measured] TV: title @ 194,184; See All @ 2528,188; line between sections @ 1000,634 */
+  --mac-card-grid-title: light-dark(#0c0c0c, #e9e9e9);
+  --mac-card-grid-action: #027aff;
+  --mac-card-grid-separator: light-dark(#f4f4f4, #282a2c);
+  /* [measured] Music text @ 633,616 and @ 634,648; Podcasts caption rows 968..984 */
+  --mac-card-grid-card-title: light-dark(#000000, #dddddd);
+  --mac-card-grid-card-subtitle: light-dark(#808080, #9a9a9b);
+  --mac-card-grid-card-caption: light-dark(#7e7e7e, #9a9a9a);
+  /* [measured, computed] landscape hairline: #e6e6e6 over white, #353029 over #221b13 (TV) */
+  --mac-card-grid-card-edge: rgb(130 130 130 / 0.2);
+  /* [provisional] square hairline, read as black on one near-black cover (Music) */
+  --mac-card-grid-card-edge-square: light-dark(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.26));
+  /* [measured, computed] shadows fitted to the falloff around each card, the same in both
+     appearances: TV col 1700 @ 571, Music col 700 @ 602, Podcasts col 900 @ 944 */
+  --mac-card-grid-card-shadow-landscape: 0 4px 7px rgb(0 0 0 / 0.25);
+  --mac-card-grid-card-shadow-square: 0 4px 6px -2.5px rgb(0 0 0 / 0.18);
+  --mac-card-grid-card-shadow-episode: 0 4px 15px rgb(0 0 0 / 0.08);
+  /* [provisional] behind artwork that is missing or transparent */
+  --mac-card-grid-card-placeholder: light-dark(#f7f7f8, #343538);
+  /* [measured] header type: TV's section title and See All */
+  --mac-card-grid-title-font: var(--mac-font-weight-bold) 18px / 22px var(--mac-font-family-system);
+  /* A shorter line than the title's, or aligning the baselines makes the header taller. */
+  --mac-card-grid-action-font:
+    var(--mac-font-weight-regular) 15px / 18px var(--mac-font-family-system);
+  /* [measured] card type: Music's two lines; Podcasts' caption, episode text and title; the
+     App Store's lockup text and title */
+  --mac-card-grid-card-font:
+    var(--mac-font-weight-regular) 13px / 16.5px var(--mac-font-family-system);
+  --mac-card-grid-card-caption-size: 11px;
+  --mac-card-grid-episode-font:
+    var(--mac-font-weight-regular) 12px / 15px var(--mac-font-family-system);
+  --mac-card-grid-episode-title-font:
+    var(--mac-font-weight-regular) 15.5px / 20px var(--mac-font-family-system);
+  --mac-card-grid-lockup-font:
+    var(--mac-font-weight-regular) 12px / 15px var(--mac-font-family-system);
+  --mac-card-grid-lockup-title-font:
+    var(--mac-font-weight-regular) 14px / 18px var(--mac-font-family-system);
+  /* [measured, computed] corners. Landscape (TV): the spec's circular fit of the continuous
+     corner is 11 pt; as a border-radius 12px matches the pixels best. Square: Music. Episode:
+     Podcasts. */
+  --mac-card-grid-card-radius-landscape: 12px;
+  --mac-card-grid-card-radius-square: 4px;
+  --mac-card-grid-card-radius-episode: 3px;
+  /* [provisional] corner of the action's focus ring; pressed and disabled looks of a card */
+  --mac-card-grid-action-radius: 3px;
+  --mac-card-grid-card-pressed-brightness: 0.9;
+  --mac-card-grid-card-disabled-opacity: 0.5;
+}

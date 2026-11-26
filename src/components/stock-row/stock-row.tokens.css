@@ -1,0 +1,32 @@
+/*
+ * Stocks watchlist row: the colours of a Mac Catalyst table cell. L and D are the Light and
+ * Dark Stocks screenshots; the sidebar behind the rows is #e7e8e9 and #2c2d2f.
+ */
+:root {
+  /* [measured] @ 300,712, a whole pixel row (the spec reads @ 300,422, across two rows) */
+  --mac-stock-row-separator: light-dark(#d4d5d5, #3a3b3d);
+  /* [measured] ink @ 139,349,140,20; col x=300: y=396..399; @ 619,350,127,19 */
+  --mac-stock-row-symbol-text: light-dark(#000000, #e9e9ea);
+  --mac-stock-row-name-text: light-dark(#808080, #98989d);
+  --mac-stock-row-price-text: light-dark(#000000, #ededed);
+  /* [measured] the same in both appearances: @ 745,395; L @ 745,877; @ 653,396 */
+  --mac-stock-row-gain-badge: #35c759;
+  --mac-stock-row-loss-badge: #ff3b30;
+  --mac-stock-row-badge-text: #ffffff;
+  /* [measured] sparkline: L @ 560,376, D @ 520,386; L @ 560,856, D @ 520,964 */
+  --mac-stock-row-gain-line: light-dark(#4cd864, #4dd763);
+  --mac-stock-row-loss-line: #ff3b30;
+  /* [measured] dashed previous close: L @ 502,381, D @ 571,401; L @ 502,839, D @ 571,932 */
+  --mac-stock-row-gain-close: light-dark(#70e080, #4ac860);
+  --mac-stock-row-loss-close: light-dark(#ff4b40, #ed3c31);
+  /* [provisional] selected or pressed row: the selected Business News cell (@ 600,280); no
+     stock row is selected in either capture */
+  --mac-stock-row-selected-fill: light-dark(#f2f2f3, #575858);
+}
+
+/* [measured, computed] opacity of the line's colour at the top of the sparkline's box,
+   falling to none at the bottom: L col x=560 (0.45), D col x=520 (0.52) */
+:root,
+[data-appearance] {
+  --mac-stock-row-fill-opacity: calc(0.45 + 0.07 * var(--mac-appearance-dark));
+}

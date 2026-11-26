@@ -1,0 +1,244 @@
+/*
+ * Mac Catalyst chrome: toolbar row, sidebar and content of an iPad app in a Mac window. The
+ * toolbar row is the title bar's title-hidden layout. Values: docs page and spec.
+ * States: [data-bar="none"] (controls in a 22 pt strip), [data-under-toolbar], the sidebar's
+ * [data-divider], an item's [aria-current] (grey, never the accent) and :focus-visible (key
+ * window only); an inactive window's toolbar is the title bar's flat fill.
+ */
+.mac-catalyst-chrome {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Toolbar items start 77.5 pt from the window's edge and end 7.5 pt from the other. */
+.mac-catalyst-chrome-toolbar {
+  margin-inline: -0.5px;
+}
+
+.mac-catalyst-chrome-body {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.mac-catalyst-chrome-content {
+  position: relative;
+  flex: 1 1 0;
+  box-sizing: border-box;
+  min-width: 0;
+  overflow: auto;
+  background: var(--mac-color-control-background);
+}
+
+/* Dark Aqua: the bar is darker over the sidebar's column, the shadow of a box before the
+   bar's leading edge (so it follows the direction), clipped by the bar. */
+.mac-catalyst-chrome-bar {
+  isolation: isolate;
+  overflow: clip;
+}
+
+.mac-catalyst-chrome-bar::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-block: 0;
+  inset-inline-start: -100px;
+  width: 50px;
+  box-shadow: 0 0 48px calc(var(--mac-catalyst-chrome-sidebar-width, -126px) + 25px)
+    var(--mac-catalyst-chrome-bar-shade);
+  pointer-events: none;
+}
+
+/* Over the body: the bar that content runs under, and the strip that holds the window
+   controls where no bar is drawn (Find My: 8 pt in, centred 11 pt down). */
+.mac-catalyst-chrome:where([data-under-toolbar]) > .mac-catalyst-chrome-bar,
+.mac-catalyst-chrome-strip {
+  position: absolute;
+  z-index: 2;
+  inset: 0 0 auto;
+}
+
+.mac-catalyst-chrome-strip {
+  display: flex;
+  align-items: center;
+  height: var(--mac-catalyst-chrome-strip-height);
+  padding-inline-start: var(--mac-catalyst-chrome-strip-inset);
+}
+
+.mac-catalyst-chrome:where([data-under-toolbar]):where(
+    :not(:where([data-window-state="inactive"]) *)
+  )
+  > .mac-catalyst-chrome-bar {
+  background: linear-gradient(
+    to bottom,
+    var(--mac-catalyst-chrome-material-top),
+    var(--mac-catalyst-chrome-material-bottom)
+  );
+  box-shadow:
+    inset 0 var(--mac-hairline) 0 var(--mac-title-bar-highlight),
+    inset 0 calc(2 * var(--mac-hairline)) 0 var(--mac-title-bar-highlight-second),
+    inset 0 calc(-1 * var(--mac-hairline)) 0 var(--mac-catalyst-chrome-material-separator),
+    inset 0 calc(-2 * var(--mac-hairline)) 0 var(--mac-catalyst-chrome-material-shadow-row);
+  -webkit-backdrop-filter: var(--mac-material-filter);
+  backdrop-filter: var(--mac-material-filter);
+}
+
+/* What the sidebar and the content run under. */
+.mac-catalyst-chrome:where([data-under-toolbar]) {
+  --mac-catalyst-chrome-toolbar-inset: var(--mac-catalyst-chrome-bar-height);
+}
+
+.mac-catalyst-chrome:where([data-bar="none"]) {
+  --mac-catalyst-chrome-toolbar-inset: var(--mac-catalyst-chrome-strip-height);
+}
+
+.mac-catalyst-chrome-content,
+.mac-catalyst-chrome-sidebar-scroll {
+  scroll-padding-top: var(--mac-catalyst-chrome-toolbar-inset, 0);
+  scrollbar-color: var(--mac-catalyst-chrome-scroll-indicator) transparent;
+  scrollbar-width: thin;
+}
+
+/* Sidebar: the column and, over its last point, the divider rows run under. */
+.mac-catalyst-chrome-sidebar {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: none;
+  width: calc(var(--mac-catalyst-chrome-sidebar-width, 227px) + 1px);
+  background: var(--mac-catalyst-chrome-sidebar-fill);
+  box-shadow:
+    var(--mac-hairline) 0 0 var(--mac-catalyst-chrome-sidebar-edge),
+    calc(2 * var(--mac-hairline)) 0 0 var(--mac-catalyst-chrome-sidebar-edge-second);
+  color: var(--mac-catalyst-chrome-sidebar-text);
+  font: var(--mac-font-body);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-catalyst-chrome-sidebar::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: 1px;
+  background: var(--mac-catalyst-chrome-sidebar-divider);
+  pointer-events: none;
+}
+
+.mac-catalyst-chrome-sidebar:where([data-divider="shade"], [data-divider="plain"]) {
+  box-shadow: none;
+}
+
+.mac-catalyst-chrome-sidebar:where([data-divider="shade"]) {
+  width: var(--mac-catalyst-chrome-sidebar-width, 227px);
+}
+
+.mac-catalyst-chrome-sidebar:where([data-divider="shade"])::after {
+  width: var(--mac-hairline);
+  background: var(--mac-catalyst-chrome-sidebar-shade);
+}
+
+.mac-catalyst-chrome-sidebar-scroll {
+  flex: 1;
+  box-sizing: border-box;
+  min-width: 0;
+  padding-top: var(--mac-catalyst-chrome-toolbar-inset, 0);
+  overflow: hidden auto;
+}
+
+.mac-catalyst-chrome-sidebar-group + .mac-catalyst-chrome-sidebar-group {
+  margin-top: 2px;
+}
+
+.mac-catalyst-chrome-sidebar-header {
+  box-sizing: border-box;
+  height: 26px;
+  padding: 11px 9px 0 8px;
+  overflow: hidden;
+  color: var(--mac-catalyst-chrome-sidebar-header);
+  font: var(--mac-font-weight-semibold) 11px / 13px var(--mac-font-family-system);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-catalyst-chrome-sidebar-item {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 26px;
+  margin: 0;
+  padding: 1px 9px 0 18px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  text-decoration: none;
+  cursor: default;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-catalyst-chrome-sidebar-item:where([aria-current]:not([aria-current="false"])) {
+  background: var(--mac-catalyst-chrome-sidebar-selection);
+  box-shadow: 0 1px 0 var(--mac-catalyst-chrome-sidebar-selection);
+  color: var(--mac-catalyst-chrome-sidebar-text-selected);
+}
+
+.mac-catalyst-chrome-sidebar-item:where(:focus-visible):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+.mac-catalyst-chrome-sidebar-icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 18.5px;
+  height: 18.5px;
+  margin-top: 0.5px;
+}
+
+.mac-catalyst-chrome-sidebar-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  .mac-catalyst-chrome-sidebar {
+    box-shadow: none;
+  }
+
+  .mac-catalyst-chrome-sidebar::after {
+    background: CanvasText;
+  }
+
+  .mac-catalyst-chrome-sidebar-item:where([aria-current]:not([aria-current="false"])) {
+    forced-color-adjust: none;
+    background: Highlight;
+    box-shadow: none;
+    color: HighlightText;
+  }
+
+  .mac-catalyst-chrome-sidebar-item:where(:focus-visible) {
+    outline: 2px solid CanvasText;
+    outline-offset: -2px;
+  }
+}

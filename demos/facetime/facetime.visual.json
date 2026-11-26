@@ -1,0 +1,372 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "window-light",
+      "description": "The whole FaceTime window against the Aqua capture, 652 by 585 pt: the dark sidebar with the window controls, the All and Missed segmented control and the empty recipient field over an empty list. Masked: the camera preview, 390 by 585 pt from x 262 (60% of the crop). The capture shows a person there and the demo an abstract placeholder that takes nothing from that picture, so there is nothing to compare. What mismatches is the sidebar's material: FaceTime's sidebar is vibrant and takes the tone of the desktop behind the window (down to #1c1c1d at the bottom right of this capture), where the demo fills it with the one opaque colour measured at its top, #413f3b. The rest is hairlines (the window's top rim, the outline the library's bezel draws around the segmented control, the field's bottom edge) and text in the fallback font.",
+      "example": "visual-window",
+      "appearance": "light",
+      "masks": [{ "x": 262, "y": 0, "width": 390, "height": 585 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-FaceTime.png",
+        "crop": { "x": 112, "y": 76, "width": 1304, "height": 1170 }
+      },
+      "budget": { "1x": 0.0807, "2x": 0.0804 },
+      "deltaBudget": { "1x": 8.7, "2x": 8.6 }
+    },
+    {
+      "name": "window-light-layout",
+      "description": "As window-light at the stricter threshold, with more masked, to score the frame, the sidebar's fill, the window controls, the segmented control's bezel and selected segment, and the field's bezel. Masked besides the camera preview: the two segment titles and the field's placeholder (text in the fallback font), and one rectangle of the sidebar, 142 by 165 pt at its bottom right, where the desktop behind the window shows through the capture's vibrant material and darkens it by more than the threshold; the demo's sidebar is opaque, so that patch is the capture's backdrop and not chrome. 67% of the crop is masked in all.",
+      "example": "visual-window",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 262, "y": 0, "width": 390, "height": 585 },
+        { "x": 86, "y": 35, "width": 24, "height": 14 },
+        { "x": 140, "y": 35, "width": 50, "height": 14 },
+        { "x": 15, "y": 63, "width": 192, "height": 15 },
+        { "x": 120, "y": 420, "width": 142, "height": 165 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-FaceTime.png",
+        "crop": { "x": 112, "y": 76, "width": 1304, "height": 1170 }
+      },
+      "budget": { "1x": 0.01, "2x": 0.0039 },
+      "deltaBudget": { "1x": 6.1, "2x": 5.9 }
+    },
+    {
+      "name": "chrome-light",
+      "description": "The measured chrome of the window, held to colours taken from the spec or computed from the tokens, with the page in Aqua: the sidebar's fill at the spec's sample points, the window's rim, the three window controls and their extent (x 8 to 60, y 5 to 17 pt), the segmented control's fill (x 64 to 198, y 32 to 51 pt, boundary at 131 pt, the selected segment's gradient and the other segment's grey), the recipient field's fill and four edges (x 11.5 to 250.5, y 60.5 to 80.5 pt) and the sidebar's end at 262 pt. The camera preview from 262 pt is demo artwork and is not read: like every comparison here it leaves the preview out. Geometry is checked to half a point at 2x. Where the library's Dark Aqua field edge is weaker than the capture's, the pixel holds the library's value and its note gives the capture's.",
+      "example": "visual-window",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 652, "height": 585 },
+        "pixels": [
+          {
+            "x": 94,
+            "y": 12,
+            "color": "#413f3b",
+            "note": "sidebar fill, --mac-facetime-sidebar, at the spec's first sample (@ 300,100): measured in both captures"
+          },
+          {
+            "x": 94,
+            "y": 262,
+            "color": "#413f3b",
+            "note": "the same fill at the spec's second sample (@ 300,600): the demo's sidebar is opaque; the captures have #494847 and #44403d there, the desktop through the material"
+          },
+          {
+            "x": 0.5,
+            "y": 300,
+            "color": "#676562",
+            "note": "the window's inner rim, white at 20% over the sidebar, computed from --mac-shadow-window-rim; the Aqua capture has #696865 over #43423f"
+          },
+          { "x": 1.5, "y": 300, "color": "#413f3b", "note": "sidebar inside the 1 pt rim" },
+          {
+            "x": 14,
+            "y": 11,
+            "color": "#ff5a53",
+            "note": "close button, --mac-color-window-close in Dark Aqua: measured, row 98 x 128..151"
+          },
+          {
+            "x": 34,
+            "y": 11,
+            "color": "#e7c029",
+            "note": "minimize button, measured, row 98 x 168..191"
+          },
+          {
+            "x": 54,
+            "y": 11,
+            "color": "#53c22c",
+            "note": "zoom button, measured, row 98 x 208..231"
+          },
+          {
+            "x": 7.25,
+            "y": 11,
+            "color": "#413f3b",
+            "scale": 2,
+            "note": "sidebar left of the close button, which starts 8 pt in (measured)"
+          },
+          { "x": 8.75, "y": 11, "color": "#ff5a53", "scale": 2, "note": "close button from 8 pt" },
+          {
+            "x": 59.25,
+            "y": 11,
+            "color": "#53c22c",
+            "scale": 2,
+            "note": "zoom button up to 60 pt (measured)"
+          },
+          { "x": 60.75, "y": 11, "color": "#413f3b", "scale": 2, "note": "sidebar from 60 pt" },
+          {
+            "x": 14,
+            "y": 4.25,
+            "color": "#413f3b",
+            "scale": 2,
+            "note": "sidebar above the close button, which starts 5 pt down (measured)"
+          },
+          { "x": 14, "y": 5.75, "color": "#ff5a53", "scale": 2, "note": "close button from 5 pt" },
+          {
+            "x": 14,
+            "y": 16.25,
+            "color": "#ff5a53",
+            "scale": 2,
+            "note": "close button down to 17 pt"
+          },
+          { "x": 14, "y": 17.75, "color": "#413f3b", "scale": 2, "note": "sidebar from 17 pt" },
+          {
+            "x": 69.25,
+            "y": 37.25,
+            "color": "#1767e1",
+            "tolerance": 3,
+            "note": "selected segment, the accent bezel's gradient a quarter of the way down: measured in both captures (@ 250,150)"
+          },
+          {
+            "x": 193,
+            "y": 41.5,
+            "color": "#7e7c78",
+            "tolerance": 3,
+            "note": "segment that is not selected: measured (col 450, y 142..153); the demo's white at 32% over #413f3b computes to #7e7c7a"
+          },
+          { "x": 62.5, "y": 41.5, "color": "#413f3b", "note": "sidebar left of the control" },
+          {
+            "x": 64.25,
+            "y": 41.5,
+            "color": "#1764da",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "the control's fill starts 64 pt in (measured, row 150: from x 240); the gradient's colour halfway down, measured (col 250, y 159)"
+          },
+          {
+            "x": 130.75,
+            "y": 41.5,
+            "color": "#1764da",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "selected segment up to the boundary at 131 pt (measured, row 150: boundary at x 374)"
+          },
+          {
+            "x": 131.25,
+            "y": 41.5,
+            "color": "#7e7c78",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "the other segment from 131 pt, with no line between the two (measured)"
+          },
+          {
+            "x": 197.75,
+            "y": 41.5,
+            "color": "#7e7c78",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "fill up to 198 pt: 134 pt wide (measured, row 150: ends at x 507)"
+          },
+          { "x": 200.5, "y": 41.5, "color": "#413f3b", "note": "sidebar right of the control" },
+          { "x": 193, "y": 30.5, "color": "#413f3b", "note": "sidebar above the control" },
+          {
+            "x": 193,
+            "y": 32.75,
+            "color": "#83817f",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "second row of the fill, which starts 32 pt down: the bezel's highlight of white at 4% over the fill, computed from --mac-bezel-highlight; the Aqua capture has #85837f (col 450, y 141)"
+          },
+          {
+            "x": 193,
+            "y": 50.75,
+            "color": "#7e7c78",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "fill down to 51 pt: 19 pt tall (measured, col 450: ends at y 177)"
+          },
+          { "x": 193, "y": 53.5, "color": "#413f3b", "note": "sidebar under the control" },
+          {
+            "x": 240,
+            "y": 70.5,
+            "color": "#504e4b",
+            "tolerance": 3,
+            "note": "the field's fill, --mac-facetime-field, white at 8% over #413f3b, computed; the captures have #534f4b over #44403b and #504e4a over #403e3b"
+          },
+          {
+            "x": 11.25,
+            "y": 70.5,
+            "color": "#413f3b",
+            "scale": 2,
+            "note": "sidebar up to the field's left edge at 11.5 pt (measured, row 216: edge at x 135)"
+          },
+          {
+            "x": 11.75,
+            "y": 70.5,
+            "color": "#52504d",
+            "scale": 2,
+            "note": "the field's side edge, the library's white at 9% over the sidebar, computed from --mac-text-field-border-side; the Aqua capture has #5a5854"
+          },
+          {
+            "x": 12.25,
+            "y": 70.5,
+            "color": "#504e4b",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "fill from 12 pt"
+          },
+          {
+            "x": 250.25,
+            "y": 70.5,
+            "color": "#52504d",
+            "scale": 2,
+            "note": "the field's right edge, up to 250.5 pt: 239 pt wide (measured, row 216: edge at x 612)"
+          },
+          {
+            "x": 250.75,
+            "y": 70.5,
+            "color": "#413f3b",
+            "scale": 2,
+            "note": "sidebar from 250.5 pt"
+          },
+          {
+            "x": 240,
+            "y": 60.25,
+            "color": "#413f3b",
+            "scale": 2,
+            "note": "sidebar down to the field's top edge at 60.5 pt (measured, col 500: edge at y 197)"
+          },
+          {
+            "x": 240,
+            "y": 60.75,
+            "color": "#585653",
+            "scale": 2,
+            "note": "the field's top edge, the library's white at 12% over the sidebar, computed from --mac-color-field-border; the Aqua capture has #615d59"
+          },
+          {
+            "x": 240,
+            "y": 79.75,
+            "color": "#5e5c58",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "the fill's last row, under the library's white at 7.6%, computed from --mac-text-field-inner-shadow; the Aqua capture has #615d59"
+          },
+          {
+            "x": 240,
+            "y": 80.25,
+            "color": "#716f6c",
+            "scale": 2,
+            "note": "the field's bottom edge, down to 80.5 pt: 20 pt tall (measured, col 500: edge at y 236); the library's white at 25% over the sidebar, computed from --mac-text-field-border-bottom, where the Aqua capture has #807c76"
+          },
+          { "x": 240, "y": 80.75, "color": "#413f3b", "scale": 2, "note": "sidebar from 80.5 pt" },
+          {
+            "x": 261.75,
+            "y": 300,
+            "color": "#413f3b",
+            "scale": 2,
+            "note": "sidebar up to 262 pt, with no line after it (measured, row 700: the picture starts at x 636); the preview after it is demo artwork and is not read"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-dark",
+      "description": "The whole FaceTime window against the Dark Aqua capture: the same dark window as in window-light, compared and masked the same way (the camera preview, 60% of the crop). The desktop behind this capture is darker and shows through more of the sidebar (three patches, down to #1b1b1d), which is the larger mismatch.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "masks": [{ "x": 262, "y": 0, "width": 390, "height": 585 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-FaceTime.png",
+        "crop": { "x": 112, "y": 76, "width": 1304, "height": 1170 }
+      },
+      "budget": { "1x": 0.1117, "2x": 0.1114 },
+      "deltaBudget": { "1x": 10, "2x": 9.85 }
+    },
+    {
+      "name": "window-dark-layout",
+      "description": "As window-dark at the stricter threshold, with more masked, as in window-light-layout: the two segment titles, the field's placeholder, and the three patches of the sidebar where the desktop behind the window shows through the capture's vibrant material (two at its left edge, 38 by 136 pt and 75 by 86 pt, and the bottom right in two rectangles, 97 by 65 pt and 177 by 165 pt). 73% of the crop is masked in all.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 262, "y": 0, "width": 390, "height": 585 },
+        { "x": 86, "y": 35, "width": 24, "height": 14 },
+        { "x": 140, "y": 35, "width": 50, "height": 14 },
+        { "x": 15, "y": 63, "width": 192, "height": 15 },
+        { "x": 0, "y": 92, "width": 38, "height": 136 },
+        { "x": 0, "y": 392, "width": 75, "height": 86 },
+        { "x": 165, "y": 355, "width": 97, "height": 65 },
+        { "x": 85, "y": 420, "width": 177, "height": 165 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-FaceTime.png",
+        "crop": { "x": 112, "y": 76, "width": 1304, "height": 1170 }
+      },
+      "budget": { "1x": 0.0119, "2x": 0.0044 },
+      "deltaBudget": { "1x": 5.05, "2x": 4.8 }
+    },
+    {
+      "name": "chrome-dark",
+      "description": "The window with the page in Dark Aqua: it is dark in both appearances and must not follow the page's. One pixel of each part that chrome-light holds, to the same colour: the sidebar's fill, the rim, a window control, the two segments, the field's fill and top edge, and the sidebar's end at 262 pt. The camera preview is demo artwork and is not read.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 652, "height": 585 },
+        "pixels": [
+          {
+            "x": 94,
+            "y": 12,
+            "color": "#413f3b",
+            "note": "sidebar fill, --mac-facetime-sidebar: measured in both captures (@ 300,100)"
+          },
+          {
+            "x": 0.5,
+            "y": 300,
+            "color": "#676562",
+            "note": "the window's inner rim, white at 20% over the sidebar, computed from --mac-shadow-window-rim"
+          },
+          {
+            "x": 14,
+            "y": 11,
+            "color": "#ff5a53",
+            "note": "close button, measured, row 98 x 128..151 of the Dark Aqua capture too"
+          },
+          {
+            "x": 69.25,
+            "y": 37.25,
+            "color": "#1767e1",
+            "tolerance": 3,
+            "note": "selected segment: measured in both captures (@ 250,150)"
+          },
+          {
+            "x": 193,
+            "y": 41.5,
+            "color": "#7e7c78",
+            "tolerance": 3,
+            "note": "segment that is not selected, as in chrome-light; the Dark Aqua capture has #7c7a76 over a sidebar of #413d3a"
+          },
+          {
+            "x": 131.25,
+            "y": 41.5,
+            "color": "#7e7c78",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "the boundary between the segments at 131 pt (measured)"
+          },
+          {
+            "x": 240,
+            "y": 70.5,
+            "color": "#504e4b",
+            "tolerance": 3,
+            "note": "the field's fill, white at 8% over #413f3b, computed; the Dark Aqua capture has #504e4a"
+          },
+          {
+            "x": 240,
+            "y": 60.75,
+            "color": "#585653",
+            "scale": 2,
+            "note": "the field's top edge, the library's white at 12% over the sidebar, computed; the Dark Aqua capture has #5d5b58"
+          },
+          {
+            "x": 261.75,
+            "y": 300,
+            "color": "#413f3b",
+            "scale": 2,
+            "note": "sidebar up to 262 pt, as in chrome-light; the preview after it is demo artwork and is not read"
+          }
+        ]
+      }
+    }
+  ]
+}

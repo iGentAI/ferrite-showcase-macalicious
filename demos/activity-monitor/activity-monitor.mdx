@@ -1,0 +1,227 @@
+---
+title: Activity Monitor
+description: The Activity Monitor window of macOS 10.15 with its five views, a sortable process table with alternating rows, search, and a footer of statistics and a graph, over invented processes that a timer keeps moving.
+layout: full
+order: 20
+---
+
+<Example name="basic" />
+
+Click a heading to sort, pick a view in the toolbar, type in the search field, select a row
+and quit it. The processes are invented: nothing is read from the machine the page runs on. A
+timer moves their numbers every two seconds, the rows re-sort as they change, and the footer
+and its graph follow. The process icons are original stand-in drawings; the toolbar glyphs are
+the library's [System Images](/components/system-image).
+
+## What it shows
+
+- A [Window](/components/window) with a unified [Title Bar](/components/title-bar): the
+  [Window Controls](/components/window-controls), the title and a
+  [Toolbar](/components/toolbar) on one surface.
+- The toolbar: two [Toolbar Buttons](/components/toolbar-button), Quit Process and Inspect,
+  which are unavailable while no process is selected or a search hides the selected one; the
+  Action pull-down, a toolbar button
+  that opens a [Menu](/components/menu) of [Menu Items](/components/menu-item); the five views
+  as a [Toolbar Segmented Control](/components/toolbar-segmented-control) centred on the
+  window; and a [Toolbar Search Field](/components/toolbar-search-field) that filters the list
+  by process name. Quit Process asks in a [Sheet](/components/sheet) that hangs from the
+  title bar, with a [Default Button](/components/default-button) for Quit. The three buttons'
+  glyphs are [System Images](/components/system-image): `stop-progress`, `info`, and `action`
+  beside `chevron-down`.
+- The process list: a [Table View](/components/table-view) with 18 pt alternating rows at the
+  small size, a [Table Header](/components/table-header) whose every heading sorts and is
+  centred over right-aligned numbers and left-aligned names (`headerAlign`), single
+  selection that is emphasised while the table has the keyboard focus in the key window, and
+  type-select by process name. Rows are selected by process identifier, so the selection stays
+  on its process while the rows re-sort and when the view changes.
+- The footer: a [Box](/components/box) in its `well` variant, of three cells. The outer cells
+  hold up to three statistics each, set in the [Label](/components/label)'s 12 pt `callout`
+  style, and the middle one a history graph, drawn as SVG, with the newest point at
+  the trailing edge.
+
+| View | Columns | Footer |
+| --- | --- | --- |
+| CPU | % CPU, CPU Time, Threads, Idle Wake Ups, % GPU, GPU Time, PID, User | System, User and Idle shares, the CPU load graph, thread and process counts |
+| Memory | Memory, Threads, Ports, PID, User | Physical memory, memory used, swap; memory pressure; app, wired and compressed memory |
+| Energy | Energy Impact, Avg Energy Impact, App Nap, Preventing Sleep, User | Energy impact, graphics card, charge; energy impact graph; time on AC |
+| Disk | Bytes Written, Bytes Read, Kind, PID, User | Data read and written per second; data graph; totals |
+| Network | Sent Bytes, Rcvd Bytes, Sent Packets, Rcvd Packets, PID, User | Packets in and out per second; packets graph; totals |
+
+Only the CPU view has a reference screenshot. The columns of the other four follow Activity
+Monitor's defaults at plausible widths, and their footers use the CPU view's three-cell layout.
+
+The Action menu holds Quit Process, Inspect Process and the update frequency: every second,
+every two seconds (the default), every five seconds, or paused. Quit Process asks first, in a
+sheet on the window: Cancel (or Escape) keeps the process, and Quit (or Return) and Force Quit
+remove it. While the sheet waits the window is main, not key, its toolbar and content are
+inert and its close button is disabled. Inspect, a double click on a row and Return call `onInspect` with
+the process; the line under the example stands for the inspector window a host would open.
+
+## Hosting the window
+
+`ActivityMonitor` renders the library's `Window` as its root and passes every `Window` prop to
+it, so it does not assume it fills the page. Place it with `style`; a window manager gives it
+`state`, the size, and eight more props that the component hands to the window controls and
+the title bar. These are the props a [Managed Window](/components/managed-window)'s `render`
+form supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { activityMonitorApp } from "./app";
+
+<ManagedWindow
+  id={activityMonitorApp.id}
+  defaultFrame={{ x: 80, y: 60, ...activityMonitorApp.defaultSize }}
+  minWidth={activityMonitorApp.minSize.width}
+  minHeight={activityMonitorApp.minSize.height}
+  render={(props) => <activityMonitorApp.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `processes` | `ActivityMonitorProcess[]` | The processes the window opens with; the default is the list of the light screenshot and eight more. |
+| `totals` | `ActivityMonitorTotals` | The footer's figures for the whole machine when the window opens. |
+| `history` | `ActivityMonitorSample[]` | Points the graphs start with; without it they fill as the numbers move. |
+| `defaultUpdateInterval` | `number` | Milliseconds between updates at first; 2000 by default, and 0 opens the window paused. |
+| `tab`, `defaultTab`, `onTabChange` | `"cpu" \| "memory" \| "energy" \| "disk" \| "network"` and a function | The view, controlled or not. |
+| `defaultSelectedPid` | `number` | The process selected at first. |
+| `onInspect` | `(process: ActivityMonitorProcess) => void` | Called for Inspect, a double click on a row and Return. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 839 by 634 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `activityMonitorApp` and as `app`:
+`id`, `name`, `component`, `defaultSize` (839 by 634), `minSize` (640 by 300), `resizable` and
+`menus`, the menu titles after the Apple menu.
+
+The simulation is a pure function of its state (`advance` in `activity-monitor-data.ts`): the
+random numbers come from a seed the state carries, so every run of the demo, and of its tests,
+shows the same sequence.
+
+## On the desktop's Ferrite application
+
+When the `macalicious-desktop` Ferrite application serves the desktop (`ferrite-apps/desktop`),
+`DesktopActivityMonitor` (`activity-monitor-desktop.tsx`) shows three views:
+
+- **Applications**: the desktop's running applications with their windows; Quit Process quits
+  one, as Force Quit does.
+- **Ferrite**: how fast the application answers, per app, over the last five minutes: requests
+  per second, the median and 95th-percentile server time, the store calls each request made
+  (every call the app's code makes, counted by the router) and failed requests, with the
+  deployment generation and instance that answered. The application's
+  router measures every request a module answers on the platform clock and keeps the last five
+  minutes in the module's request counter, in the write that counts the request
+  (`ferrite-apps/desktop/src/timing.rs`), so measuring costs no store call; the percentiles are
+  estimated within their latency bucket. The graph plots the median and the 95th percentile.
+  The figures are for everyone together, by app, never by person. The window reads nothing
+  while the page is hidden.
+- **Network**: the round trips the browser itself timed to the application (`/health`) and to
+  Activity Monitor's own read, every two seconds.
+
+Ferrite shows an application no processes, CPU, memory, energy or disk figures, so none is
+shown.
+
+## Styling hooks
+
+The demo's measured lengths and font sizes are custom properties in
+`activity-monitor.tokens.css`, declared on `:root`; set one on the window with `style` to
+change it. That file tags each with where it comes from: the least room beside the summary
+box in a narrow window is provisional, the rest is measured in the two captures. Left as
+literals in `activity-monitor.css`, because they are structure rather than measurements:
+zeros, the 100% sizes, the flex factors and the graph cell's fr tracks, the 1 pt lines (the
+footer's top line, the rules and the cell dividers), and the upper series' fill opacity.
+
+| Property | Default | Controls |
+| --- | --- | --- |
+| `--mac-activity-monitor-toolbar-gap` | `9px` | A toolbar group: gap between its controls |
+| `--mac-activity-monitor-toolbar-inset` | `0.5px` | A toolbar group: inset at the window's edge |
+| `--mac-activity-monitor-name-gap` | `10px` | The Process Name cell: gap between the icon and the name |
+| `--mac-activity-monitor-name-padding-start` | `17px` | The Process Name cell: leading padding |
+| `--mac-activity-monitor-icon-size` | `16px` | A process icon: width and height |
+| `--mac-activity-monitor-footer-height` | `117px` | The footer panel, with its line: height |
+| `--mac-activity-monitor-footer-padding-top` | `12px` | The footer panel: top padding |
+| `--mac-activity-monitor-statement-padding` | `4px 12px` | On the served desktop, the line of what a page cannot see |
+| `--mac-activity-monitor-panel-gap` | `8px` | On the served desktop, between the lines of an inspector or CPU window |
+| `--mac-activity-monitor-panel-padding` | `12px` | On the served desktop, around an inspector's or CPU window's lines |
+| `--mac-activity-monitor-summary-width` | `580px` | The summary box: width |
+| `--mac-activity-monitor-summary-height` | `90px` | The summary box: height |
+| `--mac-activity-monitor-graph-width` | `185px` | The graph cell: width, with its two dividers |
+| `--mac-activity-monitor-statistics-padding-top` | `4px` | A statistics cell: top padding |
+| `--mac-activity-monitor-statistics-padding-edge` | `8px` | A statistics cell: padding at the box's edge |
+| `--mac-activity-monitor-statistics-padding-divider` | `8.5px` | A statistics cell: padding before the graph cell's divider |
+| `--mac-activity-monitor-statistic-gap` | `8px` | A label and value line: least gap between them |
+| `--mac-activity-monitor-statistic-height` | `20px` | A label and value line: height |
+| `--mac-activity-monitor-statistic-line-height` | `20px` | A label and value line: line height |
+| `--mac-activity-monitor-statistic-padding-start` | `4px` | A label and value line: leading padding |
+| `--mac-activity-monitor-statistic-padding-end` | `2.5px` | A label and value line: trailing padding |
+| `--mac-activity-monitor-graph-title-height` | `23px` | The graph's title: height |
+| `--mac-activity-monitor-graph-title-margin-inline` | `11.5px` | The graph's title: inline margin |
+| `--mac-activity-monitor-graph-title-padding-top` | `5px` | The graph's title: top padding |
+| `--mac-activity-monitor-graph-title-size` | `9px` | The graph's title: font size |
+| `--mac-activity-monitor-graph-title-line-height` | `11px` | The graph's title: line height |
+| `--mac-activity-monitor-graph-title-tracking` | `0.3px` | The graph's title: letter spacing |
+| `--mac-activity-monitor-graph-plot-inset-bottom` | `1px` | The graph: distance of its baseline from the box's bottom edge |
+| `--mac-activity-monitor-graph-plot-inset-end` | `3px` | The graph: distance of its newest point from the trailing divider |
+| `--mac-activity-monitor-summary-min-margin` | `16px` | The summary box: least room left beside it in a narrow window |
+
+## Accessibility
+
+- The window is a `region` named by its title. The toolbar is one tab stop; the arrow keys
+  move between its buttons, the five views and the search field.
+- Quit Process, Inspect and Action show only a glyph and are named with `aria-label`. The
+  first two are marked unavailable (`aria-disabled`) while no listed process is selected and
+  stay reachable with the arrow keys.
+- The views are toggle buttons in a group named "View"; the selected one has
+  `aria-pressed="true"` and cannot be switched off.
+- The table is a `grid` named "Processes" and one tab stop: the arrow keys, Page Up, Page
+  Down, Home and End move the selection, typing selects by name, and Return inspects. Each
+  heading is a button, and its column reports the order with `aria-sort`.
+- The footer box is a `group` named after the view ("CPU summary"); its statistics are
+  description lists, and the graph is an image named "CPU history". The System and User
+  values are also told apart by their labels, not by colour alone.
+- The quit confirmation is a modal `dialog` named by its question and described by the line
+  that names the process. The keyboard stays inside it; Escape cancels and Return quits.
+- The numbers change without an announcement: a live region that spoke every two seconds
+  would be noise. Pause Updates in the Action menu stops the movement.
+
+## Fidelity
+
+`activity-monitor.visual.json` compares the whole window with the Activity Monitor
+screenshots in both appearances, each as captured and again with the text and the stand-in
+drawings masked. The dark screenshot lists other processes than the light one and has its
+seventh row selected, so it has an example of its own. Scores from
+`npm run visual -- activity-monitor/` in Chromium on Linux with the fallback font: the share
+of pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 6.98% | 6.95 | 5.95% | 7.70 |
+| `window-light-layout` (masked) | 0.61% | 0.59 | 0.09% | 0.48 |
+| `window-dark` | 6.84% | 6.44 | 5.83% | 7.01 |
+| `window-dark-layout` (masked) | 0.63% | 0.70 | 0.06% | 0.50 |
+
+Measured in the screenshots and reproduced: the 839 by 634 pt frame, the 56 pt chrome with
+its controls where the capture has them, the nine column widths, the 18 pt rows with the name
+46 pt from the window's edge, the 116 pt footer under its line, the 580 by 90 pt summary box
+with its three cells, the 20 pt pitch and the rules of the statistics, and the red and blue of
+the System and User values.
+
+What differs, and why:
+
+- **Text.** Set in the fallback font off Apple devices, which is nearly all of the unmasked
+  scores. The table's and the footer's text is 12 pt; the title, the toolbar and the headings
+  follow the library's controls.
+- **Icons and glyphs.** Process icons are application artwork and are replaced by original
+  drawings. The toolbar glyphs are the library's System Images in place of Apple's, placed
+  where the captures have them: `stop-progress`, a disc where Activity Monitor draws an
+  octagon; `info` at 14 of its 15 pt; and `action` with `chevron-down` at 7.5 pt wide.
+- **The graph.** The capture shows one small rise at the trailing edge of the CPU load graph;
+  the comparison draws a rise of the same size there. Its shape while the demo runs is the
+  simulation's.
+- **Not in a screenshot (provisional):** the Memory, Energy, Disk and Network views, the
+  Action menu's items, the quit confirmation sheet with its wording, width and button order,
+  the window when it is not key, and every size other than the captured
+  one.

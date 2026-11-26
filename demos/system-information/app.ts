@@ -1,0 +1,33 @@
+import { DesktopSystemInformation } from "./system-information-desktop";
+
+/**
+ * What a desktop page needs to list, launch and host the app: render `component` (its root is
+ * the library's `Window`, and it takes that window's props together with the window controls'
+ * and the drag region's callbacks, which are the props a managed window's `render` supplies),
+ * open it at `defaultSize`, keep it at least `minSize`, and show `menus` in the menu bar while
+ * it is the front application.
+ */
+export const systemInformationApp = {
+  /** Identifies the app among the demos: the folder's name. */
+  id: "system-information",
+  /** The application's name: the title of its application menu and its Dock label. */
+  name: "System Information",
+  /**
+   * The app as a window: served by the `macalicious-desktop` Ferrite application it reports the
+   * browser and that application; elsewhere the captured MacBook Pro.
+   */
+  component: DesktopSystemInformation,
+  /** The frame the window opens at, in points: the reference capture's. */
+  defaultSize: { width: 751, height: 520 },
+  /** The smallest frame that keeps the outline beside a readable report. */
+  minSize: { width: 420, height: 240 },
+  /** The window can be resized, and its zoom button enters full screen. */
+  resizable: true,
+  /** Menu titles after the Apple menu; the first is the application menu. */
+  menus: ["System Information", "File", "Edit", "Window", "Help"],
+} as const;
+
+/** The same descriptor under the name every demo's `app.ts` shares. */
+export const app = systemInformationApp;
+
+export type { SystemInformationProps } from "./system-information";

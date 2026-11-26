@@ -1,0 +1,523 @@
+/*
+ * Voice Memos: what the app adds to the library's controls. The window, the Catalyst chrome
+ * with its toolbar and sidebar, the waveform with its ruler, playhead and overview, the list
+ * and the search field are the library's and are not restyled here; this file lays them out
+ * on the black content and draws the timer and the bottom bar, which the blueprint lists as
+ * the app's own.
+ *
+ * Positions are measured on the two captures, in points from the window's top-left corner:
+ * waveform panel from 74.5, overview strip at 394 and 33 from either side, timer cap top
+ * 485.5, bottom bar from 556.5 (73.5 tall) with the record pill at 66, 569.5 (113 x 46.5),
+ * the transport glyphs at 328.5, 383 and 439, and the Done pill at 617.5, 573.5 (105 x 39).
+ *
+ * Parts
+ *   .mac-voice-memos              the window
+ *   .mac-voice-memos-player       the content: waveform, timer and bottom bar, on black
+ *   .mac-voice-memos-waveform     the library's waveform view, placed under the toolbar
+ *   .mac-voice-memos-overview     its overview, placed under the ruler
+ *   .mac-voice-memos-timer        the large position, minutes, seconds and hundredths
+ *   .mac-voice-memos-empty        the room an empty state fills when there is no recording
+ *   .mac-voice-memos-bar          the bottom bar
+ *   .mac-voice-memos-pill         the outlined pill that pauses and resumes a take
+ *   .mac-voice-memos-transport    skip back, play or pause, skip forward
+ *   .mac-voice-memos-key          one of the three
+ *   .mac-voice-memos-play         the middle one, whose triangle stands off centre
+ *   .mac-voice-memos-done         the grey pill that leaves the editing view
+ *   .mac-voice-memos-library      the sidebar's column: search, list, record button
+ *   .mac-voice-memos-search       the search field's place
+ *   .mac-voice-memos-list         the list of recordings (or the empty state in its place)
+ *   .mac-voice-memos-length       a row's length, in tabular digits
+ *   .mac-voice-memos-new          the strip under the list
+ *   .mac-voice-memos-place        the row under the list that goes to Recently Deleted and back
+ *   .mac-voice-memos-preferences  the Preferences panel over the window, and -body its rows
+ *   .mac-voice-memos-record       the round button in it that starts a recording
+ *   .mac-voice-memos-notices      the app's messages (window banners) over the top of the player
+ *   .mac-voice-memos-trim         the app's yellow handles over the overview's strip, with
+ *                                 -kept, the stretch between them, -outside, the dimmed rest,
+ *                                 and -handle, one handle (data-side start or end)
+ *   .mac-voice-memos-trim-row     the timer between Revert and Delete and Trim, while trimming;
+ *                                 -actions a side of it, -action a button (data-tone="yellow")
+ *
+ * States
+ *   :active                       on a button of the bar: lighter
+ *   :disabled                     on a transport button: dim
+ *   :focus-visible                on the app's own buttons: focus ring, in the key window only
+ *
+ * Every measured length and font size is a token in voice-memos.tokens.css
+ * (--mac-voice-memos-*). Literal here, as structure: zeros, the 0px fallback of the Catalyst
+ * toolbar inset hook, the 100% height and 50% radius, the flex factors and grid tracks, the
+ * notices' stacking order, and the forced-colours borders and focus outline.
+ */
+.mac-voice-memos-player {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding-top: var(--mac-catalyst-chrome-toolbar-inset, 0px);
+  overflow: hidden;
+  background: var(--mac-voice-memos-background);
+  color: var(--mac-voice-memos-timer);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* The detailed view starts 7.6 pt above its panel, which is 74.5 pt from the window's top. */
+.mac-voice-memos-waveform {
+  position: relative;
+  flex: none;
+  padding-top: var(--mac-voice-memos-waveform-padding-top);
+}
+
+/* The overview starts 2.15 pt above its strip, which is 394 pt from the window's top: 44.95 pt
+   under the detailed view's 280. */
+.mac-voice-memos-overview {
+  margin: var(--mac-voice-memos-overview-margin-top) var(--mac-voice-memos-overview-margin-inline) 0;
+}
+
+/* 34.5 pt bold: the 24.5 pt cap height stands 485.5 pt from the window's top. */
+.mac-voice-memos-timer {
+  flex: none;
+  margin-top: var(--mac-voice-memos-timer-margin-top);
+  font:
+    var(--mac-font-weight-bold) var(--mac-voice-memos-timer-size) /
+    var(--mac-voice-memos-timer-line-height) var(--mac-font-family-system);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.mac-voice-memos-empty {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* The bar keeps to the window's bottom edge; what is above it keeps its measured places. */
+.mac-voice-memos-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  flex: none;
+  align-items: center;
+  box-sizing: border-box;
+  height: var(--mac-voice-memos-bar-height);
+  margin-top: auto;
+  background: linear-gradient(
+    to bottom,
+    var(--mac-voice-memos-bar-top),
+    var(--mac-voice-memos-bar-bottom)
+  );
+  box-shadow:
+    inset 0 var(--mac-hairline) 0 var(--mac-voice-memos-bar-line),
+    inset 0 calc(2 * var(--mac-hairline)) 0 var(--mac-voice-memos-bar-line-second);
+}
+
+/* The pill, the transport and Done are a plain button each: the reset they share. */
+.mac-voice-memos-pill,
+.mac-voice-memos-key,
+.mac-voice-memos-done,
+.mac-voice-memos-record {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: default;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-voice-memos-pill:where(:focus-visible),
+.mac-voice-memos-key:where(:focus-visible),
+.mac-voice-memos-done:where(:focus-visible),
+.mac-voice-memos-record:where(:focus-visible) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-voice-memos-focus-offset);
+}
+
+.mac-voice-memos-pill:where(:focus-visible):where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+),
+.mac-voice-memos-key:where(:focus-visible):where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+),
+.mac-voice-memos-done:where(:focus-visible):where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+),
+.mac-voice-memos-record:where(:focus-visible):where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  outline: none;
+}
+
+/* Nominally 113 x 46.5 pt, 66 pt from the leading edge, with a 1.5 pt outline; the pixels
+   are matched by 112.65 x 46.3 pt from 66.1, 13.2 pt under the bar's top, and 1.75 pt of
+   outline, drawn as a shadow because a border's width is rounded to whole pixels. A dark row
+   of pixels lies either side of the outline, and the pause mark, or "Resume", is in the
+   recording red. */
+.mac-voice-memos-pill {
+  grid-column: 1;
+  align-self: start;
+  justify-self: start;
+  width: var(--mac-voice-memos-pill-width);
+  height: var(--mac-voice-memos-pill-height);
+  margin-block-start: var(--mac-voice-memos-pill-margin-top);
+  margin-inline-start: var(--mac-voice-memos-pill-margin-start);
+  border-radius: var(--mac-voice-memos-pill-radius);
+  box-shadow:
+    0 0 0 var(--mac-hairline) var(--mac-voice-memos-pill-edge),
+    inset 0 0 0 var(--mac-voice-memos-pill-outline-width)
+    var(--_outline, var(--mac-voice-memos-pill-outline)),
+    inset 0 0 0 calc(var(--mac-voice-memos-pill-outline-width) + var(--mac-hairline))
+    var(--mac-voice-memos-pill-edge);
+  color: var(--mac-voice-memos-record);
+  font:
+    var(--mac-font-weight-bold) var(--mac-voice-memos-pill-size) /
+    var(--mac-voice-memos-pill-line-height) var(--mac-font-family-system);
+}
+
+.mac-voice-memos-pill:where(:active) {
+  --_outline: var(--mac-voice-memos-transport-pressed);
+}
+
+.mac-voice-memos-pill:where(:disabled) {
+  --_outline: var(--mac-voice-memos-transport-disabled);
+
+  color: var(--mac-voice-memos-transport-disabled);
+}
+
+/* Three 44 pt targets whose glyphs stand where the captures have them: the skip glyphs centred
+   338.5 and 449 pt from the window's leading edge, three quarters of a point left of centre. */
+.mac-voice-memos-transport {
+  display: flex;
+  grid-column: 2;
+  gap: var(--mac-voice-memos-transport-gap);
+  translate: var(--mac-voice-memos-transport-shift) 0;
+  color: var(--mac-voice-memos-transport);
+}
+
+.mac-voice-memos-key {
+  width: var(--mac-voice-memos-key-size);
+  height: var(--mac-voice-memos-key-size);
+  border-radius: var(--mac-voice-memos-key-radius);
+}
+
+.mac-voice-memos-key:where(:active) {
+  color: var(--mac-voice-memos-transport-pressed);
+}
+
+.mac-voice-memos-key:where(:disabled) {
+  color: var(--mac-voice-memos-transport-disabled);
+}
+
+/* The triangle's box is 383 to 408 pt across and 578.65 to 607 pt down: 1.75 pt right of the
+   button's centre, as a triangle's weight asks, and 0.4 pt above it. */
+.mac-voice-memos-play {
+  padding: 0 0 var(--mac-voice-memos-play-padding-bottom) var(--mac-voice-memos-play-padding-left);
+}
+
+/* Nominally 105 x 39 pt, ending 66.5 pt from the trailing edge; the pixels are matched by
+   104.85 x 38.7 pt, 17.05 pt under the bar's top. The captures have a dark row of pixels
+   around it. */
+.mac-voice-memos-done {
+  grid-column: 3;
+  align-self: start;
+  justify-self: end;
+  width: var(--mac-voice-memos-done-width);
+  height: var(--mac-voice-memos-done-height);
+  margin-block-start: var(--mac-voice-memos-done-margin-top);
+  margin-inline-end: var(--mac-voice-memos-done-margin-end);
+  border-radius: var(--mac-voice-memos-done-radius);
+  background: var(--mac-voice-memos-done-fill);
+  box-shadow: 0 0 0 var(--mac-hairline) var(--mac-voice-memos-pill-edge);
+  color: var(--mac-voice-memos-done-text);
+  font:
+    var(--mac-font-weight-semibold) var(--mac-voice-memos-done-size) /
+    var(--mac-voice-memos-done-line-height) var(--mac-font-family-system);
+}
+
+.mac-voice-memos-done:where(:active) {
+  background: var(--mac-voice-memos-done-pressed);
+}
+
+/* The sidebar's column fills the sidebar under the toolbar: the field, the list, the button. */
+.mac-voice-memos-library-menu {
+  display: contents;
+}
+
+.mac-voice-memos-library {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+}
+
+.mac-voice-memos-search {
+  flex: none;
+  width: auto;
+  margin: var(--mac-voice-memos-search-margin-block) var(--mac-voice-memos-search-margin-inline);
+}
+
+/* The list takes the sidebar's own fill, not a list's white. */
+.mac-voice-memos-list {
+  flex: 1 1 0;
+  min-height: 0;
+  background: none;
+}
+
+/* A row's title while it is renamed: the field takes the title's line in the row. */
+.mac-voice-memos-row-field {
+  grid-column: 2;
+  width: 100%;
+}
+
+.mac-voice-memos-length {
+  font-variant-numeric: tabular-nums;
+}
+
+.mac-voice-memos-preferences {
+  position: absolute;
+  top: var(--mac-space-4);
+  right: var(--mac-space-4);
+  z-index: 3;
+}
+
+.mac-voice-memos-preferences-body {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--mac-space-4);
+  align-items: center;
+  padding: var(--mac-space-4);
+}
+
+.mac-voice-memos-place {
+  flex: none;
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--mac-voice-memos-place-padding-block) var(--mac-voice-memos-place-padding-inline);
+  border: 0;
+  border-block-start: 1px solid var(--mac-color-separator);
+  background: none;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  text-align: start;
+}
+
+.mac-voice-memos-new {
+  display: flex;
+  flex: none;
+  justify-content: center;
+  padding: var(--mac-voice-memos-new-padding-top) 0 var(--mac-voice-memos-new-padding-bottom);
+}
+
+/* A red disc in a ring, 44 pt across. */
+.mac-voice-memos-record {
+  width: var(--mac-voice-memos-record-size);
+  height: var(--mac-voice-memos-record-size);
+  border: var(--mac-voice-memos-record-ring-width) solid var(--mac-voice-memos-record-ring);
+  border-radius: 50%;
+  background: var(--mac-voice-memos-record) content-box;
+  padding: var(--mac-voice-memos-record-padding);
+}
+
+.mac-voice-memos-record:where(:active) {
+  padding: var(--mac-voice-memos-record-padding-pressed);
+}
+
+.mac-voice-memos-record:where(:disabled) {
+  border-color: var(--mac-voice-memos-transport-disabled);
+  background-color: var(--mac-voice-memos-transport-disabled);
+}
+
+/* The app's messages hang under the toolbar, over the waveform's top padding, and take no room
+   from the measured layout below them. */
+.mac-voice-memos-notices {
+  position: absolute;
+  top: var(--mac-catalyst-chrome-toolbar-inset, 0px);
+  right: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Exactly over the overview's strip, in its coordinates; only the handles take the pointer, so
+   the red handle under them still seeks. */
+.mac-voice-memos-trim {
+  position: absolute;
+  right: var(--mac-voice-memos-overview-margin-inline);
+  bottom: var(--mac-voice-memos-trim-strip-bottom);
+  left: var(--mac-voice-memos-overview-margin-inline);
+  height: var(--mac-voice-memos-trim-strip-height);
+  pointer-events: none;
+}
+
+.mac-voice-memos-trim-kept,
+.mac-voice-memos-trim-outside {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  box-sizing: border-box;
+}
+
+.mac-voice-memos-trim-kept {
+  border-block: var(--mac-voice-memos-trim-edge) solid var(--mac-voice-memos-trim);
+}
+
+.mac-voice-memos-trim-outside {
+  background: var(--mac-voice-memos-trim-outside);
+}
+
+/* A handle stands outside the stretch it marks, so the two stay apart at the shortest trim. */
+.mac-voice-memos-trim-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--mac-voice-memos-trim-handle-width);
+  background: var(--mac-voice-memos-trim);
+  outline: none;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.mac-voice-memos-trim-handle[data-side="start"] {
+  translate: -100% 0;
+  border-start-start-radius: var(--mac-voice-memos-trim-handle-radius);
+  border-end-start-radius: var(--mac-voice-memos-trim-handle-radius);
+}
+
+.mac-voice-memos-trim-handle[data-side="end"] {
+  border-start-end-radius: var(--mac-voice-memos-trim-handle-radius);
+  border-end-end-radius: var(--mac-voice-memos-trim-handle-radius);
+}
+
+.mac-voice-memos-trim-handle::after {
+  content: "";
+  border-block: var(--mac-voice-memos-trim-grip-size) solid transparent;
+}
+
+.mac-voice-memos-trim-handle[data-side="start"]::after {
+  border-inline-end: var(--mac-voice-memos-trim-grip-size) solid var(--mac-voice-memos-trim-text);
+}
+
+.mac-voice-memos-trim-handle[data-side="end"]::after {
+  border-inline-start: var(--mac-voice-memos-trim-grip-size) solid var(--mac-voice-memos-trim-text);
+}
+
+.mac-voice-memos-trim-handle:where(:active) {
+  background: var(--mac-voice-memos-trim-pressed);
+}
+
+.mac-voice-memos-trim-handle:where(:focus-visible),
+.mac-voice-memos-trim-action:where(:focus-visible) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-voice-memos-focus-offset);
+}
+
+/* The timer keeps its place: the buttons take the room either side of it, on the timer's line. */
+.mac-voice-memos-trim-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  flex: none;
+  align-items: center;
+  padding-inline: var(--mac-voice-memos-overview-margin-inline);
+}
+
+.mac-voice-memos-trim-actions {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+  margin-block-start: var(--mac-voice-memos-timer-margin-top);
+}
+
+.mac-voice-memos-trim-actions[data-side="end"] {
+  justify-content: end;
+}
+
+.mac-voice-memos-trim-action {
+  box-sizing: border-box;
+  height: var(--mac-voice-memos-trim-action-height);
+  margin: 0;
+  padding: 0 var(--mac-voice-memos-trim-action-padding);
+  border: 0;
+  border-radius: var(--mac-voice-memos-trim-action-radius);
+  background: var(--mac-voice-memos-done-fill);
+  color: var(--mac-voice-memos-done-text);
+  font:
+    var(--mac-font-weight-semibold) var(--mac-voice-memos-done-size) /
+    var(--mac-voice-memos-done-line-height) var(--mac-font-family-system);
+  cursor: default;
+  appearance: none;
+}
+
+.mac-voice-memos-trim-action[data-tone="yellow"] {
+  background: var(--mac-voice-memos-trim);
+  color: var(--mac-voice-memos-trim-text);
+}
+
+.mac-voice-memos-trim-action:where(:disabled) {
+  background: var(--mac-voice-memos-transport-disabled);
+  color: var(--mac-voice-memos-transport);
+}
+
+@media (forced-colors: active) {
+  .mac-voice-memos-player {
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .mac-voice-memos-bar {
+    border-top: 1px solid CanvasText;
+    background: Canvas;
+    box-shadow: none;
+  }
+
+  .mac-voice-memos-pill,
+  .mac-voice-memos-done,
+  .mac-voice-memos-trim-action {
+    border: 1px solid ButtonText;
+    background: ButtonFace;
+    box-shadow: none;
+    color: ButtonText;
+  }
+
+  .mac-voice-memos-transport,
+  .mac-voice-memos-key:where(:active) {
+    color: ButtonText;
+  }
+
+  .mac-voice-memos-key:where(:disabled),
+  .mac-voice-memos-pill:where(:disabled) {
+    border-color: GrayText;
+    color: GrayText;
+  }
+
+  .mac-voice-memos-trim-handle {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+
+  .mac-voice-memos-record {
+    forced-color-adjust: none;
+    border-color: ButtonText;
+    background-color: Highlight;
+  }
+
+  .mac-voice-memos-pill:where(:focus-visible),
+  .mac-voice-memos-key:where(:focus-visible),
+  .mac-voice-memos-done:where(:focus-visible),
+  .mac-voice-memos-record:where(:focus-visible) {
+    outline: 2px solid CanvasText;
+    outline-offset: 1px;
+  }
+}

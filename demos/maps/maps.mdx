@@ -1,0 +1,440 @@
+---
+title: Maps
+description: The Maps window of macOS 10.15, with Directions, the location button, a search field, Share and the map types in a toolbar without a title, a window tab bar, and a map with the library's map controls, the weather, a pin and its place card in a popover, over an abstract placeholder map and a handful of places of the demo's own.
+layout: full
+order: 114
+---
+
+<Example name="basic" />
+
+Click the pin to open Apple Park's place card, as in the reference screenshots. Switch the
+map type, zoom, open or close a tab, or search: type "theater", "visitor" or "park" and
+press Return. The map is an abstract placeholder and the demo knows five places; nothing is
+fetched anywhere.
+
+## What it shows
+
+- A [Window](/components/window) whose [Title Bar](/components/title-bar) hides the title
+  (`variant="title-hidden"`): the window controls and the [Toolbar](/components/toolbar)
+  share one 38 pt row, and `divider="bar"` gives it the lighter bottom edge of a bar that is
+  followed by another.
+- The toolbar: a [Toolbar Button](/components/toolbar-button) that is a toggle, Directions;
+  one with a glyph, the location button; a [Toolbar Search Field](/components/toolbar-search-field)
+  with its clear button; a [Share Menu](/components/share-menu); and a
+  [Toolbar Segmented Control](/components/toolbar-segmented-control) that selects one of
+  Map, Transit and Satellite.
+- A [Window Tab Bar](/components/window-tab-bar) of two tabs with close buttons and the
+  new-tab cell. Every tab keeps its own part of the map, zoom, map type, search and place.
+- The map, held by an [Image View](/components/image-view) that names it, with the
+  [Map Controls](/components/map-controls) over it: the Show pull-down, a `MapButton` that is
+  the trigger of a [Menu](/components/menu) of checkbox items, at the leading corner, and the
+  compass with its 3D button over the zoom pair at the trailing one.
+- The place card: a [Popover](/components/popover) at the left of the pin, whose arrow
+  points at it. Inside, two [Push Buttons](/components/push-button) with glyphs (the second
+  is the trigger of another Share Menu), a full-width Directions button, three image views,
+  a disabled Call button, [Labels](/components/label) as links, and the popover's
+  separators, in a [Scroll View](/components/scroll-view) that scrolls when the card has
+  less room than it needs.
+
+| Command | Where | What it does |
+| --- | --- | --- |
+| Search | the search field, then Return | Puts the pin on the best match, moves the map to it and opens its place card. A search that finds nothing says so on the map. The clear button or Escape empties the field and takes the pin away. |
+| Map, Transit, Satellite | the toolbar | The tab's map type: the transit view adds two lines to the placeholder, the satellite view darkens it. |
+| Directions | the toolbar and the card | Draws a route from the current location to the place; the toolbar button takes it away again. |
+| Current location | the toolbar | Moves the map so that the current location's dot is in the middle. |
+| Share | the toolbar and the card | A menu of three services; choosing one is reported to `onShare`. |
+| Open a card | the pin | A click on the pin opens its card; Escape, or a press anywhere else, closes it. |
+| Favorite | the card | Marks the place; the heart fills. |
+| Tabs | the tab bar | A click selects a tab, its close button or Delete closes it, the + opens a tab on the same part of the map. The last tab cannot be closed. |
+| Show | the map | Traffic, 3D Map and Scale, each on or off. |
+| Zoom, 3D | the map | Nine zoom levels, from 25% to 400%; the middle of the compass switches 3D. |
+
+## Source walkthrough
+
+The demo is six files in `demos/maps/`.
+
+**`maps-data.ts`** is what the demo knows: five places, each a name, the two halves of a
+card's second line and a point of the abstract map, and for Apple Park the address, the
+phone number and the links of the captures' card; the two regions of the tabs; the weather
+of the Aqua capture; and `searchPlaces(places, query)`, which ranks a name that starts with
+the text before one with a word that does, and that before one that only contains it.
+
+**`maps-artwork.tsx`** holds the drawings, all of them original and all placeholders: the
+map, the pin, the weather's mark, the three photographs, the glyphs of the location,
+Favorite and Share buttons and the icons of the Share menus. The map is one tile repeated
+in every direction and placed by the view's middle and scale, so it needs no measuring:
+
+```tsx
+<pattern id={id} patternUnits="userSpaceOnUse" width={480} height={360}
+         patternTransform={`scale(${scale}) translate(${-center.x} ${-center.y})`}>
+  {/* two wide and two narrow bands, a disc, a block and a stripe */}
+</pattern>
+```
+
+**`maps.tsx`** is the window. Its state is the list of tabs, each a view of the map, and
+whether the card is open; everything shown is derived from the tab in front:
+
+```tsx
+const view = tabs.views.find((item) => item.id === tabs.active);
+const place = places.find((item) => item.id === view.placeId) ?? null;
+const scale = scaleOf(view.zoom);
+```
+
+The chrome is the title bar with its toolbar, then the tab bar:
+
+```tsx
+<TitleBar variant="title-hidden" divider="bar" controls={<WindowControls />}>
+  <Toolbar aria-label="Toolbar">
+    <ToolbarButton pressed={view.route} onPressedChange={(route) => change({ route })}>
+      Directions
+    </ToolbarButton>
+    <ToolbarSpace />
+    <ToolbarButton aria-label="Show Your Current Location"><LocationGlyph /></ToolbarButton>
+    <ToolbarSearchField placeholder="Search for a place or address" value={view.query}
+                        onValueChange={(query) => change({ query })} onClear={() => showPlace(null)} />
+    <ShareMenu>{/* ShareMenuItems */}</ShareMenu>
+    <ToolbarSegmentedControl aria-label="Map type" value={[view.mapType]}
+                             onValueChange={(value) => change({ mapType: value[0] })}>
+      <ToolbarSegment value="map">Map</ToolbarSegment>
+      {/* Transit, Satellite */}
+    </ToolbarSegmentedControl>
+  </Toolbar>
+</TitleBar>
+<WindowTabBar aria-label="Tabs" value={String(view.id)} onValueChange={selectTab} onNewTab={newTab}>
+  {tabs.views.map((item) => (
+    <WindowTab key={item.id} value={String(item.id)} onClose={() => closeTab(item.id)}>
+      {item.title}
+    </WindowTab>
+  ))}
+</WindowTabBar>
+```
+
+The pin is the popover's trigger and its ball is what the card points at. The card's fill
+is the popover's material without its translucency, and its padding is taken away, both
+through the popover's own hooks:
+
+```tsx
+<Popover open={cardOpen} onOpenChange={setCardOpen}>
+  <PopoverTrigger render={<button type="button" className="mac-maps-pin" style={where} />}>
+    <Pin />
+    <span ref={setPinHead} className="mac-maps-pin-head" />
+    <span className="mac-maps-pin-label">{place.name}</span>
+  </PopoverTrigger>
+  <PopoverPopup side="left" sideOffset={17} anchor={pinHead} className="mac-maps-card"
+                style={{ "--mac-popover-padding": "0px",
+                         "--mac-material-popover": "var(--mac-material-popover-opaque)" }}>
+    <PlaceCard place={place} />
+  </PopoverPopup>
+</Popover>
+```
+
+The map controls are the library's, in two groups that the demo places itself:
+
+```tsx
+<MapControls placement="none" aria-label="Map options" className="mac-maps-options">
+  <Menu>
+    <MenuTrigger render={<MapButton chevron>Show</MapButton>} />
+    <MenuPopup align="start">
+      <MenuCheckboxItem checked={shown.traffic} onCheckedChange={setTraffic}>Traffic</MenuCheckboxItem>
+      {/* 3D Map, Scale */}
+    </MenuPopup>
+  </Menu>
+</MapControls>
+<MapControls placement="none" orientation="vertical" aria-label="Map controls" className="mac-maps-controls">
+  <MapCompass pitched={pitched} onPitchedChange={setPitched} />
+  <MapZoomControl onZoomIn={zoomIn} onZoomOut={zoomOut}
+                  zoomInDisabled={view.zoom >= MAX_ZOOM} zoomOutDisabled={view.zoom <= MIN_ZOOM} />
+</MapControls>
+```
+
+**`maps.css`** gives the toolbar's items the capture's widths, lays the map out with what
+lies over it, and sets the card's rows where the captures have them. **`maps.tokens.css`**
+holds the colours no shared token has: the measured ones (the land, the card's headings and
+links, the temperature, the air quality capsule and the weather's plate) and the demo's own
+for the placeholders; and one length, the point by which each map type is wider in Dark Aqua.
+
+**`app.ts`** is the descriptor the [Desktop](/demos/desktop) reads.
+
+## Hosting the window
+
+`Maps` renders the library's `Window` as its root and passes every `Window` prop to it, so it
+does not assume it fills the page. Place it with `style`; a window manager gives it `state`,
+the size, and eight more props that the component hands to the window controls and the title
+bar. These are the props a [Managed Window](/components/managed-window)'s `render` form
+supplies, so the component can be spread with them as they come.
+
+<Example name="hosted" />
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `places` | `MapsPlace[]` | The places the search finds; the demo's five by default. |
+| `defaultQuery` | `string` | The text in the search field at first; `"Apple Park"`, as in the Aqua capture. |
+| `defaultPlaceId` | `string \| null` | The place with the pin at first; `"apple-park"`. |
+| `defaultCardOpen` | `boolean` | Whether that place's card is open at first; `false`, because the card takes the keyboard and lies over the page. |
+| `defaultMapType` | `"map" \| "transit" \| "satellite"` | The map type selected at first; `"map"`. |
+| `defaultCenter` | `{ x, y }` | The point of the abstract map at the middle of the first tab; the capture's. |
+| `weather` | `{ temperature, airQuality } \| null` | The weather in the map's corner; 72° and AQI 49, as in the Aqua capture. `null` shows none, as in the Dark Aqua one. |
+| `onPlaceChange` | `(place: MapsPlace \| null) => void` | Called with the place that has the pin when it changes: another place, none, or the same place given other details through `places`. |
+| `onShare` | `(service: string, place: MapsPlace \| null) => void` | Called when a service of a Share menu is chosen. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 1000 by 690 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `mapsApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (1000 by 690), `minSize` (640 by 320), `resizable` and
+`menus`, the menu titles after the Apple menu. Its `component` is `DesktopMaps`
+(`maps-desktop.tsx`), which renders `Maps` in every build but one, described next.
+
+## On the desktop's Ferrite application
+
+When the `macalicious-desktop` Ferrite application serves the desktop
+(`ferrite-apps/desktop`), `DesktopMaps` shows a working Maps instead of the demo. Nothing of
+it runs on this documentation site, which asks no server anything.
+
+- **The map** is OpenStreetMap's standard map (`maps-tiles.tsx`, `maps-geo.ts`): the
+  browser loads the tiles in view and no others, drag moves it, the wheel, a double-click,
+  the keyboard and the zoom pair zoom it from level 2 to 19, the context menu drops a pin,
+  and "© OpenStreetMap contributors" links to the licence, as the tiles' usage policy asks.
+- **Search** runs on Return, never as you type. The `maps` module asks OpenStreetMap's
+  Nominatim, at most once a second for the whole application, and keeps each answer for a
+  day. One place found gets its pin and its card, with the address, the phone, the website,
+  Wikipedia and the coordinates OpenStreetMap knows. Several get a pin each, framed on the map,
+  and a list under the field whose rows open their cards. While you type, the field suggests
+  the person's own Favorites, Guides and Recents; nothing typed leaves the window for it.
+- **Directions** run from the toolbar, ⌘R, a card's button and the context menus: a panel with
+  the two ends, Drive or Walk (Transit stays dimmed: the routers have none), the time, the
+  length and the steps, and the route's line over the map. The module asks the FOSSGIS OSRM
+  routers (`https://routing.openstreetmap.de/`) behind a declared egress, at most once a second
+  for the whole application, and keeps each 200 answer for a day. Only the router's `NoRoute`
+  and `NoSegment` codes read as "no journey" (the routers send those under HTTP 400; the module
+  answers that with its own error and keeps nothing); an `Ok` answer with no routes fails rather
+  than reads as one; an answer under any other status is never a route and is never cached; a
+  route of more than 1,000 steps fails rather than loses some; and a change
+  to the journey forgets any question on its way. The panel shows the attribution and the
+  "fix the map" link the routers' usage policy asks for.
+- **Places** opens Favorites, Recents and Guides, which the module keeps for the person under
+  the revision rule of the desktop's documents. The card's heart, its Add to Guide menu and
+  the sidebar's New Guide, Remove and Clear Recents change them; a row's context menu shows it,
+  routes to it, copies its link, renames a guide or removes it.
+- **Share** hands the place's link on openstreetmap.org to Mail, Messages, Notes or Reminders,
+  or copies it.
+- **Context menus:** the map's drops a pin, routes to or from the point, and reports an issue on
+  OpenStreetMap; a pin's shows its card, routes, adds it to Favorites and copies its link.
+- **The menu bar** carries the commands (`maps-menus.tsx`): File > New Window, Share, Export as
+  PDF and Print (a picture of the map as the window shows it, with its pins and route); Edit >
+  Find, Drop Pin and Remove Pin; View > Map, Show Scale, Zoom In and Out, Go to Current Location
+  and Directions, with their keys. What the served window does not have stays in the menus,
+  dimmed, saying why.
+- **Kept for the person:** the last map view, the way the map is turned, the open panel and the
+  scale, for the next window. Each window has its own map; all of them show the person's one set
+  of places.
+- **The compass:** dragged round, it turns the map, pins and route with it; the arrow keys turn it
+  by 15° while it has the keyboard; its ring faces north. The tiles turn with the map, so their
+  labels do too.
+
+The served window has no tabs (New Window instead), no Transit or Satellite map
+(OpenStreetMap has neither) and no 3D. Its plate in the map's top corner shows the temperature at
+the map's middle once the map is zoomed in far enough for one temperature to mean something, from
+Open-Meteo through the desktop's server, with the condition, source and time in its tooltip; `--`
+and the reason when the source is down. It has no air quality capsule, which Open-Meteo serves
+from a host this application does not declare. The free services are for light use: a busy deployment
+needs a tile, geocoding and routing provider of its own, such as MapTiler or Stadia Maps, with a
+key.
+
+## Styling hooks
+
+The demo's measured lengths are custom properties in `maps.tokens.css`, each tagged measured
+or provisional with the place it was read; `maps.css` reads them with `var()`. Set one on the
+window or an ancestor to change that measure. The class names are listed at the head of
+`maps.css`.
+
+| Property | Default | Controls |
+| --- | --- | --- |
+| `--mac-maps-directions-width` | `90px` | Directions: width |
+| `--mac-maps-locate-width` | `38px` | Location button: width |
+| `--mac-maps-search-width` | `396px` | Search field: width (flex basis) |
+| `--mac-maps-share-width` | `40px` | Share: width |
+| `--mac-maps-map-type-margin-inline-start` | `8px` | Map types: margin inline start |
+| `--mac-maps-search-min-width` | `80px` | Search field: min width |
+| `--mac-maps-map-type-extra` | `calc(1px * var(--mac-appearance-dark))` | Map types: extra width of each segment in Dark Aqua |
+| `--mac-maps-pin-width` | `28px` | Pin: width |
+| `--mac-maps-pin-height` | `42px` | Pin: height |
+| `--mac-maps-pin-foot-x` | `14px` | Pin: x of the stem's foot, which is on the place |
+| `--mac-maps-pin-foot-y` | `38px` | Pin: y of the stem's foot, which is on the place |
+| `--mac-maps-pin-radius` | `6px` | Pin: radius of its focus ring |
+| `--mac-maps-pin-head-top` | `1px` | Pin head: top |
+| `--mac-maps-pin-head-left` | `7px` | Pin head: left |
+| `--mac-maps-pin-head-size` | `14px` | Pin head: size |
+| `--mac-maps-pin-label-top` | `44px` | Pin label: top |
+| `--mac-maps-pin-label-font-size` | `10px` | Pin label: font size |
+| `--mac-maps-pin-label-line-height` | `13px` | Pin label: line height |
+| `--mac-maps-pin-label-letter-spacing` | `0.04em` | Pin label: letter spacing |
+| `--mac-maps-pin-halo-blur` | `2px` | Pin label halo: blur of its two inner shadows |
+| `--mac-maps-pin-halo-outer-blur` | `3px` | Pin label halo: blur of its outer shadow |
+| `--mac-maps-notes-top` | `12px` | Notes: top |
+| `--mac-maps-notes-left` | `14px` | Notes: left |
+| `--mac-maps-notes-gap` | `6px` | Notes: gap |
+| `--mac-maps-note-padding` | `2px 8px` | Note: padding |
+| `--mac-maps-note-radius` | `4px` | Note: radius |
+| `--mac-maps-scale-width` | `60px` | Scale legend: width |
+| `--mac-maps-scale-padding` | `0 4px 1px` | Scale legend: padding |
+| `--mac-maps-scale-radius` | `0 0 2px 2px` | Scale legend: radius |
+| `--mac-maps-weather-top` | `10px` | Weather: top |
+| `--mac-maps-weather-right` | `10.5px` | Weather: right |
+| `--mac-maps-weather-width` | `54px` | Weather: width |
+| `--mac-maps-weather-height` | `40.5px` | Weather: height |
+| `--mac-maps-weather-radius` | `5px` | Weather: radius |
+| `--mac-maps-weather-glyph-top` | `2.25px` | Weather mark: top |
+| `--mac-maps-weather-glyph-left` | `1.75px` | Weather mark: left |
+| `--mac-maps-temperature-left` | `22.5px` | Temperature: left |
+| `--mac-maps-temperature-font-size` | `17px` | Temperature: font size |
+| `--mac-maps-temperature-line-height` | `20px` | Temperature: line height |
+| `--mac-maps-air-quality-top` | `23px` | Air quality: top |
+| `--mac-maps-air-quality-left` | `1.5px` | Air quality: left |
+| `--mac-maps-air-quality-width` | `51px` | Air quality: width |
+| `--mac-maps-air-quality-height` | `15.5px` | Air quality: height |
+| `--mac-maps-air-quality-radius` | `5px` | Air quality: radius |
+| `--mac-maps-air-quality-font-size` | `10px` | Air quality: font size |
+| `--mac-maps-air-quality-line-height` | `15.5px` | Air quality: line height |
+| `--mac-maps-controls-inset-inline` | `13.5px` | Map controls: inset from the map's sides |
+| `--mac-maps-controls-inset-block-end` | `14px` | Map controls: inset from the map's bottom |
+| `--mac-maps-compass-offset-x` | `0.5px` | Compass: offset x |
+| `--mac-maps-compass-margin-block-end` | `0.5px` | Compass: margin block end |
+| `--mac-maps-card-width` | `320px` | Place card: width |
+| `--mac-maps-card-max-height` | `600px` | Place card: max height |
+| `--mac-maps-card-head-height` | `34px` | Card head: height |
+| `--mac-maps-card-head-gap` | `8px` | Card head: gap |
+| `--mac-maps-card-head-padding` | `7px 8px 0 0` | Card head: padding |
+| `--mac-maps-card-action-width` | `38.5px` | Card head button: width |
+| `--mac-maps-card-share-width` | `35px` | Card head Share: width |
+| `--mac-maps-card-content-padding` | `0 15px 2px` | Card contents: padding |
+| `--mac-maps-card-title-margin-top` | `11.75px` | Card title: margin top |
+| `--mac-maps-card-subtitle-margin-top` | `-0.75px` | Card subtitle: margin top |
+| `--mac-maps-card-button-margin-top` | `33.5px` | Card button: margin top |
+| `--mac-maps-card-call-margin-top` | `29px` | Card Call button: margin top |
+| `--mac-maps-card-photos-row-height` | `62.5px` | Card photos: row height |
+| `--mac-maps-card-photos-lead-width` | `192px` | Card photos: first column width |
+| `--mac-maps-card-photos-side-width` | `96px` | Card photos: second column width |
+| `--mac-maps-card-photos-gap` | `2px` | Card photos: gap |
+| `--mac-maps-card-photos-margin-top` | `16.5px` | Card photos: margin top |
+| `--mac-maps-card-link-line-height` | `15px` | Card link: line height |
+| `--mac-maps-card-photos-link-margin-top` | `15px` | Photos link: margin top |
+| `--mac-maps-card-photos-link-line-height` | `16px` | Photos link: line height |
+| `--mac-maps-card-line-margin-top` | `10px` | Card separator: margin top |
+| `--mac-maps-card-section-padding-top` | `7.5px` | Card section: padding top |
+| `--mac-maps-card-section-first-margin-top` | `22.5px` | First card section: margin top |
+| `--mac-maps-card-section-row-margin-top` | `19px` | One-row card section: margin top |
+| `--mac-maps-card-heading-margin-bottom` | `1.5px` | Card section heading: margin bottom |
+| `--mac-maps-card-row-link-line-height` | `16px` | One-row section link: line height |
+| `--mac-maps-card-value-line-height` | `15px` | Card section value: line height |
+
+## Accessibility
+
+- The window has no title, so it is a `region` named "Maps" by `aria-label`.
+- The toolbar is one tab stop; the arrow keys move between its items. Directions is a toggle
+  button whose `aria-pressed` says whether the route is drawn; it is marked unavailable
+  (`aria-disabled`) and stays reachable while no place has the pin. The location button
+  shows a glyph only and is named "Show Your Current Location"; Share is named "Share".
+- The search field is a `searchbox` named by its placeholder, "Search for a place or
+  address"; its clear button is named "Clear".
+- The map types are a group named "Map type" of three toggle buttons.
+- The tabs are a `tablist` named "Tabs". A tab's close button is named after it ("Close
+  Manhattan — Jersey City"), and Delete closes the tab that has the keyboard.
+- The map is an image whose text alternative says that it is a placeholder, and names the
+  map type, the part of the map and the zoom, so a change of any of them can be read.
+- The pin is a button named after its place. The card is a `dialog` named by its title; it
+  takes the keyboard when it opens and returns it to the pin when it closes. Its headings
+  are headings, its links are links that open a new tab, and Call is a disabled button.
+- The note of a search ("No Results Found") is a `status`, so it is announced.
+- The weather is a group named "Weather"; the two groups of map controls are named "Map
+  options" and "Map controls", and their buttons "Show", "Face north", "3D", "Zoom out" and
+  "Zoom in". A zoom button at its limit stays reachable.
+- The placeholder drawings are decorative; the elements around them name what they stand for.
+
+## Fidelity
+
+`maps.visual.json` compares the window with the Maps screenshots in both appearances: the
+whole window with the placeholders masked, the same with the text and the stand-in glyphs
+masked as well, and three crops of pure chrome, the toolbar, the tab bar and the card's
+head. Every comparison clicks the pin first, because the captures show the card open. Scores
+from `npm run visual -- maps/` in Chromium on Linux with the fallback font: the share of
+pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` (placeholders masked) | 5.56% | 5.98 | 4.23% | 5.58 |
+| `window-light-layout` (and text) | 2.27% | 1.48 | 0.69% | 0.98 |
+| `toolbar-light` | 4.97% | 4.19 | 0.71% | 2.56 |
+| `tab-bar-light` | 0.26% | 0.96 | 0.26% | 0.89 |
+| `card-head-light` | 3.50% | 1.15 | 0.10% | 0.20 |
+| `window-dark` (placeholders masked) | 6.07% | 7.43 | 4.27% | 6.98 |
+| `window-dark-layout` (and text) | 1.71% | 2.57 | 0.53% | 1.99 |
+| `toolbar-dark` | 3.93% | 6.95 | 0.77% | 5.16 |
+| `tab-bar-dark` | 0.25% | 2.37 | 0.23% | 2.33 |
+| `card-head-dark` | 1.23% | 1.42 | 0.21% | 0.72 |
+
+The two captures are not the same state, so each has its own example. In the Aqua one the
+search field holds text, the weather is shown, and the card points at the pin's ball and
+begins 15 pt above the window. In the Dark Aqua one the field is empty, there is no weather,
+and the card points 28 pt lower, at the pin's foot, and lies inside the window.
+`visual-window-dark` moves the map by that much instead: the demo's card always points at
+the ball.
+
+### Placeholders and masks
+
+The captures show Apple's map and artwork and a third party's photographs. None of them is
+reproduced or imitated: the owner of the project decided that these are abstract
+placeholders, flat fills and simple shapes that are not fitted to the pictures in the
+screenshots. Every one of them is masked in every comparison that contains it, so what is
+scored is the chrome and the layout around them.
+
+| Placeholder | What the demo draws | Mask, in points of the Aqua comparison (Dark Aqua) |
+| --- | --- | --- |
+| The map: tiles, roads, labels and places | One tile repeated: bands, a disc, a block and a stripe on the measured land colour | Everything under the tab bar except the card, its arrow, the Show pull-down, the weather's plate and the zoom pair: 4 rectangles left of the card, 1 under it and 8 (5) right of it |
+| The pin and its label | A ball on a stem over a ground mark, and the place's name | Inside the map's mask |
+| The compass | The library's `MapCompass`, whose face is an original drawing | Inside the map's mask |
+| The weather's glyph | A plain disc | 19 x 19 at 936, 91 (none: no weather) |
+| The three photographs | Three flat panels with a disc, a bar and a triangle | 290 x 127 at 172, 155 (172, 166) |
+| The Wikipedia wordmark | The name set as text | 72 x 17 at 338, 297 (338, 308) |
+
+The layout comparisons mask the text as well, which is set in the fallback font off Apple
+devices, and the stand-in glyphs of the Share, Favorite and location buttons: the titles of
+Directions, of the map types, of the second tab and of Show; the temperature and the
+capsule's text; and in the card its title and second line, the titles of its two buttons,
+the link under the photographs, the three headings with their values, and the last row.
+The masks cover 69% of the Aqua crop and 70% of the Dark Aqua one in the whole-window
+comparisons, and 74% and 75% in the layout ones. Nearly all of that is the map, which is
+nine tenths of the window and of which only what the card covers is not a placeholder.
+
+### Measured and reproduced
+
+The 1000 by 690 pt frame; the toolbar's items at their places and widths; the 25 pt tab bar
+with its two tabs and new-tab cell; the Show pull-down, the zoom pair and the compass at
+their distances from the map's corners; the weather's plate, its capsule and their colours;
+and the card: 320 by 600 pt, 157 pt from the window's left edge, its head and separator, its
+two head buttons, the two full-width buttons, the mosaic's three cells, the separators of
+its sections, and every line of text within a point of where the captures have it.
+
+### Known differences
+
+- **Text.** Set in the fallback font off Apple devices: most of the two whole-window scores.
+- **The card's arrow.** Maps' card is a MapKit callout whose arrow is 22 pt wide and 11 pt
+  deep; the library's popover has the arrow of an `NSPopover`, 29 by 13 pt. The card's body
+  is where the captures have it, so the demo's arrow reaches 2 pt further.
+- **The bars' colours.** The library's title bar and toolbar bezels are those measured in
+  Finder and Preview; Maps' Dark Aqua toolbar is a few levels lighter, which is the
+  mean difference of `toolbar-dark`. The side edges of the Aqua bezels and the cross of the
+  search field's clear button differ by a hairline.
+- **The Show pull-down's chevron** stands about a point further left than in the captures.
+- **The last row of the card** is greyer in the captures than its other headings, as if it
+  were fading out at the card's edge; here it has the colour of the others.
+- **The tab bar's layout.** Maps divides the whole bar among its tabs and takes the new-tab
+  cell from the last one; the library divides what the cell leaves. The demo gives every tab
+  but the last 25 pt more to start from, which reproduces the capture.
+- **Not in a screenshot (provisional):** the first tab's title, which the card hides; every
+  place but Apple Park and the cards of those places; the transit and satellite views,
+  traffic, the 3D map, the scale, the route and the current location; the Show and Share
+  menus; a search that finds nothing; the weather in Dark Aqua; the zoom levels; the minimum
+  size; and the window when it is not key.

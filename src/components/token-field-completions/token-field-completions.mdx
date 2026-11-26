@@ -1,0 +1,135 @@
+---
+title: Token Field Completions
+description: A token field that suggests completions in a list while the user types, as Mail's address fields do.
+order: 34
+---
+
+<Example name="basic" both />
+
+In AppKit completions are part of `NSTokenField`: its delegate supplies them and
+`completionDelay` sets when they appear. Here they are a component of their own around
+[`TokenField`](/components/token-field), so that a field without completions does not carry
+them. Base UI has no token field, so the list is written here, on the WAI-ARIA combo box
+pattern: the text box keeps the keyboard and names the active completion.
+
+No reference screenshot shows a token field's completions. The list is built from the
+documented behaviour and drawn as the library's menu surface.
+
+## Usage
+
+```tsx
+import { TokenFieldCompletions } from "macalicious/token-field-completions";
+import "macalicious/token-field.css";
+import "macalicious/token-field-completions.css";
+
+<TokenFieldCompletions aria-label="To" completions={addresses} />
+<TokenFieldCompletions
+  aria-label="To"
+  completions={(text, tokens) => search(text, tokens)}
+  completionDelay={250}
+  value={recipients}
+  onValueChange={setRecipients}
+/>
+```
+
+Or copy the source into your project: `npx macalicious add token-field-completions`, which
+brings the token field with it.
+
+`completions` is either a list or a function. A list is searched for the entries that contain
+the typed text, ignoring case; entries that are tokens already are left out. A function gets
+the typed text and the tokens and returns the completions to show, in order; it runs while the
+component renders, so it must be quick and must not fetch. For completions from a server,
+keep them in state, fill that state from `onChange`, and pass the state as the list.
+
+The list appears under the text being typed once the text matches something, after
+`completionDelay` milliseconds without a keystroke (0 by default, as in AppKit, which counts
+the delay in seconds). Taking a completion replaces the typed text with one token; the
+completion becomes a token whole, even when it holds a tokenizing character.
+
+Every other prop is the token field's and does what it does there: `value`, `defaultValue`,
+`onValueChange`, `tokenStyle`, `bordered`, `tokenizingCharacters`, `tokenMenu`, `name`,
+`disabled`, `readOnly`, `inputRef` and the `<input>`'s own. `className`, `style` and `ref` go
+to the root, which takes the field's place in the layout (240 pt wide unless `style` says
+otherwise) and wraps the field and the list.
+
+<Example name="delay" />
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for token fields:
+
+- Suggest completions where people pick from things the app knows, such as addresses or tags;
+  Mail's address fields do.
+- Adjust the delay before suggestions appear when an immediate list would get in the way of
+  typing.
+
+<Example name="mail" />
+
+## Variants and states
+
+| State | How it is triggered | Look | Status |
+| --- | --- | --- | --- |
+| Closed | no text, or no completion matches | the token field alone | as the token field |
+| List | typing text that completions match | menu surface under the text box: 5 pt corners, 19 pt rows, 4 pt above and below | provisional: no reference |
+| Active completion | first row at first; arrow keys or the pointer move it | emphasised selection colour, white text | provisional: colours measured on menus |
+| Waiting | `completionDelay` is running | no list | documented behaviour |
+| Disabled, read-only | `disabled`, `readOnly` | no list | inferred |
+
+The list is as wide as its longest completion, at least 120 pt, and scrolls beyond ten rows.
+It is placed inside the root, not in a portal: an ancestor that clips its overflow clips the
+list too. It follows the text box when the field is resized and its tokens wrap.
+
+Not built: AppKit also completes the typed text in place, with the added part selected. Here
+the typed text stays as typed and the active completion is shown in the list only.
+
+## Sizes
+
+One size, the token field's: 13 pt text and 19 pt tokens. The list is set in the menu font,
+14 pt in 19 pt rows.
+
+## API
+
+<PropsTable name="TokenFieldCompletionsProps" />
+
+The props of [`TokenField`](/components/token-field) are listed on its page.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `aria-selected` | completion | `true`, `false` | The active completion. |
+| `data-index` | completion | a number | The completion's position in the list. |
+
+Classes: `.mac-token-field-completions`, `.mac-token-field-completions-field` (on the token
+field's root), `.mac-token-field-completions-list`, `.mac-token-field-completions-option`.
+
+## Accessibility
+
+- The text box has `role="combobox"` with `aria-autocomplete="list"`; name it with a label or
+  `aria-label`. While the list is shown, `aria-expanded` is true, `aria-controls` names the
+  list and `aria-activedescendant` the active completion. The list is a list box named by
+  `completionsLabel`. The keyboard never leaves the text box.
+- Down and Up Arrow move through the completions and go round at the ends. Return takes the
+  active completion; it does not submit the form. Escape dismisses the list and leaves the
+  typed text; with no list shown, Escape is left to whatever is around the field, such as a
+  dialog.
+- The first completion is active as soon as the list appears, so Return takes it. To make a
+  token of the typed text itself, press Escape first, or type a tokenizing character.
+- Leaving the field closes the list and makes a token of the typed text, as the token field
+  does; Tab does not take a completion.
+- A click takes a completion and keeps the keyboard in the text box; the completion under a
+  moving pointer becomes the active one.
+- Text an input method is still composing is not completed, keys pressed during the
+  composition are the input method's, and a list that was showing closes when a composition
+  starts.
+- A key that your own `onKeyDown` prevents is left alone.
+- Tokens are reached and removed as in the token field. Resetting the form restores
+  `defaultValue` and closes the list, since the reset empties the text box.
+- In forced-colours mode the list has a border and the active completion uses `Highlight`.
+
+## Visual comparison
+
+No reference screenshot shows this list, so there is no comparison against a crop.
+`npm run visual -- token-field-completions/` types into the field in a real browser and
+checks pixels of the list in both appearances: that it hangs under the text box, its surface,
+the active row's colour, and that the arrow keys move it. The colours come from the shared
+menu and selection tokens, which are measured on menus; their use here, the list's metrics
+and its position are provisional.

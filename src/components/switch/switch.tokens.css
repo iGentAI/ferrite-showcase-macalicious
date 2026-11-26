@@ -1,0 +1,51 @@
+/*
+ * Switch colours. The only switch in the reference set is the Do Not Disturb switch of
+ * Notification Center (Light- and Dark-Notification-Center-Today @ 3242,187, off), drawn on a
+ * vibrant panel, so every measured value is a translucent black or white recovered from its
+ * composite over the panel beside it. switch.mdx tabulates the pixels.
+ */
+:root {
+  /* [measured, computed] Off track. Light: #cfe0e9 under the top edge to #d8e9f5 above the
+     bottom edge, on a panel of #e3f3fd to #e2f4ff. Dark: flat #38404a on #2b323c. */
+  --mac-switch-track-top: light-dark(rgb(0 0 0 / 0.086), rgb(255 255 255 / 0.07));
+  --mac-switch-track-bottom: light-dark(rgb(0 0 0 / 0.041), rgb(255 255 255 / 0.07));
+  /* [measured, computed] Rim inside the track's edge, two device pixels wide. Light: an inner
+     shadow, strongest on the top row (#c7d8e0, then #cadbe6 at the ends). Dark: a lighter
+     rim, #595f68 then #454b56 on every side. The alphas stack: outer pixel = both rings
+     (and, in light, the top row as well). */
+  --mac-switch-track-rim:
+    inset 0 0 0 0.5px light-dark(rgb(0 0 0 / 0.027), rgb(255 255 255 / 0.108)),
+    inset 0 0 0 1px light-dark(rgb(0 0 0 / 0.013), rgb(255 255 255 / 0.059)),
+    inset 0 0.5px 0 0 light-dark(rgb(0 0 0 / 0.047), transparent);
+  /* [measured] Knob: #ffffff; #cfd0d2 in dark */
+  --mac-switch-thumb-fill: light-dark(#ffffff, #cfd0d2);
+  /* [measured, computed] Knob hairline, outside the 19 pt fill: #b3bbc0 at the top and sides,
+     #a0aab1 at the bottom, over the track; dark #44494f, #42464d, #383d45 */
+  --mac-switch-thumb-outline-top: light-dark(rgb(0 0 0 / 0.15), rgb(0 0 0 / 0.076));
+  --mac-switch-thumb-outline-side: light-dark(rgb(0 0 0 / 0.17), rgb(0 0 0 / 0.11));
+  --mac-switch-thumb-outline-bottom: light-dark(rgb(0 0 0 / 0.26), rgb(0 0 0 / 0.18));
+  /* [measured, computed] Dark: first row of the knob, #d4d5d6 over #cfd0d2. The alpha is
+     higher than that composite gives, because the browser's edge antialiasing darkens the
+     first row of the disc. */
+  --mac-switch-thumb-highlight: inset 0 0.5px 0 0 light-dark(transparent, rgb(255 255 255 / 0.2));
+  /* [measured, computed] Shadow beyond the hairline: about 3% all round, 11% on the first
+     row below (#bcc8cf under the knob) and 3.5% on the second (#dcebf3) */
+  --mac-switch-thumb-shadow:
+    0 0 0 0.5px rgb(0 0 0 / 0.025), 0 0.5px 0 0 rgb(0 0 0 / 0.06), 0 1px 0 0 rgb(0 0 0 / 0.035);
+  /* [provisional] Knob while pressed: no pressed switch is captured; the step is the one the
+     spec infers for a pressed slider knob */
+  --mac-switch-thumb-fill-pressed: light-dark(#f0f0f0, #e0e0e0);
+  /* [provisional] On, in a window that is not key: a neutral track, darker than off, so that
+     on still reads without the accent. No screenshot shows it. */
+  --mac-switch-track-on-not-key: light-dark(rgb(0 0 0 / 0.25), rgb(255 255 255 / 0.25));
+}
+
+:root,
+[data-accent] {
+  /* [provisional] On: no screenshot shows a switch that is on. The fill is the measured
+     checkbox "on" fill (shared tokens); the rim is the checkbox's too: the accent hairline in
+     light, the top highlight in dark. */
+  --mac-switch-on-rim:
+    inset 0 0 0 0.5px var(--mac-accent-control-edge),
+    inset 0 0.5px 0 0 var(--mac-accent-bezel-highlight);
+}

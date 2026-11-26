@@ -1,0 +1,128 @@
+/*
+ * Gradient button (NSButton, small-square bezel) and the bar it forms under a list.
+ *
+ * A 21 pt high, square-cornered cell: 1 pt border, 19 pt near-flat fill, centred glyph, no
+ * shadow. In a group the cells overlap by their borders, so two cells are separated by one
+ * 1 pt line, and a filler cell continues the bar to the edge of the list.
+ *
+ * States
+ *   :active                            pressed: darker flat fill (lighter in Dark Aqua)
+ *   [data-pressed], [aria-pressed="true"]   on, when rendered by a Toggle: as pressed
+ *   [data-popup-open]                  its menu is open (Menu.Trigger): as pressed
+ *   :focus-visible                     keyboard focus ring, only in the key window
+ *   [data-disabled]                    set by Base UI for `disabled`: the glyph dims
+ *   [data-force~="pressed" | "focus"]  static previews of transient states (docs, visual tests)
+ *   [data-variant="network"]           on the group: the bar as the Network pane draws it
+ *
+ * It looks the same in a window that is not key, apart from the focus ring.
+ */
+.mac-gradient-button,
+.mac-gradient-button-filler {
+  position: relative;
+  box-sizing: border-box;
+  height: 21px;
+  border: 1px solid var(--mac-bezel-square-border);
+  border-radius: 0;
+  background: var(--mac-bezel-square-fill);
+}
+
+.mac-gradient-button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 25px;
+  margin: 0;
+  padding: 0 4px;
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-regular);
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-gradient-button-glyph {
+  display: block;
+  flex: none;
+}
+
+/* The action cell of the Network pane has 28 pt of fill for 22 pt of ink, 2 pt before it and
+   4 pt after (ink x 258 to 301 in the fill x 254 to 309, at 2x). */
+.mac-gradient-button-glyph-action {
+  margin-inline-start: -2px;
+}
+
+/* The bar */
+.mac-gradient-button-group {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.mac-gradient-button-filler {
+  display: block;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.mac-gradient-button-group
+  > :where(.mac-gradient-button, .mac-gradient-button-filler):where(:not(:first-child)) {
+  margin-inline-start: -1px;
+  border-inline-start-color: var(--mac-bezel-square-separator);
+}
+
+/* The Network pane's bar (measured in that pane alone): its own fill, a top line that runs the
+   width of the bar, darker bottom and outer side borders, lighter lines between the cells. */
+.mac-gradient-button-group:where([data-variant="network"])
+> :where(.mac-gradient-button, .mac-gradient-button-filler) {
+  border-color: var(--mac-gradient-button-network-border);
+  border-block-start-color: var(--mac-gradient-button-network-border-top);
+  background: var(--mac-gradient-button-network-fill);
+}
+
+.mac-gradient-button-group:where([data-variant="network"])
+  > :where(.mac-gradient-button, .mac-gradient-button-filler):where(:not(:first-child)) {
+  border-inline-start-color: var(--mac-gradient-button-network-separator);
+}
+
+/* Pressed, on, or showing its menu */
+.mac-gradient-button:where(
+  :active,
+  [data-force~="pressed"],
+  [data-pressed],
+  [aria-pressed="true"],
+  [data-popup-open]
+):where(:not([data-disabled])) {
+  background: var(--mac-bezel-square-fill-pressed);
+}
+
+/* Disabled: the fill stays, the glyph dims */
+.mac-gradient-button:where([data-disabled]) {
+  color: var(--mac-color-control-text-disabled);
+}
+
+/* Keyboard focus ring; only in the key window, as in AppKit. It covers the cell's border and
+   is lifted above the neighbouring cells. */
+.mac-gradient-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  z-index: 1;
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(var(--mac-focus-ring-offset) - 0.5px);
+}
+
+@media (forced-colors: active) {
+  .mac-gradient-button,
+  .mac-gradient-button-filler {
+    border-color: ButtonText;
+  }
+
+  .mac-gradient-button:where([data-disabled]) {
+    color: GrayText;
+  }
+}

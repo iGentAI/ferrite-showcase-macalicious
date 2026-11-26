@@ -1,0 +1,203 @@
+---
+title: Dock Stack
+description: A folder kept in the Dock whose contents spring out of its tile as a fan of thumbnails with labels, or open as a grid or a list.
+---
+
+<Example name="basic" both />
+
+A stack is a folder's tile in the [Dock](/components/dock). Activating it springs the
+folder's contents out above the tile; while they are out, the tile shows a rounded square
+with a down triangle in place of its icon. `DockStack` is the tile and its popup, a
+`DockStackItem` is one file or folder, and `DockStackMore` is the element that opens the
+folder itself ("7 More in Finder").
+
+## Usage
+
+```tsx
+import { Dock, DockItem, DockSeparator } from "macalicious/dock";
+import { DockStack, DockStackItem, DockStackMore } from "macalicious/dock-stack";
+import "macalicious/styles.css";
+
+<Dock>
+  <DockItem label="Files" icon={<FilesIcon />} running />
+  <DockSeparator />
+  <DockStack label="Downloads" icon={<NewestThumbnail />}>
+    <DockStackMore onClick={openFolder}>3 More in Finder</DockStackMore>
+    <DockStackItem icon={<Thumbnail file={dunes} />} onClick={() => open(dunes)}>
+      Dunes.jpg
+    </DockStackItem>
+    <DockStackItem icon={<Thumbnail file={harbour} />} onClick={() => open(harbour)}>
+      Harbour.jpg
+    </DockStackItem>
+  </DockStack>
+</Dock>
+```
+
+Or copy the source into your project: `npx macalicious add dock-stack`.
+
+- `DockStack` takes the props of a `DockItem` (`label`, `icon`, `running`, `disabled`); they
+  and the `ref` go to the tile. Catalina shows the newest file's thumbnail as the tile's
+  icon, or the folder's icon: pass the one you want.
+- The children are the contents **in the order they are shown, from the top**. In a fan the
+  last child sits nearest the Dock, and the `DockStackMore` is the first child, because it
+  is the fan's far end. In a grid or a list the `DockStackMore` is the last child.
+- An item's children are its name, the text of its label. `icon` is its thumbnail, centred
+  in a box of 60 points in a fan, 64 in a grid and 16 in a list; a photograph gets its white
+  border and shadow from you. `onClick` opens the item, and the stack closes.
+- A fan holds about ten items in Catalina; show the newest ten and let the
+  `DockStackMore` name the rest. The measured curve ends at the eleventh place, and items
+  beyond it continue straight up.
+- `open` with `onOpenChange` controls the stack; `defaultOpen` starts it open.
+- The popup is rendered in a portal, only while the stack is open.
+
+## Guidelines
+
+What the Human Interface Guidelines for macOS and the Dock's own options say about stacks,
+as the measured specification records it (`reference/spec/components/dock-stack.md`); the
+Apple page itself was not consulted for this text:
+
+- A stack is a folder kept in the Dock, after the separator; Downloads is there by default.
+- Its contents are shown as a fan, a grid or a list. "Automatic" shows a fan for a few
+  items and a grid for many.
+- The last element of a fan opens the folder in the Finder and says how many more items it
+  holds.
+- A fan rises from a Dock at the bottom of the screen only. With the Dock on a side, use a
+  grid or a list.
+
+## Variants and states
+
+<Example name="views" />
+
+| Prop or state | Values | Source |
+| --- | --- | --- |
+| `view` | `fan` (default) | Measured on the Stacks screenshots: the pitch, the curve, the rotation, the labels, the round button |
+| `view` | `grid`, `list` | Provisional: no screenshot shows them. A panel in the popover material with four columns of icons over their names, and a menu of names with small icons, each closed by the `DockStackMore` as a plain row |
+| open | `open`, `defaultOpen`; `[data-popup-open]` on the tile | Measured: the tile shows a rounded square outline with a down triangle, an original drawing of Catalina's placeholder |
+| item under the pointer or the keyboard | `[data-highlighted]` | Provisional: the label takes the selection colour, and in a list the whole row |
+| disabled item | `disabled` on a `DockStackItem` | Provisional: half opacity |
+
+Not implemented: the "Automatic" view (choose `fan` or `grid` from the number of items
+yourself), the pointer of the grid's panel towards its tile, and a fan from a Dock on the
+left or right, which macOS does not offer either. The spec infers the Dock's own material
+for the grid; the popover material is used instead, so that names stay readable over any
+desktop.
+
+The fan springs out of the tile and its parts fade in; a grid or a list fades in. Only
+`transform` and `opacity` are animated, and with reduced motion nothing moves: the popup
+appears with the fade alone.
+
+## Sizes
+
+A stack has no `size` prop. The tile follows the Dock's `--mac-dock-tile-size`, and the
+placeholder of the open tile scales with it (52 points in a 64 point tile). The popup's
+measures are fixed, as in Catalina, whatever the tile size:
+
+| Part | Size |
+| --- | --- |
+| Fan | Items 64 pt apart; a 60 pt box for each thumbnail, the lowest 15 pt above the shelf; each item 1.25 degrees further round than the one below it, from 1.6 degrees, and further right by 2, 4, 5, 7, 8, 9, 11, 13, 13 and 15 pt |
+| Fan label | 26 pt tall, 14 pt beside its text, 4 pt corners, ending 7 pt before the thumbnail's box; 13 pt text |
+| Round button | 56 pt across, with a 22 pt arrow |
+| Grid | Four columns of 96 pt, 64 pt icons, 13 pt names |
+| List | 19 pt rows, 16 pt icons, 14 pt names |
+
+## API
+
+### DockStack
+
+<PropsTable name="DockStackProps" />
+
+### DockStackItem
+
+<PropsTable name="DockStackItemProps" />
+
+### DockStackMore
+
+<PropsTable name="DockStackMoreProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-popup-open` | tile | present | The stack is open. Set by Base UI. |
+| `data-view` | popup | `fan`, `grid`, `list` | Reflects `view`. |
+| `data-highlighted` | item | present | Under the pointer or the keyboard. Set by Base UI. |
+| `data-disabled` | item | present | Set by Base UI for `disabled`. |
+| `data-more` | item | present | The `DockStackMore`. |
+| `data-starting-style`, `data-ending-style` | popup | present | While the popup opens and closes. Set by Base UI. |
+
+The component has no CSS variables of its own. Classes: `.mac-dock-stack` (the tile, beside
+`.mac-dock-item`), `.mac-dock-stack-icon`, `.mac-dock-stack-placeholder`,
+`.mac-dock-stack-positioner`, `.mac-dock-stack-popup`, `.mac-dock-stack-item`,
+`.mac-dock-stack-item-label`, `.mac-dock-stack-item-icon` and `.mac-dock-stack-more` (the
+round button).
+
+## Accessibility
+
+- Built on Base UI's Menu. The tile is a `button` with `aria-haspopup="menu"` and
+  `aria-expanded`; the popup is a `menu` and every item a `menuitem` named by its text. The
+  thumbnails and the arrow are hidden from assistive technology.
+- With focus on the tile, Up Arrow opens the stack on the item nearest the Dock, as on a
+  Mac; Return, Space and Down Arrow open it on the first item.
+- In the open stack Up and Down Arrow move between the items in the order they are shown,
+  Home and End go to the first and the last, typing the first letters of a name goes to it,
+  Return opens the item and closes the stack, and Escape or Tab closes it and gives the
+  focus back to the tile.
+- The stack is not modal: a press anywhere else closes it, and the rest of the page stays
+  available.
+- In a Dock on the left or right, Up and Down Arrow move between the Dock's tiles, a
+  stack's included; Return or Space opens the stack there.
+- A grid is the same menu laid out in rows: Up and Down Arrow go through it in reading
+  order, and Left and Right Arrow do nothing.
+- In forced colours the labels, the round button, the placeholder and the panels keep an
+  outline; with `prefers-reduced-transparency` the labels are opaque.
+
+## Visual comparison
+
+`dock-stack.visual.json` compares three crops of the Stacks screenshots in both
+appearances: the far end of the fan over the sky (the label of the last element, turned 14
+degrees, and the round button), the label of the item nearest the Dock over the sea (turned
+1.6 degrees: the same material over a dark backdrop), and the open tile in the Dock with
+the nearest thumbnail's border above it.
+
+Masked, and why: the round button's arrow, which is Apple's glyph in the reference and an
+original drawing here; the thumbnails' pictures, which are photographs (their white border
+is compared, and holds the fan's lowest place); the corner of the first crop where the next
+item and the coast show; and, in Aqua, the sea around the label and the thumbnail, a
+photograph of waves that the examples replace with its mean colour (in Dark Aqua it is flat
+enough to compare). Each crop with text is also compared with the text masked, at threshold
+0.05, to score the drawing alone; in the examples the text is given the width it has in San
+Francisco, so that the labels are as wide as in the screenshots in the fallback font too.
+
+Scores from `npm run visual -- dock-stack/` in Chromium on Linux with the fallback font: the
+share of pixels that differ by more than the comparison's threshold, and the mean colour
+difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `more-light` | Light-Stacks (2712, 460, 408, 180) | 3.82% | 5.53 | 3.00% | 5.20 |
+| `more-light-drawing` (text masked) | Light-Stacks (2712, 460, 408, 180) | 3.07% | 2.72 | 1.97% | 2.58 |
+| `more-dark` | Dark-Stacks (2712, 460, 408, 180) | 6.12% | 6.32 | 3.25% | 4.74 |
+| `more-dark-drawing` (text masked) | Dark-Stacks (2712, 460, 408, 180) | 6.33% | 3.45 | 1.27% | 1.99 |
+| `label-light` | Light-Stacks (2490, 1810, 312, 70) | 18.17% | 11.97 | 10.27% | 7.62 |
+| `label-light-drawing` (text masked) | Light-Stacks (2490, 1810, 312, 70) | 17.92% | 8.93 | 8.56% | 3.82 |
+| `label-dark` | Dark-Stacks (2490, 1810, 312, 70) | 17.36% | 15.39 | 9.53% | 9.77 |
+| `label-dark-drawing` (text masked) | Dark-Stacks (2490, 1810, 312, 70) | 17.30% | 6.49 | 2.11% | 2.50 |
+| `tile-light` | Light-Stacks (2772, 1784, 172, 316) | 5.73% | 4.36 | 4.65% | 3.58 |
+| `tile-dark` | Dark-Stacks (2772, 1784, 172, 316) | 3.94% | 3.83 | 2.64% | 3.09 |
+
+The two `label` comparisons with text are above the tight tier at 2x, where the text is
+most of what is left of a small crop; their `-drawing` twins are within it. The label
+crops score high at 1x because a turned edge and a 1 pt line do not survive the averaging
+of the reference to half its size. In `label-light-drawing` what remains is the sliver of
+sea between the masks' steps and the label's sloping edge.
+
+What no screenshot shows is checked on a flat grey desktop, with real input and colours
+computed from the tokens: nothing above the Dock while the stack is closed, the label's
+material and the down triangle after a press on the tile, the selection colour on the item
+under the pointer, and the panel, the menu and their highlighted item in the grid and the
+list.
+
+Measured: the fan's pitch, curve and rotation, the labels' size, material, inner line and
+outline, the round button and its soft edge in Aqua, the open tile's outline and triangle,
+the gap to the Dock. Provisional: the grid and the list, the highlighted and disabled
+items, the blur radius behind a label, the spring of the opening, the thumbnails' shadow
+(yours to draw), and the padding beside a label's text, which is fitted to the ink of the
+screenshots' text (14 pt; the spec gives 16 pt to the first glyph's stem).

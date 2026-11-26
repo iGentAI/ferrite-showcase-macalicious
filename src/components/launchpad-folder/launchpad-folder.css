@@ -1,0 +1,148 @@
+/*
+ * Launchpad folder: a closed tile in the Launchpad grid, and the panel it opens into.
+ *
+ * Parts
+ *   .mac-launchpad-folder          the closed folder: a Launchpad item (button) in the grid
+ *   .mac-launchpad-folder-tile     its tile, 108 pt in the 112 pt icon box
+ *   .mac-launchpad-folder-mini     one of up to nine small icons, on a 30 pt pitch
+ *   .mac-launchpad-folder-popup    the open folder (Base UI Dialog.Popup): covers the desktop
+ *   .mac-launchpad-folder-dismiss  the area around the panel, a button that closes the folder
+ *   .mac-launchpad-folder-title    the folder's name above the panel
+ *   .mac-launchpad-folder-panel    the panel: 1406 pt wide for seven columns
+ *
+ * States
+ *   [data-popup-open]              on the closed folder while it is open: the tile is hidden
+ *   [data-starting-style], [data-ending-style]   the popup fading in and out (Base UI)
+ *
+ * Hooks
+ *   --mac-launchpad-folder-layer   z-index of the open folder (951: above Launchpad)
+ */
+.mac-launchpad-folder-tile {
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  align-self: start;
+  box-sizing: border-box;
+  width: calc(100% * 108 / 112);
+  height: calc(100% * 108 / 112);
+  margin-top: 0.5px;
+  padding: 8%;
+  /* The spec reads 18 pt off the straight edges; a circular 13 pt corner fits the pixels. */
+  border-radius: 12%;
+  background: var(--mac-launchpad-folder-fill);
+  transition: opacity 0.2s;
+}
+
+.mac-launchpad-folder:where([data-popup-open]) .mac-launchpad-folder-tile {
+  opacity: 0;
+}
+
+.mac-launchpad-folder-mini {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* An icon fills its box; on the tile it is 24 pt in a 30 pt slot. */
+.mac-launchpad-folder-mini > * {
+  max-width: 80%;
+  max-height: 80%;
+}
+
+.mac-launchpad-folder-popup {
+  position: absolute;
+  z-index: var(--mac-launchpad-folder-layer, 951);
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  /* Title and panel sit 32 pt above the middle: the panel's top is at 231 pt of 1050. */
+  padding-bottom: 64px;
+  outline: none;
+  background: var(--mac-launchpad-folder-scrim);
+  backdrop-filter: blur(40px);
+  color: var(--mac-launchpad-folder-text);
+  font: var(--mac-font-weight-medium) 13px / 16px var(--mac-font-family-system);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: opacity 0.3s;
+}
+
+.mac-launchpad-folder-popup:where([data-starting-style], [data-ending-style]) {
+  opacity: 0;
+}
+
+.mac-launchpad-folder-dismiss {
+  position: absolute;
+  inset: 0;
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  cursor: default;
+}
+
+/* About 28 pt, light; its baseline is 22 pt above the panel. */
+.mac-launchpad-folder-title {
+  position: relative;
+  flex: none;
+  margin: 0 0 15px;
+  font: 300 28px / 34px var(--mac-font-family-system);
+  pointer-events: none;
+}
+
+/* Seven 195 pt columns and 166 pt rows, as in Launchpad; the first row of icons starts
+   51.5 pt below the panel's top. Three rows make the panel 573 pt high. */
+.mac-launchpad-folder-panel {
+  position: relative;
+  display: grid;
+  flex: none;
+  grid-template-columns: repeat(var(--_columns), minmax(0, 195px));
+  grid-auto-rows: 166px;
+  box-sizing: border-box;
+  max-width: calc(100% - 40px);
+  padding: 51.5px 21.5px 23.5px 19.5px;
+  /* The spec reads about 30 pt off the straight edges; the corner is a continuous curve, and
+     a circular 37 pt corner fits its pixels best (34, 38 and 42 were compared). */
+  border-radius: 37px;
+  background: var(--mac-launchpad-folder-fill);
+  transition: transform 0.3s;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mac-launchpad-folder-popup:where([data-starting-style], [data-ending-style])
+    > .mac-launchpad-folder-panel {
+    transform: scale(0.8);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .mac-launchpad-folder-popup {
+    background: var(--mac-launchpad-folder-scrim-opaque);
+    backdrop-filter: none;
+  }
+
+  .mac-launchpad-folder-tile,
+  .mac-launchpad-folder-panel {
+    background: var(--mac-launchpad-folder-fill-opaque);
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-launchpad-folder-popup {
+    background: Canvas;
+    backdrop-filter: none;
+    color: CanvasText;
+  }
+
+  .mac-launchpad-folder-tile,
+  .mac-launchpad-folder-panel {
+    border: 1px solid CanvasText;
+    background: Canvas;
+  }
+}

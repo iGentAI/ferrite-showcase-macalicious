@@ -1,0 +1,31 @@
+/*
+ * Status bar colours. light-dark(<Aqua>, <Dark Aqua>); tags as in CONTRIBUTING, "Token tags".
+ * Each variant is read from the bottom strip of one application, 10-15-Catalina-<Light|Dark>-
+ * <App>.png. "Outer" and "inner" are the two device-pixel rows at the top of the strip.
+ */
+:root {
+  /* Finder's informational bar [provisional]: not in any screenshot. Modelled on the empty
+     path bar of Finder-Search (fill, rows) and the scope bar's label colour (text). */
+  --mac-status-bar-fill: light-dark(#f0f0f0, #2b2c2f);
+  --mac-status-bar-separator-outer: light-dark(#cecece, #4d4e51);
+  --mac-status-bar-separator-inner: light-dark(#e1e1e1, #3a3b3e);
+  --mac-status-bar-text: light-dark(#717171, #a7a8ab);
+
+  /* Automator [measured] @ 1200,1770 to 1200,1811: rows #e4e4e4 to #cdcdcd (light), #3e4041
+     to #333536 (dark). The stops are the CSS values that reproduce those rows; a gradient is
+     sampled at pixel centres, half a step inside its ends. The dark strip is lighter over the
+     library pane (#454648 at x=400); the value is the one over the workflow pane. */
+  --mac-status-bar-gradient-top: light-dark(#e5e5e5, #3f4142);
+  --mac-status-bar-gradient-bottom: light-dark(#cdcdcd, #333536);
+  --mac-status-bar-gradient-separator-outer: light-dark(#cfcfcf, #626465);
+  --mac-status-bar-gradient-separator-inner: light-dark(#cecece, #636364);
+
+  /* Script Editor [measured] @ 800,1440 (one device-pixel row) and @ 800,1441 */
+  --mac-status-bar-flat-fill: light-dark(#ececec, #323232);
+  --mac-status-bar-flat-separator: light-dark(#b2b2b2, #646465);
+
+  /* System Information [measured] @ 800,1074, @ 800,1090; label stems in row 1096 */
+  --mac-status-bar-breadcrumb-fill: light-dark(#ececec, #303132);
+  --mac-status-bar-breadcrumb-separator: light-dark(#d5d5d5, #444546);
+  --mac-status-bar-breadcrumb-text: light-dark(#767676, #a2a2a3);
+}

@@ -1,0 +1,228 @@
+/*
+ * Keychain Access demo: the layout of the panes, the rows of the two lists, the Name cell
+ * and the summary of the selected item. The window, the toolbar controls, the split views,
+ * the three tables with their headers, the image views and the summary's text styles are the
+ * library's own; nothing here restyles them.
+ *
+ * Parts
+ *   .mac-keychain-access-body            the window's body: the split view fills it
+ *   .mac-keychain-access-split           the left column beside the items, and their divider
+ *   .mac-keychain-access-sources         the left column: keychains over categories
+ *   .mac-keychain-access-keychains       the upper list; its title tucks 1 pt under the toolbar
+ *   .mac-keychain-access-keychains-frame the region of a keychain's contextual menu, around that list
+ *   .mac-keychain-access-categories      the lower list
+ *   .mac-keychain-access-source          a row of either list: 16 pt icon, then the name
+ *   .mac-keychain-access-main            the right pane: the summary over the item table
+ *   .mac-keychain-access-summary         the 105 pt summary
+ *   .mac-keychain-access-items           the item table takes the height the summary leaves
+ *   .mac-keychain-access-items-frame     the region of a row's contextual menu, around the table
+ *   .mac-keychain-access-status          the status bar under the table, on the served desktop
+ *   .mac-keychain-access-name            Name cell: 16 pt icon, then the name
+ *   .mac-keychain-access-form            the labelled fields of the desktop's keychain dialogs
+ *   .mac-keychain-access-detail          one line of an item's details in the Info dialog
+ *   .mac-keychain-access-quality         a password's quality meter, and the assistant's buttons
+ *   .mac-keychain-access-lock-after      Change Settings' line with the minutes in it
+ *   .mac-keychain-access-preferences     the Preferences window's single column
+ *
+ * States
+ *   [data-default]    on a keychain's name: the default keychain, set in bold
+ */
+.mac-keychain-access-body {
+  display: flex;
+  overflow: hidden;
+}
+
+.mac-keychain-access-split {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.mac-keychain-access-sources {
+  height: 100%;
+}
+
+/* The Keychains title is 22 pt over its line where a header is 23 pt: its first point is
+   under the toolbar's edge (measured). */
+.mac-keychain-access-keychains {
+  height: calc(100% + 1px);
+  margin-block-start: -1px;
+}
+
+.mac-keychain-access-categories,
+.mac-keychain-access-keychains-frame {
+  height: 100%;
+}
+
+/* The icon's box starts 18 pt from the window's edge and is 1 pt under the row's top edge;
+   the name starts 40.5 pt from the window's edge (measured). The cell's own padding is the
+   first 3 pt. */
+.mac-keychain-access-keychains-drop {
+  display: contents;
+}
+
+.mac-keychain-access-source {
+  display: flex;
+  gap: 6.5px;
+  align-items: flex-start;
+  padding-block-start: 1px;
+  padding-inline-start: 15px;
+}
+
+/* The 12 pt text's baseline is 14 pt under the row's top edge (measured), which an 18 pt line
+   under the 1 pt above gives. */
+.mac-keychain-access-source-name {
+  min-width: 0;
+  overflow: hidden;
+  line-height: 18px;
+  text-overflow: ellipsis;
+}
+
+.mac-keychain-access-source-name:where([data-default]) {
+  font-weight: var(--mac-font-weight-bold);
+}
+
+.mac-keychain-access-main {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 105 pt; the line under it is the top border of the table's header. The 64 pt icon is
+   12 pt from the pane's edge and 9 pt under its top; the text starts 90 pt from the edge and
+   8 pt under the top (measured). */
+.mac-keychain-access-summary {
+  display: flex;
+  flex: none;
+  gap: 14px;
+  align-items: flex-start;
+  box-sizing: border-box;
+  height: 105px;
+  padding-inline: 12px;
+  background: var(--mac-color-control-background-tinted);
+}
+
+.mac-keychain-access-summary-icon {
+  display: flex;
+  flex: none;
+  margin-block-start: 9px;
+}
+
+.mac-keychain-access-summary-text {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  margin-block-start: 8px;
+}
+
+/* The lines are 16 pt apart, the first 17.75 pt under the name (measured between
+   baselines). */
+.mac-keychain-access-summary-lines {
+  display: block;
+  margin-block-start: 2.75px;
+}
+
+.mac-keychain-access-summary-line {
+  display: flex;
+  gap: 8px;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.mac-keychain-access-summary-label {
+  flex: none;
+  color: var(--mac-color-label-secondary);
+  font-weight: var(--mac-font-weight-bold);
+}
+
+.mac-keychain-access-summary-value {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mac-keychain-access-items,
+.mac-keychain-access-items-frame {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.mac-keychain-access-items-frame {
+  display: flex;
+  flex-direction: column;
+}
+
+.mac-keychain-access-status {
+  flex: none;
+  padding: 4px 12px;
+  border-block-start: 1px solid var(--mac-color-separator);
+  text-align: center;
+}
+
+/* The icon's box starts 19 pt from the table's edge and the name 41 pt from it (measured);
+   the cell's own padding is the first 3 pt. The icon is centred on the 17 pt highlight. */
+.mac-keychain-access-name {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  padding-inline-start: 16px;
+}
+
+.mac-keychain-access-name-icon {
+  display: flex;
+  flex: none;
+  margin-block-start: 0.5px;
+}
+
+/* The Preferences window: one column, with its notes wrapping inside the window. */
+.mac-keychain-access-preferences {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--mac-space-control-gap);
+}
+
+.mac-keychain-access-preferences p {
+  margin: 0;
+}
+
+/* The desktop's keychain dialogs: labels at the end of their column, fields beside them. */
+.mac-keychain-access-form {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--mac-keychain-access-form-gap);
+  align-items: center;
+  margin: var(--mac-keychain-access-form-margin) 0 0;
+}
+
+.mac-keychain-access-quality {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-keychain-access-form-gap);
+}
+
+.mac-keychain-access-lock-after {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-keychain-access-form-gap);
+}
+
+.mac-keychain-access-lock-after > input,
+.mac-keychain-access-lock-after > :has(> input) {
+  width: var(--mac-keychain-access-minutes-width);
+}
+
+.mac-keychain-access-detail {
+  display: contents;
+}
+
+.mac-keychain-access-detail > dt {
+  justify-self: end;
+}
+
+.mac-keychain-access-detail > dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}

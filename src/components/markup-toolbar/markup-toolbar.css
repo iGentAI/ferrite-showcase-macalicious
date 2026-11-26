@@ -1,0 +1,147 @@
+/*
+ * Markup toolbar (the Markup extension's tools, in Quick Look and Preview).
+ *
+ * A flex row with no background. A tool is a borderless button, 22 pt high, holding a glyph
+ * of about 16 pt and, for a tool that opens choices, a small chevron 4 pt after it. Tools are
+ * as wide as their glyph plus 8 pt on each side. A separator is a 1 pt line, 20 pt high.
+ *
+ * States
+ *   [data-selected]                      the active drawing tool: accent colour
+ *   :active, [data-force~="pressed"]     pressed: darker by a fifth [provisional]
+ *   [data-disabled]                      35% opacity [provisional]
+ *   :focus-visible, [data-force~="focus"] focus ring, only in a key window
+ *   :where([data-window-state="main"], [data-window-state="inactive"]) *
+ *                                        the selected tool loses its accent [provisional]
+ *
+ * Hooks
+ *   --mac-markup-toolbar-gap             space between tools (default 0)
+ */
+.mac-markup-toolbar {
+  display: flex;
+  gap: var(--mac-markup-toolbar-gap, 0px);
+  align-items: center;
+  box-sizing: border-box;
+  min-width: 0;
+  color: var(--mac-markup-toolbar-glyph);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-markup-toolbar-tool {
+  display: inline-flex;
+  flex: none;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 22px;
+  margin: 0;
+  padding: 0 8px;
+  border: 0;
+  border-radius: var(--mac-radius-control-regular);
+  outline: 0;
+  background: none;
+  color: inherit;
+  font: var(--mac-font-control-regular);
+  cursor: default;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.mac-markup-toolbar-tool:where([data-selected]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  color: var(--mac-markup-toolbar-selected);
+}
+
+.mac-markup-toolbar-tool:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  filter: brightness(0.8);
+}
+
+.mac-markup-toolbar-tool:where([data-disabled]) {
+  opacity: 0.35;
+}
+
+.mac-markup-toolbar-tool:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+/* The chevron keeps the glyph colour of an unselected tool. */
+.mac-markup-toolbar-tool-chevron {
+  flex: none;
+  color: var(--mac-markup-toolbar-glyph);
+}
+
+.mac-markup-toolbar-separator {
+  flex: none;
+  align-self: center;
+  width: 1px;
+  height: 20px;
+  margin-inline: 8px;
+  background: var(--mac-markup-toolbar-separator);
+}
+
+/* Colour swatch: 15 pt square with a 1 pt frame; its colour is the element's `color`. */
+.mac-markup-toolbar-swatch {
+  display: block;
+  flex: none;
+  box-sizing: border-box;
+  width: 15px;
+  height: 15px;
+  border: 1px solid var(--mac-markup-toolbar-swatch-frame);
+  background: currentColor;
+}
+
+.mac-markup-toolbar-swatch:where([data-variant="border"]) {
+  border: 4px solid currentColor;
+  outline: 1px solid var(--mac-markup-toolbar-swatch-frame);
+  outline-offset: -1px;
+  background: none;
+}
+
+.mac-markup-toolbar-swatch:where([data-none]) {
+  border: 1px solid var(--mac-markup-toolbar-swatch-frame);
+  outline: 0;
+  background:
+    linear-gradient(
+      to top right,
+      transparent calc(50% - 0.75px),
+      var(--mac-markup-toolbar-swatch-none-line) calc(50% - 0.75px),
+      var(--mac-markup-toolbar-swatch-none-line) calc(50% + 0.75px),
+      transparent calc(50% + 0.75px)
+    ),
+    var(--mac-markup-toolbar-swatch-none);
+}
+
+@media (forced-colors: active) {
+  .mac-markup-toolbar,
+  .mac-markup-toolbar-tool-chevron {
+    color: ButtonText;
+  }
+
+  .mac-markup-toolbar-tool:where([data-selected]) {
+    color: Highlight;
+  }
+
+  .mac-markup-toolbar-tool:where([data-disabled]) {
+    color: GrayText;
+    opacity: 1;
+  }
+
+  .mac-markup-toolbar-separator {
+    background: CanvasText;
+  }
+
+  .mac-markup-toolbar-swatch {
+    forced-color-adjust: none;
+  }
+
+  .mac-markup-toolbar-tool:where(:focus-visible) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}

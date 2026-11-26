@@ -1,0 +1,36 @@
+/*
+ * System image (a template NSImage): an inline SVG drawn in the text colour of whatever it is
+ * in. It has no colour of its own, so it follows a control's enabled, disabled and
+ * window-state colours, and the forced-colours text colour, without a rule here.
+ *
+ * Attributes
+ *   [data-name]   which image
+ *
+ * Parts
+ *   .mac-system-image-mark   the letter of `info`, drawn again over its hole: filled with a
+ *                            toolbar button's --mac-toolbar-button-glyph-mark (the mark's
+ *                            colour while a tinted toggle is on), else transparent
+ *   .mac-system-image-body   the tag of `tag` and the page of `rotate-left`: filled with
+ *                            --mac-system-image-body (outlined in Aqua, solid in Dark Aqua)
+ *   .mac-system-image-dot    the hole of `tag`: filled with --mac-system-image-dot (a dot in
+ *                            Aqua, empty in Dark Aqua, where the body has the hole cut out)
+ */
+.mac-system-image {
+  display: inline-block;
+  flex: none;
+  overflow: visible;
+  vertical-align: middle;
+  fill: currentColor;
+}
+
+.mac-system-image-mark {
+  fill: var(--mac-toolbar-button-glyph-mark, transparent);
+}
+
+.mac-system-image-body {
+  fill: var(--mac-system-image-body);
+}
+
+.mac-system-image-dot {
+  fill: var(--mac-system-image-dot);
+}

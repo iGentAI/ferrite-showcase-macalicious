@@ -1,0 +1,306 @@
+/*
+ * About window (About This Mac): a window frame with a tab control centred in its 38 pt title
+ * bar, and the Overview layout in its body. Every tab paints its own part of the 18 pt bezel
+ * in ::before; the 1 pt divider is the last point of every tab but the last.
+ *
+ * States
+ *   [data-active] on a tab               selected (set by Base UI)
+ *   :active                              pressed [provisional]
+ *   [data-disabled] on a tab             dimmed title [provisional]
+ *   :focus-visible                       focus ring, in the key window only
+ *   [data-window-state="inactive"] *     dimmed tab control [provisional]
+ *   [data-force~="pressed" | "focus"]    static previews, on a tab
+ */
+
+/* Laid over the whole title bar, so that the control is centred on the window. It takes no
+   clicks itself: the bar under it stays the drag region. */
+.mac-about-window-bar {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.mac-about-window-tabs {
+  --_radius: calc(var(--mac-radius-control-regular) + var(--mac-hairline));
+
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex: none;
+  box-sizing: border-box;
+  height: 18px;
+  color: var(--mac-about-window-tab-text);
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+  pointer-events: auto;
+}
+
+.mac-about-window-tab {
+  /* Not the title bar's private fill, which the tab would inherit. */
+  --_tab-fill: var(--mac-about-window-tab-fill);
+  --_tab-under: none;
+  --_tab-top: var(--mac-about-window-tab-border-top);
+  --_tab-side: var(--mac-about-window-tab-border-side);
+  --_tab-bottom: var(--mac-about-window-tab-border-bottom);
+
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 100%;
+  margin: 0;
+  /* 10 pt either side of the title, and the divider's point after it. */
+  padding: 0 11px 0 10px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-about-window-tab:where(:last-child) {
+  padding-inline-end: 10px;
+}
+
+/* The tab's part of the bezel. */
+.mac-about-window-tab::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: calc(-1 * var(--mac-hairline)) 0;
+  box-sizing: border-box;
+  border: var(--mac-hairline) solid;
+  border-color: var(--_tab-top) var(--_tab-side) var(--_tab-bottom);
+  border-inline-width: 0;
+  /* The second layer lies under the border, to close the seam round a corner. */
+  background:
+    var(--_tab-fill) padding-box,
+    var(--_tab-under) border-box;
+  box-shadow: 0 var(--mac-hairline) 0 var(--mac-about-window-tab-shadow);
+  pointer-events: none;
+}
+
+.mac-about-window-tab:where(:first-child)::before {
+  inset-inline-start: calc(-1 * var(--mac-hairline));
+  border-inline-start-width: var(--mac-hairline);
+  border-start-start-radius: var(--_radius);
+  border-end-start-radius: var(--_radius);
+}
+
+.mac-about-window-tab:where(:last-child)::before {
+  inset-inline-end: calc(-1 * var(--mac-hairline));
+  border-inline-end-width: var(--mac-hairline);
+  border-start-end-radius: var(--_radius);
+  border-end-end-radius: var(--_radius);
+}
+
+/* Divider */
+.mac-about-window-tab:where(:not(:last-child, [data-active], :has(+ [data-active])))::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: 1px;
+  background: var(--mac-about-window-tab-divider);
+  pointer-events: none;
+}
+
+/* Pressed */
+.mac-about-window-tab:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  --_tab-fill: var(--mac-about-window-tab-fill-pressed);
+}
+
+/* Selected */
+.mac-about-window-tab:where([data-active]) {
+  --_tab-fill: var(--mac-about-window-tab-fill-on);
+  --_tab-under: var(--mac-about-window-tab-under-on);
+  --_tab-top: var(--mac-about-window-tab-border-top-on);
+  --_tab-side: var(--mac-about-window-tab-border-side-on);
+  --_tab-bottom: var(--mac-about-window-tab-border-bottom-on);
+
+  color: var(--mac-about-window-tab-text-on);
+}
+
+/* Disabled or inactive [provisional] */
+.mac-about-window-tab:where(:not([data-active])):where(
+  [data-disabled],
+  [data-window-state="inactive"] *
+) {
+  color: var(--mac-about-window-tab-text-dimmed);
+}
+
+.mac-about-window-tab:where([data-active]):where(
+  [data-disabled],
+  [data-window-state="inactive"] *
+)::before {
+  opacity: 0.5;
+}
+
+/* Body */
+.mac-about-window-body,
+.mac-about-window-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.mac-about-window-panel {
+  flex: 1 0 auto;
+  outline: none;
+}
+
+/* A pane kept mounted while another is shown, or being left: Base UI holds it for its exit, inert. */
+.mac-about-window-panel:where([hidden], [inert]) {
+  display: none;
+}
+
+/* Overview, measured on About This Mac */
+.mac-about-window-overview {
+  display: grid;
+  flex: 1 0 auto;
+  grid-template-columns: 153px minmax(0, 1fr);
+  column-gap: 51px;
+  align-items: start;
+  box-sizing: border-box;
+  padding: 0 20px 0 51px;
+}
+
+.mac-about-window-image {
+  display: grid;
+  place-items: center;
+  width: 153px;
+  height: 153px;
+  margin-top: 71px;
+}
+
+.mac-about-window-content {
+  padding-block: 40.5px 47px;
+  color: var(--mac-color-label);
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+/* The version's baseline is 16 pt below the title's. */
+.mac-about-window-title {
+  margin: 0;
+  font-weight: 300;
+  font-size: 26px;
+  line-height: 28.5px;
+  letter-spacing: normal;
+  white-space: nowrap;
+}
+
+.mac-about-window-title-emphasized,
+.mac-about-window-version-label,
+.mac-about-window-detail-label {
+  font-weight: var(--mac-font-weight-bold);
+}
+
+.mac-about-window-version {
+  margin: 0;
+}
+
+.mac-about-window-version-label {
+  color: var(--mac-color-text);
+}
+
+.mac-about-window-details {
+  margin: 15.5px 0 0;
+  padding: 0;
+  line-height: 19px;
+  list-style: none;
+}
+
+.mac-about-window-detail {
+  display: flex;
+  gap: 9px;
+  white-space: nowrap;
+}
+
+.mac-about-window-actions {
+  display: flex;
+  gap: 10px;
+  margin: 18.5px 0 0 -2px;
+}
+
+.mac-about-window-footer {
+  margin: 0;
+  padding: 0 20px 5px;
+  color: var(--mac-color-label-tertiary);
+  font: var(--mac-font-label);
+  letter-spacing: var(--mac-tracking-mini);
+  text-align: center;
+}
+
+.mac-about-window-link {
+  border-radius: var(--mac-radius-control-mini);
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.mac-about-window-link:where(:hover, [data-force~="hover"]) {
+  text-decoration: underline;
+}
+
+/* Keyboard focus ring; only in the key window. */
+.mac-about-window-tab:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+),
+.mac-about-window-panel:where(:focus-visible):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+),
+.mac-about-window-link:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  z-index: 1;
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+.mac-about-window-panel:where(:focus-visible) {
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+@media (forced-colors: active) {
+  .mac-about-window-tabs {
+    color: ButtonText;
+  }
+
+  .mac-about-window-tab::before {
+    border-color: ButtonText;
+  }
+
+  .mac-about-window-tab::after {
+    background: ButtonText;
+  }
+
+  .mac-about-window-tab:where([data-active]) {
+    color: HighlightText;
+  }
+
+  .mac-about-window-tab:where([data-active])::before {
+    background: Highlight;
+    forced-color-adjust: none;
+  }
+
+  .mac-about-window-tab:where([data-disabled]) {
+    color: GrayText;
+  }
+
+  .mac-about-window-link {
+    color: LinkText;
+  }
+}

@@ -1,0 +1,27 @@
+/*
+ * Login window (reference/spec/components/login-window.md). The screen is the same in a light
+ * and in a dark session, so every value is one colour. The field and the discs lie on the
+ * desktop picture: they are a tint over a blur of it (--mac-material-filter-sheet, the shared
+ * filter that saturates least: the disc over the dark water is nearly neutral), and each tint
+ * is solved over the backdrop measured beside it.
+ */
+:root {
+  /* [provisional] the desktop picture is not reproduced: the dark rock measured around the
+     field. Give the window a background of your own. */
+  --mac-login-window-backdrop: #3c2e2c;
+  /* [measured] name, button titles, rings, glyphs, status items */
+  --mac-login-window-text: #fff;
+  /* [provisional] shadow that keeps the text legible over a picture */
+  --mac-login-window-text-shadow: rgb(0 0 0 / 0.5);
+  /* [measured, computed] field: #837876 to #91817c over a backdrop of about #3c2e2c */
+  --mac-login-window-field: rgb(255 255 255 / 0.38);
+  /* [measured, computed] placeholder and insertion point: #b5aaa8 on #837876 */
+  --mac-login-window-placeholder: rgb(255 255 255 / 0.4);
+  /* [measured, computed] disc behind a round button: #2b2c33 on #080c15 */
+  --mac-login-window-disc: rgb(255 255 255 / 0.135);
+  /* [provisional] the disc while the button is pressed */
+  --mac-login-window-disc-pressed: rgb(255 255 255 / 0.3);
+  /* [provisional] stand-in for a missing account picture: a grey disc and a silhouette */
+  --mac-login-window-picture: #8e8e93;
+  --mac-login-window-picture-glyph: #e5e5ea;
+}

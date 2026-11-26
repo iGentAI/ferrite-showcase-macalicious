@@ -1,0 +1,139 @@
+/*
+ * Materials (NSVisualEffectView).
+ *
+ * AppKit vibrancy blends a blurred, saturated copy of whatever is behind the window (including
+ * other applications and the desktop picture) and then applies per-material blend modes. A web
+ * page can only see its own pixels, so a material here is a translucent tint plus a
+ * backdrop-filter over page content. It matches the reference when the same content is behind
+ * it and cannot match when the reference shows the desktop through a window.
+ *
+ * Use as a pair:
+ *   background: var(--mac-material-menu);
+ *   backdrop-filter: var(--mac-material-filter-menu);
+ *
+ * Tints tagged [measured, computed] were fitted to composites over a known backdrop. Filters
+ * are not colours, so the ones that differ between Aqua and Dark Aqua interpolate with
+ * --mac-appearance-dark and are declared for `:root, [data-appearance]` (see appearance.css).
+ * A token is tagged provisional as soon as one part of it is inferred; its comment says which
+ * part was fitted.
+ */
+:root,
+[data-appearance] {
+  --mac-material-filter: blur(30px) saturate(180%); /* [provisional] fits range 20 to 30 px */
+  --mac-material-filter-thin: blur(20px) saturate(150%); /* [provisional] */
+  /* [measured, computed] blur(22px), saturate 180% in Aqua and 220% in Dark Aqua */
+  --mac-material-filter-menu: blur(22px) saturate(calc(180% + 40% * var(--mac-appearance-dark)));
+  /* [provisional] the blur radius is inferred; saturation is fitted, 170% and 180% */
+  --mac-material-filter-menu-bar: blur(20px) saturate(calc(170% + 10% * var(--mac-appearance-dark)));
+  --mac-material-filter-sheet: blur(30px) saturate(120%); /* [measured, computed] */
+  /* [provisional] fitted in Aqua with an inferred blur radius; Dark Aqua is inferred */
+  --mac-material-filter-dock: blur(20px) saturate(170%);
+  /* [measured, computed] blur(25px) saturate(170%) in Aqua, blur(30px) saturate(160%) in
+     Dark Aqua */
+  --mac-material-filter-notification-center: blur(calc(25px + 5px * var(--mac-appearance-dark)))
+    saturate(calc(170% - 10% * var(--mac-appearance-dark)));
+}
+
+:root {
+  /* [measured, computed] */
+  --mac-material-menu: light-dark(rgb(234 234 234 / 0.7), rgb(62 63 64 / 0.7));
+  /* Over the default wallpaper the bar measures #c5e0f1 / #1b2237 */
+  --mac-material-menu-bar: light-dark(rgb(255 255 255 / 0.67), rgb(31 28 35 / 0.78));
+  /* Composites #edeeee over white, #c4d5e6 over sky, #2d2d30 over a dark document */
+  --mac-material-sheet: light-dark(rgb(236 236 236 / 0.72), rgb(40 40 40 / 0.75));
+  --mac-material-notification-center: light-dark(rgb(237 244 246 / 0.47), rgb(58 58 56 / 0.42));
+  /* Dark was captured without a backdrop, so only its base colour is known */
+  --mac-material-spotlight: light-dark(rgb(224 222 218 / 0.65), #2b2c2d);
+
+  /* Title bar [measured]: opaque in every capture. First and last stops of the unified 55 pt
+     bar; the stops between are within two levels of linear. */
+  --mac-material-titlebar: linear-gradient(
+    light-dark(#e5e5e5, #404142),
+    light-dark(#cdcdcd, #343435)
+  );
+  --mac-material-titlebar-inactive: light-dark(#f6f6f6, #2d2d2d); /* [measured] flat */
+
+  /* [provisional] Aqua is fitted to composites; the Dark Aqua value is inferred. Over the
+     default wallpaper the shelf measures #456689 / #152137. */
+  --mac-material-dock: light-dark(rgb(255 255 255 / 0.27), rgb(60 60 60 / 0.25));
+  /* [provisional] too few clean composites to fit */
+  --mac-material-sidebar: light-dark(rgb(232 232 232 / 0.78), rgb(42 42 42 / 0.72));
+  /* [provisional] alpha and blur are inferred; the tint is chosen so that the material
+     composites to the measured opaque fill below over a neutral window */
+  --mac-material-popover: light-dark(rgb(242 242 242 / 0.86), rgb(40 40 40 / 0.82));
+  /* [provisional] */
+  --mac-material-hud: rgb(30 30 30 / 0.7);
+  --mac-material-notification: light-dark(rgb(246 246 246 / 0.72), rgb(40 40 40 / 0.72));
+  --mac-material-under-window: light-dark(rgb(230 230 230 / 0.7), rgb(30 30 30 / 0.7));
+
+  /* Opaque stand-ins [measured]: the surface as captured over a neutral window. Used when
+     backdrop-filter is unsupported, reduced transparency is on, or the window is inactive. */
+  --mac-material-sidebar-opaque: light-dark(#e7e8e8, #2c2d2f); /* Finder-Home */
+  --mac-material-menu-opaque: light-dark(#f0f0f0, #343536); /* Contacts */
+  /* Popover body as captured in Maps, Reminders and Calendar. A dark popover also has a
+     1 pt inner rim, #535353, which belongs to the popover component. */
+  --mac-material-popover-opaque: light-dark(#f2f2f2, #282828);
+}
+
+/*
+ * Accessibility's Reduce transparency on the served desktop, which has no way to set the operating
+ * system's preference: the same values as under prefers-reduced-transparency above.
+ */
+:root[data-mac-reduce-transparency],
+:root[data-mac-reduce-transparency] [data-appearance] {
+  --mac-material-filter: none;
+  --mac-material-filter-thin: none;
+  --mac-material-filter-menu: none;
+  --mac-material-filter-menu-bar: none;
+  --mac-material-filter-sheet: none;
+  --mac-material-filter-dock: none;
+  --mac-material-filter-notification-center: none;
+}
+
+:root[data-mac-reduce-transparency] {
+  --mac-material-sidebar: var(--mac-material-sidebar-opaque);
+  --mac-material-menu: var(--mac-material-menu-opaque);
+  --mac-material-popover: var(--mac-material-popover-opaque);
+  --mac-material-sheet: light-dark(#ececec, #303031);
+  --mac-material-notification: light-dark(#ededed, #383838);
+  --mac-material-under-window: light-dark(#e6e6e6, #1e1e1e);
+  --mac-material-menu-bar: light-dark(#f2f2f2, #201d24);
+  --mac-material-notification-center: light-dark(#e4e8e9, #3a3a39);
+  --mac-material-spotlight: light-dark(#e0deda, #2b2c2d);
+  --mac-material-dock: light-dark(#d2d2d2, #353535);
+  --mac-material-hud: rgb(30 30 30);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  /* [provisional] Not a measurement: switching the filters off under this preference is the
+     library's policy. No screenshot shows Catalina with Reduce transparency on. */
+  :root,
+  [data-appearance] {
+    --mac-material-filter: none;
+    --mac-material-filter-thin: none;
+    --mac-material-filter-menu: none;
+    --mac-material-filter-menu-bar: none;
+    --mac-material-filter-sheet: none;
+    --mac-material-filter-dock: none;
+    --mac-material-filter-notification-center: none;
+  }
+
+  :root {
+    /* [measured] the opaque surfaces above */
+    --mac-material-sidebar: var(--mac-material-sidebar-opaque);
+    --mac-material-menu: var(--mac-material-menu-opaque);
+    --mac-material-popover: var(--mac-material-popover-opaque);
+    /* [measured] a sheet without its material is the window background (color.css) */
+    --mac-material-sheet: light-dark(#ececec, #303031);
+    /* [measured] the notification banner as captured opaque */
+    --mac-material-notification: light-dark(#ededed, #383838);
+    /* [provisional] no opaque capture exists for the rest: each is its tint flattened over
+       a neutral mid grey, and the Spotlight and HUD values are the tint's base colour */
+    --mac-material-under-window: light-dark(#e6e6e6, #1e1e1e);
+    --mac-material-menu-bar: light-dark(#f2f2f2, #201d24);
+    --mac-material-notification-center: light-dark(#e4e8e9, #3a3a39);
+    --mac-material-spotlight: light-dark(#e0deda, #2b2c2d);
+    --mac-material-dock: light-dark(#d2d2d2, #353535);
+    --mac-material-hud: rgb(30 30 30);
+  }
+}

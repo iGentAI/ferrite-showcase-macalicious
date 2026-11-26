@@ -1,0 +1,321 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "disk-utility-start-light",
+      "description": "Leading end of Disk Utility's capacity bar with its used part, Aqua. Threshold 0.05 and a 2x budget just above the measured score, so that a half-point change of the corner radius or one level of the border colour fails.",
+      "example": "visual-disk-utility-start-light",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0015,
+        "2x": 0.0015
+      },
+      "deltaBudget": {
+        "1x": 0.25,
+        "2x": 0.42
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Disk-Utility.png",
+        "crop": {
+          "x": 678,
+          "y": 484,
+          "width": 240,
+          "height": 68
+        }
+      }
+    },
+    {
+      "name": "disk-utility-start-dark",
+      "description": "Leading end of Disk Utility's capacity bar with its used part, Dark Aqua.",
+      "example": "visual-disk-utility-start-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0025,
+        "2x": 0.0021
+      },
+      "deltaBudget": {
+        "1x": 0.2,
+        "2x": 0.25
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Disk-Utility.png",
+        "crop": {
+          "x": 678,
+          "y": 484,
+          "width": 240,
+          "height": 68
+        }
+      }
+    },
+    {
+      "name": "disk-utility-end-light",
+      "description": "Trailing, empty end of Disk Utility's capacity bar, Aqua.",
+      "example": "visual-disk-utility-end",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.0014
+      },
+      "deltaBudget": {
+        "1x": 0.2,
+        "2x": 0.25
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Disk-Utility.png",
+        "crop": {
+          "x": 1778,
+          "y": 484,
+          "width": 120,
+          "height": 68
+        }
+      }
+    },
+    {
+      "name": "disk-utility-end-dark",
+      "description": "Trailing, empty end of Disk Utility's capacity bar, Dark Aqua.",
+      "example": "visual-disk-utility-end",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0069,
+        "2x": 0.0026
+      },
+      "deltaBudget": {
+        "1x": 0.25,
+        "2x": 0.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Disk-Utility.png",
+        "crop": {
+          "x": 1778,
+          "y": 484,
+          "width": 120,
+          "height": 68
+        }
+      }
+    },
+    {
+      "name": "editable-click-star-light",
+      "description": "Editable rating starting at 2: a click on the fourth star fills four stars, Aqua. No screenshot shows an editable indicator.",
+      "example": "visual-editable",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": ".mac-level-indicator-star:nth-of-type(4)"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 200,
+          "height": 70
+        },
+        "pixels": [
+          {
+            "x": 64.5,
+            "y": 17,
+            "color": "#232323",
+            "note": "fourth star, filled: --mac-color-label, black at 85% over #ececec (inferred; spec: Rating, not shown)"
+          },
+          {
+            "x": 80.5,
+            "y": 17,
+            "color": "#d4d4d4",
+            "note": "fifth star, empty: --mac-color-label-quaternary, black at 10% over #ececec (inferred)"
+          },
+          {
+            "x": 55.5,
+            "y": 41,
+            "color": "#28cd41",
+            "note": "second row untouched: third segment (x 46.4..62.6) filled, --mac-color-system-green (inferred)"
+          },
+          {
+            "x": 72.7,
+            "y": 41,
+            "color": "#dbdbdb",
+            "note": "second row untouched: fourth segment (x 64.6..80.8) empty, track black at 7% over #ececec (inferred, the progress bar's measured track)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "editable-click-segment-light",
+      "description": "Editable discrete capacity starting at 3 of 10: a click on the seventh segment fills seven, Aqua.",
+      "example": "visual-editable",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": ".mac-level-indicator-segment:nth-of-type(7)"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 200,
+          "height": 70
+        },
+        "pixels": [
+          {
+            "x": 127.3,
+            "y": 41,
+            "color": "#28cd41",
+            "note": "seventh segment, filled: --mac-color-system-green (inferred)"
+          },
+          {
+            "x": 145.5,
+            "y": 41,
+            "color": "#dbdbdb",
+            "note": "eighth segment, empty: track black at 7% over #ececec (inferred)"
+          },
+          {
+            "x": 32.5,
+            "y": 17,
+            "color": "#232323",
+            "note": "first row untouched: second star filled"
+          },
+          {
+            "x": 48.5,
+            "y": 17,
+            "color": "#d4d4d4",
+            "note": "first row untouched: third star empty"
+          }
+        ]
+      }
+    },
+    {
+      "name": "editable-keyboard-light",
+      "description": "Editable rating starting at 2: Tab focuses it and Right Arrow makes it 3, with the focus ring around the indicator, Aqua.",
+      "example": "visual-editable",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "ArrowRight"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 200,
+          "height": 70
+        },
+        "pixels": [
+          {
+            "x": 48.5,
+            "y": 17,
+            "color": "#232323",
+            "note": "third star, filled after Right Arrow"
+          },
+          {
+            "x": 64.5,
+            "y": 17,
+            "color": "#d4d4d4",
+            "note": "fourth star, still empty"
+          },
+          {
+            "x": 7.5,
+            "y": 16.5,
+            "color": "#82abf1",
+            "tolerance": 2,
+            "note": "focus ring 1 pt outside the indicator: --mac-focus-ring-color, rgb(24 106 246) at 50% over #ececec (spec: focus-ring, measured on a text field)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "editable-click-star-dark",
+      "description": "Editable rating starting at 2: a click on the fourth star fills four stars, Dark Aqua.",
+      "example": "visual-editable",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": ".mac-level-indicator-star:nth-of-type(4)"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 200,
+          "height": 70
+        },
+        "pixels": [
+          {
+            "x": 64.5,
+            "y": 17,
+            "color": "#e0e0e0",
+            "note": "fourth star, filled: --mac-color-label, white at 85% over #2f3031 (inferred)"
+          },
+          {
+            "x": 80.5,
+            "y": 17,
+            "color": "#444546",
+            "note": "fifth star, empty: --mac-color-label-quaternary, white at 10% over #2f3031 (inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "editable-keyboard-dark",
+      "description": "Editable rating starting at 2: Tab focuses it and Right Arrow makes it 3, with the focus ring around the indicator, Dark Aqua.",
+      "example": "visual-editable",
+      "appearance": "dark",
+      "actions": [{ "tab": 1 }, { "key": "ArrowRight" }],
+      "expect": {
+        "size": { "width": 200, "height": 70 },
+        "pixels": [
+          {
+            "x": 48.5,
+            "y": 17,
+            "color": "#e0e0e0",
+            "note": "third star, filled after Right Arrow"
+          },
+          {
+            "x": 64.5,
+            "y": 17,
+            "color": "#444546",
+            "note": "fourth star, still empty"
+          },
+          {
+            "x": 7.5,
+            "y": 16.5,
+            "color": "#2d6c98",
+            "tolerance": 2,
+            "note": "focus ring 1 pt outside the indicator: --mac-focus-ring-color, rgb(43 168 255) at 50% over #2f3031 (spec: focus-ring, measured on a text field as #2d6c99 over #2f3032)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "editable-click-segment-dark",
+      "description": "Editable discrete capacity starting at 3 of 10: a click on the seventh segment fills seven, Dark Aqua.",
+      "example": "visual-editable",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": ".mac-level-indicator-segment:nth-of-type(7)"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 200,
+          "height": 70
+        },
+        "pixels": [
+          {
+            "x": 127.3,
+            "y": 41,
+            "color": "#32d74b",
+            "note": "seventh segment, filled: --mac-color-system-green (inferred)"
+          },
+          {
+            "x": 145.5,
+            "y": 41,
+            "color": "#4c4d4e",
+            "note": "eighth segment, empty: track white at 14% over #2f3031 (inferred)"
+          }
+        ]
+      }
+    }
+  ]
+}

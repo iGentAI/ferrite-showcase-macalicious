@@ -1,0 +1,139 @@
+/*
+ * Desktop icon: a 64 pt tile with a label under it, in a 116 by 112 pt cell (the pitch of
+ * Finder's desktop grid at this icon size).
+ *
+ * .mac-desktop-icon         the cell, a button
+ * .mac-desktop-icon-image   the tile that holds the artwork
+ * .mac-desktop-icon-label   the label box: up to two centred lines
+ * .mac-desktop-icon-text    the text, which carries the selection highlight
+ *
+ * States
+ *   [data-selected]                    selected: backing behind the tile, accent behind the name
+ *   [data-dimmed]                      artwork at half strength
+ *   :focus-visible                     focus ring round the tile
+ *   :where([data-window-state="main"], [data-window-state="inactive"]) *
+ *                                      not key: grey selection, no focus ring
+ *
+ * Set by a consumer
+ *   --mac-desktop-icon-size            the tile, 64px by default (Finder offers 16 to 128)
+ */
+.mac-desktop-icon {
+  --mac-desktop-icon-size: 64px;
+
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  width: 116px;
+  min-height: 112px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mac-desktop-icon-label-color);
+  font: var(--mac-font-icon-label-wrapped);
+  font-weight: var(--mac-font-weight-bold);
+  text-align: center;
+  cursor: default;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-desktop-icon:focus-visible {
+  outline: none;
+}
+
+.mac-desktop-icon-image {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--mac-desktop-icon-size);
+  height: var(--mac-desktop-icon-size);
+  border-radius: 4px;
+}
+
+/* Whatever the artwork is, it stays inside the tile. */
+.mac-desktop-icon-image > * {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.mac-desktop-icon:where([data-dimmed]) .mac-desktop-icon-image {
+  opacity: 0.5;
+}
+
+/* The label's cap line is 12 pt under the tile: 9 pt of gap and the line's own leading. */
+.mac-desktop-icon-label {
+  display: -webkit-box;
+  overflow: hidden;
+  max-width: 110px;
+  margin-top: 9px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow-wrap: anywhere;
+}
+
+.mac-desktop-icon-text {
+  padding: 0 2px;
+  border-radius: 3px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  text-shadow: var(--mac-desktop-icon-label-shadow);
+}
+
+/* Selected: a backing 2 pt wider than the tile all round, and the name on the accent. */
+.mac-desktop-icon:where([data-selected]) .mac-desktop-icon-image {
+  background: var(--mac-desktop-icon-selection);
+  box-shadow: 0 0 0 2px var(--mac-desktop-icon-selection);
+}
+
+.mac-desktop-icon:where([data-selected]) .mac-desktop-icon-text {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-content-text);
+  text-shadow: none;
+}
+
+.mac-desktop-icon:where(
+    [data-selected]:where([data-window-state="main"], [data-window-state="inactive"]) *
+  )
+  .mac-desktop-icon-text {
+  background: var(--mac-color-selected-content-background-unemphasized);
+  color: var(--mac-color-label);
+}
+
+/* Keyboard focus: the ring round the tile, in the key window only. */
+.mac-desktop-icon:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) .mac-desktop-icon-image {
+  box-shadow: 0 0 0 var(--mac-focus-ring-width) var(--mac-focus-ring-color);
+}
+
+@media (forced-colors: active) {
+  .mac-desktop-icon {
+    color: CanvasText;
+  }
+
+  .mac-desktop-icon-text {
+    text-shadow: none;
+  }
+
+  .mac-desktop-icon:where([data-selected]) .mac-desktop-icon-image {
+    outline: 2px solid Highlight;
+  }
+
+  .mac-desktop-icon:where([data-selected]) .mac-desktop-icon-text {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  .mac-desktop-icon:focus-visible:where(
+      :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+    )
+    .mac-desktop-icon-image {
+    outline: 2px solid CanvasText;
+    outline-offset: 2px;
+  }
+}

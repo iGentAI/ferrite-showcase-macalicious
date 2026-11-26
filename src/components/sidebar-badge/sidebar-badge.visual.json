@@ -1,0 +1,217 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "mail-drafts-light",
+      "description": "The “1” pill on Mail's Drafts row (inactive window), Aqua.",
+      "example": "visual-mail-drafts",
+      "appearance": "light",
+      "windowState": "inactive",
+      "budget": {
+        "1x": 0.062,
+        "2x": 0.038
+      },
+      "deltaBudget": {
+        "1x": 4,
+        "2x": 3.8
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mail.png",
+        "crop": {
+          "x": 372,
+          "y": 300,
+          "width": 64,
+          "height": 40
+        }
+      }
+    },
+    {
+      "name": "mail-drafts-light-pill",
+      "description": "As mail-drafts-light with the digit masked, to score the pill alone: the digit is set in the fallback font off Apple platforms.",
+      "example": "visual-mail-drafts",
+      "appearance": "light",
+      "windowState": "inactive",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.057,
+        "2x": 0.0398
+      },
+      "deltaBudget": {
+        "1x": 2,
+        "2x": 2.1
+      },
+      "masks": [
+        {
+          "x": 12,
+          "y": 5,
+          "width": 8,
+          "height": 10
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Mail.png",
+        "crop": {
+          "x": 372,
+          "y": 300,
+          "width": 64,
+          "height": 40
+        }
+      }
+    },
+    {
+      "name": "mail-drafts-dark",
+      "description": "The “1” pill on Mail's Drafts row (inactive window), Dark Aqua.",
+      "example": "visual-mail-drafts",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "budget": {
+        "1x": 0.061,
+        "2x": 0.0377
+      },
+      "deltaBudget": {
+        "1x": 3.8,
+        "2x": 3.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mail.png",
+        "crop": {
+          "x": 360,
+          "y": 298,
+          "width": 64,
+          "height": 40
+        }
+      }
+    },
+    {
+      "name": "mail-drafts-dark-pill",
+      "description": "As mail-drafts-dark with the digit masked, to score the pill alone.",
+      "example": "visual-mail-drafts",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.05,
+        "2x": 0.0394
+      },
+      "deltaBudget": {
+        "1x": 1.8,
+        "2x": 1.9
+      },
+      "masks": [
+        {
+          "x": 12,
+          "y": 5,
+          "width": 8,
+          "height": 10
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mail.png",
+        "crop": {
+          "x": 360,
+          "y": 298,
+          "width": 64,
+          "height": 40
+        }
+      }
+    },
+    {
+      "name": "pill-key-window-light",
+      "description": "The unselected pill in a key window, Aqua. No screenshot shows it: Mail's window is inactive in both captures.",
+      "appearance": "light",
+      "example": "visual-mail-drafts",
+      "expect": {
+        "size": {
+          "width": 32,
+          "height": 20
+        },
+        "pixels": [
+          {
+            "x": 9,
+            "y": 10,
+            "color": "#8a8b8b",
+            "note": "pill fill left of the digit: --mac-sidebar-badge-fill (spec: Unselected row, key window, about #8a8b8b, inferred)"
+          },
+          {
+            "x": 2,
+            "y": 10,
+            "color": "#f6f6f6",
+            "note": "left of the pill: the example's sidebar colour"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pill-key-window-dark",
+      "description": "The unselected pill in a key window, Dark Aqua. No screenshot shows it, and the spec infers no value: the fill measured in Mail's inactive window is reused.",
+      "appearance": "dark",
+      "example": "visual-mail-drafts",
+      "expect": {
+        "size": {
+          "width": 32,
+          "height": 20
+        },
+        "pixels": [
+          {
+            "x": 9,
+            "y": 10,
+            "color": "#a8a9ab",
+            "note": "pill fill left of the digit: --mac-sidebar-badge-fill (provisional: the value measured in the inactive window, Dark-Mail @ 380,318)"
+          },
+          {
+            "x": 2,
+            "y": 10,
+            "color": "#2c2d2f",
+            "note": "left of the pill: the example's sidebar colour"
+          }
+        ]
+      }
+    },
+    {
+      "name": "notes-count-selected-light",
+      "description": "The plain count on the grey selected row of Notes, Aqua. The digit is set in the fallback font off Apple platforms, so the score is mostly the digit's outline.",
+      "example": "visual-notes-count-selected",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.0054,
+        "2x": 0.0039
+      },
+      "deltaBudget": {
+        "1x": 0.88,
+        "2x": 0.96
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Notes.png",
+        "crop": {
+          "x": 440,
+          "y": 206,
+          "width": 52,
+          "height": 40
+        }
+      }
+    },
+    {
+      "name": "notes-count-emphasized-dark",
+      "description": "The plain count on the accent selected row of Notes, Dark Aqua. The digit is set in the fallback font off Apple platforms.",
+      "example": "visual-notes-count-emphasized",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.036,
+        "2x": 0.0424
+      },
+      "deltaBudget": {
+        "1x": 2.06,
+        "2x": 2.29
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Notes.png",
+        "crop": {
+          "x": 440,
+          "y": 206,
+          "width": 52,
+          "height": 40
+        }
+      }
+    }
+  ]
+}

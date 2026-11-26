@@ -1,0 +1,969 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "finder-bar-light",
+      "description": "The left end of Finder's menu bar with no menu open, Aqua: the 22 pt material strip, its shadow line, and the titles.",
+      "example": "visual-finder-bar",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.2,
+        "2x": 0.167
+      },
+      "deltaBudget": {
+        "1x": 24.7,
+        "2x": 25.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Desktop.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 800,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "finder-bar-light-drawing",
+      "description": "As finder-bar-light with the mark and the titles masked, to score the drawing alone: text is set in the fallback font off Apple platforms and the images are stand-ins.",
+      "example": "visual-finder-bar",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 20,
+          "y": 2,
+          "width": 372,
+          "height": 18
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0248,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 5.9,
+        "2x": 5.9
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Desktop.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 800,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "apple-open-light",
+      "description": "The same bar after a click on the Apple title, Aqua: the open title's highlight, square, from x 10 to 45 and as high as the bar, and the first row of the attached menu under the bar.",
+      "example": "visual-finder-bar",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "[data-testid=apple]"
+        }
+      ],
+      "budget": {
+        "1x": 0.2,
+        "2x": 0.167
+      },
+      "deltaBudget": {
+        "1x": 24.1,
+        "2x": 25.1
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Apple-Menu.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 800,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "apple-open-light-drawing",
+      "description": "As apple-open-light with the mark and the titles masked, to score the drawing alone: text is set in the fallback font off Apple platforms and the images are stand-ins.",
+      "example": "visual-finder-bar",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "[data-testid=apple]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 20,
+          "y": 2,
+          "width": 15,
+          "height": 18
+        },
+        {
+          "x": 55,
+          "y": 2,
+          "width": 337,
+          "height": 18
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0593,
+        "2x": 0.0569
+      },
+      "deltaBudget": {
+        "1x": 5.9,
+        "2x": 6.0
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Apple-Menu.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 800,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "finder-bar-dark",
+      "description": "The left end of Finder's menu bar with no menu open, Dark Aqua: the 22 pt material strip, its shadow line, and the titles.",
+      "example": "visual-finder-bar",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.21,
+        "2x": 0.178
+      },
+      "deltaBudget": {
+        "1x": 27.2,
+        "2x": 28.0
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Desktop.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 800,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "finder-bar-dark-drawing",
+      "description": "As finder-bar-dark with the mark and the titles masked, to score the drawing alone: text is set in the fallback font off Apple platforms and the images are stand-ins.",
+      "example": "visual-finder-bar",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 20,
+          "y": 2,
+          "width": 372,
+          "height": 18
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0252,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 4.0,
+        "2x": 4.1
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Desktop.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 800,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "apple-open-dark",
+      "description": "The same bar after a click on the Apple title, Dark Aqua: the open title's highlight, square, from x 10 to 45 and as high as the bar, and the first row of the attached menu under the bar.",
+      "example": "visual-finder-bar",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "[data-testid=apple]"
+        }
+      ],
+      "budget": {
+        "1x": 0.21,
+        "2x": 0.178
+      },
+      "deltaBudget": {
+        "1x": 27.0,
+        "2x": 27.7
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Apple-Menu.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 800,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "apple-open-dark-drawing",
+      "description": "As apple-open-dark with the mark and the titles masked, to score the drawing alone: text is set in the fallback font off Apple platforms and the images are stand-ins.",
+      "example": "visual-finder-bar",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "[data-testid=apple]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 20,
+          "y": 2,
+          "width": 15,
+          "height": 18
+        },
+        {
+          "x": 55,
+          "y": 2,
+          "width": 337,
+          "height": 18
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0223,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 4.1,
+        "2x": 4.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Apple-Menu.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 800,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "accent-blue-light",
+      "description": "The open application title in the blue accent, Aqua: the highlight of the System Preferences cell, with the title masked (it is set in the fallback font off Apple platforms).",
+      "example": "visual-accent-title",
+      "appearance": "light",
+      "accent": "blue",
+      "actions": [
+        {
+          "click": "[data-testid=app]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 9,
+          "y": 3,
+          "width": 139,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0077,
+        "2x": 0.045
+      },
+      "deltaBudget": {
+        "1x": 2.4,
+        "2x": 2.5
+      },
+      "reference": {
+        "file": "10-15-Catalina-Theme-Light-Blue.png",
+        "crop": {
+          "x": 90,
+          "y": 0,
+          "width": 314,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "accent-blue-dark",
+      "description": "The open application title in the blue accent, Dark Aqua: the highlight of the System Preferences cell, with the title masked (it is set in the fallback font off Apple platforms).",
+      "example": "visual-accent-title",
+      "appearance": "dark",
+      "accent": "blue",
+      "actions": [
+        {
+          "click": "[data-testid=app]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 9,
+          "y": 3,
+          "width": 139,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 2.3,
+        "2x": 2.4
+      },
+      "reference": {
+        "file": "10-15-Catalina-Theme-Dark-Blue.png",
+        "crop": {
+          "x": 90,
+          "y": 0,
+          "width": 314,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "accent-purple-light",
+      "description": "The open application title in the purple accent, Aqua: the highlight of the System Preferences cell, with the title masked (it is set in the fallback font off Apple platforms).",
+      "example": "visual-accent-title",
+      "appearance": "light",
+      "accent": "purple",
+      "actions": [
+        {
+          "click": "[data-testid=app]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 9,
+          "y": 3,
+          "width": 139,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0077,
+        "2x": 0.045
+      },
+      "deltaBudget": {
+        "1x": 2.2,
+        "2x": 2.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Theme-Light-Purple.png",
+        "crop": {
+          "x": 90,
+          "y": 0,
+          "width": 314,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "accent-purple-dark",
+      "description": "The open application title in the purple accent, Dark Aqua: the highlight of the System Preferences cell, with the title masked (it is set in the fallback font off Apple platforms).",
+      "example": "visual-accent-title",
+      "appearance": "dark",
+      "accent": "purple",
+      "actions": [
+        {
+          "click": "[data-testid=app]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 9,
+          "y": 3,
+          "width": 139,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 2.1,
+        "2x": 2.3
+      },
+      "reference": {
+        "file": "10-15-Catalina-Theme-Dark-Purple.png",
+        "crop": {
+          "x": 90,
+          "y": 0,
+          "width": 314,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "accent-pink-light",
+      "description": "The open application title in the pink accent, Aqua: the highlight of the System Preferences cell, with the title masked (it is set in the fallback font off Apple platforms).",
+      "example": "visual-accent-title",
+      "appearance": "light",
+      "accent": "pink",
+      "actions": [
+        {
+          "click": "[data-testid=app]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 9,
+          "y": 3,
+          "width": 139,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0077,
+        "2x": 0.045
+      },
+      "deltaBudget": {
+        "1x": 2.4,
+        "2x": 2.5
+      },
+      "reference": {
+        "file": "10-15-Catalina-Theme-Light-Pink.png",
+        "crop": {
+          "x": 90,
+          "y": 0,
+          "width": 314,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "accent-pink-dark",
+      "description": "The open application title in the pink accent, Dark Aqua: the highlight of the System Preferences cell, with the title masked (it is set in the fallback font off Apple platforms).",
+      "example": "visual-accent-title",
+      "appearance": "dark",
+      "accent": "pink",
+      "actions": [
+        {
+          "click": "[data-testid=app]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 9,
+          "y": 3,
+          "width": 139,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 2.0,
+        "2x": 2.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Theme-Dark-Pink.png",
+        "crop": {
+          "x": 90,
+          "y": 0,
+          "width": 314,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "accent-red-light",
+      "description": "The open application title in the red accent, Aqua: the highlight of the System Preferences cell, with the title masked (it is set in the fallback font off Apple platforms).",
+      "example": "visual-accent-title",
+      "appearance": "light",
+      "accent": "red",
+      "actions": [
+        {
+          "click": "[data-testid=app]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 9,
+          "y": 3,
+          "width": 139,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0077,
+        "2x": 0.045
+      },
+      "deltaBudget": {
+        "1x": 2.6,
+        "2x": 2.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Theme-Light-Red.png",
+        "crop": {
+          "x": 90,
+          "y": 0,
+          "width": 314,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "accent-red-dark",
+      "description": "The open application title in the red accent, Dark Aqua: the highlight of the System Preferences cell, with the title masked (it is set in the fallback font off Apple platforms).",
+      "example": "visual-accent-title",
+      "appearance": "dark",
+      "accent": "red",
+      "actions": [
+        {
+          "click": "[data-testid=app]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 9,
+          "y": 3,
+          "width": 139,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 2.6,
+        "2x": 2.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Theme-Dark-Red.png",
+        "crop": {
+          "x": 90,
+          "y": 0,
+          "width": 314,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "accent-orange-light",
+      "description": "The open application title in the orange accent, Aqua: the highlight of the System Preferences cell, with the title masked (it is set in the fallback font off Apple platforms).",
+      "example": "visual-accent-title",
+      "appearance": "light",
+      "accent": "orange",
+      "actions": [
+        {
+          "click": "[data-testid=app]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 9,
+          "y": 3,
+          "width": 139,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0077,
+        "2x": 0.045
+      },
+      "deltaBudget": {
+        "1x": 2.3,
+        "2x": 2.4
+      },
+      "reference": {
+        "file": "10-15-Catalina-Theme-Light-Orange.png",
+        "crop": {
+          "x": 90,
+          "y": 0,
+          "width": 314,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "accent-orange-dark",
+      "description": "The open application title in the orange accent, Dark Aqua: the highlight of the System Preferences cell, with the title masked (it is set in the fallback font off Apple platforms).",
+      "example": "visual-accent-title",
+      "appearance": "dark",
+      "accent": "orange",
+      "actions": [
+        {
+          "click": "[data-testid=app]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 9,
+          "y": 3,
+          "width": 139,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 1.8,
+        "2x": 2.0
+      },
+      "reference": {
+        "file": "10-15-Catalina-Theme-Dark-Orange.png",
+        "crop": {
+          "x": 90,
+          "y": 0,
+          "width": 314,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "accent-yellow-light",
+      "description": "The open application title in the yellow accent, Aqua: the highlight of the System Preferences cell, with the title masked (it is set in the fallback font off Apple platforms).",
+      "example": "visual-accent-title",
+      "appearance": "light",
+      "accent": "yellow",
+      "actions": [
+        {
+          "click": "[data-testid=app]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 9,
+          "y": 3,
+          "width": 139,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0077,
+        "2x": 0.045
+      },
+      "deltaBudget": {
+        "1x": 2.3,
+        "2x": 2.4
+      },
+      "reference": {
+        "file": "10-15-Catalina-Theme-Light-Yellow.png",
+        "crop": {
+          "x": 90,
+          "y": 0,
+          "width": 314,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "accent-yellow-dark",
+      "description": "The open application title in the yellow accent, Dark Aqua: the highlight of the System Preferences cell, with the title masked (it is set in the fallback font off Apple platforms).",
+      "example": "visual-accent-title",
+      "appearance": "dark",
+      "accent": "yellow",
+      "actions": [
+        {
+          "click": "[data-testid=app]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 9,
+          "y": 3,
+          "width": 139,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 1.8,
+        "2x": 1.8
+      },
+      "reference": {
+        "file": "10-15-Catalina-Theme-Dark-Yellow.png",
+        "crop": {
+          "x": 90,
+          "y": 0,
+          "width": 314,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "accent-green-light",
+      "description": "The open application title in the green accent, Aqua: the highlight of the System Preferences cell, with the title masked (it is set in the fallback font off Apple platforms).",
+      "example": "visual-accent-title",
+      "appearance": "light",
+      "accent": "green",
+      "actions": [
+        {
+          "click": "[data-testid=app]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 9,
+          "y": 3,
+          "width": 139,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0077,
+        "2x": 0.045
+      },
+      "deltaBudget": {
+        "1x": 2.5,
+        "2x": 2.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Theme-Light-Green.png",
+        "crop": {
+          "x": 90,
+          "y": 0,
+          "width": 314,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "accent-green-dark",
+      "description": "The open application title in the green accent, Dark Aqua: the highlight of the System Preferences cell, with the title masked (it is set in the fallback font off Apple platforms).",
+      "example": "visual-accent-title",
+      "appearance": "dark",
+      "accent": "green",
+      "actions": [
+        {
+          "click": "[data-testid=app]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 9,
+          "y": 3,
+          "width": 139,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 1.7,
+        "2x": 1.8
+      },
+      "reference": {
+        "file": "10-15-Catalina-Theme-Dark-Green.png",
+        "crop": {
+          "x": 90,
+          "y": 0,
+          "width": 314,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "accent-graphite-light",
+      "description": "The open application title in the graphite accent, Aqua: the highlight of the System Preferences cell, with the title masked (it is set in the fallback font off Apple platforms).",
+      "example": "visual-accent-title",
+      "appearance": "light",
+      "accent": "graphite",
+      "actions": [
+        {
+          "click": "[data-testid=app]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 9,
+          "y": 3,
+          "width": 139,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0077,
+        "2x": 0.045
+      },
+      "deltaBudget": {
+        "1x": 4.5,
+        "2x": 4.5
+      },
+      "reference": {
+        "file": "10-15-Catalina-Theme-Light-Graphite.png",
+        "crop": {
+          "x": 90,
+          "y": 0,
+          "width": 314,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "accent-graphite-dark",
+      "description": "The open application title in the graphite accent, Dark Aqua: the highlight of the System Preferences cell, with the title masked (it is set in the fallback font off Apple platforms).",
+      "example": "visual-accent-title",
+      "appearance": "dark",
+      "accent": "graphite",
+      "actions": [
+        {
+          "click": "[data-testid=app]"
+        }
+      ],
+      "masks": [
+        {
+          "x": 9,
+          "y": 3,
+          "width": 139,
+          "height": 17
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 1.6,
+        "2x": 2.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Theme-Dark-Graphite.png",
+        "crop": {
+          "x": 90,
+          "y": 0,
+          "width": 314,
+          "height": 46
+        }
+      }
+    },
+    {
+      "name": "hover-switch-light",
+      "description": "Real input: with the Finder menu open, the pointer moves to the File title, which opens its menu and takes the highlight. Captures the File title.",
+      "example": "visual-finder-bar",
+      "appearance": "light",
+      "selector": "[data-testid=file]",
+      "actions": [
+        {
+          "click": "[data-testid=finder]"
+        },
+        {
+          "hover": "[data-testid=file]"
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 3,
+            "y": 3,
+            "color": "#2a7cef",
+            "tolerance": 3,
+            "note": "highlight of the open title: the blue menu bar highlight over the bar material (menu-bar.md, Open-title highlight, measured #2a7cef on the Apple title)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "hover-leaves-light",
+      "description": "The same input, capturing the Finder title: its menu closed when the pointer moved on, so the cell shows the bar again.",
+      "example": "visual-finder-bar",
+      "appearance": "light",
+      "selector": "[data-testid=finder]",
+      "actions": [
+        {
+          "click": "[data-testid=finder]"
+        },
+        {
+          "hover": "[data-testid=file]"
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 3,
+            "y": 3,
+            "color": "#c1e2f4",
+            "tolerance": 5,
+            "note": "bar material over the sky stand-in (menu-bar.md, Bar composite, measured #c1e2f4 at x 400)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "hover-switch-dark",
+      "description": "Real input: with the Finder menu open, the pointer moves to the File title, which opens its menu and takes the highlight. Captures the File title.",
+      "example": "visual-finder-bar",
+      "appearance": "dark",
+      "selector": "[data-testid=file]",
+      "actions": [
+        {
+          "click": "[data-testid=finder]"
+        },
+        {
+          "hover": "[data-testid=file]"
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 3,
+            "y": 3,
+            "color": "#0e6bdc",
+            "tolerance": 3,
+            "note": "highlight of the open title: the blue menu bar highlight over the bar material (menu-bar.md, Open-title highlight, measured #0e6bdc on the Apple title)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "hover-leaves-dark",
+      "description": "The same input, capturing the Finder title: its menu closed when the pointer moved on, so the cell shows the bar again.",
+      "example": "visual-finder-bar",
+      "appearance": "dark",
+      "selector": "[data-testid=finder]",
+      "actions": [
+        {
+          "click": "[data-testid=finder]"
+        },
+        {
+          "hover": "[data-testid=file]"
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 3,
+            "y": 3,
+            "color": "#1a253e",
+            "tolerance": 5,
+            "note": "bar material over the sky stand-in (menu-bar.md, Bar composite, measured #1a253e at x 400)"
+          }
+        ]
+      }
+    }
+  ]
+}

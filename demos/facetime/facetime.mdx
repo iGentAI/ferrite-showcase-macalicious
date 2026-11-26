@@ -1,0 +1,274 @@
+---
+title: FaceTime
+description: The FaceTime window of macOS 10.15, dark in both appearances, with a full-height sidebar that holds the window controls, the All and Missed filter, the recipient field and the recent calls beside the camera preview, and a model of a call that is placed, shown over the preview and recorded, over an abstract placeholder for the camera's picture.
+layout: full
+order: 86
+---
+
+<Example name="basic" />
+
+The window as the two reference captures show it: nobody has been called yet. Type a name, an
+email address or a number in the field: an Audio and a Video button appear under the list, and
+Return places a video call. A panel over the camera preview names who is being called until
+End is pressed, and the call then heads the list of recent calls. Nothing is dialled, no
+camera and no microphone is asked for, and the preview is an abstract placeholder: a disc, a
+square and a wedge on a blue field crossed by a band.
+
+## What it shows
+
+- A [Window](/components/window) without a title bar and with `data-appearance="dark"`: a
+  FaceTime window is dark in Aqua and in Dark Aqua alike, and the attribute gives everything
+  inside its Dark Aqua look.
+- A [Sidebar](/components/sidebar), 262 pt wide and as tall as the window. Its `header` holds
+  the [Window Controls](/components/window-controls), which float over it where a title bar
+  would have them, the filter and the recipient field; this strip is the window's drag
+  region. Its surface is the colour measured in the captures, given through the material's
+  token, `--mac-material-sidebar`.
+- The filter is a [Segmented Control](/components/segmented-control) of two segments, All and
+  Missed, at the regular size, whose fill is the 134 by 19 pt of the capture. The fill of the
+  segment that is not selected is the measured one, through the bezel's token,
+  `--mac-bezel-fill`.
+- The recipient field is a [Text Field](/components/text-field), 239 by 20 pt, with the
+  measured fill through `--mac-text-field-background`.
+- A recent call is a row of the sidebar: its `label` is two lines, the name and the kind of
+  call with its time, and its `accessory` is an [Image Button](/components/image-button)
+  that calls back. The rows are 40 pt high through `--mac-sidebar-row-height`.
+- Once a recipient is typed, the sidebar's `footer` holds two
+  [Push Buttons](/components/push-button) in the `primary` variant, Audio and Video. They are
+  green, as FaceTime's are: the group around them sets `data-accent="green"`.
+- The camera preview is an [Image View](/components/image-view) around the placeholder
+  drawing, which names it for assistive technology. `children` replace it with a picture of
+  your own.
+- A call is shown by a [HUD Window](/components/hud-window) over the bottom of the preview:
+  two lines of `HudWindowText` and an End button, a `primary` push button inside an element
+  with `data-accent="red"`.
+
+<Example name="recents" />
+
+The list takes its calls from `defaultCalls`; `RECENT_CALLS` in `facetime-data.ts` is a list
+of five with invented names. Missed shows the calls that were not answered, whose names are
+red and whose second line starts with the word. The button at the end of a row calls back
+with the row's kind of call, and so does Return on the selected row.
+
+| Action | Result |
+| --- | --- |
+| All, Missed | The list shows every call, or the ones that were not answered. The selected segment stays selected when it is pressed again. |
+| Typing a recipient | Audio and Video appear under the list; they go when the field is empty or holds only spaces. |
+| Return in the field, or Video | A FaceTime Video call to the recipient. Audio places a FaceTime Audio call. |
+| The button of a row, or Return on the selected row | A call back, of the row's kind. |
+| End | The call ends and is added to the top of the list as an outgoing call, with the time. The missed call it answered stays where it was. |
+
+One call is under way at a time: while it is, the buttons that would start another are
+disabled and Return starts none.
+
+### The source
+
+| File | What is in it |
+| --- | --- |
+| `facetime.tsx` | `FaceTime`: the window, the sidebar with its header, rows and footer, the camera preview and the call panel. Its state is the list of calls, the filter, the text of the field, the selected row and the call under way. |
+| `facetime-data.ts` | The types of a call, the invented `RECENT_CALLS`, and four pure functions: `filterCalls`, `callDetail` (a row's second line), `kindName` and `describeList` (what the filter shows, in a sentence). The tests call them directly. |
+| `facetime-artwork.tsx` | `CameraPlaceholder`, the abstract picture, and the two glyphs of the call buttons, a camera and a handset. Original drawings. |
+| `facetime.css` | Where the parts lie: the sidebar's 262 pt, the three controls of the header at their measured places, a row's two lines, the two buttons under the list, the preview and the call panel. No colours of its own. |
+| `facetime.tokens.css` | The colours the demo adds, each tagged measured or provisional: the sidebar's, the fills of the segment and the field, and the placeholder's tones. |
+| `app.ts` | The descriptor the desktop demo reads. |
+
+The component starts with the library's variables it sets, in four constants (`SIDEBAR`,
+`FILTER`, `FIELD`, `CALL`), with a comment that says where each variable is documented. A call
+is two functions: `start` sets the call under way, empties the field and announces the call;
+`end` puts a new line at the head of the list and announces that. An effect moves the
+keyboard focus when a call starts and when it ends, since the control that started it is
+disabled or gone.
+
+## Hosting the window
+
+`FaceTime` renders the library's `Window` as its root and passes every `Window` prop to it, so
+it does not assume it fills the page. Place it with `style`; a window manager gives it `state`,
+the size, and eight more props that the component hands to the window controls and to its drag
+region. These are the props a [Managed Window](/components/managed-window)'s `render` form
+supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { facetimeApp } from "./app";
+
+<ManagedWindow
+  id={facetimeApp.id}
+  defaultFrame={{ x: 80, y: 60, ...facetimeApp.defaultSize }}
+  minWidth={facetimeApp.minSize.width}
+  minHeight={facetimeApp.minSize.height}
+  render={(props) => <facetimeApp.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `defaultCalls` | `readonly FaceTimeCall[]` | The recent calls when the window opens, newest first; none by default, as captured. Read once. |
+| `defaultFilter` | `"all" \| "missed"` | Which calls the list shows at first; all by default. |
+| `defaultRecipient` | `string` | The text in the field at first; empty by default. |
+| `children` | `ReactNode` | The camera's picture, shown instead of the placeholder: your own `<video>` or image. The demo does not ask for a camera. |
+| `onCallStart` | `(call: { name, kind }) => void` | Called when a call starts, from the field or from a recent call. |
+| `onCallEnd` | `(call: FaceTimeCall) => void` | Called when a call ends, with the line it adds to the list. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | A press or a double click on the strip that holds the window controls, the filter and the field, not on a control in it. |
+| `calls` | `readonly FaceTimeCall[]` | The recent calls, when the owner holds them: the window shows these and adds nothing itself. |
+| `call` | `{ name, kind, status } \| null` | The call under way, when the owner holds it; End then only calls `onHangUp`. |
+| `onHangUp` | `() => void` | Called when End is clicked on a call the owner holds. |
+| `incoming` | `{ name, kind, detail?, acceptLabel?, declineLabel? } \| null` | A call waiting for the person: a panel over the preview with two buttons, Decline and Accept unless named otherwise. |
+| `onAccept`, `onDecline` | `() => void` | Called by the panel's two buttons. |
+| `stage` | `ReactNode` | The other person's picture during a call; the camera's own picture (`children`) moves to a small view in the corner. |
+| `notice` | `string` | A sentence over the top of the preview, such as why a call could not be placed. |
+| `width`, `height` | `number \| string` | The frame; 652 by 585 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer and key events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `facetimeApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (652 by 585), `minSize` (560 by 320), `resizable` and
+`menus`, the menu titles after the Apple menu (FaceTime, File, Edit, Video, Window, Help). The
+[desktop demo](/demos/desktop) finds it there and lists FaceTime among its applications.
+
+On the desktop served by its Ferrite application (`ferrite-apps/desktop`), the app's component
+is `FaceTimeLive` (`facetime-live.tsx`), which makes real calls between accounts of that
+desktop. It asks for the camera and microphone when it opens; a call is placed by account name,
+rings in the other person's FaceTime with Accept and Decline, and once answered carries sound
+and picture straight between the two browsers over WebRTC, with a public STUN server and no
+relay. The server carries only the signalling. Each page names itself with a random token and
+holds a seat tied to it, so a reload or a second tab takes the call up on a seat of its own,
+only when asked (Join Here), and a hang-up from a page that has been replaced ends nothing. End
+and Decline cancel a request still on its way, and a call whose reply was lost is looked for
+and taken up, or left, rather than left running while the window looks idle. Only the desktop
+build made for that application turns this on (`VITE_MACALICIOUS_API=1`); on this site and
+anywhere else the window is the plain `FaceTime` and asks for no camera.
+
+Add Person, in the call panel and in the Video menu, rings one more person by account name, with
+the same Contacts suggestions as the recipient field, up to four people in a call. A group is a
+mesh: each browser holds a connection to each other person joined, with one tile for each, named
+for its person. Who could not be reached is said by name, and the call goes on with the rest. Mute,
+Pause, a change of device and the choice of output act on every connection, and Picture in Picture
+floats the first picture. When someone hangs up their tile goes; the call ends for everyone when
+fewer than two people remain, so one of two hanging up still ends it for both. A row in the recent
+calls reads "Martin and 2 others", and calling it back calls Martin. There is no media server, so
+among four people every browser sends its picture three times and receives three.
+
+The panel's Full Screen and Video > Enter Full Screen use the window's green-button command. Live
+Photo keeps a still of the first picture in the person's Photos library: a page has no motion or
+sound from around the moment, and the other person is not told. Undo to Select All in the Edit menu
+act on the recipient field or Add Person's field. A contact dragged from Contacts onto the window
+fills the recipient field, with the account name when the card names one. The names the field offers
+lie under it; Down Arrow enters them and Escape puts them away. A recent call's info button opens
+the person's card in Contacts, and is dimmed for someone with no card.
+
+## Accessibility
+
+- The window is a `region` named “FaceTime”. It has no title bar, so the name is an
+  `aria-label`.
+- The filter is a `group` named “Calls shown” and one tab stop: the arrow keys move between
+  its two segments, Space and Return select, and the selected one has `aria-pressed`. The list
+  changing under it is announced: “Showing 2 missed calls”, “No missed calls”.
+- The field is a `textbox` named “Recipient”; its placeholder is the hint FaceTime shows.
+  Return in it places a video call.
+- The recent calls are a `tree` named “Recent calls” and one tab stop: the arrow keys, Home
+  and End move the selection, typing selects by name, and Return calls the selected row back.
+  A row is named by its two lines, such as “Dario Venturi Missed FaceTime Audio · Yesterday”:
+  a missed call says so in words, since its red name is a colour only. The glyph button at
+  the end of a row is a tab stop of its own, named with the row's name and kind, “Call Dario
+  Venturi with FaceTime Audio”.
+- Audio and Video are buttons in a `group` named with the recipient, “Call Quinn Abara”. They
+  follow the list in the tab order, as they follow it in the window.
+- A call is announced by a polite `status` region, “Calling Quinn Abara with FaceTime Audio”,
+  and the keyboard focus moves to End, in a `group` named “Call” that holds the recipient's
+  name and the kind of call. Ending is announced too, “Call with Quinn Abara ended”, and the
+  focus returns to the field. While a call is under way the buttons that would start another
+  are disabled, not hidden.
+- The placeholder picture is an image whose text alternative says what it is: an abstract
+  placeholder for the camera preview.
+- Focus rings and the accent selection of the list are drawn only while the window is key.
+
+## Fidelity
+
+`facetime.visual.json` compares the window with the two FaceTime captures, which show the
+same dark window, so one example, `visual-window`, serves both.
+
+**Masked in every comparison: the camera preview**, 390 by 585 pt from x 262, which is the
+window's whole height and 60% of it. Each capture shows a person in front of the camera. The
+demo shows artwork of its own there (the generated picture in `art/camera.webp`, or the
+abstract placeholder drawing without it), which takes nothing from those pictures, so there
+is nothing to compare. The expected-pixel checks leave the preview out too: they hold the
+sidebar up to its edge at 262 pt and read no pixel of the artwork, so changing the picture
+changes no comparison. No budget was raised to admit the artwork: every budget is just above
+the score measured with the region masked.
+
+- `window-light` and `window-dark` compare the whole window with that one mask.
+- `window-light-layout` and `window-dark-layout` compare it again at the stricter threshold
+  and also mask the text (the two segment titles and the placeholder) and the parts of the
+  sidebar where the desktop behind the captured window shows through its material: one
+  rectangle at the bottom right in the Aqua capture, and four rectangles over three patches
+  in the Dark Aqua one. What they score is the frame, the sidebar's fill, the window
+  controls, the segmented control's bezel and the field's bezel.
+- `chrome-light` and `chrome-dark` are expected-pixel checks, which pass or fail and have no
+  score. In Aqua, 39 pixels at 2x (14 at 1x) hold the measured chrome to colours from the
+  spec or computed from the tokens: the sidebar's fill, the rim, the three window controls
+  (x 8 to 60, y 5 to 17 pt), the segmented control's fill (x 64 to 198, y 32 to 51 pt, the
+  boundary at 131 pt), the field's fill and four edges (x 11.5 to 250.5, y 60.5 to 80.5 pt)
+  and the sidebar's end at 262 pt, to half a point at 2x. In Dark Aqua, nine pixels
+  (six at 1x) show that the window does not follow the page's appearance. No expected pixel
+  lies in the preview.
+
+Scores from `npm run visual -- facetime/` in Chromium on Linux with the fallback font: the
+share of pixels that differ by more than the threshold (0.1, and 0.05 in the `-layout`
+comparisons) and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` (preview masked) | 8.02% | 8.56 | 7.99% | 8.44 |
+| `window-light-layout` (preview, text and backdrop patch masked) | 0.95% | 5.99 | 0.34% | 5.80 |
+| `window-dark` (preview masked) | 11.12% | 9.86 | 11.09% | 9.74 |
+| `window-dark-layout` (preview, text and backdrop patches masked) | 1.14% | 4.94 | 0.39% | 4.71 |
+
+Nearly all of the two `window-*` scores is the sidebar's material, described below. The mean
+difference of the `-layout` comparisons is the same material where it is within the
+threshold: the captured sidebar runs from `#413f3b` to `#4a4948` over the unmasked part, and
+the demo's is `#413f3b` throughout.
+
+Measured in the captures and reproduced: the 652 by 585 pt frame; the 262 pt sidebar and its
+colour where no desktop shows through; the window controls at x 8, 28 and 48 pt, y 5 pt, in
+their dark-window colours; the segmented control's 134 by 19 pt of fill at 64, 32 with its
+boundary at 131 pt, the blue gradient of the selected segment and the grey of the other, with
+no line between them; the recipient field's 239 by 20 pt at 11.5, 60.5 with its fill, its
+placeholder text and its colour; and the list starting 86 pt under the window's top.
+
+### Known differences
+
+- **The camera's picture** is the demo's own artwork and is masked, as said above.
+- **The sidebar's material.** FaceTime's sidebar is vibrant: it takes the tone of whatever is
+  behind the window, so it runs from `#4a4948` down to `#1c1c1d` in the Aqua capture and to
+  `#1b1b1d` in the Dark Aqua one, differently in each. The library has no dark vibrant
+  sidebar material, and a page cannot see the desktop behind a window: the demo gives the
+  library's sidebar one opaque colour, `#413f3b`, measured at the top of both captures. This
+  is the mismatch of `window-light` and `window-dark`.
+- **The segmented control's outline.** FaceTime's control is flat: its fill ends at the
+  sidebar, with one lighter row along its top. The library's segmented control has no such
+  vibrant rendering, so the standard Dark Aqua bezel is used with the measured fill: it adds
+  a hairline around the fill and a faint shadow under it, and the highlight along its top is
+  weaker (white at 17% over the fill, where the capture's first row, `#a5a39f`, is about
+  30%). The titles are white at 85%, the library's control text, where FaceTime's are pure
+  white.
+- **The field's edges.** The library's Dark Aqua text field is used with the measured fill.
+  Its edges are a little weaker than the capture's: white at 12% along the top, 9% at the
+  sides and 25% along the bottom, where the capture has about 15%, 12% and 32%.
+- **The top edge.** Both captures have two brighter rows along the window's top edge
+  (`#868482`, `#757571`). The library draws them in its title bar, and this window has none:
+  its top edge is the window's rim, as its other three edges are in the captures too.
+- **Text.** Set in the fallback font off Apple devices.
+- **The window when it is not key.** The library's sidebar switches to its own inactive
+  Dark Aqua surface, `#2c2d2f`, and the selected segment turns grey. No capture shows an
+  inactive FaceTime window.
+- **Not in a screenshot (provisional):** the rows of the recent calls and their glyph
+  buttons, the Audio and Video buttons, the call panel with its End button, and every size
+  other than the captured one. They are built from the library's components as they are;
+  none of their looks is measured.
+- **Not built on this site:** real calls, the camera and the microphone; ringing, answering
+  and incoming calls (all of these exist on the desktop's Ferrite application, between two
+  of its accounts); the full-window picture and controls of a call that is answered; Group
+  FaceTime;
+  recipients as tokens completed from Contacts (the field is a plain text field and takes one
+  recipient); removing a recent call; and the menus beyond their titles.

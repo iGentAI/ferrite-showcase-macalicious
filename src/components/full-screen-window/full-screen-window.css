@@ -1,0 +1,132 @@
+/*
+ * Full-screen window: a window in a Space of its own, with the menu bar, and if it hides the
+ * title bar too, out of sight above the top edge until the pointer or the keyboard calls them.
+ *
+ * Parts
+ *   .mac-full-screen-window            the root: a full-screen `Window`, or the element given
+ *                                      as `render` inside one
+ *   .mac-full-screen-window-bars       holds the bars; in flow when the title bar stays, out of
+ *                                      flow over the content when it hides
+ *   .mac-full-screen-window-edge       the strip along the top edge that reveals the bars
+ *   .mac-full-screen-window-panel      what slides: the title bar, with the menu bar above it
+ *   .mac-full-screen-window-menu-bar   the 22 pt slot of the menu bar
+ *
+ * States, on the root
+ *   [data-full-screen]             in full screen; without it the bars are an ordinary title bar
+ *   [data-revealed]                the bars are down, over the content, and cast their shadow
+ *   [data-auto-hide-toolbar]       the title bar hides with the menu bar
+ *
+ * Hooks
+ *   --mac-full-screen-window-menu-bar-height   height of the menu bar slot (22px)
+ *   --mac-full-screen-window-edge              height of the strip that reveals the bars (4px)
+ */
+.mac-full-screen-window {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Rendered as another element inside a window, it is the whole of that window. */
+:where([data-window-state]) > .mac-full-screen-window {
+  flex: 1 1 auto;
+}
+
+.mac-full-screen-window-bars {
+  position: relative;
+  z-index: 2;
+  flex: none;
+}
+
+/* The pointer goes through to the content, except on the edge and on the bars themselves. */
+.mac-full-screen-window:where([data-full-screen][data-auto-hide-toolbar])
+> .mac-full-screen-window-bars {
+  position: absolute;
+  inset: 0 0 auto;
+  pointer-events: none;
+}
+
+.mac-full-screen-window-edge {
+  position: absolute;
+  z-index: 1;
+  inset: 0 0 auto;
+  height: var(--mac-full-screen-window-edge, 4px);
+  pointer-events: auto;
+}
+
+/* Once the bars are down the edge is theirs. */
+.mac-full-screen-window:where([data-revealed]) > * > .mac-full-screen-window-edge {
+  pointer-events: none;
+}
+
+.mac-full-screen-window-panel {
+  --_menu-bar: 0px;
+
+  position: relative;
+  pointer-events: auto;
+  transition: transform 0.2s ease-out;
+}
+
+.mac-full-screen-window-panel:where(:has(> .mac-full-screen-window-menu-bar)) {
+  --_menu-bar: var(--mac-full-screen-window-menu-bar-height, 22px);
+}
+
+.mac-full-screen-window:where([data-full-screen][data-auto-hide-toolbar])
+  > *
+  > .mac-full-screen-window-panel {
+  transform: translateY(-100%);
+}
+
+/* As specific as the rule above, and after it. */
+.mac-full-screen-window:where([data-revealed]) > * > .mac-full-screen-window-panel {
+  transform: translateY(var(--_menu-bar));
+}
+
+/* The shadow of the revealed bars, behind the title bar. It fades in: only opacity moves. */
+.mac-full-screen-window-panel::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  box-shadow: var(--mac-full-screen-window-bar-shadow);
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+  pointer-events: none;
+}
+
+.mac-full-screen-window:where([data-revealed]) > * > .mac-full-screen-window-panel::after {
+  opacity: 1;
+}
+
+/* The menu bar sits on top of the title bar, so it is above the screen until the panel slides. */
+.mac-full-screen-window-menu-bar {
+  position: absolute;
+  inset: auto 0 100%;
+  display: grid;
+  height: var(--_menu-bar);
+}
+
+/* No movement: the bars are in place at once and fade. */
+@media (prefers-reduced-motion: reduce) {
+  .mac-full-screen-window-panel,
+  .mac-full-screen-window-menu-bar {
+    transition: opacity 0.2s linear;
+  }
+
+  .mac-full-screen-window:where([data-full-screen][data-auto-hide-toolbar]:not([data-revealed]))
+    > *
+    > .mac-full-screen-window-panel,
+  .mac-full-screen-window:where(:not([data-revealed])) > * > * > .mac-full-screen-window-menu-bar {
+    opacity: 0;
+  }
+}
+
+/* The shadow is gone in forced-colours mode: an edge under the bars takes its place. */
+@media (forced-colors: active) {
+  .mac-full-screen-window:where([data-revealed]) > * > .mac-full-screen-window-panel {
+    border-bottom: 1px solid CanvasText;
+  }
+}

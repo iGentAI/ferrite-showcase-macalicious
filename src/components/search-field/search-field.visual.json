@@ -1,0 +1,787 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "reminders-light",
+      "description": "The 21 pt search field of the Reminders sidebar, Aqua, at threshold 0.05: the sidebar variant with the height hook. The glass and the placeholder are masked (the placeholder is set in the fallback font off Apple platforms); what is scored is the bezel and its height.",
+      "example": "visual-reminders",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [{ "x": 11, "y": 8, "width": 75, "height": 16 }],
+      "budget": { "1x": 0.13, "2x": 0.0005 },
+      "deltaBudget": { "1x": 3.2, "2x": 1.0 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Reminders.png",
+        "crop": { "x": 130, "y": 170, "width": 530, "height": 62 }
+      }
+    },
+    {
+      "name": "reminders-dark",
+      "description": "As reminders-light, Dark Aqua.",
+      "example": "visual-reminders",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [{ "x": 11, "y": 8, "width": 75, "height": 16 }],
+      "budget": { "1x": 0.13, "2x": 0.0009 },
+      "deltaBudget": { "1x": 3.5, "2x": 1.2 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Reminders.png",
+        "crop": { "x": 130, "y": 170, "width": 530, "height": 62 }
+      }
+    },
+    {
+      "name": "automator-light",
+      "description": "Focused small search field of Automator's library, Aqua, whole crop.",
+      "example": "visual-automator",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": ".mac-search-field-input"
+        }
+      ],
+      "budget": {
+        "1x": 0.165,
+        "2x": 0.0131
+      },
+      "deltaBudget": {
+        "1x": 8.91,
+        "2x": 1.33
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Automator.png",
+        "crop": {
+          "x": 412,
+          "y": 212,
+          "width": 456,
+          "height": 48
+        }
+      }
+    },
+    {
+      "name": "automator-light-masked",
+      "description": "As automator-light with the placeholder masked, to score bezel, glass and focus ring alone: text is set in the fallback font off Apple platforms.",
+      "example": "visual-automator",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": ".mac-search-field-input"
+        }
+      ],
+      "masks": [
+        {
+          "x": 26,
+          "y": 7,
+          "width": 34,
+          "height": 13
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.175,
+        "2x": 0.0084
+      },
+      "deltaBudget": {
+        "1x": 8.88,
+        "2x": 0.74
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Automator.png",
+        "crop": {
+          "x": 412,
+          "y": 212,
+          "width": 456,
+          "height": 48
+        }
+      }
+    },
+    {
+      "name": "automator-dark",
+      "description": "Focused small search field of Automator's library, Dark Aqua, whole crop.",
+      "example": "visual-automator",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": ".mac-search-field-input"
+        }
+      ],
+      "budget": {
+        "1x": 0.165,
+        "2x": 0.0136
+      },
+      "deltaBudget": {
+        "1x": 9.7,
+        "2x": 2.11
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Automator.png",
+        "crop": {
+          "x": 412,
+          "y": 212,
+          "width": 456,
+          "height": 48
+        }
+      }
+    },
+    {
+      "name": "automator-dark-masked",
+      "description": "As automator-dark with the placeholder masked, to score bezel, glass and focus ring alone: text is set in the fallback font off Apple platforms.",
+      "example": "visual-automator",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": ".mac-search-field-input"
+        }
+      ],
+      "masks": [
+        {
+          "x": 26,
+          "y": 7,
+          "width": 34,
+          "height": 13
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.174,
+        "2x": 0.0085
+      },
+      "deltaBudget": {
+        "1x": 9.69,
+        "2x": 1.61
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Automator.png",
+        "crop": {
+          "x": 412,
+          "y": 212,
+          "width": 456,
+          "height": 48
+        }
+      }
+    },
+    {
+      "name": "music-light",
+      "description": "Search field at the top of Music's sidebar, not focused, Aqua, whole crop.",
+      "example": "visual-music",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.036,
+        "2x": 0.0163
+      },
+      "deltaBudget": {
+        "1x": 5.26,
+        "2x": 2.02
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Music.png",
+        "crop": {
+          "x": 128,
+          "y": 198,
+          "width": 408,
+          "height": 56
+        }
+      }
+    },
+    {
+      "name": "music-light-masked",
+      "description": "As music-light with the placeholder masked, to score bezel and glass alone.",
+      "example": "visual-music",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 26,
+          "y": 7,
+          "width": 48,
+          "height": 15
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.158,
+        "2x": 0.0041
+      },
+      "deltaBudget": {
+        "1x": 4.26,
+        "2x": 0.93
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Music.png",
+        "crop": {
+          "x": 128,
+          "y": 198,
+          "width": 408,
+          "height": 56
+        }
+      }
+    },
+    {
+      "name": "music-dark",
+      "description": "Search field at the top of Music's sidebar, not focused, Dark Aqua, whole crop.",
+      "example": "visual-music",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.074,
+        "2x": 0.0189
+      },
+      "deltaBudget": {
+        "1x": 5.83,
+        "2x": 2.5
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Music.png",
+        "crop": {
+          "x": 128,
+          "y": 198,
+          "width": 408,
+          "height": 56
+        }
+      }
+    },
+    {
+      "name": "music-dark-masked",
+      "description": "As music-dark with the placeholder masked, to score bezel and glass alone.",
+      "example": "visual-music",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 26,
+          "y": 7,
+          "width": 48,
+          "height": 15
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.146,
+        "2x": 0.0054
+      },
+      "deltaBudget": {
+        "1x": 4.83,
+        "2x": 1.24
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Music.png",
+        "crop": {
+          "x": 128,
+          "y": 198,
+          "width": 408,
+          "height": 56
+        }
+      }
+    },
+    {
+      "name": "standard-light",
+      "description": "The standard field at rest, which no screenshot shows: the text field's edge and fill, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 176,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 8.25,
+            "y": 19,
+            "color": "#b1b1b1",
+            "scale": 2,
+            "tolerance": 1,
+            "note": "side edge, black at 25% over #ececec (spec: search-field, Standard unfocused in-content bezel, inferred from text-field)"
+          },
+          {
+            "x": 100,
+            "y": 19,
+            "color": "#ffffff",
+            "note": "fill (spec: white fill, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "standard-dark",
+      "description": "The standard field at rest, which no screenshot shows: the text field's edge and fill, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 176,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 100,
+            "y": 8.25,
+            "color": "#4b4b4b",
+            "scale": 2,
+            "tolerance": 2,
+            "note": "top edge, white at 12% over #323232 (inferred from text-field)"
+          },
+          {
+            "x": 100,
+            "y": 19,
+            "color": "#3c3c3c",
+            "note": "fill, white at 5% over #323232 (spec: rgba(255,255,255,0.05), inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "standard-focus-light",
+      "description": "Keyboard focus on the standard field, given by a click: the ring reaches 3 pt beyond the edge, as measured on Automator's field, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#standard"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 176,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 19,
+            "color": "#82abf1",
+            "tolerance": 3,
+            "note": "focus ring over the window background: #82abf1 on #ececec, measured on the Go to Folder field (spec: focus-ring)"
+          },
+          {
+            "x": 4.5,
+            "y": 19,
+            "color": "#ececec",
+            "note": "page just outside the ring: it ends 3 pt beyond the field's edge (Automator col 640: ring y 213..218, edge 219)"
+          },
+          {
+            "x": 100,
+            "y": 19,
+            "color": "#ffffff",
+            "note": "fill: the ring covers the edge only (Automator col 640: fill from y 220)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "standard-focus-dark",
+      "description": "Keyboard focus on the standard field, given by a click: the ring reaches 3 pt beyond the edge, as measured on Automator's field, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#standard"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 176,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 19,
+            "color": "#2e6d98",
+            "tolerance": 3,
+            "note": "focus ring, rgb(43 168 255 / 0.5), over the untinted window background #323232 (spec: focus-ring measures #2d6c99 on #2f3032)"
+          },
+          {
+            "x": 4.5,
+            "y": 19,
+            "color": "#323232",
+            "note": "page just outside the ring: it ends 3 pt beyond the field's edge (Automator col 640: ring y 213..218, edge 219)"
+          },
+          {
+            "x": 100,
+            "y": 19,
+            "color": "#3c3c3c",
+            "note": "fill: the ring covers the edge only (Automator col 640: fill from y 220)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-not-key-light",
+      "description": "The focused field in a window that is not key: no ring, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "click": "#standard"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 176,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 19,
+            "color": "#ececec",
+            "note": "no focus ring in a window that is not key (spec: focus-ring, documented)"
+          },
+          {
+            "x": 100,
+            "y": 19,
+            "color": "#ffffff",
+            "note": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-not-key-dark",
+      "description": "The focused field in a window that is not key: no ring, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "click": "#standard"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 176,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 19,
+            "color": "#323232",
+            "note": "no focus ring in a window that is not key (spec: focus-ring, documented)"
+          },
+          {
+            "x": 100,
+            "y": 19,
+            "color": "#3c3c3c",
+            "note": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cancel-button-light",
+      "description": "Once the field holds text the cancel button shows: a 14 pt disc 4 pt from the trailing edge, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#standard"
+        },
+        {
+          "key": "a"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 176,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 157,
+            "y": 13.5,
+            "color": "#7b7b7b",
+            "tolerance": 3,
+            "note": "disc, above the cross (inferred: the toolbar search field's measured disc colour)"
+          },
+          {
+            "x": 148,
+            "y": 19,
+            "color": "#ffffff",
+            "note": "fill just before the disc: it starts 18 pt from the edge"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cancel-button-dark",
+      "description": "Once the field holds text the cancel button shows: a 14 pt disc 4 pt from the trailing edge, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#standard"
+        },
+        {
+          "key": "a"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 176,
+          "height": 38
+        },
+        "pixels": [
+          {
+            "x": 157,
+            "y": 13.5,
+            "color": "#b9b9ba",
+            "tolerance": 3,
+            "note": "disc, above the cross (inferred: the toolbar search field's measured disc colour)"
+          },
+          {
+            "x": 148,
+            "y": 19,
+            "color": "#3c3c3c",
+            "note": "fill just before the disc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "store-light",
+      "description": "The store field of the App Store's sidebar, empty and at rest, Aqua. The placeholder is set in the fallback font off Apple platforms and the glass is the library's drawing.",
+      "example": "visual-store",
+      "appearance": "light",
+      "budget": { "1x": 0.0105, "2x": 0.0136 },
+      "deltaBudget": { "1x": 1.1, "2x": 1.2 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mac-App-Store.png",
+        "crop": { "x": 140, "y": 162, "width": 384, "height": 76 }
+      }
+    },
+    {
+      "name": "store-light-masked",
+      "description": "As store-light with the glass and the placeholder masked, to score the bezel alone.",
+      "example": "visual-store",
+      "appearance": "light",
+      "masks": [{ "x": 65, "y": 11, "width": 59, "height": 16 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0005, "2x": 0.0009 },
+      "deltaBudget": { "1x": 0.2, "2x": 0.2 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mac-App-Store.png",
+        "crop": { "x": 140, "y": 162, "width": 384, "height": 76 }
+      }
+    },
+    {
+      "name": "store-dark",
+      "description": "The store field of the App Store's sidebar, empty and at rest, Dark Aqua.",
+      "example": "visual-store",
+      "appearance": "dark",
+      "budget": { "1x": 0.006, "2x": 0.0093 },
+      "deltaBudget": { "1x": 0.7, "2x": 0.8 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mac-App-Store.png",
+        "crop": { "x": 140, "y": 162, "width": 384, "height": 76 }
+      }
+    },
+    {
+      "name": "store-dark-masked",
+      "description": "As store-dark with the glass and the placeholder masked, to score the bezel alone.",
+      "example": "visual-store",
+      "appearance": "dark",
+      "masks": [{ "x": 65, "y": 11, "width": 59, "height": 16 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0005, "2x": 0.0011 },
+      "deltaBudget": { "1x": 0.1, "2x": 0.15 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mac-App-Store.png",
+        "crop": { "x": 140, "y": 162, "width": 384, "height": 76 }
+      }
+    },
+    {
+      "name": "store-focus-light",
+      "description": "The store field after a click, Aqua: the glass and the placeholder move to the leading edge, as NSSearchField does with a centred placeholder, and the focus ring is drawn. Inferred; no screenshot shows the field with the keyboard.",
+      "example": "visual-store",
+      "appearance": "light",
+      "actions": [{ "click": ".mac-search-field-input" }],
+      "expect": {
+        "size": { "width": 192, "height": 38 },
+        "pixels": [
+          {
+            "x": 13.25,
+            "y": 17.75,
+            "color": "#646666",
+            "tolerance": 8,
+            "note": "the ring of the glass at the leading edge, 7 pt inside the field (colour measured on the App Store's glass; position inferred)"
+          },
+          {
+            "x": 100,
+            "y": 19,
+            "color": "#e3e5e5",
+            "note": "fill where the centred placeholder was (measured fill)"
+          },
+          {
+            "x": 4.5,
+            "y": 19,
+            "color": "#80a9f0",
+            "tolerance": 4,
+            "note": "focus ring, rgb(24 106 246 / 0.5), over the sidebar colour #e7e8e9 (spec: focus-ring)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "store-focus-dark",
+      "description": "The store field after a click, Dark Aqua. Inferred.",
+      "example": "visual-store",
+      "appearance": "dark",
+      "actions": [{ "click": ".mac-search-field-input" }],
+      "expect": {
+        "size": { "width": 192, "height": 38 },
+        "pixels": [
+          {
+            "x": 13.25,
+            "y": 17.75,
+            "color": "#a3a4a7",
+            "tolerance": 8,
+            "note": "the ring of the glass at the leading edge (colour measured on the App Store's glass; position inferred)"
+          },
+          {
+            "x": 100,
+            "y": 19,
+            "color": "#454649",
+            "note": "fill where the centred placeholder was (measured fill)"
+          },
+          {
+            "x": 4.5,
+            "y": 19,
+            "color": "#2c6b97",
+            "tolerance": 4,
+            "note": "focus ring, rgb(43 168 255 / 0.5), over the sidebar colour #2c2d2f (spec: focus-ring)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "store-not-key-light",
+      "description": "The store field after a click in an inactive window, Aqua: no focus ring.",
+      "example": "visual-store",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [{ "click": ".mac-search-field-input" }],
+      "expect": {
+        "size": { "width": 192, "height": 38 },
+        "pixels": [
+          {
+            "x": 4.5,
+            "y": 19,
+            "color": "#e7e8e9",
+            "note": "sidebar colour: no focus ring in a window that is not key"
+          }
+        ]
+      }
+    },
+    {
+      "name": "store-not-key-dark",
+      "description": "The store field after a click in an inactive window, Dark Aqua: no focus ring.",
+      "example": "visual-store",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [{ "click": ".mac-search-field-input" }],
+      "expect": {
+        "size": { "width": 192, "height": 38 },
+        "pixels": [
+          {
+            "x": 4.5,
+            "y": 19,
+            "color": "#2c2d2f",
+            "note": "sidebar colour: no focus ring in a window that is not key"
+          }
+        ]
+      }
+    },
+    {
+      "name": "store-states-light",
+      "description": "Two store fields no screenshot shows, Aqua: a forced focus preview, laid out as real focus is, and a placeholder too long for an 80 pt field, which stays on one line inside it and starts after the glass.",
+      "example": "visual-store-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 192, "height": 76 },
+        "pixels": [
+          {
+            "x": 13.25,
+            "y": 17.75,
+            "color": "#646666",
+            "tolerance": 8,
+            "note": "forced focus: the ring of the glass at the leading edge, 7 pt inside the field (colour measured on the App Store's glass; position inferred)"
+          },
+          {
+            "x": 100,
+            "y": 19,
+            "color": "#e3e5e5",
+            "note": "forced focus: fill where the centred placeholder would be (measured fill)"
+          },
+          {
+            "x": 4.5,
+            "y": 19,
+            "color": "#80a9f0",
+            "tolerance": 4,
+            "note": "forced focus: the ring, rgb(24 106 246 / 0.5), over the sidebar colour #e7e8e9 (spec: focus-ring)"
+          },
+          {
+            "x": 19.1,
+            "y": 55.6,
+            "scale": 2,
+            "color": "#646666",
+            "tolerance": 8,
+            "note": "long placeholder: the ring of the glass, which starts 12.5 pt inside the field when the row has no room to centre (the copy's 7 pt padding and 5.5 pt gap); a half-point stroke edge, so 2x only"
+          },
+          {
+            "x": 90,
+            "y": 57,
+            "color": "#e7e8e9",
+            "note": "long placeholder: sidebar colour beside the field; the text does not run out of it"
+          },
+          {
+            "x": 40,
+            "y": 73,
+            "color": "#e7e8e9",
+            "note": "long placeholder: sidebar colour under the field; the text does not wrap"
+          }
+        ]
+      }
+    },
+    {
+      "name": "store-states-dark",
+      "description": "The forced focus preview and the long placeholder of the store field, Dark Aqua.",
+      "example": "visual-store-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 192, "height": 76 },
+        "pixels": [
+          {
+            "x": 13.25,
+            "y": 17.75,
+            "color": "#a3a4a7",
+            "tolerance": 8,
+            "note": "forced focus: the ring of the glass at the leading edge (colour measured on the App Store's glass; position inferred)"
+          },
+          {
+            "x": 100,
+            "y": 19,
+            "color": "#454649",
+            "note": "forced focus: fill where the centred placeholder would be (measured fill)"
+          },
+          {
+            "x": 4.5,
+            "y": 19,
+            "color": "#2c6b97",
+            "tolerance": 4,
+            "note": "forced focus: the ring, rgb(43 168 255 / 0.5), over the sidebar colour #2c2d2f (spec: focus-ring)"
+          },
+          {
+            "x": 90,
+            "y": 57,
+            "color": "#2c2d2f",
+            "note": "long placeholder: sidebar colour beside the field; the text does not run out of it"
+          },
+          {
+            "x": 40,
+            "y": 73,
+            "color": "#2c2d2f",
+            "note": "long placeholder: sidebar colour under the field; the text does not wrap"
+          }
+        ]
+      }
+    }
+  ]
+}

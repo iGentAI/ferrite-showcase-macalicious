@@ -1,0 +1,289 @@
+---
+title: Safari
+description: Safari 13 with tabs, the Smart Search field, the start page, the Bookmarks sidebar, Reader, the Tab Overview, the Share menu, Picture in Picture and its preferences window.
+layout: full
+order: 40
+---
+
+<Example name="basic" />
+
+Safari 13 as it opens in the Catalina captures: three tabs with the middle one in front, a
+toolbar with Back and Forward, the sidebar button, the Smart Search field, Share and Tab
+Overview, and a web view under them. Everything that draws is a library component; the demo
+adds the browser's state (tabs, each with its own history, Reader and loading) and a small
+invented web to browse.
+
+Nothing is fetched. The pages are placeholder sites written for the demo under the reserved
+`.example` domain, and every such address opens one: type `orchard.example` in the address
+field, or a few words to search the demo's pages. Any other address shows Safari's error page.
+No site, article, photograph or icon from the captures is reproduced.
+
+## What to try
+
+- Click a tab, close one with the button that appears under the pointer (or Delete while the
+  tab has the keyboard), open one with the + at the end of the tab bar, or, while one tab is
+  open, with the + at the end of the toolbar.
+- Click the address field: it shows the whole address, selected. Return loads what was typed,
+  Escape puts the address back. Reload turns into Stop while the page "loads"; each tab
+  loads on its own, so a load goes on while another tab is in front.
+- Follow a link on a page, then use Back and Forward: each tab keeps its own history.
+- The Reader button at the leading end of the field shows the page's article on a sheet of
+  paper; the button that replaces Reload there changes the text size.
+- The Tab Overview button shows a thumbnail per tab and a tile that opens a new one.
+- The sidebar button opens Bookmarks and the Reading List; a link there loads in the front tab.
+- The Share button opens the Share menu on a page that loaded: Add to Reading List and Add
+  Bookmark put the page in the sidebar's lists.
+- Type `reel.example`: the page has a video, and the button under it moves the video to a
+  Picture in Picture window.
+
+## Start page and sidebar
+
+A window with one tab has no tab bar, as in Safari, and its new-tab cell is the last item of
+the toolbar: the library's `SafariNewTabButton`, against the window's edge. The start page is
+the web view's Favorites grid; a folder of favourites opens the Bookmarks sidebar, whose width
+the divider changes. The switch between Bookmarks and the Reading List is the `header` of the
+library's [Sidebar](/components/sidebar), so it is drawn on the sidebar's own material. A
+link's row stays selected while its page is in front; once the tab shows another page the row
+can be chosen again.
+
+<Example name="favorites" />
+
+## Reader
+
+<Example name="reader" />
+
+## Tab Overview
+
+The thumbnails take the shape of the window, as Safari's do: the demo sets the web view's
+`--mac-web-view-thumbnail-aspect` from the window's `width` and `height` when both are numbers.
+The miniatures are schematic drawings of the pages, not renderings.
+
+<Example name="tab-overview" />
+
+## Share menu
+
+The Share button is the library's [Share Menu](/components/share-menu) with Safari's rows:
+Add to Reading List, Add Bookmark, five services and More…. The first two work: the page in
+front joins the Reading List, or the end of the Bookmarks list, unless the list or one of its
+folders already holds it. The services have
+nowhere to send a page and More… has no Extensions preferences to open, so they close the
+menu and do nothing; their icons are abstract placeholders in the demo's tints. The button is dimmed where
+there is nothing to share: on the start page, on the error page and in the Tab Overview.
+
+## Picture in Picture
+
+A page with a video (the demo has one, `reel.example`) can send it to the library's
+[Picture in Picture](/components/picture-in-picture) window. The window outlives a change of
+tab; its return button brings the video's tab to the front, and it closes when that tab
+closes or loads another page. By default it floats over the page, inside the Safari window.
+Give `pictureInPictureContainer` the positioned element that stands for the screen and it
+floats there, as in the capture, where Safari is behind another application's window:
+
+<Example name="picture-in-picture" />
+
+The video is an abstract placeholder, like every picture of the demo's pages: nothing plays.
+
+## Preferences
+
+`SafariPreferences` is a second window: the library's preferences window with Safari's ten
+panes. Pass it the browser's current address and "Set to Current Page" copies it to the
+Homepage field; without one the button is disabled, as in the Dark Aqua capture.
+
+<Example name="preferences" />
+
+The General pane has the capture's rows: eight pop-up buttons around the Homepage field, each
+with a few of Safari's choices, at the capture's places. The other nine panes hold a few
+checkboxes each; no capture shows them.
+
+## Usage
+
+```tsx
+import { Safari } from "./safari";
+import { SafariPreferences } from "./safari-preferences";
+
+<Safari width={1254} height={903} />
+<Safari defaultTabs={[""]} defaultSidebarOpen />            {/* start page, Bookmarks open */}
+<Safari defaultActiveTab={2} defaultReader />               {/* third tab in Reader */}
+<SafariPreferences currentPage="https://harbor.example/" />
+```
+
+The demo is built from these entry points and nothing else: `macalicious/window`,
+`window-controls`, `title-bar`, `toolbar`, `toolbar-button`, `toolbar-segmented-control`,
+`smart-search-field`, `safari-tab-bar`, `web-view`, `split-view`, `sidebar`,
+`segmented-control`, `share-menu`, `picture-in-picture` and `push-button`, and for the
+preferences window `preferences-window`, `preferences-toolbar`, `pop-up-button`,
+`text-field`, `push-button`, `checkbox` and `help-button`. Its own stylesheet sizes and
+places them and styles the placeholder pages; it changes no control.
+
+## Hosting the window
+
+The root of `Safari` is the library's [Window](/components/window), and it takes the window's
+props, so a window manager can place, size and order it:
+
+| Prop | Purpose |
+| --- | --- |
+| `state` | `key`, `main` or `inactive`; every control inside follows it. |
+| `width`, `height`, `style`, `ref` | The frame's size and position. Without a size the window is 1254 x 903 pt, the Dark Aqua capture's. |
+| `onClose`, `onMinimize`, `onZoom`, `zoomRole`, `minimizeDisabled`, `zoomDisabled` | The three window controls. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | The toolbar is the window's drag region: a press or double click on the bar itself, not on a control in it. |
+| `defaultTabs`, `defaultActiveTab`, `defaultSidebarOpen`, `defaultReader`, `defaultTabOverview`, `defaultPictureInPicture` | What the window opens with. |
+| `pictureInPictureContainer`, `pictureInPictureWidth` | Where the Picture in Picture window floats (the window's page when left out; `null` while the element is not there yet) and the width it opens with, 320 pt when left out. |
+
+`app.ts` exports the descriptor the [Desktop](/demos/desktop) demo reads, as `app` like every
+demo: `id`, `name`, `component`, `defaultSize`, `minSize`, `resizable` and the menu bar's
+`menus`, so Safari is in that desktop's Dock and opens there as a window. The descriptor also
+names `preferences` (the preferences window's component and the frame it opens with), which
+the Desktop demo opens from Safari > Preferences… as a second window. Both components take what a
+[Managed Window](/components/managed-window) hands to its `render` function, so the
+[Window Manager](/components/window-manager) can host them as they are:
+
+<Example name="desktop" />
+
+## On the Ferrite desktop app
+
+When the [Ferrite desktop application](https://github.com/iGentAI/ferrite-showcase-macalicious/tree/main/ferrite-apps/desktop)
+serves the desktop, Safari opens real pages. A Ferrite application reaches the network only
+through destinations it declares in advance, so it works in two ways:
+
+- A page of a listed site (Wikipedia and its search, news, developer documentation, Marginalia
+  search and a few more) is fetched by the server module and made safe there: no scripts, frames
+  or handlers; its pictures and stylesheets fetched by the server too, each address checked, and
+  put in the page (stylesheets reduced to a strict subset); and a Content-Security-Policy that
+  allows Safari's own link relay and no network source at all, so the page makes no request of
+  its own. It is shown in a sandboxed frame without `allow-same-origin`. Links and GET forms
+  open in Safari; Command-click opens a new tab; Reader shows the article.
+- Any other page is neither fetched nor framed. Safari says it opens outside Safari on Ferrite
+  and offers **Open in New Browser Tab**, which opens it in a tab of the visitor's own browser
+  and adds it to the history. Back and Forward step over it like any other page.
+
+Addresses that are not `http` or `https`, use a user name, another port, or point at a loopback,
+private, link-local or metadata address are refused with Safari's error page, as are pages over
+the 1 MB a Ferrite application can fetch and servers that do not answer in time. The Favorites
+(the Favorites bar and the start page), other bookmarks, the Reading List, the open tabs and the
+history (searchable on the History page, and the start page's Frequently Visited) are kept on the
+server for the session. The kept tabs are the ones Safari opens with; a window that is already
+open keeps its own tabs, with their Back and Forward, when the desktop reloads Safari's data in
+the background, which it does when another browser or tab changed it, never for the page's own
+saves. Another app can open an address in an open Safari window with
+`window.dispatchEvent(new CustomEvent("macalicious:open-url", { detail: { url }, cancelable: true }))`;
+the window calls `preventDefault()` when it takes it.
+
+Every other build, the documentation included, keeps the demo's own placeholder pages.
+
+A preferences window sizes itself to its pane, so it is hosted as a window that cannot be
+resized, at its own width, and the example gives the manager's frame the height the window
+has whenever that changes (`useWindowManagerStore().patch`). What is chosen in a pane is kept with
+the person's desktop values (`safari-settings.ts`), where every Safari window reads and acts on it;
+served by the Ferrite desktop app, a control nothing could carry out there is dimmed and its pane
+says why. The [Preferences Window](/components/preferences-window) does not
+pass on the drag-region callbacks of its title bar, so `SafariPreferences` watches its root
+for a press on the bar instead and reports it through the same two callbacks.
+
+## Accessibility
+
+- The window is a `region` named "Safari"; the web view inside it is a `region` named after
+  the page ("Start Page", "Tab Overview", `Reader: ` and the page's title in Reader).
+- The toolbar is one tab stop with the arrow keys between its items, the address field
+  included; the tab bar is a `tablist` in which the arrow keys move focus and Space or Return
+  selects, so passing over a tab does not load it. Delete closes the focused tab.
+- The sidebar button and the Tab Overview button change their name with their state ("Show
+  Sidebar", "Hide Sidebar"); the Reader button is a toggle with `aria-pressed`.
+- In the Tab Overview each thumbnail is a button named by its page's title, the front tab's
+  marked `aria-current`; the miniatures are hidden from assistive technology.
+- A link on a placeholder page is a real link; activating it loads the page in the tab.
+- The Share button opens a `menu` of `menuitem`s; while there is nothing to share it is
+  dimmed and stays in the toolbar's arrow-key order.
+- The floating video is a `group` named "Picture in Picture" with Close, Return to Window and
+  Pause buttons; Escape closes it from inside. The drawing in it is an `img` named
+  "Placeholder video", and the page says in text that its video is playing there.
+
+## Visual comparison
+
+Compared with the Safari v13 captures in both appearances, at 1x and 2x, with the window at
+the captures' sizes (1324 x 940 pt in Aqua, 1254 x 903 pt in Dark Aqua). The Favorites, Reader,
+Tab Overview and preferences-pane comparisons take the whole window and its shadow; the Window
+comparison takes the top 113 pt of the three-tab window (toolbar, tab bar and the first points
+of the page) and the first Preferences comparison the top 124 pt (the bar). Mismatch at
+threshold 0.05 and mean Δ out of 255, at 2x:
+
+| Comparison | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Window: toolbar and tab bar | 0.36%, Δ 2.02 | 0.32%, Δ 1.71 |
+| Favorites: start page and sidebar, with the new-tab cell in the toolbar | 0.11%, Δ 0.34 | 0.11%, Δ 0.68 |
+| Reader | 0.06%, Δ 0.59 | 0.05%, Δ 0.57 |
+| Tab Overview | 0.03%, Δ 0.24 | 0.06%, Δ 0.30 |
+| Sharing: the toolbar's trailing end with the Share menu open | 2.01%, Δ 2.76 | 1.55%, Δ 2.45 |
+| Sharing: the Share menu's highlighted row | 0.00%, Δ 7.48 | 0.00%, Δ 6.02 |
+| Picture in Picture: the inactive window's bars beside the video | 0.47%, Δ 0.30 | 0.27%, Δ 1.33 |
+| Preferences: title bar and toolbar | 0.02%, Δ 0.85 | 0.02%, Δ 1.39 |
+| Preferences: the whole window, General pane | 0.46%, Δ 0.95 | 0.40%, Δ 1.72 |
+
+Two things in the captures cannot be compared whole, pixel for pixel, because what is in or
+behind them is third-party content or the desktop picture. Of the Share menu, the highlighted
+row is compared with the capture where it has neither glyph nor label (the row above): the
+capture's highlight is vibrant, a colour that changes with what is behind the menu, so each
+appearance compares the piece whose backdrop brings it nearest the library's one colour, the
+last 20 pt over the desktop in Aqua and the first 14 pt over the page in Dark Aqua. The crop
+is the row's exact band, 98 to 119 pt from the window's corner, so a highlight that leaves
+part of the band uncovered shows the menu's material and fails; one that reaches past the band
+is caught by the pixel checks just outside the row, below. Of the floating video, the left edge and its shadow on the
+window's bars are compared with the capture (the Picture in Picture row above). The rest is
+pinned to the rectangles measured in the captures, by checks of chosen pixels in both
+appearances and at both scales:
+
+| Check | What it pins |
+| --- | --- |
+| Share menu | The open menu is 182 x 186 pt, from (1139, 33) to (1321, 219) from the window's corner, 67 pt past the window's edge, and the row under the pointer is highlighted from 98 to 119 pt. |
+| Floating video | The Picture in Picture window is 528 x 297 pt, at (1132, 42) on the 1680 pt screen: 20 pt from its right edge and 20 pt under the menu bar, with pixels on both sides of its top and bottom edges. The pixels inside it sample the placeholder drawing's flat tinted band (`--mac-safari-tint-4`) and its first row: the Picture in Picture stages render Safari with `artwork={false}`, so the video is that drawing and not the generated still, and no generated pixel is checked. |
+
+### What is masked
+
+Stand-in artwork is abstract: it is not drawn to resemble the pictures in the captures, and it
+is left out of every comparison together with the text. The demo's generated artwork (touch
+icons, page photographs and the video's still) is never compared: it lies under the masks
+below, and where a check samples a picture, the floating video, the visual example sets
+`artwork={false}` to show the placeholder drawing instead.
+
+- **Text**: the address or placeholder in the Smart Search field, the band of the tab titles,
+  the sidebar's rows, the Favorites heading and the tile titles, the thumbnails' titles. It is
+  the demo's own and is set in the fallback font off Apple platforms.
+- **Favorites tiles**: each 80 pt tile whole. The captures have site artwork there; the demo
+  has a letter on a plain ground. The tiles' shadows are compared.
+- **Reader**: the article on the sheet, from 15 pt under its top edge, and the sheet's whole
+  width from the row where the capture's photograph can begin. The demo has placeholder text
+  and a placeholder picture of two gradients.
+- **Tab Overview**: the miniatures, pictures of third-party pages in the captures and
+  schematic blocks in the demo.
+- **Sidebar switch**: its two glyphs, the demo's own drawings.
+- **Sharing**: the window's rounded corner, where the capture shows the desktop picture, and
+  the top of the menu under the toolbar, whose material shows the page behind it.
+- **Picture in Picture**: the video, a third-party frame in the capture and a placeholder of
+  two gradients and a tinted band in the demo; the window's rounded corner; the Reader button
+  the demo's page has and the captured site has not; the speaker the demo does not draw.
+- **Preferences**: the Homepage field, which the captures caught focused.
+
+Each comparison's description in `safari.visual.json` gives its masks in full.
+
+What differs from the captures, and why:
+
+- **The Share menu's material and the floating video's picture are compared in the library,
+  not here.** The menu's rows and material are compared on the
+  [Share Menu](/components/share-menu) page over stand-ins for the page and the desktop
+  picture, and the floating window's corners and shadow on the
+  [Picture in Picture](/components/picture-in-picture) page. Here the menu and the video are
+  pinned to their captured rectangles, as above. In the Sharing comparison most of the score
+  is the Share glyph, the library's drawing: it is the same colour as the capture's, but its
+  strokes are thinner and its outline differs a little from the capture's, where the button is
+  pressed. The speaker in the address
+  field of the Picture in Picture capture is not drawn.
+- **The control column of the General pane stands 1 pt to the right of the capture's.** The
+  preferences form is centred from the width of its labels, which are set in the fallback font
+  here. The Homepage field is masked: the captures caught it focused.
+- **Tabs are equally wide.** The capture caught them at 445, 432 and 420 pt.
+- **The Aqua window capture is compared without its outermost margins** (20 pt at the sides,
+  10 pt at the top and 47 pt at the bottom, all faint shadow): the comparison harness cannot
+  draw its review sheet for an image as large as the whole 1436 x 1052 pt capture.
+- Glyphs are original drawings on the captures' boxes, not Apple's; preference pane icons and
+  the Share menu's service icons are abstract placeholders in the system colours and the
+  demo's tints.
+- Text is San Francisco only on Apple devices, and is masked in every comparison.

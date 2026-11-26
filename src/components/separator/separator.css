@@ -1,0 +1,32 @@
+/*
+ * Separator (NSBox, boxType separator): a flat line of separatorColor, 1 pt thick, square
+ * ends. It is two device pixels at 2x, not a hairline.
+ *
+ * States
+ *   [data-orientation="horizontal" | "vertical"]   set by Base UI
+ *
+ * The line does not react to the window state.
+ */
+.mac-separator {
+  flex: none;
+  box-sizing: border-box;
+  height: 1px;
+  margin: 0;
+  border: 0;
+  background: var(--mac-color-separator);
+}
+
+/* In a flex row a vertical separator stretches to the row's height; anywhere else give it a
+   height. */
+.mac-separator:where([data-orientation="vertical"]) {
+  align-self: stretch;
+  width: 1px;
+  height: auto;
+  min-height: 1em;
+}
+
+@media (forced-colors: active) {
+  .mac-separator {
+    background: CanvasText;
+  }
+}

@@ -1,0 +1,24 @@
+/*
+ * Launchpad colours (reference/spec/components/launchpad.md). The overlay is the same in Aqua
+ * and Dark Aqua; only what is behind it differs.
+ */
+:root {
+  /* [measured, computed] the spec's fit of 560 background pixels of the Launchpad captures
+     against the Desktop captures: blur 35 pt, saturation 1.8 and this tint, rms 3.2 and 3.4
+     levels. The blur and the saturation are in launchpad.css. */
+  --mac-launchpad-scrim: rgb(28 28 28 / 0.44);
+  /* [measured] mean of the background in each capture, for reduced transparency */
+  --mac-launchpad-scrim-opaque: light-dark(#3b4f5c, #182943);
+  /* [measured] labels, typed text and the magnifier, Launchpad @ 448,387 and 1612,62 */
+  --mac-launchpad-text: #ffffff;
+  /* [measured, computed] white over the background beside the field, Launchpad @ 1500,40:
+     fill #3977a9 over #2b6da4 at 1500,60, border #588bb7 at 1500,50, placeholder #84a8c8
+     over the fill; the dark capture gives the same alphas */
+  --mac-launchpad-search-fill: rgb(255 255 255 / 0.065);
+  --mac-launchpad-search-border: rgb(255 255 255 / 0.21);
+  --mac-launchpad-placeholder: rgb(255 255 255 / 0.36);
+  /* [measured, computed] the spec's fit of the halo under a label, Launchpad @ 1256,1044 */
+  --mac-launchpad-label-shadow: rgb(0 0 0 / 0.2);
+  /* [provisional] the plate behind the icon that has the keyboard focus */
+  --mac-launchpad-highlight: rgb(255 255 255 / 0.2);
+}

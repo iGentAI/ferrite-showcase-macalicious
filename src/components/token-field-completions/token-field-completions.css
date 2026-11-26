@@ -1,0 +1,78 @@
+/*
+ * Token field with completions: a token field and the list of completions under the text
+ * being typed.
+ *
+ * No screenshot shows the list. It is drawn as the menu surface the library's other lists
+ * use (provisional): menu material, 5 pt corners, 4 pt above and below 19 pt rows, the active
+ * row in the emphasised selection colour.
+ *
+ * The root takes the field's place in the layout, 240 pt wide unless its style says
+ * otherwise; the field fills it. The component sets the list's left and top to the text
+ * box's.
+ *
+ * States
+ *   [aria-selected="true"]             the active completion
+ */
+.mac-token-field-completions {
+  position: relative;
+  display: inline-flex;
+  box-sizing: border-box;
+  width: 240px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.mac-token-field-completions > .mac-token-field-completions-field {
+  flex: 1 1 auto;
+  width: auto;
+}
+
+.mac-token-field-completions-list {
+  position: absolute;
+  z-index: 1;
+  box-sizing: border-box;
+  min-width: 120px;
+  max-height: 198px;
+  margin-block-start: 3px;
+  padding-block: 4px;
+  overflow-y: auto;
+  border-radius: var(--mac-radius-menu);
+  background: var(--mac-material-menu-opaque);
+  box-shadow: var(--mac-shadow-menu-rim), var(--mac-shadow-menu);
+  color: var(--mac-color-label);
+  font: var(--mac-font-menu);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .mac-token-field-completions-list {
+    background: var(--mac-material-menu);
+    -webkit-backdrop-filter: var(--mac-material-filter-menu);
+    backdrop-filter: var(--mac-material-filter-menu);
+  }
+}
+
+.mac-token-field-completions-option {
+  padding-inline: 9px;
+}
+
+.mac-token-field-completions-option:where([aria-selected="true"]) {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-menu-item-text);
+}
+
+@media (forced-colors: active) {
+  .mac-token-field-completions-list {
+    border: 1px solid CanvasText;
+    background: Canvas;
+  }
+
+  .mac-token-field-completions-option:where([aria-selected="true"]) {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+}

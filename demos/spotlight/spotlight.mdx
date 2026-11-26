@@ -1,0 +1,291 @@
+---
+title: Spotlight
+description: Spotlight of macOS 10.15 over a small index, with results grouped by kind, a top hit that completes the field, a selection that the arrow keys move, and a preview of the selected result as a dictionary entry, the text of a file, a picture or a summary.
+layout: full
+order: 28
+---
+
+<Example name="basic" />
+
+Type in the field to search: try "cal", "dic", "aqua" or "page". The window opens on the
+search of the reference screenshots, "OS X", and lists what the Aqua capture lists. The arrow
+keys move the selection and the preview follows; Return opens the selection and closes the
+window, Escape clears the field and then closes it, and the button under the window opens it
+again. Nothing is searched or opened on the machine the page runs on: the index is a file of
+the demo's, and a host hears about an opened result through `onOpenItem`.
+
+## What it shows
+
+- The library's [Spotlight](/components/spotlight) window, with its `SpotlightGroup`s and
+  `SpotlightResult`s: the field, the category bands, the rows, the selection, the dividers,
+  the material and the keyboard handling are all the component's. The demo adds what the
+  component leaves to an application: the search, the choice of the top hit and what the
+  preview holds.
+- **Results by kind.** What a query finds is grouped as Applications, Developer, Definition,
+  Images, Folders and Documents, in that order, with at most five results to a group, as in
+  the captures. An item is found when every word of the query begins a word of its name or of
+  the words the index holds for its contents, so "OS X" finds `catalina.md`, which only
+  mentions it.
+- **The top hit** is the first result of the first group. It is selected whenever the text
+  changes, its name is the completion behind the typed text, and its icon stands at the end of
+  the field.
+- **The preview** of the selected result, one of four kinds:
+  a dictionary entry, with its cross-reference as a bold link that looks the phrase up;
+  the text of a file in a read-only, fixed-pitch [Text View](/components/text-view), which
+  scrolls, can be selected from and takes the keyboard;
+  a picture, as a flat frame of the picture's proportions over its name and facts;
+  and a folder, an application or a document without text, as its icon, name and facts.
+  The facts are [Label](/components/label)s.
+- **The collapsed window.** With an empty field, or a query that finds nothing, the window is
+  the 56 pt field alone.
+
+| Key or gesture | What it does |
+| --- | --- |
+| Typing | Searches, and selects the new top hit. |
+| Down Arrow, Up Arrow | Move the selection; the preview follows. |
+| Command-Down, Command-Up | Jump to the first result of the next or previous group. |
+| Return, or a double click | Calls `onOpenItem` with the selected result and closes the window. |
+| Command-Return | The same with `reveal: true`: in Spotlight it shows the item in the Finder. |
+| Escape | Clears the field; in the empty field, closes the window. |
+| A click on a result | Selects it. |
+| A click on a cross-reference | Looks the phrase up: "Classic Mac OS" in the entry for macOS. |
+
+With the index of a developer's Mac, the Developer group comes first, as in the Dark Aqua
+capture: the top hit for "OS X" is an XML file and the preview is its text.
+
+<Example name="developer" />
+
+## Using the window
+
+`CatalinaSpotlight` renders the library's `Spotlight` as its root and passes it every prop it
+does not use itself (`style`, `className`, `ref`, `placeholder`, `resultsLabel`,
+`previewLabel`, `aria-*`, `data-*`). The window does not place itself: put it in a fixed
+layer, 210 pt under the top of the screen and centred, in the page it should blur.
+
+```tsx
+import { CatalinaSpotlight } from "./spotlight";
+import { developerItems } from "./spotlight-data";
+
+<CatalinaSpotlight
+  open={open}
+  onOpenChange={setOpen}
+  items={developerItems}
+  onOpenItem={(item, { reveal }) => (reveal ? showInFinder(item) : launch(item))}
+  style={{ position: "fixed", top: 210, left: "50%", translate: "-50%" }}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `items` | `SpotlightItem[]` | The index. `defaultItems` by default, the Mac of the Aqua capture; `developerItems` is the Mac of the Dark Aqua capture, the same with a developer's files. |
+| `defaultQuery` | `string` | The text in the field when the window is first shown; empty by default. A window that is opened again starts empty. |
+| `onQueryChange` | `(query: string) => void` | Called when the user changes the text: typing, Escape in a field with text, a cross-reference. |
+| `open` | `boolean` | Whether the window is shown, when the host controls it. A closed window renders nothing. |
+| `defaultOpen` | `boolean` | Whether it is shown at first, when it keeps that itself; `true` by default. |
+| `onOpenChange` | `(open: boolean) => void` | Called with `false` when the window closes itself: after a result was opened, and on Escape in the empty field. |
+| `onOpenItem` | `(item, { reveal }) => void` | Called with the selected result on Return, Command-Return (`reveal`) and a double click. |
+| the rest | `SpotlightProps` | Everything of the library's window that the demo does not fill in: not its text, selection, completion, top hit, preview or children. |
+
+When the host shows a closed window again, the field takes the keyboard focus. A window that
+is on the page from the start leaves the focus where it is. Closing takes the window out of
+the page, and the focus with it: give it back to what opens the window in `onOpenChange`, as
+the first example does.
+
+A `SpotlightItem` is `{ id, name, category, kind, contents?, details?, preview }`. `preview` is
+`{ type: "definition", text }`, `{ type: "text", text }`, `{ type: "image", pixels }` or
+`{ type: "summary" }`. Names need not be unique (the captures list `page.txt` twice); the
+selection is kept by `id`. The rules are plain functions in `spotlight-data.ts`: `search()`
+groups what a query finds and `topHitOf()` names the top hit.
+
+### Not on the Desktop demo
+
+The demo has no `app.ts`, so the [Desktop](/demos/desktop) does not list it. A descriptor's
+`component` must have a window of the library as its root that a
+[Managed Window](/components/managed-window) can place, size, activate, move and close, and
+the library's `Spotlight` is not such a window:
+
+- It has no `state` prop and does not write `data-window-state`, which only a window
+  component may set on its own root. The desktop's test of a hosted demo reads that attribute
+  on the root first.
+- It has no window controls: its `onClose` reports Escape in the empty field, and there is no
+  Close button for the desktop's close command to stand behind.
+- It has no title bar or other part that takes the two drag-region callbacks, so it could not
+  be moved.
+- It sizes itself: 680 pt wide by `--mac-spotlight-width`, and 56 or 430 pt high with its
+  results. The managed window's `width`, `height`, `variant` and `fullScreen` are not props of
+  it and would end up on its element.
+
+Tried with the eight extra props taken out and the rest spread onto the root, the desktop's
+"hosts spotlight" test fails on the missing `data-window-state` and on React's warning about
+`fullScreen` on an element. In macOS, Spotlight is not an application with a Dock tile
+either: it opens from the magnifying glass at the end of the menu bar.
+
+## On the desktop's Ferrite application
+
+When the `macalicious-desktop` Ferrite application serves the desktop (`ferrite-apps/desktop`),
+the desktop's Spotlight (`spotlight-desktop.tsx`, opened from the menu bar) searches more than
+the applications' names:
+
+- **Sums and conversions**, worked out in the browser as they are typed: `12*12+6`,
+  `sqrt(2)*10`, `15% of 80`, `5 km to miles`, `212 f to c`, `1 gib in mb` (`spotlight-calc.ts`).
+  Return on a sum copies it and opens Calculator; on a conversion it copies the answer. A currency
+  (`100 usd to eur`, `$5 in yen`; `spotlight-currency.ts`) converts on the served desktop at the
+  European Central Bank's daily reference rates, from the server, with the rates' date in the
+  preview, and a clear row when they cannot be read.
+- **The person's own things**, from the application's Spotlight module
+  (`ferrite-apps/desktop/src/apps/spotlight`): Contacts, Mail messages, Calendar events,
+  Reminders, Notes,
+  Stickies, TextEdit documents, the folders and files of their drive (and the words of its text
+  files, shown around the match), Safari's bookmarks and history, Music's songs and Photos'
+  photos and albums. The module keeps a per-person index in Ferrite's store, one entry per
+  document, rebuilt only when that document's store version changes, and the words of each text
+  file once per content. Another person's search never sees them.
+- **A definition** from Dictionary for a one-word query, asked with `history=0` so that
+  Spotlight's look-ups stay out of Dictionary's History.
+- **Search the Web**, last: Return opens the words in a new tab of the person's Safari (the tab
+  is kept on the server, so an open Safari window shows it at once).
+
+A bookmark or a visited page opens in a new Safari tab, a text file in TextEdit, and any other
+file in Finder, which shows it selected in its folder; anything else opens the app that keeps it,
+not the item itself. A query that reads as a sum (a phone number, a date) is worked out and still
+finds the person's things. A one-word query also asks Dictionary, whose sources are on the
+Internet, so the word typed leaves the desktop's application; nothing else typed into Spotlight
+does. Messages' shared rooms are not searched, since they belong to everyone who names them; the
+person's own conversations are, the newest 30 and as far as each document goes, without what they
+deleted or blocked. Help's topics are searched by title, in the browser.
+
+## Accessibility
+
+- The field is a `combobox` named "Spotlight Search" that keeps the keyboard focus; the
+  results are a `listbox` named "Results" of `option`s in `group`s named by their category,
+  and the selected result is the field's active descendant. These are the library's.
+- The placeholders that stand for icons are decorative and hidden from assistive technology;
+  a result is named by its title.
+- The preview is a `group` named "Preview". A dictionary entry has its headword as a heading
+  and its cross-reference as a `link`; choosing it puts the phrase in the field and gives the
+  field the focus, since the entry the link was in is gone. The text of a file is a read-only
+  `textbox` named "Contents of" and the file's name. A summary has the name as a heading and
+  its facts as a description list.
+- The cross-reference shows the focus ring in the key window. Its address is the `dict:` URL
+  that opens Dictionary on a Mac; the demo takes the click and searches instead.
+- Tab from the field reaches the result list before the preview in Chromium, which makes a
+  scrolling container without a tab stop of its own focusable; the list is the library's and
+  shows the browser's outline there.
+- After the window closes itself the focus is the host's to place (see `onOpenChange`).
+
+## Fidelity
+
+`spotlight.visual.json` compares the whole 680 by 430 pt window with the Dark Aqua capture:
+once with the text in the comparison and once with it masked, to score the drawing alone. Of
+the Aqua capture it compares the selected row only, and checks the rest of the Aqua window
+by pixels over a flat grey; why is under "What differs" below.
+Scores from `npm run visual -- spotlight/` in Chromium on Linux with the fallback fonts: the
+share of pixels that differ and the mean colour difference out of 255. (The filter also runs
+the comparisons of the [Spotlight](/components/spotlight) component, whose folder has the
+same name.)
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `selection-light` (the selected row) | 3.79% | 7.12 | 3.11% | 7.53 |
+| `window-dark` | 11.53% | 13.07 | 9.77% | 13.79 |
+| `window-dark-layout` (text masked) | 0.19% | 0.30 | 0.17% | 0.33 |
+
+The scores were measured again after the dictionary entry became the library's labels and
+link and its measures became tokens (pull request #273): every one is the same to the
+hundredth, and each stays under its budget in `spotlight.visual.json` (`selection-light`,
+the Aqua comparison that came with #213: 3.79% and 7.12 against 3.84% and 7.25 at 1x, 3.11%
+and 7.53 against 3.16% and 7.66 at 2x), with none of them flagged as slack. No budget was
+changed.
+
+The examples differ as the captures do: `visual-window` and `visual-selection` search the
+default index and show the dictionary entry, `visual-window-dark` searches the developer's
+index and shows the XML file's text.
+
+Measured in the captures and reproduced by the demo (the window's own measures are the
+library's): the entry's headword in the 22 pt title style, its ink 91 to 108 pt under the
+window's top and from 27 pt inside the preview; the entry's text, 13 pt on a 17 pt pitch,
+44 pt inside the preview on both sides;
+the cross-reference in bold `#1400ee`; and the file's text in the 11 pt fixed-pitch font on a
+13 pt pitch, 8 pt inside the preview on both sides. These measures, with the edges of the
+icon placeholders, are the demo's tokens in `spotlight.tokens.css`
+(`--mac-spotlight-app-definition-*`, `--mac-spotlight-app-file-*` and
+`--mac-spotlight-app-artwork-*`). The blueprint
+(`reference/spec/apps/spotlight.md`) gives the entry's text as 12 pt; measured again in the
+capture it is 13 pt (the capture's widest line is 295 pt, and its first line's ink is 12.5 pt
+from ascender to descender). Neither text is the capture's (below), so where the demo's
+lines break is its own.
+
+### What is masked
+
+Every comparison masks the artwork that is Apple's, which the demo replaces by abstract
+placeholders: a plain shape in one flat tint for each kind of result (a disc for an
+application, a square for a definition, an upright rectangle for a file, a lying one for a
+picture and, with round corners, for a folder). They are not drawings of the icons.
+
+| Mask | In | Why |
+| --- | --- | --- |
+| The top hit's icon at the end of the field (34 by 34 pt) | the two `window-dark` | Safari's icon in the Dark Aqua capture: Apple artwork. |
+| The icon of each result in the crop (20 by 20 pt each): twelve, or the selected row's one | all three | Document, folder and Dictionary icons: Apple artwork. |
+| The query and its completion | `window-dark-layout` | Text, set in the fallback font off Apple devices. |
+| The four category names | `window-dark-layout` | Text. |
+| The title of each of the twelve results, with its icon | `window-dark-layout` | Text; two names are cut off by an ellipsis at a width that depends on the font. |
+| The text of the file: the preview from 6 pt inside its leading edge to 1 pt inside the window's edge | `window-dark-layout` | Text, in the platform's fixed-pitch font. |
+
+The masks cover 2% of the crop in `window-dark`, 6% in `selection-light` and 72% in
+`window-dark-layout`, where the preview is text from edge to edge; what that comparison
+scores of the preview is the text view's background along its leading edge and the rim at
+the window's edge.
+
+Not masked but not compared at all: the desktop picture of the Aqua capture, which shows
+through the whole of that capture's window (next section).
+
+### What differs, and why
+
+- **The Aqua window is not compared with its capture, except for the selected row.** The
+  Aqua capture is of the whole screen: the window is translucent, and every pixel of its panel
+  is the desktop picture, blurred and tinted. The picture is Apple's; it is not shipped, and
+  the demo does not imitate it or fit colours to it, so there is nothing to put behind the
+  window that the capture could be scored against. The one part of that window that does not
+  show the picture is the selected row, an opaque fill: `selection-light` compares it. The
+  rest is checked without the capture (`check-window-light`, below): the window stands over a
+  flat mid grey of the demo's own, and the check reads what the material gives over it. The
+  entry's position and type sizes were measured in the capture (above) and are not scored by
+  a comparison. The [Spotlight](/components/spotlight) component has its own comparison of
+  the Aqua window's top-left corner.
+- **The entry's text is not the capture's.** The capture shows the Dictionary's entry for
+  macOS, which is not the demo's to reproduce: the demo's entry is its own wording, about as
+  long, with the same cross-reference.
+- **Text.** Set in the fallback fonts off Apple devices, which is nearly all of the unmasked
+  scores. In Dark Aqua the file's text is a third of the window.
+- **The completion.** The library sets the completion on the query's baseline; in both
+  captures it stands about 4.5 pt higher, centred on the query's capitals, and begins about
+  5 pt nearer to the query. It is masked with the query.
+- **The magnifying glass** is an original drawing of the library's, and with the window's
+  corners it is what is left of the dark layout comparison's mismatch.
+- **The names the captures cut off.** "19 Apple_iPadOS_Paste-Feature_06…" is completed as
+  `19 Apple_iPadOS_Paste-Feature_060319.jpg`, and the second developer file, which shows the
+  same cut-off name as the first, is taken to be a second copy of it. The fallback font's
+  contextual alternates draw the x of `thumb600x600` as a multiplication sign.
+- **The file's text is not the capture's.** The file the capture previews is Apple's, so the
+  demo previews a property list of its own with the same shape and line lengths. The
+  comparison that keeps the text therefore scores where the lines stand and how they wrap, not
+  their letters.
+
+Three more entries of `spotlight.visual.json` are checks, not comparisons with a screenshot.
+Two put `visual-window-dark` into a state no capture shows, with real keys, and read four
+pixels against values that are measured elsewhere or follow from the example. The third reads
+the Aqua window over the flat mid grey `#808080`; its values are what the library's material
+and the window's parts give over that grey in Chromium, recorded so that a change of either
+shows, and they are not measures of the capture.
+
+| Check | State | What the pixels say |
+| --- | --- | --- |
+| `check-window-light` | The Aqua window over mid grey | The field's row, a plain result's row and the preview are `#bfbebb`, the material over the grey; a category band is `#a8a7a4`; the selected row is the opaque selection colour `#136fe6`. |
+| `check-collapsed-dark` | Escape in the field | The field's row is still the window's base `#2b2c2d`; where the list, a band and the preview were, the example's white matte shows. |
+| `check-selection-preview-dark` | Down Arrow five times | The sixth result is selected in the accent colour and the first is not; the preview is the window's base where the text view was `#1e1e1e`: the entry has replaced the file's text. |
+
+**Not in a screenshot (provisional):** the collapsed window; the previews of a picture, a
+folder, an application and a document, their layout and every fact in them; the entry in Dark
+Aqua and its link colour there; the text of a file in Aqua; the Applications group and its
+place before the others; what any query but "OS X" finds; a search that finds nothing, shown
+as the collapsed window; and the window when it is not key.

@@ -1,0 +1,122 @@
+/*
+ * App switcher: the Command-Tab panel, a translucent rounded HUD with a row of application
+ * icons, the selected one on a tile with its name underneath.
+ *
+ * Parts
+ *   .mac-app-switcher        the panel and listbox: 24 pt corners, 23 pt beside the row and
+ *                            29 pt above and under it, centred in the positioned element it
+ *                            is in; no border and no shadow
+ *   .mac-app-switcher-item   an application: a square as wide as its icon, 5 pt from the next;
+ *                            its ::before is the selection tile, 4 pt larger on every side
+ *   .mac-app-switcher-icon   holds the icon, which is stretched to it
+ *   .mac-app-switcher-name   the name, centred under the icon, shown for the selected item
+ *
+ * States
+ *   [data-selected]          on an item: the selected application
+ *
+ * Hooks
+ *   --mac-app-switcher-icon-size   width and height of an icon (128px); the icons shrink
+ *                                  together when the row is wider than the screen allows
+ *   --mac-app-switcher-margin      what the panel keeps clear at the sides of the screen (20px)
+ *   --mac-app-switcher-layer       the panel's z-index (2000: above a window manager's windows,
+ *                                  its menu bar and Dock, and a full-screen window)
+ */
+.mac-app-switcher {
+  position: absolute;
+  z-index: var(--mac-app-switcher-layer, 2000);
+  inset: 0;
+  display: flex;
+  gap: 5px;
+  align-items: flex-start;
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: calc(100% - 2 * var(--mac-app-switcher-margin, 20px));
+  height: fit-content;
+  margin: auto;
+  padding: 29px 23px;
+  /* The spec reads 20 pt from where the curve meets the straight edges; the curve itself
+     (Command-Tab @ 1240,864,48,40) is that of a 24 pt circle, which is what matches. */
+  border-radius: 24px;
+  background: var(--mac-app-switcher-material-opaque);
+  color: var(--mac-app-switcher-name-color);
+  font: var(--mac-font-title-3);
+  /* The selection tile shows where the keyboard is: the focus stays on the panel. */
+  outline: none;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* The material: what is behind the panel in the same page, blurred and saturated, under the
+   tint. Without backdrop-filter the panel is the opaque fill above. */
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .mac-app-switcher {
+    background: var(--mac-app-switcher-material);
+    -webkit-backdrop-filter: var(--mac-material-filter);
+    backdrop-filter: var(--mac-material-filter);
+  }
+}
+
+/* A width, not a flex basis: the panel is as wide as its row, and an item may still shrink. */
+.mac-app-switcher-item {
+  position: relative;
+  flex: 0 1 auto;
+  width: var(--mac-app-switcher-icon-size, 128px);
+  min-width: 0;
+  aspect-ratio: 1;
+}
+
+/* The tile's corners: the spec reads 8 pt; the curve in the captures (Command-Tab @
+   1278,914,24,18) is that of 9 pt, which is what matches the pixels. */
+.mac-app-switcher-item::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 9px;
+}
+
+.mac-app-switcher-item:where([data-selected])::before {
+  background: var(--mac-app-switcher-selection);
+}
+
+.mac-app-switcher-icon {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: 100%;
+}
+
+.mac-app-switcher-icon > :where(*) {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+
+/* The name's baseline is 22.5 pt under the icon, 6.5 pt above the panel's edge. Every item
+   keeps its name, which is what assistive technology reads; only the selected one shows it. */
+.mac-app-switcher-name {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 50%;
+  white-space: nowrap;
+  opacity: 0;
+  translate: -50% 0;
+  pointer-events: none;
+}
+
+.mac-app-switcher-item:where([data-selected]) > .mac-app-switcher-name {
+  opacity: 1;
+}
+
+/* The panel has neither border nor shadow, and its tile is a fill: draw both as edges. */
+@media (forced-colors: active) {
+  .mac-app-switcher {
+    border: 1px solid CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .mac-app-switcher-item:where([data-selected])::before {
+    border: 2px solid Highlight;
+  }
+}

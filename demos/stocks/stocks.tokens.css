@@ -1,0 +1,163 @@
+/*
+ * Stocks: the colours of the app that no shared token and no component holds, from
+ * reference/spec/apps/stocks.md and the two Stocks captures (L: 10-15-Catalina-Light-Stocks.png,
+ * D: 10-15-Catalina-Dark-Stocks.png). The watchlist rows' colours are the stock row's, the
+ * toolbar's and the sidebar's the Catalyst chrome's.
+ */
+:root {
+  /* [measured] the iOS search field: fill L and D @ 600,190; glass L @ 150,190; placeholder
+     L ink of "Search". The Dark Aqua glass and placeholder are read from the capture's ink. */
+  --mac-stocks-search-fill: light-dark(#d1d1d4, #27292c);
+  --mac-stocks-search-glyph: light-dark(#656666, #98989e);
+  --mac-stocks-search-placeholder: light-dark(#9d9d9f, #8d8d93);
+  /* [measured] the line under the search field: L col x=600 @ y=228; in Dark Aqua that row is
+     the sidebar's own colour (#2c2c2e), so no line shows */
+  --mac-stocks-separator: light-dark(#aeaeae, transparent);
+  /* [measured] the Business News cell while the news is shown: @ 600,280; its two lines
+     @ 139,250,193,20 and @ 139,288,152,18 */
+  --mac-stocks-news-cell-fill: light-dark(#f2f2f3, #585959);
+  --mac-stocks-news-cell-title: light-dark(#000000, #f0f0f0);
+  --mac-stocks-news-cell-source: light-dark(#818188, #ffffff);
+  /* [measured] the footer: its line, col x=300 @ y=1604; the wordmark @ 137,1633,84,20 */
+  --mac-stocks-footer-separator: light-dark(#b9baba, #3c3d3e);
+  --mac-stocks-footer-text: light-dark(#676768, #8e8e90);
+
+  /* [measured] "Top Stories", the stem of its T: L and D col x=1122 @ y=200..247 */
+  --mac-stocks-title: light-dark(#000000, #dddddd);
+  /* [measured] headlines: L col x=1105 @ y=920..947; [provisional] Dark Aqua, read from the
+     capture */
+  --mac-stocks-headline: light-dark(#272727, #ebebeb);
+  /* [measured] timestamps: L col x=1105 @ y=1031..1041. [provisional] Dark Aqua. */
+  --mac-stocks-timestamp: light-dark(#86868a, #98989e);
+  /* [provisional] the lead's summary, which only the Dark Aqua capture shows; its Aqua value
+     is the watchlist's secondary grey */
+  --mac-stocks-summary: light-dark(#808080, #98989d);
+  /* [provisional] the publisher's name, where the captures have its logo */
+  --mac-stocks-publisher: light-dark(#1d1d1f, #f2f2f2);
+  /* [provisional] the placeholder that stands where the captures have news photographs: a
+     flat panel and the mark on it, in greys of the pane. No capture is their source. */
+  --mac-stocks-picture-fill: light-dark(#ececee, #2c2c2e);
+  --mac-stocks-picture-mark: light-dark(#c4c4c8, #4a4a4e);
+
+  /* [provisional] the detail view, which no capture shows: the change beside the price, in
+     greens and reds that keep their contrast as text */
+  --mac-stocks-gain-text: light-dark(#1f7a36, #30d158);
+  --mac-stocks-loss-text: light-dark(#d1271b, #ff5a4f);
+
+  /* Lengths, in points of the Stocks captures from the window's top-left corner (see the
+     head of stocks.css). */
+
+  /* [measured] The sidebar: the search field at 12.5, 43 (305 x 28) in a 38.5 pt block with
+     its line at 76; the Business News cell from 77, 49 pt high, its title 14 pt semibold on
+     17 pt lines and "From News" 12 pt semibold on 15 pt lines; the mark before "News"; the
+     footer from the line at 764, 39 pt high, 10 pt medium caps on 12 pt lines. */
+  --mac-stocks-search-height: 38.5px;
+  --mac-stocks-search-padding: 5px 12.5px 0 12.25px;
+  --mac-stocks-news-cell-height: 49px;
+  --mac-stocks-news-cell-padding: 7.4px 13.5px 0;
+  --mac-stocks-news-cell-title-font-size: 14px;
+  --mac-stocks-news-cell-title-line-height: 17px;
+  --mac-stocks-news-cell-source-margin-top: 2.3px;
+  --mac-stocks-news-cell-source-font-size: 12px;
+  --mac-stocks-news-cell-source-line-height: 15px;
+  --mac-stocks-news-glyph-margin-inline: 1px 2px;
+  --mac-stocks-news-glyph-vertical-align: -1px;
+  --mac-stocks-footer-height: 39px;
+  --mac-stocks-footer-padding: 13.5px 12.5px 0;
+  --mac-stocks-footer-font-size: 10px;
+  --mac-stocks-footer-line-height: 12px;
+  --mac-stocks-footer-letter-spacing: 0.04em;
+
+  /* [provisional] Edit mode's row controls, in the sizes of iOS's table editing at 77%. */
+  --mac-stocks-row-remove-fill: var(--mac-color-system-red);
+  --mac-stocks-row-remove-bar: #ffffff;
+  --mac-stocks-row-remove-size: 17px;
+  --mac-stocks-row-remove-bar-width: 9px;
+  --mac-stocks-row-remove-bar-height: 2px;
+  --mac-stocks-row-remove-margin-start: 10px;
+  --mac-stocks-row-grip-line: light-dark(#c4c4c7, #636366);
+  --mac-stocks-row-grip-width: 16px;
+  --mac-stocks-row-grip-height: 10px;
+  --mac-stocks-row-grip-margin: 9px;
+  --mac-stocks-footer-edit-end: 12.5px;
+  --mac-stocks-footer-edit-top: 10px;
+
+  /* [measured] The news pane: a 493 pt column centred on the pane (its start half the pane
+     less 245.5 pt), 24 pt beside it in a narrow pane; the title's cap top at 61.5, 36 pt
+     heavy on 43 pt lines. */
+  --mac-stocks-feed-width: 493px;
+  --mac-stocks-feed-inset: 24px;
+  --mac-stocks-reader-gap: 10px;
+  --mac-stocks-feed-centre-offset: 245.5px;
+  --mac-stocks-feed-padding: 14.7px 0 24px;
+  --mac-stocks-title-margin-bottom: 15.3px;
+  --mac-stocks-title-font-size: 36px;
+  --mac-stocks-title-line-height: 43px;
+
+  /* [measured] A story: the picture's corner; the publisher 11 pt bold caps on 13 pt lines,
+     the headline 13 pt bold on 16.5 pt lines, the summary 11.5 pt on 13.4 pt lines and the
+     age 11 pt bold on 13 pt lines, at the captures' distances under each other. */
+  --mac-stocks-story-art-radius: 3px;
+  --mac-stocks-story-publisher-margin-top: 6.9px;
+  --mac-stocks-story-publisher-font-size: 11px;
+  --mac-stocks-story-publisher-line-height: 13px;
+  --mac-stocks-story-publisher-letter-spacing: 0.02em;
+  --mac-stocks-story-headline-margin-top: 8.8px;
+  --mac-stocks-story-headline-font-size: 13px;
+  --mac-stocks-story-headline-line-height: 16.5px;
+  --mac-stocks-story-summary-margin-top: 4.5px;
+  --mac-stocks-story-summary-font-size: 11.5px;
+  --mac-stocks-story-summary-line-height: 13.4px;
+  --mac-stocks-story-age-margin-top: 7.7px;
+  --mac-stocks-story-age-font-size: 11px;
+  --mac-stocks-story-age-line-height: 13px;
+
+  /* [measured] The lead over the column's whole width (a 493 x 277 pt picture), with a
+     20.5 pt headline on 24 pt lines; the lead beside a 299 x 224 pt picture, 13 pt from its
+     text; a compact story's 104 pt picture 12 pt after its text. */
+  --mac-stocks-story-lead-margin-bottom: 16.1px;
+  --mac-stocks-story-lead-publisher-margin-top: 6.4px;
+  --mac-stocks-story-lead-headline-margin-top: 9.8px;
+  --mac-stocks-story-lead-headline-font-size: 20.5px;
+  --mac-stocks-story-lead-headline-line-height: 24px;
+  --mac-stocks-story-beside-column-gap: 13px;
+  --mac-stocks-story-beside-margin-bottom: 16px;
+  --mac-stocks-story-beside-publisher-margin-top: 3.4px;
+  --mac-stocks-story-beside-headline-margin-top: 6px;
+  --mac-stocks-story-beside-age-padding-top: 7.7px;
+  --mac-stocks-story-compact-picture-width: 104px;
+  --mac-stocks-story-compact-column-gap: 12px;
+
+  /* [provisional] The detail view, which no capture shows: its measures are the demo's. A
+     heading's margins; the price's margins and the last price's distance from the change;
+     the chart's margin, its 168 pt plot with a 48 pt column for the scale, the scale's inset
+     and 10 pt type, the times' 11 pt type 4 pt under the plot; the figures' columns, gaps,
+     margin and padding. */
+  --mac-stocks-heading-margin: 24px 0 12px;
+  --mac-stocks-quote-price-margin: 10px 0 14px;
+  --mac-stocks-quote-last-margin-inline-end: 6px;
+  --mac-stocks-chart-margin-top: 14px;
+  --mac-stocks-chart-plot-height: 168px;
+  --mac-stocks-chart-scale-width: 48px;
+  --mac-stocks-chart-scale-inset-block: 2px;
+  --mac-stocks-chart-scale-font-size: 10px;
+  --mac-stocks-chart-scale-line-height: 12px;
+  --mac-stocks-chart-times-padding-top: 4px;
+  --mac-stocks-chart-times-font-size: 11px;
+  --mac-stocks-chart-times-line-height: 13px;
+  --mac-stocks-figures-min-width: 104px;
+  --mac-stocks-figures-column-gap: 18px;
+  --mac-stocks-figures-margin-top: 16px;
+  --mac-stocks-figure-gap: 8px;
+  --mac-stocks-figure-padding-block: 6px;
+  /* [provisional] the parts the Ferrite desktop adds, which no capture shows: the found symbols
+     under the watchlist and the price alerts under the figures */
+  --mac-stocks-results-padding: 12px 12.5px;
+  --mac-stocks-results-title-margin-bottom: 6px;
+  --mac-stocks-result-padding-block: 4px;
+  --mac-stocks-alerts-margin-block: 16px;
+  --mac-stocks-alert-form-margin-top: 8px;
+  --mac-stocks-alert-price-width: 96px;
+  /* [provisional] an empty chart (loading, or no data) keeps the drawn chart's height */
+  --mac-stocks-chart-empty-height: 168px;
+}

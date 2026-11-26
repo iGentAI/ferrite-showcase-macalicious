@@ -1,0 +1,365 @@
+---
+title: Calendar
+description: The Calendar window of macOS 10.15 with its Preferences window, a toolbar with the Day, Week, Month and Year switcher and search, the list of calendars over a mini month, the week grid with events and the event popover, built from the library alone.
+layout: full
+---
+
+<Example name="basic" />
+
+Switch the view, step through the weeks and return with Today, choose a day in the mini month,
+type in the search field for a list of every match, tick calendars off, add an event, and
+double-click an event (or press Return on it) for its popover, where a click on the title, the
+location, the date or the notes edits them. Delete or Backspace deletes the
+selected event. Control-click the list of calendars for New Calendar, Rename, Color and
+Delete, and to import an iCalendar file or export a calendar as one. The button under the window stands for the Calendar menu's Preferences
+command. Here nothing is stored and there are no accounts: the events last as long as the page,
+and the demo runs no clock, so today is the day of the reference capture, 3 October 2019. On
+the desktop served by the Ferrite application the calendar is the signed-in person's, on the
+real clock ("How it behaves").
+
+## What it shows
+
+- A [Window](/components/window) whose [Title Bar](/components/title-bar) holds no title but a
+  [Toolbar](/components/toolbar): two [Toolbar Buttons](/components/toolbar-button)
+  (Calendars, and the plus that adds an event, the [System Image](/components/system-image)
+  `add`), the view switcher, a
+  [Toolbar Segmented Control](/components/toolbar-segmented-control) centred on the window,
+  and a [Toolbar Search Field](/components/toolbar-search-field).
+- A [Split View](/components/split-view) with a fixed pane of 165 pt for the list of
+  calendars: an opaque [Sidebar](/components/sidebar) with the sections iCloud and Other, a
+  [Checkbox](/components/checkbox) in each calendar's colour in the icon column, and the
+  [Calendar Mini Month](/components/calendar-mini-month) as its footer.
+- The week and day views are one [Calendar Week Grid](/components/calendar-week-grid) of
+  seven, five or one day, with a momentary [Segmented Control](/components/segmented-control)
+  (previous, Today, next) as its accessory. Its chevrons are the System Images `go-back` and
+  `go-forward`.
+- The month view is whole weeks of days, each with the events that fall on it, and a "more"
+  row when they do not fit; an event is dragged to another day. An event of several days is
+  drawn in each of its days, not as one bar. The year view is twelve mini months, each day shaded
+  by how many events it has. No screenshot
+  shows either: they are composed to Catalina's conventions.
+- The event [Popover](/components/popover), anchored to the event's block: the title, the
+  event's calendar in a pop-up button bezel that opens a [Menu](/components/menu) of radio
+  items, the date and time, and the location and notes. Each opens for editing on a
+  click: a [Text Field](/components/text-field) for the title and the location; for the date,
+  an all-day [Checkbox](/components/checkbox), two [Date Pickers](/components/date-picker) and
+  [Pop Up Buttons](/components/pop-up-button) for the repeat and its end; a
+  [Text View](/components/text-view) and a text field for the notes and the URL.
+- The list of calendars has a [Contextual Menu](/components/contextual-menu) with a
+  [Submenu](/components/submenu) of colours; New Calendar and Rename ask for the name in a
+  [Sheet](/components/sheet), and deleting a calendar and deleting one occurrence of a
+  repeating event are [Alerts](/components/alert).
+- A search shows a [List View](/components/list-view) of every matching event over the view.
+- The Preferences window (below) is a [Preferences Window](/components/preferences-window)
+  with a [Preferences Toolbar](/components/preferences-toolbar).
+
+## How it behaves
+
+| Action | Effect |
+| --- | --- |
+| Choose Day, Week, Month or Year | Shows that view of the date the window is on. |
+| Press the arrows beside Today | Goes a day, a week, a month or a year back or forward, as the view is. Today returns to the current day. |
+| Choose a day in the mini month | Shows that day in the view; in the year view, a day opens the day view. The mini month's chevrons only change the month it shows. |
+| Click an event | Selects it. A click on the empty grid clears the selection. |
+| Double-click an event, or press Return on it | Opens its popover. Escape, a press outside it, navigation, a search or a calendar's checkbox closes it. |
+| Click the title, "Add Location", the date or "Add Notes, URL, or Attachments" in the popover | Opens that part for editing; Return or Done closes it. Every change is kept at once. |
+| Choose a time zone in the date's editor, with Preferences > Advanced > Turn on time zone support | The event keeps its clock reading in that zone, so it moves in time; the popover then shows the zone's own reading under the date. Floating keeps its reading on whatever clock it is seen. |
+| Choose a zone in the toolbar's menu, with the same preference | The whole window draws on that zone's clock, and what is typed there reads on it; all-day and floating events stay where they are. The choice is kept in this browser. |
+| Press Add Attachment… or drop files on the popover, on a served desktop | Uploads each file, up to 10 MB, and names it on the event. Its name downloads it and Remove takes it off. An invitee gets none of them. |
+| Choose a repeat in the date editor | Every day, every week on the start's weekday, every month on its day or every year, ending never, after a number of times or on a date. The event shows in every day it repeats on; a change of an occurrence's dates moves the whole series. |
+| Press Delete or Backspace with an event selected | Deletes it. For an occurrence of a repeating event, asks whether to delete only it or all future ones. |
+| Choose a calendar in the popover's menu | Moves the event to that calendar, which gives it its colour. |
+| Untick a calendar | Hides its events. Pressing the checkbox does not select the calendar. |
+| Press the plus | Adds "New Event", an hour long, to the day shown (an hour after now when that is today) in the calendar selected in the list, or the one the preferences name, and selects it. On the Ferrite desktop its popover opens with the title ready to type. |
+| Type in the search field | Lists every event whose title, location or notes contain the text, at its next occurrence, and shows only those in the view. Double-click a result, or press Return on it, to go to its day. |
+| Control-click the list of calendars | New Calendar, Rename… and Color for one of the person's own calendars, and Delete (with its events); Import… and Export “name”…. |
+| Choose Import… | Opens the computer's file picker for an iCalendar (`.ics`) file, then a sheet asks which of the person's calendars the events go to, or a new calendar named after the file's. An alert says how many were imported and what was changed or left out. |
+| Choose Export “name”… | Downloads that calendar's events as `name.ics`. On the Ferrite desktop the File menu also exports the selected event, and Import from Drive… and Save to Drive… use the person's drive. |
+| Press Calendars | Hides or shows the list of calendars. |
+| Press Command-comma (Control-comma) in the window | Calls `onOpenPreferences`. |
+
+An event keeps at most 200 removed occurrences and a calendar at most 1,000 events.
+
+Import and Export read and write iCalendar files (RFC 5545) in the browser
+(`calendar-ics.ts`). An import takes each VEVENT's title, location, notes, URL, dates (a date,
+a UTC time, a time in a named zone or a floating time) and its repeat, where Calendar keeps
+that kind of repeat: daily, weekly on plain weekdays, monthly on the start's day or yearly on
+the start's date, every 1 to 99, after 1 to 999 occurrences or until a date. A zone is found by
+its IANA name, the X-LIC-LOCATION of its VTIMEZONE, or the VTIMEZONE's own rules; one none of
+those explains is read as the browser's time zone, and the alert names it. Any other repeat
+(by position in the month, RDATE) imports the event's first occurrence alone; a changed
+occurrence (RECURRENCE-ID) becomes an event of its own and a cancelled one is removed from its
+series. Texts longer than Calendar keeps are cut. Every other component and property is
+passed over. Each imported event's id comes from its UID (an event Calendar exported keeps its
+own id), so importing the same file, or an export, again adds nothing. An import that would
+pass 1,000 events, 50 calendars or about 180 KB of saved events is refused whole.
+
+Calendar repeats an event in the browser's time zone. A repeat written in another zone keeps
+its weekdays where its start falls on another day here; a monthly or yearly one whose day
+differs here is imported as a single event, unless both days are the 28th or before in the
+same month. Its occurrences follow the browser's clocks, so they are an hour off the file's
+zone while only one of the two zones keeps summer time, and an occurrence near midnight can
+fall on the next or the previous day there; its removed and changed occurrences are matched
+to Calendar's own. A repeat of several days a week that skips weeks is kept only when its
+weeks (which begin on its WKST, Monday by default) group the days as Calendar's Sunday weeks
+do. A repeat with more removed occurrences than Calendar keeps (200) is kept with the first
+200, and the alert says the later ones show again.
+
+An export writes all-day events as dates, timed events in UTC, and timed repeating events in
+the browser's zone with a VTIMEZONE for it (in UTC on a browser that keeps UTC, and as floating
+time when the browser names no zone). The VTIMEZONE gives each kind of change the zone makes
+as its yearly rule when that rule also makes each change of the next 28 years, and otherwise
+lists the changes as dates through those years. Text is escaped, lines end in CRLF and are folded at 75 octets,
+each UID is the event's id at `macalicious`, and an event past the year 9999 is left out.
+Repeats are worked out in the browser's local time, so an event keeps its time of day across a
+change of daylight saving time; an occurrence at a time the clocks skip that day is left out.
+There is no time-zone setting per event.
+
+On the desktop served by the `macalicious-desktop` Ferrite application
+(`ferrite-apps/desktop/src/apps/calendar`), the window follows the real clock, and the events and
+the person's own calendars are the signed-in account's, saved after every change.
+
+There a signed-in account (not a Guest User) invites other accounts to an event. A click on
+"Add Invitees" in the popover opens a field for an account name: Return or Invite looks the
+name up and adds the person, who is told in Notification Center, with Accept and Decline, once
+the event is saved. The row then lists each invitee with their answer (Not answered, Accepted
+or Declined), and Remove takes one off, who is told the event is cancelled for them. A change
+of the event's time asks everyone again; a new title or place does not. Events other accounts
+invited the person to show in the Invitations calendar (Other group); their popover reads the
+event, its organizer and who is invited, and answers it with Accept or Decline. An answer is to
+the event as the popover shows it: when the organizer has changed its time since, the answer is
+refused and the popover shows the new time to answer again. Declined invitations are hidden
+until Show Declined Invitations, in the calendar list's contextual menu, shows them again, so a
+decline can be taken back. Invitations cannot be edited or deleted there, are never saved in the
+person's own calendar, and their links open only as web addresses. The organizer is told of each
+answer. An event invites at most 20 people, at most 50 events invite anyone, a save invites at
+most 20 new people, and an inbox holds at most 500 invitations; a save the desktop refuses (an
+invitee whose inbox is full, say) is said in an alert, with the reason.
+
+## Preferences
+
+`CalendarPreferences` is Calendar's second window. Its General pane is the one in the
+screenshots: eight [Pop Up Buttons](/components/pop-up-button) in rows named by
+[Labels](/components/label), [Separators](/components/separator), three
+[Checkboxes](/components/checkbox) and a [Help Button](/components/help-button). Its controls
+read and change a `CalendarSettings` object (`settings` and `onSettingsChange`, or
+`defaultSettings`). Give the main window the same object and it follows: the days of a week
+and its first day, the hour at the top of the grid, the hours shown at a time, the calendar new
+events go to, the Birthdays and Holidays calendars, and the alternate calendar. On the desktop
+"Day starts at" and "Day ends at" shade the hours outside the day. "Scroll in week view by" is
+what the arrows and a sideways scroll step by. The Accounts, Alerts and Advanced panes have no
+screenshot; what Advanced sets goes with the person's desktop settings, and the default calendar
+app lists Calendar alone, the only one a desktop has.
+
+The demo's two windows are separate components, so the page that hosts them decides how the
+Preferences window opens and where it stands. In the example above it is rendered under the
+main window, which becomes the main (not key) window meanwhile.
+
+## Hosting the window
+
+`Calendar` renders the library's `Window` as its root and passes every `Window` prop to it, so
+it does not assume it fills the page. Place it with `style`; a window manager gives it `state`,
+the size, and eight more props that the component takes out before the rest goes to the
+`Window`. These are the props a [Managed Window](/components/managed-window)'s `render` form
+supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { calendarApp } from "./app";
+
+<ManagedWindow
+  id={calendarApp.id}
+  defaultFrame={{ x: 80, y: 60, ...calendarApp.defaultSize }}
+  render={(props) => <calendarApp.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `events` | `CalendarEntry[]` | The events the window opens with; those of the light screenshot and the year's other holidays by default. |
+| `now` | `Date` | Today and the current-time line; the moment of the light capture by default, and the real clock on the Ferrite desktop. |
+| `view`, `defaultView`, `onViewChange` | `"day" \| "week" \| "month" \| "year"` and a function | The view, controlled or not; `"week"` at first. |
+| `defaultDate` | `Date` | The date the views open on; `now` by default. |
+| `defaultSelectedEvent`, `defaultPopoverOpen` | `string`, `boolean` | The event selected at first, and whether its popover is open. |
+| `popoverProps` | `PopoverPopupProps` | For a host that confines the popover: its `container`, `side` or `collisionAvoidance`. |
+| `defaultCalendar` | `string` | The calendar selected in the list at first; `"work"` by default. |
+| `settings` | `CalendarSettings` | What the preferences set. |
+| `onOpenPreferences` | `() => void` | Called on Command-comma or Control-comma. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: the toolbar's empty space is the drag region. |
+| `width`, `height` | `number \| string` | The frame; 1102 by 624 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `calendarApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (1102 by 624), `minSize` (680 by 420), `resizable`, `menus`
+(the menu titles after the Apple menu), and `preferences`, which holds the `CalendarPreferences`
+component, whose root is the `PreferencesWindow`, and its frame of 537 by 542.
+
+## Styling hooks
+
+The demo's measured lengths and font sizes are custom properties in `calendar.tokens.css`,
+declared on `:root`; set one on the window with `style` to change it. That file tags each
+with where it comes from: the main window, the event popover and the Preferences window's
+General pane are measured; the month and year views and the popover's menu chip, which no
+capture shows, are provisional. `calendar-preferences.tsx` imports the same file. Left as
+literals in `calendar.css` and `calendar-preferences.css`, because they are structure rather
+than measurements: zeros, the sidebar's 100% sizes, flex factors and `1fr` tracks, the 1 pt
+line over each popover row, and the title's weight.
+
+| Property | Default | Controls |
+| --- | --- | --- |
+| `--mac-calendar-toolbar-gap` | `10px` | The toolbar's two groups: gap between their items |
+| `--mac-calendar-toolbar-trailing-basis` | `72px` | The trailing toolbar group's flex basis: the room the window controls take on the leading side |
+| `--mac-calendar-plus-offset` | `-0.5px` | The New Event button's plus: shift, both ways |
+| `--mac-calendar-navigation-margin-top` | `15.5px` | Previous, Today and next in a title row: top margin |
+| `--mac-calendar-navigation-margin-end` | `7px` | Previous, Today and next in a title row: trailing margin |
+| `--mac-calendar-chevron-offset` | `0.5px` | The chevrons of previous and next: shift, both ways |
+| `--mac-calendar-chevron-back-offset` | `-1.25px` | The chevron of previous: inline shift |
+| `--mac-calendar-popover-width` | `289px` | The event popover: width |
+| `--mac-calendar-popover-head-gap` | `3px` | The popover's head: gap between its items |
+| `--mac-calendar-popover-head-min-height` | `60px` | The popover's head: least height |
+| `--mac-calendar-popover-head-padding-top` | `12px` | The popover's head: top padding |
+| `--mac-calendar-popover-head-padding-right` | `12px` | The popover's head: right padding |
+| `--mac-calendar-popover-head-padding-bottom` | `10px` | The popover's head: bottom padding |
+| `--mac-calendar-popover-head-padding-left` | `15px` | The popover's head: left padding |
+| `--mac-calendar-popover-row-min-height` | `35px` | A popover row: least height |
+| `--mac-calendar-popover-row-padding-block` | `8px` | A popover row: block padding |
+| `--mac-calendar-popover-row-padding-inline` | `15px` | A popover row: inline padding |
+| `--mac-calendar-popover-invitees-min-height` | `29px` | The popover's invitees row: least height |
+| `--mac-calendar-popover-invitees-padding-block` | `6px` | The popover's invitees row: block padding |
+| `--mac-calendar-popover-notes-min-height` | `38px` | The popover's notes row: least height |
+| `--mac-calendar-editor-label-width` | `84px` | The popover's date editor: width of its labels' column |
+| `--mac-calendar-editor-gap` | `6px` | The popover's editors: gap between their lines and controls |
+| `--mac-calendar-editor-count-width` | `48px` | The repeat's number of times: width |
+| `--mac-calendar-editor-notes-height` | `72px` | The notes being edited: height |
+| `--mac-calendar-detail-gap` | `2px` | The repeat under the date: gap |
+| `--mac-calendar-results-height` | `180px` | The search results over the view: height |
+| `--mac-calendar-results-empty-padding` | `12px` | "No Results": padding |
+| `--mac-calendar-chip-size` | `12px` | A calendar's colour chip in the popover's menu: width and height |
+| `--mac-calendar-chip-margin` | `2px` | The colour chip: margin |
+| `--mac-calendar-chip-radius` | `2px` | The colour chip: corner radius |
+| `--mac-calendar-heading-height` | `51px` | The title row of the month and year views: height |
+| `--mac-calendar-heading-padding-start` | `14.5px` | The title row: leading padding |
+| `--mac-calendar-heading-padding-end` | `6px` | The title row: trailing padding |
+| `--mac-calendar-heading-title-margin-top` | `7px` | The month or year title: top margin |
+| `--mac-calendar-heading-title-size` | `32px` | The month or year title: font size |
+| `--mac-calendar-heading-title-line-height` | `40px` | The month or year title: line height |
+| `--mac-calendar-month-weekdays-height` | `22px` | The month view: height of its row of weekday names |
+| `--mac-calendar-month-day-height` | `22px` | A day of the month: height of the row of its number |
+| `--mac-calendar-month-event-height` | `16px` | An event in a day of the month: height |
+| `--mac-calendar-month-event-radius` | `3px` | An event in a day of the month: corner radius |
+| `--mac-calendar-month-cell-padding` | `4px` | A day of the month: inline padding |
+| `--mac-calendar-month-font-size` | `11px` | The month view: font size |
+| `--mac-calendar-text-smaller-font-size` | `10px` | Make Text Smaller: the month view's font size |
+| `--mac-calendar-text-smaller-event-height` | `15px` | Make Text Smaller: an event's height |
+| `--mac-calendar-text-big-font-size` | `12px` | Make Text Bigger once: the month view's font size |
+| `--mac-calendar-text-big-event-height` | `17px` | Make Text Bigger once: an event's height |
+| `--mac-calendar-text-bigger-font-size` | `13px` | Make Text Bigger twice: the month view's font size |
+| `--mac-calendar-text-bigger-event-height` | `18px` | Make Text Bigger twice: an event's height |
+| `--mac-calendar-text-biggest-font-size` | `14px` | Make Text Bigger three times: the month view's font size |
+| `--mac-calendar-text-biggest-event-height` | `19px` | Make Text Bigger three times: an event's height |
+| `--mac-calendar-month-number-size` | `18px` | A day's number: height of its disc when it is today |
+| `--mac-calendar-month-number-padding` | `4px` | A day's number: inline padding |
+| `--mac-calendar-month-dot-size` | `7px` | A timed event's dot in a day of the month |
+| `--mac-calendar-year-column-min-width` | `190px` | The year view: least width of a month's column |
+| `--mac-calendar-year-row-gap` | `4px` | The year view: gap between rows of months |
+| `--mac-calendar-year-column-gap` | `24px` | The year view: gap between columns of months |
+| `--mac-calendar-year-padding-top` | `4px` | The year view: top padding |
+| `--mac-calendar-year-padding-inline` | `20px` | The year view: inline padding |
+| `--mac-calendar-year-padding-bottom` | `20px` | The year view: bottom padding |
+| `--mac-calendar-preferences-margin-inline` | `16px` | The Preferences panes' form, separators and checkboxes: inline margin |
+| `--mac-calendar-preferences-label-column` | `206.5px` | The Preferences form: width of the labels' column |
+| `--mac-calendar-preferences-row-gap` | `9px` | The Preferences form: gap between rows |
+| `--mac-calendar-preferences-choice-width` | `181px` | A pop-up button of the Preferences form: width |
+| `--mac-calendar-preferences-number-width` | `54px` | The pop-up button of the hours shown: width |
+| `--mac-calendar-preferences-unit-margin-start` | `-1px` | The text after the hours pop-up button: leading margin |
+| `--mac-calendar-preferences-rule-margin-block` | `11px` | A separator between Preferences rows: block margin |
+| `--mac-calendar-preferences-line-margin-top` | `20px` | A separator under the Preferences form: top margin |
+| `--mac-calendar-preferences-checks-gap` | `6px` | The Preferences checkboxes (and the Advanced pane's list): gap between them |
+| `--mac-calendar-preferences-checks-margin-block` | `16px` | The Preferences checkboxes: space above them and above the line under them |
+| `--mac-calendar-preferences-alternate-width` | `358px` | The alternate-calendar row: width |
+| `--mac-calendar-preferences-switch-margin-top` | `3px` | The alternate-calendar checkbox: top margin |
+
+## Accessibility
+
+- The window is a `region` named "Calendar". The view switcher is a group named "View", and
+  the previous, Today and next control a group named "Go to" whose arrows are named by the
+  view ("Previous week").
+- The calendars are a `tree` named "Calendars"; each row's checkbox is named "Show Home" and
+  so on. The mini month is a `grid` of day buttons named by their full dates, with one tab
+  stop and the arrow keys, Home, End, Page Up and Page Down.
+- Every event is a button named by its title, day and times, with `aria-pressed` for the
+  selection. Return opens the popover, which is a `dialog` named by the event's title and
+  takes the focus when it opens; Escape closes it.
+- The popover's calendar button is named "Calendar: Work" and opens a menu of radio items.
+  "Add Location", "Add Notes, URL, or Attachments", the title ("Title: …") and the date
+  ("Date: …") are buttons that open their editors; each field is named ("Title", "Location",
+  "Starts", "Ends", "Repeat", "Notes", "URL").
+- The list of calendars opens its contextual menu on Control-click, a right-click or the
+  context-menu key. The search results are a `listbox` named "Search results".
+- In the Preferences window each pop-up button is named by the label of its row, and the
+  window takes the name of the pane chosen in its toolbar as its title.
+
+## Fidelity
+
+`calendar.visual.json` compares the main window and the event popover beside it with the
+Calendar screenshots, and the Preferences window with the Calendar-Preferences screenshots, in
+both appearances. The popover reaches past the window's edge, so the scene is captured in two
+parts: the window left of the popover's arrow, and the rest. The Preferences window is scored
+as captured and again with the text and the stand-in drawings masked. Scores from
+`npm run visual -- calendar/` in Chromium on Linux with the fallback font: the share of pixels
+that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 2.33% | 2.59 | 1.68% | 2.27 |
+| `popover-light` | 3.30% | 3.29 | 2.94% | 3.26 |
+| `window-dark` | 2.11% | 2.57 | 1.65% | 2.20 |
+| `popover-dark` | 4.80% | 3.98 | 4.61% | 4.25 |
+| `preferences-light` | 4.63% | 4.48 | 3.24% | 3.96 |
+| `preferences-light-layout` (masked) | 2.48% | 0.86 | 0.05% | 0.15 |
+| `preferences-dark` | 4.53% | 5.40 | 3.24% | 4.84 |
+| `preferences-dark-layout` (masked) | 1.29% | 2.10 | 0.05% | 1.47 |
+
+The masked rows count a pixel as differing at a colour distance of 0.05, half the default. The
+main window has no masked rows: its drawing is scored in the masked comparisons of the
+[Calendar Week Grid](/components/calendar-week-grid) and the
+[Calendar Mini Month](/components/calendar-mini-month).
+
+- The plus and the chevrons beside Today are the library's
+  [System Images](/components/system-image): `add` at its own 11 pt, and `go-back` and
+  `go-forward` at 0.72 of their size, the 5 by 9 pt the captures show; the demo's stylesheet
+  places them where the captures have them. They are the library's drawings, not Apple's.
+- The subscription mark, the colour chip in the popover and the icons of the Preferences
+  toolbar and its first pop-up button are the demo's own stand-in drawings; Apple's glyphs and
+  the Calendar icon are not reproduced.
+- A window capture records the popover's material already blended with the desktop behind it.
+  The comparison gives the popover the opaque form of the material; on a page it is the
+  library's translucent one.
+- At the captured width AppKit rounds the seven day columns to 123, 124, 124, 124, 123, 123
+  and 121 pt. The comparison sets those through the week grid's columns hook; elsewhere the
+  columns are equal.
+- The list of calendars is tighter than a standard sidebar (24 pt rows that touch, shorter
+  headers), and the segments of the two switchers have their captured widths. The demo sets
+  those through the parts' `style`.
+- In the Preferences window the title sits 3 pt left of the capture's, which is centred on the
+  window, and Dark Aqua's window background is two levels off the capture's.
+- The month and year views, the day view, a week of five days, new events, the popover's
+  menu and editors, search results, the contextual menu and three of
+  the four Preferences panes have no reference screenshot; they are composed to Catalina's
+  conventions and are provisional. The colours of the person's own calendars other than Home's
+  cyan and Work's purple are provisional too.
+- The popover's "Add Invitees" row is shown as in the capture. Only on the Ferrite desktop, for a
+  signed-in account, is it a control (above); its list of invitees and the invitation's popover
+  have no reference screenshot and are provisional. An invitee's event has no alert of its own.
+- Exported events carry new UIDs (their id at `macalicious`), not the UIDs of the file they
+  were imported from, and an export writes no alarms, attendees or attachments.
+- Events of the person's own calendars are dragged in the week and day views in steps of 15
+  minutes (an all-day event by whole days, in the all-day row); an event that reaches another day
+  moves whole, and only an event within one day has edges to drag. A touch scrolls the grid
+  rather than dragging, and from the keyboard an event's dates change in its popover. Birthdays
+  is an empty calendar: the demo has no contacts. On the desktop the holidays are worked out from
+  each one's rule, not subscribed to from the network.
+- An event's alert shows only while a Calendar window is open. Time to Leave is dimmed: it needs a
+  map service.

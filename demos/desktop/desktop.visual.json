@@ -1,0 +1,649 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "menu-bar-light",
+      "description": "The menu bar of the Aqua Desktop screenshot across the whole 1680 pt screen: the Apple title, Finder's seven titles and the nine extras with the capture's clock, over the stand-in for the desktop picture. Whole crop: the titles are set in the fallback font, whose wider letters also move the titles after the first, and the mark and the status images are stand-in drawings.",
+      "example": "visual-light",
+      "appearance": "light",
+      "selector": ".mac-desktop-shell-menu-bar",
+      "reference": {
+        "file": "10-15-Catalina-Light-Desktop.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 3360,
+          "height": 44
+        }
+      },
+      "budget": {
+        "1x": 0.094,
+        "2x": 0.08
+      },
+      "deltaBudget": {
+        "1x": 14.3,
+        "2x": 15.3
+      }
+    },
+    {
+      "name": "menu-bar-light-surface",
+      "description": "As menu-bar-light with the titles and the extras masked (the first 440 pt and the last 425 pt of the bar, where text in the fallback font and stand-in images are), to score the bar itself: its 22 pt height and its material over the stand-in for the desktop picture.",
+      "example": "visual-light",
+      "appearance": "light",
+      "selector": ".mac-desktop-shell-menu-bar",
+      "masks": [
+        {
+          "x": 14,
+          "y": 0,
+          "width": 426,
+          "height": 22
+        },
+        {
+          "x": 1255,
+          "y": 0,
+          "width": 425,
+          "height": 22
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Desktop.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 3360,
+          "height": 44
+        }
+      },
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 4.9,
+        "2x": 5.4
+      }
+    },
+    {
+      "name": "apple-menu-light",
+      "description": "The top left 235 by 300 pt of the Aqua Apple-Menu screenshot after a click on the Apple title, with the pointer on About This Mac: the highlighted title, the left end of the bar and the open menu, row for row, over the stand-in for the desktop picture. Whole crop, text in the fallback font and a stand-in for the mark.",
+      "example": "visual-light",
+      "appearance": "light",
+      "selector": "[data-crop='apple-menu']",
+      "actions": [
+        {
+          "click": "role=menuitem[name='Apple']"
+        },
+        {
+          "hover": "role=menuitem[name='About This Mac']"
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Apple-Menu.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 470,
+          "height": 600
+        }
+      },
+      "budget": {
+        "1x": 0.088,
+        "2x": 0.08
+      },
+      "deltaBudget": {
+        "1x": 14,
+        "2x": 15.7
+      }
+    },
+    {
+      "name": "apple-menu-light-drawing",
+      "description": "As apple-menu-light with the text masked (the mark, the titles in the bar, and the titles, key equivalents and submenu arrow of the menu's six groups of rows), to score the drawing: the title's highlight, the menu's place under the bar, its width, height, corners, rim and shadow, the selection across its first row and the five separators.",
+      "example": "visual-light",
+      "appearance": "light",
+      "selector": "[data-crop='apple-menu']",
+      "actions": [
+        {
+          "click": "role=menuitem[name='Apple']"
+        },
+        {
+          "hover": "role=menuitem[name='About This Mac']"
+        }
+      ],
+      "masks": [
+        {
+          "x": 14,
+          "y": 1,
+          "width": 26,
+          "height": 20
+        },
+        {
+          "x": 50,
+          "y": 1,
+          "width": 185,
+          "height": 20
+        },
+        {
+          "x": 28,
+          "y": 26,
+          "width": 186,
+          "height": 19
+        },
+        {
+          "x": 28,
+          "y": 57,
+          "width": 186,
+          "height": 38
+        },
+        {
+          "x": 28,
+          "y": 107,
+          "width": 186,
+          "height": 19
+        },
+        {
+          "x": 28,
+          "y": 138,
+          "width": 186,
+          "height": 19
+        },
+        {
+          "x": 28,
+          "y": 169,
+          "width": 186,
+          "height": 57
+        },
+        {
+          "x": 28,
+          "y": 238,
+          "width": 186,
+          "height": 38
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Apple-Menu.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 470,
+          "height": 600
+        }
+      },
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 6.4,
+        "2x": 6.5
+      }
+    },
+    {
+      "name": "dock-light",
+      "description": "The Dock of the Aqua Desktop screenshot, 1398 by 80 pt at the foot of the screen, with the capture's twenty tiles: the shelf, its top corners and border, the separator, and the running dot under Finder, over the stand-in for the desktop picture. The twenty 64 pt tiles are masked: the capture's icons are Apple's, and the desktop's are stand-in drawings.",
+      "example": "visual-light",
+      "appearance": "light",
+      "selector": ".mac-dock",
+      "masks": [
+        {
+          "x": 6,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 74,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 142,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 210,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 278,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 346,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 414,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 482,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 550,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 618,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 686,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 754,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 822,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 890,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 958,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 1026,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 1094,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 1162,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 1260,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 1328,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Desktop.png",
+        "crop": {
+          "x": 282,
+          "y": 1940,
+          "width": 2796,
+          "height": 160
+        }
+      },
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 6.5,
+        "2x": 6.5
+      }
+    },
+    {
+      "name": "menu-bar-dark",
+      "description": "The menu bar of the Dark Aqua Desktop screenshot across the whole 1680 pt screen: the Apple title, Finder's seven titles and the nine extras with the capture's clock, over the stand-in for the desktop picture. Whole crop: the titles are set in the fallback font, whose wider letters also move the titles after the first, and the mark and the status images are stand-in drawings.",
+      "example": "visual-dark",
+      "appearance": "dark",
+      "selector": ".mac-desktop-shell-menu-bar",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Desktop.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 3360,
+          "height": 44
+        }
+      },
+      "budget": {
+        "1x": 0.097,
+        "2x": 0.084
+      },
+      "deltaBudget": {
+        "1x": 13.7,
+        "2x": 14.3
+      }
+    },
+    {
+      "name": "menu-bar-dark-surface",
+      "description": "As menu-bar-dark with the titles and the extras masked (the first 440 pt and the last 425 pt of the bar, where text in the fallback font and stand-in images are), to score the bar itself: its 22 pt height and its material over the stand-in for the desktop picture.",
+      "example": "visual-dark",
+      "appearance": "dark",
+      "selector": ".mac-desktop-shell-menu-bar",
+      "masks": [
+        {
+          "x": 14,
+          "y": 0,
+          "width": 426,
+          "height": 22
+        },
+        {
+          "x": 1255,
+          "y": 0,
+          "width": 425,
+          "height": 22
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Desktop.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 3360,
+          "height": 44
+        }
+      },
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 1.6,
+        "2x": 1.9
+      }
+    },
+    {
+      "name": "apple-menu-dark",
+      "description": "The top left 235 by 300 pt of the Dark Aqua Apple-Menu screenshot after a click on the Apple title, with the pointer on About This Mac: the highlighted title, the left end of the bar and the open menu, row for row, over the stand-in for the desktop picture. Whole crop, text in the fallback font and a stand-in for the mark.",
+      "example": "visual-dark",
+      "appearance": "dark",
+      "selector": "[data-crop='apple-menu']",
+      "actions": [
+        {
+          "click": "role=menuitem[name='Apple']"
+        },
+        {
+          "hover": "role=menuitem[name='About This Mac']"
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Apple-Menu.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 470,
+          "height": 600
+        }
+      },
+      "budget": {
+        "1x": 0.09,
+        "2x": 0.083
+      },
+      "deltaBudget": {
+        "1x": 12.3,
+        "2x": 14.1
+      }
+    },
+    {
+      "name": "apple-menu-dark-drawing",
+      "description": "As apple-menu-dark with the text masked (the mark, the titles in the bar, and the titles, key equivalents and submenu arrow of the menu's six groups of rows), to score the drawing: the title's highlight, the menu's place under the bar, its width, height, corners, rim and shadow, the selection across its first row and the five separators.",
+      "example": "visual-dark",
+      "appearance": "dark",
+      "selector": "[data-crop='apple-menu']",
+      "actions": [
+        {
+          "click": "role=menuitem[name='Apple']"
+        },
+        {
+          "hover": "role=menuitem[name='About This Mac']"
+        }
+      ],
+      "masks": [
+        {
+          "x": 14,
+          "y": 1,
+          "width": 26,
+          "height": 20
+        },
+        {
+          "x": 50,
+          "y": 1,
+          "width": 185,
+          "height": 20
+        },
+        {
+          "x": 28,
+          "y": 26,
+          "width": 186,
+          "height": 19
+        },
+        {
+          "x": 28,
+          "y": 57,
+          "width": 186,
+          "height": 38
+        },
+        {
+          "x": 28,
+          "y": 107,
+          "width": 186,
+          "height": 19
+        },
+        {
+          "x": 28,
+          "y": 138,
+          "width": 186,
+          "height": 19
+        },
+        {
+          "x": 28,
+          "y": 169,
+          "width": 186,
+          "height": 57
+        },
+        {
+          "x": 28,
+          "y": 238,
+          "width": 186,
+          "height": 38
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Apple-Menu.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 470,
+          "height": 600
+        }
+      },
+      "budget": {
+        "1x": 0.002,
+        "2x": 0.0016
+      },
+      "deltaBudget": {
+        "1x": 4.7,
+        "2x": 4.9
+      }
+    },
+    {
+      "name": "dock-dark",
+      "description": "The Dock of the Dark Aqua Desktop screenshot, 1398 by 80 pt at the foot of the screen, with the capture's twenty tiles: the shelf, its top corners and border, the separator, and the running dot under Finder, over the stand-in for the desktop picture. The twenty 64 pt tiles are masked: the capture's icons are Apple's, and the desktop's are stand-in drawings.",
+      "example": "visual-dark",
+      "appearance": "dark",
+      "selector": ".mac-dock",
+      "masks": [
+        {
+          "x": 6,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 74,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 142,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 210,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 278,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 346,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 414,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 482,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 550,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 618,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 686,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 754,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 822,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 890,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 958,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 1026,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 1094,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 1162,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 1260,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 1328,
+          "y": 6,
+          "width": 64,
+          "height": 64
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Desktop.png",
+        "crop": {
+          "x": 282,
+          "y": 1940,
+          "width": 2796,
+          "height": 160
+        }
+      },
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 3.1,
+        "2x": 3
+      }
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+---
+title: Notification Center
+description: The panel on the trailing edge of the screen, with a Today view and a Notifications view chosen by two segments.
+---
+
+<Example name="basic" both />
+
+The panel that slides in under the menu bar when its menu bar extra is clicked. It holds
+[Today widgets](/components/today-widget) in one view and delivered
+[notifications](/components/notification-banner) in the other.
+
+## Usage
+
+```tsx
+import {
+  NotificationCenter,
+  NotificationCenterGroup,
+  NotificationCenterView,
+} from "macalicious/notification-center";
+import "macalicious/notification-center.css";
+
+<NotificationCenter open={open} editLabel="Edit" onEdit={edit} onSettings={openPreferences}>
+  <NotificationCenterView value="today">…widgets…</NotificationCenterView>
+  <NotificationCenterView value="notifications">
+    <NotificationCenterGroup heading="Today" onClear={clearToday}>
+      …notifications…
+    </NotificationCenterGroup>
+  </NotificationCenterView>
+</NotificationCenter>
+```
+
+Or copy the source into your project: `npx macalicious add notification-center`.
+
+The panel is 344 pt wide and as tall as its container: place it in a layer that runs from the
+menu bar's bottom edge to the bottom of the screen, at the trailing edge, in the same page as
+the desktop it should blur. `open` moves it in and out; closing it on a click elsewhere is the
+application's.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for
+[Notifications](https://web.archive.org/web/20200503160812/https://developer.apple.com/design/human-interface-guidelines/macos/system-capabilities/notifications/):
+
+- Notification Center lists what was delivered, newest first, grouped by day; people clear a
+  day's notifications together or one at a time.
+- Keep a notification short and specific, and make a click on it open the item it is about.
+- Do not send a notification for something people are already looking at.
+
+## Variants and states
+
+<Example name="empty" both hideCode />
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Today view | `value="today"` (the default) | First segment selected; the footer can have its button |
+| Notifications view | `value="notifications"` | Second segment selected; no footer button |
+| Footer button | `editLabel` | Dark translucent button, centred: "Edit", or "2 New" |
+| Gear | `onSettings` | 18 pt gear at the trailing end of the footer |
+| Day group | `NotificationCenterGroup` | Large light heading with a 14 pt clear button |
+| Empty view | `NotificationCenterEmpty` | Centred text in the heading colour |
+| Closed | `open={false}` | Moved out past the trailing edge, hidden and inert |
+
+The panel is a vibrant material: it blurs and tints the desktop behind it, so its colours
+follow the picture. With `prefers-reduced-transparency`, or where `backdrop-filter` is not
+available, it is an opaque colour.
+
+Measured: the panel, header, segments, dividers, day heading, clear button, footer button and
+gear, in both appearances, over the default desktop picture. Provisional: the pressed looks,
+the empty view and the slide (a quarter of a second, by eye); no capture shows them.
+
+## Sizes
+
+One size. `--mac-notification-center-width` changes the width; the cards inside are 322 pt
+wide and have variables of their own.
+
+## API
+
+<PropsTable name="NotificationCenterProps" />
+
+The panel is built on Base UI's Tabs and also accepts the root's other props, such as
+`onValueChange`. `className`, `style`, `ref` and other attributes go to the root element.
+
+<PropsTable name="NotificationCenterViewProps" />
+
+<PropsTable name="NotificationCenterGroupProps" />
+
+<PropsTable name="NotificationCenterEmptyProps" />
+
+| Attribute | On | Description |
+| --- | --- | --- |
+| `data-open` | root | Present while the panel is on screen. |
+| `data-active` | segment | The selected segment (Base UI Tabs). |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-notification-center-width` | `344px` | Width of the panel. |
+
+## Accessibility
+
+- The root is an `<aside>`, a `complementary` landmark, named "Notification Center"; pass
+  `aria-label` for another language.
+- The header is a `tablist` with two `tab`s and each view a `tabpanel`, from Base UI: the arrow
+  keys move between the segments, Return or Space selects, and a view without a focusable
+  element is itself a tab stop.
+- A day group is a `region` named by its heading, an `<h2>`. Its clear button is named by
+  `clearLabel` and described by the heading, so two groups' buttons can be told apart.
+- The gear has no text: it is named by `settingsLabel`.
+- A closed panel is `inert` and hidden, so nothing in it can be focused or read.
+- Focus rings show only in the key window. In forced-colours mode the panel and the segments
+  have borders and the selected segment uses the system highlight.
+- The slide is not played with `prefers-reduced-motion`.
+
+## Visual comparison
+
+The captures show the panel over the default desktop picture, which is not reproduced: each
+example paints, behind the panel, gradients that under the panel's material give the colours
+measured along the header and under it. Text is masked (the fallback font off Apple platforms),
+and so are the glyphs of the switch rows and the app icon, which are Apple artwork. Results in
+Chromium on Linux, at a colour distance of 0.05:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Today view: header and switches card, Aqua | 0.24% of pixels differ | 1.24% |
+| Today view, Dark Aqua | 5.49% | 6.36% |
+| Notifications view: header, day heading, start of a notification, Aqua | 0.04% | 0.90% |
+| Notifications view, Dark Aqua | 5.73% | 6.69% |
+| Footer with the gear, Aqua (button masked) | 3.42% | 3.55% |
+| Footer with Edit and the gear, Dark Aqua | 3.23% | 3.54% |
+
+In Dark Aqua nearly all of the difference is the glow of the sun in the desktop picture at the
+trailing side of the panel, which the stand-in gradients follow along one row only; the
+header, segments, card and clear button match. In the footer it is the gear, an original
+drawing with the measured size, weight and colour, and the blurred end of the Dock behind the
+panel. The Aqua capture's footer button reads "2 New" with a blue dot and is masked whole. A
+state check clicks the second segment and reads the fills of both segments.
+
+Not compared: the leading edge lines, which lie on the desktop picture.

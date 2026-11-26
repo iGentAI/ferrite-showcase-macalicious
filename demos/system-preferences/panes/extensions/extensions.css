@@ -1,0 +1,38 @@
+/*
+ * Extensions pane. Every control is a library component placed by form.tsx; this file places
+ * the line between the two groups of categories and the note shown for a category that is not
+ * captured.
+ *
+ *   .mac-system-preferences-extensions-divider   the 10 pt gap between Today and Finder, with
+ *                                                its line 4.5 pt down, 6 pt from the left
+ *                                                and 7 pt from the right
+ *   .mac-system-preferences-extensions-empty     fills the box of a category
+ */
+.mac-system-preferences-extensions-divider {
+  box-sizing: border-box;
+  height: 10px;
+  padding: 4.5px 7px 0 6px;
+}
+
+.mac-system-preferences-extensions-empty {
+  position: absolute;
+  inset: 0;
+}
+
+.mac-system-preferences-extensions-today {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-system-preferences-extensions-today > li {
+  display: flex;
+  align-items: center;
+  padding-inline: var(--mac-space-control-gap);
+  touch-action: none;
+  user-select: none;
+}
+
+.mac-system-preferences-extensions-today > li[data-dragging] {
+  opacity: 0.6;
+}

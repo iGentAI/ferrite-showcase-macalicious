@@ -1,0 +1,687 @@
+/*
+ * Stocks: what the app adds to the library's controls. The window, the Catalyst chrome with its
+ * toolbar and sidebar, the search field, the watchlist's rows, the card grid, the segmented
+ * control and the menu are the library's; this file lays them out and draws the two things
+ * that are the app's own, the Business News cell and a story.
+ *
+ * Positions are measured on the Stocks captures, in points from the window's top-left corner:
+ * the search field at 12.5, 43 (305 x 28), a line at 76, the Business News cell from 77, the
+ * rows from 125, the footer's line at 764; in the news pane a 493 pt column centred on the
+ * pane, the title's cap top at 61.5, the lead picture at 111 (493 x 277), the two-up pictures
+ * at 502 (234.5 x 175.5, 24 pt apart) and the next row at 776.
+ *
+ * Parts
+ *   .mac-stocks                    the window
+ *   .mac-stocks-column             the library's sidebar; [data-hidden] when View hides it
+ *   .mac-stocks-sidebar            the sidebar's column: search, cell, rows, footer
+ *   .mac-stocks-search             the block that holds the search field, with its line
+ *   .mac-stocks-news-cell          the Business News cell, a button
+ *   .mac-stocks-news-cell-title    its first line
+ *   .mac-stocks-news-cell-source   its second line, "From News"
+ *   .mac-stocks-news-glyph         the mark before "News"
+ *   .mac-stocks-no-results         what the list shows when the search matches nothing
+ *   .mac-stocks-footer             the line at the sidebar's foot that says where the data is from
+ *   .mac-stocks-menu-area          what a story's contextual menu belongs to; no box of its own
+ *   .mac-stocks-row                a watchlist row with its menu; in Edit mode, with -remove and -grip
+ *   .mac-stocks-footer-edit        the footer's Edit button, which starts and ends editing
+ *   .mac-stocks-pane               the scrolling view beside the sidebar
+ *   .mac-stocks-feed               the 493 pt column in it
+ *   .mac-stocks-title              the large title: "Top Stories" or a symbol
+ *   .mac-stocks-heading            a smaller heading in the detail view
+ *   .mac-stocks-stories            the card grid of stories
+ *   .mac-stocks-story              a story; -art, -picture, -text, -publisher, -headline,
+ *                                  -summary and -age are its parts
+ *   .mac-stocks-quote              the head of the detail view; -name, -price, -last, -change
+ *   .mac-stocks-chart              the chart; -plot, -line, -base, -fill-top, -fill-bottom,
+ *                                  -scale and -times are its parts
+ *   .mac-stocks-figures            the figures under the chart; .mac-stocks-figure is one
+ *
+ * States
+ *   [aria-current] on .mac-stocks-news-cell    the lighter cell: the news is shown
+ *   :focus-visible on .mac-stocks-news-cell    focus ring, in the key window only
+ *   [data-layout] on .mac-stocks-story         "lead", "beside", "card" or "compact"
+ *   [data-direction="loss"]                    on the price and the chart: red instead of green
+ */
+.mac-stocks:where(:focus) {
+  outline: none;
+}
+
+.mac-stocks-menu-area,
+.mac-stocks-row {
+  display: contents;
+}
+
+.mac-stocks-row:where([data-editing]) {
+  display: flex;
+  align-items: center;
+}
+
+.mac-stocks-row:where([data-editing]) > .mac-stocks-row-info {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.mac-stocks-row-remove {
+  position: relative;
+  flex: none;
+  width: var(--mac-stocks-row-remove-size);
+  height: var(--mac-stocks-row-remove-size);
+  margin: 0;
+  margin-inline-start: var(--mac-stocks-row-remove-margin-start);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--mac-stocks-row-remove-fill);
+  cursor: default;
+  appearance: none;
+}
+
+.mac-stocks-row-remove::before {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: var(--mac-stocks-row-remove-bar-width);
+  height: var(--mac-stocks-row-remove-bar-height);
+  background: var(--mac-stocks-row-remove-bar);
+  transform: translate(-50%, -50%);
+}
+
+.mac-stocks-row-grip {
+  flex: none;
+  width: var(--mac-stocks-row-grip-width);
+  height: var(--mac-stocks-row-grip-height);
+  margin-inline-end: var(--mac-stocks-row-grip-margin);
+  border-block: var(--mac-hairline) solid var(--mac-stocks-row-grip-line);
+  background:
+    linear-gradient(var(--mac-stocks-row-grip-line), var(--mac-stocks-row-grip-line)) center / 100%
+    var(--mac-hairline) no-repeat;
+  cursor: grab;
+}
+
+.mac-stocks-column[data-hidden] {
+  display: none;
+}
+
+.mac-stocks-sidebar {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+/* The block of the search field, with the line under it. The component gives the library's
+   sidebar field the iOS field's metrics and colours through the field's own variables. */
+.mac-stocks-search {
+  flex: none;
+  box-sizing: border-box;
+  height: var(--mac-stocks-search-height);
+  padding: var(--mac-stocks-search-padding);
+  box-shadow: inset 0 calc(-1 * var(--mac-hairline)) 0 var(--mac-stocks-separator);
+}
+
+.mac-stocks-news-cell {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--mac-stocks-news-cell-height);
+  margin: 0;
+  padding: var(--mac-stocks-news-cell-padding);
+  border: 0;
+  border-radius: 0;
+  background: none;
+  text-align: start;
+  cursor: default;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-stocks-news-cell:where([aria-current]) {
+  background: var(--mac-stocks-news-cell-fill);
+}
+
+.mac-stocks-news-cell:where(:focus-visible):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+.mac-stocks-news-cell-title {
+  color: var(--mac-stocks-news-cell-title);
+  font:
+    var(--mac-font-weight-semibold) var(--mac-stocks-news-cell-title-font-size) /
+    var(--mac-stocks-news-cell-title-line-height) var(--mac-font-family-system);
+}
+
+.mac-stocks-news-cell-source {
+  margin-top: var(--mac-stocks-news-cell-source-margin-top);
+  color: var(--mac-stocks-news-cell-source);
+  font:
+    var(--mac-font-weight-semibold) var(--mac-stocks-news-cell-source-font-size) /
+    var(--mac-stocks-news-cell-source-line-height) var(--mac-font-family-system);
+}
+
+.mac-stocks-news-glyph {
+  margin-inline: var(--mac-stocks-news-glyph-margin-inline);
+  vertical-align: var(--mac-stocks-news-glyph-vertical-align);
+}
+
+.mac-stocks-no-results {
+  flex: 1 0 auto;
+  min-height: 96px;
+}
+
+/* The footer stays at the sidebar's foot, over the rows when they are scrolled. */
+.mac-stocks-footer {
+  position: sticky;
+  bottom: 0;
+  flex: none;
+  box-sizing: border-box;
+  height: var(--mac-stocks-footer-height);
+  margin-top: auto;
+  padding: var(--mac-stocks-footer-padding);
+  background: var(--mac-catalyst-chrome-sidebar-fill);
+  box-shadow: inset 0 var(--mac-hairline) 0 var(--mac-stocks-footer-separator);
+  color: var(--mac-stocks-footer-text);
+  font:
+    var(--mac-font-weight-medium) var(--mac-stocks-footer-font-size) /
+    var(--mac-stocks-footer-line-height) var(--mac-font-family-system);
+  letter-spacing: var(--mac-stocks-footer-letter-spacing);
+  text-transform: uppercase;
+}
+
+.mac-stocks-footer-edit {
+  position: absolute;
+  inset-block-start: var(--mac-stocks-footer-edit-top);
+  inset-inline-end: var(--mac-stocks-footer-edit-end);
+}
+
+.mac-stocks-pane {
+  position: absolute;
+  inset: 0;
+  overflow: hidden auto;
+  scrollbar-color: var(--mac-catalyst-chrome-scroll-indicator) transparent;
+  scrollbar-width: thin;
+}
+
+/* The column is 493 pt and centred on the pane; a narrow pane keeps 24 pt beside it. */
+.mac-stocks-feed {
+  box-sizing: border-box;
+  width: min(var(--mac-stocks-feed-width), 100% - 2 * var(--mac-stocks-feed-inset));
+  margin-inline-start: max(
+    var(--mac-stocks-feed-inset),
+    50% -
+    var(--mac-stocks-feed-centre-offset)
+  );
+  padding: var(--mac-stocks-feed-padding);
+}
+
+/* The headings and paragraphs are named under the window, so that a page's own rules for h2,
+   h3, p and dl (the documentation site has them) do not reach into it. */
+.mac-stocks .mac-stocks-title {
+  margin: 0 0 var(--mac-stocks-title-margin-bottom);
+  padding: 0;
+  border: 0;
+  color: var(--mac-stocks-title);
+  font:
+    800 var(--mac-stocks-title-font-size) / var(--mac-stocks-title-line-height)
+    var(--mac-font-family-system);
+  letter-spacing: normal;
+}
+
+.mac-stocks .mac-stocks-heading {
+  margin: var(--mac-stocks-heading-margin);
+  padding: 0;
+  border: 0;
+  color: var(--mac-stocks-title);
+  font: var(--mac-catalyst-chrome-font-title);
+  letter-spacing: normal;
+}
+
+/* A story: the picture, then the publisher, the headline and its age. */
+.mac-stocks-story {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  cursor: default;
+}
+
+.mac-stocks-story-art {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 234.5 / 175.5;
+  overflow: hidden;
+  border-radius: var(--mac-stocks-story-art-radius);
+  background: var(--mac-stocks-picture-fill);
+  color: var(--mac-stocks-picture-mark);
+}
+
+/* The placeholder's mark keeps its size; a small picture's box cuts nothing off it. */
+.mac-stocks-story-picture {
+  display: block;
+  flex: none;
+  max-width: 50%;
+  max-height: 50%;
+}
+
+.mac-stocks-story-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mac-stocks-story-publisher {
+  margin-top: var(--mac-stocks-story-publisher-margin-top);
+  overflow: hidden;
+  color: var(--mac-stocks-publisher);
+  font:
+    var(--mac-font-weight-bold) var(--mac-stocks-story-publisher-font-size) /
+    var(--mac-stocks-story-publisher-line-height) var(--mac-font-family-system);
+  letter-spacing: var(--mac-stocks-story-publisher-letter-spacing);
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.mac-stocks .mac-stocks-story-headline {
+  margin: var(--mac-stocks-story-headline-margin-top) 0 0;
+  padding: 0;
+  border: 0;
+  color: var(--mac-stocks-headline);
+  font:
+    var(--mac-font-weight-bold) var(--mac-stocks-story-headline-font-size) /
+    var(--mac-stocks-story-headline-line-height) var(--mac-font-family-system);
+  letter-spacing: normal;
+}
+
+.mac-stocks .mac-stocks-story-summary {
+  margin: var(--mac-stocks-story-summary-margin-top) 0 0;
+  color: var(--mac-stocks-summary);
+  font:
+    var(--mac-font-weight-regular) var(--mac-stocks-story-summary-font-size) /
+    var(--mac-stocks-story-summary-line-height) var(--mac-font-family-system);
+}
+
+.mac-stocks-story-age {
+  margin-top: var(--mac-stocks-story-age-margin-top);
+  color: var(--mac-stocks-timestamp);
+  font:
+    var(--mac-font-weight-bold) var(--mac-stocks-story-age-font-size) /
+    var(--mac-stocks-story-age-line-height) var(--mac-font-family-system);
+}
+
+/* The lead over the column's whole width: a 493 x 277 pt picture and a larger headline. */
+.mac-stocks-story:where([data-layout="lead"]) {
+  margin-bottom: var(--mac-stocks-story-lead-margin-bottom);
+}
+
+.mac-stocks-story:where([data-layout="lead"]) > .mac-stocks-story-art {
+  aspect-ratio: 493 / 277;
+}
+
+.mac-stocks-story:where([data-layout="lead"]) .mac-stocks-story-publisher {
+  margin-top: var(--mac-stocks-story-lead-publisher-margin-top);
+}
+
+.mac-stocks .mac-stocks-story:where([data-layout="lead"]) .mac-stocks-story-headline {
+  margin-top: var(--mac-stocks-story-lead-headline-margin-top);
+  font:
+    var(--mac-font-weight-bold) var(--mac-stocks-story-lead-headline-font-size) /
+    var(--mac-stocks-story-lead-headline-line-height) var(--mac-font-family-system);
+}
+
+/* The lead with its text beside a 299 x 224 pt picture; the age stands on the picture's foot. */
+.mac-stocks-story:where([data-layout="beside"]) {
+  display: grid;
+  grid-template-columns: minmax(0, 299fr) minmax(0, 181fr);
+  column-gap: var(--mac-stocks-story-beside-column-gap);
+  margin-bottom: var(--mac-stocks-story-beside-margin-bottom);
+}
+
+.mac-stocks-story:where([data-layout="beside"]) > .mac-stocks-story-art {
+  aspect-ratio: 299 / 224;
+}
+
+.mac-stocks-story:where([data-layout="beside"]) .mac-stocks-story-publisher {
+  margin-top: var(--mac-stocks-story-beside-publisher-margin-top);
+}
+
+.mac-stocks .mac-stocks-story:where([data-layout="beside"]) .mac-stocks-story-headline {
+  margin-top: var(--mac-stocks-story-beside-headline-margin-top);
+}
+
+.mac-stocks-story:where([data-layout="beside"]) .mac-stocks-story-age {
+  margin-top: auto;
+  padding-top: var(--mac-stocks-story-beside-age-padding-top);
+}
+
+/* A compact story: the text, and a small picture after it. */
+.mac-stocks-story:where([data-layout="compact"]) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--mac-stocks-story-compact-picture-width);
+  column-gap: var(--mac-stocks-story-compact-column-gap);
+}
+
+.mac-stocks-story:where([data-layout="compact"]) > .mac-stocks-story-art {
+  order: 1;
+  aspect-ratio: 104 / 78;
+}
+
+.mac-stocks-story:where([data-layout="compact"]) .mac-stocks-story-publisher {
+  margin-top: 0;
+}
+
+/* The detail view. No capture shows it: its measures are the demo's. */
+.mac-stocks-reader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--mac-stocks-reader-gap);
+}
+
+.mac-stocks .mac-stocks-reader > .mac-stocks-title {
+  margin: 0;
+}
+
+.mac-stocks .mac-stocks-reader-summary {
+  margin: 0;
+  padding: 0;
+  color: var(--mac-stocks-headline);
+  font: var(--mac-font-body);
+}
+
+.mac-stocks .mac-stocks-quote > .mac-stocks-title {
+  margin-bottom: 0;
+}
+
+.mac-stocks .mac-stocks-quote-name {
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-catalyst-chrome-font-headline);
+}
+
+.mac-stocks .mac-stocks-quote-price {
+  margin: var(--mac-stocks-quote-price-margin);
+  color: var(--mac-stocks-gain-text);
+  font: var(--mac-catalyst-chrome-font-headline);
+  font-variant-numeric: tabular-nums;
+}
+
+.mac-stocks .mac-stocks-quote-price:where([data-direction="loss"]) {
+  color: var(--mac-stocks-loss-text);
+}
+
+.mac-stocks-quote-last {
+  margin-inline-end: var(--mac-stocks-quote-last-margin-inline-end);
+  color: var(--mac-stocks-title);
+  font: var(--mac-catalyst-chrome-font-large-title);
+}
+
+.mac-stocks .mac-stocks-chart {
+  --_line: var(--mac-stock-row-gain-line);
+  --_base: var(--mac-stock-row-gain-close);
+
+  margin: var(--mac-stocks-chart-margin-top) 0 0;
+  padding: 0;
+}
+
+.mac-stocks .mac-stocks-chart:where([data-direction="loss"]) {
+  --_line: var(--mac-stock-row-loss-line);
+  --_base: var(--mac-stock-row-loss-close);
+}
+
+.mac-stocks-chart-plot {
+  position: relative;
+  height: var(--mac-stocks-chart-plot-height);
+  padding-inline-end: var(--mac-stocks-chart-scale-width);
+}
+
+.mac-stocks-chart-plot > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+}
+
+.mac-stocks-chart-line {
+  stroke: var(--_line);
+  stroke-width: 1.5px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.mac-stocks-chart-base {
+  stroke: var(--_base);
+  stroke-width: 1px;
+  stroke-dasharray: 3 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.mac-stocks-chart-fill-top,
+.mac-stocks-chart-fill-bottom {
+  stop-color: var(--_line);
+  stop-opacity: 0;
+}
+
+.mac-stocks-chart-fill-top {
+  stop-opacity: var(--mac-stock-row-fill-opacity);
+}
+
+.mac-stocks-chart-scale {
+  position: absolute;
+  inset: var(--mac-stocks-chart-scale-inset-block) 0 var(--mac-stocks-chart-scale-inset-block) auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: var(--mac-color-label-secondary);
+  font:
+    var(--mac-font-weight-regular) var(--mac-stocks-chart-scale-font-size) /
+    var(--mac-stocks-chart-scale-line-height) var(--mac-font-family-system);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  pointer-events: none;
+}
+
+.mac-stocks-chart-times {
+  display: flex;
+  justify-content: space-between;
+  margin-inline-end: var(--mac-stocks-chart-scale-width);
+  padding-top: var(--mac-stocks-chart-times-padding-top);
+  box-shadow: inset 0 var(--mac-hairline) 0 var(--mac-color-separator);
+  color: var(--mac-color-label-secondary);
+  font:
+    var(--mac-font-weight-regular) var(--mac-stocks-chart-times-font-size) /
+    var(--mac-stocks-chart-times-line-height) var(--mac-font-family-system);
+}
+
+.mac-stocks .mac-stocks-figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--mac-stocks-figures-min-width), 1fr));
+  gap: 0 var(--mac-stocks-figures-column-gap);
+  margin: var(--mac-stocks-figures-margin-top) 0 0;
+  padding: 0;
+}
+
+.mac-stocks-figure {
+  display: flex;
+  gap: var(--mac-stocks-figure-gap);
+  justify-content: space-between;
+  padding: var(--mac-stocks-figure-padding-block) 0;
+  box-shadow: inset 0 calc(-1 * var(--mac-hairline)) 0 var(--mac-color-separator);
+  font: var(--mac-catalyst-chrome-font-body);
+  font-variant-numeric: tabular-nums;
+}
+
+.mac-stocks .mac-stocks-figure > dt {
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-stocks .mac-stocks-figure > dd {
+  margin: 0;
+  color: var(--mac-color-label);
+  font-weight: var(--mac-font-weight-semibold);
+}
+
+@media (forced-colors: active) {
+  .mac-stocks-search,
+  .mac-stocks-footer {
+    box-shadow: none;
+  }
+
+  .mac-stocks-footer {
+    background: Canvas;
+    border-top: 1px solid CanvasText;
+  }
+
+  .mac-stocks-news-cell:where([aria-current]) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+
+  .mac-stocks-news-cell:where(:focus-visible) {
+    outline: 2px solid CanvasText;
+    outline-offset: -2px;
+  }
+
+  .mac-stocks .mac-stocks-chart {
+    --_line: CanvasText;
+    --_base: GrayText;
+  }
+
+  .mac-stocks-chart-plot > svg {
+    forced-color-adjust: none;
+  }
+}
+
+/*
+ * What the desktop's Ferrite application adds (stocks-desktop.tsx); no capture shows these, so
+ * their sizes are provisional tokens. A story's headline links to its page in the headline's
+ * colour.
+ */
+.mac-stocks-story-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.mac-stocks-story-link:hover {
+  text-decoration: underline;
+}
+
+/* A chart with no prices to draw yet keeps the chart's room and says why. */
+.mac-stocks-chart-empty {
+  min-height: var(--mac-stocks-chart-empty-height);
+}
+
+/* Symbols the search found, to be added to the watchlist, under its matches. */
+.mac-stocks-results {
+  padding: var(--mac-stocks-results-padding);
+}
+
+.mac-stocks .mac-stocks-results-title {
+  margin: 0 0 var(--mac-stocks-results-title-margin-bottom);
+  color: var(--mac-stocks-footer-text);
+  font:
+    var(--mac-font-weight-semibold) var(--mac-stocks-footer-font-size) /
+    var(--mac-stocks-footer-line-height) var(--mac-font-family-system);
+  text-transform: uppercase;
+}
+
+.mac-stocks .mac-stocks-result-list,
+.mac-stocks .mac-stocks-alert-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-stocks-result,
+.mac-stocks-alert {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-space-control-gap);
+  padding-block: var(--mac-stocks-result-padding-block);
+  color: var(--mac-stocks-title);
+  font: var(--mac-font-body);
+}
+
+.mac-stocks-alert {
+  justify-content: space-between;
+}
+
+.mac-stocks-result-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mac-stocks-result-symbol {
+  font-weight: var(--mac-font-weight-semibold);
+}
+
+.mac-stocks-result-name {
+  overflow: hidden;
+  color: var(--mac-stocks-footer-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A symbol's price alerts and the form that adds one, under its figures. */
+.mac-stocks-alerts {
+  margin-block: var(--mac-stocks-alerts-margin-block);
+}
+
+.mac-stocks-alert-form {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-space-control-gap);
+  margin-block-start: var(--mac-stocks-alert-form-margin-top);
+}
+
+.mac-stocks-alert-price {
+  width: var(--mac-stocks-alert-price-width);
+}
+
+/* The Stocks card of Notification Center's Today view: a symbol, its price and its change a
+   row, the change green or red as the watchlist's badges. */
+.mac-stocks-today {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-stocks-today-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: var(--mac-space-control-gap);
+  align-items: baseline;
+  width: 100%;
+  padding-block: var(--mac-stocks-result-padding-block);
+  border: 0;
+  background: none;
+  color: inherit;
+  font: var(--mac-font-body);
+  text-align: start;
+  cursor: default;
+}
+
+.mac-stocks-today-symbol {
+  font-weight: var(--mac-font-weight-semibold);
+}
+
+.mac-stocks-today-price {
+  font-variant-numeric: tabular-nums;
+}
+
+.mac-stocks-today-change {
+  color: var(--mac-stock-row-gain-badge);
+  font-variant-numeric: tabular-nums;
+}
+
+.mac-stocks-today-change:where([data-direction="loss"]) {
+  color: var(--mac-stock-row-loss-badge);
+}

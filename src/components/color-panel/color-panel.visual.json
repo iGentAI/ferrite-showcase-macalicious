@@ -1,0 +1,389 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "pending": "No reference: no screenshot shows the Colors panel (spec: color-panel, not seen), and every value of its own is inferred. The checks below drive the panel in a real browser, with the pointer and the keyboard, and hold it to the colour it is given, to the HSB model of its pickers and to the measured colours of the window, slider and selection it is built from.",
+  "comparisons": [
+    {
+      "name": "wheel-light",
+      "description": "The panel on the colour wheel with Tangerine (#ff9300) and the opacity slider, Aqua. The panel is at 20, 20; its bars end at y 70; the disc is centred on 134, 184 with a radius of 102 pt; the opacity track is centred on y 350.5 and the current colour on y 381.",
+      "example": "visual-panel",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 268, "height": 440 },
+        "pixels": [
+          { "x": 10, "y": 10, "color": "#ffffff", "note": "page beside the panel" },
+          {
+            "x": 240,
+            "y": 200,
+            "color": "#ececec",
+            "note": "the panel's body: window background (measured on every window)"
+          },
+          {
+            "x": 185,
+            "y": 184,
+            "color": "#ff8080",
+            "tolerance": 4,
+            "note": "wheel, half way out at three o'clock: hue 0, saturation 50% (HSB model, documented)"
+          },
+          {
+            "x": 134,
+            "y": 133,
+            "color": "#bfff80",
+            "tolerance": 4,
+            "note": "wheel, half way out at twelve o'clock: hue 90, saturation 50%"
+          },
+          {
+            "x": 60,
+            "y": 350.5,
+            "color": "#3d88fd",
+            "note": "opacity is 100%: filled track (measured on the Displays pane's slider)"
+          },
+          { "x": 134, "y": 381, "color": "#ff9300", "note": "the current colour: the one given" }
+        ]
+      }
+    },
+    {
+      "name": "wheel-dark",
+      "description": "The same in Dark Aqua.",
+      "example": "visual-panel",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 268, "height": 440 },
+        "pixels": [
+          { "x": 10, "y": 10, "color": "#000000", "note": "page beside the panel" },
+          {
+            "x": 240,
+            "y": 200,
+            "color": "#323232",
+            "note": "the panel's body: window background in Dark Aqua (measured)"
+          },
+          {
+            "x": 185,
+            "y": 184,
+            "color": "#ff8080",
+            "tolerance": 4,
+            "note": "wheel: hue 0, saturation 50% (HSB model, documented)"
+          },
+          {
+            "x": 60,
+            "y": 350.5,
+            "color": "#1869e6",
+            "note": "opacity is 100%: filled track in Dark Aqua (measured on the Displays pane)"
+          },
+          { "x": 134, "y": 381, "color": "#ff9300", "note": "the current colour: the one given" }
+        ]
+      }
+    },
+    {
+      "name": "sliders-light",
+      "description": "After a click on Color Sliders in the toolbar: the RGB sliders of Tangerine, Aqua. The picker starts at 32, 82; the red track is centred on y 130.5 and the blue one on y 208.5.",
+      "example": "visual-panel",
+      "appearance": "light",
+      "actions": [{ "click": "[aria-label='Color Sliders']" }],
+      "expect": {
+        "size": { "width": 268, "height": 440 },
+        "pixels": [
+          {
+            "x": 72,
+            "y": 130.5,
+            "color": "#3d88fd",
+            "note": "red is 255: filled track (measured colour of the slider)"
+          },
+          {
+            "x": 112,
+            "y": 208.5,
+            "color": "#b8b8b8",
+            "note": "blue is 0: unfilled track, black at 22% over #ececec (measured on the Sound pane)"
+          },
+          {
+            "x": 134,
+            "y": 381,
+            "color": "#ff9300",
+            "note": "the current colour is unchanged by the change of picker"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sliders-with-keys-dark",
+      "description": "The toolbar from the keyboard: with the focus on Color Wheel, Right Arrow moves to Color Sliders and Return chooses it, Dark Aqua.",
+      "example": "visual-panel",
+      "appearance": "dark",
+      "actions": [
+        { "click": "[aria-label='Color Wheel']" },
+        { "key": "ArrowRight" },
+        { "key": "Enter" }
+      ],
+      "expect": {
+        "size": { "width": 268, "height": 440 },
+        "pixels": [
+          {
+            "x": 72,
+            "y": 130.5,
+            "color": "#1869e6",
+            "note": "the red slider's filled track where the wheel was (measured colour of the slider, Dark Aqua)"
+          },
+          {
+            "x": 112,
+            "y": 208.5,
+            "color": "#4f4f4f",
+            "note": "blue is 0: unfilled track, white at 14% over #323232 (measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "palettes-dark",
+      "description": "After a click on Color Palettes and one on Blue: the row is chosen and Blue is the current colour, Dark Aqua. The list starts at 32, 82 with 19 pt rows.",
+      "example": "visual-panel",
+      "appearance": "dark",
+      "actions": [{ "click": "[aria-label='Color Palettes']" }, { "click": "[aria-label='Blue']" }],
+      "expect": {
+        "size": { "width": 268, "height": 440 },
+        "pixels": [
+          { "x": 49.5, "y": 92, "color": "#000000", "note": "swatch of the first row: Black" },
+          {
+            "x": 180,
+            "y": 111,
+            "color": "#0158d0",
+            "note": "the chosen row: emphasised selection in Dark Aqua (token, measured elsewhere; inferred here)"
+          },
+          { "x": 134, "y": 381, "color": "#0000ff", "note": "the current colour is the one chosen" }
+        ]
+      }
+    },
+    {
+      "name": "palettes-inactive-light",
+      "description": "The same in a page that is not key: the panel's controls read the window state, so the chosen row is unemphasised, Aqua.",
+      "example": "visual-panel",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [{ "click": "[aria-label='Color Palettes']" }, { "click": "[aria-label='Blue']" }],
+      "expect": {
+        "size": { "width": 268, "height": 440 },
+        "pixels": [
+          {
+            "x": 180,
+            "y": 111,
+            "color": "#dcdcdc",
+            "note": "unemphasised selection (token, measured in Contacts; inferred here)"
+          },
+          { "x": 134, "y": 381, "color": "#0000ff", "note": "the current colour is the one chosen" }
+        ]
+      }
+    },
+    {
+      "name": "image-light",
+      "description": "After a click on Image Palettes: the spectrum, 204 x 102 pt from 32, 82, Aqua.",
+      "example": "visual-panel",
+      "appearance": "light",
+      "actions": [{ "click": "[aria-label='Image Palettes']" }],
+      "expect": {
+        "size": { "width": 268, "height": 440 },
+        "pixels": [
+          {
+            "x": 134,
+            "y": 133,
+            "color": "#00ffff",
+            "tolerance": 8,
+            "note": "the middle of the spectrum: cyan at full strength (HSB model, documented); the gradients change by up to 6 levels per point, and at 1x the pixel read is centred half a point further on"
+          },
+          {
+            "x": 134,
+            "y": 107.5,
+            "color": "#80ffff",
+            "tolerance": 8,
+            "note": "half way to its top edge: cyan at 50% saturation"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pencils-light",
+      "description": "After a click on Pencils: the 48 crayons in rows of twelve, 17 pt apart from x 32, Aqua.",
+      "example": "visual-panel",
+      "appearance": "light",
+      "actions": [{ "click": "[aria-label='Pencils']" }],
+      "expect": {
+        "size": { "width": 268, "height": 440 },
+        "pixels": [
+          {
+            "x": 40.5,
+            "y": 116,
+            "color": "#000000",
+            "note": "first pencil of the first row: Licorice"
+          },
+          { "x": 227.5, "y": 116, "color": "#ffffff", "note": "last pencil of the first row: Snow" }
+        ]
+      }
+    },
+    {
+      "name": "pencil-chosen-dark",
+      "description": "After a click on Pencils and one on Maraschino: it is the current colour, Dark Aqua.",
+      "example": "visual-panel",
+      "appearance": "dark",
+      "actions": [{ "click": "[aria-label='Pencils']" }, { "click": "[aria-label='Maraschino']" }],
+      "expect": {
+        "size": { "width": 268, "height": 440 },
+        "pixels": [
+          {
+            "x": 40.5,
+            "y": 180,
+            "color": "#ff2600",
+            "note": "first pencil of the third row: Maraschino"
+          },
+          { "x": 134, "y": 381, "color": "#ff2600", "note": "the current colour is the one chosen" }
+        ]
+      }
+    },
+    {
+      "name": "opacity-zero-light",
+      "description": "The opacity taken to 0 by emptying its number field (a click in it, End, Backspace three times): the track empties and the current colour shows the tiles behind it, 6 pt squares from the corner of its frame at 72.5, 370, Aqua.",
+      "example": "visual-panel",
+      "appearance": "light",
+      "actions": [
+        { "click": "[aria-label='Opacity value']" },
+        { "key": "End" },
+        { "key": "Backspace" },
+        { "key": "Backspace" },
+        { "key": "Backspace" }
+      ],
+      "expect": {
+        "size": { "width": 268, "height": 440 },
+        "pixels": [
+          {
+            "x": 150,
+            "y": 350.5,
+            "color": "#b8b8b8",
+            "note": "opacity is 0: unfilled track (measured colour of the slider)"
+          },
+          {
+            "x": 75.5,
+            "y": 373,
+            "color": "#ffffff",
+            "note": "first tile behind the fully transparent colour: token --mac-color-panel-checker-light (inferred)"
+          },
+          {
+            "x": 81.5,
+            "y": 373,
+            "color": "#c8c8c8",
+            "note": "second tile: token --mac-color-panel-checker-dark (inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "well-open-light",
+      "description": "A colour well after a click: its bezel is the active one and the panel is open 6 pt under it, at 20, 49, on the wheel, with the well's colour, Aqua. The page is the window background.",
+      "example": "visual-well",
+      "appearance": "light",
+      "actions": [{ "click": ".mac-color-well" }],
+      "expect": {
+        "size": { "width": 268, "height": 420 },
+        "pixels": [
+          {
+            "x": 22,
+            "y": 30,
+            "color": "#c9c9c9",
+            "note": "the well's bezel while its panel is open: active (spec: color-well, States, inferred)"
+          },
+          { "x": 42, "y": 30, "color": "#ff9300", "note": "the well's colour" },
+          {
+            "x": 185,
+            "y": 213,
+            "color": "#ff8080",
+            "tolerance": 4,
+            "note": "the panel's wheel, half way out at three o'clock (HSB model, documented)"
+          },
+          {
+            "x": 134,
+            "y": 369,
+            "color": "#ff9300",
+            "note": "the panel's current colour is the well's"
+          }
+        ]
+      }
+    },
+    {
+      "name": "well-closed-light",
+      "description": "The same well after Escape: the panel is gone and the bezel is at rest, Aqua.",
+      "example": "visual-well",
+      "appearance": "light",
+      "actions": [{ "click": ".mac-color-well" }, { "key": "Escape" }],
+      "expect": {
+        "size": { "width": 268, "height": 420 },
+        "pixels": [
+          { "x": 185, "y": 213, "color": "#ececec", "note": "page where the panel's wheel was" },
+          {
+            "x": 21.75,
+            "y": 31.5,
+            "color": "#f7f7f7",
+            "note": "the well's bezel at rest, at mid height (measured gradient of the format-bar well)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "well-clicked-twice-dark",
+      "description": "A second click on the well closes its panel again, Dark Aqua.",
+      "example": "visual-well",
+      "appearance": "dark",
+      "actions": [{ "click": ".mac-color-well" }, { "click": ".mac-color-well" }],
+      "expect": {
+        "size": { "width": 268, "height": 420 },
+        "pixels": [
+          { "x": 185, "y": 213, "color": "#323232", "note": "page where the panel's wheel was" },
+          { "x": 42, "y": 30, "color": "#ff9300", "note": "the well keeps its colour" }
+        ]
+      }
+    },
+    {
+      "name": "well-keyboard-dark",
+      "description": "The well opened from the keyboard, Tab then Space, Dark Aqua.",
+      "example": "visual-well",
+      "appearance": "dark",
+      "actions": [{ "tab": 1 }, { "key": "Space" }],
+      "expect": {
+        "size": { "width": 268, "height": 420 },
+        "pixels": [
+          {
+            "x": 22,
+            "y": 30,
+            "color": "#858585",
+            "tolerance": 3,
+            "note": "active bezel in Dark Aqua: white at 40.6% over #323232 (spec: color-well, inferred)"
+          },
+          {
+            "x": 185,
+            "y": 213,
+            "color": "#ff8080",
+            "tolerance": 4,
+            "note": "the panel's wheel (HSB model, documented)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "well-picks-light",
+      "description": "A colour chosen in the panel is the well's colour: a click on the well, on Color Palettes and on Red, Aqua.",
+      "example": "visual-well",
+      "appearance": "light",
+      "actions": [
+        { "click": ".mac-color-well" },
+        { "click": "[aria-label='Color Palettes']" },
+        { "click": "[aria-label='Red']" }
+      ],
+      "expect": {
+        "size": { "width": 268, "height": 420 },
+        "pixels": [
+          {
+            "x": 42,
+            "y": 30,
+            "color": "#ff0000",
+            "note": "the well shows the colour chosen in its panel"
+          },
+          { "x": 134, "y": 369, "color": "#ff0000", "note": "and so does the panel" }
+        ]
+      }
+    }
+  ]
+}

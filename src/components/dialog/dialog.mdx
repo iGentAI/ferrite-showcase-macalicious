@@ -1,0 +1,201 @@
+---
+title: Dialog
+description: A small window that asks for a response, with a title bar, the standard margins and a row of buttons, shown modally or as a modeless panel.
+---
+
+<Example name="basic" both />
+
+A dialog is an `NSWindow` or `NSPanel` that an application runs to ask for one or several
+values: Finder's Go to Folder and Connect to Server, the Cancel and OK of a preferences dialog.
+The parts are built on Base UI's [Dialog](https://base-ui.com/react/components/dialog) and keep
+its anatomy; `DialogPopup` combines Base UI's portal and popup with the library's
+[Window](/components/window) and [Title Bar](/components/title-bar), because a dialog window is
+always assembled the same way. A dialog that belongs to one window is a
+[Sheet](/components/sheet); one that warns is an [Alert](/components/alert).
+
+## Usage
+
+```tsx
+import { DefaultButton } from "macalicious/default-button";
+import { Dialog, DialogActions, DialogClose, DialogPopup, DialogTrigger } from "macalicious/dialog";
+import { Label } from "macalicious/label";
+import { PushButton } from "macalicious/push-button";
+import { TextField } from "macalicious/text-field";
+import "macalicious/styles.css";
+
+<Dialog>
+  <DialogTrigger render={<PushButton />}>Go to Folder…</DialogTrigger>
+  <DialogPopup title="Go to Folder" width={429}>
+    <Label id="folder-label">Go to the folder:</Label>
+    <TextField aria-labelledby="folder-label" defaultValue="~/Documents/" />
+    <DialogActions>
+      <DialogClose>Cancel</DialogClose>
+      <DialogClose render={<DefaultButton />} onClick={go}>Go</DialogClose>
+    </DialogActions>
+  </DialogPopup>
+</Dialog>
+```
+
+Or copy the source into your project: `npx macalicious add dialog`.
+
+- Open it with `DialogTrigger`, or control it with `open` and `onOpenChange` on `Dialog`.
+- `title` is the window title and names the dialog. `controls` takes a
+  [Window Controls](/components/window-controls) element for a dialog that has them.
+- The body has the standard 20 pt margins and is yours to lay out. `DialogDescription` is a
+  paragraph that assistive technology reads as the dialog's description.
+- `DialogActions` is the button row: its children are the dismissing buttons, at the trailing
+  end with the action last; `leading` takes a [Help Button](/components/help-button) or
+  buttons that change the content. `DialogClose` is a [Push Button](/components/push-button)
+  that closes the dialog; `render={<DefaultButton />}` makes it the
+  [Default Button](/components/default-button).
+- The dialog appears centred, 20% of the viewport's height from its top. Move it down or up
+  with `--mac-dialog-top` or with `top` in `style`, which the component turns into that
+  variable, so the height limit follows either. `left` and `margin` in `style` place it
+  sideways. It does not move by itself: a window manager can, with
+  `onDragRegionPointerDown` and `onDragRegionDoubleClick` on `DialogPopup`, which report a
+  press and a double click on the title bar itself, not on a window control in it.
+- A modeless dialog stays open while another window has the keyboard. A window manager says
+  so with `state` on `DialogPopup` (`"key"`, `"main"` or `"inactive"`), and the frame, the
+  window controls and the default button are drawn for that state.
+
+## Guidelines
+
+From the Human Interface Guidelines for macOS,
+[Dialogs](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/dialogs/):
+
+- Fill in default values wherever possible, so that people can accept the dialog at once.
+- Put the initial focus on the first control that accepts typing.
+- Mark the button people are most likely to want as the default button, and never a
+  destructive one.
+- Place the buttons that dismiss the dialog at the bottom right, the action rightmost and
+  Cancel to its left. Buttons that change the dialog's content go at the left.
+- Prefer a sheet when the request concerns one window, and a modeless panel when people need
+  to keep working while it is open.
+
+## Variants and states
+
+<Example name="modeless" />
+
+| Prop | Values | Source |
+| --- | --- | --- |
+| `modal` (on `Dialog`) | `true` (default): app-modal, the rest of the page is inert. `false`: a modeless panel; give it window controls. `"trap-focus"`: the keyboard stays inside, the pointer is free | Measured: app-modal without controls (Go to Folder), modeless with controls (Connect to Server) |
+| `controls` | None, or a `WindowControls` element | Measured on Connect to Server |
+| `state` (on `DialogPopup`) | `key` (default), `main` or `inactive`: the window state the frame is drawn in | The key look is measured; an inactive dialog is drawn as any inactive window (provisional: no screenshot shows one) |
+| `divider` (on `DialogActions`) | A 1 pt line from edge to edge above the button row, as in preferences-style dialogs | Measured on Music's preferences |
+| `disablePointerDismissal` (on `Dialog`) | `true` (default): a click outside leaves the dialog open, as in Catalina. `false`: Base UI's behaviour | Catalina's behaviour; not a look |
+
+<Example name="divider" />
+
+| State | Look | Source |
+| --- | --- | --- |
+| Open | A key window with the window shadow and a 22 pt title bar | Measured in both appearances |
+| Another window is key | With `state="inactive"` (or `"main"`) on `DialogPopup`: the title bar, the window controls and the default button lose their key look, as in any window | Provisional: no screenshot shows an inactive dialog |
+| Page in the background | Inactive title bar and controls, as any window | Provisional: no screenshot shows an inactive dialog |
+| Taller than the viewport | The body scrolls under the title bar | Provisional |
+
+## Sizes
+
+A dialog takes the width of its content, or `width` (Go to Folder is 429 pt, Connect to Server
+486 pt); its height follows its content. Measured on Finder's dialogs: 20 pt margins on all
+sides (20.5 pt to a control's visible edge), 20 pt between the last control and the buttons,
+buttons 12 pt apart (13 pt between their bezels) and at least 84 pt wide. Preferences-style
+dialogs use 70 pt buttons: set `--mac-dialog-button-min-width`.
+
+## API
+
+`Dialog` takes Base UI's Dialog Root props, `DialogTrigger` its Trigger props, `DialogPopup`
+its Popup props, `DialogDescription` its Description props, `DialogClose` its Close props, and
+`DialogActions` those of a `<div>`, plus these:
+
+### Dialog
+
+<PropsTable name="DialogProps" />
+
+### DialogTrigger
+
+<PropsTable name="DialogTriggerProps" />
+
+### DialogPopup
+
+<PropsTable name="DialogPopupProps" />
+
+### DialogDescription
+
+<PropsTable name="DialogDescriptionProps" />
+
+### DialogActions
+
+<PropsTable name="DialogActionsProps" />
+
+### DialogClose
+
+<PropsTable name="DialogCloseProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-window-state` | window | `key`, `main`, `inactive` | Reflects `state`: an open dialog is the key window unless a window manager says otherwise. |
+| `data-open`, `data-closed` | window | present or absent | Set by Base UI. |
+| `data-divider` | button row | present or absent | Reflects `divider`. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-dialog-top` | `20vh` | Distance of the dialog from the top of the viewport. Its greatest height is the viewport's less this distance and 8 pt. |
+| `--mac-dialog-button-min-width` | `84px` | Least width of a dismissing button in `DialogActions`. |
+
+Classes: `.mac-dialog` (the window), `.mac-dialog-body`, `.mac-dialog-description`,
+`.mac-dialog-actions`, `.mac-dialog-actions-leading` and `.mac-dialog-actions-trailing`.
+
+## Accessibility
+
+- The dialog is a `dialog` named by its title; without a `title`, give it an `aria-label`.
+  A modal dialog makes the rest of the page inert and hides it from assistive technology; a
+  modeless one (`modal={false}`) does neither.
+- When it opens, the focus goes to the element marked `data-autofocus`, else to the first text
+  field, else to the window itself; `initialFocus` overrides that. Checkboxes, buttons and
+  whatever cannot take the focus (disabled, inert, hidden or not focusable) are passed over.
+  When it closes the focus returns to the control that opened it. A dialog opened without a
+  `DialogTrigger`, from a menu item that is gone by then or from your own state, has no such
+  control: name where the focus goes with `finalFocus` on `DialogPopup`.
+- Return activates the default button from anywhere in the dialog, also from a text field.
+  Escape closes the dialog, which is what Cancel means. A click outside does not.
+- Window controls in the title bar are buttons with names of their own; the dialog's own
+  buttons remain the way to answer it.
+
+## Visual comparison
+
+`dialog.visual.json` compares two whole window captures, each with its shadow, in both
+appearances: Finder's Go to Folder dialog (app-modal, no window controls) and its Connect to
+Server dialog (modeless, with window controls, a help button and an auxiliary button). The Go
+to Folder field is a combo box, a component of another batch: a text field stands in for it
+and every comparison masks it. Connect to Server holds a combo box, a list of favourite
+servers and a segmented add, remove and action control, which are other components too: the
+example leaves room for them and every comparison masks them. The `-layout` twins also
+mask the title, the label and the button titles, which are set in the fallback font off Apple
+platforms, and score the frame, the shadow, the title bar and the button row at the tighter
+threshold (0.05).
+
+Scores from `npm run visual -- dialog` in Chromium on Linux with the fallback font: the share
+of pixels that differ by more than the comparison's threshold, and the mean colour difference
+out of 255.
+
+| Comparison | Reference (whole capture) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `go-to-folder-light` | Light-Finder-Go-To-Folder | 1.11% | 1.34 | 0.69% | 1.37 |
+| `go-to-folder-light-layout` (masked) | Light-Finder-Go-To-Folder | 0.53% | 0.53 | 0.05% | 0.70 |
+| `go-to-folder-dark` | Dark-Finder-Go-to-Folder | 1.08% | 1.31 | 0.68% | 1.38 |
+| `go-to-folder-dark-layout` (masked) | Dark-Finder-Go-to-Folder | 0.25% | 0.56 | 0.05% | 0.80 |
+| `connect-to-server-light` | Light-Finder-Connect-to-Server | 1.19% | 1.46 | 0.89% | 1.69 |
+| `connect-to-server-light-layout` (masked) | Light-Finder-Connect-to-Server | 0.56% | 0.56 | 0.07% | 0.76 |
+| `connect-to-server-dark` | Dark-Finder-Conect-to-Server | 1.16% | 1.46 | 0.90% | 1.73 |
+| `connect-to-server-dark-layout` (masked) | Dark-Finder-Conect-to-Server | 0.25% | 0.62 | 0.07% | 0.87 |
+
+The dark captures' window background is tinted by the desktop picture (`#303031`); the examples
+set that colour, since the tint depends on what is behind the window.
+
+Measured: the frame, the title bar with and without window controls, the margins, the label
+and field positions, the button row with its leading help button and its spacing, the
+divider's colour. Provisional: an inactive dialog (`state`), the scrolling body, and the
+forced-colours look. Not compared: the divider row, which the reference shows only with a
+preferences toolbar; [Preferences Window](/components/preferences-window) compares it. In the
+fallback font the Browse button of Connect to Server comes out 1 pt wider than the capture's
+72 pt.

@@ -1,0 +1,283 @@
+---
+title: Notes
+description: The Notes window of macOS 10.15 with its folder sidebar, note list and editable note under a unified toolbar; notes can be written, styled, added, deleted, locked, searched and shown as a gallery, and last for the page session.
+layout: full
+order: 30
+---
+
+<Example name="basic" />
+
+Select a note and type in it: its first line is its title, and the list follows every
+keystroke. Select some text and style it from the Format menu of the menu bar, from the
+toolbar's format button, from the keyboard, or in the Fonts and Colors panels. Make a new
+note, search, add a folder, switch to the gallery. The five notes are
+those of the reference screenshots; nothing is stored, so a reload brings them back. The
+pictures are plain placeholders. The list view, Show Folders and Share glyphs and the
+chevrons of the pull-down buttons are the library's [System Images](/components/system-image);
+the other toolbar glyphs are original stand-in drawings.
+
+## What it shows
+
+- A [Window](/components/window) whose [Title Bar](/components/title-bar) hides its title
+  and holds the [Window Controls](/components/window-controls) and a
+  [Toolbar](/components/toolbar) on one surface.
+- The toolbar: the list and gallery views as a
+  [Toolbar Segmented Control](/components/toolbar-segmented-control); eleven
+  [Toolbar Buttons](/components/toolbar-button) in three groups that keep to the panes under
+  them while the dividers are dragged; and a
+  [Toolbar Search Field](/components/toolbar-search-field) that searches every folder. The
+  lock, format and media buttons open a [Menu](/components/menu) of
+  [Menu Items](/components/menu-item), and Add People opens a [Popover](/components/popover).
+- Three panes in two nested [Split Views](/components/split-view) with two draggable
+  dividers. The note list and the note stay in the page, hidden, while the gallery is shown,
+  so a note keeps its tables, headings and pictures.
+- The folders: a [Sidebar](/components/sidebar) with the account as its section, a
+  [Progress Spinner](/components/progress-spinner) beside it while the account syncs, a plain
+  [Sidebar Badge](/components/sidebar-badge) counting each folder's notes, and New Folder in
+  its footer.
+- The notes: a [List View](/components/list-view) of 56 pt rows with inset separators, each
+  a title, a date with the start of the text, and an [Image View](/components/image-view)
+  thumbnail when the note has a picture. In gallery view the same notes are cards in an
+  [Icon View](/components/icon-view); a double click or Return opens one in the list view.
+  An [Empty State](/components/empty-state) stands in when a search finds nothing.
+- The note: a [Scroll View](/components/scroll-view) of paper holding the date line and a
+  rich [Text View](/components/text-view), which the browser edits in place.
+- Text styles: the Format menu of a [Menu Bar](/components/menu-bar), with Font and Text
+  [Submenus](/components/submenu) of checkbox and radio
+  [Menu Items](/components/menu-item) that check the styles where the insertion point is;
+  the same items under the toolbar's format button; and the
+  [Fonts Panel](/components/font-panel) and [Colors Panel](/components/color-panel), which
+  follow the insertion point.
+
+| Toolbar item | What it does |
+| --- | --- |
+| List View, Gallery View | Switch the middle and right panes between the list with the note and the gallery. |
+| Hide Folders | Hides and shows the sidebar. |
+| Attachments Browser | While pressed, every attachment of the notes takes the place of the list and the note, by kind: Photos & Videos, Scans, Maps, Websites, Audio and Documents. A double click shows the note that holds it. |
+| Delete | Deletes the selected note, or the selected folder with its notes when the folder list was used last. The first folder cannot be deleted. Backspace in the note list deletes the note too. |
+| New Note | Adds a note to the folder shown, ends a search, and puts the insertion point in the note. |
+| Lock | A menu: Lock Note encrypts the note under the notes password, in the page (the desktop's server keeps only ciphertext; see Password lock); Close All Locked Notes; Remove Lock; Change Password. |
+| Add Table | Adds a table of two rows and two columns at the end of the text, with an empty line after it when it ends the note. |
+| Make a Checklist | Adds a line that opens with a circle. |
+| Format | A menu: Title, Heading or Body for the line that holds the insertion point, then the Font and Text submenus of the Format menu (below). |
+| Media | A menu: Photos… opens a sheet of the Photos library on a served desktop, with From This Computer… for the browser's file chooser, and the picture chosen goes into the end of the note and becomes its thumbnail in the list. Other… also takes text files up to 50 KB, whose lines go into the note, and names any file it cannot take. |
+| Add People | A signed-in account on the desktop shares the note with another account by name; both edit it, and it moves to the Shared row. Elsewhere the popover says it needs an account. |
+| Share | The browser's share sheet where it has one; otherwise the note's text is copied. |
+| Search | Lists the notes whose text contains the search text, in any folder and any letter case. |
+
+An edited note takes the current time and moves to the top of its list, as in Notes. A long
+first line is cut at a word in the list and the rest opens the snippet, which is why the
+first row of the screenshot reads "View." under its title.
+
+## Styling the text
+
+The note's text takes the styles of Notes' Format menu wherever Notes offers them: the menu
+bar's Format menu (`NotesMenuBar`, shown above the window in the example), the same items
+under the toolbar's format button, their key equivalents while the note has the keyboard, and
+the Fonts and Colors panels. A style applies to the selection, or to the next character typed
+when nothing is selected; a paragraph style and an alignment apply to the line. The commands
+are the browser's own editing commands (through `macalicious/lib/rich-text`), so Undo takes
+them back. A menu or a panel takes the focus while it is used; the note keeps its selection
+and gets the keyboard back afterwards. Nothing can be styled in a locked note that is not open
+or in the gallery.
+
+| Command | Key equivalent | What it does |
+| --- | --- | --- |
+| Title, Heading, Body | | The paragraph style of the line with the insertion point. The first line is the title until it is given another style. A list item leaves its list. |
+| Font > Show Fonts | Command-T | Opens the Fonts panel. |
+| Font > Bold, Italic, Underline | Command-B, Command-I, Command-U | Turns the style on or off for the selection. |
+| Font > Strikethrough | | Turns striking through on or off. |
+| Font > Bigger, Smaller | Command-+ (or Command-=), Command-- | One point larger or smaller. |
+| Font > Show Colors | Shift-Command-C | Opens the Colors panel. |
+| Text > Align Left, Center, Justify, Align Right | `Command-{`, `Command-\|`, (none), `Command-}` | The alignment of the lines the selection touches. |
+
+Command is the Control key off Apple platforms. Browsers keep some keys for themselves
+(Command-T opens a tab in some of them), so a key equivalent can be out of the page's reach;
+the menu items work everywhere. The menu items show which styles the text at the insertion
+point has: the character styles as checkboxes, the paragraph style and the alignment as
+radio items.
+
+The Fonts panel shows the family, typeface and size at the insertion point and sets what is
+chosen in it, as the Colors panel does with the colour. The note's own family is the system
+font, listed first as System Font. The panels float at the top right of the page; a host that
+wants them elsewhere passes an element as `panelContainer` and they are put in it side by
+side, as the example does under the window.
+
+## Hosting the window
+
+`Notes` renders the library's `Window` as its root and passes every `Window` prop to it, so it
+does not assume it fills the page. Place it with `style`; a window manager gives it `state`,
+the size, and eight more props that the component hands to the window controls and the title
+bar. These are the props a [Managed Window](/components/managed-window)'s `render` form
+supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { notesApp } from "./app";
+
+<ManagedWindow
+  id={notesApp.id}
+  defaultFrame={{ x: 80, y: 60, ...notesApp.defaultSize }}
+  minWidth={notesApp.minSize.width}
+  minHeight={notesApp.minSize.height}
+  render={(props) => <notesApp.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `defaultFolders` | `NotesFolder[]` | The folders the app starts with; the single "Notes" folder by default. The first should be the folder named by `DEFAULT_FOLDER`, which cannot be deleted. |
+| `defaultNotes` | `NotesNote[]` | The notes the app starts with, newest first; the five notes of the screenshots by default. |
+| `syncing` | `boolean` | Shows the account as syncing, as the light screenshot does: a spinner beside its name, and the lock, table, checklist and format buttons unavailable. |
+| `actionsRef` | `Ref<NotesActions>` | Receives the app's commands for a menu bar: `newNote()`, `setParagraphStyle(style)`, `runTextCommand(command)` and `focusNote()`. |
+| `onStatusChange` | `(status: NotesStatus) => void` | Called with what the Format menu shows: whether the note can be styled (`editable`), the `format` and the `paragraph` style at the insertion point. |
+| `panelContainer` | `HTMLElement \| null` | Where the Fonts and Colors panels are put; by default they float at the top right of the page. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 1000 by 666 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `notesApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (1000 by 666), `minSize` (1000 by 300, the width at which
+the toolbar's groups still fit), `resizable`, `menus`, the menu titles after the Apple
+menu, and `menuBar`, the `NotesMenuBar` component, which takes the `actionsRef` object as
+`actions` and the last status as `status`. It also exports `NotesContent`, the same app
+without the window (the title bar with the
+toolbar, and the panes), for a host that renders the `Window` itself; it takes
+`titleBarProps` and `controlsProps` in place of the eight props above.
+
+The notes live in the component's state for as long as it is mounted. Each note's editor is
+left to the browser once it has been shown: React renders its content once and reads the
+lines back on every `input` event (`readLines` in `notes-editor.tsx`), so the insertion point
+never jumps and a table or a heading stays as it was typed while another note is shown. A
+note whose text has formats also keeps them as `html`: the editor's content without its
+pictures, rebuilt from the elements, styles and attributes that formatting and tables write
+(`noteHtml`). The note list, the snippets and the search read the lines.
+
+Served by the macalicious-desktop Ferrite application (`ferrite-apps/desktop`), the folders
+and notes are saved: `NotesContent` opens with what the browser session saved through
+`/api/notes/data` (the sample notes until something is saved) and saves every change, so a new
+note survives a reload. A note's formats are saved with it as `html` (at most 100,000
+characters; a note past that is saved as its lines alone), and a note opens with them again,
+rebuilt from what formatting writes, so nothing stored can run or load anything; the
+application refuses a note whose `html` holds anything else. A note saved before formats were
+kept opens from its lines. A picture is saved only when it is a small `data:` URL; a larger one
+stays in its window until the window shows another window's change or the stored notes. When the
+application refuses the notes as they are (a note past its length limits), the close button
+shows the dot of unsaved changes until a later change is saved. The application keeps a
+revision of the session's notes, and a save names the revision it was made on; one save is
+under way at a time, and one that met a network error, or had no answer within 15 seconds, is sent once more,
+unchanged. When another window saved first, or a save's outcome is not known, the change is
+dropped: every Notes window reads the stored notes and shows them. When two windows edit at the
+same time, the later conflicting edit is discarded. When the stored notes are the page's own save, stored
+though its answer never came, nothing is dropped and the changes made meanwhile are saved. Nothing is saved
+before the
+session's notes are read, or at all when they cannot be. Only the
+desktop build made for that application turns this on (`VITE_MACALICIOUS_API=1`); on this site
+and anywhere else the notes live in state and nothing is fetched.
+
+## Accessibility
+
+- The window is a `region` named "Notes". The toolbar is one tab stop; the arrow keys move
+  between its buttons, the two views and the search field.
+- Every toolbar button shows only a glyph and is named with `aria-label`. A button that
+  cannot act (Delete on the first folder, the editing buttons on a locked note or while the
+  account syncs) is marked unavailable and stays reachable with the arrow keys.
+- The views are toggle buttons in a group named "View"; Attachments Browser is a toggle
+  button too.
+- The folder list is a `tree` named "Folders" and the note list a `listbox` named "Notes";
+  each is one tab stop, the arrow keys move the selection, and typing selects by name.
+  While the account syncs, its section is named "iCloud, syncing": a tree may hold only its
+  rows, so the spinner itself is hidden from assistive technology.
+- The note is a multi-line `textbox` named "Note"; a locked note that is not open has none, and
+  a form named "Locked note" stands in its place. Only
+  the note that is shown is in the accessibility tree. Its pictures have text alternatives.
+- The character styles of the Format menu are `menuitemcheckbox` items and the paragraph
+  styles and alignments `menuitemradio` items, checked for the text at the insertion point;
+  each announces its key equivalent. The Fonts and Colors panels are non-modal `dialog`s
+  named by their titles. A menu or a panel that applies a style gives the keyboard back to
+  the note, its selection intact; a control of a panel keeps the keyboard while it is used.
+- Both dividers are focusable separators named for the pane they resize; the arrow keys move
+  them.
+- The list is not announced as it changes while you type: the note you are typing in is the
+  one that moves, and a live region that spoke on every keystroke would be noise.
+
+## Fidelity
+
+`notes.visual.json` compares the whole window, shadow included, with the Notes screenshots in
+both appearances, each as captured and again with the text and the stand-in drawings masked.
+The pictures are placeholders that imitate nothing of the captured ones, so all four
+comparisons mask them: the box of the picture in the first note and the two thumbnails in the
+list.
+The light screenshot was taken while the account was syncing and with no pane focused; in the
+dark one the folder list has the focus and the first note's date reads "Yesterday", so it has
+an example of its own and the comparison clicks the folder first. Scores from
+`npm run visual -- notes/` in Chromium on Linux with the fallback font: the share of pixels
+that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` (pictures masked) | 3.20% | 3.98 | 2.81% | 4.68 |
+| `window-drawing-light` (masked) | 0.33% | 1.16 | 0.06% | 1.65 |
+| `window-dark` (pictures masked) | 2.41% | 3.20 | 1.91% | 3.69 |
+| `window-drawing-dark` (masked) | 0.19% | 0.82 | 0.02% | 1.15 |
+
+Measured in the screenshots and reproduced: the 1000 by 666 pt frame; the 38 pt toolbar with
+the view switcher, the three groups of 37 pt buttons and the 207 pt search field where the
+capture has them; the 190 pt sidebar and the 248 pt note list with their dividers, the one
+beside the note fainter on the Aqua paper; the 56 pt rows with the 41 by 40 pt thumbnail;
+the grey selections of a window whose panes are not focused and the accent-coloured folder of
+the dark capture; the centred date line, the title's size and colour, and the place and size
+of the picture in the first note. The colours that are the app's own are in
+`notes.tokens.css`, each with the place it was measured.
+
+What differs, and why:
+
+- **Paper.** Notes paints its list and its note on a paper texture, a bitmap that is not
+  reproduced; both panes are filled with the texture's mean colour. This is most of the
+  masked comparisons' mean Δ.
+- **Text.** Set in the fallback font off Apple devices, so the first title is cut a few
+  letters later than in the screenshot.
+- **Pictures and glyphs.** The screenshot embedded in the first note, the photograph in the
+  third and their thumbnails are replaced by placeholders: a grey box of the picture's size
+  crossed by its diagonals. They are masked in every comparison. The list view, Show Folders
+  and Share glyphs and the pull-down chevrons are the library's system images; the other
+  toolbar glyphs are original drawings for the demo, which the library has no image for.
+- **New Folder.** Notes draws a filled circle with the plus knocked out; the library's
+  sidebar footer draws an outlined one. The demo does not restyle it.
+- **Gallery view.** The screenshots show it only as the miniature inside the first note, so
+  the card size and spacing are provisional.
+- **Not in a screenshot (provisional):** the menus' items, the popover, a locked note, a
+  second folder, the search results, the window when it is not key, and every size other
+  than the captured one. The toolbar is fitted to 1000 pt of width and more; the
+  descriptor's `minSize` keeps a window manager from going below. When the panes are dragged
+  wider than the toolbar has room for, its groups close up instead of following them.
+- **The note's text.** The library's Text View fills its pane, scrolls by itself and sets
+  text in the 13 pt system font. A note's date line scrolls with its text and the text is
+  14 pt, so the demo sizes the view to its content and sets the note's size through the
+  view's `style`; the title and headings are rules for the content the user writes. The
+  family is the view's own, the system font (San Francisco on Apple devices): the title in
+  both captures has San Francisco's letters, a G without a spur, a y with a straight tail and
+  round dots, not Helvetica Neue's. Body text is in neither capture; it is taken to be in the
+  same family as the title, as Notes' Title, Heading and Body styles are (provisional).
+- **Text styles.** No capture shows a menu, a styled word or a panel. The items of the
+  Format menu, their key equivalents and the Fonts panel's System Font entry follow AppKit and
+  Catalina's Notes as documented, not as measured. The Title style is the first line's measured
+  size and colour.
+- **Password lock.** Served by the desktop, Lock Note derives a key from the notes password in the
+  page (PBKDF2, SHA-256, 600,000 iterations) and seals the note's text with AES-GCM; the server
+  keeps the envelope and no line of the note. Forgetting the password loses the text, and each
+  sheet says so. An open note stays open until Close All Locked Notes, five minutes with no click
+  or key (provisional), the last Notes window closing, or a change of account, and keys are
+  never stored. A save names the note's revision: one that meets another revision is refused and
+  the note says so, with Show Latest and Keep as Copy. Unlike a Mac, the note list knows no title
+  of a locked note that isn't open, since the server would have to hold it in the clear; and a
+  note with attachments can't be locked, since their bytes aren't encrypted. Elsewhere than the
+  desktop Lock Note is dimmed with its reason.
+- **Not built:** sharing a whole folder.
+  Sketches and scanned documents are dimmed with their reason: they need an iPhone. Mail and
+  Messages take a note's text as a file, with what is attached to it; Reminders and the Reading
+  List take its first web address, so a note without one has those rows dimmed.
+- **Files:** a note takes any file up to 10 MB. It is kept on the server, stands at the end of the
+  note whatever the place it was added in, and a short text file becomes lines of the note instead.

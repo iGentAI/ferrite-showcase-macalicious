@@ -1,0 +1,174 @@
+/*
+ * Toolbar button (NSButton, textured rounded bezel).
+ *
+ * The element's box is the bezel's fill: 22 pt high. The bezel is the ::before pseudo-element,
+ * one hairline larger on every side, where Aqua draws its border. Two buttons sit 1 pt apart
+ * to touch and 8 pt apart as separate items.
+ *
+ * Variants
+ *   [data-pressed-style="tint"]         on is shown by the glyph's colour, not the bezel
+ *   [data-frame="bezel"]                the box includes Aqua's hairline border
+ *   --mac-toolbar-button-glyph-mark     for a mark inside a solid glyph: its fill while a
+ *                                       tinted toggle is on (white in Aqua), else transparent
+ *
+ * States
+ *   :active                             pressed: darker in Aqua, lighter in Dark Aqua
+ *   [data-pressed]                      a toggle that is on (set by Base UI)
+ *   [data-disabled]                     dimmed glyph (set by Base UI)
+ *   :focus-visible                      keyboard focus ring, in the key window only
+ *   [data-window-state="inactive"] *    flat outlined bezel, grey glyph
+ *   [data-force~="pressed" | "focus"]   static previews of transient states
+ */
+.mac-toolbar-button {
+  --_fill: var(--mac-toolbar-button-fill);
+  --_border-top: var(--mac-toolbar-button-border-top);
+  --_border-side: var(--mac-toolbar-button-border-side);
+  --_border-bottom: var(--mac-toolbar-button-border-bottom);
+  --_shadow: 0 var(--mac-hairline) 0 var(--mac-toolbar-button-shadow);
+  --mac-toolbar-button-glyph-mark: transparent;
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  flex: none;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 25px;
+  height: 22px;
+  margin: 0;
+  padding: 0 8px;
+  border: 0;
+  border-radius: var(--mac-radius-control-regular);
+  background: none;
+  color: var(--mac-toolbar-button-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-toolbar-button::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: calc(-1 * var(--mac-hairline));
+  box-sizing: border-box;
+  border: var(--mac-hairline) solid;
+  border-color: var(--_border-top) var(--_border-side) var(--_border-bottom);
+  border-radius: calc(var(--mac-radius-control-regular) + var(--mac-hairline));
+  background: var(--_fill) padding-box;
+  box-shadow: var(--_shadow);
+  pointer-events: none;
+}
+
+.mac-toolbar-button:where([data-frame="bezel"]) {
+  margin-inline: var(--mac-toolbar-button-border-room);
+}
+
+/* Inactive window: Aqua keeps only an outline, Dark Aqua a fainter fill. */
+.mac-toolbar-button:where([data-window-state="inactive"] *) {
+  --_fill: var(--mac-toolbar-button-fill-inactive);
+  --_border-top: var(--mac-toolbar-button-border-inactive);
+  --_border-side: var(--mac-toolbar-button-border-inactive);
+  --_border-bottom: var(--mac-toolbar-button-border-inactive);
+  --_shadow: inset 0 0 0 var(--mac-hairline) var(--mac-toolbar-button-ring-inactive);
+
+  color: var(--mac-toolbar-button-text-inactive);
+}
+
+/* Pressed */
+.mac-toolbar-button:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  --_fill: var(--mac-toolbar-button-fill-pressed);
+
+  color: var(--mac-toolbar-button-text-pressed);
+}
+
+/* On: wins over pressed and over the inactive bezel, as a selected segment does, and is the
+   same in a main window as in a key one (Finder behind Quick Look). */
+.mac-toolbar-button:where([data-pressed]:not([data-pressed-style="tint"])) {
+  --_fill: var(--mac-toolbar-button-fill-on);
+  --_border-top: var(--mac-toolbar-button-border-top-on);
+  --_border-side: var(--mac-toolbar-button-border-side-on);
+  --_border-bottom: var(--mac-toolbar-button-border-bottom-on);
+
+  color: var(--mac-toolbar-button-text-on);
+}
+
+/* On in an inactive window, or on and disabled: the bezel at half strength. */
+.mac-toolbar-button:where([data-pressed]:not([data-pressed-style="tint"])):where(
+  [data-disabled],
+  [data-window-state="inactive"] *
+)::before {
+  opacity: 0.5;
+}
+
+/* On, shown by the glyph. Not in an inactive window. */
+.mac-toolbar-button:where([data-pressed][data-pressed-style="tint"]):where(
+  :not([data-disabled], [data-window-state="inactive"] *)
+) {
+  --mac-toolbar-button-glyph-mark: var(--mac-toolbar-button-tint-mark);
+
+  color: var(--mac-toolbar-button-text-tint);
+}
+
+/* Disabled: the bezel stays, the glyph dims. */
+.mac-toolbar-button:where([data-disabled]):where(
+  :not([data-pressed]),
+  [data-pressed-style="tint"]
+) {
+  color: var(--mac-toolbar-button-text-disabled);
+}
+
+.mac-toolbar-button:where([data-disabled]):where(
+  :not([data-pressed]),
+  [data-pressed-style="tint"]
+):where([data-window-state="inactive"] *) {
+  color: var(--mac-toolbar-button-text-inactive-disabled);
+}
+
+/* Keyboard focus ring; only in the key window, as in AppKit. */
+.mac-toolbar-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-toolbar-button {
+    color: ButtonText;
+  }
+
+  .mac-toolbar-button::before {
+    border: 1px solid ButtonText;
+  }
+
+  .mac-toolbar-button:where([data-pressed]:not([data-pressed-style="tint"])) {
+    color: HighlightText;
+  }
+
+  .mac-toolbar-button:where([data-pressed]:not([data-pressed-style="tint"]))::before {
+    background: Highlight;
+  }
+
+  .mac-toolbar-button:where([data-pressed][data-pressed-style="tint"]:not([data-disabled])) {
+    --mac-toolbar-button-glyph-mark: Canvas;
+
+    color: Highlight;
+  }
+
+  .mac-toolbar-button:where([data-disabled]) {
+    color: GrayText;
+  }
+
+  .mac-toolbar-button:where([data-disabled])::before {
+    border-color: GrayText;
+  }
+}

@@ -1,0 +1,90 @@
+/*
+ * Split View: two full-screen windows side by side in one Space.
+ *
+ * Parts
+ *   .mac-split-view-full-screen            the Space: two tiles and the gutter between them
+ *   .mac-split-view-full-screen-tile       a tile, which is also a full-screen window; the
+ *                                          leading one takes its share of the width, the
+ *                                          trailing one the rest
+ *   .mac-split-view-full-screen-divider    the 12 pt black gutter, with a 4 x 64 pt handle
+ *                                          (::before) centred on the height of the Space
+ *
+ * States
+ *   [data-active="leading" | "trailing"]   on the root: the tile that is key
+ *   [data-side="leading" | "trailing"]     on a tile
+ *   [data-dragging]                        on the root while the divider follows the pointer
+ *   :focus-visible                         on the divider: the focus ring is drawn around
+ *                                          the handle, and not in a page that is not key
+ *
+ * The share is a number from 0 to 1 in --_split, set inline on the root; while the divider is
+ * dragged --_drag overrides it, written once per pointer move.
+ */
+.mac-split-view-full-screen {
+  display: flex;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--mac-split-view-full-screen-divider);
+}
+
+.mac-split-view-full-screen-tile {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.mac-split-view-full-screen-tile:where([data-side="leading"]) {
+  flex: 0 0 calc((100% - 12px) * var(--_drag, var(--_split, 0.5)));
+}
+
+.mac-split-view-full-screen-divider {
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  width: 12px;
+  background: var(--mac-split-view-full-screen-divider);
+  outline: none;
+  cursor: col-resize;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* The handle. Its ends are measured as half circles: a radius of 2 pt. */
+.mac-split-view-full-screen-divider::before {
+  content: "";
+  position: absolute;
+  top: calc(50% - 32px);
+  left: 4px;
+  width: 4px;
+  height: 64px;
+  border-radius: 2px;
+  background: var(--mac-split-view-full-screen-handle);
+}
+
+.mac-split-view-full-screen-divider:where(:focus-visible, [data-force~="focus"])::before {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+}
+
+.mac-split-view-full-screen-divider:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+)::before {
+  outline: none;
+}
+
+/* The gutter is a band between two edges, and the handle the system's text colour. */
+@media (forced-colors: active) {
+  .mac-split-view-full-screen,
+  .mac-split-view-full-screen-divider {
+    background: Canvas;
+  }
+
+  .mac-split-view-full-screen-divider {
+    border-inline: 1px solid CanvasText;
+  }
+
+  .mac-split-view-full-screen-divider::before {
+    left: 3px;
+    background: CanvasText;
+  }
+}

@@ -1,0 +1,465 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "expanded-light",
+      "description": "Expanded triangle in the outline of the Desktop & Screen Saver pane, Aqua.",
+      "example": "visual-expanded",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.163,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 8.02,
+        "2x": 0.26
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Desktop-and-Screen-Saver.png",
+        "crop": {
+          "x": 188,
+          "y": 494,
+          "width": 28,
+          "height": 28
+        }
+      }
+    },
+    {
+      "name": "collapsed-light",
+      "description": "Collapsed triangle in the outline of the Desktop & Screen Saver pane, Aqua.",
+      "example": "visual-collapsed",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.163,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 8.0,
+        "2x": 0.26
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Desktop-and-Screen-Saver.png",
+        "crop": {
+          "x": 188,
+          "y": 614,
+          "width": 28,
+          "height": 28
+        }
+      }
+    },
+    {
+      "name": "rest-light",
+      "description": "A collapsed and a disabled triangle on the window background, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 54,
+          "height": 29
+        },
+        "pixels": [
+          {
+            "x": 13.5,
+            "y": 14.5,
+            "color": "#767676",
+            "tolerance": 3,
+            "note": "secondary label colour over the page: black at 50% in Aqua, white at 55% in Dark Aqua (spec: disclosure-triangle, Triangle, normal, measured on a list background)"
+          },
+          {
+            "x": 12,
+            "y": 17.5,
+            "color": "#767676",
+            "tolerance": 3,
+            "scale": 2,
+            "note": "inside the collapsed shape only: the lower left of the 7.5 x 9 pt triangle"
+          },
+          {
+            "x": 17.5,
+            "y": 12,
+            "color": "#ececec",
+            "scale": 2,
+            "note": "outside the collapsed shape: where the expanded triangle would reach"
+          },
+          {
+            "x": 38.5,
+            "y": 14.5,
+            "color": "#b1b1b1",
+            "tolerance": 3,
+            "note": "disabled: half opacity (spec: States, disabled, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "toggled-light",
+      "description": "After a real click the triangle points down, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#triangle"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 54,
+          "height": 29
+        },
+        "pixels": [
+          {
+            "x": 13.5,
+            "y": 14.5,
+            "color": "#767676",
+            "tolerance": 3,
+            "note": "the triangle keeps its colour"
+          },
+          {
+            "x": 17.5,
+            "y": 12,
+            "color": "#767676",
+            "tolerance": 3,
+            "scale": 2,
+            "note": "inside the expanded shape only: the upper right of the 9 x 7.5 pt triangle (spec: Expanded triangle, measured)"
+          },
+          {
+            "x": 12,
+            "y": 17.5,
+            "color": "#ececec",
+            "scale": 2,
+            "note": "outside the expanded shape: where the collapsed triangle was"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The triangle held down with the mouse, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "#triangle"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 54,
+          "height": 29
+        },
+        "pixels": [
+          {
+            "x": 13.5,
+            "y": 14.5,
+            "color": "#232323",
+            "tolerance": 3,
+            "note": "darkens to the label colour, 85% over the page (spec: States, pressed, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the triangle, reached with Tab, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 54,
+          "height": 29
+        },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 14.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the page around the 13 pt frame, measured on a text field (spec: focus-ring, sRGB); that the triangle shows one is inferred"
+          },
+          {
+            "x": 4.25,
+            "y": 14.5,
+            "color": "#ececec",
+            "note": "page just outside the 3 pt ring"
+          },
+          {
+            "x": 13.5,
+            "y": 14.5,
+            "color": "#767676",
+            "tolerance": 3,
+            "note": "the triangle keeps its colour"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-light",
+      "description": "The same after Tab in an inactive window, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 54,
+          "height": 29
+        },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 14.5,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          },
+          {
+            "x": 13.5,
+            "y": 14.5,
+            "color": "#767676",
+            "tolerance": 3,
+            "note": "the triangle does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "expanded-dark",
+      "description": "Expanded triangle in the outline of the Desktop & Screen Saver pane, Dark Aqua.",
+      "example": "visual-expanded",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.163,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 7.7,
+        "2x": 0.21
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Desktop-and-Screen-Saver.png",
+        "crop": {
+          "x": 188,
+          "y": 494,
+          "width": 28,
+          "height": 28
+        }
+      }
+    },
+    {
+      "name": "collapsed-dark",
+      "description": "Collapsed triangle in the outline of the Desktop & Screen Saver pane, Dark Aqua.",
+      "example": "visual-collapsed",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.168,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 7.69,
+        "2x": 0.19
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Desktop-and-Screen-Saver.png",
+        "crop": {
+          "x": 188,
+          "y": 614,
+          "width": 28,
+          "height": 28
+        }
+      }
+    },
+    {
+      "name": "rest-dark",
+      "description": "A collapsed and a disabled triangle on the window background, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 54,
+          "height": 29
+        },
+        "pixels": [
+          {
+            "x": 13.5,
+            "y": 14.5,
+            "color": "#a3a3a3",
+            "tolerance": 3,
+            "note": "secondary label colour over the page: black at 50% in Aqua, white at 55% in Dark Aqua (spec: disclosure-triangle, Triangle, normal, measured on a list background)"
+          },
+          {
+            "x": 12,
+            "y": 17.5,
+            "color": "#a3a3a3",
+            "tolerance": 3,
+            "scale": 2,
+            "note": "inside the collapsed shape only: the lower left of the 7.5 x 9 pt triangle"
+          },
+          {
+            "x": 17.5,
+            "y": 12,
+            "color": "#323232",
+            "scale": 2,
+            "note": "outside the collapsed shape: where the expanded triangle would reach"
+          },
+          {
+            "x": 38.5,
+            "y": 14.5,
+            "color": "#6a6a6a",
+            "tolerance": 3,
+            "note": "disabled: half opacity (spec: States, disabled, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "toggled-dark",
+      "description": "After a real click the triangle points down, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#triangle"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 54,
+          "height": 29
+        },
+        "pixels": [
+          {
+            "x": 13.5,
+            "y": 14.5,
+            "color": "#a3a3a3",
+            "tolerance": 3,
+            "note": "the triangle keeps its colour"
+          },
+          {
+            "x": 17.5,
+            "y": 12,
+            "color": "#a3a3a3",
+            "tolerance": 3,
+            "scale": 2,
+            "note": "inside the expanded shape only: the upper right of the 9 x 7.5 pt triangle (spec: Expanded triangle, measured)"
+          },
+          {
+            "x": 12,
+            "y": 17.5,
+            "color": "#323232",
+            "scale": 2,
+            "note": "outside the expanded shape: where the collapsed triangle was"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "The triangle held down with the mouse, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": "#triangle"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 54,
+          "height": 29
+        },
+        "pixels": [
+          {
+            "x": 13.5,
+            "y": 14.5,
+            "color": "#e0e0e0",
+            "tolerance": 3,
+            "note": "darkens to the label colour, 85% over the page (spec: States, pressed, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the triangle, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 54,
+          "height": 29
+        },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 14.5,
+            "color": "#2d6c99",
+            "tolerance": 6,
+            "note": "ring over the page around the 13 pt frame, measured on a text field (spec: focus-ring, sRGB); that the triangle shows one is inferred"
+          },
+          {
+            "x": 4.25,
+            "y": 14.5,
+            "color": "#323232",
+            "note": "page just outside the 3 pt ring"
+          },
+          {
+            "x": 13.5,
+            "y": 14.5,
+            "color": "#a3a3a3",
+            "tolerance": 3,
+            "note": "the triangle keeps its colour"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-dark",
+      "description": "The same after Tab in an inactive window, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 54,
+          "height": 29
+        },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 14.5,
+            "color": "#323232",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          },
+          {
+            "x": 13.5,
+            "y": 14.5,
+            "color": "#a3a3a3",
+            "tolerance": 3,
+            "note": "the triangle does not change"
+          }
+        ]
+      }
+    }
+  ]
+}

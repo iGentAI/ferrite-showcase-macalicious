@@ -1,0 +1,263 @@
+/*
+ * Notification Center: a panel on the trailing edge of the screen.
+ *
+ * States
+ *   [data-open]                                  on screen; without it the panel is moved out
+ *   .mac-notification-center-segment[data-active] the selected segment (Base UI Tabs)
+ *   :active, [data-force~="pressed"]             pressed footer and clear buttons
+ *   :focus-visible, [data-force~="focus"]        focus ring
+ *   :where([data-window-state="main"], [data-window-state="inactive"]) *
+ *                                                no focus ring outside the key window
+ *
+ * Layout (pt): header 49 + 1 divider, the view, 1 divider + footer 44. The panel is 344 wide
+ * (--mac-notification-center-width) and as tall as its container.
+ */
+.mac-notification-center {
+  display: flex;
+  box-sizing: border-box;
+  inline-size: var(--mac-notification-center-width, 344px);
+  block-size: 100%;
+  flex-direction: column;
+  background: var(--mac-material-notification-center);
+  backdrop-filter: var(--mac-material-filter-notification-center);
+  box-shadow:
+    inset var(--mac-notification-center-edge-width) 0 0 var(--mac-notification-center-edge),
+    calc(-1 * var(--mac-hairline)) 0 0 var(--mac-notification-center-edge-outer);
+  font: var(--mac-font-body);
+}
+
+.mac-notification-center:where(:not([data-open])) {
+  transform: translateX(100%);
+  visibility: hidden;
+}
+
+.mac-notification-center:where(:dir(rtl):not([data-open])) {
+  transform: translateX(-100%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mac-notification-center {
+    transition:
+      transform 0.25s ease-out,
+      visibility 0.25s;
+  }
+}
+
+/* Header: the two segments are 20 pt high, 14.5 pt from the top and from the divider. */
+.mac-notification-center-header {
+  display: flex;
+  box-sizing: border-box;
+  flex: none;
+  block-size: 50px;
+  padding: 14.5px 24.5px;
+  border-block-end: 1px solid var(--mac-notification-center-header-divider);
+}
+
+.mac-notification-center-segment {
+  overflow: hidden;
+  flex: 1;
+  min-inline-size: 0;
+  padding: 0 8px;
+  border: 0 solid var(--mac-notification-center-segment-edge);
+  border-block-width: var(--mac-hairline);
+  appearance: none;
+  background: var(--mac-notification-center-segment);
+  background-clip: padding-box;
+  box-shadow: inset 0 var(--mac-hairline) 0 var(--mac-notification-center-segment-highlight);
+  color: var(--mac-notification-center-segment-text);
+  font: inherit;
+  line-height: calc(20px - 2 * var(--mac-hairline));
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-notification-center-segment:where(:first-child) {
+  border-inline-start-width: var(--mac-hairline);
+  border-start-start-radius: 2.5px;
+  border-end-start-radius: 2.5px;
+}
+
+.mac-notification-center-segment:where(:last-child) {
+  border-inline-end-width: var(--mac-hairline);
+  border-start-end-radius: 2.5px;
+  border-end-end-radius: 2.5px;
+}
+
+.mac-notification-center-segment:where([data-active]) {
+  background-color: var(--mac-notification-center-segment-selected);
+  color: var(--mac-notification-center-segment-text-selected);
+}
+
+/* The view scrolls; Catalina's overlay scrollers are hidden while nothing scrolls. */
+.mac-notification-center-view {
+  display: flex;
+  overflow: hidden auto;
+  box-sizing: border-box;
+  flex: 1;
+  min-block-size: 0;
+  flex-direction: column;
+  padding: 10px 11px;
+  gap: 6px;
+  scrollbar-width: none;
+}
+
+.mac-notification-center-view > :where(*) {
+  flex: none;
+}
+
+/* A view kept mounted while the other is shown (`keepMounted`), or being left (Base UI holds it for
+   its exit, inert), stays out of the layout. */
+.mac-notification-center-view:where([hidden], [inert]) {
+  display: none;
+}
+
+.mac-notification-center-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mac-notification-center-group + .mac-notification-center-group {
+  margin-block-start: 10px;
+}
+
+/* The heading's cap top is 13 pt below the header divider and the first card 42 pt. */
+.mac-notification-center-group-header {
+  display: flex;
+  block-size: 28px;
+  align-items: center;
+  padding-inline: 20.5px 8px;
+  margin-block-start: -2px;
+}
+
+.mac-notification-center-heading {
+  overflow: hidden;
+  flex: 1;
+  min-inline-size: 0;
+  margin: 0;
+  color: var(--mac-notification-center-heading);
+  font: var(--mac-font-title-1);
+  font-weight: 300;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-notification-center-clear {
+  flex: none;
+  inline-size: 14px;
+  block-size: 14px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  margin-block-start: 2px;
+  appearance: none;
+  background: none;
+  color: var(--mac-notification-center-clear);
+}
+
+.mac-notification-center-clear > :where(svg) {
+  display: block;
+  fill: currentColor;
+}
+
+.mac-notification-center-clear:where(:active, [data-force~="pressed"]) {
+  filter: brightness(var(--mac-image-brightness-pressed));
+}
+
+.mac-notification-center-empty {
+  margin: auto;
+  color: var(--mac-notification-center-empty);
+  font: var(--mac-font-title-2);
+  text-align: center;
+}
+
+/* Footer: the button is centred; the gear's centre is 22.25 pt from the edge and the bottom. */
+.mac-notification-center-footer {
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  flex: none;
+  block-size: 45px;
+  align-items: center;
+  justify-content: center;
+  border-block-start: 1px solid var(--mac-notification-center-footer-divider);
+  color: var(--mac-notification-center-footer-text);
+}
+
+.mac-notification-center-edit {
+  box-sizing: border-box;
+  min-inline-size: 66px;
+  block-size: 19px;
+  padding: 0 13.5px;
+  border: 0;
+  border-radius: 4px;
+  appearance: none;
+  background: var(--mac-notification-center-button);
+  color: inherit;
+  font: inherit;
+  line-height: 19px;
+}
+
+.mac-notification-center-edit:where(:active, [data-force~="pressed"]) {
+  background: var(--mac-notification-center-button-pressed);
+}
+
+.mac-notification-center-settings {
+  position: absolute;
+  inset-block-end: 13.25px;
+  inset-inline-end: 13.25px;
+  inline-size: 18px;
+  block-size: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  appearance: none;
+  background: none;
+  color: var(--mac-notification-center-gear);
+}
+
+.mac-notification-center-settings > :where(svg) {
+  display: block;
+  fill: none;
+  stroke: currentColor;
+}
+
+.mac-notification-center-settings:where(:active, [data-force~="pressed"]) {
+  opacity: 0.6;
+}
+
+.mac-notification-center-segment:where(:focus-visible, [data-force~="focus"]),
+.mac-notification-center-view:where(:focus-visible),
+.mac-notification-center-clear:where(:focus-visible, [data-force~="focus"]),
+.mac-notification-center-edit:where(:focus-visible, [data-force~="focus"]),
+.mac-notification-center-settings:where(:focus-visible, [data-force~="focus"]) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+.mac-notification-center-view:where(:focus-visible) {
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+.mac-notification-center
+  :where(button, [role="tabpanel"]):where(
+    :where([data-window-state="main"], [data-window-state="inactive"]) *
+  ) {
+  outline: none;
+}
+
+@media (forced-colors: active) {
+  .mac-notification-center {
+    border-inline-start: 1px solid CanvasText;
+  }
+
+  .mac-notification-center-segment {
+    border-color: ButtonText;
+  }
+
+  .mac-notification-center-segment:where([data-active]) {
+    background: Highlight;
+    color: HighlightText;
+  }
+}

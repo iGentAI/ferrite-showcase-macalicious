@@ -1,0 +1,146 @@
+/*
+ * The Launchpad demo: a stage that stands for the screen, with the library's Desktop, Dock,
+ * Launchpad and Launchpad Folder on it. Everything Launchpad draws is the library's; these
+ * rules size the stage, keep the Dock above Launchpad and draw the placeholders for Apple's
+ * artwork. The classes are .mac-launchpad-demo-*, apart from the library's .mac-launchpad-*.
+ *
+ * Parts
+ *   .mac-launchpad-demo               the stage: the screen, 1680 x 1050 pt at full size
+ *   .mac-launchpad-demo-desktop       the library's Desktop, filling the stage
+ *   .mac-launchpad-demo-picture       the abstract stand-in for the desktop picture
+ *   .mac-launchpad-demo-status        the line on the desktop that says what was launched
+ *   .mac-launchpad-demo-dock          the library's Dock, above Launchpad
+ *   .mac-launchpad-demo-icon          a placeholder icon (inline SVG): a rounded square with
+ *   .mac-launchpad-demo-icon-plate      its plate, in the tint of the application's category
+ *   .mac-launchpad-demo-icon-initial    and the application's initial
+ *
+ * States
+ *   [data-folder-open]                on the stage while a folder is open: the Dock is hidden
+ *   [data-category="..."]             on a placeholder: the tint
+ *
+ * Hooks
+ *   --mac-launchpad-demo-tile         edge of a Dock tile; it follows the stage's width
+ */
+.mac-launchpad-demo {
+  /* Twenty tiles and a separator fit the stage's width with 64 pt to spare, up to the 64 pt
+     tiles of the captures: the shelf is 68 pt for each tile, 30 for the separator and 8 more
+     (1398 pt of the 1680 pt screen). */
+  --mac-launchpad-demo-tile: clamp(16px, calc((100cqw - 152px) / 20.47), 64px);
+  /* Launchpad keeps the Dock's height clear at its foot: the tile and 16 pt. */
+  --mac-launchpad-inset-bottom: calc(var(--mac-launchpad-demo-tile) + 16px);
+
+  position: relative;
+  /* The overlay and the Dock are layers of the stage, not of the page around it. */
+  isolation: isolate;
+  container-type: inline-size;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1680px;
+  /* Below 672 pt wide the proportion would leave the grid and the Dock no room: the stage
+     keeps 420 pt of height (launchpad.mdx, "What it shows"). */
+  min-height: 420px;
+  aspect-ratio: 1680 / 1050;
+  overflow: hidden;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+}
+
+.mac-launchpad-demo-desktop {
+  width: 100%;
+  height: 100%;
+}
+
+/* The stand-in for the desktop picture, which is Apple's and is not shipped: an abstract field
+   of two of the library's system colours, there to give Launchpad's blur something to work
+   on. It is not fitted to Catalina's picture. */
+.mac-launchpad-demo-picture {
+  background: linear-gradient(160deg, var(--mac-color-system-teal), var(--mac-color-system-indigo));
+}
+
+/* Above the Dock, in the middle of the desktop. */
+.mac-launchpad-demo-status {
+  position: absolute;
+  inset: 38% 20px auto;
+  margin: 0;
+  color: var(--mac-launchpad-demo-status-text);
+  font: var(--mac-font-weight-medium) 15px / 20px var(--mac-font-family-system);
+  text-align: center;
+  text-shadow: 0 1px 3px var(--mac-launchpad-demo-status-shadow);
+  pointer-events: none;
+}
+
+/* The Dock stays in front of Launchpad (z-index 950) and goes while a folder is open, as in
+   the Launchpad-Folder captures. */
+.mac-launchpad-demo > .mac-launchpad-demo-dock {
+  z-index: 960;
+  transition:
+    opacity 0.3s,
+    visibility 0.3s;
+}
+
+.mac-launchpad-demo:where([data-folder-open]) > .mac-launchpad-demo-dock {
+  visibility: hidden;
+  opacity: 0;
+}
+
+/* A placeholder fills the box it is given: 112 pt in Launchpad, a Dock tile, or a slot of a
+   folder's tile. Its plate is 96 of the 112 units, the margin a Catalina icon leaves. */
+.mac-launchpad-demo-icon {
+  --_tint: var(--mac-color-system-gray);
+
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mac-launchpad-demo-icon:where([data-category="internet"]) {
+  --_tint: var(--mac-color-system-blue);
+}
+
+.mac-launchpad-demo-icon:where([data-category="productivity"]) {
+  --_tint: var(--mac-color-system-orange);
+}
+
+.mac-launchpad-demo-icon:where([data-category="media"]) {
+  --_tint: var(--mac-color-system-pink);
+}
+
+.mac-launchpad-demo-icon:where([data-category="creativity"]) {
+  --_tint: var(--mac-color-system-purple);
+}
+
+.mac-launchpad-demo-icon:where([data-category="utilities"]) {
+  --_tint: var(--mac-color-system-green);
+}
+
+.mac-launchpad-demo-icon:where([data-category="files"]) {
+  --_tint: var(--mac-color-system-brown);
+}
+
+.mac-launchpad-demo-icon-plate {
+  fill: var(--_tint);
+}
+
+.mac-launchpad-demo-icon-initial {
+  fill: var(--mac-launchpad-demo-icon-text);
+  font-weight: var(--mac-font-weight-semibold);
+  font-size: 52px;
+  font-family: var(--mac-font-family-system);
+}
+
+@media (forced-colors: active) {
+  .mac-launchpad-demo-status {
+    color: CanvasText;
+    text-shadow: none;
+  }
+
+  .mac-launchpad-demo-icon-plate {
+    fill: Canvas;
+    stroke: CanvasText;
+    stroke-width: 2;
+  }
+
+  .mac-launchpad-demo-icon-initial {
+    fill: CanvasText;
+  }
+}

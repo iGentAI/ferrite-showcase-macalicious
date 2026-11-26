@@ -1,0 +1,584 @@
+/*
+ * Chess demo: the board and its pieces, which are the application's own content, and where
+ * they and the bar under them lie in the window. The window, the title bar, the window
+ * controls, the status label, the New Game button and the promotion sheet with its buttons
+ * are the library's own.
+ *
+ * The board is flat squares in a flat frame on a plain backdrop, the largest square that fits the
+ * room above the bar, so it follows the window's size. With [data-board-view="3d"] on the window
+ * the same squares are tilted by a transform chess-board3d.tsx sets, on the application's backdrop,
+ * and a canvas over them draws the pieces.
+ *
+ * Parts
+ *   .mac-chess                the window
+ *   .mac-chess-title          the title's text, which keeps its three spaces
+ *   .mac-chess-view           everything under the title bar: the backdrop
+ *   .mac-chess-stage          the room the board is centred in
+ *   .mac-chess-board          the board's frame, with the rank digits and the file letters
+ *   .mac-chess-ranks          the digits 8 to 1 down the left of the frame
+ *   .mac-chess-files          the letters a to h along its bottom
+ *   .mac-chess-squares        the grid of 64 squares
+ *   .mac-chess-rank           one row of it
+ *   .mac-chess-square         one square
+ *   .mac-chess-piece          the drawing of a piece: -edge, -body and -mark inside it
+ *   .mac-chess-lifted         the piece being dragged, under the pointer; in 3D its shadow
+ *   .mac-chess-scene          the 3D board's canvas
+ *   .mac-chess-listening      says the window is listening for spoken moves
+ *   .mac-chess-bar            the row under the board: the status, Claim Draw and New Game
+ *   .mac-chess-form           the desktop's Ferrite application: New Game's form
+ *   .mac-chess-games          the desktop's Ferrite application: the list of the person's games
+ *   .mac-chess-status         how the game stands, in words
+ *   .mac-chess-announcement   the last move, for assistive technology only
+ *
+ * States, on .mac-chess-square
+ *   [data-shade="light" | "dark"]     the square's colour; a1 is dark
+ *   [data-selected]                   the piece on it is picked up
+ *   [data-target="move" | "capture"]  the picked piece can move here, or take the piece here
+ *   [data-last]                       the last move left or reached it
+ *   [data-check]                      the king on it is attacked
+ *   [data-lifted]                     the piece on it is being dragged away
+ *   [data-pointed]                    Show Last Move or Show Hint points it out
+ *   :focus-visible                    focus ring on a dark band, in the key window only
+ *
+ * States, on .mac-chess-piece
+ *   [data-side="white" | "black"]     whose piece it is
+ */
+.mac-chess-title {
+  white-space: pre;
+}
+
+.mac-chess-view {
+  position: relative;
+  display: grid;
+  flex: 1 1 auto;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 0;
+  background: var(--mac-chess-backdrop);
+}
+
+/* The stage is a size container: the board measures it in container units. Its margin, not
+   a padding, keeps the board off the window's edges, so that the units are the free room. */
+.mac-chess-stage {
+  container-type: size;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+  margin: var(--mac-space-window-margin) var(--mac-space-window-margin) 0;
+}
+
+.mac-chess-board {
+  --_frame: 22px;
+  --_side: min(100cqw, 100cqh);
+
+  box-sizing: border-box;
+  display: grid;
+  grid-template:
+    "ranks squares" minmax(0, 1fr)
+    ". files" var(--_frame)
+    / var(--_frame) minmax(0, 1fr);
+  width: var(--_side);
+  height: var(--_side);
+  padding: var(--_frame) var(--_frame) 0 0;
+  border-radius: 6px;
+  background: var(--mac-chess-frame);
+}
+
+.mac-chess-ranks,
+.mac-chess-files {
+  display: grid;
+  place-items: center;
+  color: var(--mac-chess-frame-text);
+  font: var(--mac-font-subheadline);
+  user-select: none;
+}
+
+.mac-chess-ranks {
+  grid-area: ranks;
+  grid-template-rows: repeat(8, minmax(0, 1fr));
+}
+
+.mac-chess-files {
+  grid-area: files;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+}
+
+/* The contextual menu's trigger leaves the grid in its place in the frame. */
+.mac-chess-board-menu {
+  display: contents;
+}
+
+.mac-chess-squares {
+  position: relative;
+  display: grid;
+  grid-area: squares;
+  grid-template-rows: repeat(8, minmax(0, 1fr));
+  min-width: 0;
+  min-height: 0;
+  touch-action: none;
+  user-select: none;
+}
+
+/* The piece in the air, one square wide, under the pointer. */
+.mac-chess-lifted {
+  position: absolute;
+  z-index: 2;
+  width: 12.5%;
+  height: 12.5%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.mac-chess-square:where([data-lifted]) .mac-chess-piece {
+  opacity: 0.3;
+}
+
+.mac-chess-rank {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  min-height: 0;
+}
+
+.mac-chess-square {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  background: var(--mac-chess-square-light);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-chess-square:where([data-shade="dark"]) {
+  background: var(--mac-chess-square-dark);
+}
+
+/* The marks of a square are layers over its colour, under the piece. */
+.mac-chess-square:where([data-last])::before,
+.mac-chess-square:where([data-pointed])::before,
+.mac-chess-square:where([data-check])::before,
+.mac-chess-square:where([data-selected])::before {
+  content: "";
+  position: absolute;
+  inset: var(--_mark-inset, 0);
+  background: var(--mac-chess-last-move);
+}
+
+.mac-chess-square:where([data-pointed])::before {
+  background: var(--mac-chess-pointed);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mac-chess-square:where([data-pointed])::before {
+    animation: mac-chess-pointed 0.5s ease-in-out 6 alternate;
+  }
+}
+
+@keyframes mac-chess-pointed {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0.35;
+  }
+}
+
+.mac-chess-square:where([data-check])::before {
+  background: var(--mac-chess-check);
+}
+
+.mac-chess-square:where([data-selected])::before {
+  background: var(--mac-chess-selected);
+}
+
+/* Where the picked piece can go: a dot on an empty square, a ring around a piece it takes. */
+.mac-chess-square:where([data-target])::after {
+  content: "";
+  position: absolute;
+  inset: 36%;
+  border-radius: 50%;
+  background: var(--mac-chess-target);
+}
+
+.mac-chess-square:where([data-target="capture"])::after {
+  inset: 4%;
+  border: 3px solid var(--mac-chess-target);
+  background: none;
+}
+
+/* The system ring is half transparent and would not show on a square of either shade, so it
+   lies on a dark band with a light line inside it: one of the two stands out from any square.
+   The square's marks draw back to leave the band free. */
+.mac-chess-square:where(:focus-visible):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  --_mark-inset: calc(var(--mac-focus-ring-width) + 1px);
+
+  z-index: 1;
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+  box-shadow:
+    inset 0 0 0 var(--mac-focus-ring-width) var(--mac-chess-focus-backing),
+    inset 0 0 0 var(--_mark-inset) var(--mac-chess-focus-edge);
+}
+
+.mac-chess-piece {
+  --_body: var(--mac-chess-piece-white);
+  --_edge: var(--mac-chess-piece-white-edge);
+
+  position: absolute;
+  inset: 6%;
+  width: 88%;
+  height: 88%;
+  pointer-events: none;
+}
+
+.mac-chess-piece:where([data-side="black"]) {
+  --_body: var(--mac-chess-piece-black);
+  --_edge: var(--mac-chess-piece-black-edge);
+}
+
+.mac-chess-piece-edge {
+  fill: var(--_edge);
+  stroke: var(--_edge);
+  stroke-width: 2.4;
+  stroke-linejoin: round;
+}
+
+.mac-chess-piece-body {
+  fill: var(--_body);
+}
+
+.mac-chess-piece-mark {
+  fill: var(--_edge);
+  stroke: var(--_edge);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.mac-chess-bar {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  padding: var(--mac-space-control-gap) var(--mac-space-window-margin)
+    var(--mac-space-window-margin);
+}
+
+.mac-chess-status {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mac-chess-clocks {
+  display: flex;
+  flex: none;
+  gap: var(--mac-space-control-gap);
+}
+
+.mac-chess-hands {
+  display: flex;
+  justify-content: space-between;
+  min-height: 32px;
+  padding-inline: var(--mac-space-window-margin);
+}
+
+.mac-chess-hand {
+  display: flex;
+  gap: 4px;
+}
+
+.mac-chess-hand-piece {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 4px;
+}
+
+.mac-chess-hand-piece[aria-pressed="true"] {
+  outline: 2px solid var(--mac-color-label);
+}
+
+.mac-chess-hand-piece:disabled {
+  opacity: 0.6;
+}
+
+.mac-chess-hand-piece > span {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  color: var(--mac-color-label);
+  font-size: 10px;
+}
+
+.mac-chess-clock {
+  color: var(--mac-color-label-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.mac-chess-clock[data-running] {
+  color: var(--mac-color-label);
+  font-weight: bold;
+}
+
+.mac-chess-clock[data-running][data-low] {
+  color: var(--mac-color-system-red);
+}
+
+.mac-chess-listening {
+  flex: none;
+}
+
+/* The 3D board. The stage has no margin because the canvas fills it, and the board's element lies at
+   its middle by position, as it can be larger than the stage once tilted. */
+.mac-chess[data-board-view="3d"] .mac-chess-view {
+  background: linear-gradient(
+    to bottom,
+    var(--mac-chess-sky-top),
+    var(--mac-chess-sky-low) var(--mac-chess-horizon),
+    var(--mac-chess-backdrop) var(--mac-chess-horizon)
+  );
+}
+
+.mac-chess[data-board-view="3d"] .mac-chess-stage {
+  position: relative;
+  display: block;
+  margin: 0;
+  overflow: clip;
+  touch-action: none;
+}
+
+.mac-chess[data-board-view="3d"] .mac-chess-board {
+  --_frame: calc(var(--_side) * 0.075);
+
+  position: absolute;
+  top: calc(50% - var(--_side) / 2);
+  left: calc(50% - var(--_side) / 2);
+  border-radius: 0;
+}
+
+.mac-chess[data-board-view="3d"] .mac-chess-ranks,
+.mac-chess[data-board-view="3d"] .mac-chess-files {
+  font-size: calc(var(--_side) * 0.034);
+  font-weight: var(--mac-font-weight-semibold);
+  text-transform: uppercase;
+}
+
+.mac-chess[data-board-view="3d"] .mac-chess-lifted {
+  background: radial-gradient(closest-side, var(--mac-chess-carried-shadow), transparent);
+}
+
+/* WebKit collapses a grid item to the row's width and no height when a positioned pseudo-element
+   first appears in it under this board's perspective transform, so a square always has both. */
+.mac-chess[data-board-view="3d"] .mac-chess-square::before,
+.mac-chess[data-board-view="3d"] .mac-chess-square::after {
+  content: "";
+  position: absolute;
+}
+
+.mac-chess-scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Read, not seen: the visible status says how the game stands, this says what just happened. */
+.mac-chess-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The Ferrite application's sheets (chess-account.tsx): New Game's form, a column of labels
+   beside a column of controls, and Games' list of rows. */
+.mac-chess-form {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--mac-chess-form-gap) var(--mac-space-control-gap);
+  align-items: center;
+  margin-block: var(--mac-space-control-gap);
+}
+
+.mac-chess-form-label {
+  justify-self: end;
+}
+
+.mac-chess-form-error {
+  margin: 0;
+  color: var(--mac-color-system-red);
+  font: var(--mac-font-body);
+}
+
+.mac-chess[data-board-style="green"] {
+  --mac-chess-square-light: var(--mac-chess-board-green-light);
+  --mac-chess-square-dark: var(--mac-chess-board-green-dark);
+}
+
+.mac-chess[data-board-style="blue"] {
+  --mac-chess-square-light: var(--mac-chess-board-blue-light);
+  --mac-chess-square-dark: var(--mac-chess-board-blue-dark);
+}
+
+.mac-chess[data-board-style="sand"] {
+  --mac-chess-square-light: var(--mac-chess-board-sand-light);
+  --mac-chess-square-dark: var(--mac-chess-board-sand-dark);
+}
+
+.mac-chess[data-piece-style="warm"] {
+  --mac-chess-piece-white: var(--mac-chess-piece-warm-white);
+  --mac-chess-piece-black: var(--mac-chess-piece-warm-black);
+}
+
+.mac-chess-games {
+  display: grid;
+  gap: var(--mac-chess-form-gap);
+  max-height: var(--mac-chess-games-height);
+  margin: var(--mac-space-control-gap) 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.mac-chess-game-row {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+  align-items: center;
+  padding: var(--mac-chess-game-row-padding);
+  border-radius: var(--mac-chess-game-row-radius);
+}
+
+.mac-chess-game-row:where([data-chosen]) {
+  color: var(--mac-color-selected-content-text);
+  background: var(--mac-color-selected-content-background);
+}
+
+.mac-chess-game-row:where([data-chosen]) .mac-chess-game-text {
+  color: inherit;
+}
+
+.mac-chess-games-note {
+  margin: 0;
+  font: var(--mac-font-body);
+}
+
+.mac-chess-games-actions {
+  flex: 1 1 auto;
+}
+
+.mac-chess-game-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mac-chess-game-row:where([data-current]) .mac-chess-game-text {
+  font-weight: var(--mac-font-weight-semibold);
+}
+
+/* Forced colours drop the fills: the squares keep an edge, and the marks become outlines. */
+@media (forced-colors: active) {
+  .mac-chess-board {
+    border: 1px solid CanvasText;
+  }
+
+  .mac-chess-square {
+    border: 1px solid GrayText;
+  }
+
+  .mac-chess-square:where([data-selected]) {
+    outline: 3px solid Highlight;
+    outline-offset: -3px;
+  }
+
+  .mac-chess-square:where([data-target])::after {
+    border: 2px solid CanvasText;
+    background: none;
+  }
+
+  .mac-chess-square:where(:focus-visible) {
+    outline: 3px solid CanvasText;
+    outline-offset: -3px;
+  }
+
+  .mac-chess-piece {
+    --_body: Canvas;
+    --_edge: CanvasText;
+  }
+
+  .mac-chess-piece:where([data-side="black"]) {
+    --_body: CanvasText;
+    --_edge: Canvas;
+  }
+}
+
+/* The Game Log window. */
+/* Chess Preferences, a window of its own. */
+.mac-chess-preferences {
+  padding: var(--mac-chess-preferences-padding);
+}
+
+.mac-chess-log-body {
+  overflow: auto;
+  padding: var(--mac-chess-log-padding);
+}
+
+.mac-chess-log-lines {
+  display: grid;
+  gap: var(--mac-chess-log-line-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-chess-log-line {
+  display: grid;
+  grid-template-columns: var(--mac-chess-log-number-column) repeat(2, var(--mac-chess-log-column));
+  align-items: baseline;
+  font: var(--mac-font-body);
+  color: var(--mac-color-label);
+}
+
+.mac-chess-log-number,
+.mac-chess-log-empty {
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-chess-log-move {
+  justify-self: start;
+  padding: var(--mac-chess-log-move-padding);
+  border: 0;
+  border-radius: var(--mac-chess-log-move-radius);
+  background: none;
+  color: inherit;
+  font: inherit;
+}
+
+.mac-chess-log-move[aria-current] {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-alternate-selected-control-text);
+}
+
+/* The Open panel over the desktop. */
+.mac-chess-panel-layer {
+  position: fixed;
+  z-index: var(--mac-chess-panel-layer-z-index);
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  pointer-events: none;
+}
+
+.mac-chess-panel-layer > * {
+  max-width: calc(100% - var(--mac-chess-panel-layer-margin));
+  max-height: calc(100% - var(--mac-chess-panel-layer-margin));
+  pointer-events: auto;
+}

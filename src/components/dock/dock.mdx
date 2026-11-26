@@ -1,0 +1,192 @@
+---
+title: Dock
+description: The translucent shelf at the edge of the desktop that holds applications, folders and minimized windows, with a dot under every application that is running.
+---
+
+<Example name="basic" both />
+
+The Dock of a simulated desktop: a shelf in the Dock material, flush with an edge, that
+holds a row of tiles. `Dock` is the shelf, a `DockItem` is one tile (an application, a
+folder, a file or a minimized window) and a `DockSeparator` is the line between the
+applications and what follows them. A folder that springs open is a
+[Dock Stack](/components/dock-stack). The Dock draws no artwork: each tile shows the icon it
+is given.
+
+## Usage
+
+```tsx
+import { Dock, DockItem, DockSeparator } from "macalicious/dock";
+import "macalicious/styles.css";
+
+<div style={{ position: "relative", height: "100vh" }}>
+  <Dock>
+    <DockItem label="Files" icon={<FilesIcon />} running onClick={openFiles} />
+    <DockItem label="Mail" icon={<MailIcon />} onClick={openMail} />
+    <DockSeparator />
+    <DockItem label="Downloads" icon={<FolderIcon />} onClick={openDownloads} />
+  </Dock>
+</div>
+```
+
+Or copy the source into your project: `npx macalicious add dock`.
+
+- The Dock places itself against the edge of its containing block: the nearest ancestor with
+  `position: relative`, which is the desktop. It is as wide as its tiles and centred on the
+  edge. Give it a `style` to put it elsewhere.
+- `label` names a tile. It is the button's accessible name and the label that appears beside
+  the tile under the pointer or with keyboard focus.
+- `icon` fills a 64 point tile. A round or irregular icon leaves the margin a Catalina icon
+  has: 56 points of artwork in the 64 point box.
+- `running` draws the indicator dot and tells assistive technology that the application is
+  running.
+- Children of a `DockItem` are drawn over the tile, in front of the icon, starting from its
+  top trailing corner, where Catalina puts a badge.
+- The shelf is a material: it blurs and tints what is behind it in the same page, so put the
+  wallpaper and the windows in the same positioned element ([Fidelity limits](/fidelity)).
+
+### With a window manager
+
+<Example name="window-manager" />
+
+The Dock does not know the [Window Manager](/components/window-manager): it is fed by props
+and children. Render it inside the manager from a component of your own that calls
+`useWindowManager()`:
+
+| Need | How |
+| --- | --- |
+| Which applications are running | The distinct `app` values in `windows`; pass `running` to their tiles. |
+| Minimized windows | One `DockItem` after the separator for each of `windows.filter((w) => w.minimized)`; its `onClick` calls `focus(id)`, which restores the window. |
+| Where minimizing windows shrink to | Nothing to do: the Dock's root carries `data-window-minimize-target`. |
+| Above the windows, below full screen | Nothing to do: inside a manager the Dock takes `z-index: var(--mac-window-manager-layer-chrome)`. |
+| Keep windows clear of the Dock | `insets={{ bottom: 80 }}` on the manager (`left` or `right` for a Dock on a side). |
+
+## Guidelines
+
+What the Human Interface Guidelines for macOS say about the Dock, as the measured
+specification records it (`reference/spec/components/dock.md`); the page itself was not
+consulted for this text:
+
+- The Dock gives access to the applications, documents and folders people use most, and to
+  minimized windows. Applications come first; folders, minimized windows and the Trash
+  follow a separator.
+- A dot marks every application that is running. An application that is running but is not
+  kept in the Dock is appended after the last one that is, before the separator.
+- Clicking an application opens it, or brings it to the front when it is open already.
+- Where the Dock sits (bottom, left or right), how large its tiles are and whether they
+  magnify are the person's settings; do not fix them without a reason.
+
+## Variants and states
+
+<Example name="positions" />
+
+| Prop or state | Values | Source |
+| --- | --- | --- |
+| `position` | `bottom` (default), `left`, `right` | Bottom is measured. Left and right are provisional: no screenshot shows them; the shelf is turned, with the same distances |
+| `magnification` | a size in points, larger than the tiles | Provisional: no screenshot shows it; the falloff is a cosine over two and a half tiles |
+| `running` (item) | `true`, `false` (default) | Measured: a 4 pt dot centred 4 pt from the screen edge |
+| `bouncing` (item) | `true`, `false` (default) | Provisional: no screenshot can show it; the icon bounces while it is set, and stays still for a person who prefers reduced motion |
+| disabled (item) | `disabled` | Provisional: the icon at half opacity |
+| pressed (item) | `:active` | Provisional: the icon darkened, as AppKit darkens a pressed image |
+| pointer over, keyboard focus (item) | `:hover`, `:focus-visible` | Provisional: a label in a rounded rectangle 9 pt beyond the shelf, and the focus ring around the tile |
+
+<Example name="magnification" />
+
+Magnification is one pointer handler on the Dock's own element that writes two CSS variables
+on each tile; nothing re-renders and nothing listens on the page. It does nothing for a
+visitor who prefers reduced motion. The shelf keeps its width while tiles are magnified, so
+the tiles near its ends reach past them; Catalina widens the shelf instead. The Dock does
+not react to `data-window-state`: it belongs to no window.
+
+## Sizes
+
+<Example name="sizes" />
+
+The Dock has no `size` prop. The tile size is the CSS variable `--mac-dock-tile-size`, 64
+points by default, as on the reference machine; the Dock preference allows 16 to 128. The
+shelf is 16 points taller than a tile, tiles are 4 points apart and 4 points from the
+shelf's ends, and a separator's slot scales with the tile (30 points at 64). The shelf's
+width is 68 points for each tile, 30 for each separator and 8 more.
+
+## API
+
+### Dock
+
+<PropsTable name="DockProps" />
+
+### DockItem
+
+<PropsTable name="DockItemProps" />
+
+### DockSeparator
+
+<PropsTable name="DockSeparatorProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-position` | Dock | `bottom`, `left`, `right` | Reflects `position`. |
+| `data-magnification` | Dock | present | `magnification` is set. |
+| `data-window-minimize-target` | Dock | present | Where a window manager's minimizing windows shrink to. |
+| `data-orientation` | Dock, item, separator | `horizontal`, `vertical` | Set by Base UI: the direction the arrow keys move in. |
+| `data-running` | item | present | Reflects `running`. |
+| `data-bouncing` | item | present | Reflects `bouncing`. |
+| `data-disabled` | item | present | Set by Base UI for `disabled`. |
+| `data-popup-open` | item | present | The tile is the trigger of an open popup, such as a stack: its label stays hidden. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-dock-tile-size` | `64px` | Edge of a tile. Set it on the Dock. |
+
+Classes: `.mac-dock`, `.mac-dock-item`, `.mac-dock-item-icon`, `.mac-dock-item-label` and
+`.mac-dock-separator`.
+
+## Accessibility
+
+- The Dock is a `toolbar` named "Dock"; pass `aria-label` for another name, and give each
+  Dock its own when a page has two.
+- It is one tab stop. Left and Right Arrow move between the tiles (Up and Down when the Dock
+  is on a side), Home and End go to the first and the last, and Tab leaves the Dock. Coming
+  back, focus returns to the tile it left.
+- A tile is a native `button`: Return and Space open it. Its accessible name is `label`; the
+  visible label and the icon are hidden from assistive technology, so the name is read once.
+- A running application has the accessible description "running" (`runningLabel` changes or
+  translates the word).
+- A disabled tile is `aria-disabled` and stays reachable with the arrow keys, so a screen
+  reader still finds it.
+- macOS opens an item's menu with Up Arrow and moves focus to the Dock with Control-F3. The
+  menu belongs to the Dock's contextual menu component, and a page cannot claim Control-F3.
+- The shelf blurs what is behind it only with `backdrop-filter`. With
+  `prefers-reduced-transparency` it is opaque, and in forced colours it has a solid
+  background and a border.
+
+## Visual comparison
+
+`dock.visual.json` compares the shelf's left end (the corner, the first tile's place and the
+running dot) and the separator slot with the Desktop screenshots in both appearances. The
+tiles' icons are Apple artwork in the reference and plain stand-ins in the examples, so the
+first tile's box is masked. The desktop picture is a photograph; the examples paint its mean
+colour, and in Aqua the 5 points of picture above and beside the shelf are masked too (in
+Dark Aqua the picture is flat enough to compare, and the shelf's outer hairline lies in it).
+
+Scores from `npm run visual -- dock/` in Chromium on Linux: the share of pixels that differ
+by more than the comparison's threshold (0.05), and the mean colour difference out of 255.
+
+| Comparison | Reference (crop x, y, width, height) | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- | --- |
+| `left-end-light` | Light-Desktop (272, 1930, 162, 170) | 0.00% | 3.68 | 0.08% | 3.68 |
+| `left-end-dark` | Dark-Desktop (272, 1930, 162, 170) | 0.00% | 1.76 | 0.00% | 1.81 |
+| `separator-light` | Light-Desktop (2728, 1930, 82, 170) | 0.00% | 1.93 | 0.00% | 1.92 |
+| `separator-dark` | Dark-Desktop (2728, 1930, 82, 170) | 0.00% | 0.89 | 0.00% | 0.92 |
+
+The mean difference in Aqua is the shelf's red channel: the shared material
+`--mac-material-dock` cannot go below 69 in red over this picture, and the screenshot
+measures 60.
+
+What no screenshot shows is checked on a flat grey desktop, with real input and colours
+computed from the tokens: the shelf's material and the running dot at rest, the label under
+the pointer, the focus ring after Tab, the Dock on the left edge, and the shelf's border in
+forced colours. One check holds magnification to doing nothing under reduced motion.
+
+Measured: the shelf's height, corner, fill, inner border and outer hairline, the tile pitch
+and position, the separator, the running dot. Provisional: the left and right positions,
+magnification, the label under the pointer, the pressed and disabled looks, the focus ring's
+place, tile sizes other than 64 points, and the Dark Aqua tint of the shared material.

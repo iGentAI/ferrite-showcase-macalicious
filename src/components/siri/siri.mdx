@@ -1,0 +1,131 @@
+---
+title: Siri
+description: The Siri window, a dark translucent panel with the request, its results as light cards, and the orb that listens.
+---
+
+<Example name="basic" both />
+
+The floating panel Siri opens at the top right of the screen. The component is the window and
+its result card only: it is no assistant. The prompt, the results and the level arrive through
+props, and the orb is the library's own drawing, not Siri's.
+
+## Usage
+
+```tsx
+import { Siri, SiriCard } from "macalicious/siri";
+import "macalicious/siri.css";
+
+<Siri prompt="What’s the weather today?" listening={listening} onListen={toggle} onClose={close}>
+  <SiriCard title="Weather">…</SiriCard>
+</Siri>
+```
+
+Or copy the source into your project: `npx macalicious add siri`.
+
+The children are the results, normally one `SiriCard` each; the region they are in scrolls
+under the fixed strips. A card is light in both appearances: when it holds other controls of
+the library, put `data-appearance="light"` on it. Text in a card takes the card's colour;
+`var(--mac-siri-card-secondary)` is the colour of its secondary lines.
+
+## Guidelines
+
+From the macOS User Guide on Siri (the Human Interface Guidelines treat Siri as a technology,
+not as a macOS control):
+
+- Open the window at the top right of the screen, under the menu bar, and close it with its
+  close button or Escape.
+- Show what was understood at the top, then the answer as cards that can be scrolled.
+- The orb listens again when it is clicked; while listening it is a waveform that follows the
+  voice.
+
+## Variants and states
+
+<Example name="listening" both hideCode />
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Result shown | children | Cards 320 pt wide, 12 pt from the window's edges, under the 28 pt top strip |
+| Prompt | `prompt` | Text above the results |
+| Listening | `listening` | A waveform of five bars replaces the orb; `level` sets its height |
+| Waveform still | `animated={false}`, or reduced motion | Each bar at the height `level` gives it |
+| Help button | `onHelp` | A 12 pt disc with a question mark at the left of the bottom strip |
+| Button pressed | pointer or keyboard press | The discs lighten; the orb dims |
+| Keyboard focus | Tab | Focus ring on the button, or inside the results |
+| Not the key window | `data-window-state` of `main` or `inactive` on an ancestor | No focus ring; the window itself does not change |
+
+Measured: the window, its strips, lines, edge and shadow, the close and help buttons, the card
+with its header band, and the text colours on the card. Provisional: the prompt, the listening
+state and the pressed looks, which no screenshot shows; the orb and the waveform, which are
+original drawings in place of Siri's artwork; and the chrome's material, the shared
+`--mac-material-hud`, whose alpha is inferred because the window was captured with nothing
+behind it.
+
+## Sizes
+
+One size: 344 x 600 pt. `--mac-siri-width` and `--mac-siri-height` change it, for a page with
+less room; the strips keep their heights and the results take the rest.
+
+## API
+
+<PropsTable name="SiriProps" />
+
+`className`, `style`, `ref` and other attributes go to the root element. `aria-label` defaults
+to "Siri".
+
+<PropsTable name="SiriCardProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-listening` | `Siri` | present or absent | Reflects `listening`. |
+| `data-animated` | the waveform | present or absent | Reflects `animated`. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-siri-width` | `344px` | Width of the window. |
+| `--mac-siri-height` | `600px` | Height of the window. |
+| `--mac-siri-card-glow` | none | Background layers over a card's fill: the coloured light Siri shows in a result. Set it on a `SiriCard`. |
+| `--mac-siri-card-secondary` | black at 55% | Read it for secondary text in a card. |
+
+## Accessibility
+
+- The root is a `dialog` named "Siri". It is not modal and moves no focus: focus the window,
+  or its orb, when it opens, and return the focus when it closes.
+- The close button, the help button and the orb have no text, so each has an accessible name:
+  `closeLabel`, `helpLabel` and `listenLabel`. The orb's button is announced as pressed while
+  listening.
+- The results are a `group` named by `resultsLabel` and a polite live region, so a new answer
+  is announced. The region is in the tab order, so it can be scrolled with the arrow keys. A
+  card is an `article` named by its title; its icon is decorative.
+- Tab moves through close, results, help and orb; Return and Space activate a button; Escape
+  calls `onClose` while the keyboard focus is in the window.
+- The waveform animates transforms only and stands still with `prefers-reduced-motion`.
+- In forced-colours mode the window, the cards and the buttons get a border, and the orb keeps
+  its colours.
+
+## Visual comparison
+
+`visual-light` and `visual-dark` reproduce the two Siri captures whole, shadow included, with
+the Weather result. The window is the same in both: the captures differ in the result and in
+the desktop picture, which Catalina blended into the materials before capturing the window
+with nothing behind it. Two things in the examples stand in for the picture: an element behind
+the window, grey (#757575, which the HUD material turns into the measured #383838) with the
+casts the chrome has in each capture, and `--mac-siri-card-glow` for the tints in the card.
+Results in Chromium on Linux with the fallback font:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Window, Aqua capture | 2.68% of pixels differ, mean Δ 3.86 | 3.22%, mean Δ 3.98 |
+| Window, Aqua capture, text, glyphs and orb masked, threshold 0.05 | 0.03%, mean Δ 1.01 | 0.03%, mean Δ 1.02 |
+| Window, Dark Aqua capture | 2.56%, mean Δ 4.77 | 3.12%, mean Δ 4.90 |
+| Window, Dark Aqua capture, text, glyphs and orb masked, threshold 0.05 | 0.02%, mean Δ 2.06 | 0.03%, mean Δ 2.08 |
+
+In the unmasked comparisons what differs is the text, set in the fallback font instead of San
+Francisco, the weather glyphs and the header icon, which are plain shapes, and the orb. With
+those masked the remainder is the tint of the desktop picture, which the gradients follow only
+roughly, more so in the Dark Aqua capture, whose casts are stronger.
+
+What no screenshot shows is checked on the same flat grey (`visual-states`), in both
+appearances: the chrome, rim and lines, the close button's disc at rest and held down with the
+mouse, the card's fill and header band, the focus ring on the orb after four Tabs, and the
+waveform at full level. The pressed looks and the listening state are inferred; the checks
+only hold the component to what is inferred.

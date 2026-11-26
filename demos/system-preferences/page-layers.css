@@ -1,0 +1,60 @@
+/*
+ * What covers the whole page: above the windows, the menu bar and the Dock.
+ *
+ *   .mac-system-preferences-screen-saver         the screen saver and the display asleep: takes all input
+ *   .mac-system-preferences-screen-saver-clock   Show with clock's time, drifting
+ *   .mac-system-preferences-page-dim             Displays' brightness; input passes through
+ *   .mac-system-preferences-page-warm            Displays' Night Shift; input passes through
+ *   .mac-system-preferences-page-flash           Accessibility's flash for an alert sound; input passes through
+ */
+.mac-system-preferences-screen-saver {
+  position: fixed;
+  z-index: 2147483647;
+  inset: 0;
+  background: var(--mac-system-preferences-screen-saver-background);
+  cursor: none;
+}
+
+.mac-system-preferences-screen-saver-clock {
+  position: absolute;
+  inset-block-start: 45%;
+  inset-inline-start: 45%;
+  color: var(--mac-system-preferences-screen-saver-text);
+  font: var(--mac-font-large-title);
+  font-size: 48px;
+  transition:
+    inset-block-start 1s,
+    inset-inline-start 1s;
+}
+
+.mac-system-preferences-page-dim,
+.mac-system-preferences-page-warm,
+.mac-system-preferences-page-flash {
+  position: fixed;
+  z-index: 2147483646;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mac-system-preferences-page-dim {
+  background: var(--mac-system-preferences-page-dim);
+}
+
+.mac-system-preferences-page-flash {
+  background: var(--mac-system-preferences-page-flash);
+}
+
+/*
+ * Accessibility's Reduce motion: still ends, as code that waits for transitionend needs it to.
+ * The repeated :root outranks every component's transition rule.
+ */
+:root:root:root[data-mac-reduce-motion] *,
+:root:root:root[data-mac-reduce-motion] *::before,
+:root:root:root[data-mac-reduce-motion] *::after {
+  transition-duration: 0.01ms;
+}
+
+.mac-system-preferences-page-warm {
+  background: var(--mac-system-preferences-page-warm);
+  mix-blend-mode: multiply;
+}

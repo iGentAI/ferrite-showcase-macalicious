@@ -1,0 +1,188 @@
+---
+title: Calculator Keypad
+description: The face of Catalina's Calculator, a right-aligned display of thin digits above a grid of flat keys in three colour roles, dark in both appearances.
+---
+
+<Example name="basic" both />
+
+Calculator draws its own keys: flat, borderless rectangles that touch, in a window with no
+title bar. This component is that face, as three parts: `CalculatorKeypad` is the grid,
+`CalculatorKeypadDisplay` the number, and `CalculatorKeypadKey` one key, built on Base UI's
+[Button](https://base-ui.com/react/components/button). It is presentational: it draws the keys
+and reports their clicks, and holds no number. The [Calculator demo](/demos/calculator) adds
+the arithmetic and the window.
+
+## Usage
+
+```tsx
+import {
+  CalculatorKeypad,
+  CalculatorKeypadDisplay,
+  CalculatorKeypadKey,
+} from "macalicious/calculator-keypad";
+import "macalicious/calculator-keypad.css";
+
+<CalculatorKeypad aria-label="Calculator">
+  <CalculatorKeypadDisplay aria-label="Result">{value}</CalculatorKeypadDisplay>
+  <CalculatorKeypadKey variant="function" aria-label="All clear" onClick={clear}>
+    AC
+  </CalculatorKeypadKey>
+  <CalculatorKeypadKey variant="function" glyph="negate" onClick={negate} />
+  <CalculatorKeypadKey variant="function" aria-label="Percent" onClick={percent}>
+    %
+  </CalculatorKeypadKey>
+  <CalculatorKeypadKey variant="operator" glyph="divide" armed={armed === "divide"} onClick={divide} />
+  <CalculatorKeypadKey onClick={() => type("7")}>7</CalculatorKeypadKey>
+  {/* … the other keys, row by row … */}
+  <CalculatorKeypadKey span={2} onClick={() => type("0")}>0</CalculatorKeypadKey>
+</CalculatorKeypad>
+```
+
+Or copy the source into your project: `npx macalicious add calculator-keypad`.
+
+The display comes first and covers the top row; the keys after it fill the grid row by row.
+
+## Guidelines
+
+The Human Interface Guidelines do not describe this control: it belongs to one application.
+What follows is how Calculator itself uses it.
+
+- Use it for a calculator, or for a pad of large keys that enters a number. For ordinary
+  commands use a [Push Button](/components/push-button).
+- Keep the three roles: the lighter grey for what types a number, the darker grey for what
+  changes the number shown (clear, sign, percent), orange for what computes.
+- Let the clear key say what it will do: `AC` when nothing has been entered, `C` once a number
+  has.
+- Keep the keypad dark in Aqua as well. It does not follow the accent colour.
+- Give every key that people can type an equivalent on the keyboard; the component does not
+  listen for keys itself.
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| Role or state | How it is triggered | Look |
+| --- | --- | --- |
+| Digit | `variant="digit"` (the default) | Lighter grey, 23 pt label |
+| Function | `variant="function"` | Darker grey, 18 pt medium label |
+| Operator | `variant="operator"` | Orange |
+| Symbol | `glyph` | A drawn symbol in place of text: `add`, `subtract`, `multiply`, `divide`, `equals`, `negate` |
+| Wide key | `span={2}` | Covers two columns, with no gap inside |
+| Pressed | `:active` | Digit and function keys lighten, operator keys darken |
+| Armed | `armed` | A 1 pt darker outline inside the key's edge, and `aria-pressed="true"` |
+| Keyboard focus | `:focus-visible` | The focus ring, drawn inside the key because the keys touch |
+| Disabled | `disabled` | Label at 40% opacity |
+| Long number | text wider than the display | The display's text is set smaller so that it fits; its baseline stays |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No focus ring; nothing else changes |
+
+The three greys are a little lighter in Aqua than in Dark Aqua; the orange, the white of the
+display and the labels are the same in both.
+
+Measured in the two Calculator screenshots: the grid, the fills, the labels' sizes, weights and
+positions, the symbols and the display. Provisional, because no screenshot shows them: pressed
+(the spec's inferred values), the armed outline, the focus ring, disabled, and the scaling of a
+long number.
+
+Only Calculator's Basic layout is measured, and it is the only one the examples build. The
+Scientific and Programmer layouts of its View menu appear in no screenshot, so the component
+has no ready-made key sets for them; a wider grid of the same keys is a matter of
+`--mac-calculator-keypad-columns` and `--mac-calculator-keypad-rows` (see API), and every
+value of such a layout would be provisional.
+
+## Sizes
+
+The keypad has one size, Calculator's. The default grid is the basic calculator: 232 by 321 pt.
+
+| Part | Size |
+| --- | --- |
+| Display | 232 by 81 pt; 50 pt thin digits, the last one ending 16.5 pt from the edge, baseline 68 pt from the top |
+| Columns | 56, 57, 57 and 59 pt, 1 pt apart |
+| Key rows | four of 47 pt and a last one of 48 pt, 1 pt apart |
+
+Another layout sets the two grid variables on the root; the display always spans every column:
+
+```tsx
+<CalculatorKeypad
+  aria-label="Number pad"
+  style={{
+    "--mac-calculator-keypad-columns": "repeat(3, 76px)",
+    "--mac-calculator-keypad-rows": "repeat(4, 47px)",
+  }}
+>
+```
+
+## API
+
+<PropsTable name="CalculatorKeypadProps" />
+
+<PropsTable name="CalculatorKeypadDisplayProps" />
+
+<PropsTable name="CalculatorKeypadKeyProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-variant` | `digit`, `function`, `operator` | On a key. Reflects `variant`. |
+| `data-glyph` | `add`, `subtract`, `multiply`, `divide`, `equals`, `negate` | On a key that draws a symbol. Reflects `glyph`. |
+| `data-armed` | present or absent | On a key. Reflects `armed`. |
+| `data-disabled` | present or absent | On a key. Reflects `disabled`. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient state on a key. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-calculator-keypad-columns` | `56px 57px 57px 59px` | Column widths of the grid, on the root. |
+| `--mac-calculator-keypad-rows` | `repeat(4, 47px) 48px` | Heights of the key rows, on the root. |
+| `--mac-calculator-keypad-background` | `#37393c`, Dark Aqua `#2d3134` | Display, and the gaps between keys. |
+| `--mac-calculator-keypad-digit`, `-function`, `-operator` | `#68696b`, `#4a4c4e`, `#ff9f0b`; Dark Aqua `#616365`, `#424447`, `#ff9f0b` | Key fills. Each has a `-pressed` companion. |
+| `--mac-calculator-keypad-label` | white at 85% | Key labels and symbols. |
+| `--mac-calculator-keypad-display-text` | `#ffffff` | The display's number. |
+| `--mac-calculator-keypad-armed` | black at 25% | Outline of an armed key. |
+
+The greys follow the page's appearance (`data-appearance`), not the colour scheme of the
+element they are in, so the keypad keeps its Aqua greys inside a window that is drawn dark, as
+Calculator's is.
+
+## Accessibility
+
+- The root is a `group`; give it an `aria-label`.
+- The display is an `output` element, so a new value is announced politely. Give it an
+  `aria-label` such as "Result". A number too wide for it is measured and set smaller, so no
+  digit is cut off in any font; `fitLength` is only the estimate used where there is no
+  layout to measure, as in a server render. The text is measured again when the display is
+  resized and when a font finishes loading, and the measurement holds under an ancestor that
+  is scaled with a CSS transform.
+- Each key is a button. A text key is named by its text; name `AC`, `C`, `%` and `.` with
+  `aria-label` ("All clear", "Clear", "Percent", "Decimal point"), because their text alone
+  is read poorly. A key with a `glyph` is named after it ("Add", "Subtract", "Multiply",
+  "Divide", "Equals", "Negate") unless it has its own `aria-label`.
+- A key given `armed` is a toggle button: `aria-pressed` says whether it waits for its second
+  number. Leave `armed` unset on keys that are never armed.
+- Every key is a tab stop, activated by Space and Return. In Calculator the keys are not in
+  the key view loop and the keyboard types the sum; an application adds those key equivalents
+  itself, as the [demo](/demos/calculator) does.
+- The keypad is not mirrored in right-to-left text, as a calculator is not.
+- In forced-colours mode the keys are outlined, an armed key has a thicker outline, and a
+  disabled key takes the system's grey text colour.
+
+## Visual comparison
+
+`visual-entry` reproduces the whole face of the Aqua capture (display `42`, clear key `C`) and
+`visual-cleared` that of the Dark Aqua capture (display `0`, clear key `AC`). The crop is the
+window's frame less 2 pt on every side, which leaves out the window's rim and corners. Share
+of pixels that differ, from `npm run visual -- calculator-keypad` in Chromium on Linux with the
+fallback font:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| `entry-light` | 1.98% | 2.51% |
+| `entry-light-layout` (text masked, threshold 0.05) | 0.80% | 1.14% |
+| `cleared-dark` | 1.68% | 2.19% |
+| `cleared-dark-layout` (text masked, threshold 0.05) | 0.80% | 1.15% |
+
+What differs: the digits and the function labels are set in the fallback font off Apple
+devices, which is the difference between each comparison and its masked companion; what the
+masked ones still count is the anti-aliased edge of the six drawn symbols and the faint
+dither the captures carry in each fill. The 1x figures are measured against the 2x screenshot
+averaged in 2 by 2 blocks.
+
+Three more comparisons hold the mouse button on a digit, an operator and a function key and
+check the pressed fill against the spec's inferred value.

@@ -1,0 +1,267 @@
+---
+title: System Preferences
+description: The System Preferences window of macOS 10.15, a grid of panes behind a title-hidden toolbar window, whose General pane switches the page's appearance, accent colour and highlight colour live.
+layout: full
+order: 30
+---
+
+<Example name="basic" />
+
+Click **General**, then choose Dark or another accent colour: the whole page follows, this
+documentation included. The window is built from library components only, and its distances
+are the ones measured in the reference screenshots, with the exceptions listed under Fidelity.
+
+## What it shows
+
+- A [Window](/components/window) with a title-hidden [Title Bar](/components/title-bar): the
+  [Window Controls](/components/window-controls) (zoom disabled, as the window cannot be
+  resized), Back and Forward as a navigation
+  [Toolbar Segmented Control](/components/toolbar-segmented-control), Show All as a
+  [Toolbar Button](/components/toolbar-button) and a
+  [Toolbar Search Field](/components/toolbar-search-field), in one
+  [Toolbar](/components/toolbar).
+- The Show All grid: the library's [Account Header](/components/account-header) and thirty-three
+  [Preference Pane Icon](/components/preference-pane-icon)s, two in the header and the rest in
+  two bands of its grid divided by a [Separator](/components/separator).
+- Navigation with a history: opening a pane, Back, Forward and Show All. The window takes the
+  height of the pane it shows; the width is 668 pt throughout.
+- Search: typing dims the panes that do not match a pane's name or keywords, and Return opens
+  the first match.
+- The General pane, with [Color Swatch Picker](/components/color-swatch-picker),
+  [Checkbox](/components/checkbox), [Radio Button](/components/radio-button),
+  [Label](/components/label) and [Help Button](/components/help-button).
+- The Dock pane: [Slider](/components/slider)s with tick marks, radio buttons with their
+  titles underneath, checkboxes.
+- The Family Sharing pane: the introduction with a [Default Button](/components/default-button).
+- The Sidecar pane: pop-up buttons and checkboxes that a drawing of the tablet follows.
+- The Siri pane: settings that turning Ask Siri off disables.
+- The Software Update pane: a mixed checkbox that a click turns on.
+- The Touch ID pane: fingerprint tiles as image buttons; one more can be added, up to three.
+- The Sound pane: a [Tab View](/components/tab-view), a [Table View](/components/table-view)
+  in a content [Box](/components/box), volume sliders.
+- The Keyboard pane: a tab view, stepped sliders, [Push Button](/components/push-button)s.
+- The Bluetooth pane: a device list under a [Table Header](/components/table-header), a
+  [Progress Spinner](/components/progress-spinner) that turns while Bluetooth is on, and a
+  button that turns it off and on.
+- The Mission Control pane: checkboxes, and pop-up buttons for the keyboard and mouse
+  shortcuts in a box.
+- The Mouse pane: gesture option rows with a
+  [Pull-Down Button](/components/pull-down-button) built from
+  [Menu Item](/components/menu-item)s, and a tracking slider.
+- The Spotlight pane: a table of categories, each with a checkbox.
+- The Startup Disk pane: a locked pane whose volumes can be chosen once the lock is clicked.
+- The Displays pane: a tab view, radio buttons, a slider; the window is titled after the
+  display.
+- The Trackpad pane: three [Gesture Option Row](/components/gesture-option-row)s whose callout
+  follows the pointer and the keyboard focus, and stepped sliders with captions.
+- The Extensions pane: a list of categories beside a table of checkboxes, with a
+  [New Item Dot](/components/new-item-dot) that switching its extension on clears.
+- The Language & Region pane: a list of languages with gradient buttons,
+  [Pop-Up Button](/components/pop-up-button)s, and formatting examples that follow the region
+  and the time format.
+- The Time Machine pane: a backup under way with a [Progress Bar](/components/progress-bar)
+  and a button that stops it.
+- The Date & Time pane: a locked pane with a [Lock Button](/components/lock-button), the
+  library's [Combo Box](/components/combo-box) for the time server, the
+  [Date Picker](/components/date-picker)'s fields with their steppers, its calendar and its
+  clock, and a button that opens another pane.
+- The Notifications pane: a [Bordered List](/components/bordered-list) that selects, beside a
+  content box whose two Do Not Disturb times are [Date Picker](/components/date-picker)s.
+- The Printers & Scanners pane: a printer list with a status dot, a detail box, and a button
+  that opens the Sharing pane.
+- The Screen Time pane: a list of sections, a day chooser made of a pop-up button and a
+  [Segmented Control](/components/segmented-control), a [Scope Bar](/components/scope-bar),
+  charts drawn for the day shown and a table of apps with
+  [Image View](/components/image-view)s.
+- The Sharing pane: a table of services whose checkboxes toggle, an editable
+  [Text Field](/components/text-field) for the computer's name, and a table of users whose
+  permissions are pop-up buttons.
+- The Network pane: a bordered list with [Status Dot](/components/status-dot)s and
+  [Gradient Button](/components/gradient-button)s in its footer.
+- The Security & Privacy pane: controls the lock keeps disabled, next to ones it does not.
+- The Accessibility pane: a list of categories under headings that selects with the mouse
+  and the arrow keys, beside the overview.
+- The Energy Saver pane: a tab view, a slider that snaps to its marks and names them, and a
+  Restore Defaults button that is enabled once a setting has changed.
+- The Internet Accounts pane: a list of accounts that selects and can lose an account, beside
+  the providers as image buttons laid out in rows.
+- The Users & Groups pane: a bordered list with section headers, an
+  [Image Button](/components/image-button) for the account picture, a tab view.
+- The Apple ID pane: a list of pages under the account picture, a table of apps with
+  checkboxes, and the storage as a [Level Indicator](/components/level-indicator).
+- The Desktop & Screen Saver pane: an [Outline View](/components/outline-view) of sources
+  beside a [Scroll View](/components/scroll-view) of pictures; choosing one changes the
+  [Image Well](/components/image-well) and its name.
+- The Wallet & Apple Pay pane: the introduction, with a link and a button.
+
+## Theming the page from the General pane
+
+The General pane calls the three helpers of `macalicious/lib/appearance` and nothing else:
+
+```tsx
+import { setAccent, setAppearance, setHighlight } from "macalicious/lib/appearance";
+
+setAppearance("dark"); // data-appearance="dark" on <html>; "auto" removes it
+setAccent("purple"); // data-accent="purple"
+setHighlight("accent"); // data-highlight="accent": the highlight follows the accent
+```
+
+By default they act on the `<html>` element, so the whole page changes. Pass `themeTarget` to
+confine the change to one element, for instance a desktop that holds several windows:
+
+```tsx
+<SystemPreferences defaultPane="general" themeTarget={desktopElement} />
+```
+
+As in Catalina, choosing an accent colour makes the highlight colour follow it. The themed
+element is the only record of the appearance and the accent, and the pane follows it when
+something else changes it, such as a theme switch of the page. The accent marked is the one in
+effect on the element, its own or an inherited one. The appearance marked is the element's
+own: Auto means it has none and follows its surroundings, which for the page is the operating
+system and for an element inside a page is whatever encloses it.
+
+## Hosting the window
+
+`SystemPreferences` renders the library's `Window` as its root and passes every `Window` prop
+to it, so it does not assume it fills the page. Place it with `style`; a window manager gives
+it `state`, the size, and eight more props that the component takes out before the rest goes
+to the `Window`: `onClose`, `onMinimize`, `onZoom`, `zoomRole`, `minimizeDisabled` and
+`zoomDisabled` for the `WindowControls`, and `onDragRegionPointerDown` and
+`onDragRegionDoubleClick` for the `TitleBar`. These are the props a managed window's `render`
+form supplies, so the component can be spread with them as they come.
+
+```tsx
+import { SystemPreferences } from "./system-preferences";
+
+<SystemPreferences
+  state={isKey ? "key" : "inactive"}
+  style={{ position: "absolute", left: 120, top: 80 }}
+  onDragRegionPointerDown={startDrag}
+  onClose={close}
+  onMinimize={minimize}
+  onFrameSizeChange={({ width, height }) => resizeTo(width, height)}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `defaultPane` | `string \| null` | The pane the window opens on; `null` (the default) is the grid. |
+| `onPaneChange` | `(pane: string \| null) => void` | Called whenever the window shows another pane. |
+| `onFrameSizeChange` | `(size: { width: number; height: number }) => void` | Called with the frame the window wants: on mount and whenever it changes. |
+| `defaultSettings` | `Record<string, unknown>` | Starting values of the panes' settings by key, such as `"general.accent"` (applied to the theme when the General pane first opens). |
+| `themeTarget` | `HTMLElement` | The element the General pane themes; the page when absent. |
+| `account` | `{ name: string; detail: string }` | The two lines of the account header. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`; `zoomDisabled` defaults to `true`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`. |
+| `titleBarProps` | `TitleBarProps` | Further props for the `TitleBar`. |
+| `controlsProps` | `WindowControlsProps` | Further props for the `WindowControls`. |
+| `searchFieldProps` | `ToolbarSearchFieldProps` | Passed to the search field. |
+| `width`, `height` | `number \| string` | Override the frame; without them the window sizes itself to the pane. |
+| the rest | `WindowProps` | `state`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads: `id`, `name`, `component`,
+`defaultSize` (668 by 554, the grid), `resizable` (false) and `menus`, the menu titles after
+the Apple menu.
+
+## Panes
+
+Each pane is a folder, `panes/<id>/`, and registers itself by existing: the shell finds
+`panes/<id>/pane.tsx` with `import.meta.glob`, so adding a pane edits no shared list.
+
+```tsx
+// panes/dock/pane.tsx
+import { definePane } from "../../pane";
+import { Dock } from "./dock";
+
+export const pane = definePane({
+  height: 401, // the whole window frame while the pane is open, title bar included
+  component: Dock,
+  keywords: ["magnification", "minimize"],
+});
+```
+
+The folder name is the pane's id and must be one of the ids in `catalogue.ts`, which already
+lists all thirty-three panes with their names and grid captions. A pane of the catalogue
+without a folder opens an empty state. `panes/README.md` has the rules in full: the layout
+helpers of `form.tsx`, `usePreference` for settings that survive navigation, and how to add a
+pane's visual comparison.
+
+All thirty-three panes are built. A pane sets `title` in `definePane` when the window's title
+is not the pane's name, as Displays does.
+
+## Accessibility
+
+- The window is a `region` named by its title, which changes with the pane. The grid and the
+  open pane are named groups.
+- When navigation removes the control that had the keyboard focus (a grid icon that was
+  clicked), focus moves to the pane that replaced it.
+- The number of search matches is announced through a `status` element.
+- Toolbar items are reached with the arrow keys, as in every `Toolbar`.
+
+## Fidelity
+
+- The pane icons, the application icons and the Notification Center picture of Notifications
+  and the service icons of Network are original stand-in drawings. Where a capture shows a
+  photograph, a video still or one of Apple's pictures, the pane shows a placeholder that
+  imitates nothing of it, a grey box crossed by its diagonals or a flat tile: the eleven
+  desktop pictures and the preview of Desktop & Screen Saver, the picture of the display in
+  Displays, the three Appearance thumbnails of General, the gesture pictures of Trackpad and
+  Mouse, the photograph of Wallet & Apple Pay and the current account's picture in Users &
+  Groups. Every comparison of those panes masks the placeholders, the whole-crop ones
+  included. Apple's artwork is not reproduced.
+- The account names are placeholders.
+- The pop-up buttons are the library's `PopUpButton`, at the measured places of their bezels:
+  General (Highlight color, Sidebar icon size, Default web browser, Recent items), Dock
+  (Minimize windows using, Prefer tabs when opening documents, the action of a double click on
+  a title bar), Sound (Play sound effects through), Keyboard (the backlight delay, Touch Bar
+  shows, Press Fn key to), Displays (AirPlay Display), Notifications (Notification Center sort
+  order), Network (Location, Network Name) and Security & Privacy (the password delay). No
+  screenshot shows one of their menus open: the items are the choices of Catalina as far as
+  they are known, and Network Name shows nothing, as in the capture, where the name is erased.
+  Highlight color is real: it sets `data-highlight`, and choosing an accent colour makes it
+  follow the accent again.
+- The second lines of the first two Trackpad gestures are the library's `PullDownButton`
+  without a bezel. The gear of Network is the library's gradient button opening the library's
+  menu, not a pull-down button, whose bezel is a push button's; its commands do nothing.
+- The time server of Date & Time is the library's [Combo Box](/components/combo-box); its
+  date and time and the two times of Notifications are the library's
+  [Date Picker](/components/date-picker), each field given the width measured in the capture
+  (79.5, 85.5 and 65 pt) so that its stepper stands where the capture has it. The calendar and
+  the clock are the date picker's own and follow the fields. The steppers of Notifications are
+  centred on their fields, as the library draws them; the capture has them 1.5 pt lower.
+- The tabs and list rows that no reference screenshot shows open an empty state.
+- The button Set Lock Message of Security & Privacy follows its checkbox's title, so it sits
+  further right than in the screenshot when the text is in the fallback font.
+- The dark screenshot of Users & Groups has its tab view 4 pt taller than the light one; the
+  demo keeps the light one's size in both appearances.
+- The speaker glyphs of the Sound pane are stand-in drawings.
+- Where the two screenshots of a pane differ in content, a setting holds the difference and
+  each appearance is compared in its own state: Bluetooth (the mouse connected or not),
+  Extensions (an extension marked as new), Language & Region and Screen Time (the day),
+  Sharing (the shared folders and the order of two services), Software Update (the time of
+  the last check), Startup Disk (one volume, or two and a spinner), Time Machine (a backup
+  under way, or idle), Energy Saver (the battery's charge), Desktop & Screen Saver (Dynamic or
+  Dark (Still)) and Apple ID (the search field focused).
+- The storage bar of Apple ID is the library's level indicator, which is taller than
+  Catalina's bar, has one fill where Catalina's has one per kind of data, and no caption
+  inside. The headings of the picture gallery of Desktop & Screen Saver are drawn by the pane.
+- A disabled image button dims its picture and its caption, so the locked Startup Disk pane
+  dims the volume's icon where Catalina dims the caption only; its caption is 12 pt where
+  Catalina's is 11 pt, and the caption of a saved fingerprint in Touch ID is in the secondary
+  label colour where Catalina's is the label colour.
+- The scope bar of Screen Time is the library's, whose label and scopes are bolder and greyer
+  than the captured ones.
+- The providers of Internet Accounts are named in the system font at the size of their
+  logos, which are not reproduced. The list of Accessibility ends at Captions, the last
+  category a screenshot shows.
+- A button or link whose sheet or dialog no screenshot shows (Advanced, Hot Corners, Options,
+  the buttons that add and remove) opens a [Popover](/components/popover) that says so, in
+  the twenty-two panes from Bluetooth on (`panes/uncaptured.tsx`).
+- The settings other than appearance, accent and highlight keep their state and change nothing.
+  On the desktop served by the Ferrite application a few more take effect (`setting-effects.ts`),
+  and panes that show a captured Mac's facts show a page of `served-pages.tsx` instead, which says
+  what the browser and the application really report.
+- The window is compared with `System-Preferences-0`, the screenshot of each pane that is
+  built and a sample of the `Theme` accent screenshots in both appearances; see
+  `system-preferences.visual.json` for what each comparison masks and why.

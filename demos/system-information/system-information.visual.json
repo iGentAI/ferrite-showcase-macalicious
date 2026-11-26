@@ -1,0 +1,102 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "window-light",
+      "description": "The whole System Information window, Aqua: Hardware selected while the outline has the keyboard focus (a click on the selected row), its overview in the report pane, the path at the bottom. Whole crop: the text is set in the fallback font and the computer icon of the path is a stand-in drawing.",
+      "example": "visual-window",
+      "appearance": "light",
+      "actions": [{ "click": ".mac-table-view-row[aria-selected='true'] .mac-outline-view-label" }],
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Information.png",
+        "crop": { "x": 112, "y": 76, "width": 1502, "height": 1040 }
+      },
+      "budget": { "1x": 0.052, "2x": 0.039 },
+      "deltaBudget": { "1x": 6.2, "2x": 5.4 }
+    },
+    {
+      "name": "window-light-layout",
+      "description": "As window-light with the text and the stand-in drawing masked (the title, the labels of the outline, the report's heading and lines, and the icon and names of the path), to score the frame, the title bar and its controls, the outline's background, selection and disclosure triangles, the divider, the report pane, and the bottom bar under its line.",
+      "example": "visual-window",
+      "appearance": "light",
+      "threshold": 0.05,
+      "actions": [{ "click": ".mac-table-view-row[aria-selected='true'] .mac-outline-view-label" }],
+      "masks": [
+        { "x": 325, "y": 2, "width": 102, "height": 18 },
+        { "x": 18, "y": 22, "width": 140, "height": 477 },
+        { "x": 176, "y": 30, "width": 400, "height": 214 },
+        { "x": 5, "y": 501, "width": 135, "height": 17 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Information.png",
+        "crop": { "x": 112, "y": 76, "width": 1502, "height": 1040 }
+      },
+      "budget": { "1x": 0.0009, "2x": 0.0007 },
+      "deltaBudget": { "1x": 0.12, "2x": 0.22 }
+    },
+    {
+      "name": "window-dark",
+      "description": "The whole System Information window, Dark Aqua: Hardware selected while the outline has the keyboard focus, the dark capture's overview. Whole crop: fallback font, stand-in icon.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "actions": [{ "click": ".mac-table-view-row[aria-selected='true'] .mac-outline-view-label" }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Information.png",
+        "crop": { "x": 112, "y": 76, "width": 1502, "height": 1040 }
+      },
+      "budget": { "1x": 0.052, "2x": 0.0385 },
+      "deltaBudget": { "1x": 5.95, "2x": 5.0 }
+    },
+    {
+      "name": "window-dark-layout",
+      "description": "As window-dark with the same regions masked as window-light-layout. Scores the frame, the title bar and its controls, the outline's background, selection and disclosure triangles, the divider, the report pane, and the bottom bar under its line.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "actions": [{ "click": ".mac-table-view-row[aria-selected='true'] .mac-outline-view-label" }],
+      "masks": [
+        { "x": 325, "y": 2, "width": 102, "height": 18 },
+        { "x": 18, "y": 22, "width": 140, "height": 477 },
+        { "x": 176, "y": 30, "width": 400, "height": 214 },
+        { "x": 5, "y": 501, "width": 135, "height": 17 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Information.png",
+        "crop": { "x": 112, "y": 76, "width": 1502, "height": 1040 }
+      },
+      "budget": { "1x": 0.001, "2x": 0.0008 },
+      "deltaBudget": { "1x": 0.3, "2x": 0.47 }
+    },
+    {
+      "name": "applications-light",
+      "description": "A report that lists things, which no screenshot shows: Software > Applications after a click on its first row, Aqua. The row is selected and emphasised, its details are under the table, and the path names it.",
+      "example": "visual-applications",
+      "appearance": "light",
+      "actions": [{ "click": ".mac-system-information-table .mac-table-view-row" }],
+      "expect": {
+        "size": { "width": 751, "height": 520 },
+        "pixels": [
+          {
+            "x": 735,
+            "y": 54,
+            "color": "#0164e1",
+            "tolerance": 3,
+            "note": "the first row is selected and emphasised: measured selection colour of a focused table (spec: table-view)"
+          },
+          {
+            "x": 600,
+            "y": 300,
+            "color": "#ffffff",
+            "note": "the details pane under the table is the content background, measured in the report pane of the capture"
+          },
+          {
+            "x": 600,
+            "y": 510,
+            "color": "#ececec",
+            "note": "the bottom bar's fill, measured in the capture; the bar keeps its 21 pt under a split report"
+          }
+        ]
+      }
+    }
+  ]
+}

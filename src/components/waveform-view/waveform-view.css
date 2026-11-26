@@ -1,0 +1,233 @@
+/*
+ * Waveform view (the waveform, ruler and overview of Voice Memos).
+ *
+ * Dark in both appearances, as the app's content is. The detailed view is a 244 pt panel with
+ * bars mirrored around its axis, a ruler under it and a playhead fixed at the middle; the
+ * waveform, the ticks and the labels are moved under the playhead by three variables the
+ * component sets (--_x, --_zero, --_s). The overview is Base UI's Slider: a rounded strip with
+ * dimmer bars and a capsule handle that reaches 2 pt beyond the strip above and below.
+ *
+ * States
+ *   [data-disabled]            the position cannot be changed (no measured look: unchanged)
+ *   handle :has(:focus-visible), [data-force~="focus"] on the overview: keyboard focus
+ */
+.mac-waveform-view {
+  background: var(--mac-waveform-view-background);
+  color: var(--mac-waveform-view-label);
+  font: var(--mac-waveform-view-font);
+  font-variant-numeric: tabular-nums;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Detailed view: 7.6 pt for the playhead's upper dot, the 243.5 pt panel, 28.9 pt of ruler.
+   The axis is where the waveform and the ruler are placed from: 394.3 pt into the 789 pt
+   window. The playhead's line is half a point after it. */
+.mac-waveform-view-detail {
+  --_axis: calc(50% - 0.2px);
+
+  position: relative;
+  box-sizing: border-box;
+  height: 280px;
+  max-width: 1848px;
+  padding-top: 7.6px;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.mac-waveform-view-panel {
+  position: relative;
+  height: 243.5px;
+  overflow: hidden;
+  background: var(--mac-waveform-view-panel);
+}
+
+.mac-waveform-view-bars {
+  position: absolute;
+  top: 0;
+  left: var(--_axis);
+  translate: var(--_x) 0;
+  fill: none;
+  stroke: var(--mac-waveform-view-bar);
+  stroke-width: 1.5px;
+}
+
+.mac-waveform-view-ruler {
+  position: relative;
+  height: 28.9px;
+}
+
+/* Ticks: 1 x 10 pt, starting 0.9 pt under the panel, one every quarter of a second and a
+   brighter one every second, from time zero to the view's right edge; there are none before
+   the recording starts. */
+.mac-waveform-view-ticks {
+  --_q: calc(var(--_s) * 0.25px);
+
+  position: absolute;
+  top: 0.9px;
+  right: 0;
+  left: calc(var(--_axis) + var(--_zero) - 0.5px);
+  height: 10px;
+  background: repeating-linear-gradient(
+    to right,
+    var(--mac-waveform-view-tick-major) 0 1px,
+    transparent 1px var(--_q),
+    var(--mac-waveform-view-tick-minor) var(--_q) calc(var(--_q) + 1px),
+    transparent calc(var(--_q) + 1px) calc(var(--_q) * 2),
+    var(--mac-waveform-view-tick-minor) calc(var(--_q) * 2) calc(var(--_q) * 2 + 1px),
+    transparent calc(var(--_q) * 2 + 1px) calc(var(--_q) * 3),
+    var(--mac-waveform-view-tick-minor) calc(var(--_q) * 3) calc(var(--_q) * 3 + 1px),
+    transparent calc(var(--_q) * 3 + 1px) calc(var(--_q) * 4)
+  );
+}
+
+.mac-waveform-view-ruler-labels {
+  position: absolute;
+  top: 10.2px;
+  left: var(--_axis);
+  translate: var(--_x) 0;
+}
+
+/* A label starts at its second's tick, not centred on it. */
+.mac-waveform-view-ruler-label {
+  position: absolute;
+  margin-left: -2px;
+  white-space: nowrap;
+}
+
+/* Playhead: a 1 pt line (1.33 pt with its soft edges, as measured) from the centre of one
+   7.1 pt dot to the other. The line's centre is 394.8 pt into the 789 pt window (ink from
+   image x=900.29 to 902.93 in both captures); the dots' centres are 3.4 pt above and 3.25 pt
+   below the panel and 0.17 pt before the line's, as measured. Half a point either side of the
+   line is darker than the panel. */
+.mac-waveform-view-playhead {
+  position: absolute;
+  top: 4.2px;
+  left: calc(var(--_axis) - 0.165px);
+  width: 1.33px;
+  height: 250.15px;
+  background: var(--mac-waveform-view-playhead);
+  box-shadow: 0 0 0 var(--mac-hairline) var(--mac-waveform-view-playhead-fringe);
+  pointer-events: none;
+}
+
+.mac-waveform-view-playhead::before,
+.mac-waveform-view-playhead::after {
+  content: "";
+  position: absolute;
+  left: -3.055px;
+  width: 7.1px;
+  height: 7.1px;
+  border-radius: 50%;
+  background: inherit;
+}
+
+.mac-waveform-view-playhead::before {
+  top: -3.55px;
+}
+
+.mac-waveform-view-playhead::after {
+  bottom: -3.55px;
+}
+
+/* Overview: 2.15 pt for the handle's overhang, the 44.1 pt strip, then the labels. Time runs
+   from left to right in every writing direction, as the waveform does. */
+.mac-waveform-view-overview {
+  position: relative;
+  direction: ltr;
+  box-sizing: border-box;
+  height: 68px;
+  padding-top: 2.15px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-waveform-view-strip {
+  position: relative;
+  height: 44.1px;
+  border-radius: 5px;
+  background: var(--mac-waveform-view-panel);
+}
+
+.mac-waveform-view-overview-bars {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  clip-path: inset(0 round 5px);
+  fill: none;
+  stroke: var(--mac-waveform-view-overview-bar);
+  stroke-width: 1.5px;
+}
+
+.mac-waveform-view-control {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  touch-action: none;
+}
+
+.mac-waveform-view-track {
+  height: 100%;
+}
+
+.mac-waveform-view-handle {
+  box-sizing: border-box;
+  width: 5.2px;
+  height: 48.4px;
+  margin-block-start: -24.2px;
+  margin-inline-start: -2.6px;
+  border-radius: 2.6px;
+  background: var(--mac-waveform-view-playhead);
+}
+
+/* Keyboard focus (provisional): a ring outside the handle, so the measured drawing is left as
+   it is. */
+.mac-waveform-view-handle:where(:has(:focus-visible)),
+.mac-waveform-view-overview:where([data-force~="focus"]) .mac-waveform-view-handle {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: 1px;
+}
+
+.mac-waveform-view-overview-labels {
+  display: flex;
+  justify-content: space-between;
+  padding: 6.75px 0.5px 0 0;
+  margin-left: -0.3px;
+}
+
+@media (forced-colors: active) {
+  .mac-waveform-view {
+    --mac-waveform-view-tick-major: CanvasText;
+    --mac-waveform-view-tick-minor: GrayText;
+
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .mac-waveform-view-panel,
+  .mac-waveform-view-strip {
+    border: 1px solid CanvasText;
+    background: Canvas;
+  }
+
+  .mac-waveform-view-bars,
+  .mac-waveform-view-overview-bars {
+    stroke: CanvasText;
+  }
+
+  .mac-waveform-view-ticks {
+    forced-color-adjust: none;
+  }
+
+  .mac-waveform-view-playhead,
+  .mac-waveform-view-handle {
+    background: Highlight;
+    forced-color-adjust: none;
+  }
+
+  .mac-waveform-view-handle:where(:has(:focus-visible)) {
+    outline-color: CanvasText;
+  }
+}

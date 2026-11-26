@@ -1,0 +1,65 @@
+/*
+ * Colours of the FaceTime demo that no shared token and no component token holds
+ * (reference/spec/apps/facetime.md). The window is dark in both appearances, so none of them
+ * uses light-dark(). Positions are pixels of 10-15-Catalina-Light-FaceTime.png (window at
+ * 112,76); the Dark capture has the same window at the same place.
+ */
+:root,
+[data-appearance] {
+  /* [measured] The sidebar's material where no desktop shows through it: @ 300,100, and
+     #413f3b beside the segmented control (row 150, x 230..239). FaceTime's sidebar is vibrant
+     and takes the tone of what is behind the window (#1c1c1d to #4a4a49 down the two
+     captures); this is the opaque colour the spec names for it. */
+  --mac-facetime-sidebar: #413f3b;
+  /* [measured, computed] The fill of the segment that is not selected: #7e7c78 over the
+     sidebar's #413f3b (col 450, y 142..153) is white at 32%. The Dark capture has #7c7a76
+     over #413d3a, 31%. A bezel fill is an image, as the shared --mac-bezel-fill is. */
+  --mac-facetime-segment-fill: linear-gradient(rgb(255 255 255 / 0.32), rgb(255 255 255 / 0.32));
+  /* [measured, computed] The fill of the recipient field: #534f4b over the sidebar's #44403b
+     (col 500, y 201..210) is white at 8%. The Dark capture has #504e4a over #403e3b, 8%. */
+  --mac-facetime-field: rgb(255 255 255 / 0.08);
+  /* [provisional] The names the recipient field and Add Person offer (no capture shows them);
+     the field's drop under itself, 2 pt below its 80.5 pt edge, over the list. */
+  --mac-facetime-suggestions-padding: 6px 11px;
+  --mac-facetime-offers-top: 82.5px;
+  --mac-facetime-offers-start: 11.5px;
+  --mac-facetime-offers-width: 239px;
+  --mac-facetime-offers-fill: #2c2b28;
+  --mac-facetime-offers-radius: 5px;
+  --mac-facetime-offers-shadow: 0 4px 12px rgb(0 0 0 / 0.5);
+  /* [provisional] A recent call's two buttons (no capture shows a row). */
+  --mac-facetime-row-buttons-gap: 2px;
+  /* [provisional] Behind a camera picture that does not fill its pane. */
+  --mac-facetime-camera-backdrop: #000000;
+  /* [provisional] A call on the desktop's Ferrite application (no capture shows one): the
+     other people's tiles and the camera's own small view in the corner. */
+  --mac-facetime-tile-min: 160px;
+  --mac-facetime-tile-gap: 2px;
+  --mac-facetime-self-width: 128px;
+  --mac-facetime-self-inset: 12px;
+  --mac-facetime-self-radius: 6px;
+  --mac-facetime-self-shadow: 0 2px 10px rgb(0 0 0 / 0.5);
+  /* [provisional] A call of several people (no capture shows one): each tile's name, clear of
+     the call panel, and the panel's rows of who else rings and of adding a person. */
+  --mac-facetime-tile-name-end: 112px;
+  --mac-facetime-tile-name-start: 8px;
+  --mac-facetime-tile-name-padding: 2px 6px;
+  --mac-facetime-tile-name-radius: 4px;
+  --mac-facetime-tile-name-fill: rgb(0 0 0 / 0.55);
+  --mac-facetime-tile-name-color: #ffffff;
+  --mac-facetime-hud-people-gap: 6px;
+  --mac-facetime-add-field-width: 140px;
+  /* [provisional] Preferences and several rows chosen: no capture shows them. */
+  --mac-facetime-preferences-margin: 20px;
+  --mac-facetime-row-chosen: rgb(255 255 255 / 0.18);
+  /* [provisional] The abstract placeholder that stands for the camera's picture: a field and
+     four plain tones, chosen for the demo and taken from no screenshot. */
+  --mac-facetime-placeholder-field: #23395b;
+  --mac-facetime-placeholder-band: #406e8e;
+  --mac-facetime-placeholder-disc: #8ea8c3;
+  --mac-facetime-placeholder-block: #cbf7ed;
+  --mac-facetime-placeholder-wedge: #161925;
+  /* [measured] What the visual example paints behind the window: the comparison's matte
+     behind the capture's transparent corners, which the harness composites over white. */
+  --mac-facetime-visual-matte: #ffffff;
+}

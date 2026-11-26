@@ -1,0 +1,75 @@
+/*
+ * Preferences window (NSWindow with a toolbar of selectable items).
+ *
+ * The frame, title bar and toolbar are the window, title-bar and preferences-toolbar
+ * components. This file lays out the body: a pane with 20 pt margins, and in it a form of two
+ * columns, right-aligned labels and controls, centred as a block.
+ *
+ * Measured on Calendar, Mail and Safari preferences: label to control 8 pt between alignment
+ * rectangles (9.5 pt to the control's visible edge), rows 10 pt apart (30 pt pitch for 20 pt
+ * pop-up buttons), 20 pt above and below a separator between sections, help button 20 pt from
+ * the right and bottom edges.
+ *
+ * States
+ *   [data-modal]                         the modal kind (no window controls, Cancel and OK)
+ *   [data-align="baseline" | "center" | "start"]   on a row (form.css)
+ *   :focus-visible, [data-force~="focus"]   a pane that holds the keyboard focus: a ring
+ *                                        inside its edge, in a key window only
+ *
+ * Hooks
+ *   --mac-preferences-window-row-gap     space between two rows (default 10px)
+ *   --mac-preferences-window-label-gap   space between label and control (default
+ *                                        var(--mac-space-label-gap))
+ */
+.mac-preferences-window-pane {
+  box-sizing: border-box;
+  padding: var(--mac-space-window-margin);
+  outline: 0;
+}
+
+/* A pane is a tab stop (Base UI's Tabs.Panel). The ring is drawn inside it: the window clips
+   at its edge. [provisional] */
+.mac-preferences-window-pane:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+/* The modal kind holds the focus itself when it appears; the frame shows that it is key. */
+.mac-preferences-window:where([data-modal]) {
+  outline: 0;
+}
+
+/* The form and its rows are the library's Form (form.css, which the package loads before this
+   file): only what a preferences pane does differently is here. Both columns are as wide as
+   their content and the block is centred. The component passes the two hooks below on to the
+   Form's own (`--mac-form-row-gap`, `--mac-form-label-gap`): rows 10 pt apart by default. */
+.mac-preferences-window-form {
+  grid-template-columns: max-content max-content;
+  justify-content: center;
+}
+
+/* The bottom row: buttons at the trailing edge, help at the leading edge. */
+.mac-preferences-window-footer {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+  justify-content: flex-end;
+  align-items: center;
+  margin-block-start: var(--mac-space-section);
+}
+
+.mac-preferences-window-footer-leading {
+  display: flex;
+  align-items: center;
+  margin-inline-end: auto;
+}
+
+@media (forced-colors: active) {
+  .mac-preferences-window-pane:where(:focus-visible, [data-force~="focus"]):where(
+    :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+  ) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}

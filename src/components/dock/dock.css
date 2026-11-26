@@ -1,0 +1,279 @@
+/*
+ * Dock (Dock.app): a translucent shelf flush with an edge of the desktop.
+ *
+ * Measured on 10-15-Catalina-Light-Desktop.png and -Dark-Desktop.png, 64 pt tiles: the shelf
+ * is 80 pt tall with 5 pt top corners, tiles are 68 pt apart and start 4 pt from the shelf's
+ * ends and 6 pt below its top, a separator is a 30 pt slot with a 1 by 60 pt line, the
+ * running dot is 4 pt wide and centred 4 pt above the bottom. Everything else derives from
+ * the tile size. The left and right positions and magnification are provisional.
+ *
+ * States
+ *   [data-position="bottom" | "left" | "right"]   the edge of the desktop (on the Dock)
+ *   [data-magnification]               tiles grow under the pointer (on the Dock)
+ *   [data-running]                     indicator dot (on an item)
+ *   [data-bouncing]                    the icon bounces (on an item)
+ *   [data-disabled]                    set by Base UI for `disabled` (on an item)
+ *   [data-popup-open]                  the item is the trigger of an open popup: no label
+ *   :hover, :focus-visible, :active    label, focus ring, pressed
+ *   [data-force~="hover" | "focus" | "pressed"]   static previews of the transient states
+ *
+ * The Dock belongs to no window, so it does not react to data-window-state.
+ *
+ * Hooks
+ *   --mac-dock-tile-size               edge of a tile; default 64px
+ */
+.mac-dock,
+.mac-dock-item,
+.mac-dock-separator {
+  --_tile: var(--mac-dock-tile-size, 64px);
+}
+
+.mac-dock {
+  position: absolute;
+  z-index: var(--mac-window-manager-layer-chrome, auto);
+  inset: auto 0 0;
+  box-sizing: border-box;
+  display: flex;
+  width: fit-content;
+  height: calc(var(--_tile) + 16px);
+  margin: auto;
+  /* With the border: 6 pt above the tiles, 10 pt below, 4 pt at each end. */
+  padding: 5px 3px 10px;
+  border: 1px solid var(--mac-dock-border);
+  border-bottom-width: 0;
+  border-radius: 5px 5px 0 0;
+  background: var(--mac-material-dock);
+  -webkit-backdrop-filter: var(--mac-material-filter-dock);
+  backdrop-filter: var(--mac-material-filter-dock);
+  box-shadow: 0 0 0 var(--mac-hairline) var(--mac-dock-outline);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-dock:where([data-position="left"], [data-position="right"]) {
+  inset: 0 auto 0 0;
+  flex-direction: column;
+  width: calc(var(--_tile) + 16px);
+  height: fit-content;
+  padding: 3px 5px 3px 10px;
+  border-width: 1px 1px 1px 0;
+  border-radius: 0 5px 5px 0;
+}
+
+.mac-dock:where([data-position="right"]) {
+  inset: 0 0 0 auto;
+  padding: 3px 10px 3px 5px;
+  border-width: 1px 0 1px 1px;
+  border-radius: 5px 0 0 5px;
+}
+
+.mac-dock-item,
+.mac-dock-separator {
+  position: relative;
+  flex: none;
+  /* Magnification: the Dock's pointer handler writes --_shift and --_grow. */
+  translate: var(--_shift, 0);
+  transition: translate 0.1s linear;
+}
+
+:where([data-position="left"], [data-position="right"]) > :is(.mac-dock-item, .mac-dock-separator) {
+  translate: 0 var(--_shift, 0);
+}
+
+.mac-dock-item {
+  /* One cell: children lie over the icon, from the tile's top trailing corner. */
+  display: grid;
+  place-items: start end;
+  width: var(--_tile);
+  height: var(--_tile);
+  margin: 0 2px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  outline: none;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:where([data-position="left"], [data-position="right"]) > .mac-dock-item {
+  margin: 2px 0;
+}
+
+.mac-dock-item > * {
+  grid-area: 1 / 1;
+}
+
+.mac-dock-item-icon {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 22.5%;
+  transform-origin: bottom;
+  scale: var(--_grow, 1);
+  transition: scale 0.1s linear;
+}
+
+:where([data-position="left"]) > .mac-dock-item > .mac-dock-item-icon {
+  transform-origin: left;
+}
+
+:where([data-position="right"]) > .mac-dock-item > .mac-dock-item-icon {
+  transform-origin: right;
+}
+
+.mac-dock-item:where(:active, [data-force~="pressed"]):where(:not([data-disabled]))
+  > .mac-dock-item-icon {
+  filter: brightness(var(--mac-image-brightness-pressed));
+}
+
+.mac-dock-item:where([data-disabled]) > .mac-dock-item-icon {
+  opacity: var(--mac-control-opacity-disabled);
+}
+
+.mac-dock-item:where(:focus-visible, [data-force~="focus"]) > .mac-dock-item-icon {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+/* The running indicator: a dot drawn as a border, which forced colours keep. */
+.mac-dock-item:where([data-running])::after {
+  content: "";
+  position: absolute;
+  top: calc(100% + 4px);
+  left: calc(50% - 2px);
+  border: 2px solid var(--mac-dock-indicator);
+  border-radius: 50%;
+}
+
+:where([data-position="left"]) > .mac-dock-item:where([data-running])::after {
+  top: calc(50% - 2px);
+  left: -8px;
+}
+
+:where([data-position="right"]) > .mac-dock-item:where([data-running])::after {
+  top: calc(50% - 2px);
+  left: calc(100% + 4px);
+}
+
+/* An application that opens or asks for attention. */
+@keyframes mac-dock-bounce {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  50% {
+    translate: 0 calc(var(--_tile) * -0.5);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mac-dock-item:where([data-bouncing]) > .mac-dock-item-icon {
+    animation: mac-dock-bounce 0.5s ease-in-out infinite;
+  }
+}
+
+/* The label of the tile under the pointer or with keyboard focus. It clears the shelf's edge
+   by 9 pt, and a magnified tile by as much. */
+.mac-dock-item-label {
+  --_clear: calc(100% + 15px + (var(--_grow, 1) - 1) * var(--_tile));
+  position: absolute;
+  bottom: var(--_clear);
+  left: 50%;
+  translate: -50%;
+  padding: 5px 12px 4px;
+  border: var(--mac-hairline) solid var(--mac-dock-label-border);
+  border-radius: 4px;
+  background: var(--mac-dock-label-background);
+  color: var(--mac-dock-label-text);
+  font: var(--mac-font-control-regular);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+}
+
+:where([data-position="left"]) > .mac-dock-item > .mac-dock-item-label {
+  top: 50%;
+  bottom: auto;
+  left: var(--_clear);
+  translate: 0 -50%;
+}
+
+:where([data-position="right"]) > .mac-dock-item > .mac-dock-item-label {
+  top: 50%;
+  right: var(--_clear);
+  bottom: auto;
+  left: auto;
+  translate: 0 -50%;
+}
+
+.mac-dock-item:where(:hover, :focus-visible, [data-force~="hover"], [data-force~="focus"]):where(
+    :not([data-popup-open])
+  )
+  > .mac-dock-item-label {
+  opacity: 1;
+}
+
+.mac-dock-separator {
+  width: calc(var(--_tile) * 0.46875);
+}
+
+/* The line starts at the slot's centre and is 10 pt from the shelf's top and bottom. */
+.mac-dock-separator::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 0;
+  left: 50%;
+  border-left: 1px solid var(--mac-dock-separator);
+}
+
+:where([data-position="left"], [data-position="right"]) > .mac-dock-separator {
+  width: auto;
+  height: calc(var(--_tile) * 0.46875);
+}
+
+:where([data-position="left"]) > .mac-dock-separator::before {
+  inset: 50% 4px auto 0;
+  border-top: 1px solid var(--mac-dock-separator);
+  border-left: 0;
+}
+
+:where([data-position="right"]) > .mac-dock-separator::before {
+  inset: 50% 0 auto 4px;
+  border-top: 1px solid var(--mac-dock-separator);
+  border-left: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-dock-item,
+  .mac-dock-separator {
+    translate: none;
+  }
+
+  .mac-dock-item-icon {
+    scale: none;
+  }
+
+  .mac-dock-item-label {
+    --_grow: 1;
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-dock {
+    border-color: CanvasText;
+    background: Canvas;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .mac-dock-item-label {
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+}

@@ -1,0 +1,37 @@
+/* Calendar week grid: colours of Calendar's week view (Light-Calendar and Dark-Calendar). */
+:root {
+  /* [measured] weekday columns: row 700 x=838 */
+  --mac-calendar-week-grid-background: light-dark(#ffffff, #1e1f20);
+  /* [measured] Saturday, Sunday: x=592 */
+  --mac-calendar-week-grid-weekend: light-dark(#f5f5f5, #272828);
+  /* [measured] hour lines: col 700 y=407 */
+  --mac-calendar-week-grid-line: light-dark(#e0e0e0, #404040);
+  /* [measured] column separators: row 700 x=836 */
+  --mac-calendar-week-grid-separator: light-dark(#e6e5e6, #404040);
+  /* [measured] band under the all-day row: y=358 */
+  --mac-calendar-week-grid-band: light-dark(#d9d9d9, #404040);
+  /* [measured] title, weekday names: row 282 x=900 */
+  --mac-calendar-week-grid-text: light-dark(#272727, #dddddd);
+  /* [measured] weekend names: x=660 */
+  --mac-calendar-week-grid-weekend-text: light-dark(#808080, #9a9a9a);
+  /* [measured] hours, all-day label: row 404 x=500 */
+  --mac-calendar-week-grid-hour-text: light-dark(#c0c0c0, #565657);
+  /* [measured] current time and today's disc: row 1008, dark row 640 */
+  --mac-calendar-week-grid-now: light-dark(#ff3b30, #ff443a);
+  /* [measured] text on today's disc and on a selected event */
+  --mac-calendar-week-grid-on-color: #ffffff;
+  /* [measured] Calendar's blue: dark row 336 x=850 */
+  --mac-calendar-week-grid-event-default: #1dadf8;
+  /* [measured, computed] unselected text is mixed towards this: #207fb1 from the blue */
+  --mac-calendar-week-grid-event-ink: light-dark(#000000, #ffffff);
+}
+
+:root,
+[data-appearance] {
+  /* [measured, computed] share of the colour in the fill: #d3ebfe on white, #3f2b46 on dark */
+  --mac-calendar-week-grid-event-tint: 20%;
+  /* [measured, computed] selected: 90%, dark 60%, from the hour line seen through it */
+  --mac-calendar-week-grid-event-selected-tint: calc(90% - 30% * var(--mac-appearance-dark));
+  /* [measured, computed] share of the ink in the text: 27%, dark none */
+  --mac-calendar-week-grid-event-ink-share: calc(27% - 27% * var(--mac-appearance-dark));
+}

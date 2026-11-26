@@ -1,0 +1,180 @@
+---
+title: Ruler
+description: The horizontal ruler of a text view, with ticks, numbers and markers for tab stops and indents.
+---
+
+<Example name="basic" both />
+
+AppKit's `NSRulerView` as TextEdit shows it above a rich-text document: a 32 pt strip that
+measures the text container and holds a marker for each tab stop and indent of the selected
+paragraphs. Base UI has no ruler; the strip is drawn with CSS gradients, the numbers are text
+and the markers are clipped boxes.
+
+The row of controls above the ruler in TextEdit (paragraph style, font, size, colours,
+alignment, spacing, lists) is the text view's format bar. It is not part of this component: it
+is made of small pop-up buttons,
+[segmented controls](/components/segmented-control) and colour wells, laid out by the
+application.
+
+## Usage
+
+```tsx
+import { Ruler } from "macalicious/ruler";
+import "macalicious/ruler.css";
+
+<Ruler
+  markers={[
+    { type: "first-line-indent", position: 0 },
+    { type: "head-indent", position: 0 },
+    { type: "left", position: 72 },
+    { type: "tail-indent", position: 468 },
+  ]}
+/>
+```
+
+Or copy the source into your project: `npx macalicious add ruler`.
+
+The ruler fills the width of its container; put it directly above the text it measures and
+give both the same width. Positions are in points from the origin, whatever the units: an inch
+is 72 pt. `origin` is where 0 is, by default 5 pt from the left edge, the left padding of a
+text container.
+
+With `onMarkersChange` the markers can be dragged and moved with the keyboard. The ruler does
+not keep the markers itself: store the array it calls back with.
+
+```tsx
+const [markers, setMarkers] = useState<RulerMarker[]>([{ type: "left", position: 72 }]);
+
+<Ruler aria-label="Paragraph ruler" markers={markers} onMarkersChange={setMarkers} />
+```
+
+To scroll the ruler with wide text, put it inside the scrolling content, as wide as the text.
+
+## Guidelines
+
+The macOS Human Interface Guidelines have no page for rulers. What follows describes AppKit's
+ruler as the measured specification records it; it was not checked against an Apple document.
+
+- Show a ruler only above text whose paragraphs have tab stops and indents to edit, and let
+  people hide it (TextEdit: Format, Text, Show Ruler).
+- Measure in the units of the user's locale.
+- The markers show the paragraphs that are selected. When the selection changes, change the
+  markers.
+- A marker snaps to the ruler's ticks while it is dragged.
+
+## Variants and states
+
+<Example name="markers" both />
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Decorative | no `onMarkersChange` | The strip and its markers; hidden from assistive technology |
+| Editable | `onMarkersChange` | The same look; each marker is a slider that can be dragged and focused |
+| Left tab stop | marker `type: "left"` | A 6 x 9 pt triangle pointing right, standing on the rule, its left edge on the position |
+| First-line indent | `"first-line-indent"` | A 9 x 2 pt bar on a 1 pt stem that reaches the rule |
+| Head indent, tail indent | `"head-indent"`, `"tail-indent"` | A 9 x 6 pt triangle pointing down at the rule |
+| Centre, right and decimal tab stop | `"center"`, `"right"`, `"decimal"` | A diamond, a triangle pointing left, a disc |
+| Keyboard focus on a marker | Tab | Focus ring around the marker's box, in a key window only |
+| Dragging | pointer held on a marker | No change of look; the marker follows the pointer from tick to tick |
+
+Markers are translucent (black at 50%, white at 55% in Dark Aqua), so two markers at one
+position darken where they overlap, as the first-line and head indent do at 0 in TextEdit. A
+ruler looks the same in a key, main and inactive window.
+
+Measured, in both appearances: the height, the rule, the four tick lengths and their
+spacing, the position and colour of the numbers, every colour, and the left tab stop, the
+first-line indent, the head indent and the tail indent. Provisional (no screenshot shows
+them): the centre, right and decimal tab stops, the units other than inches, the focus ring
+(AppKit's markers cannot be focused), snapping to ticks, and the look in an inactive window.
+Not implemented: adding a tab stop by clicking the ruler, removing one by dragging it off, the
+guide line that drops through the text while a marker is dragged, and a vertical ruler.
+
+## Sizes
+
+A ruler has one size: 32 pt high, which is 31 pt of fill and a 1 pt bottom border, with the
+rule 15 pt under the top. Its width is its container's.
+
+<Example name="units" both hideCode />
+
+| Units | Numbered tick | Shorter ticks | Basis |
+| --- | --- | --- | --- |
+| `inches` | every inch (72 pt), 11 pt long | half 4.5 pt, quarter 3.5 pt, eighth 2.5 pt long, 9 pt apart | Measured |
+| `centimeters` | every centimetre (28.35 pt) | half | Inferred from the step cycles AppKit registers for the unit |
+| `points` | every 100 pt | 50, 25 and 12.5 pt | Inferred |
+| `picas` | every 10 picas (120 pt) | 5, 2.5 and 1.25 picas | Inferred |
+
+## API
+
+<PropsTable name="RulerProps" />
+
+The root is a `div` and takes its attributes, `ref`, `className` and `style`. The ruler's own
+`onPointerDown` and `onKeyDown` run after yours and do nothing when yours call
+`preventDefault()`.
+
+A marker (`RulerMarker`, exported as a type) is an object:
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `type` | `"left"`, `"center"`, `"right"`, `"decimal"`, `"first-line-indent"`, `"head-indent"`, `"tail-indent"` | A tab stop, named by its alignment, or one of the three indents. |
+| `position` | `number` | Points from the origin. |
+| `label` | `string`, optional | Accessible name of an editable marker. By default it is made from the type: “left tab stop”, “head indent”. |
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-units` | root | `inches`, `centimeters`, `points`, `picas` | Reflects `units`. |
+| `data-type` | marker | the marker's `type` | Selects its shape. |
+| `data-index` | marker | 0 and up | Its place in `markers`. |
+| `data-force` | marker | `focus` | Pins the focus ring for documentation. |
+
+| Class | Part |
+| --- | --- |
+| `.mac-ruler` | The strip; rule and ticks are its background |
+| `.mac-ruler-numbers`, `.mac-ruler-number` | The layer of numbers, and a number |
+| `.mac-ruler-marker` | A marker |
+
+## Accessibility
+
+- Without `onMarkersChange` the ruler is decoration and is `aria-hidden`: it repeats what the
+  text shows. Offer the indents and tab stops through other controls as well.
+- With it the ruler is a `group` (name it with `aria-label`) and every marker is a `slider`
+  in the tab order, with its position in points as `aria-valuenow`, the position in the
+  ruler's units as `aria-valuetext` (“1.5 in”), and a name made from its type or given by
+  `label`. The numbers stay hidden from assistive technology.
+- Keys on a focused marker: Right and Up Arrow move it one tick further from 0, Left and Down
+  Arrow one tick nearer, Home to 0, End to the last tick inside the ruler. A tick is the
+  smallest division of the units: an eighth of an inch.
+- AppKit's markers are not in the tab order; here they are, because the web has no other way
+  to move them with the keyboard. That is a deliberate difference.
+- A marker is a small target: a 6 x 9 pt box, or 9 x 6 pt. Do not make the ruler the only
+  way to set an indent.
+- The focus ring is drawn only in a key window. In forced-colours mode the ruler keeps its
+  rule and ticks and draws them, the markers and the numbers in the system text colour on
+  the system background.
+- The ruler's geometry is physical: 0 is on the left in every writing direction. A ruler
+  whose origin is on the right, for right-to-left text, is not implemented.
+
+## Visual comparison
+
+The ruler of TextEdit's document window, full width, in both appearances
+(`visual-text-edit`): the indent markers at 0, five left tab stops, the tail indent, and the
+numbers 0 to 8. Each crop is scored whole and with the nine numbers masked at a colour
+distance of 0.05. Results in Chromium on Linux:
+
+| Comparison | Whole crop, 2x | Whole crop, 1x | Numbers masked, 2x | Numbers masked, 1x |
+| --- | --- | --- | --- | --- |
+| TextEdit, Aqua | 0.30% of pixels differ, mean Δ 0.24 | 1.43%, mean Δ 1.17 | 0.00%, mean Δ 0.04 | 0.32%, mean Δ 0.11 |
+| TextEdit, Dark Aqua | 0.47%, mean Δ 0.36 | 1.19%, mean Δ 1.16 | 0.00%, mean Δ 0.03 | 0.32%, mean Δ 0.11 |
+
+The whole-crop difference is the digits, set in the fallback font off Apple platforms. At 1x
+the ticks that end on a half point (4.5, 3.5 and 2.5 pt long) and the slanted edges of the
+markers differ from the averaged screenshot. The crops leave out the first and last point of
+the window, which hold its edge highlight in Dark Aqua.
+
+What no screenshot shows is checked with real input and pixel colours from the spec
+(`visual-states`, both appearances): the rule, the border and three tick lengths at their
+positions in a short ruler; the centre, right and decimal tab stops, whose shapes are
+inferred; the focus ring around a marker after Tab; the marker one tick further after Right
+Arrow; and the same marker focused in an inactive window, without a ring. Dragging with a
+real pointer, the limits at both ends and the numbers of a resized ruler were exercised in
+Chromium by the script `visual/output/b7/browser/ruler.mjs` when the component was finished;
+that script is not part of `npm run check`. No comparison covers the units other than inches.

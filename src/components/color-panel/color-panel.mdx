@@ -1,0 +1,176 @@
+---
+title: Color Panel
+description: The Colors panel, a floating window of colour pickers that a colour well opens.
+order: 52
+---
+
+<Example name="basic" both />
+
+AppKit calls this window the *color panel* (`NSColorPanel`); its title is "Colors". It is the
+standard place to choose a colour on the Mac: a toolbar of pickers, an optional opacity slider,
+the current colour and an eyedropper. Here it is a [`Window`](/components/window) of the panel
+kind whose toolbar is a tab list built on
+[Base UI's Tabs](https://base-ui.com/react/components/tabs), and each picker is a component of
+its own that also works alone:
+
+| Toolbar item | Picker | Component |
+| --- | --- | --- |
+| Color Wheel | Hue and saturation on a disc, with a brightness slider | [`ColorWheel`](/components/color-wheel) |
+| Color Sliders | Grey scale, RGB or HSB sliders and a hex field | [`ColorSliders`](/components/color-sliders) |
+| Color Palettes | The "Apple" list of named colours | [`ColorPalette`](/components/color-palette) |
+| Image Palettes | The spectrum | [`ColorSpectrum`](/components/color-wheel) |
+| Pencils | The 48 crayons | [`ColorPalette`](/components/color-palette), `variant="pencils"` |
+
+**No reference screenshot shows the Colors panel.** Its layout follows Apple's documentation
+of `NSColorPanel` and the Human Interface Guidelines; every measurement of its own is an
+estimate and is tagged provisional. See [Visual comparison](#visual-comparison).
+
+## Usage
+
+```tsx
+import { ColorPanel, ColorPanelWell } from "macalicious/color-panel";
+import "macalicious/color-panel.css";
+
+<ColorPanel value={color} onValueChange={setColor} onClose={() => setShown(false)} />
+
+<ColorPanelWell aria-label="Text colour" value={color} onValueChange={setColor} />
+```
+
+The value is a colour as `#rrggbb`. With `showsAlpha` the panel has an opacity slider, and a
+colour that is not opaque is reported as `#rrggbbaa`. Or copy the source into your project:
+`npx macalicious add color-panel`. See [Installation](/installation).
+
+### Opened by a colour well
+
+`ColorPanelWell` is a [colour well](/components/color-well) that opens the panel under itself
+in place of the browser's own colour chooser. The well is drawn active while its panel is
+open; Escape, a click outside the panel or its close button closes it.
+
+<Example name="well" />
+
+In AppKit one shared panel floats above every window and edits whichever well is active. On a
+page, a panel per well in a popup is the closer fit; for one shared panel, render a
+`ColorPanel` yourself (in a [managed window](/components/managed-window), for example) and
+point it at the active well's state.
+
+### Opacity
+
+<Example name="opacity" />
+
+### Choosing the picker
+
+`defaultMode` chooses the picker the panel opens on; `mode` and `onModeChange` control it.
+
+<Example name="pencils" />
+
+## Guidelines
+
+From Apple's documentation of
+[NSColorPanel](https://developer.apple.com/documentation/appkit/nscolorpanel) and the macOS
+Human Interface Guidelines for
+[color wells](https://web.archive.org/web/20200504154558/https://developer.apple.com/design/human-interface-guidelines/macos/selectors/color-wells/):
+
+- The colour panel is the system's standard interface for selecting a colour. Open it from a
+  colour well, which darkens to show that it is the one being edited, rather than building a
+  chooser of your own.
+- Show the opacity slider (`showsAlpha`) only where a colour may be translucent. Without it,
+  treat every colour as opaque.
+- The panel is continuous by default: it reports the colour while a slider or the wheel's
+  marker is being dragged. Apply the colour as it changes; there is no OK button.
+- AppKit's panel also lets people keep frequently used colours as swatches, by dragging the
+  current colour into a grid at the bottom. This component does not implement the swatch grid
+  or dragging colours; keep favourite colours in a `ColorPalette` of your own.
+
+## Variants and states
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Chosen picker | a click on its toolbar item, or the arrow keys and Return | A darker rounded rectangle behind the item's glyph |
+| Pressed toolbar item | `:active` | A darker rectangle still |
+| Keyboard focus | `:focus-visible` on a toolbar item or the eyedropper | Focus ring in the accent colour |
+| Eyedropper unavailable | the browser has no `EyeDropper` (anything but Chromium on a desktop) | The eyedropper is disabled and dimmed, and a line under it says why, which makes the panel that line taller |
+| Translucent colour | `showsAlpha` and an opacity under 100% | The current colour is drawn over grey and white tiles |
+| Window not key | `state="main"` or `"inactive"`, or such an ancestor | As any window: flat title bar when inactive, no focus rings, unemphasised selection in the palette |
+
+The pickers' own states are on their pages.
+
+## Sizes
+
+The panel is 228 pt wide by default (`width`) and as tall as its content: the pickers share
+one height, so the panel does not change size with the picker. It has no control sizes; the
+controls inside are small ones, as in AppKit's panel.
+
+## API
+
+<PropsTable name="ColorPanelProps" />
+
+`ColorPanel` also takes the props of [`Window`](/components/window): `state`, `height`,
+`style`, `ref` and every `<div>` attribute.
+
+<PropsTable name="ColorPanelWellProps" />
+
+`ColorPanelWell` also takes the props of [`ColorWell`](/components/color-well): `variant`,
+`bordered`, `disabled`, `name` and every `<input>` attribute.
+
+| Class | Element |
+| --- | --- |
+| `mac-color-panel` | The window |
+| `mac-color-panel-modes`, `mac-color-panel-mode` | The toolbar and one of its items (a tab; `aria-selected` marks the chosen one) |
+| `mac-color-panel-body`, `mac-color-panel-picker` | The window's body and the area that holds the picker |
+| `mac-color-panel-footer`, `mac-color-panel-eyedropper`, `mac-color-panel-swatch` | The bottom row, its eyedropper button and the current colour |
+| `mac-color-panel-eyedropper-reason` | The line that says why the eyedropper is dimmed; absent where the browser has an `EyeDropper` |
+| `mac-color-panel-positioner` | The popup that places a `ColorPanelWell`'s panel |
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-window-state`, `data-variant="panel"` | as on `Window` | Set by the window. |
+
+The transient states (a pressed toolbar item, keyboard focus) are on elements inside the
+panel, so there is no `data-force` preview for them; the visual checks reach them with real
+input. The panel has no CSS variables of its own for a consumer to set.
+
+## Accessibility
+
+- The panel is a labelled region named by its title, "Colors"; in a `ColorPanelWell` it is a
+  `dialog` that takes the focus when it opens and returns it to the well when it closes.
+- The toolbar is a `tablist` named "Color pickers" and is one tab stop. Left and Right Arrow,
+  Home and End move between its items; Return or Space chooses one. Each item is named after
+  its picker and shows the name as a tooltip, since it has no visible text.
+- Every control inside is reachable with Tab and has a name: the wheel's and spectrum's areas
+  and the palettes follow the arrow keys (see their pages), every slider has a number field
+  beside it, and the hex field takes a typed colour.
+- The current colour is an image whose name is its hex value, and its opacity when it has one.
+- The eyedropper is a button named "Pick a color from the screen". Where the browser cannot
+  do that it is disabled, not hidden, and a line of text under it says why.
+- A `ColorPanelWell` needs an accessible name (`aria-label`, `aria-labelledby` or a
+  `<label>`), like any colour well. It stays a colour input and says that it opens a dialog
+  (`aria-haspopup`); Return, Space or a click opens the panel and closes it again. It cannot
+  say whether the panel is open: `aria-expanded` is not allowed on a colour input, so the open
+  panel announces itself by taking the focus.
+- In forced-colours mode the chosen toolbar item is outlined and the colours of the pickers
+  and of the current colour are kept.
+
+## Visual comparison
+
+No screenshot in the reference set shows the Colors panel, so there is no crop to compare with
+and `npm run visual -- color-panel` reports no score. Instead its checks drive the panel in a
+real browser, at 1x and 2x in both appearances, and hold chosen pixels to values that do not
+come from the panel's own output (`color-panel.visual.json`):
+
+| What is checked | How it is brought about | Source of the values |
+| --- | --- | --- |
+| The body's fill, the wheel's colours, the opacity track and the current colour, in both appearances | the panel as it opens | Window background and slider colours measured on other screenshots; the HSB model; the colour given |
+| Each of the four other pickers | a click on its toolbar item | The colour given, the HSB model, the crayons' values |
+| The toolbar from the keyboard | focus, Right Arrow, Return | The slider's measured colours |
+| A colour chosen in a palette becomes the current colour | clicks on the palette | The colour chosen |
+| The chosen row in a page that is not key | the same, with the page inactive | Unemphasised selection, measured in Contacts |
+| Opacity 0 shows the tiles | the opacity field emptied with Backspace | The tiles' tokens (inferred) |
+| A well opens the panel, with the pointer and with Tab and Space; Escape closes it; a colour chosen in the panel is the well's | real input on a `ColorPanelWell` | The well's active bezel (inferred by its spec), its measured bezel at rest, the colours given |
+
+Everything about the panel's own geometry is provisional: its width, the 50 pt of title bar
+and toolbar, the toolbar's glyphs (drawn for this library, not Apple's), the 12 pt margins and
+the size of the current colour. Not implemented: the swatch grid for favourite colours,
+dragging a colour to or from a well, the CMYK sliders, image palettes other than the
+spectrum, colour lists other than "Apple", and choosing a colour space. Not checked anywhere:
+Firefox and Safari, and the eyedropper itself, which needs a person to click on the screen;
+its wiring is covered by a unit test with a stand-in for the browser's `EyeDropper`.

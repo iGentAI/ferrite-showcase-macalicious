@@ -1,0 +1,111 @@
+/*
+ * The real map of Maps and Find My when the desktop's Ferrite application serves them
+ * (maps-tiles.tsx): OpenStreetMap's standard tiles, the current location
+ * with its accuracy, and the attribution the tiles' licence asks for. The owner lays its pins or
+ * markers over the map and its controls beside it.
+ *
+ * Parts
+ *   .mac-maps-tiles                  the map: clips the tiles, takes the drags and the wheel
+ *     [data-dragging], [data-zoom]
+ *   .mac-maps-tiles-layer, -tile     the tiles; dimmed a little in Dark Aqua
+ *   .mac-maps-tiles-location         the current location: the dot and its accuracy
+ *   .mac-maps-tiles-attribution      "© OpenStreetMap contributors", at the top trailing corner
+ *
+ * Every length and colour is a token of maps.tokens.css; literal here, as structure: zeros, the
+ * 50% radius and translation of the round parts, the z-index and the 1 of a dot's line height.
+ */
+
+.mac-maps-tiles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--mac-maps-land);
+  cursor: grab;
+  outline: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-maps-tiles:where([data-dragging]) {
+  cursor: grabbing;
+}
+
+.mac-maps-tiles:where(:focus-visible):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  box-shadow: inset 0 0 0 var(--mac-focus-ring-width) var(--mac-focus-ring-color);
+}
+
+.mac-maps-tiles-layer {
+  position: absolute;
+  inset: 0;
+  filter: brightness(var(--mac-maps-tile-brightness));
+  pointer-events: none;
+}
+
+.mac-maps-tiles-tile {
+  position: absolute;
+  display: block;
+  max-width: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* The location is a point; the dot and the halo are hung about it. */
+.mac-maps-tiles-location {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.mac-maps-tiles-accuracy,
+.mac-maps-tiles-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  translate: -50% -50%;
+}
+
+.mac-maps-tiles-accuracy {
+  background: var(--mac-maps-location-halo);
+}
+
+.mac-maps-tiles-dot {
+  width: var(--mac-maps-location-dot-size);
+  height: var(--mac-maps-location-dot-size);
+  background: var(--mac-maps-location);
+  box-shadow: 0 0 0 var(--mac-maps-location-ring-width) var(--mac-maps-location-ring);
+}
+
+.mac-maps-tiles-attribution {
+  position: absolute;
+  z-index: 1;
+  top: var(--mac-maps-attribution-inset);
+  right: var(--mac-maps-attribution-inset);
+  padding: var(--mac-maps-attribution-padding);
+  border-radius: var(--mac-maps-note-radius);
+  background: var(--mac-maps-note-plate);
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  font-size: var(--mac-maps-attribution-font-size);
+  line-height: var(--mac-maps-attribution-line-height);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.mac-maps-tiles-attribution:where(:hover) {
+  text-decoration: underline;
+}
+
+@media (forced-colors: active) {
+  .mac-maps-tiles-dot {
+    background: CanvasText;
+  }
+
+  .mac-maps-tiles-attribution {
+    border: 1px solid CanvasText;
+  }
+}

@@ -1,0 +1,227 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "label-light",
+      "description": "The first volume icon of the desktop over the picture, Aqua: the label, 12 pt bold white with its shadow, centred under the tile. The tile is masked, because the volume artwork is Apple's; the backdrop is a gradient near the picture. The text is set in the fallback font off Apple platforms, which is why this comparison is loose.",
+      "example": "visual-label",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 17.5,
+          "y": 1.5,
+          "width": 64,
+          "height": 64
+        }
+      ],
+      "budget": {
+        "1x": 0.1025,
+        "2x": 0.08
+      },
+      "deltaBudget": {
+        "1x": 10.15,
+        "2x": 9.45
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Desktop.png",
+        "crop": {
+          "x": 3130,
+          "y": 56,
+          "width": 200,
+          "height": 180
+        }
+      }
+    },
+    {
+      "name": "label-light-masked",
+      "description": "The same crop with the label masked as well, Aqua: what is left is the backdrop, which shows that nothing but the label is drawn outside the tile.",
+      "example": "visual-label",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 17.5,
+          "y": 1.5,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 0,
+          "y": 72,
+          "width": 100,
+          "height": 18
+        }
+      ],
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 2.55,
+        "2x": 2.65
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Desktop.png",
+        "crop": {
+          "x": 3130,
+          "y": 56,
+          "width": 200,
+          "height": 180
+        }
+      }
+    },
+    {
+      "name": "label-dark",
+      "description": "The first volume icon of the desktop over the picture, Dark Aqua: the label, 12 pt bold white with its shadow, centred under the tile. The tile is masked, because the volume artwork is Apple's; the backdrop is a gradient near the picture. The text is set in the fallback font off Apple platforms, which is why this comparison is loose.",
+      "example": "visual-label",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 17.5,
+          "y": 1.5,
+          "width": 64,
+          "height": 64
+        }
+      ],
+      "budget": {
+        "1x": 0.1235,
+        "2x": 0.0865
+      },
+      "deltaBudget": {
+        "1x": 17.05,
+        "2x": 14.6
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Desktop.png",
+        "crop": {
+          "x": 3130,
+          "y": 56,
+          "width": 200,
+          "height": 180
+        }
+      }
+    },
+    {
+      "name": "label-dark-masked",
+      "description": "The same crop with the label masked as well, Dark Aqua: what is left is the backdrop, which shows that nothing but the label is drawn outside the tile.",
+      "example": "visual-label",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 17.5,
+          "y": 1.5,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 0,
+          "y": 72,
+          "width": 100,
+          "height": 18
+        }
+      ],
+      "budget": {
+        "1x": 0.0015,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 1.75,
+        "2x": 1.9
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Desktop.png",
+        "crop": {
+          "x": 3130,
+          "y": 56,
+          "width": 200,
+          "height": 180
+        }
+      }
+    },
+    {
+      "name": "selected-light",
+      "description": "A selected icon, which no screenshot shows on the desktop, Aqua: the backing behind the tile, 2 pt wider than the tile all round, and the accent behind the name. The values are Finder's icon-view selection as the spec infers it (provisional).",
+      "example": "visual-selected",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 116,
+          "height": 112
+        },
+        "pixels": [
+          {
+            "x": 58.5,
+            "y": 32.5,
+            "color": "#7e9ab5",
+            "tolerance": 1,
+            "note": "backing in the middle of the tile: black at 20% over the backdrop"
+          },
+          {
+            "x": 24.5,
+            "y": 32.5,
+            "color": "#7e9ab5",
+            "tolerance": 1,
+            "note": "the backing reaches 2 pt past the 64 pt tile"
+          },
+          {
+            "x": 21.5,
+            "y": 32.5,
+            "color": "#9ec1e2",
+            "tolerance": 1,
+            "note": "and no further: the backdrop"
+          },
+          {
+            "x": 58.25,
+            "y": 73.75,
+            "color": "#0164e1",
+            "scale": 2,
+            "tolerance": 1,
+            "note": "the name's highlight, above the letters: selectedContentBackgroundColor"
+          }
+        ]
+      }
+    },
+    {
+      "name": "selected-dark",
+      "description": "A selected icon, which no screenshot shows on the desktop, Dark Aqua: the backing behind the tile, 2 pt wider than the tile all round, and the accent behind the name. The values are Finder's icon-view selection as the spec infers it (provisional).",
+      "example": "visual-selected",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 116,
+          "height": 112
+        },
+        "pixels": [
+          {
+            "x": 58.5,
+            "y": 32.5,
+            "color": "#051834",
+            "tolerance": 1,
+            "note": "backing in the middle of the tile: black at 20% over the backdrop"
+          },
+          {
+            "x": 24.5,
+            "y": 32.5,
+            "color": "#051834",
+            "tolerance": 1,
+            "note": "the backing reaches 2 pt past the 64 pt tile"
+          },
+          {
+            "x": 21.5,
+            "y": 32.5,
+            "color": "#061e41",
+            "tolerance": 1,
+            "note": "and no further: the backdrop"
+          },
+          {
+            "x": 58.25,
+            "y": 73.75,
+            "color": "#0158d0",
+            "scale": 2,
+            "tolerance": 1,
+            "note": "the name's highlight, above the letters: selectedContentBackgroundColor"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+/*
+ * Image well (NSImageView with a frame). The root's box is the frame from edge to edge; the
+ * image fits its content box.
+ *
+ * States
+ *   [data-frame="bezel" | "photo" | "groove" | "button" | "none"]
+ *   [data-scaling="proportionally-down" | "proportionally-up-or-down" | "axes-independently"
+ *     | "none"]
+ *   [data-empty]                       no image and no children
+ *   :focus-visible                     keyboard focus: the selection ring
+ *   [data-drag-over]                   an image file is being dragged over the well
+ *   [data-disabled]                    disabled: the image is dimmed
+ *   [data-window-state="main" | "inactive"] *
+ *                                      window that is not key: no focus ring. The drop
+ *                                      highlight stays: a drag from another application comes
+ *                                      while this window is not key.
+ *   [data-force~="focus" | "drag-over"]
+ *                                      static previews of transient states (docs, visual tests)
+ *
+ * Hooks
+ *   --mac-image-well-padding   space between the frame and the image (default 5px in the bezel)
+ */
+.mac-image-well {
+  --_border: 2px solid var(--mac-image-well-ring);
+  /* The outer corner measures about 5.5 pt; 6px is the CSS radius that reproduces its pixels
+     (5 to 7px were scored against the screenshot). The recess's corner is then 4px. */
+  --_radius: 6px;
+  --_padding: 5px;
+  --_fill: var(--mac-image-well-recess);
+  --_shadow: var(--mac-image-well-recess-shadow), var(--mac-image-well-halo);
+  --_fit: scale-down;
+
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  /* [provisional] Interface Builder's default frame; a well is sized by its window. */
+  inline-size: 48px;
+  block-size: 48px;
+  padding: var(--mac-image-well-padding, var(--_padding));
+  border: var(--_border);
+  border-radius: var(--_radius);
+  background: var(--_fill) padding-box;
+  box-shadow: var(--_shadow);
+  overflow: hidden;
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.mac-image-well-image {
+  display: block;
+  min-inline-size: 0;
+  min-block-size: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: var(--_fit);
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* Frames other than the bezel [provisional]: none is in a screenshot. */
+.mac-image-well:where([data-frame="photo"]) {
+  --_border: var(--mac-hairline) solid var(--mac-image-well-photo-border);
+  --_radius: 0px;
+  --_padding: 0px;
+  --_fill: none;
+  --_shadow: var(--mac-image-well-photo-shadow);
+}
+
+.mac-image-well:where([data-frame="groove"]) {
+  --_border: var(--mac-hairline) solid var(--mac-color-box-border);
+  --_radius: var(--mac-radius-group);
+  --_padding: 3px;
+  --_fill: var(--mac-color-group-background);
+  --_shadow: none;
+}
+
+.mac-image-well:where([data-frame="button"]) {
+  --_border: var(--mac-bezel-border-width) solid;
+  --_radius: var(--mac-radius-control-regular);
+  --_padding: 3px;
+  --_fill: var(--mac-bezel-fill);
+  --_shadow: var(--mac-bezel-highlight), var(--mac-bezel-shadow);
+  border-color: var(--mac-bezel-border-top) var(--mac-bezel-border-side)
+    var(--mac-bezel-border-bottom);
+}
+
+.mac-image-well:where([data-frame="none"]) {
+  --_border: 0 solid;
+  --_radius: 0px;
+  --_padding: 0px;
+  --_fill: none;
+  --_shadow: none;
+}
+
+/* Scaling */
+.mac-image-well:where([data-scaling="proportionally-up-or-down"]) {
+  --_fit: contain;
+}
+
+.mac-image-well:where([data-scaling="axes-independently"]) {
+  --_fit: fill;
+}
+
+.mac-image-well:where([data-scaling="none"]) {
+  --_fit: none;
+}
+
+/* Disabled [provisional] */
+.mac-image-well:where([data-disabled]) > .mac-image-well-image {
+  opacity: 0.5;
+}
+
+/* Keyboard focus: the selection ring, from half a point inside the frame's edge to 2.5 pt
+   beyond it. Only in the key window. */
+.mac-image-well:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(var(--mac-focus-ring-offset) - var(--mac-hairline));
+}
+
+/* Drop target [provisional]: 2 pt of the accent colour over the frame's edge, in a window of
+   any state. */
+.mac-image-well:where([data-drag-over], [data-force~="drag-over"]) {
+  outline: 2px solid var(--mac-accent);
+  outline-offset: -2px;
+}
+
+@media (forced-colors: active) {
+  .mac-image-well:where(:not([data-frame="none"])) {
+    border-color: ButtonText;
+  }
+
+  .mac-image-well:where([data-drag-over], [data-force~="drag-over"]) {
+    outline-color: Highlight;
+  }
+}

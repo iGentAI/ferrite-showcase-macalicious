@@ -1,0 +1,71 @@
+/*
+ * Colours of the Chess demo that no shared token holds. The view under the title bar is the
+ * same in the Aqua and the Dark Aqua capture (10-15-Catalina-Light-Chess.png and its Dark
+ * twin, window at 112,76 in both), so none of them uses light-dark().
+ */
+:root {
+  /* [measured] The plain backdrop of the placeholder board: the flat floor of the rendered
+     scene, column x=150 from y=739 down to the window's bottom edge (@ 150,1400), the same in
+     both captures. The scene's gradient above its horizon is not reproduced. */
+  --mac-chess-backdrop: #404040;
+  /* [measured] The 3D view's backdrop, left edge, top to horizon, as a share of the view's height
+     (spec/apps/chess.md); the floor below is the flat floor above. The capture's horizon is a
+     shallow curve; here it is straight. */
+  --mac-chess-sky-top: #989898;
+  --mac-chess-sky-low: #4d4d4d;
+  --mac-chess-horizon: 45.5%;
+  /* [provisional] Under the piece carried over the 3D board. */
+  --mac-chess-carried-shadow: rgb(0 0 0 / 0.4);
+  /* [provisional] The Game Log, which no screenshot shows, and the layer of the Open panel. */
+  --mac-chess-log-padding: 8px;
+  --mac-chess-log-line-gap: 2px;
+  --mac-chess-log-column: 64px;
+  --mac-chess-log-number-column: 28px;
+  --mac-chess-log-move-padding: 1px 4px;
+  --mac-chess-log-move-radius: 3px;
+  --mac-chess-panel-layer-z-index: 800;
+  --mac-chess-panel-layer-margin: 16px;
+  /* [provisional] The placeholder board, which replaces the application's wooden one: flat
+     colours of the demo's own, chosen not to look like wood. No capture shows them. */
+  --mac-chess-frame: #262a31;
+  --mac-chess-frame-text: #c5cad3;
+  --mac-chess-square-light: #e7eaef;
+  --mac-chess-square-dark: #7b8ca3;
+  /* [provisional] The flat pieces, which replace the application's turned wooden ones: each
+     side's fill and the outline that keeps it apart from a square of its own shade. */
+  --mac-chess-piece-white: #ffffff;
+  --mac-chess-piece-white-edge: #30353d;
+  --mac-chess-piece-black: #23262c;
+  --mac-chess-piece-black-edge: #eef0f4;
+  /* [provisional] Chess Preferences' other boards and pieces, flat as the board above is, and the
+     window's margin. No capture shows them. */
+  --mac-chess-preferences-padding: 20px;
+  --mac-chess-board-green-light: #eef0d8;
+  --mac-chess-board-green-dark: #6f9460;
+  --mac-chess-board-blue-light: #e2ecf6;
+  --mac-chess-board-blue-dark: #5b86b4;
+  --mac-chess-board-sand-light: #f1e4cc;
+  --mac-chess-board-sand-dark: #b89a72;
+  --mac-chess-piece-warm-white: #f7ecd5;
+  --mac-chess-piece-warm-black: #4a3424;
+  /* [provisional] The marks on a square: the picked piece, where it can go, the last move
+     and a king in check. The application lifts and slides its pieces instead. */
+  --mac-chess-selected: rgb(64 196 110 / 0.62);
+  --mac-chess-target: rgb(22 26 33 / 0.38);
+  --mac-chess-last-move: rgb(247 206 70 / 0.42);
+  --mac-chess-pointed: rgb(64 156 255 / 0.72);
+  --mac-chess-check: rgb(236 72 60 / 0.68);
+  /* [provisional] Under the keyboard focus ring of a square: the band the half-transparent
+     system ring lies on, and the line inside it. */
+  --mac-chess-focus-backing: #262a31;
+  --mac-chess-focus-edge: #ffffff;
+  /* [measured] What the visual example paints behind the window: the comparison's matte
+     behind the capture's transparent margin, which the harness composites over white. */
+  --mac-chess-visual-matte: #ffffff;
+  /* [provisional] The Ferrite application's sheets: the rows of New Game's form and of the
+     list of games, and how tall that list grows before it scrolls. */
+  --mac-chess-form-gap: 8px;
+  --mac-chess-games-height: 320px;
+  --mac-chess-game-row-padding: 2px 4px;
+  --mac-chess-game-row-radius: 4px;
+}

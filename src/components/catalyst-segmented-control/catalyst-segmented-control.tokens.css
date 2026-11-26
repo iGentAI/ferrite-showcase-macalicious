@@ -1,0 +1,46 @@
+/*
+ * Catalyst Segmented Control: the values that differ between Aqua and Dark Aqua. Measured on
+ * the People and Devices switch of 10-15-Catalina-Light-Find-My.png (window at 112,76) and
+ * 10-15-Catalina-Dark-Find-My.png (window at 68,52); coordinates are image pixels.
+ */
+:root {
+  /* [measured, computed] The track: #e8e7e5 over the sidebar's #f8f7f5 (Light @ 607,174),
+     #343438 over #1f2021 (Dark @ 563,150): UIKit's grey at 12% and at 24%. */
+  --mac-catalyst-segmented-control-track: light-dark(
+    rgb(118 118 128 / 0.12),
+    rgb(118 118 128 / 0.24)
+  );
+  /* [measured] The selected segment's pill: Light @ 232,170 and Dark @ 188,146. */
+  --mac-catalyst-segmented-control-pill: light-dark(#ffffff, #6b6b72);
+  /* [measured, fitted] The pill's shadow, which the track clips. Aqua: the track is #d4d4d3
+     under the pill (Light @ 232,197), #dddbd8 a point after it (Light @ 370,174) and #e2e2e1
+     above it (Light @ 232,152). Dark Aqua: the track is the same all around the pill. */
+  --mac-catalyst-segmented-control-pill-shadow:
+    0 2px 3px light-dark(rgb(0 0 0 / 0.1), transparent),
+    0 0 1px light-dark(rgb(0 0 0 / 0.04), transparent);
+  /* [measured] Titles: #000000 (Light @ 220,171), #e9eaea (Dark @ 188,150). */
+  --mac-catalyst-segmented-control-text: light-dark(#000000, #e9eaea);
+  /* [provisional] A disabled segment's title: no capture shows one. */
+  --mac-catalyst-segmented-control-text-disabled: light-dark(
+    rgb(0 0 0 / 0.3),
+    rgb(233 234 234 / 0.3)
+  );
+  /* [measured] The hairline between two unselected segments, on the map types of the same
+     captures (map-controls). */
+  --mac-catalyst-segmented-control-divider: light-dark(rgb(0 0 0 / 0.11), rgb(255 255 255 / 0.13));
+
+  /* [measured] Metrics, the same in both appearances: the track 24.5 pt tall (Light @ 2x
+     rows 150..198), the pill 1.5 pt inside it above and below, 2 pt from a segment's leading
+     edge and 2.25 pt from its trailing one, titles 10.5 pt, and the hairline between two
+     unselected segments 6 pt short of the track at both ends (map types, the same captures). */
+  --mac-catalyst-segmented-control-height: 24.5px;
+  --mac-catalyst-segmented-control-pill-inset-block: 1.5px;
+  --mac-catalyst-segmented-control-pill-inset-start: 2px;
+  --mac-catalyst-segmented-control-pill-inset-end: 2.25px;
+  --mac-catalyst-segmented-control-font-size: 10.5px;
+  --mac-catalyst-segmented-control-divider-inset: 6px;
+  /* [inferred] Corner radii: UIKit's scaled to 77%, as Catalyst scales an iPad app; the
+     comparison agrees with them. */
+  --mac-catalyst-segmented-control-radius: 7px;
+  --mac-catalyst-segmented-control-pill-radius: 5.5px;
+}

@@ -1,0 +1,309 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "stack-light",
+      "description": "The leading end of the stack in Aqua: eight windows behind the front one, six with a title bar and window controls and two blank. The blurred sky behind is a gradient of the colours measured there. No text is in the crop, so this is the drawing: the perspective (where each window's top edge and leading edge fall), the fading and the veil. What remains is the ring round each window control, which the stack does not draw, and the picture showing through the translucent windows.",
+      "example": "visual-stack-light",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": { "1x": 0.0109, "2x": 0.0068 },
+      "deltaBudget": { "1x": 2.44, "2x": 2.33 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Time-Machine.png",
+        "crop": { "x": 700, "y": 320, "width": 420, "height": 240 }
+      }
+    },
+    {
+      "name": "stack-dark",
+      "description": "The leading end of the stack in Dark Aqua, where the oldest backup is shown and all eight windows behind it are blank. Gates the perspective and the blank window's fill and top line; the backdrop is a gradient of the colours measured beside the stack.",
+      "example": "visual-stack-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": { "1x": 0.0051, "2x": 0.0037 },
+      "deltaBudget": { "1x": 3.75, "2x": 3.69 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Time-Machine.png",
+        "crop": { "x": 880, "y": 486, "width": 420, "height": 240 }
+      }
+    },
+    {
+      "name": "buttons-light",
+      "description": "Cancel and the disabled Restore in Aqua, over a gradient of the colours measured around them. The budgets allow for the two titles in the fallback font.",
+      "example": "visual-buttons-light",
+      "appearance": "light",
+      "budget": { "1x": 0.011, "2x": 0.0095 },
+      "deltaBudget": { "1x": 2.12, "2x": 2.22 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Time-Machine.png",
+        "crop": { "x": 1428, "y": 1800, "width": 492, "height": 84 }
+      }
+    },
+    {
+      "name": "buttons-drawing-light",
+      "description": "The same with the two titles masked: the faces, which are added to the backdrop, their top line and their corners.",
+      "example": "visual-buttons-light",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 34, "y": 14, "width": 46, "height": 14 },
+        { "x": 164, "y": 14, "width": 52, "height": 14 }
+      ],
+      "budget": { "1x": 0.002, "2x": 0.0009 },
+      "deltaBudget": { "1x": 1.38, "2x": 1.41 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Time-Machine.png",
+        "crop": { "x": 1428, "y": 1800, "width": 492, "height": 84 }
+      }
+    },
+    {
+      "name": "buttons-dark",
+      "description": "Cancel and the disabled Restore in Dark Aqua. The budgets allow for the two titles in the fallback font.",
+      "example": "visual-buttons-dark",
+      "appearance": "dark",
+      "budget": { "1x": 0.012, "2x": 0.0098 },
+      "deltaBudget": { "1x": 2.41, "2x": 2.48 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Time-Machine.png",
+        "crop": { "x": 1428, "y": 1632, "width": 492, "height": 84 }
+      }
+    },
+    {
+      "name": "buttons-drawing-dark",
+      "description": "The same with the two titles masked.",
+      "example": "visual-buttons-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 34, "y": 14, "width": 46, "height": 14 },
+        { "x": 164, "y": 14, "width": 52, "height": 14 }
+      ],
+      "budget": { "1x": 0.002, "2x": 0.0009 },
+      "deltaBudget": { "1x": 1.61, "2x": 1.62 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Time-Machine.png",
+        "crop": { "x": 1428, "y": 1632, "width": 492, "height": 84 }
+      }
+    },
+    {
+      "name": "arrows-light",
+      "description": "The two arrows and the date in Aqua. The budgets allow for the date in the fallback font.",
+      "example": "visual-arrows-light",
+      "appearance": "light",
+      "budget": { "1x": 0.054, "2x": 0.038 },
+      "deltaBudget": { "1x": 6.27, "2x": 5.86 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Time-Machine.png",
+        "crop": { "x": 2660, "y": 1044, "width": 260, "height": 240 }
+      }
+    },
+    {
+      "name": "arrows-drawing-light",
+      "description": "The same with the date masked: the two faces, their distance from each other and the chevrons.",
+      "example": "visual-arrows-light",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [{ "x": 8, "y": 52, "width": 122, "height": 18 }],
+      "budget": { "1x": 0.0214, "2x": 0.0022 },
+      "deltaBudget": { "1x": 3.36, "2x": 2.85 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Time-Machine.png",
+        "crop": { "x": 2660, "y": 1044, "width": 260, "height": 240 }
+      }
+    },
+    {
+      "name": "arrows-dark",
+      "description": "The two arrows and the date in Dark Aqua, where the oldest backup is shown and the up arrow is disabled. The budgets allow for the date in the fallback font.",
+      "example": "visual-arrows-dark",
+      "appearance": "dark",
+      "budget": { "1x": 0.039, "2x": 0.032 },
+      "deltaBudget": { "1x": 5.46, "2x": 5.49 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Time-Machine.png",
+        "crop": { "x": 2472, "y": 1044, "width": 300, "height": 240 }
+      }
+    },
+    {
+      "name": "arrows-drawing-dark",
+      "description": "The same with the date masked: the disabled up arrow and the down arrow.",
+      "example": "visual-arrows-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [{ "x": 8, "y": 52, "width": 142, "height": 18 }],
+      "budget": { "1x": 0.0026, "2x": 0.0016 },
+      "deltaBudget": { "1x": 2.66, "2x": 2.67 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Time-Machine.png",
+        "crop": { "x": 2472, "y": 1044, "width": 300, "height": 240 }
+      }
+    },
+    {
+      "name": "timeline-light",
+      "description": "The lower end of the timeline in Aqua: dim ticks, the mark of today, six backups, the red tick of the one shown, and Now. The budgets allow for the two labels in the fallback font.",
+      "example": "visual-timeline-light",
+      "appearance": "light",
+      "budget": { "1x": 0.017, "2x": 0.018 },
+      "deltaBudget": { "1x": 1.72, "2x": 1.79 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Time-Machine.png",
+        "crop": { "x": 3160, "y": 1698, "width": 200, "height": 400 }
+      }
+    },
+    {
+      "name": "timeline-drawing-light",
+      "description": "The same with the two labels masked: the ticks, their pitch, the long tick of the day mark and the red tick.",
+      "example": "visual-timeline-light",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 24, "y": 28, "width": 36, "height": 16 },
+        { "x": 48, "y": 157, "width": 30, "height": 14 }
+      ],
+      "budget": { "1x": 0.0038, "2x": 0.0015 },
+      "deltaBudget": { "1x": 0.93, "2x": 0.93 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Time-Machine.png",
+        "crop": { "x": 3160, "y": 1698, "width": 200, "height": 400 }
+      }
+    },
+    {
+      "name": "timeline-dark",
+      "description": "The lower end of the timeline in Dark Aqua: the end of yesterday's backups, the mark of today, two backups and Now. The budgets allow for the two labels in the fallback font.",
+      "example": "visual-timeline-dark",
+      "appearance": "dark",
+      "budget": { "1x": 0.017, "2x": 0.017 },
+      "deltaBudget": { "1x": 1.29, "2x": 1.37 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Time-Machine.png",
+        "crop": { "x": 3160, "y": 1698, "width": 200, "height": 400 }
+      }
+    },
+    {
+      "name": "timeline-drawing-dark",
+      "description": "The same with the two labels masked.",
+      "example": "visual-timeline-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 24, "y": 107, "width": 36, "height": 16 },
+        { "x": 48, "y": 157, "width": 30, "height": 14 }
+      ],
+      "budget": { "1x": 0.0021, "2x": 0.0006 },
+      "deltaBudget": { "1x": 0.49, "2x": 0.5 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Time-Machine.png",
+        "crop": { "x": 3160, "y": 1698, "width": 200, "height": 400 }
+      }
+    },
+    {
+      "name": "cancel-focus-light",
+      "description": "Keyboard focus on Cancel in Aqua, reached with Tab past the window's close button and the two arrows. No screenshot shows it: the ring is the shared focus ring, outside the button's edge.",
+      "example": "visual-buttons-light",
+      "appearance": "light",
+      "actions": [{ "tab": 4 }],
+      "expect": {
+        "size": { "width": 246, "height": 42 },
+        "pixels": [
+          {
+            "x": 8.5,
+            "y": 21,
+            "color": "#1d52a4",
+            "tolerance": 4,
+            "note": "the 3 pt ring outside the button's leading edge: --mac-focus-ring-color in Aqua, rgb(24 106 246 / 0.5), over the backdrop measured there, #213952; computed from the tokens (inferred state)"
+          },
+          {
+            "x": 4,
+            "y": 21,
+            "color": "#213952",
+            "tolerance": 4,
+            "note": "backdrop outside the ring, measured in the capture beside the button (10-15-Catalina-Light-Time-Machine.png @ 1436,1842,12,1)"
+          },
+          {
+            "x": 20,
+            "y": 33,
+            "color": "#5e758d",
+            "tolerance": 4,
+            "note": "the face, unchanged by the focus: measured in the capture (10-15-Catalina-Light-Time-Machine.png @ 1464,1842,32,1)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cancel-pressed-dark",
+      "description": "Cancel held down in Dark Aqua. No screenshot shows a pressed button: the face becomes --mac-time-machine-browser-control-pressed (provisional), which is added to the backdrop like the normal face.",
+      "example": "visual-buttons-dark",
+      "appearance": "dark",
+      "actions": [{ "press": ".mac-time-machine-browser-actions > button:first-child" }],
+      "expect": {
+        "size": { "width": 246, "height": 42 },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 33,
+            "color": "#8491a6",
+            "tolerance": 4,
+            "note": "pressed face: the backdrop measured beside the button, #28354a, plus white at 0.36 (92 levels); inferred"
+          },
+          {
+            "x": 180,
+            "y": 33,
+            "color": "#515e70",
+            "tolerance": 4,
+            "note": "the disabled Restore beside it is unchanged: measured in the capture (10-15-Catalina-Dark-Time-Machine.png @ 1712,1674,46,1)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "timeline-long-newest",
+      "description": "Sixty backups on a timeline with room for fifteen: the newest, which is shown at first, is in view at the lower end. No screenshot shows it.",
+      "example": "visual-timeline-long",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 200, "height": 300 },
+        "pixels": [
+          {
+            "x": 192,
+            "y": 262,
+            "color": "#ff3b30",
+            "tolerance": 4,
+            "note": "tick of the backup shown, the last one, in the lowest slot: --mac-time-machine-browser-tick-selected"
+          },
+          {
+            "x": 192,
+            "y": 38,
+            "color": "#5c6c7c",
+            "tolerance": 4,
+            "note": "a plain tick in the highest slot: the backdrop #102030 plus 76 levels (computed from the tokens)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "timeline-long-oldest",
+      "description": "The same after a click on the timeline and Home: the oldest backup is shown and the timeline has brought it into view at its upper end. No screenshot shows it.",
+      "example": "visual-timeline-long",
+      "appearance": "dark",
+      "actions": [{ "click": ".mac-time-machine-browser-timeline" }, { "key": "Home" }],
+      "expect": {
+        "size": { "width": 200, "height": 300 },
+        "pixels": [
+          {
+            "x": 192,
+            "y": 38,
+            "color": "#ff3b30",
+            "tolerance": 4,
+            "note": "tick of the oldest backup, now shown, in the highest slot"
+          },
+          {
+            "x": 192,
+            "y": 262,
+            "color": "#5c6c7c",
+            "tolerance": 4,
+            "note": "a plain tick in the lowest slot"
+          }
+        ]
+      }
+    }
+  ]
+}

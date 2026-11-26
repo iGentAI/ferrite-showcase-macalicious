@@ -1,0 +1,173 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "automator-light",
+      "description": "An artwork-free stretch of Automator's gradient bottom strip, Aqua: separator rows and gradient. The last point of the 21 pt strip is outside the crop (the window's edge highlight covers it).",
+      "example": "visual-automator",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 1.0, "2x": 1.2 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Automator.png",
+        "crop": { "x": 1000, "y": 1770, "width": 1000, "height": 40 }
+      }
+    },
+    {
+      "name": "automator-dark",
+      "description": "An artwork-free stretch of Automator's gradient bottom strip, Dark Aqua: separator rows and gradient. The last point of the 21 pt strip is outside the crop (the dark window's inner border covers it).",
+      "example": "visual-automator",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 1.2, "2x": 1.4 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Automator.png",
+        "crop": { "x": 1000, "y": 1770, "width": 1000, "height": 40 }
+      }
+    },
+    {
+      "name": "script-editor-light",
+      "description": "An artwork-free stretch of Script Editor's flat bottom strip, Aqua: hairline and fill. The last point of the 23 pt strip is outside the crop.",
+      "example": "visual-script-editor",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.4, "2x": 0.7 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Script-Editor.png",
+        "crop": { "x": 400, "y": 1440, "width": 1000, "height": 44 }
+      }
+    },
+    {
+      "name": "script-editor-dark",
+      "description": "An artwork-free stretch of Script Editor's flat bottom strip, Dark Aqua: hairline and fill. The last point of the 23 pt strip is outside the crop.",
+      "example": "visual-script-editor",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": { "1x": 0.003, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.4, "2x": 0.7 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Script-Editor.png",
+        "crop": { "x": 400, "y": 1440, "width": 1000, "height": 44 }
+      }
+    },
+    {
+      "name": "system-information-light",
+      "description": "The breadcrumb strip of System Information, Aqua, whole crop: the icon is a stand-in for the application's artwork and the label is set in the fallback font.",
+      "example": "visual-system-information",
+      "appearance": "light",
+      "budget": { "1x": 0.057, "2x": 0.0383 },
+      "deltaBudget": { "1x": 4.4, "2x": 4.7 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Information.png",
+        "crop": { "x": 114, "y": 1074, "width": 1400, "height": 40 }
+      }
+    },
+    {
+      "name": "system-information-light-strip",
+      "description": "As system-information-light with the icon and the label masked, to score the strip alone.",
+      "example": "visual-system-information",
+      "appearance": "light",
+      "masks": [{ "x": 5, "y": 2, "width": 140, "height": 17 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.004, "2x": 0.0006 },
+      "deltaBudget": { "1x": 0.4, "2x": 0.4 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Information.png",
+        "crop": { "x": 114, "y": 1074, "width": 1400, "height": 40 }
+      }
+    },
+    {
+      "name": "system-information-dark",
+      "description": "The breadcrumb strip of System Information, Dark Aqua, whole crop: the icon is a stand-in for the application's artwork and the label is set in the fallback font.",
+      "example": "visual-system-information",
+      "appearance": "dark",
+      "budget": { "1x": 0.055, "2x": 0.0375 },
+      "deltaBudget": { "1x": 4.1, "2x": 4.4 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Information.png",
+        "crop": { "x": 114, "y": 1074, "width": 1400, "height": 40 }
+      }
+    },
+    {
+      "name": "system-information-dark-strip",
+      "description": "As system-information-dark with the icon and the label masked, to score the strip alone.",
+      "example": "visual-system-information",
+      "appearance": "dark",
+      "masks": [{ "x": 5, "y": 2, "width": 140, "height": 17 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.004, "2x": 0.0009 },
+      "deltaBudget": { "1x": 0.4, "2x": 0.4 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Information.png",
+        "crop": { "x": 114, "y": 1074, "width": 1400, "height": 40 }
+      }
+    },
+    {
+      "name": "long-message-light",
+      "description": "A message longer than the bar is cut and the trailing content stays inside the bar. No screenshot shows it; the pixel is the trailing swatch, which a message that is not cut pushes out of the bar.",
+      "example": "visual-long-message",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 300, "height": 23 },
+        "pixels": [
+          {
+            "x": 13,
+            "y": 12,
+            "color": "#242424",
+            "tolerance": 2,
+            "note": "leading swatch, the label colour over the bar"
+          },
+          {
+            "x": 287,
+            "y": 12,
+            "color": "#242424",
+            "tolerance": 2,
+            "note": "trailing swatch, still inside the bar"
+          },
+          {
+            "x": 270,
+            "y": 12,
+            "color": "#f0f0f0",
+            "tolerance": 1,
+            "note": "bar fill between the cut message and the trailing swatch"
+          }
+        ]
+      }
+    },
+    {
+      "name": "long-message-dark",
+      "description": "A message longer than the bar is cut and the trailing content stays inside the bar. No screenshot shows it; the pixel is the trailing swatch, which a message that is not cut pushes out of the bar.",
+      "example": "visual-long-message",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 300, "height": 23 },
+        "pixels": [
+          {
+            "x": 13,
+            "y": 12,
+            "color": "#dfdfe0",
+            "tolerance": 2,
+            "note": "leading swatch, the label colour over the bar"
+          },
+          {
+            "x": 287,
+            "y": 12,
+            "color": "#dfdfe0",
+            "tolerance": 2,
+            "note": "trailing swatch, still inside the bar"
+          },
+          {
+            "x": 270,
+            "y": 12,
+            "color": "#2b2c2f",
+            "tolerance": 1,
+            "note": "bar fill between the cut message and the trailing swatch"
+          }
+        ]
+      }
+    }
+  ]
+}

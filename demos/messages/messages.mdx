@@ -1,0 +1,580 @@
+---
+title: Messages
+description: The Messages window of macOS 10.15 with its Preferences, a list of conversations beside a transcript of bubbles in which Return sends what is typed, built from the library alone.
+layout: full
+order: 120
+---
+
+<Example name="basic" />
+
+Choose a conversation, type a message and press Return, search, start a new conversation with
+the compose button. Messages is simulated: nothing is sent anywhere and nothing is stored, the
+people are invented, and nothing of Apple's artwork is reproduced: the glyphs of the buttons
+are original line drawings, and a contact's picture, the icons of the Preferences panes and
+the folder in a pop-up button are abstract placeholders, a plain disc and plain squares in
+one grey, which the visual comparisons mask (see Fidelity).
+The first conversation holds the two messages of the reference screenshots.
+
+## What it shows
+
+- A [Window](/components/window) without a title bar: the
+  [Window Controls](/components/window-controls) float over the conversation list, and the
+  strip over the list and the bar over the transcript are the window's drag regions.
+- A [Split View](/components/split-view) of two panes with a divider that can be dragged. The
+  left pane is on the sidebar material and holds a [Search Field](/components/search-field)
+  in its sidebar variant, set to Messages' 21 pt through the field's height hook, and the
+  compose button, a compact [Push Button](/components/push-button) around a glyph, at
+  Messages' 22 pt height.
+- The conversations are a [List View](/components/list-view) of 64 pt rows: a placeholder
+  disc for the picture, the
+  name with the time, and up to two lines of the last message. The list is always
+  emphasised (`emphasis="always"`), because Messages keeps its selected conversation
+  emphasised whether or not the list has the keyboard, and in a window that is not key; a
+  row's time, its Do Not Disturb mark and its last message are in the list view's
+  `ListViewRowDetail`, which draws them in the detail colour of a selected row there. The
+  list's own
+  surface is transparent, so that it stands on the pane's material. Search narrows the list
+  to the conversations whose name or messages hold the text, without regard to case or
+  accents and with every character taken as itself; an empty result is an
+  [Empty State](/components/empty-state).
+- The bar over the transcript has two [Labels](/components/label), "To:" and the name, and
+  Details: a [Borderless Button](/components/borderless-button) in its link colour. It opens a
+  [Popover](/components/popover) with a [Checkbox](/components/checkbox) for Do Not Disturb,
+  which marks the conversation's row.
+- The transcript is a [Scroll View](/components/scroll-view) around the parts of the
+  [Message Bubble](/components/message-bubble): the transcript, a header with a time over
+  each run of messages that follows more than an hour of silence, the bubbles, with the tail
+  on the last one of each writer's turn, and the status under the last message sent. A
+  conversation that goes by text message has green bubbles.
+- The message field is a [Text Field](/components/text-field) with the capsule bezel, with an
+  [Image Button](/components/image-button) inside it, which adds an emoji, and another beside
+  it, the audio button, disabled in this demo; on the served desktop it records an audio message in a
+  conversation between accounts. Return sends what is typed: the
+  message becomes the last bubble of the selected conversation, Delivered moves under it,
+  the conversation's row shows it with its time and goes to the top of the list, the field is
+  emptied and the transcript scrolls to its end. A message of nothing but spaces is not sent.
+  What is typed and not sent stays with its conversation. The message goes to the
+  conversation the transcript shows, also while a search leaves that conversation out of the
+  list.
+- The compose button starts a conversation: its recipient is typed in a Text Field without a
+  bezel in the bar, Return there goes on to the message, and the conversation is listed at
+  once, at the top, as New Message until its recipient has a name. One that is never written
+  to is given up when another is chosen. Nothing
+  is sent to a conversation without a recipient: Return in the message goes to the
+  recipient's field.
+- Times are written against the `now` the window is given: the hour on the same day,
+  "Yesterday", the weekday up to six days back, otherwise the date. By default that moment is
+  fixed at the minute of the last default message, so the page shows the same text whenever
+  it is rendered, and a message that is sent carries it.
+- Every library control is as the library draws it. The window sets a control's width, its
+  margins and its place, and the custom properties that the control's own page documents as
+  hooks: the divider's colour, the search field's height, the text
+  field's fill and the image buttons' padding. `messages.tsx` names each with the page that
+  documents it.
+
+## Preferences
+
+<Example name="preferences" />
+
+Messages' preferences are a [Preferences Window](/components/preferences-window) with a
+[Preferences Toolbar](/components/preferences-toolbar) of two panes. General is the pane of
+the screenshots, laid out by a [Form](/components/form) with the label column's width set
+through its `labelWidth`: three [Pop Up Buttons](/components/pop-up-button), one with an icon
+before its title, a group of four [Checkboxes](/components/checkbox), a
+[Slider](/components/slider) with seven tick marks and a
+[Help Button](/components/help-button). Changes take effect at once. On a page by itself, one
+setting does something:
+
+| Setting | Effect |
+| --- | --- |
+| General, Text size | The size of the text in the transcript's bubbles: 10 to 16 pt, 13 pt at the captured step. The bubble is the library's and grows around its text. |
+| General, Play sound effects and Message received sound | A short tone when a message goes out and when one comes from someone else, in a conversation without Do Not Disturb. Each choice is a tone of its own, standing in for Apple's sounds. |
+
+Served by the desktop, the Help buttons open Help Viewer on Messages, the iMessage pane names the
+person's account, and the settings with nothing to act on there are dimmed and say why
+(`SERVED_UNAVAILABLE`).
+
+The other settings keep their state and change nothing. Only the General pane has a reference
+screenshot; the iMessage pane is a plausible stand-in.
+
+The app opens its preferences with Command-comma (Control-comma off Apple platforms) while
+the keyboard focus is in one of its windows, and through the `preferencesOpen` prop, which is
+how a menu bar's Preferences command reaches it; the button under the first example stands
+for that command.
+
+## How it is built
+
+The window is one component, `Messages` in `messages.tsx`, over the data and the pure
+functions of `messages-data.ts` (the default conversations, `byRecency`, `matches`,
+`listTime`, `transcriptTime`, `minutesBetween`). `messages-preferences.tsx` is the
+Preferences window, `messages-artwork.tsx` the glyphs and the placeholders, `messages.css`
+the layout and `messages.tokens.css` the measured colours.
+
+**State.** Everything the window shows is derived from a few pieces of state. The
+conversations are kept in the order of the list, the one last heard from first; the
+selection is an `id`; and what is typed and not sent is kept per conversation, in a `Map`,
+so that an `id` may be any text:
+
+```tsx
+const [conversations, setConversations] = useState(() => byRecency(defaultConversations));
+const [selectedId, setSelectedId] = useState<string | null>(/* the first, or the one asked for */);
+const [query, setQuery] = useState("");
+const [texts, setTexts] = useState<ReadonlyMap<string, string>>(() => new Map());
+
+const selected = conversations.find((conversation) => conversation.id === selectedId) ?? null;
+const visible = useMemo(
+  () => conversations.filter((conversation) => matches(conversation, query)),
+  [conversations, query],
+);
+```
+
+**Selecting a conversation.** The List View is controlled: its `value` is the selected `id`
+and its `onValueChange` calls `select`, which also gives up a conversation that the compose
+button started and that was never written to, and closes the Details popover. The
+transcript, the name in the bar and the message field all read `selected`, so nothing else
+has to be told:
+
+```tsx
+<ListView
+  count={visible.length}
+  rowHeight={64}
+  separator="inset"
+  emptyRows="separator"
+  renderRow={renderRow}
+  getRowId={(index) => visible[index]?.id ?? index}
+  value={selectedId === null ? [] : [selectedId]}
+  onValueChange={(next) => select(typeof next[0] === "string" ? next[0] : null)}
+  onRowAction={() => field.current?.focus()}
+/>
+```
+
+**Sending.** Return in the message field calls `send`. It takes the selected conversation's
+draft, refuses an empty one and a conversation without a recipient, appends the message
+with the window's present as its time, moves the conversation to the top of the list and
+empties the draft. A layout effect keyed on the selection and the number of messages then
+scrolls the transcript to its end:
+
+```tsx
+const send = () => {
+  if (!selected) return false;
+  const text = (texts.get(selected.id) ?? "").trim();
+  if (text === "" || selected.name.trim() === "") return false;
+  const message = { id: /* an id no message of it has */, from: "me", text, at: present };
+  const id = selected.id;
+  setConversations((all) => {
+    const target = all.find((conversation) => conversation.id === id);
+    if (!target) return all;
+    return [
+      { ...target, messages: [...target.messages, message] },
+      ...all.filter((conversation) => conversation.id !== id),
+    ];
+  });
+  setText(id, () => "");
+  onSend?.(id, message);
+  return true;
+};
+```
+
+**The transcript.** The bubbles are not stored: each render walks the selected
+conversation's messages and composes the parts of the Message Bubble component. A message
+that follows more than an hour of silence (`RUN_GAP`) gets a `MessageTranscriptHeader` with
+its time; a bubble has its tail when it ends a run or its writer's turn; and the one
+`MessageStatus` stands under the last message sent, found by its place and not by its `id`:
+
+```tsx
+const delivered = all.findLastIndex((message) => message.from === "me");
+all.forEach((message, index) => {
+  const before = all[index - 1];
+  const after = all[index + 1];
+  const starts = !before || minutesBetween(before.at, message.at) > RUN_GAP;
+  const ends = !after || minutesBetween(message.at, after.at) > RUN_GAP;
+  items.push(
+    <Fragment key={/* the id with its count among equal ids */}>
+      {starts ? (
+        <MessageTranscriptHeader title={index === 0 ? title : undefined}>
+          {transcriptTime(message.at, present)}
+        </MessageTranscriptHeader>
+      ) : null}
+      <MessageBubble
+        direction={message.from === "me" ? "sent" : "received"}
+        service={selected.service}
+        sender={message.from === "me" ? "You" : name}
+        tail={ends || after?.from !== message.from || index === delivered}
+      >
+        {message.text}
+      </MessageBubble>
+      {index === delivered ? <MessageStatus>Delivered</MessageStatus> : null}
+    </Fragment>,
+  );
+});
+```
+
+The items go into a `MessageTranscript` (a `log`, so a sent message is announced) inside a
+Scroll View whose viewport the window holds a ref to.
+
+**Settings and the Preferences window.** The settings are one object, held by the window or
+by its owner (`settings`, `defaultSettings`, `onSettingsChange`), and the Preferences window
+takes the same three props. The window renders the Preferences beside itself, through a
+portal into the element that positions it, with the settings it has; the one setting that
+acts, Text size, is read where the bubbles are composed:
+
+```tsx
+const settings = givenSettings ?? ownSettings;
+const step = textSizeStep(settings.textSize); // a step of the slider, 0 to 6
+const size = TEXT_SIZES[step] ?? 13; // 10 to 16 pt
+
+<MessagesPreferences
+  state={stateOf("preferences")}
+  settings={settings}
+  onSettingsChange={setSettings}
+  onClose={() => setPreferences(false)}
+/>
+```
+
+At the captured step a bubble's text is the bubble's own. At another step the text is set in
+an element of the demo's own inside the bubble, in that size, and the library's bubble grows
+around it. Which of the two windows is in front is state as well (`front`): a press on
+either brings it forward, the front one has the `state` the owner gave the app and the other
+is inactive, and their `z-index` follows (see Hosting the window).
+
+## Hosting the window
+
+`Messages` renders the library's `Window` as its root and passes every `Window` prop to it, so
+it does not assume it fills the page. Place it with `style`; a window manager gives it `state`,
+the size, and eight more props that the component takes out before the rest goes to the
+`Window`. These are the props a [Managed Window](/components/managed-window)'s `render` form
+supplies, so the component can be spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { messagesApp } from "./app";
+
+<ManagedWindow
+  id={messagesApp.id}
+  defaultFrame={{ x: 80, y: 60, ...messagesApp.defaultSize }}
+  render={(props) => <messagesApp.component {...props} />}
+/>;
+```
+
+The Preferences window is not inside the window's element: it is rendered into the window's
+offset parent, or into the element given as `windowsContainer`, and positioned over the
+window, 95 pt right of its corner and 70 pt below it unless `preferencesOffset` says
+otherwise; it follows the window when its owner moves it. The app decides which of its two
+windows is in front: that one has the `state` the manager gave the app, and the other is
+inactive. A press on either brings that one to the front, and it is painted over the other:
+while its Preferences are open the window takes the `z-index` its owner gave it in `style`
+(a number, a number as text, or an expression such as a custom property), or 1, and the
+Preferences are one above or one below what the browser computes that level to for the
+window. A keyword such as `auto` or `inherit` counts as none given. Here the level is a
+custom property set on the window itself:
+
+<Example name="level" />
+
+When the Messages window covers the
+Preferences, Command-comma brings them back over it.
+
+A desktop that manages every window hosts the Preferences itself, from the descriptor's
+`preferences`: the component, the frame it opens at (`defaultSize`) and `sharesSettings`,
+which says that both windows take the `settings` the Preferences report. The desktop demo
+does this for every app that names its Preferences. The Preferences window takes what a
+managed window's `render` form supplies as well. It sizes
+itself to its pane, so it is hosted as a window that is not resizable, at the descriptor's
+width and with `height="auto"` in place of the manager's height (a managed window stretches
+what it hosts to its frame), and the manager's frame is given the height it has. The
+example below does the same by hand, with the library's window manager: the
+Messages window is then told that its own Preferences stay closed
+(`preferencesOpen={false}`), asks for the hosted one through `onPreferencesOpenChange` on
+Command-comma, and shares its `settings` with it:
+
+<Example name="desktop" />
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `defaultConversations` | `MessagesConversation[]` | The conversations the window starts with, each with its messages oldest first; five invented ones by default. None is a window in which the compose button starts the first; one without messages is listed after the others; one without a name has its recipient typed in the bar; of two with one `id` the first is kept. |
+| `defaultConversation` | `string \| null` | The conversation shown at first; by default, and for an `id` that no conversation has, the one last heard from. `null` shows none. |
+| `onConversationChange` | `(id: string \| null) => void` | Called with the conversation the user selects or starts. |
+| `onSend` | `(id: string, message: MessagesMessage) => void` | Called with the conversation and the message when one is sent. |
+| `now` | `string` | The moment taken as the present, as `YYYY-MM-DDTHH:mm`; `"2019-10-07T15:27"` by default, and for text that is not such a stamp. `stampOf(new Date())` from `messages-data` gives the real one. |
+| `material` | `"translucent" \| "opaque"` | The list's surface: vibrant over a desktop (the default), or flat on a plain page. |
+| `settings`, `defaultSettings`, `onSettingsChange` | `MessagesSettings`, `MessagesSettings`, `(settings: MessagesSettings) => void` | The settings of the Preferences window, held by the owner or by the window. A Text size that is not a step from 0 to 6 is taken as the nearest step. |
+| `preferencesOpen`, `defaultPreferencesOpen`, `onPreferencesOpenChange` | `boolean`, `boolean`, `(open: boolean) => void` | The Preferences window, controlled or not. |
+| `preferencesOffset` | `{ x: number; y: number }` | Where the Preferences window opens, from the window's corner. |
+| `windowsContainer` | `HTMLElement` | The element the Preferences window is rendered into. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `controlsProps` | `WindowControlsProps` | Further props for the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Called for the strip over the list and the bar over the transcript, outside their controls. |
+| `extraConversations` | `MessagesConversation[]` | Conversations the owner holds besides the window's own, listed with them by recency (with an unread dot for `unread`); a message sent to one is only reported through `onSend`. |
+| `onStartConversation` | `(recipients, message, draftId) => Promise<string \| null>` | Called with the first message of a conversation the compose button started, in place of keeping it in the window; the owner answers the conversation that now holds it, which the window shows instead, or `null` to keep the new one and its text. |
+| `recipientSuggestions` | `string[]` | Names the To field of a new conversation offers as it is typed. |
+| `renderMessageExtras`, `transcriptStart` | `(id, message) => ReactNode`, `Map<string, ReactNode>` | What the owner shows after a message's bubble (a reply's quote, tapbacks), and a line a transcript starts with. |
+| `onTyping` | `(id) => void` | Called as a message is typed into a conversation. |
+| `width`, `height` | `number \| string` | The frame; 730 by 520 by default, as captured. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+Two custom properties, set on the window or an ancestor, replace a colour of the window:
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-messages-list-background` | the opaque sidebar material | The list's surface with `material="opaque"`. |
+| `--mac-messages-divider-color` | `--mac-messages-divider` | The line between the list and the conversation. |
+
+The selected conversation's row is the List View's emphasised selection, in the library's
+selection colour, `--mac-color-selected-content-background`, which follows the accent. The
+window has no colour of its own for it; a page that wants another colour sets that token on
+the window or an ancestor, as the visual examples do.
+
+The list draws a 1 pt line in the last point of every row and, with the List View's
+`emptyRows="separator"`, of every empty row below the last conversation, as both captures
+do. It starts 20 pt in (the List View's `--mac-list-view-separator-inset`, where the text
+starts at 77) and is `--mac-messages-list-separator`, black at 6%: measured over the five
+empty rows of the Dark Aqua capture and the one the Aqua capture shows below the
+Preferences window.
+
+`app.ts` exports the descriptor a desktop page reads, as `messagesApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` (730 by 520), `minSize` (560 by 320), `resizable`, `menus`,
+the menu titles after the Apple menu, and `preferences`: the `MessagesPreferences` component,
+the frame it opens at as `defaultSize` (540 by 309) and `sharesSettings`. It also exports
+`MessagesPreferences`, whose root is the `PreferencesWindow`, and the types of the
+conversations and the settings.
+
+On the desktop served by its Ferrite application (`ferrite-apps/desktop`), the app's
+component is `MessagesLive` (`messages-live.tsx`), which adds a shared conversation, Ferrite
+Room, first in the list. What is sent to it goes to the application with an idempotency key
+and is resent with the same key for up to ten minutes; every browser on the desktop hears the
+room through a live feed. A message still unanswered then, or refused, says Not Delivered with
+Try Again. Try Again first reads the room: a message found there by its key is taken as
+delivered, one that is not is sent again with its first key, and while the room cannot be read
+the message stays Not Delivered. The application keeps a room's newest 200 messages and, for
+15 minutes, a receipt of each keyed message, so a resend is recognised while either still holds
+it. **Known limit:** a Try Again more than 15 minutes after a message that was in fact stored,
+in a room where more than 200 messages have been written since, sends it a second time, since
+nothing the room keeps says any longer that it arrived. Only the desktop build made for that
+application turns this on (`VITE_MACALICIOUS_API=1`); on this site and anywhere else the window
+is the plain `Messages` and nothing is fetched.
+
+The same window also holds the person's conversations with the desktop's other accounts
+(`messages-accounts.tsx`). The compose button starts one by account name, one person or
+several (a group), and the To field offers the person's contacts who are desktop users; the
+first message makes the conversation on the server, and writing to the same person again finds
+the same one. A contact whose name holds a comma is offered quoted (`"Lee, Ann" (ann)`), so
+the To field reads it as one person. Each conversation is listed with an unread dot; the one that is open shows what
+the others type, Read once they have read it (when they send read receipts, Messages >
+Preferences > iMessage), a group member's name over their messages, tapbacks and replies from
+the menu after each message, and Load Earlier Messages for history older than the newest
+hundred messages. A message is sent with a fresh idempotency key and resent with the same key
+until the server answers, so it is never stored twice; every other member is notified.
+
+**Known limits:** the list and the open conversation are read again when the desktop's
+personal live stream says the person's Messages changed, when the window gains focus, and every
+15 seconds while the page is visible, one read of each at a time (a change heard during a read
+is read after it; a tick then is skipped). The list follows changes at most every 5 seconds,
+since typing and read receipts move them too. While that stream is not connected, another person's message, typing or read receipt
+can take up to those 15 seconds to show. A person starts at most 100 conversations and writes at
+most 2,000 messages a day, and a Guest User starts none: nobody can address a guest, and its
+data ends with its time. A message the server has not taken yet is kept in this browser, in
+`localStorage` under the account's name, until it is: reloading or closing the window while it is
+being sent loses nothing, and it is sent again under its own key when Messages next opens there. It
+stays there across a sign-out, and only one the server refused is dropped, after 30 days. Where the
+browser cannot store it, the transcript says so. Messages
+to the shared room are not kept, so a reload while one is being sent loses it. A conversation of
+accounts takes files, from the Attach button or dragged from Finder: each is uploaded and goes as a
+message of its own, with a picture shown, Save to Downloads and Download; the shared room takes
+none. A tapback can be added or taken away only on a message among the newest
+hundred; one loaded with Load Earlier Messages offers no tapback commands (reactions kept
+apart from the history pages are a follow-up). The list of conversations is read from the person's
+activity index, the most recently active first. A conversation of two people has
+no name; a group's name is given when it is started or by renaming it.
+
+## Styling hooks
+
+The demo's measured lengths and font sizes are custom properties in `messages.tokens.css`,
+declared on `:root` and `[data-appearance]`; set one on the window with `style` to change it.
+That file tags each with where it comes from: the Details popover's content and the iMessage
+pane, which no screenshot shows, are provisional; the rest is measured. Left as literals in
+`messages.css`, because they are structure rather than measurements: zeros, the account
+row's 100% width, the 1 pt rules of the bars, the flex factors and grid tracks, the grid
+column numbers and the two-line clamp.
+
+| Property | Default | Controls |
+| --- | --- | --- |
+| `--mac-messages-top-gap` | `10.5px` | The strip over the list: gap between the search field and the compose button |
+| `--mac-messages-top-height` | `56px` | The strip over the list: height, its rule included |
+| `--mac-messages-top-padding-top` | `25.5px` | The strip over the list: top padding |
+| `--mac-messages-top-padding-right` | `12px` | The strip over the list: right padding |
+| `--mac-messages-top-padding-left` | `20.5px` | The strip over the list: left padding |
+| `--mac-messages-controls-top` | `5px` | The window controls: distance from the top |
+| `--mac-messages-controls-start` | `8px` | The window controls: distance from the leading edge |
+| `--mac-messages-compose-margin-top` | `-0.5px` | The compose button: top margin |
+| `--mac-messages-row-avatar-top` | `-1.5px` | A conversation's picture: vertical shift |
+| `--mac-messages-row-avatar-start` | `5.5px` | A conversation's picture: inline shift |
+| `--mac-messages-row-line-height` | `15.5px` | A conversation's lines: line height (and the first line's height) |
+| `--mac-messages-row-head-gap` | `6px` | A conversation's first line: gap between name, mark and time |
+| `--mac-messages-row-head-margin-top` | `-4px` | A conversation's first line: top margin |
+| `--mac-messages-row-text-margin-start` | `-1px` | A conversation's text: leading margin |
+| `--mac-messages-row-text-margin-end` | `6px` | A conversation's text: trailing margin |
+| `--mac-messages-row-detail-size` | `12px` | The time and the last message: font size |
+| `--mac-messages-row-time-offset` | `-0.5px` | The time: vertical shift |
+| `--mac-messages-row-snippet-offset` | `0.5px` | The last message: vertical shift |
+| `--mac-messages-row-snippet-height` | `31px` | The last message: height of its two lines |
+| `--mac-messages-header-gap` | `6px` | The bar over the transcript: gap between its items |
+| `--mac-messages-header-height` | `56px` | The bar over the transcript: height, its rule included |
+| `--mac-messages-header-padding-top` | `27px` | The bar over the transcript: top padding |
+| `--mac-messages-header-padding-right` | `14px` | The bar over the transcript: right padding |
+| `--mac-messages-header-padding-left` | `13px` | The bar over the transcript: left padding |
+| `--mac-messages-header-size` | `12px` | The bar over the transcript: font size |
+| `--mac-messages-details-offset` | `1px` | The Details link: vertical shift |
+| `--mac-messages-input-gap` | `7px` | The bar of the message field: gap between its items |
+| `--mac-messages-input-button-margin` | `-2px` | The bar of the message field: how far a 28 pt button reaches past the field |
+| `--mac-messages-effect-balloon` | `30px` | A message's screen effect: a balloon's width |
+| `--mac-messages-effect-piece` | `7px` | A message's screen effect: a piece of confetti or a spark |
+| `--mac-messages-effect-beam` | `2px` | A message's screen effect: a laser's height |
+| `--mac-messages-effect-reach` | `170px` | A message's screen effect: how far a spark flies |
+| `--mac-messages-picture-size` | `48px` | A conversation's people in its row: the picture's size |
+| `--mac-messages-monogram-font-size` | `20px` | A person's initials in that picture |
+| `--mac-messages-monogram-small-font-size` | `12px` | A group member's initials there |
+| `--mac-messages-recording-gap` | `6px` | A recording beside the message field: gap between its parts |
+| `--mac-messages-recording-dot` | `8px` | A recording: the red dot while it records |
+| `--mac-messages-recording-player-width` | `180px` | A recording held: its player's width |
+| `--mac-messages-recording-player-height` | `24px` | A recording held: its player's height |
+| `--mac-messages-input-height` | `41px` | The bar of the message field: height, its rule included |
+| `--mac-messages-input-padding-right` | `7px` | The bar of the message field: right padding |
+| `--mac-messages-input-padding-left` | `14px` | The bar of the message field: left padding |
+| `--mac-messages-details-gap` | `8px` | The Details popover's content: gap between its items |
+| `--mac-messages-details-min-width` | `156px` | The Details popover's content: least width |
+| `--mac-messages-preferences-general-margin-top` | `-10px` | The General pane's block: top margin |
+| `--mac-messages-preferences-general-margin-bottom` | `-5px` | The General pane's block: bottom margin |
+| `--mac-messages-preferences-size-width` | `198px` | The Text size slider and its letters: width |
+| `--mac-messages-preferences-size-margin-top` | `-3px` | The Text size slider and its letters: top margin |
+| `--mac-messages-preferences-size-margin-start` | `1px` | The Text size slider and its letters: leading margin |
+| `--mac-messages-preferences-size-letter-offset` | `2.5px` | The two letters over the slider: vertical shift |
+| `--mac-messages-preferences-imessage-gap` | `12px` | The iMessage pane: gap between its items and in the account row |
+| `--mac-messages-preferences-indent-gap` | `6px` | The iMessage pane's indented group: gap between its items |
+| `--mac-messages-preferences-indent-margin-start` | `20px` | The iMessage pane's indented group: leading margin |
+| `--mac-messages-sender-margin-start` | `14px` | A group member's name over their messages: leading margin |
+| `--mac-messages-suggestions-gap` | `2px` | The contacts offered under the To field: gap between them |
+| `--mac-messages-suggestions-padding` | `4px 13px` | The contacts offered under the To field: padding |
+| `--mac-messages-extras-gap` | `4px` | What a message carries under its bubble: gap between its items |
+| `--mac-messages-extras-margin-inline` | `14px` | What a message carries under its bubble: margins from the transcript's edges |
+
+## Accessibility
+
+- Each window is a `region`: the main one is named "Messages", the preferences by the
+  selected pane.
+- The conversations are a `listbox`: the arrow keys move the selection, typing selects by
+  name, and Return goes to the message field. A row's name is its content: the person, the
+  time and the last message; a conversation set to Do Not Disturb says so in an image's name.
+- The transcript is a `log`, named after the person, so a message that is sent is announced
+  without moving the focus; each bubble says who wrote it before its text. The scrolling
+  element is a tab stop, so the transcript can be scrolled from the keyboard.
+- The message field is named "Message" and the recipient's field "To"; the search field, the
+  compose button, the emoji button and the audio button are named too. In this demo the audio button is
+  disabled: without a server the demo keeps no recording.
+- Starting a conversation moves the keyboard focus to its recipient's field, and Return in
+  the message field without a recipient moves it back there. A conversation that is given
+  without a recipient shows the field and leaves the focus where it is.
+- Details is a button, named by its text, that opens a popover named after the person;
+  Escape closes it.
+- In the Preferences window each pop-up button is named by its label, the four checkboxes
+  are a group named "Application:", and the slider is named "Text size" and says its value
+  in points.
+- The windows do not contain the focus: Tab moves on through the page, as between any two
+  windows of one page.
+
+## Fidelity
+
+`messages.visual.json` compares the scene of the two Messages screenshots, in which the
+Messages window is inactive behind its key Preferences window, from the Preferences window's
+left edge to the Messages window's right edge, in both appearances: once as captured, with
+nothing masked but the three abstract placeholders, and once
+with the text, the stand-in artwork and what the desktop picture decides masked. The masks
+cover every abstract placeholder whole: the disc that stands for the contact's picture, the
+two icons of the Preferences toolbar (not the items around them: their labels and the
+selection are scored) and the square that stands for the folder in the pop-up
+button; and the glyphs of the compose, emoji and audio buttons. Scores from
+`npm run visual -- messages/` in Chromium on Linux with the fallback font: the share of
+pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `window-light` | 12.19% | 8.50 | 11.59% | 8.58 |
+| `window-light-layout` (masked) | 1.17% | 1.02 | 0.29% | 0.76 |
+| `window-dark` | 5.30% | 5.87 | 4.83% | 5.78 |
+| `window-dark-layout` (masked) | 0.85% | 1.10 | 0.25% | 0.88 |
+
+The masked rows count a pixel as differing at a colour distance of 0.05, half the default.
+The unmasked rows are mostly the desktop picture: it fills an eighth of the Aqua crop. The
+masked rows score the message field and the compose button with the search field beside it:
+the library's capsule Text Field and compact Push Button.
+
+`send-light` and `send-dark` are not comparisons with a screenshot: they click in the message
+field of the same scene, type two letters and press Return in a real browser, and hold eight
+pixels to the tokens: the new bubble's gradient at the trailing edge under what was the
+transcript's last bubble, the transcript's background beside the bubble, at the leading edge
+and under its status, and where the status stood, and the window controls of the window that
+came to the front and of the one now behind. They fail when nothing is sent and when the
+bubble is anywhere else. Pixels cannot show which conversation a bubble belongs to, what its
+text is, that the field was emptied or that the row changed: `messages.browser.test.tsx`
+drives the window with five conversations in Chromium, Firefox and WebKit, whichever are
+installed, with a real click and real key
+presses, and reads the name in the bar, the transcript's items in order and that they are
+visible, the text of the
+last bubble and Delivered under it, the empty field, the row's last message, and the
+transcripts of the four other conversations, which do not have the message.
+
+Where Messages draws a control in a way the library's control has no option or hook for, the
+demo keeps the library's control as it is:
+
+- The message field is the library's capsule Text Field. While it has the keyboard in a key
+  window it shows the library's focus ring, which Messages does not draw; the recipient's
+  field does too.
+- The compose button is the library's compact Push Button, which has the capture's width and
+  height; the capture's bezel has rounder corners.
+- The Details link. Messages draws it in `#3091ff` in both appearances. The library's
+  Borderless Button in its link colour is `#0168da` in Aqua and `#429bff` in Dark Aqua.
+
+The other differences:
+
+- The captures are of a region of the screen, so the desktop picture is in them: around the
+  windows, and through the conversation list, whose material is vibrant even while the
+  window is not key. The picture is not reproduced. The scene paints a flat stand-in colour
+  where the desktop shows (masked), and gives the list the opaque surface in the tint
+  measured over the first conversation (`#cfcbc0`, Dark Aqua `#2c2e32`), the selected row its
+  measured mean (`#186de1`, `#0866d2`) and the divider its measured colour: the list and the
+  divider through the two custom properties above, the selected row through the library's
+  selection colour token, set for the scene. In the Aqua capture the picture shades the list from beige at the
+  top to blue-grey at the bottom and brightens the selected row towards the right; the part
+  of the list under the Preferences window, where a flat colour is furthest off, is masked.
+  On a plain page (`material="opaque"` without those settings) the list is the library's
+  opaque sidebar surface and the selection the accent's.
+- The glyphs of the compose, emoji and audio buttons are original line drawings. A
+  contact's picture, the two Preferences toolbar icons and the folder in a pop-up button are
+  not drawn at all: each is an abstract placeholder, a plain disc or a plain rounded square
+  in one neutral grey that is not taken from the captures, and the masked comparisons leave
+  them out. Apple's artwork is not reproduced or approximated. In Dark Aqua the capture's
+  emoji face is filled; the stand-in is a ring in
+  both appearances.
+- The person is invented: the capture's name is blurred out, in the row, in the bar and in
+  the transcript's header. The text is set in the fallback font off Apple platforms, which
+  also makes the received bubble 2.5 pt wider than the capture's.
+- The list's lines are measured only under empty rows: in both captures the one
+  conversation is selected, and the selection covers its line. That the line under a
+  conversation that is not selected is the same one is inferred.
+- The window controls of the inactive window are the library's `#dedede` (`#4b4b4e`); over
+  the tinted list the Aqua capture's are darker, `#cecece` with a ring.
+- The top edge of both windows is the library's rim; the captures have a brighter line there
+  (`#f8f8f8` over the bar's `#f0f0f0`, and `#777777` in Dark Aqua where the rim is `#535353`).
+- The audio button is disabled, which draws its glyph at half strength: close to the
+  capture's in Aqua, dimmer than it in Dark Aqua.
+- In Dark Aqua the Preferences pane is the library's window background, `#323232`, where the
+  capture has `#303133`.
+- The colours of the two bars, the transcript and the field are measured in the captures,
+  where the window is inactive, and are used in a key window too; no screenshot shows
+  Messages as the key window.
+- Sending, searching, the compose flow, the Details popover (one checkbox, where Messages
+  has more), a conversation by text message, another text size, the iMessage pane, the
+  windows on a desktop and everything else the demo does when something is pressed have no
+  reference screenshot; they are composed from library components to Catalina's conventions.
+  The emoji button opens the host's character palette where it has one, and otherwise adds one
+  character, and a
+  message is marked Delivered at once: nobody answers.

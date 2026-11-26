@@ -1,0 +1,197 @@
+---
+title: Window Manager
+description: The desktop that managed windows live on. It decides which window is key, keeps their stacking order, frames, and minimized, zoomed and full-screen flags, and gives a Dock or a Window menu a hook to read and drive them.
+order: 80
+---
+
+<Example name="basic" both />
+
+A [Window](/components/window) only draws a frame. Something has to decide which window is
+key, which is in front and where each one is: on a Mac that is the window server, here it is
+`WindowManager`. It renders one positioned element, the desktop, and keeps the state of every
+[Managed Window](/components/managed-window) inside it. Base UI has no such primitive.
+
+## Usage
+
+```tsx
+import { ManagedWindow, useManagedWindow } from "macalicious/managed-window";
+import { TitleBar } from "macalicious/title-bar";
+import { WindowBody } from "macalicious/window";
+import { WindowControls } from "macalicious/window-controls";
+import { WindowManager } from "macalicious/window-manager";
+import "macalicious/window-manager.css";
+
+function Chrome({ title }: { title: string }) {
+  const managed = useManagedWindow();
+  return (
+    <TitleBar
+      title={title}
+      controls={<WindowControls {...managed.controlsProps} />}
+      {...managed.titleBarProps}
+    />
+  );
+}
+
+<WindowManager insets={{ top: 22, bottom: 70 }} style={{ height: "100vh" }}>
+  <ManagedWindow id="notes" app="notes" title="Notes" defaultFrame={{ x: 80, y: 60, width: 640, height: 420 }}>
+    <Chrome title="Notes" />
+    <WindowBody>…</WindowBody>
+  </ManagedWindow>
+</WindowManager>
+```
+
+Or copy the source into your project: `npx macalicious add window-manager managed-window`.
+
+**Everything on the desktop goes inside the manager**: the wallpaper, the menu bar, the Dock
+and the windows. Give the element a size; windows are positioned from its top-left corner and
+clipped to it. A translucent surface blurs only what is in the same page behind it, so a menu
+bar or a Dock shows the windows under it only when they share this element
+([Fidelity limits](/fidelity)).
+
+`insets` is the space windows keep clear of: `top` for a menu bar, `bottom` (or `left`,
+`right`) for a Dock. A zoomed window fills what is left and no title bar can be dragged above
+`top`. A full-screen window ignores the insets and covers the whole element.
+
+### Layers
+
+The manager is its own stacking context. Windows take `z-index` 1 to 399 in the order they
+were last key, panels come above every ordinary window at 401 to 799, and a full-screen
+window is above 1000 while it is key. The ranges are bounded: no number of windows reaches
+the layer between them, where a menu bar and a Dock belong (beyond 399 windows, the ones
+furthest back share the lowest place):
+
+```css
+.my-menu-bar,
+.my-dock {
+  z-index: var(--mac-window-manager-layer-chrome); /* 900 */
+}
+```
+
+### A Dock, a Window menu, Mission Control
+
+<Example name="dock" />
+
+Any component inside the manager reads and drives the windows with `useWindowManager()`. The
+hook has to be called below `<WindowManager>`, so the Dock and the menu bar are components of
+their own, not the component that renders the manager.
+
+| Need | How |
+| --- | --- |
+| The running applications | The distinct `app` values in `windows`. The manager stores no icons: map the `app` id to your icon. |
+| The minimized windows | `windows.filter((w) => w.minimized)`; a click on the tile calls `focus(id)`, which restores the window, brings it to the front and gives it the keyboard focus. |
+| Launch an application | Render its `ManagedWindow`, or set its `open` to `true`. Closing arrives as `onOpenChange(false)`. |
+| Where minimizing windows shrink to | Put `data-window-minimize-target` on the Dock or on the tile area. Without one they go straight down. |
+| Hide the menu bar and the Dock in full screen | While `fullScreenWindowId` is set. |
+| A Window menu | `windows` for the list, `focus(id)` for an item, `minimize(keyWindowId)`, `zoom(keyWindowId)` and `cycle()` for the commands. |
+
+## Guidelines
+
+From the macOS Human Interface Guidelines on
+[window anatomy](https://web.archive.org/web/20200503170954/https://developer.apple.com/design/human-interface-guidelines/macos/windows-and-views/window-anatomy/):
+
+- Exactly one window is key and takes keyboard input. Clicking a window brings it forward and
+  makes it key; windows behind it look subdued.
+- A panel floats above the document windows of its application, and while it is key the
+  window it serves stays main: its frame still looks active.
+- People expect to move a window by its title bar, resize it from any edge or corner, and find
+  close, minimize and zoom in the same place in every window.
+- Do not put a window where its title bar is under the menu bar or off the screen, since it
+  can no longer be moved.
+
+## Variants and states
+
+The manager has no look of its own. What it decides is written on each managed window:
+
+| Decision | Rule |
+| --- | --- |
+| Key window | The window that was last pressed, focused or asked for with `focus(id)`, among those not minimized. The store's `rest()` leaves no window key, as a press on the desktop does on a Mac, until a window is raised, opened or cycled to. |
+| Main window | While a panel is key, the front ordinary window. |
+| Stacking | Order of last use; panels above ordinary windows; a full-screen window above everything while it is key. |
+| Full screen behind another window | Bringing another window in front of a full-screen one suspends full screen: the full-screen window keeps its size, takes its ordinary place in the order, and `fullScreenWindowId` is unset, so the menu bar and the Dock come back. It covers them again when it is key again. |
+| Keyboard focus | Every command (`focus`, `minimize`, `zoom`, `toggleFullScreen`, `close`, `cycle`) ends by moving the keyboard focus into the window that is key, also when that window was key already. A press or Tab into a window moves nothing: the focus is there. A window that opens while the focus is inside the desktop (launched from a Dock, a menu or another window) takes the focus; one that is there when the page loads, or opens while the focus is elsewhere on the page, does not. A window that goes away with the focus inside hands it to the next. |
+| After minimize or close | The next window in the order becomes key and takes the keyboard focus. |
+
+## Sizes
+
+The manager is as large as you make it (`style`, `className`). It has no `size` prop.
+
+## API
+
+<PropsTable name="WindowManagerProps" />
+
+### useWindowManager()
+
+Returns the same object until a window opens, closes, changes state or settles in a new
+frame. It does not change while a window is being dragged.
+
+| Member | Type | Description |
+| --- | --- | --- |
+| `windows` | `readonly ManagedWindowInfo[]` | Every open window, minimized ones included, in the order they were last key. |
+| `keyWindowId` | `string \| undefined` | The key window, if any window is showing. |
+| `fullScreenWindowId` | `string \| undefined` | The key window when it is in full screen: the time to hide a menu bar and a Dock. |
+| `focus(id)` | `(id: string) => void` | Bring to the front, make key, move the keyboard focus in, also when the window is key already. Restores a minimized window. Does nothing for an id that is not open. |
+| `minimize(id)` | `(id: string) => void` | Minimize; the next window becomes key. Ignored for a full-screen window. |
+| `zoom(id)` | `(id: string) => void` | Zoom to the space inside the insets, or back, and make the window key; a minimized window comes back. A window that is not resizable does not zoom, but one that is zoomed can always go back. |
+| `toggleFullScreen(id)` | `(id: string) => void` | Enter or leave full screen, and make the window key; a minimized window comes back. A window that is not resizable does not enter full screen, but one that is in it can always leave. |
+| `close(id)` | `(id: string) => void` | Close, as the close button does: the window's `onOpenChange(false)` is called. |
+| `cycle(backwards?)` | `(backwards?: boolean) => void` | Make the next window key; `true` goes the other way. |
+
+### ManagedWindowInfo
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | The window's id, unique in its manager. |
+| `app` | `string` | The application it belongs to. |
+| `title` | `string` | Its name in a Dock, a Window menu or Mission Control. |
+| `state` | `"key" \| "main" \| "inactive"` | Its window state. |
+| `minimized`, `zoomed`, `fullScreen` | `boolean` | Its flags. |
+| `away` | `boolean` | On a desktop that is not showing, as on another Space: not shown, `inert`, and never key. Set it with the store's `patch`; `focus(id)`, `zoom(id)` and `toggleFullScreen(id)` bring the window back. |
+| `panel` | `boolean` | A utility panel. |
+| `resizable` | `boolean` | Whether it can be resized, zoomed and shown in full screen. |
+| `minWidth`, `minHeight` | `number` | Its smallest size. |
+| `z` | `number` | Stacking position, 1 furthest back; also its `z-index`. 1 to 399 for a window, 401 to 799 for a panel, above 1000 for a full-screen window while it is key. |
+| `frame` | `{ x, y, width, height }` | Where it is when neither zoomed nor in full screen. |
+
+`useWindowManagerStore()` returns the store behind the manager (`WindowManagerStore`): what
+[Managed Window](/components/managed-window) is written with, for a different kind of managed
+window of your own. Applications do not need it.
+
+| Class or variable | On | Description |
+| --- | --- | --- |
+| `.mac-window-manager` | the root | The desktop: `position: relative`, its own stacking context, clips its windows. |
+| `--mac-window-manager-layer-chrome` | the root | The `z-index` for a menu bar and a Dock: above windows, below full screen. |
+| `--mac-window-manager-inset-top`, `-right`, `-bottom`, `-left` | the root | The insets, set from the `insets` prop. |
+
+## Accessibility
+
+- The desktop element has no role. Each window is a labelled `region`
+  ([Window](/components/window)).
+- The key window is where the keyboard focus is: focus moving into a window makes it key, and
+  a window made key by a command takes the focus.
+- Window commands work from the keyboard, with Control-Option held (Control-Command also
+  works): the arrow keys move the key window by 16 points, within the same bounds as a drag
+  (the title bar stays between the top and bottom insets, and 40 points of it stay between
+  the left and right insets, so a window cannot be lost behind a Dock at the side), Shift
+  with the arrow keys resizes it (but a window that is within those bounds is not made so
+  narrow that it leaves them). A zoomed window that is moved leaves its zoom, as it does when
+  its title bar is dragged, and is not resized until it has. A move or a resize that is
+  made takes the keyboard focus into the window, as the other commands do. M minimizes, W closes, Z zooms, F enters and leaves full screen, and the key left of 1
+  (`` ` ``) goes to the next window, with Shift to the previous. Keys are read by position, so
+  they work on every layout. A browser cannot give a page Command-W, Command-M or Command-`;
+  offer the commands in a Window menu as well.
+- Handle a key yourself and call `preventDefault()` in `onKeyDown` on the manager to keep it
+  from the window commands.
+- AltGr, which types characters such as µ and reaches some browsers as Control with Option,
+  is never a window command.
+- A minimized window is `inert`: nothing in it can be focused or read until it is restored.
+
+## Visual comparison
+
+No reference screenshot shows a window manager, only its results, so `window-manager.visual.json`
+is marked `pending` and holds state checks instead of comparisons. In a real browser, in both
+appearances, the front window covers the one behind it, and pressing the back window brings
+it in front: the pixel where the two overlap takes the colour of the window on top.
+
+Provisional, because no screenshot or measurement backs it: the 16 point step of the arrow
+keys, the 40 point strip of a window that must stay on the desktop, and the cascade of 24
+points between windows opened without a position.

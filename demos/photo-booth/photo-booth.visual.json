@@ -1,0 +1,97 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "title-bar-light",
+      "description": "The top 25 pt of the Photo Booth window, Aqua: the 22 pt title bar with the window controls and the title, and under it the 3 pt of the stage above the first row of previews. The nine previews are four fifths of the window; they show the camera in the capture and an abstract placeholder here, which takes nothing from those pictures, so the whole window is not compared (the harness does not accept a comparison with more than three quarters masked). Nothing is masked here. Text is set in the fallback font.",
+      "example": "visual-window",
+      "appearance": "light",
+      "selector": "[data-crop='title-bar']",
+      "reference": {
+        "file": "10-15-Catalina-Light-Photo-Booth.png",
+        "crop": { "x": 112, "y": 76, "width": 1440, "height": 50 }
+      },
+      "budget": { "1x": 0.028, "2x": 0.046 },
+      "deltaBudget": { "1x": 6.6, "2x": 6.8 }
+    },
+    {
+      "name": "bar-light",
+      "description": "The bottom 63 pt of the Photo Booth window, Aqua: the 3 pt of the stage under the last row of previews and the 60 pt bar with the page control on the window's centre and the Effects button. Nothing is masked.",
+      "example": "visual-window",
+      "appearance": "light",
+      "selector": "[data-crop='bar']",
+      "reference": {
+        "file": "10-15-Catalina-Light-Photo-Booth.png",
+        "crop": { "x": 112, "y": 1074, "width": 1440, "height": 126 }
+      },
+      "budget": { "1x": 0.0116, "2x": 0.0085 },
+      "deltaBudget": { "1x": 0.9, "2x": 0.8 }
+    },
+    {
+      "name": "stage-geometry-light",
+      "description": "The stage with the Effects browser, Aqua: its 720 by 480 pt, and the stage's own colour in the 3 pt gaps around and between the nine previews, which is where the captures have them (columns from x 3, 242 and 481 pt, rows from y 25, 184 and 343 pt of the window). The previews themselves are not compared: they are placeholders.",
+      "example": "visual-window",
+      "appearance": "light",
+      "selector": ".mac-photo-booth-stage",
+      "expect": {
+        "size": { "width": 720, "height": 480 },
+        "pixels": [
+          { "x": 1.5, "y": 240, "color": "#292929", "note": "left margin" },
+          { "x": 240.5, "y": 100, "color": "#292929", "note": "gap after the first column" },
+          { "x": 479.5, "y": 100, "color": "#292929", "note": "gap after the second column" },
+          { "x": 718.5, "y": 240, "color": "#292929", "note": "right margin" },
+          { "x": 120, "y": 1.5, "color": "#292929", "note": "top margin" },
+          { "x": 120, "y": 160.5, "color": "#292929", "note": "gap after the first row" },
+          { "x": 120, "y": 319.5, "color": "#292929", "note": "gap after the second row" },
+          { "x": 120, "y": 478.5, "color": "#292929", "note": "bottom margin" }
+        ]
+      }
+    },
+    {
+      "name": "title-bar-dark",
+      "description": "The top 25 pt of the Photo Booth window, Dark Aqua: the same crop as title-bar-light.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "selector": "[data-crop='title-bar']",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Photo-Booth.png",
+        "crop": { "x": 112, "y": 76, "width": 1440, "height": 50 }
+      },
+      "budget": { "1x": 0.0681, "2x": 0.0457 },
+      "deltaBudget": { "1x": 4.6, "2x": 4.6 }
+    },
+    {
+      "name": "bar-dark",
+      "description": "The bottom 63 pt of the Photo Booth window, Dark Aqua: the same crop as bar-light.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "selector": "[data-crop='bar']",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Photo-Booth.png",
+        "crop": { "x": 112, "y": 1074, "width": 1440, "height": 126 }
+      },
+      "budget": { "1x": 0.0093, "2x": 0.0064 },
+      "deltaBudget": { "1x": 1, "2x": 0.9 }
+    },
+    {
+      "name": "stage-geometry-dark",
+      "description": "The stage with the Effects browser, Dark Aqua: the same size and the same gaps in the same colour as stage-geometry-light; the stage does not change with the appearance.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "selector": ".mac-photo-booth-stage",
+      "expect": {
+        "size": { "width": 720, "height": 480 },
+        "pixels": [
+          { "x": 1.5, "y": 240, "color": "#292929", "note": "left margin" },
+          { "x": 240.5, "y": 100, "color": "#292929", "note": "gap after the first column" },
+          { "x": 479.5, "y": 100, "color": "#292929", "note": "gap after the second column" },
+          { "x": 718.5, "y": 240, "color": "#292929", "note": "right margin" },
+          { "x": 120, "y": 1.5, "color": "#292929", "note": "top margin" },
+          { "x": 120, "y": 160.5, "color": "#292929", "note": "gap after the first row" },
+          { "x": 120, "y": 319.5, "color": "#292929", "note": "gap after the second row" },
+          { "x": 120, "y": 478.5, "color": "#292929", "note": "bottom margin" }
+        ]
+      }
+    }
+  ]
+}

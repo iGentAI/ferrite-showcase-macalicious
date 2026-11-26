@@ -1,0 +1,129 @@
+---
+title: Dock Menu
+description: The menu of one item of the Dock, opened by a secondary click or by pressing and holding the item. A dark detached menu with a pointer towards the item.
+order: 64
+---
+
+<Example name="basic" both />
+
+AppKit's Dock menu (`applicationDockMenu`). The menu is built on
+[Base UI's Menu](https://base-ui.com/react/components/menu) and holds
+[menu items](/components/menu-item); what differs is how it opens, where it sits, and that it
+is dark in both appearances: the example opens the same dark menu from either side.
+
+No screenshot of the reference library shows a Dock menu. Everything on this page that is not
+the look of a dark detached menu is inferred, and marked provisional.
+
+## Usage
+
+```tsx
+import { DockMenu, DockMenuPopup, DockMenuTrigger } from "macalicious/dock-menu";
+import { MenuItem, MenuSeparator } from "macalicious/menu-item";
+import "macalicious/menu.css";
+import "macalicious/menu-item.css";
+import "macalicious/dock-menu.css";
+
+<DockMenu>
+  <DockMenuTrigger aria-label="Notes" onClick={openNotes}>
+    <NotesIcon />
+  </DockMenuTrigger>
+  <DockMenuPopup>
+    <MenuItem onClick={newNote}>New Note</MenuItem>
+    <MenuSeparator />
+    <MenuItem onClick={showAllWindows}>Show All Windows</MenuItem>
+    <MenuItem onClick={hide}>Hide</MenuItem>
+    <MenuItem onClick={quit}>Quit</MenuItem>
+  </DockMenuPopup>
+</DockMenu>
+```
+
+Or copy the source into your project: `npx macalicious add dock-menu menu-item`.
+
+`DockMenuTrigger` is the Dock item: a `<button>`, or your own element with `render` (add
+`nativeButton={false}` when that is not a button). A click
+remains the item's own, so `onClick` opens the application. The menu opens on a secondary
+click or Control-click, when the item is pressed and held for half a second, and with Up
+Arrow while the item has the focus. For a Dock along a side of the screen give the popup
+`side="right"` or `side="left"`.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines,
+[Dock Menus](https://web.archive.org/web/20200503225732/https://developer.apple.com/design/human-interface-guidelines/macos/menus/dock-menus/):
+
+- Put the application's own commands first, then its open windows, then the system's items:
+  Options, Show All Windows, Hide and Quit.
+- Offer commands that are useful while the application is not frontmost, such as starting a
+  new document.
+- Every command of the Dock menu must also be in the menu bar.
+- A Dock menu does not show key equivalents.
+
+## Variants and states
+
+| Part or state | Look | Basis |
+| --- | --- | --- |
+| Menu | A detached menu, dark in Aqua and in Dark Aqua, and its submenus with it | Provisional: recollection of Catalina; no screenshot |
+| `appearance="inherit"` | The menu follows the page's appearance, or a `MenuPopupContext` around it | Provisional |
+| Pointer | A 12 by 6 pt triangle of the menu's material at the menu's edge, centred on the Dock item; it has no rim of its own | Provisional |
+| Position | Centred above the item, the pointer's tip 4 pt from it; beside the item with `side` | Provisional |
+| Items | 14 pt menu items in 19 pt rows; key equivalents not shown | As [Menu Item](/components/menu-item); catalog (HIG) |
+
+## Sizes
+
+One size, with the 14 pt menu font.
+
+## API
+
+`DockMenu` takes the props of [`Menu`](/components/menu) (`open`, `defaultOpen`, `disabled`,
+`loopFocus`) and this:
+
+<PropsTable name="DockMenuProps" />
+
+`DockMenuTrigger` takes the props of Base UI's Menu.Trigger. `DockMenuPopup` takes the
+props of Base UI's Menu.Popup, the positioning props of [`MenuPopup`](/components/menu), and
+these:
+
+<PropsTable name="DockMenuPopupProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-popup-open` | Dock item | present or absent | The menu is open. |
+| `data-appearance` | positioner | `dark` or absent | Reflects `appearance`; with `"inherit"`, what a `MenuPopupContext` around the menu says. |
+| `data-side` | pointer | `top`, `bottom`, `left`, `right` | The side of the Dock item the menu is on. Set by Base UI. |
+
+Classes: `.mac-dock-menu` (the popup, which is also a `.mac-menu`),
+`.mac-dock-menu-positioner` and `.mac-dock-menu-pointer`.
+
+## Accessibility
+
+- The Dock item has `aria-haspopup="menu"` and `aria-expanded`; give it an `aria-label` when
+  it is an image. The popup has `role="menu"`.
+- Up Arrow on the item opens the menu, as in the Dock, and so do the keyboard's menu key and
+  Shift-F10. Return and Space activate the item itself. In the menu, the arrow keys, typing,
+  Return and Escape work as in any menu, and focus returns to the item when it closes.
+- A press that opened the menu is not also a click: releasing it does not activate the item.
+- `disabled` on `DockMenu` disables the Dock item as well as its menu. `disabled` on
+  `DockMenuTrigger` alone disables the item, and nothing opens its menu. A press that began
+  while the item or the menu was disabled does not open it either.
+- When an owner that controls `open` declines to open the menu after a held press, the press
+  ends as an ordinary click. A press that did open the menu never does, even if the menu has
+  closed again before the release. A press the browser cancelled is over and withholds nothing.
+- With `prefers-reduced-motion` the menu and its pointer close at once, without the fade.
+- With `side` use the physical sides (`top`, `bottom`, `left`, `right`); the pointer is drawn
+  for those.
+
+## Visual comparison
+
+No screenshot shows a Dock menu, so `npm run visual -- dock-menu` compares the menu's body
+with the nearest thing the screenshots have, the dark detached menu of the Contacts
+screenshot (`dock-menu.visual.json`). Scores at 2x, in Chromium on Linux with the fallback
+font:
+
+| Crop | Dark Aqua, whole crop | Dark Aqua, drawing only |
+| --- | --- | --- |
+| Menu body, pixels that differ | 12.65% | 3.90% |
+| Menu body, mean Δ of 255 | 19.61 | 3.89 |
+
+"Drawing only" masks the titles and the pointer and halves the colour threshold. The pointer,
+its place over the Dock item, and the menu being dark in Aqua are checked as pixels against
+values computed from the tokens. All of those are inferred.

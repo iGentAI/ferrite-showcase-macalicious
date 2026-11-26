@@ -1,0 +1,1136 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "sound-tabs-light",
+      "description": "The Sound pane's tab strip on the top border of its box, first tab selected, Aqua.",
+      "example": "visual-sound-tabs",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.169,
+        "2x": 0.0913
+      },
+      "deltaBudget": {
+        "1x": 14.4,
+        "2x": 11.5
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Sound.png",
+        "crop": {
+          "x": 532,
+          "y": 184,
+          "width": 496,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "sound-tabs-light-bezel",
+      "description": "As sound-tabs-light with the three titles masked, to score the bezel and the box alone: titles are set in the fallback font off Apple platforms.",
+      "example": "visual-sound-tabs",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.203,
+        "2x": 0.0007
+      },
+      "deltaBudget": {
+        "1x": 6.6,
+        "2x": 0.9
+      },
+      "masks": [
+        {
+          "x": 22,
+          "y": 8,
+          "width": 86,
+          "height": 14
+        },
+        {
+          "x": 130,
+          "y": 8,
+          "width": 46,
+          "height": 14
+        },
+        {
+          "x": 194,
+          "y": 8,
+          "width": 34,
+          "height": 14
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Sound.png",
+        "crop": {
+          "x": 532,
+          "y": 184,
+          "width": 496,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "sound-tabs-dark",
+      "description": "The Sound pane's tab strip, first tab selected, Dark Aqua.",
+      "example": "visual-sound-tabs",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.164,
+        "2x": 0.0867
+      },
+      "deltaBudget": {
+        "1x": 12.3,
+        "2x": 9
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Sound.png",
+        "crop": {
+          "x": 532,
+          "y": 184,
+          "width": 496,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "sound-tabs-dark-bezel",
+      "description": "As sound-tabs-dark with the three titles masked.",
+      "example": "visual-sound-tabs",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.102,
+        "2x": 0.0012
+      },
+      "deltaBudget": {
+        "1x": 6.7,
+        "2x": 0.9
+      },
+      "masks": [
+        {
+          "x": 22,
+          "y": 8,
+          "width": 86,
+          "height": 14
+        },
+        {
+          "x": 130,
+          "y": 8,
+          "width": 46,
+          "height": 14
+        },
+        {
+          "x": 194,
+          "y": 8,
+          "width": 34,
+          "height": 14
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Sound.png",
+        "crop": {
+          "x": 532,
+          "y": 184,
+          "width": 496,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "energy-saver-tabs-light",
+      "description": "The Energy Saver pane's tab strip, last of two tabs selected, Aqua.",
+      "example": "visual-energy-saver-tabs",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.19,
+        "2x": 0.1102
+      },
+      "deltaBudget": {
+        "1x": 16.1,
+        "2x": 13.1
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Energy-Saver.png",
+        "crop": {
+          "x": 580,
+          "y": 304,
+          "width": 404,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "energy-saver-tabs-light-bezel",
+      "description": "As energy-saver-tabs-light with the two titles masked.",
+      "example": "visual-energy-saver-tabs",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.206,
+        "2x": 0.0008
+      },
+      "deltaBudget": {
+        "1x": 7.3,
+        "2x": 1
+      },
+      "masks": [
+        {
+          "x": 20,
+          "y": 8,
+          "width": 50,
+          "height": 14
+        },
+        {
+          "x": 88,
+          "y": 8,
+          "width": 94,
+          "height": 14
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Energy-Saver.png",
+        "crop": {
+          "x": 580,
+          "y": 304,
+          "width": 404,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "side-tabs-light",
+      "description": "Tabs on the left and on the right, first tab selected, Aqua: the accent gradient runs across the strip, from its outer edge to the edge that faces the content. No screenshot shows side tabs.",
+      "example": "visual-side-tabs",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 280,
+          "height": 110
+        },
+        "pixels": [
+          {
+            "x": 15.75,
+            "y": 20,
+            "color": "#589afc",
+            "tolerance": 6,
+            "note": "left strip, a quarter of the way in from its outer (left) edge: --mac-accent-bezel-upper, the gradient's 25% stop (spec: tab-view, Selected fill gradient, measured on top tabs; orientation inferred)"
+          },
+          {
+            "x": 25.75,
+            "y": 20,
+            "color": "#1c76ff",
+            "tolerance": 6,
+            "note": "left strip, three quarters in: --mac-accent-bezel-lower, the 75% stop"
+          },
+          {
+            "x": 264.25,
+            "y": 20,
+            "color": "#589afc",
+            "tolerance": 6,
+            "note": "right strip, a quarter of the way in from its outer (right) edge: --mac-accent-bezel-upper"
+          },
+          {
+            "x": 254.25,
+            "y": 20,
+            "color": "#1c76ff",
+            "tolerance": 6,
+            "note": "right strip, three quarters in: --mac-accent-bezel-lower"
+          },
+          {
+            "x": 20.5,
+            "y": 58,
+            "color": "#ffffff",
+            "note": "left strip, unselected tab: fill (spec: Unselected fill, measured)"
+          },
+          {
+            "x": 14,
+            "y": 60,
+            "color": "#ffffff",
+            "note": "left strip, unselected tab, near its outer edge: the same fill as near its inner edge, because the unselected fill (--mac-bezel-fill) is one flat colour and has no shading to turn (spec: Unselected fill, measured on top tabs)"
+          },
+          {
+            "x": 28,
+            "y": 60,
+            "color": "#ffffff",
+            "note": "left strip, unselected tab, near its inner edge"
+          },
+          {
+            "x": 267,
+            "y": 60,
+            "color": "#ffffff",
+            "note": "right strip, unselected tab, near its outer edge"
+          },
+          {
+            "x": 253,
+            "y": 60,
+            "color": "#ffffff",
+            "note": "right strip, unselected tab, near its inner edge"
+          }
+        ]
+      }
+    },
+    {
+      "name": "side-tabs-dark",
+      "description": "Tabs on the left and on the right, first tab selected, Dark Aqua: gradient and top highlight are turned with the strip.",
+      "example": "visual-side-tabs",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 280,
+          "height": 110
+        },
+        "pixels": [
+          {
+            "x": 15.75,
+            "y": 20,
+            "color": "#1767e2",
+            "tolerance": 6,
+            "note": "left strip, a quarter in from its outer edge: --mac-accent-bezel-upper (measured on top tabs; orientation inferred)"
+          },
+          {
+            "x": 25.75,
+            "y": 20,
+            "color": "#1561d3",
+            "tolerance": 6,
+            "note": "left strip, three quarters in: --mac-accent-bezel-lower"
+          },
+          {
+            "x": 264.25,
+            "y": 20,
+            "color": "#1767e2",
+            "tolerance": 6,
+            "note": "right strip, a quarter in from its outer edge: --mac-accent-bezel-upper"
+          },
+          {
+            "x": 254.25,
+            "y": 20,
+            "color": "#1561d3",
+            "tolerance": 6,
+            "note": "right strip, three quarters in: --mac-accent-bezel-lower"
+          },
+          {
+            "x": 11.25,
+            "y": 20,
+            "color": "#5c96f0",
+            "scale": 2,
+            "tolerance": 4,
+            "note": "left strip, the half-point highlight on its outer edge (spec: Selected top edge highlight #5c96f0, measured on top tabs)"
+          },
+          {
+            "x": 268.75,
+            "y": 20,
+            "color": "#5c96f0",
+            "scale": 2,
+            "tolerance": 4,
+            "note": "right strip, the half-point highlight on its outer edge"
+          },
+          {
+            "x": 14,
+            "y": 60,
+            "color": "#636464",
+            "note": "left strip, unselected tab, near its outer edge: the same fill as near its inner edge, because the unselected fill (--mac-bezel-fill over the window background) is one flat colour and has no shading to turn (spec: Unselected fill, measured on top tabs)"
+          },
+          {
+            "x": 28,
+            "y": 60,
+            "color": "#636464",
+            "note": "left strip, unselected tab, near its inner edge"
+          },
+          {
+            "x": 267,
+            "y": 60,
+            "color": "#636464",
+            "note": "right strip, unselected tab, near its outer edge"
+          },
+          {
+            "x": 253,
+            "y": 60,
+            "color": "#636464",
+            "note": "right strip, unselected tab, near its inner edge"
+          }
+        ]
+      }
+    },
+    {
+      "name": "side-tabs-rtl-light",
+      "description": "The side tabs of side-tabs-light inside dir=rtl, Aqua. Left and right are physical sides: each strip stays on its side, on the edge of the content box painted for it, with the first tab at the top. No screenshot shows side tabs or a right-to-left window.",
+      "example": "visual-side-tabs-rtl",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 280,
+          "height": 110
+        },
+        "pixels": [
+          {
+            "x": 15.75,
+            "y": 20,
+            "color": "#589afc",
+            "tolerance": 6,
+            "note": "left strip, first tab (top), selected, a quarter of the way in from its outer edge: --mac-accent-bezel-upper, as in side-tabs-light (orientation and right-to-left placement inferred)"
+          },
+          {
+            "x": 264.25,
+            "y": 20,
+            "color": "#589afc",
+            "tolerance": 6,
+            "note": "right strip, first tab (top), selected, a quarter of the way in from its outer edge: --mac-accent-bezel-upper"
+          },
+          {
+            "x": 14,
+            "y": 60,
+            "color": "#ffffff",
+            "note": "left strip, second tab (bottom), unselected: fill (spec: Unselected fill, measured on top tabs)"
+          },
+          {
+            "x": 267,
+            "y": 60,
+            "color": "#ffffff",
+            "note": "right strip, second tab (bottom), unselected: fill"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pane-corner-light",
+      "description": "Top-left corner of the tab view's content box, from the Sound pane, Aqua. Threshold 0.02, because the box's border is too faint for a higher one to count any pixel. This is the comparison that follows --mac-radius-group in a tab view.",
+      "example": "visual-pane-corner",
+      "appearance": "light",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.0179,
+        "2x": 0.0012
+      },
+      "deltaBudget": {
+        "1x": 0.81,
+        "2x": 0.67
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Sound.png",
+        "crop": {
+          "x": 132,
+          "y": 192,
+          "width": 80,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "pane-corner-dark",
+      "description": "Top-left corner of the tab view's content box, from the Sound pane, Dark Aqua. Threshold as for pane-corner-light.",
+      "example": "visual-pane-corner",
+      "appearance": "dark",
+      "threshold": 0.02,
+      "budget": {
+        "1x": 0.0385,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.83,
+        "2x": 0.52
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Sound.png",
+        "crop": {
+          "x": 132,
+          "y": 192,
+          "width": 80,
+          "height": 80
+        }
+      }
+    },
+    {
+      "name": "security-tabs-light",
+      "description": "The four tabs of Security & Privacy on the top border of the box, first tab selected, Aqua.",
+      "example": "visual-security-tabs",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.1406,
+        "2x": 0.0757
+      },
+      "deltaBudget": {
+        "1x": 13.42,
+        "2x": 10.2
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Security-and-Privacy.png",
+        "crop": {
+          "x": 478,
+          "y": 194,
+          "width": 604,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "security-tabs-light-bezel",
+      "description": "As security-tabs-light with the four titles masked, to score the bezel, the two dividers and the box alone.",
+      "example": "visual-security-tabs",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.208,
+        "2x": 0.0007
+      },
+      "deltaBudget": {
+        "1x": 6.27,
+        "2x": 0.74
+      },
+      "masks": [
+        {
+          "x": 19,
+          "y": 8,
+          "width": 54,
+          "height": 14
+        },
+        {
+          "x": 91,
+          "y": 8,
+          "width": 55,
+          "height": 14
+        },
+        {
+          "x": 164,
+          "y": 8,
+          "width": 50,
+          "height": 14
+        },
+        {
+          "x": 232,
+          "y": 8,
+          "width": 51,
+          "height": 14
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Security-and-Privacy.png",
+        "crop": {
+          "x": 478,
+          "y": 194,
+          "width": 604,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "security-tabs-dark",
+      "description": "The four tabs of Security & Privacy, first tab selected, Dark Aqua.",
+      "example": "visual-security-tabs",
+      "appearance": "dark",
+      "budget": {
+        "1x": 0.1296,
+        "2x": 0.0711
+      },
+      "deltaBudget": {
+        "1x": 10.81,
+        "2x": 7.23
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Security-and-Privacy.png",
+        "crop": {
+          "x": 478,
+          "y": 194,
+          "width": 604,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "security-tabs-dark-bezel",
+      "description": "As security-tabs-dark with the four titles masked.",
+      "example": "visual-security-tabs",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.1039,
+        "2x": 0.0011
+      },
+      "deltaBudget": {
+        "1x": 6.32,
+        "2x": 0.7
+      },
+      "masks": [
+        {
+          "x": 19,
+          "y": 8,
+          "width": 54,
+          "height": 14
+        },
+        {
+          "x": 91,
+          "y": 8,
+          "width": 55,
+          "height": 14
+        },
+        {
+          "x": 164,
+          "y": 8,
+          "width": 50,
+          "height": 14
+        },
+        {
+          "x": 232,
+          "y": 8,
+          "width": 51,
+          "height": 14
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Security-and-Privacy.png",
+        "crop": {
+          "x": 478,
+          "y": 194,
+          "width": 604,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "network-utility-tabs-light",
+      "description": "The eight tabs of Network Utility across its window, on a content box that runs from window edge to window edge, first tab selected, Aqua.",
+      "example": "visual-network-utility-tabs",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.1239,
+        "2x": 0.0672
+      },
+      "deltaBudget": {
+        "1x": 11.82,
+        "2x": 9.41
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Network-Utility.png",
+        "crop": {
+          "x": 112,
+          "y": 136,
+          "width": 1288,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "network-utility-tabs-light-bezel",
+      "description": "As network-utility-tabs-light with the eight titles masked, to score the bezel, the six dividers and the box alone.",
+      "example": "visual-network-utility-tabs",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.1667,
+        "2x": 0.0007
+      },
+      "deltaBudget": {
+        "1x": 4.89,
+        "2x": 0.69
+      },
+      "masks": [
+        {
+          "x": 70,
+          "y": 8,
+          "width": 29,
+          "height": 14
+        },
+        {
+          "x": 117,
+          "y": 8,
+          "width": 49,
+          "height": 14
+        },
+        {
+          "x": 184,
+          "y": 8,
+          "width": 31,
+          "height": 14
+        },
+        {
+          "x": 233,
+          "y": 8,
+          "width": 49,
+          "height": 14
+        },
+        {
+          "x": 300,
+          "y": 8,
+          "width": 70,
+          "height": 14
+        },
+        {
+          "x": 388,
+          "y": 8,
+          "width": 42,
+          "height": 14
+        },
+        {
+          "x": 448,
+          "y": 8,
+          "width": 43,
+          "height": 14
+        },
+        {
+          "x": 509,
+          "y": 8,
+          "width": 66,
+          "height": 14
+        }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Network-Utility.png",
+        "crop": {
+          "x": 112,
+          "y": 136,
+          "width": 1288,
+          "height": 60
+        }
+      }
+    },
+    {
+      "name": "states-light",
+      "description": "Top tabs at rest in a key window, first tab selected, Aqua: the fixture of the state checks below.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 196, "height": 53 },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#3d88fd",
+            "tolerance": 3,
+            "note": "selected tab at mid height: --mac-accent-bezel-middle, the gradient's 50% stop (spec: tab-view, Selected fill gradient, measured)"
+          },
+          {
+            "x": 74,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "unselected tab: fill (spec: Unselected fill, measured)"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "window background beside the strip: no focus ring at rest"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-dark",
+      "description": "Top tabs at rest in a key window, first tab selected, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 196, "height": 53 },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#1764db",
+            "tolerance": 3,
+            "note": "selected tab at mid height: --mac-accent-bezel-middle (measured on the Sound tabs)"
+          },
+          {
+            "x": 74,
+            "y": 18.5,
+            "color": "#636464",
+            "note": "unselected tab: white at 25% over the window background #2f3031 (spec: Unselected fill, measured)"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#2f3031",
+            "note": "window background beside the strip: no focus ring at rest"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "An unselected tab while the mouse is held down on it, Aqua. Inferred; no screenshot shows it.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "press": "#three" }],
+      "expect": {
+        "size": { "width": 196, "height": 53 },
+        "pixels": [
+          {
+            "x": 134,
+            "y": 18.5,
+            "color": "#f0f0f0",
+            "note": "pressed fill of a bezel that does not take the accent, inferred (token sheet: --mac-bezel-fill-pressed)"
+          },
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#3d88fd",
+            "tolerance": 3,
+            "note": "the first tab is still selected: the mouse button has not been released"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "An unselected tab while the mouse is held down on it, Dark Aqua. Inferred.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "press": "#three" }],
+      "expect": {
+        "size": { "width": 196, "height": 53 },
+        "pixels": [
+          {
+            "x": 134,
+            "y": 18.5,
+            "color": "#7a7a7b",
+            "note": "pressed fill, inferred: white at 36% (--mac-bezel-fill-pressed) over the window background #2f3031"
+          },
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#1764db",
+            "tolerance": 3,
+            "note": "the first tab is still selected"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-selected-light",
+      "description": "The selected tab while the mouse is held down on it, Aqua: the pressed accent bezel. Inferred.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "press": "#one" }],
+      "expect": {
+        "size": { "width": 196, "height": 53 },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#3678df",
+            "tolerance": 3,
+            "note": "the middle stop #3d88fd at 88% over black, the pressed accent bezel of the token sheet (inferred; no pressed accent bezel is captured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-selected-dark",
+      "description": "The selected tab while the mouse is held down on it, Dark Aqua. Inferred.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "press": "#one" }],
+      "expect": {
+        "size": { "width": 196, "height": 53 },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#1458c1",
+            "tolerance": 3,
+            "note": "the middle stop #1764db at 88% over black, the pressed accent bezel of the token sheet (inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the selected tab, reached with Tab, Aqua: the ring goes round the whole strip.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 196, "height": 53 },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the window background, measured on the Go to Folder field (spec: focus-ring)"
+          },
+          {
+            "x": 189,
+            "y": 18.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring beyond the last tab: it surrounds the strip, not the focused tab"
+          },
+          {
+            "x": 5.25,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the bezel's edge"
+          },
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#3d88fd",
+            "tolerance": 3,
+            "note": "the selected tab keeps the accent"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the selected tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 196, "height": 53 },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#2d6c99",
+            "tolerance": 4,
+            "note": "ring over the window background, measured as #2d6c99 over #2f3032 on Automator's search field (spec: focus-ring)"
+          },
+          {
+            "x": 189,
+            "y": 18.5,
+            "color": "#2d6c99",
+            "tolerance": 4,
+            "note": "ring beyond the last tab"
+          },
+          {
+            "x": 5.25,
+            "y": 18.5,
+            "color": "#2f3031",
+            "note": "page just outside the ring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-main-light",
+      "description": "In a main window that is not key, after a Tab, Aqua: the selected tab is grey and there is no focus ring. Inferred; no screenshot shows a tab view in such a window.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "main",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 196, "height": 53 },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#d5d5d5",
+            "note": "selected tab without the accent, inferred (spec: tab-view, States, inactive window)"
+          },
+          {
+            "x": 74,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "unselected tabs do not change"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-main-dark",
+      "description": "In a main window that is not key, after a Tab, Dark Aqua. Inferred.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "main",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 196, "height": 53 },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#6a6a6a",
+            "note": "selected tab without the accent, inferred (spec: tab-view, States, inactive window)"
+          },
+          {
+            "x": 74,
+            "y": 18.5,
+            "color": "#636464",
+            "note": "unselected tabs do not change"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#2f3031",
+            "note": "no focus ring outside the key window"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-light",
+      "description": "In an inactive window, after a Tab, Aqua: grey selected tab, no focus ring. Inferred.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 196, "height": 53 },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#d5d5d5",
+            "note": "selected tab without the accent, inferred (spec: tab-view, States, inactive window)"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-dark",
+      "description": "In an inactive window, after a Tab, Dark Aqua. Inferred.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 196, "height": 53 },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#6a6a6a",
+            "note": "selected tab without the accent, inferred (spec: tab-view, States, inactive window)"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#2f3031",
+            "note": "no focus ring outside the key window"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-purple-light",
+      "description": "The selected tab with the purple accent, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "accent": "purple",
+      "expect": {
+        "size": { "width": 196, "height": 53 },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#be63b3",
+            "tolerance": 3,
+            "note": "middle stop of the purple bezel, measured on the purple checkbox of General (token sheet, accent tables); that the selected tab takes it is inferred"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accent-purple-dark",
+      "description": "The selected tab with the purple accent, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "accent": "purple",
+      "expect": {
+        "size": { "width": 196, "height": 53 },
+        "pixels": [
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#9d3e9b",
+            "tolerance": 3,
+            "note": "middle stop of the purple bezel in Dark Aqua (token sheet, accent tables); inferred for the selected tab"
+          }
+        ]
+      }
+    },
+    {
+      "name": "clicked-light",
+      "description": "After a click on the third tab, Aqua: releasing the mouse button over a tab selects it and the first tab is no longer selected.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "click": "#three" }],
+      "expect": {
+        "size": { "width": 196, "height": 53 },
+        "pixels": [
+          {
+            "x": 134,
+            "y": 18.5,
+            "color": "#3d88fd",
+            "tolerance": 3,
+            "note": "the clicked tab is selected: --mac-accent-bezel-middle (measured on the Sound tabs)"
+          },
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "the first tab is unselected again: fill (measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "clicked-dark",
+      "description": "After a click on the third tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "click": "#three" }],
+      "expect": {
+        "size": { "width": 196, "height": 53 },
+        "pixels": [
+          {
+            "x": 134,
+            "y": 18.5,
+            "color": "#1764db",
+            "tolerance": 3,
+            "note": "the clicked tab is selected: --mac-accent-bezel-middle (measured on the Sound tabs)"
+          },
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#636464",
+            "note": "the first tab is unselected again: white at 25% over #2f3031 (measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "arrow-key-light",
+      "description": "After Tab and Right Arrow, Aqua: the arrow key moves focus to the second tab and selects it, and the ring stays round the strip.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }, { "key": "ArrowRight" }],
+      "expect": {
+        "size": { "width": 196, "height": 53 },
+        "pixels": [
+          {
+            "x": 74,
+            "y": 18.5,
+            "color": "#3d88fd",
+            "tolerance": 3,
+            "note": "the second tab is selected: --mac-accent-bezel-middle (measured on the Sound tabs)"
+          },
+          {
+            "x": 14,
+            "y": 18.5,
+            "color": "#ffffff",
+            "note": "the first tab is unselected: fill (measured)"
+          },
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "focus ring over the window background, measured on the Go to Folder field (spec: focus-ring)"
+          }
+        ]
+      }
+    }
+  ]
+}

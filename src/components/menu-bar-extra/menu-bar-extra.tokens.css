@@ -1,0 +1,22 @@
+/*
+ * Menu bar extra (reference/spec/components/menu-bar-extra.md): the highlight of an open
+ * extra, which Catalina draws lighter than that of an open menu title.
+ */
+:root,
+[data-accent="blue"] {
+  /* [measured, computed] the colour that, at 85% (Aqua) or 88% (Dark Aqua) over the bar, gives
+     the highlight of the open battery extra (Menu-Bar-Battery @ 2725,3: #3b8ff6 and #0066cd) */
+  --mac-menu-bar-extra-highlight: light-dark(rgb(34 128 247 / 0.85), rgb(0 112 227 / 0.88));
+}
+[data-accent="purple"],
+[data-accent="pink"],
+[data-accent="red"],
+[data-accent="orange"],
+[data-accent="yellow"],
+[data-accent="green"],
+[data-accent="graphite"],
+[data-accent="custom"] {
+  /* [provisional] no screenshot shows an open extra in another accent: the highlight of an
+     open menu title */
+  --mac-menu-bar-extra-highlight: var(--mac-menu-bar-highlight);
+}

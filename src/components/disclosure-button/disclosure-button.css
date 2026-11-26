@@ -1,0 +1,118 @@
+/*
+ * Disclosure button (NSButton, rounded-disclosure bezel): a square push-button bezel with one
+ * chevron, down when collapsed and up when expanded.
+ *
+ * No screenshot shows this control. The bezel is the shared one of tokens/controls.css (the
+ * push button's edge, fill, highlight and shadow rows); the size, chevron and pressed look
+ * follow reference/spec/components/disclosure-button.md and are provisional.
+ *
+ * States
+ *   [data-expanded]                    set while expanded: the chevron points up
+ *   [data-size="small" | "mini"]       control size
+ *   :active                            pressed: the fill darkens (lightens in Dark Aqua); in
+ *                                      10.15 this button never takes the accent
+ *   :focus-visible                     keyboard focus ring, only in the key window
+ *   [data-disabled]                    set by Base UI for `disabled`
+ *   [data-force~="pressed" | "focus"]  static previews of transient states (docs, visual tests)
+ */
+.mac-disclosure-button {
+  --_size: var(--mac-control-height-regular);
+  --_radius: var(--mac-radius-control-regular);
+  --_fill: var(--mac-bezel-fill);
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--_size);
+  height: var(--_size);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: calc(var(--_radius) + var(--mac-bezel-inset));
+  background: none;
+  color: var(--mac-color-control-text);
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-disclosure-button::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: var(--mac-bezel-inset);
+  box-sizing: border-box;
+  border: var(--mac-bezel-border-width) solid;
+  border-color: var(--mac-bezel-border-top) var(--mac-bezel-border-side)
+    var(--mac-bezel-border-bottom);
+  border-radius: var(--_radius);
+  background: var(--_fill) padding-box;
+  box-shadow: var(--mac-bezel-highlight), var(--mac-bezel-shadow);
+  pointer-events: none;
+}
+
+.mac-disclosure-button-chevron {
+  display: block;
+  flex: none;
+}
+
+/* Expanded: the same chevron turned about the centre of the button */
+.mac-disclosure-button:where([data-expanded]) .mac-disclosure-button-chevron {
+  transform: rotate(180deg);
+}
+
+/* Sizes */
+.mac-disclosure-button:where([data-size="small"]) {
+  --_size: var(--mac-control-height-small);
+  --_radius: var(--mac-radius-control-small);
+}
+
+.mac-disclosure-button:where([data-size="mini"]) {
+  --_size: var(--mac-control-height-mini);
+  --_radius: var(--mac-radius-control-mini);
+}
+
+/* Pressed */
+.mac-disclosure-button:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  --_fill: var(--mac-bezel-fill-pressed);
+}
+
+/* Disabled */
+.mac-disclosure-button:where([data-disabled]) {
+  color: var(--mac-color-control-text-disabled);
+}
+
+.mac-disclosure-button:where([data-disabled])::before {
+  opacity: var(--mac-bezel-opacity-disabled);
+}
+
+/* Keyboard focus ring; only in the key window, as in AppKit. */
+.mac-disclosure-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(
+    var(--mac-focus-ring-offset) -
+    var(--mac-bezel-inset) -
+    var(--mac-bezel-border-width)
+  );
+}
+
+@media (forced-colors: active) {
+  .mac-disclosure-button::before {
+    border-color: ButtonText;
+  }
+
+  .mac-disclosure-button:where([data-disabled])::before {
+    border-color: GrayText;
+    opacity: 1;
+  }
+}

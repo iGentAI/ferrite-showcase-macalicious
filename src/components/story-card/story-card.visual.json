@@ -1,0 +1,346 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "thumbnail-corner-light",
+      "description": "Top-left corner of the first secondary story's thumbnail in News, Aqua, 20 x 20 pt: the 3 pt corner on the page. The photograph is black there, and so is the fixture's picture. Nothing is masked.",
+      "example": "visual-thumbnail-corner",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": { "1x": 0.046, "2x": 0.044 },
+      "deltaBudget": { "1x": 2.2, "2x": 2.6 },
+      "reference": {
+        "file": "10-15-Catalina-Light-News.png",
+        "crop": { "x": 1075, "y": 1406, "width": 40, "height": 40 }
+      }
+    },
+    {
+      "name": "lead-corner-dark",
+      "description": "Top-left corner of the first lead story's picture in News, Dark Aqua, 20 x 20 pt. The photograph is replaced by its one colour there. Nothing is masked.",
+      "example": "visual-lead-corner",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": { "1x": 0.002, "2x": 0.0016 },
+      "deltaBudget": { "1x": 1.2, "2x": 1.9 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-News.png",
+        "crop": { "x": 775, "y": 492, "width": 40, "height": 40 }
+      }
+    },
+    {
+      "name": "lead-text-light",
+      "description": "The text under the first lead story of News, Aqua, 399 x 140 pt: a headline of two lines and the story's age, in the fallback font off Apple platforms and with a stand-in headline, so it scores where the lines stand, not the letters. The publisher's logo is masked: none is drawn.",
+      "example": "visual-lead-text",
+      "appearance": "light",
+      "masks": [{ "x": 0, "y": 12, "width": 200, "height": 18 }],
+      "budget": { "1x": 0.141, "2x": 0.126 },
+      "deltaBudget": { "1x": 20.4, "2x": 20.7 },
+      "reference": {
+        "file": "10-15-Catalina-Light-News.png",
+        "crop": { "x": 744, "y": 1102, "width": 798, "height": 280 }
+      }
+    },
+    {
+      "name": "lead-text-light-masked",
+      "description": "As lead-text-light with the headline and the age masked too: scores the page around the text, which shows that nothing else is drawn there.",
+      "example": "visual-lead-text",
+      "appearance": "light",
+      "masks": [
+        { "x": 0, "y": 12, "width": 200, "height": 18 },
+        { "x": 0, "y": 34, "width": 399, "height": 80 },
+        { "x": 0, "y": 116, "width": 80, "height": 16 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0023, "2x": 0.001 },
+      "deltaBudget": { "1x": 0.46, "2x": 0.57 },
+      "reference": {
+        "file": "10-15-Catalina-Light-News.png",
+        "crop": { "x": 744, "y": 1102, "width": 798, "height": 280 }
+      }
+    },
+    {
+      "name": "lead-text-dark",
+      "description": "The text under the first lead story of News, Dark Aqua, 399 x 140 pt: a headline of three lines and the story's age, with a stand-in headline in the fallback font. The publisher's logo is masked.",
+      "example": "visual-lead-text-dark",
+      "appearance": "dark",
+      "masks": [{ "x": 0, "y": 12, "width": 200, "height": 18 }],
+      "budget": { "1x": 0.203, "2x": 0.184 },
+      "deltaBudget": { "1x": 29.1, "2x": 30.2 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-News.png",
+        "crop": { "x": 785, "y": 1102, "width": 798, "height": 280 }
+      }
+    },
+    {
+      "name": "lead-text-dark-masked",
+      "description": "As lead-text-dark with the headline and the age masked too: scores the page around the text.",
+      "example": "visual-lead-text-dark",
+      "appearance": "dark",
+      "masks": [
+        { "x": 0, "y": 12, "width": 200, "height": 18 },
+        { "x": 0, "y": 34, "width": 399, "height": 80 },
+        { "x": 0, "y": 116, "width": 80, "height": 16 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.002, "2x": 0.0012 },
+      "deltaBudget": { "1x": 0.36, "2x": 0.53 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-News.png",
+        "crop": { "x": 785, "y": 1102, "width": 798, "height": 280 }
+      }
+    },
+    {
+      "name": "secondary-light",
+      "description": "The first secondary story of News, Aqua, 279 x 112 pt: a headline of three lines and the story's age, with a stand-in headline in the fallback font. The publisher's logo and the photograph are masked: neither is drawn.",
+      "example": "visual-secondary",
+      "appearance": "light",
+      "masks": [
+        { "x": 0, "y": 0, "width": 120, "height": 12 },
+        { "x": 170, "y": 0, "width": 89, "height": 89 }
+      ],
+      "budget": { "1x": 0.148, "2x": 0.13 },
+      "deltaBudget": { "1x": 18.7, "2x": 19.8 },
+      "reference": {
+        "file": "10-15-Catalina-Light-News.png",
+        "crop": { "x": 744, "y": 1415, "width": 558, "height": 224 }
+      }
+    },
+    {
+      "name": "secondary-light-masked",
+      "description": "As secondary-light with the headline and the age masked too: scores the page around the text.",
+      "example": "visual-secondary",
+      "appearance": "light",
+      "masks": [
+        { "x": 0, "y": 0, "width": 120, "height": 12 },
+        { "x": 170, "y": 0, "width": 89, "height": 89 },
+        { "x": 0, "y": 14, "width": 166, "height": 54 },
+        { "x": 0, "y": 78, "width": 80, "height": 14 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.002, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.58, "2x": 0.63 },
+      "reference": {
+        "file": "10-15-Catalina-Light-News.png",
+        "crop": { "x": 744, "y": 1415, "width": 558, "height": 224 }
+      }
+    },
+    {
+      "name": "secondary-dark",
+      "description": "The first secondary story of News, Dark Aqua, 279 x 112 pt, with a stand-in headline in the fallback font. The publisher's logo and the photograph are masked.",
+      "example": "visual-secondary",
+      "appearance": "dark",
+      "masks": [
+        { "x": 0, "y": 0, "width": 120, "height": 12 },
+        { "x": 170, "y": 0, "width": 89, "height": 89 }
+      ],
+      "budget": { "1x": 0.141, "2x": 0.123 },
+      "deltaBudget": { "1x": 17.6, "2x": 18.4 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-News.png",
+        "crop": { "x": 785, "y": 1410, "width": 558, "height": 224 }
+      }
+    },
+    {
+      "name": "secondary-dark-masked",
+      "description": "As secondary-dark with the headline and the age masked too: scores the page around the text.",
+      "example": "visual-secondary",
+      "appearance": "dark",
+      "masks": [
+        { "x": 0, "y": 0, "width": 120, "height": 12 },
+        { "x": 170, "y": 0, "width": 89, "height": 89 },
+        { "x": 0, "y": 14, "width": 166, "height": 54 },
+        { "x": 0, "y": 78, "width": 80, "height": 14 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.002, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.51, "2x": 0.61 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-News.png",
+        "crop": { "x": 785, "y": 1410, "width": 558, "height": 224 }
+      }
+    },
+    {
+      "name": "states-light",
+      "description": "What the captures show only over photographs, Aqua, on a picture of one colour: the lead picture's box and corner, the play badge at its middle, and the secondary story's 88 pt thumbnail at the trailing edge.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 220, "height": 310 },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 20,
+            "color": "#00ff00",
+            "note": "the lead picture fills its box, 200 x 150.4 pt here"
+          },
+          {
+            "x": 207,
+            "y": 157,
+            "color": "#00ff00",
+            "note": "its bottom-right, inside the corner's curve"
+          },
+          {
+            "x": 112,
+            "y": 85,
+            "color": "#ffffff",
+            "note": "the badge's triangle, centred 2 pt after the picture's middle (spec: Geometry, play badge, measured)"
+          },
+          {
+            "x": 94,
+            "y": 85,
+            "color": "#006600",
+            "tolerance": 3,
+            "note": "the badge's disc, black at 60% over the picture, before the triangle (spec: Colours, play badge, computed)"
+          },
+          {
+            "x": 127,
+            "y": 85,
+            "color": "#006600",
+            "tolerance": 3,
+            "note": "the disc after the triangle's tip"
+          },
+          { "x": 84, "y": 85, "color": "#00ff00", "note": "the picture outside the 44 pt disc" },
+          {
+            "x": 166,
+            "y": 247,
+            "color": "#00ff00",
+            "note": "the secondary story's thumbnail, 88 pt square at the trailing edge (spec: Geometry, thumbnail, measured)"
+          },
+          {
+            "x": 124.5,
+            "y": 205.5,
+            "color": "#00ff00",
+            "note": "its top-left, inside the corner's curve"
+          },
+          {
+            "x": 118,
+            "y": 247,
+            "color": "#ffffff",
+            "note": "the 8 pt between the text and the thumbnail"
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-dark",
+      "description": "As states-light, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 220, "height": 310 },
+        "pixels": [
+          { "x": 20, "y": 20, "color": "#00ff00", "note": "the lead picture" },
+          {
+            "x": 112,
+            "y": 85,
+            "color": "#ffffff",
+            "note": "the badge's triangle is white in both appearances"
+          },
+          { "x": 94, "y": 85, "color": "#006600", "tolerance": 3, "note": "the badge's disc" },
+          { "x": 166, "y": 247, "color": "#00ff00", "note": "the secondary story's thumbnail" },
+          {
+            "x": 118,
+            "y": 247,
+            "color": "#1e1e1e",
+            "note": "the 8 pt between the text and the thumbnail"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "A lead story that is a button, held down with the mouse, Aqua: dimmed by a tenth.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "press": "#card" }],
+      "expect": {
+        "size": { "width": 220, "height": 310 },
+        "pixels": [
+          {
+            "x": 20,
+            "y": 20,
+            "color": "#00e600",
+            "tolerance": 3,
+            "note": "the picture #00ff00 at 90% brightness (spec: States, pressed, inferred)"
+          },
+          { "x": 166, "y": 247, "color": "#00ff00", "note": "the other card is not dimmed" }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on a lead story that is a button, reached with Tab, Aqua: a 3 pt ring around the card.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 220, "height": 310 },
+        "pixels": [
+          {
+            "x": 8.5,
+            "y": 100,
+            "color": "#8cb5fb",
+            "tolerance": 4,
+            "note": "focus ring token rgb(24 106 246 / 0.5) over the page #ffffff, 1.5 pt outside the card's leading edge"
+          },
+          {
+            "x": 20,
+            "y": 20,
+            "color": "#00ff00",
+            "note": "inside the ring the picture is unchanged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on a lead story that is a button, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 220, "height": 310 },
+        "pixels": [
+          {
+            "x": 8.5,
+            "y": 100,
+            "color": "#25638f",
+            "tolerance": 4,
+            "note": "focus ring token rgb(43 168 255 / 0.5) over the page #1e1e1e, 1.5 pt outside the card's leading edge"
+          },
+          {
+            "x": 20,
+            "y": 20,
+            "color": "#00ff00",
+            "note": "inside the ring the picture is unchanged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-inactive-light",
+      "description": "Tab in a window that is not key, Aqua: the card takes the focus without a ring.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 220, "height": 310 },
+        "pixels": [
+          {
+            "x": 8.5,
+            "y": 100,
+            "color": "#ffffff",
+            "note": "no ring: the page reaches the card's edge (CONTRIBUTING, Window state)"
+          },
+          {
+            "x": 20,
+            "y": 20,
+            "color": "#00ff00",
+            "note": "the picture is unchanged in a window that is not key"
+          }
+        ]
+      }
+    }
+  ]
+}

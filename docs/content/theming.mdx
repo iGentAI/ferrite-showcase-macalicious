@@ -1,0 +1,138 @@
+---
+title: Theming
+description: Appearance, accent colour, highlight colour and the token layer.
+group: Foundations
+order: 1
+inventory: accent-colors, highlight-color, focus-ring, material
+---
+
+Shared values are CSS custom properties declared in `src/styles/tokens/`; a value private to
+one component is in that component's `<name>.tokens.css`. Components read tokens and never
+hard-code a colour or test the appearance themselves.
+
+## Appearance
+
+By default the page follows the operating system (`prefers-color-scheme`). One attribute forces
+an appearance, on the page or on any subtree:
+
+```html
+<html data-appearance="dark">
+  …
+  <aside data-appearance="light">always Aqua</aside>
+</html>
+```
+
+This works because every appearance-dependent colour token is written once with the CSS
+`light-dark()` function, and the attribute sets `color-scheme` (plus one number,
+`--mac-appearance-dark`, 0 or 1, for the few values that are not colours):
+
+```css
+--mac-color-window-background: light-dark(#ececec, #323232);
+```
+
+From JavaScript, `setAppearance("auto" | "light" | "dark")` from `macalicious/lib/appearance`
+sets the attribute for you.
+
+## Accent and highlight colour
+
+As in System Preferences › General, the accent colour tints primary buttons, selections and
+focus rings, and the highlight colour (text selection) follows it unless chosen separately.
+
+```html
+<html data-accent="purple">
+<html data-accent="purple" data-highlight="green">
+```
+
+`data-highlight` takes the same eight names, or `accent` to make the highlight follow the
+accent again inside an element that set another one. From JavaScript, `setAccent()` and
+`setHighlight()` from `macalicious/lib/appearance` set the two attributes, and `ACCENTS` is
+the list of the eight names.
+
+The eight Catalina accents are `blue`, `purple`, `pink`, `red`, `orange`, `yellow`, `green` and
+`graphite`. For any other colour, set the two inputs and mark the element as custom:
+
+```html
+<div data-accent="custom" style="--mac-accent-light: #e6007a; --mac-accent-dark: #ff4da6">
+```
+
+For the eight Catalina accents, bezel gradients and control fills are the values measured in
+the accent screenshots, accent by accent: they do not follow one rule (orange is nearly flat in
+Dark Aqua, graphite inverts its glyphs there). For a custom accent the same tokens are derived
+from the two inputs with relative colour syntax, by a formula fitted to blue, so the result is
+an approximation. The emphasised selection colour and the focus ring are measured for blue and
+derived for the other accents, which no screenshot shows on a list or a focused control.
+
+## Focus ring
+
+The control that has the keyboard focus is ringed in the accent colour. The ring is three
+tokens, so it is the same on every control and follows the accent of the element it is in:
+
+```css
+.my-control:focus-visible {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+```
+
+`--mac-focus-ring-color` is declared with the accent tokens ([Accent](#accent) below) and
+`--mac-focus-ring-width` and `--mac-focus-ring-offset` with the metrics
+([Spacing, radii and lines](#spacing-radii-and-lines)). The library's controls draw the ring
+for keyboard focus only, and only in the key window (next section).
+
+## Window activation
+
+A Mac window that is not in front draws its controls without the accent colour. A window
+element carries
+`data-window-state="key"`, `"main"` or `"inactive"`, and no attribute counts as key. Controls
+keep their accent and their focus ring only in the key window; the title bar, shadow and
+materials change only in an inactive window; the window controls turn grey in both other
+states. Any element with `data-window-state="inactive"` puts everything inside it in that
+state. Call `trackWindowActivation()` from `macalicious/lib/window-activation` once to mirror
+the browser window's focus onto the page. [Building a window](/building-a-window) shows the
+three states side by side and explains the rules.
+
+## Control sizes
+
+Controls take `size="regular" | "small" | "mini"` and read their height, padding, radius and
+font from the matching tokens. The three names are cases of AppKit's
+[`NSControl.ControlSize`](https://developer.apple.com/documentation/appkit/nscontrol/controlsize-swift.enum)
+(checked against that page, which today also lists larger sizes added after Catalina; which
+cases 10.15 had was not checked).
+
+## Token status
+
+Each value is tagged in the source, following the measured token sheet. **measured** values
+were read from the reference screenshots (after converting from the screenshots' display colour
+profile to sRGB) or computed from such readings, for example an alpha recovered from a
+composite over a known background. **catalog** values are documented by Apple for 10.15 but do
+not appear in a screenshot; they were written from recollection and have not been checked
+against Apple's documentation. **provisional** values are inferred: no screenshot shows them.
+See [Fidelity limits](/fidelity).
+
+## Colour
+
+<TokenTable file="color" />
+
+## Accent
+
+<TokenTable file="accent" />
+
+## Typography
+
+<TokenTable file="typography" />
+
+## Spacing, radii and lines
+
+<TokenTable file="metrics" />
+
+## Controls
+
+<TokenTable file="controls" />
+
+## Shadows
+
+<TokenTable file="elevation" />
+
+## Materials
+
+<TokenTable file="materials" />

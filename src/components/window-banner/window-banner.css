@@ -1,0 +1,112 @@
+/*
+ * Window banner (Finder's "Shared Folder" strip).
+ *
+ * 25 pt: 24 pt of fill and two 0.5 pt rows below it. The two rows are one 1px strip whose
+ * gradient is sampled at the centre of each device pixel: at 2x the rows are the two measured
+ * colours, at 1x the single row is their mean, which is what the downsampled reference has.
+ *
+ * Parts
+ *   .mac-window-banner-text       the message; truncates at the end
+ *   .mac-window-banner-trailing   the trailing slot
+ *   .mac-window-banner-action     round-rect button for the trailing slot [provisional]
+ * States of the action
+ *   :active, :focus-visible, [data-disabled], [data-force~="pressed" | "focus"]
+ *   [data-window-state="main" | "inactive"] *   no focus ring in a window that is not key
+ */
+.mac-window-banner {
+  display: flex;
+  /* A bar keeps its height when the window is too short for its content: the body gives way. */
+  flex: none;
+  align-items: center;
+  gap: var(--mac-space-4);
+  box-sizing: border-box;
+  height: 25px;
+  /* Glyph ink starts 11 pt from the content edge; the rest is the glyph's side bearing. */
+  padding: 0 10px 0 10.5px;
+  background:
+    linear-gradient(
+      var(--mac-window-banner-separator-inner) 25%,
+      var(--mac-window-banner-separator-outer) 75%
+    )
+    bottom / 100% 1px no-repeat,
+    var(--mac-window-banner-fill);
+  color: var(--mac-window-banner-text);
+  /* 13 pt Bold, measured from the cap height (18 px at 2x); baseline 17 pt below the top */
+  font: var(--mac-font-body-emphasized);
+  letter-spacing: var(--mac-tracking-regular);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-window-banner-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-window-banner-trailing {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--mac-space-1);
+}
+
+.mac-window-banner-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 18px;
+  height: 16px;
+  margin: 0;
+  padding: 0 7px;
+  border: 1px solid var(--mac-window-banner-action-border);
+  border-radius: 4px;
+  background: none;
+  color: var(--mac-window-banner-action-text);
+  font: var(--mac-font-icon-label);
+  letter-spacing: var(--mac-tracking-regular);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-window-banner-action:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  background: var(--mac-window-banner-action-fill-pressed);
+}
+
+.mac-window-banner-action:where([data-disabled]) {
+  border-color: var(--mac-window-banner-action-border-disabled);
+  color: var(--mac-color-control-text-disabled);
+}
+
+/* Keyboard focus ring; only in the key window. */
+.mac-window-banner-action:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-window-banner {
+    border-bottom: 1px solid CanvasText;
+    background: Canvas;
+  }
+
+  .mac-window-banner-action {
+    border-color: ButtonText;
+  }
+
+  .mac-window-banner-action:where([data-disabled]) {
+    border-color: GrayText;
+    color: GrayText;
+  }
+}

@@ -1,0 +1,234 @@
+---
+title: Push Button
+description: Starts an action when clicked. The standard Catalina button, with a primary variant for a window's default action.
+order: 10
+---
+
+<Example name="basic" both />
+
+AppKit calls this control a *push button* (`NSButton` with the rounded bezel style). It is built
+on [Base UI's Button](https://base-ui.com/react/components/button), which supplies the button
+semantics, keyboard handling, the `disabled` and `focusableWhenDisabled` behaviour, and the
+`render` prop.
+
+## Usage
+
+```tsx
+import { PushButton } from "macalicious/push-button";
+import "macalicious/push-button.css";
+
+<PushButton onClick={cancel}>Cancel</PushButton>
+<PushButton variant="primary" onClick={go}>Go</PushButton>
+```
+
+Or copy the source into your project: `npx macalicious add push-button`. See
+[Installation](/installation).
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for buttons:
+
+- Give a window, sheet or dialog **at most one primary button**: the action people most likely
+  want. Never make a destructive action the primary button. In AppKit the Return key activates
+  it; here `variant="primary"` changes the look only, so use the
+  [default button](/components/default-button), which adds the key, or make it
+  `type="submit"` in a form (see [In a form](#in-a-form)).
+- Title a button with a verb or verb phrase in title case (“Save”, “Empty Trash”), and end the
+  title with an ellipsis when the button opens another window or needs more input before acting
+  (“Change Password…”).
+- In a row of dialog buttons, put the primary button on the right, Cancel to its left, with
+  12 pt between buttons: `gap: var(--mac-space-control-gap)`.
+- Use the regular size in windows and dialogs. Small and mini are for dense panels and
+  inspectors; do not mix sizes in one view.
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | White bezel (translucent white in Dark Aqua) |
+| Primary | `variant="primary"` | Accent gradient bezel; white title (white at 85% in Dark Aqua) |
+| Pressed | `:active` | Standard buttons highlight with the accent; a primary button deepens |
+| Keyboard focus | `:focus-visible` | Focus ring in the accent colour |
+| Disabled | `disabled` | Bezel at half opacity, title at 25% |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No accent: primary falls back to the standard bezel and a pressed button darkens its standard bezel; an emphasised title keeps its blue and its weight; no focus ring |
+
+### Compact and emphasised
+
+Two forms that Catalina's own apps add to the standard button:
+
+<Example name="forms" both />
+
+| Form | Prop | Look | Seen in | Status |
+| --- | --- | --- | --- | --- |
+| Compact | `compact` | The bezel 8 pt beside the content in place of 14 pt: 33 pt wide (a 34 pt box) around an 18 pt image | The compose button of Messages, which also makes it one point higher (`style={{ height: 22 }}`) | measured in both appearances |
+| Emphasised | `variant="emphasized"` | The standard bezel with a blue, semibold title | Done under a Contacts card being edited | measured in Aqua; the Dark Aqua blue is provisional |
+
+Use `compact` for a button that shows one image and no title, and give it an `aria-label`.
+Use the emphasised title for the button that ends a mode the window is in (Done), not for a
+dialog's default action, which is the primary button. Pressed, an emphasised button highlights
+like any other; disabled, its title dims. In a window that is not key it does not change: the
+blue is a title colour the app chose, not the accent (it ignores `data-accent`), and AppKit
+withdraws only the accent bezel and the focus ring from a window that is not key. The spec
+infers the same for every non-default push button. No capture shows an emphasised button
+outside the key window (the only one, Done in `10-15-Catalina-Light-Contacts.png`, is in the
+key window), so this is inferred, and `push-button.browser.test.tsx` holds it in main and
+inactive windows in both appearances.
+
+The window state is not a prop. A window component sets `data-window-state` to `key`, `main` or
+`inactive` on itself, and a button keeps its accent and its focus ring only while its window is
+key (no attribute counts as key). `trackWindowActivation()` from
+`macalicious/lib/window-activation` mirrors the browser window's focus onto the page, as this
+site does: switch to another application and the primary buttons on this page lose their
+colour.
+
+## Sizes
+
+<Example name="sizes" />
+
+| Size | Height | Font |
+| --- | --- | --- |
+| `regular` | 21 pt (measured) | 13 pt |
+| `small` | 18 pt (measured) | 11 pt |
+| `mini` | 15 pt (provisional) | 9 pt |
+
+The element's box is AppKit's *alignment rectangle*; the visible bezel is one hairline smaller
+on every side. Lay buttons out by their boxes and the spacing matches Interface Builder.
+
+## Accent colour
+
+The primary bezel follows the accent colour, like System Preferences › General. Set
+`data-accent` on any ancestor. See [Theming](/theming). The gradient of each of the eight
+Catalina accents is measured from the pop-up button of the matching accent screenshot, which
+the spec identifies as the same gradient as the default button; no screenshot shows a default
+button in an accent other than blue.
+
+<Example name="accents" />
+
+## In a form
+
+Like Base UI's Button, a push button is `type="button"` unless told otherwise, so it never
+submits a form by accident. Give the primary button `type="submit"`; the browser then activates
+it on Return, which is the default-button behaviour.
+
+<Example name="form" />
+
+## Key equivalents
+
+AppKit gives two buttons of a dialog a key: Return activates the default button, Escape and
+Command-Period activate Cancel. `keyEquivalent="escape"` makes a button answer the Cancel
+keys (Command-Period on Apple platforms only: elsewhere that key belongs to the operating
+system); `keyEquivalent="return"` is what the
+[default button](/components/default-button) sets.
+
+```tsx
+<PushButton keyEquivalent="escape" onClick={close}>Cancel</PushButton>
+<DefaultButton onClick={go}>Go</DefaultButton>
+```
+
+The key works anywhere in the button's "window": the nearest ancestor that is a `<form>`, a
+`<dialog>`, an element with `role="dialog"` or `role="alertdialog"`, or an element that
+carries `data-window-state`. Only the nearest window counts, a button outside all of those
+answers no key, and so does a button that is disabled, hidden or inert, or one whose window is
+not key. The key is left
+to a focused control that uses it (for Escape: a `<select>`, a search field that holds text,
+a control whose popup is open, that is `aria-haspopup` with `aria-expanded="true"` or an open
+combo box, a menu, a list box, a popover; an expanded disclosure does not keep it), to any
+`keydown` handler, on the document included, that
+calls `preventDefault()` or `stopPropagation()`, and while
+an input method is composing. A dialog that already closes itself on Escape, such as Base
+UI's Dialog, does not need a Cancel button with this key; give it one only when Cancel does
+more than close.
+
+## API
+
+<PropsTable name="PushButtonProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-variant` | `standard`, `primary`, `emphasized` | Reflects `variant`. |
+| `data-compact` | present or absent | Reflects `compact`. |
+| `data-size` | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-disabled` | present or absent | Set by Base UI while the button is disabled. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+The children are rendered inside a `<span class="mac-push-button-label">`, the box that
+truncates a title too long for the button.
+
+## Accessibility
+
+- Renders a native `<button>`. Space and Return activate it; Tab reaches it.
+- Key equivalents are handled by one `keydown` listener per document, on its window, shared
+  by every button that has one and removed with the last. Assistive technology is not told about the key.
+- A disabled button leaves the tab order. Use `focusableWhenDisabled` for a button that
+  disables itself while its action runs, so focus is not lost.
+- A button with only an icon needs an `aria-label`.
+- To make a link look like a push button, style the `<a>` with the `mac-push-button` class
+  rather than rendering the button as a link: Base UI's Button enforces button semantics.
+- In forced-colours mode the bezel is drawn with system colours.
+
+## Visual comparison
+
+Four examples reproduce buttons in the reference screenshots and are compared with them in
+both appearances by `npm run visual` (`push-button.visual.json`): the Cancel and Go buttons of
+Finder's Go to Folder dialog, Advanced… in the Bluetooth pane, the small Options… button in
+the Apple ID pane and the disabled Restore Defaults in Energy Saver. The bezel geometry,
+colours, gradient and shadows are measured from those screenshots. Share of pixels that differ
+at 2x, in Chromium on Linux with the fallback font:
+
+| Crop | Aqua, whole crop | Aqua, bezel only | Dark Aqua, whole crop | Dark Aqua, bezel only |
+| --- | --- | --- | --- | --- |
+| Dialog buttons (standard and primary) | 1.65% | 0.02% | 1.58% | 0.06% |
+| Pane button | not scored | 0.02% | not scored | 0.02% |
+| Small button | 4.39% | 0.08% | 4.02% | 0.06% |
+| Disabled button | 2.87% | 0.02% | 1.69% | 0.00% |
+
+"Bezel only" masks the title and counts a pixel as differing at a colour distance of 0.05, half
+the default, so that a hairline or a corner that is slightly off shows; each of those
+comparisons has a budget 0.05 percentage points above its score. With that gate a corner
+radius of 3px, 3.75px or 4px instead of 3.5px fails the run. What remains in the whole-crop
+scores is the title text, set in the fallback font instead of San Francisco. At 1x the dialog
+crop scores 5.43% and 4.84%: there is no 1x reference, so the 2x screenshot is averaged down,
+and a half-point hairline that the browser must draw as a full pixel cannot match its averaged
+counterpart ([Fidelity limits](/fidelity)).
+
+The compact and emphasised forms are compared the same way with the two captures that show
+them. Messages' compose button (`messages-compose`, glyph masked) scores 2.49% in Aqua and
+2.29% in Dark Aqua at 2x: the sides, the height and the fill match, and what differs is the
+corners, which are rounder in the capture than the standard bezel's, and in Dark Aqua the top
+highlight row, brighter on the list's vibrant material. Neither is built: the compact form
+changes the padding only. Done on a Contacts card (`contacts-done`, Aqua only) scores 3.05%
+whole and 1.19% with the title masked; the example narrows the padding beside the title,
+because the fallback font's semibold is wider than San Francisco's in the 60 pt Contacts
+gives the button.
+
+No screenshot shows a pressed push button, keyboard focus on one, the mini size, a default
+button in a window that is not key, or a default button in an accent other than blue. Those
+states are checked in a real browser against values from the spec instead (the `expect`
+comparisons of `push-button.visual.json`): the example is pressed with the mouse or focused
+with Tab, and chosen pixels must have the expected colour.
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| At rest | The three hairlines of the bezel and its fill, one pixel each | Measured |
+| Pressed | Standard button takes the accent gradient; primary takes it darkened to 88% | Gradient measured; that a pressed button uses it, and the darkening, inferred |
+| Keyboard focus | Ring colour, and that the band ends 2.5 pt beyond the bezel | Measured on a text field's ring |
+| Main and inactive window | Primary is drawn as a standard button; no focus ring | Standard bezel measured; the fallback inferred |
+| Emphasised title in a main or inactive window | The title keeps the key window's blue and its semibold weight (browser test, both appearances) | Inferred: the blue is the app's title colour, not the accent; no capture shows it |
+| Pressed in a main or inactive window | Either button takes the darkened standard bezel, never the accent | Provisional: the push button's own value, no screenshot |
+| Primary button's edges | Its three hairlines in both appearances | Measured (default button) |
+| Purple accent | Middle stop of the primary gradient | Measured on the pop-up button of that accent |
+| Mini | 60 x 15 pt box, 14 pt bezel, fill and edges, and one corner pixel that is fill at the 2.5 pt radius and edge at 3.5 pt | Inferred: no screenshot shows a mini bezel, so the corner check holds the token, not Catalina |
+
+These checks hold the component to the spec; where the spec infers a value, they do not show
+that Catalina looks that way. Still not checked on the push button: the title's font size and
+position in the mini size, and the six accents other than blue and purple (the default
+button's page checks all eight).
+
+A button made narrower than its title cuts the title with an ellipsis at the end; AppKit cuts
+it in the middle. A push button has no minimum width: the narrowest in the screenshots is
+56 pt, and the spec infers, but does not measure, a floor.

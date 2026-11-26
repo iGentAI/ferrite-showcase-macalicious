@@ -1,0 +1,196 @@
+---
+title: Assistant Window
+description: An assistant, as Boot Camp Assistant, a fixed-size window that walks through a task one step at a time, with a column of artwork, a step heading, a box of text and navigation buttons.
+---
+
+<Example name="basic" />
+
+An assistant walks the user through a task one step at a time: a heading names the step, a box
+of text or a group of controls fills the body, and the navigation buttons sit at the bottom
+right. Artwork fills a fixed column at the left. In AppKit it is a plain `NSWindow` that can be
+closed and minimized and not resized, with a custom view for each step. `AssistantWindow`
+assembles the library's [Window](/components/window), [Title Bar](/components/title-bar) and
+[Window Controls](/components/window-controls) that way, and its parts lay out a step.
+
+Base UI has no primitive for a window or for a sequence of steps, so the parts are elements of
+their own; the buttons you put in the row are the library's, which are built on Base UI's
+Button.
+
+## Usage
+
+```tsx
+import {
+  AssistantWindow,
+  AssistantWindowActions,
+  AssistantWindowHeading,
+  AssistantWindowText,
+} from "macalicious/assistant-window";
+import { PushButton } from "macalicious/push-button";
+import "macalicious/styles.css";
+
+<AssistantWindow
+  title="Boot Camp Assistant"
+  artwork={<img src={diamonds} alt="" />}
+  onClose={quit}
+  onCancel={goBack}
+>
+  <AssistantWindowHeading id="step">Introduction</AssistantWindowHeading>
+  <AssistantWindowText aria-labelledby="step">
+    <p>This assistant helps you install another operating system.</p>
+    <p>Back up your disk before you continue.</p>
+  </AssistantWindowText>
+  <AssistantWindowActions leading={<PushButton onClick={help}>Open Help</PushButton>}>
+    <PushButton onClick={next}>Continue</PushButton>
+  </AssistantWindowActions>
+</AssistantWindow>
+```
+
+Or copy the source into your project: `npx macalicious add assistant-window`.
+
+- The assistant keeps no step of its own. Hold the step in your state, render its heading and
+  content, and change it from the buttons: Continue, and Go Back from the second step on.
+- `AssistantWindowText` is the bordered box of text, for steps that explain. Put paragraphs
+  (`<p>`) in it; it scrolls when they are longer than the box. `AssistantWindowContent` takes
+  the same room without a border, for steps that ask or show progress: put
+  [Checkboxes](/components/checkbox), a [Progress Bar](/components/progress-bar) or a form in
+  it.
+- `AssistantWindowActions` is the button row: its children are the navigation buttons, at the
+  trailing end with Continue last; `leading` takes a button that opens the help.
+- `artwork` is the picture of the left column. The library ships no artwork: supply an `<img>`
+  with an empty `alt`, or an inline SVG. It may be wider than its column, as Boot Camp's
+  diamonds are, and then reaches over the step; the window clips it at its own edge.
+- The window does not open, move or close itself: a window manager gives it `state` and a
+  position through `style`, moves it from `onDragRegionPointerDown` (a press on the title bar,
+  not on a window control), and unmounts it on `onClose`.
+
+## Guidelines
+
+From the Human Interface Guidelines for macOS,
+[Onboarding](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/app-architecture/onboarding/),
+as the measured spec summarises them; the page was not re-read for this one (not verified):
+
+- Keep the steps few, and say in each what is about to happen.
+- Let people leave at any point, and do not change anything before they have confirmed it.
+- Do not ask for setup information the task can do without or can find out by itself.
+
+## Variants and states
+
+<Example name="steps" both />
+
+| Part or prop | Values | Source |
+| --- | --- | --- |
+| Step content | `AssistantWindowText` (a bordered box of text) or `AssistantWindowContent` (plain) | The text box is measured on the Introduction step; other steps are not in the reference and the plain area is inferred |
+| Navigation | Continue alone; Go Back and Continue | Continue alone is measured; Go Back, 12 pt before it, is inferred |
+| Continue | A [Push Button](/components/push-button), or a [Default Button](/components/default-button) | Measured: the capture draws Continue as a plain push button. A default button is the caller's choice |
+| `controls` | The usual three with zoom disabled (default), another element, or `null` | Measured: close and minimize coloured, zoom grey |
+| `state` | `key` (default), `main`, `inactive` | Key measured; the others are the window's and provisional here |
+
+| State | Look | Source |
+| --- | --- | --- |
+| Keyboard focus on the text box | Focus ring inside its edge, in the key window only | Provisional: no screenshot shows it |
+| Text longer than the box | The box scrolls | Provisional |
+
+## Sizes
+
+An assistant is not resizable. `width` and `height` are 783 and 548 pt unless given, the frame
+of Boot Camp Assistant. Measured from the window's top-left corner: title bar 22 pt; the
+artwork column ends and the step begins at 174.5 pt (`--mac-assistant-window-artwork-width`),
+and the step ends 16 pt from the right edge; baseline of the heading at 53.5 pt, its text
+3.5 pt after the box's edge; text box 592.5 x 423 pt at 174.5, 65, with a 1 pt border; its text
+7.5 pt inside the edge, the first baseline 20.5 pt below the box's top, on a 16 pt line, with
+a blank line between paragraphs; buttons 20 pt high, 20.5 pt below the box and 19.5 pt above
+the bottom edge, the leading one flush with the box's left edge and the trailing one ending
+4.5 pt inside its right edge. The heading is 13 pt bold and the text 13 pt.
+
+## API
+
+`AssistantWindow` takes the [Window](/components/window)'s props; the other parts take the
+props of the element they render (`<h1>`, `<div>`), plus these:
+
+### AssistantWindow
+
+<PropsTable name="AssistantWindowProps" />
+
+### AssistantWindowHeading
+
+<PropsTable name="AssistantWindowHeadingProps" />
+
+### AssistantWindowText
+
+<PropsTable name="AssistantWindowTextProps" />
+
+### AssistantWindowContent
+
+<PropsTable name="AssistantWindowContentProps" />
+
+### AssistantWindowActions
+
+<PropsTable name="AssistantWindowActionsProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-window-state` | window | `key`, `main`, `inactive` | Reflects `state`; everything inside reads it. |
+| `data-force` | text box | `focus` | Pins the focus ring in documentation and visual tests. |
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-assistant-window-artwork-width` | `174.5px` | Width of the artwork column: where the step begins. |
+| `--mac-assistant-window-button-min-width` | `86px` | Least width of a navigation button: the 85 pt bezel of Continue. |
+
+The colours of the text box are the tokens in `assistant-window.tokens.css`
+(`--mac-assistant-window-text-fill`, `--mac-assistant-window-text-border`).
+
+Classes: `.mac-assistant-window` (the window), `.mac-assistant-window-body`,
+`.mac-assistant-window-artwork`, `.mac-assistant-window-step`,
+`.mac-assistant-window-heading`, `.mac-assistant-window-text`,
+`.mac-assistant-window-content`, `.mac-assistant-window-actions`,
+`.mac-assistant-window-actions-leading` and `.mac-assistant-window-actions-trailing`.
+
+## Accessibility
+
+- The window is a `region` named by its title.
+- `AssistantWindowHeading` is an `<h1>`, the heading of the window, and a polite live region:
+  keep the same heading mounted and change its text, and a screen reader says the new step.
+- `AssistantWindowText` is a `group` and a tab stop, so that the arrow keys, Page Up and Page
+  Down scroll it from the keyboard. Name it with `aria-labelledby` and the heading's `id`.
+  Its text can be selected and copied.
+- Tab moves from the window controls to the text box, the help button and the navigation
+  buttons. Return activates Continue when it is a
+  [Default Button](/components/default-button). Escape pressed anywhere inside calls
+  `onCancel`, unless a control inside has used the key: go back a step, or leave.
+- The artwork is decoration and is hidden from assistive technology.
+- The assistant does not move the focus when the step changes. If Continue disappears on the
+  last step, move the focus to what replaces it.
+- Command-W and Command-period are a window manager's keys; the window only reports its close
+  button through `onClose`.
+- In forced-colours mode the text box keeps a border in the text colour.
+
+## Visual comparison
+
+`assistant-window.visual.json` compares the whole window with the Boot Camp Assistant capture
+in both appearances (crop 112, 76, 1566 x 1096). The capture is a full screen, so the window is
+cropped at its frame: the shadow is not compared, and the four corners, where the desktop
+picture shows, are masked. The diamonds are Apple's artwork: plain diamonds stand in for them
+and every comparison masks their area, which reaches over the left edge of the text box. The
+wording of the text is a stand-in. The `-layout` twins also mask the title, the heading, the
+text and the button titles, and score the frame, the title bar, the text box and the buttons
+at the tighter threshold (0.05).
+
+Scores on Linux with the fallback font (Chromium, mismatch and mean difference of 255):
+
+| Comparison | 1x | 2x |
+| --- | --- | --- |
+| `boot-camp-light` | 5.26%, 6.77 | 4.38%, 6.87 |
+| `boot-camp-light-layout` | 0.55%, 0.22 | 0.03%, 0.19 |
+| `boot-camp-dark` | 5.45%, 6.67 | 4.60%, 6.58 |
+| `boot-camp-dark-layout` | 0.29%, 0.50 | 0.02%, 0.36 |
+
+The unmasked scores are the text: its wording is a stand-in and it is set in the fallback
+font. The `-layout` twins are the gate for the drawing: they mask the lines of text and leave
+the lower half of the text box exposed, so its measured fill is compared in both appearances.
+
+Measured: the frame, the title bar and the place of the window controls; the step's column;
+the heading's place, size and weight; the text box's frame, border and fill in both
+appearances; the text's inset and line; the buttons' places. Provisional: the focus ring of
+the text box, a scrolling box, Go Back, the plain content area and the forced-colours look.
+Not reproduced: the steps after the Introduction, which the reference does not show.

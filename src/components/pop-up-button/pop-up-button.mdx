@@ -1,0 +1,223 @@
+---
+title: Pop-Up Button
+description: Shows the current choice from a list of mutually exclusive items and opens a menu over itself to change it. The Catalina pop-up button with its accent cap and double arrow.
+order: 62
+---
+
+<Example name="basic" both />
+
+AppKit's `NSPopUpButton` (with `pullsDown` off). It is built on
+[Base UI's Select](https://base-ui.com/react/components/select), which supplies the roles,
+focus management, arrow-key navigation, type-select, dismissal, the hidden form input and the
+placement of the menu over the button. The open menu is the library's [menu](/components/menu)
+and its rows are [menu items](/components/menu-item): the same surface, rim, row height,
+highlight and checkmark, drawn by those components' stylesheets. For a menu of commands under a
+button with a fixed title, use a [pull-down button](/components/pull-down-button).
+
+## Usage
+
+```tsx
+import { PopUpButton, PopUpButtonItem, PopUpButtonSeparator } from "macalicious/pop-up-button";
+import "macalicious/menu.css";
+import "macalicious/menu-item.css";
+import "macalicious/pop-up-button.css";
+
+<PopUpButton defaultValue="medium" onValueChange={setSize} aria-label="Sidebar icon size">
+  <PopUpButtonItem value="small">Small</PopUpButtonItem>
+  <PopUpButtonItem value="medium">Medium</PopUpButtonItem>
+  <PopUpButtonSeparator />
+  <PopUpButtonItem value="large">Large</PopUpButtonItem>
+</PopUpButton>
+```
+
+Or copy the source into your project: `npx macalicious add pop-up-button`.
+
+The children are the menu. Each `PopUpButtonItem` has a `value`, which identifies it, and
+children, which are its title in the menu and in the button. The button shows the selected
+item's title from the first render, on the server too, because it reads the titles from its
+children: keep the items direct children, or children of fragments and plain elements, rather
+than hiding them inside components of your own. `value` and `onValueChange` control the
+selection, `defaultValue` sets it once; `placeholder` is shown while the value is `null`.
+
+A pop-up button is as wide as its layout makes it and does not follow its title: give it a
+`width`, as Interface Builder does. A title too long for it is cut with an ellipsis before the
+cap.
+
+`PopUpButtonBezel` is the bezel alone, as a plain `<button>` that opens nothing: the trigger
+for a popup of your own. The pull-down button is made of it.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines,
+[Pop-Up Buttons](https://web.archive.org/web/20200503110755/https://developer.apple.com/design/human-interface-guidelines/macos/buttons/pop-up-buttons/):
+
+- Use a pop-up button for a list of mutually exclusive choices or states, not for commands;
+  commands belong in a pull-down button.
+- Introduce it with a label in sentence case that ends with a colon, to its left, and give the
+  items titles in title case.
+- Prefer it to a group of radio buttons when there are more than about five choices or little
+  room; prefer checkboxes when several choices can be on at once.
+- Keep every item visible in the menu; dim one that is unavailable instead of removing it.
+
+In the screenshots a label ends 8 pt before the button's box, and stacked pop-up buttons are 31
+or 32 pt apart from top to top.
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look | Basis |
+| --- | --- | --- | --- |
+| Normal | – | Push button bezel; the trailing 16 pt are a cap in the accent gradient with a white double arrow, no line between the two | Measured |
+| Open | click, Space, Up or Down Arrow | The menu lies over the button, the selected item's title over the button's title, and that item has the checkmark | Measured (Print sheet) |
+| Pressed | `:active`, or while the menu is open | The cap deepens to 88% | Provisional |
+| Keyboard focus | `:focus-visible` | Focus ring around the bezel | Ring measured on a text field |
+| Disabled | `disabled` | Bezel at half opacity, no accent on the cap, title at 25%, arrows black at 40% (white at 25% in Dark Aqua) | Measured |
+| No bezel | `bordered={false}` | The title and the double arrow in the title's colour, for a table cell or a sentence | Provisional: the screenshots show it only in Contacts, in that app's own colours (see below) |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No accent on the cap, arrows in the title's colour, no focus ring | Provisional, from the disabled rendering |
+
+The window state is not a prop: see [Building a window](/building-a-window). The open menu is
+a window of its own and keeps its accent highlight.
+
+### Images
+
+An item's `image` is drawn before its title, in the menu and in the button: a 16 pt icon, or a
+colour chip as in the Highlight color pop-up button of the General pane.
+
+<Example name="images" />
+
+### A tinted button without a bezel
+
+An application can draw its pop-up buttons without a bezel in colours of its own: the labels of
+a Contacts card in edit mode are blue with lighter arrows (`#4188f2` and about `#77adf9` on
+white in the light Contacts screenshot). Two custom properties, set on the button or on any
+ancestor, give an enabled button without a bezel those colours:
+
+| Custom property | Colours | Default |
+| --- | --- | --- |
+| `--mac-pop-up-button-borderless-color` | the title | the control text colour |
+| `--mac-pop-up-button-borderless-arrow-color` | the arrows | the title's colour |
+
+A disabled button keeps the disabled colours, and a button with a bezel ignores both.
+
+<Example name="tinted" both />
+
+## Sizes
+
+<Example name="sizes" />
+
+| Size | Height (box) | Cap | Font | Menu font |
+| --- | --- | --- | --- | --- |
+| `regular` | 21 pt (20 pt bezel, measured) | 16.5 pt | 13 pt | 13 pt, 18 pt rows |
+| `small` | 18 pt (17 pt bezel, measured) | 14.5 pt | 11 pt | 12 pt, 17 pt rows |
+| `mini` | 15 pt (provisional) | 12.5 pt | 9 pt | 11 pt, 16 pt rows |
+
+The element's box is AppKit's alignment rectangle; the visible bezel is one hairline smaller on
+every side.
+
+## API
+
+`PopUpButton` takes the props below; every other prop goes to the button, which is Base UI's
+Select.Trigger rendered as a `<button>`. `render` goes there too: pass another button element
+to keep the selection and the menu and draw a bezel of your own, such as a toolbar button's.
+
+<PropsTable name="PopUpButtonProps" />
+
+`PopUpButtonItem` takes the props of Base UI's Select.Item (`value`, `disabled`, `label` for
+type-select when the title is not text) and:
+
+<PropsTable name="PopUpButtonItemProps" />
+
+`PopUpButtonSeparator` takes the props of Base UI's Select.Separator.
+
+<PropsTable name="PopUpButtonSeparatorProps" />
+
+`PopUpButtonBezel` takes the props of a `<button>` and:
+
+<PropsTable name="PopUpButtonBezelProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-size` | button, menu | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-bordered` | button | `false`, or absent | Reflects `bordered`. |
+| `data-arrows` | button | `double`, `down` | The indicator in the cap. |
+| `data-popup-open` | button | present or absent | Set by Base UI while the menu is open. |
+| `data-disabled` | button, item | present or absent | Disabled. |
+| `data-selected`, `data-highlighted` | item | present or absent | Set by Base UI: the current choice, and the row under the pointer or the keyboard. |
+| `data-force` | button | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+Classes: `.mac-pop-up-button` (button), `.mac-pop-up-button-title`, `.mac-pop-up-button-image`,
+`.mac-pop-up-button-cap`, and on the menu `.mac-pop-up-button-menu` beside the menu's own
+`.mac-menu`. The menu is at least 4.5 pt wider than the button, as in Catalina, and otherwise
+as wide as its widest item.
+
+## Accessibility
+
+- The button has `role="combobox"` with `aria-haspopup="listbox"` and `aria-expanded`, the
+  select-only combobox pattern; the menu is a `listbox` of `option`s and the selected one has
+  `aria-selected`.
+- The button has no label of its own. Name it with `aria-label`, or with `aria-labelledby`
+  pointing at the label beside it.
+- Tab reaches the button. Space, Return, Up Arrow or Down Arrow opens the menu with the
+  current item highlighted; the arrow keys move, typing the start of a title selects it,
+  Return or Space chooses, Escape closes without changing the value, and focus returns to the
+  button.
+- A disabled button uses the real `disabled` attribute and leaves the tab order. A disabled
+  item has `aria-disabled` and cannot be chosen. The arrow keys stop on it without
+  highlighting it, which is Base UI's Select; a Catalina menu passes over it.
+- With `name` the value is submitted with a form through a hidden input; `required` takes part
+  in the form's validation.
+- The arrows are decoration and hidden from assistive technology. In forced-colours mode the
+  bezel and the arrows are drawn with system colours.
+
+## Visual comparison
+
+`npm run visual -- pop-up-button/` compares the examples with the reference screenshots in both
+appearances (`pop-up-button.visual.json`): Sidebar icon size in the General pane, the disabled
+Change picture button of Desktop & Screen Saver, the small Open with button of Finder's Get
+Info window, the Highlight color button in each of the eight accents (Theme screenshots), and
+the open Presets menu of the Print sheet, opened by the pop-up button itself, and the tinted
+label of a Contacts card (Aqua only: no dark screenshot shows a card being edited). Share of
+pixels that differ at 2x, in Chromium on Linux with the fallback font:
+
+| Crop | Aqua, whole crop | Aqua, drawing only | Dark Aqua, whole crop | Dark Aqua, drawing only |
+| --- | --- | --- | --- | --- |
+| General pane, regular | 5.86% | 0.22% | 5.45% | 0.24% |
+| Disabled | 6.35% | 0.13% | 5.75% | 0.04% |
+| Small | not scored | 0.24% | not scored | 0.24% |
+| Eight accents | not scored | 0.21% to 0.29% | not scored | 0.29% to 0.35% |
+| Open menu (Print) | 9.36% | 0.40% | 9.81% | 0.20% |
+| Contacts label, no bezel, tinted | not scored | 4.67% | no screenshot | no screenshot |
+
+"Drawing only" masks the titles and counts a pixel as differing at a colour distance of 0.05,
+half the default; each of those comparisons has a budget 0.05 percentage points above its
+score. What remains in them is the antialiasing of the arrows and, in the menu, the material.
+The whole-crop scores are the title text, set in the fallback font instead of San Francisco.
+The small and accent crops are scored with the title masked only: the Get Info title has the
+application's icon, and the accent titles name the accent beside a chip in the highlight colour.
+
+States no screenshot shows are checked in a real browser against values from the spec (the
+`expect` comparisons): the cap's fill and its three hairlines, that no line separates the cap
+from the title part, the focus ring after Tab, the cap without accent and no ring in a main and
+in an inactive window, the box and cap of the mini size, and the two colour hooks of the button
+without a bezel: an enabled one takes them, a disabled one and one with a bezel do not.
+
+What is not exact, and what is provisional:
+
+- **The arrows** are drawn for this library on the measured boxes; their stroke is 1.3 pt at
+  the regular size and 1.2 pt at the small size, fitted to the coverage masks in the spec.
+- **The Contacts label** shares its place, its size and its two colours with the small button
+  without a bezel, but Contacts draws heavier arrows, 6 pt wide with their tips 9.5 pt apart,
+  and sets the title at 12 pt where the small size has 11 pt (the example sets that font
+  size). The arrows' weight is what its score is.
+- **Pressed, window not key and the mini size** are inferred: no screenshot shows them. The
+  untinted look without a bezel is inferred too.
+- **The menu's place** is Base UI's: the selected item's text is laid exactly over the
+  button's text. In the Print screenshot the menu starts 13 pt before the button's edge; here
+  it starts 12 pt before it.
+- A title too long for the button ends with an ellipsis; AppKit truncates the same way.
+- The blink of the chosen item and the scroll arrows of a menu taller than the screen are not
+  reproduced (see [Menu](/components/menu)).

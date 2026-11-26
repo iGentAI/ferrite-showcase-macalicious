@@ -1,0 +1,167 @@
+---
+title: Label
+description: Static text in one of Catalina's system text styles and colours. Every other component's text follows these styles.
+order: 30
+---
+
+<Example name="basic" both />
+
+AppKit has no label class: a label is an `NSTextField` that cannot be edited and draws no bezel
+(`NSTextField(labelWithString:)`). Base UI has no primitive for static text, so `Label` renders a
+plain element through Base UI's `useRender`, which keeps the `render` prop working.
+
+## Usage
+
+```tsx
+import { Label } from "macalicious/label";
+import "macalicious/label.css";
+
+<Label>Automatically keep my Mac up to date</Label>
+<Label textStyle="small" color="secondary">Last checked: Today at 10:47 AM</Label>
+<Label render={<label htmlFor="name" />} align="end">Computer Name:</Label>
+```
+
+Or copy the source into your project: `npx macalicious add label`.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for labels:
+
+- Keep labels short and legible. End a label with a colon when it introduces a control
+  (“Computer Name:”), not when label and control read as one sentence.
+- Use the four label colours to show relative importance: `primary` for the main text,
+  `secondary` for hints and subtitles, `tertiary` for disabled text, `quaternary` for watermark
+  text.
+- Make text that people may want to copy `selectable`: an address, a serial number, an error
+  message.
+- Right-align form labels against their controls (`align="end"`), 8 pt before the control
+  (`var(--mac-space-label-gap)`), on the control's text baseline.
+
+## Text styles
+
+<Example name="text-styles" both hideCode />
+
+| `textStyle` | Size / line height, weight | Where Catalina uses it | Status |
+| --- | --- | --- | --- |
+| `body` | 13 / 16 regular | Checkbox and radio titles, form labels, body copy | measured |
+| `emphasized` | 13 / 16 bold | “Connected”, pane titles under icons | measured |
+| `callout` | 12 / 15 regular | Activity Monitor's statistics: “System:”, “Threads:” | size measured, line height provisional |
+| `small` | 11 / 14 regular | Explanatory lines, slider end labels, links | measured |
+| `small-emphasized` | 11 / 14 bold | Printers & Scanners “Location:”, “Kind:” | measured |
+| `mini` | 10 / 13 regular | Network “Known networks will be joined…” | measured |
+| `large-value` | 27 / 32 regular | Screen Time “48m” | size measured, line height provisional |
+| `headline`, `subheadline` | 13 / 16 bold, 11 / 14 regular | Alert title and message | measured |
+| `title-3`, `title-2`, `title-1`, `large-title` | 15 / 20, 17 / 22, 22 / 26, 26 / 32 | Large text | provisional |
+
+The styles the spec names are combinations of a text style, a colour and an alignment:
+
+| Catalina style | Props |
+| --- | --- |
+| Control label, body copy | defaults |
+| Form label | `align="end"` |
+| Emphasized | `textStyle="emphasized"` |
+| Statistic (Activity Monitor) | `textStyle="callout"` |
+| Body, opaque | `color="text"` |
+| Small | `textStyle="small"` |
+| Small secondary (hint) | `textStyle="small" color="secondary"` |
+| Small form label | `textStyle="small-emphasized" color="tertiary" align="end"` |
+| Mini | `textStyle="mini" color="text"` |
+| Secondary | `color="secondary"` |
+| Disabled | `disabled` |
+| Group header | `textStyle="small" color="tertiary"` |
+| Link | `textStyle="small" color="link" render={<a href="…" />}` |
+| Large value | `textStyle="large-value"` |
+
+Other components do not need `Label` to use these styles: the same values are the tokens
+`--mac-font-body`, `--mac-font-body-emphasized`, `--mac-font-control-small`, `--mac-font-label`
+and the `--mac-color-label*` colours. `callout` and `large-value` have no token: their values
+are in `label.css`.
+
+## Colours and states
+
+<Example name="colors" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | The chosen colour |
+| Disabled | `disabled` | Tertiary label colour, whatever `color` is |
+| Selectable | `selectable` | I-beam pointer; selected text takes the highlight colour |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | Label colours do not change; selected text turns grey; a link shows no focus ring |
+| Link pressed | `:active` on a label rendered as `<a>` | 15% darker (provisional) |
+| Link keyboard focus | `:focus-visible` | Focus ring |
+
+## Form labels
+
+<Example name="form-labels" />
+
+## Links
+
+A link is a label rendered as a real anchor.
+
+<Example name="link" both />
+
+## Wrapping and truncation
+
+A label wraps on word boundaries inside the width it is given. `truncate` keeps it on one line.
+
+<Example name="wrapping" />
+
+## API
+
+<PropsTable name="LabelProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-text-style` | a `textStyle` value | Reflects `textStyle`. |
+| `data-color` | `primary`, `secondary`, `tertiary`, `quaternary`, `text`, `link` | Reflects `color`. |
+| `data-align` | `start`, `center`, `end` | Reflects `align`. |
+| `data-disabled`, `data-selectable`, `data-truncate` | present or absent | Reflect the boolean props. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient link state. |
+
+## Accessibility
+
+- A label is static text: it has no role and is not focusable.
+- To name a control, render it as a `<label>`: `render={<label htmlFor={id} />}`. Clicking it
+  then focuses the control, and assistive technology announces it as the control's name.
+- A link must be a real `<a href>`; it is then in the tab order, Return follows it and it shows
+  the focus ring.
+- `disabled` only changes the colour. Disable the control itself; the label has nothing to
+  disable.
+- A truncated label hides text. Give it a `title`, or show the full text elsewhere.
+- In forced-colours mode disabled text uses `GrayText` and links `LinkText`.
+
+## Visual comparison
+
+Six examples reproduce label text from System Preferences panes and from Activity Monitor and are compared with the
+reference screenshots in both appearances by `npm run visual -- label`. Results from the run that
+accompanied this component, in Chromium on Linux with the fallback font (Inter):
+
+| Comparison (reference crop, 2x pixels) | Aqua, whole crop | Aqua, text masked | Dark Aqua, whole crop | Dark Aqua, text masked |
+| --- | --- | --- | --- | --- |
+| `network-status` (Network `700,300,380,110`) | 8.33% | 0.00% | 8.71% | 0.00% |
+| `mini-text` (Network `860,704,460,96`) | 16.31% | 0.00% | 17.42% | 0.00% |
+| `notifications-hint` (Notifications `666,326,420,140`) | 17.48% | 0.00% | 18.09% | 0.00% |
+| `printer-details` (Printers & Scanners `720,450,220,130`) | 7.65% | 0.00% | 7.43% | 0.00% |
+| `software-update` (Software Update `160,450,300,160`) | 10.53% | 0.00% | 10.40% | 0.00% |
+| `callout` (Activity Monitor `386,1146,140,36`) | 16.57% | 0.00% | 16.11% | 0.00% |
+
+A label is nothing but text, so the whole-crop figure is the fallback font: Inter's letter shapes
+and advances differ from San Francisco's, and every glyph edge counts. The masked figure only
+confirms the background. What the comparisons do establish, read from the captures:
+
+- **Position.** Cap tops, baselines and line pitch land on the reference's pixel rows for the
+  13, 11 and 10 pt styles (16, 14 and 13 pt pitch). Line widths differ by up to 2% (Inter is
+  slightly narrower at 11 pt and wider at 13 pt). The 12 pt `callout` style is measured from
+  the capitals of Activity Monitor's “System:”, 8.5 pt high on the same baseline; Inter's
+  capitals are half a point taller and the word a tenth wider, which is the crop's score (the
+  crop holds one word and little else).
+- **Colour.** The solid ink colour of each style is within one level of the reference in both
+  appearances: primary `#222222` against `#232323` (dark `#e1e1e1` against `#e0e0e0`),
+  secondary `#717171` against `#727272` (dark `#a4a4a4` against `#a4a4a5`), tertiary `#a9a9a9`
+  against `#aaaaaa` (dark identical), link `#0168da` against `#0067d9` (dark `#429bff` against
+  `#429cff`), opaque text identical.
+
+Not compared with a screenshot: `large-value` (measured in the spec from Screen Time; no
+comparison on this page), `quaternary` (documented by Apple, not seen as text). Provisional,
+because no screenshot shows them: the title styles, the pressed and focused link, and selected
+text in a window that is not key.

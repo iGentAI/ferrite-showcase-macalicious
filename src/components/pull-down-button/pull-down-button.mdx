@@ -1,0 +1,171 @@
+---
+title: Pull-Down Button
+description: A button with a fixed title and one down arrow that opens a menu of commands below itself. Also the Action button, with an image in place of the title.
+order: 63
+---
+
+<Example name="basic" both />
+
+AppKit's `NSPopUpButton` with `pullsDown` on. It is built on
+[Base UI's Menu](https://base-ui.com/react/components/menu): the button is the menu's trigger,
+drawn with the bezel of the [pop-up button](/components/pop-up-button), and the menu is the
+library's [menu](/components/menu) with [menu items](/components/menu-item) as children. Unlike
+a pop-up button its title never changes: it names the menu.
+
+## Usage
+
+```tsx
+import { MenuItem, MenuSeparator } from "macalicious/menu-item";
+import { PullDownButton } from "macalicious/pull-down-button";
+import "macalicious/menu.css";
+import "macalicious/menu-item.css";
+import "macalicious/pop-up-button.css";
+import "macalicious/pull-down-button.css";
+
+<PullDownButton title="PDF">
+  <MenuItem onClick={openInPreview}>Open in Preview</MenuItem>
+  <MenuItem onClick={saveAsPdf}>Save as PDF</MenuItem>
+  <MenuSeparator />
+  <MenuItem onClick={sendInMail}>Send in Mail</MenuItem>
+</PullDownButton>
+```
+
+Or copy the source into your project: `npx macalicious add pull-down-button`.
+
+The children are the menu's items: `MenuItem`, `MenuCheckboxItem`, `MenuRadioGroup`,
+`MenuSeparator`, `MenuSection`, and submenus. The menu opens below the button, left-aligned
+with it, in the font of the button's size. A pull-down button is as wide as its title unless it
+is given a `width`.
+
+For an Action button pass an `image` (a template icon drawn with `currentColor`, such as a
+gear) instead of a title, and name the button with `aria-label`.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines,
+[Pull-Down Buttons](https://web.archive.org/web/20200503154252/https://developer.apple.com/design/human-interface-guidelines/macos/buttons/pull-down-buttons/):
+
+- Use a pull-down button for commands, or for items that are toggled independently; use a
+  pop-up button for one choice out of several.
+- The title names the menu and stays the same when an item is chosen, so the button needs no
+  label beside it. Give the items titles in title case.
+- An Action button shows a gear instead of a title and lists commands for the selected item;
+  those commands should also be available in the menu bar.
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look | Basis |
+| --- | --- | --- | --- |
+| Normal | – | The pop-up button's bezel and accent cap, with one down arrow | Measured (PDF in the Print sheet) |
+| Pressed or open | `:active`, or while the menu is open | The cap deepens to 88%; the menu hangs below the button | Provisional |
+| Keyboard focus | `:focus-visible` | Focus ring around the bezel | Ring measured on a text field |
+| Disabled | `disabled` | Bezel at half opacity, no accent on the cap, title at 25%, arrow black at 40% (white at 25% in Dark Aqua) | Measured (Sidecar pane) |
+| No bezel | `bordered={false}` | The title followed by a small chevron with round ends, 3 pt after it, both black at 65% (white at 85% in Dark Aqua) | Measured (Trackpad pane; the chevron also on Books' Sort By button; disabled in the Mouse pane) |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No accent on the cap, arrow in the title's colour, no focus ring | Provisional, from the disabled rendering |
+
+An application can draw a button without a bezel in colours of its own. Because the button is
+drawn by the pop-up button's bezel, it takes that component's two colour hooks, set on the
+button or on an ancestor:
+
+| Custom property | Colours | Default |
+| --- | --- | --- |
+| `--mac-pop-up-button-borderless-color` | the title | black at 65%, white at 85% in Dark Aqua |
+| `--mac-pop-up-button-borderless-arrow-color` | the chevron | the title's colour |
+
+Books' "Sort By" button is such a button: its title is in the label colour
+(`var(--mac-color-label)`, black and white at 85%), its chevron black at 77% and white at
+76.5%, and its title is 12 pt, set with `style`. The chevron itself and its distance
+from the title are the ones of the Trackpad pane. A disabled button keeps the disabled colours,
+and a button with a bezel ignores both hooks.
+
+## Sizes
+
+<Example name="sizes" />
+
+The sizes are the pop-up button's: 21, 18 and 15 pt boxes with 13, 11 and 9 pt titles. Regular
+is measured; small and mini bezels are measured or inferred on the pop-up button, and no
+screenshot shows a small or mini pull-down button with a bezel.
+
+## API
+
+`PullDownButton` takes the props below; every other prop, `disabled` included, goes to the
+button, which is Base UI's Menu.Trigger rendered as a `<button>`.
+
+<PropsTable name="PullDownButtonProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-size` | `regular`, `small`, `mini` | Reflects `size`; the menu carries it too. |
+| `data-bordered` | `false`, or absent | Reflects `bordered`. |
+| `data-arrows` | `down` | The single arrow; a pop-up button has `double`. |
+| `data-popup-open` | present or absent | Set by Base UI while the menu is open. |
+| `data-disabled` | present or absent | The button is disabled. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+The button carries two classes, `.mac-pop-up-button` and `.mac-pull-down-button`: the bezel,
+the cap and the states are the pop-up button's styles.
+
+## Accessibility
+
+- The button is a native `<button>` with `aria-haspopup="menu"` and `aria-expanded`; the popup
+  has `role="menu"` (the menu button pattern).
+- Tab reaches the button. Down Arrow, Return or Space opens the menu and highlights the first
+  item; the arrow keys move, typing the start of a title selects it, Return or Space chooses,
+  and Escape closes the menu and returns focus to the button.
+- A button without a title, such as an Action button, needs an `aria-label`.
+- A disabled button uses the real `disabled` attribute.
+- The arrow is decoration and hidden from assistive technology. In forced-colours mode the
+  bezel and the arrow are drawn with system colours.
+
+## Visual comparison
+
+`npm run visual -- pull-down-button/` compares four examples with the reference screenshots in
+both appearances (`pull-down-button.visual.json`): the PDF button at the foot of the Print
+sheet, the disabled No Devices button of the Sidecar pane, the enabled small button without
+a bezel under "Secondary click" in the Trackpad pane, and Books' "Sort By" button, a regular
+button without a bezel tinted with the two colour hooks. Share of pixels that differ at
+2x, in Chromium on Linux with the fallback font:
+
+| Crop | Aqua, whole crop | Aqua, drawing only | Dark Aqua, whole crop | Dark Aqua, drawing only |
+| --- | --- | --- | --- | --- |
+| PDF, Print sheet | 5.19% | 0.29% | 2.99% | 0.38% |
+| Disabled, Sidecar | 7.42% | 0.15% | 2.30% | 0.03% |
+| No bezel, Trackpad | not scored | 0.55% | not scored | 0.55% |
+| No bezel, Books' Sort By | not scored | 1.14% | not scored | 1.14% |
+
+"Drawing only" masks the title and counts a pixel as differing at a colour distance of 0.05,
+half the default. The Print sheet is a material over the desktop picture and is noisy by a few
+levels in the capture; the example paints a flat colour behind the button, which is most of
+that crop's mean difference. The Trackpad and Books crops are a line of text and a chevron, so
+they are scored with the title masked only: their score is the chevron. The title has
+the chevron's colour in the Trackpad pane: `#535353` on `#f0f0f0` and `#e1e1e1` on `#363636`
+in the screenshots.
+
+The chevron of a button without a bezel is one drawing in every screenshot that shows it: the
+Trackpad and Mouse panes, Books' Sort By button and the Action segment of Finder's Connect to
+Server show the same shape, row for row. It is fitted to the Books capture, where it is dark
+on white: arms of 3 pt at 45 degrees, a stroke of 1.43 pt, round ends and a round corner,
+7.4 x 4.4 pt of ink. Before the fit it was drawn with a stroke of 1.75 pt and flat ends, which
+scored 1.32% and 1.36% on the Trackpad crop. In the Books captures the chevron sits half a
+device pixel off the pixel grid; the comparison example moves the button by that much with a
+transform, which gives its chevron the same phase against the pixel grid, so that it is
+rasterised as the capture's is. Without the
+shift the same drawing scores 3.9% there, all of it along the chevron's edges.
+
+States no screenshot shows are checked in a real browser against values from the spec (the
+`expect` comparisons): the cap at rest, the deepened cap while the mouse is held down, the open
+menu below the button with its first item highlighted, the focus ring after Tab, and the cap
+without accent and no ring in an inactive window.
+
+Provisional, or not compared:
+
+- **Pressed, window not key, and the small and mini sizes with a bezel**: no screenshot shows
+  them.
+- **The disabled form without a bezel** is not compared with the Mouse pane, where its title
+  dominates the crop; its chevron is the same drawing as the enabled one.
+- **The Action button inside a segmented control** (Finder's Connect to Server) is a segment
+  of a [segmented control](/components/segmented-control), not this component.

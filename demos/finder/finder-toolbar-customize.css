@@ -1,0 +1,71 @@
+/* Finder's Customize Toolbar sheet. Not measured: no reference screenshot shows it. */
+.mac-finder-customize-palette,
+.mac-finder-customize-now {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-finder-customize-gap);
+  margin-block: var(--mac-finder-customize-gap);
+}
+
+.mac-finder-customize-now {
+  min-height: var(--mac-finder-customize-row);
+  padding: var(--mac-finder-customize-gap);
+  border: 1px solid var(--mac-separator);
+  border-radius: var(--mac-finder-customize-radius);
+  list-style: none;
+}
+
+.mac-finder-customize-item {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mac-finder-customize-gap);
+  padding: var(--mac-finder-customize-item-padding);
+  border: 1px solid var(--mac-separator);
+  border-radius: var(--mac-finder-customize-radius);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: grab;
+}
+
+.mac-finder-customize-item:disabled {
+  opacity: var(--mac-finder-customize-used);
+  cursor: default;
+}
+
+.mac-finder-customize-remove {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+/* While the sheet is open each toolbar item is a thing to drag, not a control to press. */
+.mac-finder-toolbar-arranged {
+  display: flex;
+  flex: none;
+  align-items: center;
+  cursor: grab;
+}
+
+.mac-finder-toolbar-arranged[data-flexible] {
+  flex: 1;
+}
+
+.mac-finder-toolbar-arranged > * {
+  pointer-events: none;
+}
+
+/* A label under it makes its item a column, where the field's width would be taken for a height. */
+.mac-finder-labelled > .mac-finder-search {
+  flex: none;
+}
+
+.mac-finder-customize-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-finder-customize-gap);
+}

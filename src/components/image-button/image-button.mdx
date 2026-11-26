@@ -1,0 +1,133 @@
+---
+title: Image Button
+description: An image without a border, optionally with a label under it, that starts an action when clicked.
+order: 18
+---
+
+<Example name="basic" both />
+
+AppKit calls this control an *image button* (a borderless `NSButton` with an image): the
+icons of the System Preferences grid, the account providers of Internet Accounts. It is built
+on [Base UI's Button](https://base-ui.com/react/components/button).
+
+The library ships no artwork. The icons on this page are stand-ins drawn for the examples;
+an application supplies its own images.
+
+## Usage
+
+```tsx
+import { ImageButton } from "macalicious/image-button";
+import "macalicious/image-button.css";
+
+<ImageButton label="General" onClick={openGeneral}>
+  <img src={generalIcon} alt="" width={32} height={32} />
+</ImageButton>
+```
+
+The children are the image: an `<img>`, an inline SVG or any other element, at the size it
+should be drawn. `label` adds text under it. A button may also have a `label` and no image,
+like the last row of a provider list; the focus ring then surrounds the label. Or copy the
+source into your project:
+`npx macalicious add image-button`. See [Installation](/installation).
+
+<Example name="pane-grid" />
+
+For a button that stays on, hold the state yourself and pass it as `aria-pressed`; the image
+is then drawn as pressed.
+
+### Rows
+
+`layout="row"` is the third use in Catalina: the account providers of Internet Accounts. A row
+is as wide as its list and 54 pt tall, with a logo, or a title in the body font, centred in
+it. The list draws the 2 pt dividers between rows.
+
+<Example name="provider-rows" />
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for image buttons:
+
+- An image button shows an image or an icon in a view and starts an immediate action. It has
+  no border.
+- The whole frame is clickable, not only the image: leave about 10 pixels between the image and
+  the edge of the frame, and keep other controls far enough away.
+- A label, if there is one, goes below the image.
+- Use it in a view, never in a toolbar or status bar.
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | The image, and the label in the secondary label colour; no background |
+| Pressed | `:active` | The image darkens to 70%; the label does not change |
+| On | `aria-pressed="true"` | As pressed |
+| Row | `layout="row"` | Full width, 54 pt tall, content centred; a title is 13 pt in the label colour |
+| Keyboard focus | `:focus-visible` | Focus ring around the image, or around the label when there is no image |
+| Disabled | `disabled` | Image and label at half opacity |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | Unchanged, but no focus ring |
+
+## Sizes
+
+The button takes the size of its image plus 5 pt of clear space on every side, which is part
+of the click target. The label is 12 pt, centred, on up to two lines 14 pt apart, and wraps at
+the button's width: give the button a `width` (82 pt is the pitch of the System Preferences
+grid) when labels are long. A row has no clear space of its own: it fills its list's width
+and is at least 54 pt tall.
+
+## API
+
+<PropsTable name="ImageButtonProps" />
+
+| Attribute or variable | Values | Description |
+| --- | --- | --- |
+| `data-layout` | `icon`, `row` | Reflects `layout`. |
+| `data-disabled` | present or absent | Set by Base UI while the button is disabled. |
+| `aria-pressed` | `true`, `false` | A toggle's state; `true` is drawn as pressed. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+| `--mac-image-button-padding` | a length, default `5px` | Clear space between the content and the edge of the click target. |
+| `--mac-image-button-gap` | a length, default `7.5px` | Distance from the image to the label's line box. |
+
+## Accessibility
+
+- Renders a native `<button>`. Space and Return activate it; Tab reaches it.
+- The visible `label` names the button; give the image an empty `alt` (or `aria-hidden`) so
+  the name is not said twice.
+- Without a label, name the button through the image's `alt` text or an `aria-label`.
+- In forced-colours mode the label is drawn in the system's button text colour.
+
+## Visual comparison
+
+The example `visual-pane-icon` reproduces the General icon and its label in the System
+Preferences grid and is compared with the screenshots in both appearances by `npm run visual`
+(`image-button.visual.json`). The icon is masked in every comparison: the example draws a
+stand-in of the same size, not Apple's artwork. Share of pixels that differ at 2x, in Chromium
+on Linux with the fallback font:
+
+| Crop, 58 x 77 pt | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Label and background, icon masked | 4.76% | 5.05% |
+| Background only, icon and label masked | 0.00% | 0.00% |
+| Provider rows, 100 x 80 pt, nothing masked | 0.00% | 0.00% |
+
+The label's size, colour, centring and distance from the image are measured. What the first
+row scores is the label itself, six letters set in the fallback font instead of San Francisco
+in a small crop; the second row shows only that nothing else is drawn. This comparison
+therefore says little about pixels: an image button draws nothing of its own.
+
+No screenshot shows an image button pressed, focused or disabled; those looks are the spec's
+inference and provisional. They are checked in a real browser against the spec's values (the
+`expect` comparisons): the image darkened under a real mouse press, the focus ring around the
+image after a real Tab (around the label of a button that has no image, in both the
+no-children and the empty-children case), the disabled image at half opacity, and that the
+ring is absent in an inactive window.
+
+The example `visual-provider-rows` reproduces the left end of two provider rows of Internet
+Accounts. The crop holds no logo and no text, so it scores only the height of a row (54 pt,
+measured) and the place of the 2 pt dividers, which the example draws with the separator
+colour as a list would. The logos themselves, and the title of the last row, are not
+compared.

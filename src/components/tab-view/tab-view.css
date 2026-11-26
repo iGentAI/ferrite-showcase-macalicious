@@ -1,0 +1,394 @@
+/*
+ * Tab view (NSTabView). The notes on its structure are in tab-view.tsx; this file is kept
+ * short for the size budget.
+ */
+.mac-tab-view {
+  --_height: var(--mac-control-height-regular);
+  --_padding: 11px;
+  --_radius: var(--mac-radius-control-regular);
+  --_font: var(--mac-font-control-regular);
+  /* Strip centred on the box's border: Sound, strip y 193..232, border y 212. */
+  --_overlap: calc((var(--_height) - 1px) / 2);
+  --_t: var(--mac-bezel-inset);
+  --_n: calc(-1 * var(--_t));
+  /* Per position: grid, areas, box inset, clips, direction of the bezel's shading. */
+  --_grid: auto minmax(0, 1fr) / minmax(0, 1fr) auto minmax(0, 1fr);
+  --_strip: 1 / 2;
+  --_pane: 2 / 1 / auto / -1;
+  --_a: 1 / 1;
+  --_b: 1 / 3;
+  --_box: var(--_overlap) 0 0;
+  --_wing: inset(0 var(--_n) var(--_t));
+  --_body: inset(var(--_n) 0 0);
+  --_to: to bottom;
+  --_dx: 0;
+  --_dy: 1;
+  --_turn: none;
+
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template: var(--_grid);
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.mac-tab-view:where([data-tab-position="bottom"]) {
+  --_grid: minmax(0, 1fr) auto / minmax(0, 1fr) auto minmax(0, 1fr);
+  --_strip: 2 / 2;
+  --_pane: 1 / 1 / auto / -1;
+  --_a: 2 / 1;
+  --_b: 2 / 3;
+  --_box: 0 0 var(--_overlap);
+  --_wing: inset(var(--_t) var(--_n) 0);
+  --_body: inset(0 0 var(--_n));
+}
+
+.mac-tab-view:where([data-tab-position="left"]) {
+  --_grid: minmax(0, 1fr) auto minmax(0, 1fr) / auto minmax(0, 1fr);
+  --_strip: 2 / 1;
+  --_pane: 1 / 2 / -1;
+  --_a: 1 / 1;
+  --_b: 3 / 1;
+  --_box: 0 0 0 var(--_overlap);
+  --_wing: inset(var(--_n) var(--_t) var(--_n) 0);
+  --_body: inset(0 0 0 var(--_n));
+  --_to: to right;
+  --_dx: 1;
+  --_dy: 0;
+  --_turn: 180deg;
+}
+
+.mac-tab-view:where([data-tab-position="right"]) {
+  --_grid: minmax(0, 1fr) auto minmax(0, 1fr) / minmax(0, 1fr) auto;
+  --_strip: 2 / 2;
+  --_pane: 1 / 1 / -1;
+  --_a: 1 / 2;
+  --_b: 3 / 2;
+  --_box: 0 var(--_overlap) 0 0;
+  --_wing: inset(var(--_n) 0 var(--_n) var(--_t));
+  --_body: inset(0 var(--_n) 0 0);
+  --_to: to left;
+  --_dx: -1;
+  --_dy: 0;
+}
+
+/* Physical sides: grid columns follow the text direction, so RTL swaps them. */
+.mac-tab-view:where([data-tab-position="left"]):where(:dir(rtl)) {
+  --_grid: minmax(0, 1fr) auto minmax(0, 1fr) / minmax(0, 1fr) auto;
+  --_strip: 2 / 2;
+  --_pane: 1 / 1 / -1;
+  --_a: 1 / 2;
+  --_b: 3 / 2;
+}
+
+.mac-tab-view:where([data-tab-position="right"]):where(:dir(rtl)) {
+  --_grid: minmax(0, 1fr) auto minmax(0, 1fr) / auto minmax(0, 1fr);
+  --_strip: 2 / 1;
+  --_pane: 1 / 2 / -1;
+  --_a: 1 / 1;
+  --_b: 3 / 1;
+}
+
+.mac-tab-view:where([data-tab-position="none"]) {
+  --_grid: minmax(0, 1fr) / minmax(0, 1fr);
+  --_pane: 1 / 1;
+  --_box: 0;
+}
+
+.mac-tab-view:where([data-size="small"]) {
+  --_height: var(--mac-control-height-small);
+  --_padding: 9px;
+  --_radius: var(--mac-radius-control-small);
+  --_font: var(--mac-font-control-small);
+}
+
+.mac-tab-view:where([data-size="mini"]) {
+  --_height: var(--mac-control-height-mini);
+  --_padding: 7px;
+  --_radius: var(--mac-radius-control-mini);
+  --_font: var(--mac-font-control-mini);
+}
+
+/* Content box. Child selectors: a tab view nested in a pane keeps its own border. */
+.mac-tab-view-box {
+  z-index: -1;
+  grid-area: var(--_pane);
+  clip-path: var(--_body);
+  pointer-events: none;
+}
+
+.mac-tab-view-box:where([data-part="a"], [data-part="b"]) {
+  grid-area: var(--_a);
+  clip-path: var(--_wing);
+}
+
+.mac-tab-view-box:where([data-part="b"]) {
+  grid-area: var(--_b);
+}
+
+.mac-tab-view-box::before {
+  content: "";
+  position: absolute;
+  inset: var(--_box);
+  box-sizing: border-box;
+  border: var(--mac-hairline) solid var(--mac-color-box-border);
+  border-top-color: var(--mac-tab-view-border-top);
+  border-radius: var(--mac-radius-group);
+  background: var(--mac-color-group-background) padding-box;
+  box-shadow: inset 0 0 0 var(--mac-hairline) var(--mac-tab-view-border-inner);
+}
+
+.mac-tab-view:where([data-border="line"]) > .mac-tab-view-box::before {
+  border: 1px solid var(--mac-color-separator);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.mac-tab-view:where([data-border="none"], [data-tab-position="none"])
+  > .mac-tab-view-box:where([data-part="a"], [data-part="b"]),
+.mac-tab-view:where([data-border="none"]) > .mac-tab-view-box {
+  display: none;
+}
+
+/* Strip */
+.mac-tab-view-list {
+  position: relative;
+  display: inline-flex;
+  grid-area: var(--_strip);
+  box-sizing: border-box;
+  max-width: 100%;
+  border-radius: calc(var(--_radius) + var(--_t));
+  outline: none;
+}
+
+.mac-tab-view-list::before {
+  content: "";
+  position: absolute;
+  inset: var(--_t);
+  border-radius: var(--_radius);
+  /* --mac-bezel-shadow, turned */
+  box-shadow:
+    0 0 0 0.5px var(--mac-tab-view-shadow-ring),
+    calc(0.5px * var(--_dx)) calc(0.5px * var(--_dy)) 0 0 var(--mac-tab-view-shadow-near),
+    calc(1px * var(--_dx)) calc(1px * var(--_dy)) 0 0 var(--mac-tab-view-shadow-far);
+  pointer-events: none;
+}
+
+/* Side tabs. The first tab stays at the top in right-to-left text too. */
+.mac-tab-view:where([data-tab-position="left"], [data-tab-position="right"]) > .mac-tab-view-list {
+  writing-mode: vertical-rl;
+  direction: ltr;
+}
+
+/* Block-start is then the outer edge of a left strip too: the tabs need no rule per side. */
+.mac-tab-view:where([data-tab-position="left"]) > .mac-tab-view-list {
+  writing-mode: vertical-lr;
+}
+
+.mac-tab-view-tab-label {
+  rotate: var(--_turn);
+}
+
+/* A title keeps the direction of its text. */
+.mac-tab-view-tab-label:where(:dir(rtl)) {
+  direction: rtl;
+}
+
+/* Segment: the shared bezel recipe, in parts that follow --_to. */
+.mac-tab-view-tab {
+  --_fill: var(--mac-bezel-fill);
+  --_under: none;
+  --_border-top: var(--mac-bezel-border-top);
+  --_border-side: var(--mac-bezel-border-side);
+  --_border-bottom: var(--mac-bezel-border-bottom);
+  --_hl: var(--mac-tab-view-highlight);
+  --_hl-inner: var(--mac-tab-view-highlight-inner);
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  block-size: var(--_height);
+  margin: 0;
+  padding: 0;
+  padding-inline: var(--_padding);
+  border: 0;
+  background: none;
+  color: var(--mac-color-control-text);
+  font: var(--_font);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+.mac-tab-view-tab::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-block: var(--_t);
+  inset-inline: 0;
+  box-sizing: border-box;
+  border: 0 solid var(--_border-side);
+  border-block-width: var(--mac-bezel-border-width);
+  border-block-start-color: var(--_border-top);
+  border-block-end-color: var(--_border-bottom);
+  background:
+    var(--_fill) padding-box,
+    var(--_under) border-box;
+  box-shadow:
+    inset calc(0.5px * var(--_dx)) calc(0.5px * var(--_dy)) 0 var(--_hl),
+    inset calc(1px * var(--_dx)) calc(1px * var(--_dy)) 0 var(--_hl-inner);
+  pointer-events: none;
+}
+
+/* End caps, a point wider as measured */
+.mac-tab-view-tab:where(:first-of-type) {
+  padding-inline-start: calc(var(--_padding) + 1px);
+}
+
+.mac-tab-view-tab:where(:first-of-type)::before {
+  inset-inline-start: var(--_t);
+  border-inline-start-width: var(--mac-bezel-border-width);
+  border-start-start-radius: var(--_radius);
+  border-end-start-radius: var(--_radius);
+}
+
+.mac-tab-view-tab:where(:last-of-type) {
+  padding-inline-end: calc(var(--_padding) + 1px);
+}
+
+.mac-tab-view-tab:where(:last-of-type)::before {
+  inset-inline-end: var(--_t);
+  border-inline-end-width: var(--mac-bezel-border-width);
+  border-start-end-radius: var(--_radius);
+  border-end-end-radius: var(--_radius);
+}
+
+/* Divider between two unselected neighbours */
+.mac-tab-view-tab:where(:not([data-active])) + .mac-tab-view-tab:where(:not([data-active]))::after {
+  content: "";
+  position: absolute;
+  inset-block: calc(var(--_t) + var(--mac-bezel-border-width));
+  inset-inline-start: 0;
+  inline-size: 1px;
+  background: var(--mac-tab-view-divider);
+  pointer-events: none;
+}
+
+/* Pressed, unselected */
+.mac-tab-view-tab:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  --_fill: var(--mac-bezel-fill-pressed);
+}
+
+/* Selected, key window only */
+.mac-tab-view-tab:where([data-active]):where(:not([data-disabled])):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  --_1: var(--mac-accent-bezel-top);
+  --_2: var(--mac-accent-bezel-upper);
+  --_3: var(--mac-accent-bezel-middle);
+  --_4: var(--mac-accent-bezel-lower);
+  --_5: var(--mac-accent-bezel-bottom);
+  --_fill: linear-gradient(
+    var(--_to),
+    var(--_1),
+    var(--_2) 25%,
+    var(--_3) 50%,
+    var(--_4) 75%,
+    var(--_5)
+  );
+  --_under: linear-gradient(
+    var(--_to),
+    var(--mac-accent-bezel-edge-top),
+    var(--mac-accent-bezel-edge-side) 50%,
+    var(--mac-accent-bezel-edge-bottom)
+  );
+  --_border-top: var(--mac-bezel-accent-border-top);
+  --_border-side: var(--mac-bezel-accent-border-side);
+  --_border-bottom: var(--mac-bezel-accent-border-bottom);
+  --_hl: var(--mac-accent-bezel-highlight);
+  --_hl-inner: var(--mac-tab-view-accent-highlight-inner);
+  color: var(--mac-color-control-text-on-accent);
+}
+
+.mac-tab-view-tab:where([data-active]):where(:active, [data-force~="pressed"]) {
+  --_1: var(--mac-accent-bezel-pressed-top);
+  --_2: var(--mac-accent-bezel-pressed-upper);
+  --_3: var(--mac-accent-bezel-pressed-middle);
+  --_4: var(--mac-accent-bezel-pressed-lower);
+  --_5: var(--mac-accent-bezel-pressed-bottom);
+}
+
+/* Selected, window not key or disabled */
+.mac-tab-view-tab:where([data-active]):where(
+  [data-disabled],
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  --_fill: linear-gradient(
+    var(--mac-tab-view-selected-inactive),
+    var(--mac-tab-view-selected-inactive)
+  );
+}
+
+.mac-tab-view-tab:where([data-disabled]) {
+  color: var(--mac-color-control-text-disabled);
+}
+
+/* Focus ring around the whole strip; key window only */
+.mac-tab-view-list:where(:has(:focus-visible), [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(var(--mac-focus-ring-offset) - var(--_t) - var(--mac-bezel-border-width));
+}
+
+/* Pane (focusable, from Base UI) */
+/* A pane being left: Base UI holds it for its exit, inert. Without this both show for a frame. */
+.mac-tab-view-panel:where([inert]) {
+  display: none;
+}
+
+.mac-tab-view-panel {
+  grid-area: var(--_pane);
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--mac-tab-view-panel-padding, 18px 20px 20px);
+  border-radius: var(--mac-radius-group);
+  outline: none;
+}
+
+.mac-tab-view-panel:where(:focus-visible):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+@media (forced-colors: active) {
+  .mac-tab-view-box::before,
+  .mac-tab-view-tab::before {
+    border-color: ButtonText;
+  }
+
+  .mac-tab-view-tab:where([data-active]) {
+    color: HighlightText;
+  }
+
+  .mac-tab-view-tab:where([data-active])::before {
+    background: Highlight;
+    forced-color-adjust: none;
+  }
+
+  .mac-tab-view-tab:where([data-disabled]) {
+    color: GrayText;
+  }
+}

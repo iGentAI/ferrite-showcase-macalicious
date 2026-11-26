@@ -1,0 +1,938 @@
+/*
+ * Mail demo: the layout of the viewer, the New Message window and the Preferences panes.
+ * Every control is a library component; this file places them and sets the demo's own text
+ * (the lines of a message row, the header of a message).
+ *
+ * Every measured length and font size is a token in mail.tokens.css (--mac-mail-*). Literal
+ * here, as structure: zeros, the 100% heights, the 50% radius of the monogram, the flex
+ * factors, the 1 pt lines under the sort bar, the header, each field of a new message and its
+ * format bar, the empty form row's 0 height, the two-line clamp and the panels' stacking order.
+ */
+
+/* Viewer: the three panes fill the body. */
+.mac-mail-body {
+  display: flex;
+  overflow: hidden;
+}
+
+.mac-mail-split {
+  flex: 1;
+  min-width: 0;
+}
+
+/* The classic layout: the list above the message, both in the one pane. */
+.mac-mail-classic {
+  display: flex;
+}
+
+.mac-mail-classic-split {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+.mac-mail-sidebar {
+  height: 100%;
+}
+
+/* The areas a contextual menu belongs to: only their events, never a box of their own. */
+.mac-mail-menu-area {
+  display: contents;
+}
+
+/* A mailbox's row while messages are dragged over it: ringed, as Photos rings an album's.
+   [provisional: no capture shows a drag] */
+.mac-mail-sidebar :where([data-drop-target]) {
+  outline: var(--mac-mail-drop-width) solid var(--mac-color-selected-content-background);
+  outline-offset: calc(-1 * var(--mac-mail-drop-width));
+}
+
+/* Message list: the 22 pt sort bar and its line, then the rows. */
+.mac-mail-list {
+  display: flex;
+  flex-direction: column;
+  background: var(--mac-mail-list-background);
+}
+
+.mac-mail-sort {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  height: var(--mac-mail-sort-height);
+  padding-inline: var(--mac-mail-sort-padding-start) var(--mac-mail-sort-padding-end);
+  border-block-end: 1px solid var(--mac-mail-sort-line);
+}
+
+.mac-mail-messages {
+  flex: 1;
+  min-height: 0;
+}
+
+/* A message row: sender and date, subject, two lines of the text; 15 pt from line to line. */
+.mac-mail-row-sender {
+  display: flex;
+  gap: var(--mac-mail-row-sender-gap);
+  align-items: baseline;
+  line-height: var(--mac-mail-row-line-height);
+}
+
+.mac-mail-row-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mac-mail-row-mark {
+  display: flex;
+  flex: none;
+  align-self: center;
+}
+
+.mac-mail-row-date {
+  flex: none;
+  font: var(--mac-font-body);
+  line-height: var(--mac-mail-row-line-height);
+}
+
+.mac-mail-row-subject {
+  grid-column: 2;
+  overflow: hidden;
+  line-height: var(--mac-mail-row-line-height);
+  text-overflow: ellipsis;
+}
+
+.mac-mail-row-preview {
+  display: -webkit-box;
+  overflow: hidden;
+  line-height: var(--mac-mail-row-line-height);
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+/* Message pane. */
+.mac-mail-viewer {
+  display: flex;
+  background: var(--mac-mail-viewer-background);
+}
+
+.mac-mail-reader-body {
+  display: flex;
+  min-height: 0;
+  background: var(--mac-mail-viewer-background);
+}
+
+.mac-mail-message {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
+
+.mac-mail-message-content {
+  position: relative;
+  padding: var(--mac-mail-message-padding-top) var(--mac-mail-message-padding-right)
+    var(--mac-mail-message-padding-bottom) var(--mac-mail-message-padding-left);
+}
+
+.mac-mail-hover-bar {
+  position: absolute;
+  inset-block-start: var(--mac-mail-hover-bar-top);
+  inset-inline-end: var(--mac-mail-message-padding-right);
+  z-index: 1;
+  display: flex;
+  gap: var(--mac-mail-hover-bar-gap);
+  padding: var(--mac-mail-hover-bar-padding);
+  border-radius: var(--mac-mail-hover-bar-radius);
+  background: var(--mac-color-control-background);
+  box-shadow: 0 0 0 1px var(--mac-color-separator);
+  color: var(--mac-color-label-secondary);
+  opacity: 0;
+}
+
+.mac-mail-message-content:hover > .mac-mail-hover-bar {
+  opacity: 1;
+}
+
+.mac-mail-header {
+  display: flex;
+  gap: var(--mac-mail-header-gap);
+  align-items: flex-start;
+  margin-block-end: var(--mac-mail-header-margin-bottom);
+  padding-block-end: var(--mac-mail-header-padding-bottom);
+  border-block-end: 1px solid var(--mac-color-separator);
+}
+
+.mac-mail-header-text {
+  display: grid;
+  flex: 1;
+  gap: var(--mac-mail-header-text-gap);
+  min-width: 0;
+}
+
+.mac-mail-header-line {
+  display: flex;
+  gap: var(--mac-mail-header-line-gap);
+  align-items: baseline;
+  min-width: 0;
+}
+
+.mac-mail-from {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--mac-color-label);
+  font: var(--mac-font-title-3);
+  font-weight: var(--mac-font-weight-bold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-mail-received {
+  flex: none;
+}
+
+.mac-mail-subject {
+  flex: 1;
+  min-width: 0;
+}
+
+/* The Details link: a borderless button of the library inside a label in the link colour. */
+.mac-mail-details {
+  flex: none;
+}
+
+.mac-mail-avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--mac-mail-avatar-size);
+  height: var(--mac-mail-avatar-size);
+  margin-block-start: var(--mac-mail-avatar-margin-top);
+  border-radius: 50%;
+  background: var(--mac-mail-avatar-fill);
+  color: var(--mac-mail-avatar-text);
+  font: var(--mac-font-title-3);
+  font-weight: var(--mac-font-weight-medium);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* All Headers and Raw Source: the message as it is kept. [provisional: no capture shows them] */
+/* A date found in a message's text: Add to Calendar. [provisional: no capture shows one] */
+.mac-mail-date {
+  padding: 0;
+  border: 0;
+  border-block-end: 1px dotted currentcolor;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* The classic layout's list: one line a row, in columns. [provisional: no capture shows it] */
+.mac-mail-classic-head,
+.mac-mail-classic-row {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 6fr) minmax(0, 2fr);
+  gap: var(--mac-mail-smart-gap);
+  align-items: baseline;
+}
+
+.mac-mail-classic-head {
+  padding-inline: var(--mac-mail-classic-head-inset);
+  border-block-end: 1px solid var(--mac-mail-divider);
+}
+
+.mac-mail-classic-head button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: var(--mac-font-body);
+  text-align: start;
+}
+
+.mac-mail-classic-head button[aria-pressed="true"] {
+  font-weight: var(--mac-font-weight-semibold, 600);
+}
+
+.mac-mail-classic-from {
+  display: flex;
+  gap: var(--mac-mail-row-sender-gap);
+  min-width: 0;
+}
+
+.mac-mail-classic-subject,
+.mac-mail-classic-date {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Markup: a picture and the pen. [provisional: no capture shows this Mail's own sheet] */
+.mac-mail-markup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-mail-smart-gap);
+  padding: var(--mac-space-control-gap);
+  overflow: auto;
+  border-radius: var(--mac-mail-markup-radius);
+  background: var(--mac-mail-viewer-background);
+  box-shadow: var(--mac-mail-markup-shadow);
+}
+
+.mac-mail-markup-tools,
+.mac-mail-markup-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-mail-smart-gap);
+  align-items: center;
+}
+
+.mac-mail-markup-buttons {
+  justify-content: flex-end;
+}
+
+.mac-mail-markup-ink {
+  width: var(--mac-mail-markup-ink-size);
+  height: var(--mac-mail-markup-ink-size);
+  padding: 0;
+  border: 1px solid var(--mac-mail-divider);
+  border-radius: 50%;
+}
+
+.mac-mail-markup-ink[aria-pressed="true"] {
+  outline: 2px solid var(--mac-mail-markup-blue);
+  outline-offset: 1px;
+}
+
+.mac-mail-markup-tool {
+  padding: var(--mac-mail-markup-tool-padding);
+  border: 1px solid var(--mac-mail-divider);
+  border-radius: var(--mac-mail-markup-tool-radius);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+.mac-mail-markup-tool[aria-pressed="true"] {
+  outline: 2px solid var(--mac-mail-markup-blue);
+  outline-offset: -1px;
+}
+
+.mac-mail-markup-stage {
+  position: relative;
+  align-self: flex-start;
+}
+
+.mac-mail-markup-text {
+  position: absolute;
+  padding: 0;
+  border: 1px dashed var(--mac-mail-markup-blue);
+  background: transparent;
+  font: var(--mac-font-body);
+}
+
+.mac-mail-markup-canvas {
+  display: block;
+  max-width: var(--mac-mail-markup-width);
+  max-height: var(--mac-mail-markup-height);
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.mac-mail-markup-canvas[data-tool="select"] {
+  cursor: default;
+}
+
+.mac-mail-markup-canvas:focus {
+  outline: none;
+}
+
+.mac-mail-markup-handle {
+  position: absolute;
+  width: var(--mac-mail-markup-handle-size);
+  height: var(--mac-mail-markup-handle-size);
+  border: 1px solid var(--mac-mail-markup-blue);
+  border-radius: 50%;
+  background: var(--mac-mail-markup-handle);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.mac-mail-source {
+  margin: 0;
+  padding: var(--mac-mail-paragraph-margin-bottom);
+  font: var(--mac-font-body);
+  font-family: var(--mac-font-family-monospaced, monospace);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.mac-mail-paragraph {
+  display: block;
+  margin: 0 0 var(--mac-mail-paragraph-margin-bottom);
+  white-space: pre-line;
+}
+
+/* A message's text in the font the person chose in Preferences > Fonts & Colors. */
+.mac-mail-message-content .mac-mail-paragraph,
+.mac-mail-message-content .mac-mail-live-styled {
+  font: var(--mac-mail-message-font, var(--mac-font-body));
+}
+
+/* Use fixed-width font for plain text messages: a message with no styled text. */
+[data-mail-fixed-width] .mac-mail-message-content .mac-mail-paragraph {
+  font-family: var(--mac-font-family-monospaced, monospace);
+}
+
+/* A conversation read as one: its messages under each other, with the mailbox a related one is in. */
+.mac-mail-stack {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
+
+.mac-mail-stacked + .mac-mail-stacked {
+  border-block-start: 1px solid var(--mac-color-separator);
+}
+
+.mac-mail-elsewhere {
+  padding-inline-start: var(--mac-mail-message-padding-left);
+  padding-block-start: var(--mac-mail-message-padding-top);
+}
+
+/* A thread's row: its triangle hangs in the gutter, its count stands at the row's end. */
+.mac-mail-row-disclosure {
+  display: flex;
+}
+
+.mac-mail-messages:where(:focus-within):not(
+    :where([data-window-state="main"], [data-window-state="inactive"]) *
+  )
+  [role="option"]:where([aria-selected="true"])
+  .mac-mail-row-disclosure,
+.mac-mail-messages:where([data-emphasis="always"])
+  [role="option"]:where([aria-selected="true"])
+  .mac-mail-row-disclosure {
+  color: var(--mac-color-selected-content-text);
+}
+
+.mac-mail-row-count {
+  flex: none;
+  padding-inline: var(--mac-mail-row-count-padding);
+  border-radius: var(--mac-mail-row-count-radius);
+  background: var(--mac-mail-row-count-fill);
+  color: inherit;
+  font: var(--mac-font-small);
+}
+
+.mac-mail-row-child {
+  padding-inline-start: var(--mac-mail-row-child-indent);
+}
+
+/* The message pane with its Find bar over the text. */
+.mac-mail-find-area {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.mac-mail-find-text {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.mac-mail-find {
+  flex: none;
+  gap: var(--mac-mail-smart-gap);
+}
+
+::highlight(mail-find) {
+  background-color: var(--mac-mail-find-match);
+}
+
+::highlight(mail-find-current) {
+  background-color: var(--mac-color-find-highlight);
+  color: var(--mac-mail-find-current-text);
+}
+
+/* Show To/Cc label in the message list. */
+.mac-mail-row-tocc {
+  flex: none;
+  color: var(--mac-color-secondary-label);
+  font: var(--mac-font-small);
+}
+
+/* Show contact photos in the message list. */
+.mac-mail-row-photo {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--mac-mail-row-photo-size);
+  height: var(--mac-mail-row-photo-size);
+  border-radius: 50%;
+  background: var(--mac-mail-avatar-fill);
+  color: var(--mac-mail-avatar-text);
+  font: var(--mac-font-small);
+}
+
+/* The search's From: and Subject: suggestions, under the search field. */
+.mac-mail-suggest-area {
+  position: relative;
+  height: 0;
+}
+
+.mac-mail-suggest {
+  position: absolute;
+  z-index: 20;
+  inset-block-start: 0;
+  inset-inline-end: var(--mac-mail-suggest-margin);
+  display: flex;
+  flex-direction: column;
+  width: var(--mac-mail-suggest-width);
+  padding-block: var(--mac-mail-suggest-padding);
+  border: 1px solid var(--mac-color-separator);
+  border-radius: var(--mac-mail-suggest-radius);
+  background: var(--mac-color-control-background);
+  box-shadow: var(--mac-mail-suggest-shadow);
+}
+
+.mac-mail-suggest-item {
+  padding: var(--mac-mail-suggest-padding) var(--mac-mail-suggest-item-padding);
+  border: 0;
+  background: none;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  text-align: start;
+}
+
+.mac-mail-suggest-item:where([aria-selected="true"], :hover) {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-mail-suggest-active-text);
+}
+
+/* Preferences > Rules: the list and the buttons beside it. */
+.mac-mail-rules {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-mail-smart-gap);
+  margin: var(--mac-mail-rules-margin);
+}
+
+.mac-mail-rules-list {
+  flex: 1;
+  min-width: 0;
+  height: var(--mac-mail-rules-list-height);
+}
+
+.mac-mail-rules-buttons {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--mac-mail-smart-gap);
+}
+
+.mac-mail-rules-note {
+  flex-basis: 100%;
+}
+
+/* Preferences > Signatures: the list, a signature's name and text, and which is used. */
+.mac-mail-signatures {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-mail-smart-gap);
+  margin: var(--mac-mail-rules-margin);
+}
+
+.mac-mail-signatures-editor {
+  display: flex;
+  gap: var(--mac-mail-smart-gap);
+  height: var(--mac-mail-rules-list-height);
+}
+
+.mac-mail-signatures-list {
+  flex: none;
+  width: var(--mac-mail-signatures-list-width);
+  height: 100%;
+}
+
+.mac-mail-signatures-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--mac-mail-smart-gap);
+  min-width: 0;
+}
+
+.mac-mail-signatures-frame {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--mac-color-separator);
+}
+
+/* New Message window: header fields 33 pt apart, ruled from the labels' edge, then the text. */
+.mac-mail-compose-body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--mac-mail-compose-background);
+}
+
+.mac-mail-compose-field {
+  display: flex;
+  flex: none;
+  gap: var(--mac-mail-compose-field-gap);
+  align-items: baseline;
+  box-sizing: border-box;
+  min-height: var(--mac-mail-compose-field-min-height);
+  margin-inline-start: var(--mac-mail-compose-field-margin-start);
+  padding-block: var(--mac-mail-compose-field-padding-top)
+    var(--mac-mail-compose-field-padding-bottom);
+  border-block-end: 1px solid var(--mac-mail-compose-rule);
+}
+
+.mac-mail-compose-input {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+}
+
+.mac-mail-compose-text {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  padding: var(--mac-mail-compose-text-padding-top) var(--mac-mail-compose-text-padding-right) 0
+    var(--mac-mail-compose-text-padding-left);
+}
+
+/* The message, a rich text view, in Mail's message font: the text view's own font and
+   tracking are the system's. */
+.mac-mail-live-styled blockquote,
+.mac-mail-compose-message blockquote {
+  margin: 0;
+  padding-inline-start: var(--mac-mail-quote-padding);
+  border-inline-start: var(--mac-mail-quote-rule-width) solid var(--mac-mail-quote-color);
+  color: var(--mac-mail-quote-color);
+}
+
+/* Preferences > Fonts & Colors with Color quoted text off: the rule stays, in the text's colour. */
+[data-mail-plain-quotes] .mac-mail-live-styled blockquote,
+[data-mail-plain-quotes] .mac-mail-compose-message blockquote {
+  border-inline-start-color: var(--mac-color-separator);
+  color: inherit;
+}
+
+/* A person in a message's Details: a token as the pointer comes over it. */
+.mac-mail-address-token {
+  border-radius: var(--mac-mail-quote-rule-width);
+}
+
+.mac-mail-address-token:hover {
+  background: var(--mac-color-selected-text-background);
+}
+
+/* View > Customize Toolbar took it out. */
+.mac-mail [data-mail-tool="hidden"] {
+  display: none;
+}
+
+.mac-mail-tool-choice {
+  display: flex;
+  margin-block-end: var(--mac-mail-preferences-checks-gap);
+}
+
+/* Preferences > Accounts: labels beside what they name. */
+.mac-mail-preferences-account {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--mac-mail-preferences-checks-gap) var(--mac-space-control-gap);
+  margin-block-start: var(--mac-mail-preferences-checks-margin-top);
+  margin-inline-start: var(--mac-mail-preferences-checks-margin-start);
+}
+
+/* Preferences > Fonts & Colors > Message list font, in place of the rows' own fonts. */
+.mac-mail[data-mail-list-font] .mac-mail-row-name,
+.mac-mail[data-mail-list-font] .mac-mail-row-subject,
+.mac-mail[data-mail-list-font] .mac-mail-row-preview,
+.mac-mail[data-mail-list-font] .mac-mail-row-date {
+  font: var(--mac-mail-list-font);
+  line-height: var(--mac-mail-row-line-height);
+}
+
+.mac-mail-compose-text .mac-mail-compose-message {
+  font: var(--mac-mail-compose-message-font);
+  letter-spacing: normal;
+}
+
+/* The format bar: a toolbar of small controls between the header fields and the message,
+   ruled like a header field and on the message's surface. */
+.mac-mail-compose-body .mac-mail-compose-format-bar {
+  flex: none;
+  align-items: center;
+  margin-inline-start: var(--mac-mail-compose-field-margin-start);
+  padding: var(--mac-mail-format-bar-padding-block) var(--mac-mail-format-bar-padding-end)
+    var(--mac-mail-format-bar-padding-block) 0;
+  border-block-end: 1px solid var(--mac-mail-compose-rule);
+}
+
+/* The Fonts and Colors panels float at the top right of the page, in front of the windows,
+   the Fonts panel above the Colors panel. */
+.mac-mail-compose-panels {
+  position: fixed;
+  z-index: 790;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--mac-mail-panels-gap);
+  padding: var(--mac-mail-panels-padding-top) var(--mac-mail-panels-padding)
+    var(--mac-mail-panels-padding);
+  overflow: auto;
+  pointer-events: none;
+}
+
+.mac-mail-compose-panel {
+  flex: none;
+  pointer-events: auto;
+}
+
+/* Preferences: the groups of checkboxes under the form, 40 pt and 58 pt from the window's
+   edge, 20 pt from row to row. */
+.mac-mail-preferences-form {
+  display: flex;
+  justify-content: flex-end;
+  padding-inline-end: var(--mac-mail-preferences-form-padding-end);
+}
+
+/* An empty row of the form: one more row gap before the second group of choices. */
+.mac-mail-preferences-gap {
+  height: 0;
+}
+
+.mac-mail-preferences-checks {
+  display: grid;
+  gap: var(--mac-mail-preferences-checks-gap);
+  justify-items: start;
+  margin-block-start: var(--mac-mail-preferences-checks-margin-top);
+  margin-inline-start: var(--mac-mail-preferences-checks-margin-start);
+}
+
+.mac-mail-preferences-checks:where([data-indent]) {
+  margin-block-start: var(--mac-mail-preferences-indent-margin-top);
+  margin-inline-start: var(--mac-mail-preferences-indent-margin-start);
+}
+
+.mac-mail-preferences-heading {
+  display: block;
+  margin-block-start: var(--mac-mail-preferences-heading-margin-top);
+  margin-inline-start: var(--mac-mail-preferences-heading-margin-start);
+}
+
+/* The help button shares the last checkbox's row. */
+.mac-mail-preferences-footer {
+  margin-block-start: var(--mac-mail-preferences-footer-margin-top);
+  margin-inline-end: var(--mac-mail-preferences-footer-margin-end);
+}
+
+/*
+ * The desktop served by Ferrite (mail-live.tsx): a notice over the message list and over the
+ * text of a new message, and a received message's styled text.
+ */
+.mac-mail-smart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-mail-smart-gap);
+}
+
+.mac-mail-smart-line,
+.mac-mail-smart-rule {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-mail-smart-gap);
+}
+
+.mac-mail-smart-rules {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-mail-smart-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-mail-smart-grow {
+  flex: 1;
+  min-width: 0;
+}
+
+.mac-mail-smart-days {
+  width: var(--mac-mail-smart-days-width);
+}
+
+.mac-mail-smart-refusal {
+  color: var(--mac-color-system-red);
+  font: var(--mac-font-small);
+}
+
+.mac-mail-notice {
+  flex: none;
+  padding: var(--mac-mail-live-notice-padding);
+  border-block-end: 1px solid var(--mac-mail-compose-rule);
+  color: var(--mac-color-system-red);
+  font: var(--mac-font-body);
+}
+
+.mac-mail-compose-notice {
+  flex: none;
+  margin-inline-start: var(--mac-mail-compose-field-margin-start);
+  padding: var(--mac-mail-live-notice-padding) var(--mac-mail-compose-text-padding-right)
+    var(--mac-mail-live-notice-padding) 0;
+  border-block-end: 1px solid var(--mac-mail-compose-rule);
+  color: var(--mac-color-system-red);
+  font: var(--mac-font-body);
+}
+
+.mac-mail-compose-attachments {
+  flex: none;
+  max-height: var(--mac-mail-live-attachments-max-height);
+  overflow: auto;
+  padding: var(--mac-mail-live-attachments-padding) var(--mac-mail-compose-text-padding-right)
+    var(--mac-mail-live-attachments-padding) var(--mac-mail-compose-text-padding-left);
+  border-block-start: 1px solid var(--mac-mail-compose-rule);
+}
+
+.mac-mail-live-attachments,
+.mac-mail-live-received {
+  display: grid;
+  gap: var(--mac-mail-live-attachment-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A file the sender put in the text: its own block there, and a named chip while it is written. */
+.mac-mail-live-styled [data-mail-file] {
+  display: block;
+}
+
+.mac-mail-live-placed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+[contenteditable] [data-mail-file] {
+  display: inline-block;
+  padding-inline: var(--mac-mail-live-attachment-gap);
+  border: 1px solid currentColor;
+  border-radius: 4px;
+}
+
+.mac-mail-live-received {
+  margin-block-start: var(--mac-mail-paragraph-margin-bottom);
+  padding-block-start: var(--mac-mail-paragraph-margin-bottom);
+  border-block-start: 1px solid var(--mac-mail-compose-rule);
+}
+
+.mac-mail-live-attachment {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mac-mail-live-attachment-gap);
+  align-items: center;
+  min-width: 0;
+}
+
+.mac-mail-live-figure,
+.mac-mail-live-audio {
+  flex-basis: 100%;
+}
+
+.mac-mail-live-picture {
+  display: block;
+  max-width: min(100%, var(--mac-mail-live-picture-max-width));
+  max-height: var(--mac-mail-live-picture-max-height);
+  object-fit: contain;
+}
+
+/* Where the drive's Open panel stands, over the page. */
+.mac-mail-panel-layer {
+  position: fixed;
+  z-index: var(--mac-mail-panel-layer-z-index);
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  pointer-events: none;
+}
+
+.mac-mail-panel-layer > * {
+  max-width: calc(100% - var(--mac-mail-panel-layer-margin));
+  max-height: calc(100% - var(--mac-mail-panel-layer-margin));
+  pointer-events: auto;
+}
+
+/* Window > Activity, Previous Recipients and Connection Doctor. */
+.mac-mail-tool {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-space-control-gap);
+  padding: var(--mac-space-window-margin);
+  overflow: hidden;
+}
+
+.mac-mail-tool-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-space-control-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mac-mail-tool-row {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-space-control-gap);
+}
+
+.mac-mail-tool-people {
+  flex: 1;
+  min-height: 0;
+}
+
+.mac-mail-tool-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--mac-space-control-gap);
+}
+
+/* A message from someone the person blocked. */
+.mac-mail-blocked {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mac-space-control-gap);
+  margin-block-end: var(--mac-space-control-gap);
+  padding-block-end: var(--mac-space-control-gap);
+  border-block-end: 1px solid var(--mac-color-separator);
+}
+
+/* The styled text a message was written with, in Mail's message font where it sets none. */
+.mac-mail-live-styled {
+  color: var(--mac-color-text);
+  font: var(--mac-mail-compose-message-font);
+  overflow-wrap: anywhere;
+  user-select: text;
+  -webkit-user-select: text;
+}

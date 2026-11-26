@@ -1,0 +1,190 @@
+---
+title: Text Field
+description: One line of editable text in Catalina's square bezel, with the focus ring, placeholder, disabled and inactive-window looks, and the capsule bezel of a message field.
+order: 31
+---
+
+<Example name="basic" both />
+
+The AppKit control is `NSTextField` with a bezel. `TextField` is built on Base UI's
+[Input](https://base-ui.com/react/components/input), so it works inside a Base UI `Field` and
+reports changes through `onValueChange`. The bezel and the focus ring are drawn by a wrapper
+element, because an `<input>` cannot draw them itself.
+
+## Usage
+
+```tsx
+import { TextField } from "macalicious/text-field";
+import "macalicious/text-field.css";
+
+<TextField aria-label="Computer name" defaultValue="Catalina" />
+<TextField placeholder="Optional" value={name} onValueChange={setName} style={{ width: 240 }} />
+```
+
+Or copy the source into your project: `npx macalicious add text-field`.
+
+`value`, `defaultValue`, `onValueChange`, `disabled`, `readOnly`, `placeholder`, `name`, `id`
+and every other input attribute go to the `<input>`. `className`, `style` and `ref` go to the
+root element; `inputRef` reaches the `<input>`. The field is 160 pt wide unless `style` sets
+its width.
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for text fields:
+
+- Give the field an introductory label in title case that ends with a colon, or placeholder
+  text in sentence case without punctuation.
+- Validate when people leave the field or press Return, not on every keystroke.
+- Use a secure text field for sensitive data, and a number formatter for numbers.
+- Decide what happens to text that does not fit: clip it, wrap it or truncate it, and offer an
+  expansion tooltip for clipped text (see [Tooltip](/components/tooltip)).
+- Keep fields of one form the same width where you can.
+
+<Example name="form" />
+
+## Variants and states
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look | Status |
+| --- | --- | --- | --- |
+| Enabled | – | White fill (white at 5% in Dark Aqua), hairline edge, inner line | measured (Sharing) |
+| Placeholder | `placeholder`, while empty | Placeholder text colour | colour documented by Apple; not shown in a standard field |
+| Focused | the field has the keyboard | 3.5 pt focus ring: 2.5 pt outside the edge, 1 pt over it | measured on the combo box of Go to Folder |
+| Disabled | `disabled` | Edges at half strength, text in the disabled colour | provisional: measured only on the date picker's field |
+| Read-only | `readOnly` | As enabled; text can be selected, not changed | provisional |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No focus ring; selected text turns grey | provisional |
+
+<Example name="bezels" both hideCode />
+
+| `bezel` | Look | Status |
+| --- | --- | --- |
+| `square` | Square corners, 20 pt high | measured |
+| `rounded` | Control corner radius, 22 pt high | provisional: not in the screenshots |
+| `capsule` | Round ends, 24 pt high, a flat 1 pt edge, text 11 pt from the edge | measured (Messages' message field) |
+| `none` | No bezel and no fill; no focus ring | provisional |
+
+The capsule is the field Messages and FaceTime type into. Put a button inside its trailing
+end as a child of the field, as Messages does with its emoji button; the text takes the rest
+of the width.
+
+```tsx
+<TextField bezel="capsule" aria-label="Message" placeholder="iMessage">
+  <ImageButton aria-label="Emoji" style={{ marginInlineEnd: 3 }}>
+    {emoji}
+  </ImageButton>
+</TextField>
+```
+
+A field takes the font it is given: its text is not tied to the three control sizes. Contacts
+edits a card's name in place at about 18 pt (capitals 13 pt high in
+`10-15-Catalina-Light-Contacts.png` at 1128,81) in a field without a bezel, which is as high
+as its line of text:
+
+<Example name="large-text" both />
+
+### Bezel only
+
+`TextFieldBezel` is the bezel without the `<input>`: the edge, the fill and the focus ring
+around content of your own. Use it for a control that looks like a text field but edits
+something else, such as the segments of a date, so that it does not copy the bezel's values.
+`TextField` is this bezel around a Base UI Input.
+
+```tsx
+import { TextFieldBezel } from "macalicious/text-field";
+
+<TextFieldBezel role="group" aria-label="Date" style={{ width: "auto" }}>
+  {segments}
+</TextFieldBezel>
+```
+
+<Example name="bezel-only" both />
+
+- It is a `<div>`: every `<div>` prop, `className`, `style` and `ref` go to it. It lays its
+  children out in a row, centred on the line, and gives them no padding; the text field's own
+  text starts 3.5 pt inside the edge.
+- The focus ring shows while anything inside has the keyboard, in the key window only. With
+  `focusRing={false}` the bezel never draws it, for content that draws its own.
+- `--mac-text-field-background`, set on the bezel or an ancestor, replaces the fill. It applies
+  to `TextField` as well.
+- `disabled` only draws the disabled edge and text colour. Disable the controls inside.
+- The role, the accessible name and the keyboard behaviour are those of the content.
+
+## Sizes
+
+<Example name="sizes" both />
+
+| `size` | Height | Text | Status |
+| --- | --- | --- | --- |
+| `regular` | 20 pt | 13 pt | measured |
+| `small` | 17 pt | 11 pt | provisional |
+| `mini` | 14 pt | 9 pt | provisional |
+
+## API
+
+<PropsTable name="TextFieldProps" />
+
+`TextFieldBezel`:
+
+<PropsTable name="TextFieldBezelProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-bezel` | root | `square`, `rounded`, `capsule`, `none` | Reflects `bezel`. |
+| `data-size` | root | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-disabled` | root | present or absent | Reflects `disabled`. |
+| `data-focus-ring` | root | `none`, or absent | Set by `focusRing={false}` on `TextFieldBezel`. |
+| `data-force` | input | `focus` | Documentation and visual tests only: pins the focus ring. |
+
+| CSS variable | Values | Description |
+| --- | --- | --- |
+| `--mac-text-field-background` | a colour | The bezel's fill. Default: the text field background colour; the capsule has a fill of its own. |
+
+Classes: `.mac-text-field` (root, the bezel) and `.mac-text-field-input`.
+
+## Accessibility
+
+- The control is a native `<input>`: it is always in the tab order, Return submits its form,
+  and the standard editing keys work.
+- Name it with a visible label (`<Label render={<label htmlFor={id} />}>`), a Base UI
+  `Field.Label`, or `aria-label`. A placeholder is a hint, not a name.
+- `disabled` uses the real attribute, so the field leaves the tab order. Use `readOnly` when
+  the text should stay selectable.
+- The focus ring shows whenever the field has the keyboard, for pointer focus too, as in
+  AppKit, and only in the key window.
+- In forced-colours mode the edge uses `ButtonText`, a disabled field `GrayText` and the ring
+  `Highlight`.
+
+## Visual comparison
+
+`npm run visual -- text-field` compares the Computer Name field of System Preferences ›
+Sharing in both appearances. Scores from the run that accompanied this component (Chromium on
+Linux, fallback font Inter; 2x, whole crop and with the text masked):
+
+| Comparison (reference crop, 2x pixels) | Aqua, whole crop | Aqua, text masked | Dark Aqua, whole crop | Dark Aqua, text masked |
+| --- | --- | --- | --- | --- |
+| `sharing` (Sharing `424,198,928,50`) | 1.04% | 0.00% | 0.94% | 0.01% |
+| `messages-field` (Messages `1306,1068,830,68`; Dark `1318,1060,830,68`) | 1.45% | 0.00% | 1.20% | 0.02% |
+
+The `messages-field` comparisons are the capsule bezel, empty with its placeholder; both mask
+the emoji button inside the field's trailing end, which is Messages' own artwork, up to 1 pt
+before the capsule's edge. At 1x they score 1.79% and 1.30% whole and 0.00% and 0.25% with the
+placeholder masked.
+
+The masked comparison uses a threshold of 0.05 and gates the bezel. States no screenshot shows
+on a plain text field are checked pixel by pixel against the spec's values, with real input:
+every hairline of the bezel at rest, the focus ring after a click (ring over the window, over
+the edge and over the inner line), the missing ring in a window that is not key, and the
+disabled edges. `TextFieldBezel` is checked the same way: the ring when its content has the
+keyboard, no ring with `focusRing={false}`, and the overridden fill.
+
+Provisional, because no screenshot shows them: the rounded and borderless bezels, the small
+and mini sizes, the placeholder in a standard field, the capsule with the keyboard focus (the
+Messages window in the captures is not key, so the capsule keeps the standard focus ring),
+and the disabled look of a plain field
+(its edges are taken from the date picker's disabled field; the dark fill is inferred). A
+disabled capsule keeps its fill and takes those same disabled edges, which in Dark Aqua are not
+flat (a fainter top than bottom); the `capsule-disabled` comparisons check its pixels beside
+an enabled capsule in both appearances. In
+Dark Aqua the reference window is tinted by the wallpaper (`#2f3031`), while the token for the
+window background is the untinted `#323232`.

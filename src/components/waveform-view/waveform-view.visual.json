@@ -1,0 +1,347 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "detail-light",
+      "description": "The detailed waveform, Aqua capture: panel, playhead with its dots, ruler ticks and labels. The bars are masked: the recording's samples are not in the screenshot.",
+      "example": "visual-detail",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 150,
+          "y": 70,
+          "width": 240,
+          "height": 120
+        }
+      ],
+      "budget": {
+        "1x": 0.0126,
+        "2x": 0.0099
+      },
+      "deltaBudget": {
+        "1x": 0.9,
+        "2x": 0.8
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Voice-Memos.png",
+        "crop": {
+          "x": 112,
+          "y": 210,
+          "width": 1578,
+          "height": 560
+        }
+      }
+    },
+    {
+      "name": "detail-light-masked",
+      "description": "As detail-light with the ruler's labels masked too, which are set in the fallback font off Apple platforms: scores the panel, the playhead and the ticks.",
+      "example": "visual-detail",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 150,
+          "y": 70,
+          "width": 240,
+          "height": 120
+        },
+        {
+          "x": 0,
+          "y": 262.5,
+          "width": 789,
+          "height": 17.5
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0062,
+        "2x": 0.0039
+      },
+      "deltaBudget": {
+        "1x": 0.33,
+        "2x": 0.19
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Voice-Memos.png",
+        "crop": {
+          "x": 112,
+          "y": 210,
+          "width": 1578,
+          "height": 560
+        }
+      }
+    },
+    {
+      "name": "detail-dark",
+      "description": "The detailed waveform, Dark Aqua capture. The bars are masked.",
+      "example": "visual-detail-dark",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 150,
+          "y": 70,
+          "width": 240,
+          "height": 120
+        }
+      ],
+      "budget": {
+        "1x": 0.0135,
+        "2x": 0.0131
+      },
+      "deltaBudget": {
+        "1x": 0.93,
+        "2x": 0.89
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Voice-Memos.png",
+        "crop": {
+          "x": 112,
+          "y": 210,
+          "width": 1578,
+          "height": 560
+        }
+      }
+    },
+    {
+      "name": "detail-dark-masked",
+      "description": "As detail-dark with the ruler's labels masked too.",
+      "example": "visual-detail-dark",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 150,
+          "y": 70,
+          "width": 240,
+          "height": 120
+        },
+        {
+          "x": 0,
+          "y": 262.5,
+          "width": 789,
+          "height": 17.5
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0085,
+        "2x": 0.0057
+      },
+      "deltaBudget": {
+        "1x": 0.39,
+        "2x": 0.31
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Voice-Memos.png",
+        "crop": {
+          "x": 112,
+          "y": 210,
+          "width": 1578,
+          "height": 560
+        }
+      }
+    },
+    {
+      "name": "overview-light",
+      "description": "The overview, Aqua capture: strip, handle and labels. The bars are masked.",
+      "example": "visual-overview",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 0,
+          "y": 8,
+          "width": 108,
+          "height": 32
+        }
+      ],
+      "budget": {
+        "1x": 0.0101,
+        "2x": 0.0094
+      },
+      "deltaBudget": {
+        "1x": 0.85,
+        "2x": 0.87
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Voice-Memos.png",
+        "crop": {
+          "x": 178,
+          "y": 860,
+          "width": 1446,
+          "height": 136
+        }
+      }
+    },
+    {
+      "name": "overview-light-masked",
+      "description": "As overview-light with the two labels masked too: scores the strip and the handle.",
+      "example": "visual-overview",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 0,
+          "y": 8,
+          "width": 108,
+          "height": 32
+        },
+        {
+          "x": 0,
+          "y": 52,
+          "width": 723,
+          "height": 16
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0023,
+        "2x": 0.0029
+      },
+      "deltaBudget": {
+        "1x": 0.31,
+        "2x": 0.3
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Voice-Memos.png",
+        "crop": {
+          "x": 178,
+          "y": 860,
+          "width": 1446,
+          "height": 136
+        }
+      }
+    },
+    {
+      "name": "overview-dark",
+      "description": "The overview, Dark Aqua capture. The bars are masked.",
+      "example": "visual-overview-dark",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 0,
+          "y": 8,
+          "width": 108,
+          "height": 32
+        }
+      ],
+      "budget": {
+        "1x": 0.0111,
+        "2x": 0.0098
+      },
+      "deltaBudget": {
+        "1x": 0.86,
+        "2x": 0.86
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Voice-Memos.png",
+        "crop": {
+          "x": 178,
+          "y": 860,
+          "width": 1446,
+          "height": 136
+        }
+      }
+    },
+    {
+      "name": "overview-dark-masked",
+      "description": "As overview-dark with the two labels masked too.",
+      "example": "visual-overview-dark",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 0,
+          "y": 8,
+          "width": 108,
+          "height": 32
+        },
+        {
+          "x": 0,
+          "y": 52,
+          "width": 723,
+          "height": 16
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.0035,
+        "2x": 0.0028
+      },
+      "deltaBudget": {
+        "1x": 0.33,
+        "2x": 0.29
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Voice-Memos.png",
+        "crop": {
+          "x": 178,
+          "y": 860,
+          "width": 1446,
+          "height": 136
+        }
+      }
+    },
+    {
+      "name": "playhead-light",
+      "description": "The playhead alone, Aqua capture: 10 x 259 pt around the line, from the upper dot to the lower one. It scores where the line and the dots stand in the window, to half a point. At 1x the line lies across two pixels of the scaled capture and on one in the browser, which is a fifth of this narrow crop. Nothing is masked.",
+      "example": "visual-playhead",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": { "1x": 0.21, "2x": 0.06 },
+      "deltaBudget": { "1x": 6.9, "2x": 2.5 },
+      "reference": {
+        "file": "10-15-Catalina-Light-Voice-Memos.png",
+        "crop": { "x": 892, "y": 210, "width": 20, "height": 518 }
+      }
+    },
+    {
+      "name": "playhead-dark",
+      "description": "The playhead alone, Dark Aqua capture: 10 x 259 pt around the line. Nothing is masked.",
+      "example": "visual-playhead",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": { "1x": 0.21, "2x": 0.06 },
+      "deltaBudget": { "1x": 6.9, "2x": 2.5 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Voice-Memos.png",
+        "crop": { "x": 892, "y": 210, "width": 20, "height": 518 }
+      }
+    },
+    {
+      "name": "seek-home",
+      "description": "Keyboard seeking: the slider is focused with Tab and Home takes the handle from the middle of the strip to its start. No screenshot shows a keyboard interaction.",
+      "example": "visual-seek",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        },
+        {
+          "key": "Home"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 200,
+          "height": 68
+        },
+        "pixels": [
+          {
+            "x": 1,
+            "y": 24,
+            "color": "#ff3b30",
+            "note": "the handle, centred on the strip's leading edge (spec: Colours, overview handle fill, measured)"
+          },
+          {
+            "x": 100,
+            "y": 24,
+            "color": "#151515",
+            "note": "the strip where the handle stood before Home (spec: Colours, panel and overview fill, measured)"
+          },
+          {
+            "x": 100,
+            "y": 49,
+            "color": "#000000",
+            "note": "the content around the strip (spec: Colours, surrounding background, measured)"
+          }
+        ]
+      }
+    }
+  ]
+}

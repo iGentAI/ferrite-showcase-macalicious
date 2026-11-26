@@ -1,0 +1,71 @@
+/*
+ * Boot Camp Assistant: what the demo adds to the library's assistant window, which draws the
+ * frame, the title bar, the artwork column, the heading, the text box and the button row at
+ * the places measured on the captures. This file places the placeholder in the artwork column
+ * and lays out the steps that no capture shows.
+ *
+ * Parts
+ *   .mac-boot-camp-assistant               the window
+ *   .mac-boot-camp-assistant-artwork       the placeholder mark in the artwork column
+ *   .mac-boot-camp-assistant-step          the step, inert while the help sheet is open
+ *   .mac-boot-camp-assistant-sheet-anchor  the line under the title bar that the sheet hangs from
+ *   .mac-boot-camp-assistant-tasks         the Select Tasks step
+ *   .mac-boot-camp-assistant-choices       its three checkboxes
+ *   .mac-boot-camp-assistant-partition     the partition step: text, slider, sizes
+ *   .mac-boot-camp-assistant-sizes         the two sizes under the slider
+ *   .mac-boot-camp-assistant-progress      the installation: what it is doing, and the bar
+ */
+
+/* Centred in the 174.5 pt column, where the capture's artwork has its middle. */
+.mac-boot-camp-assistant-artwork {
+  display: block;
+  margin: 232px auto 0;
+  color: var(--mac-boot-camp-assistant-artwork);
+}
+
+/* The step's parts are the assistant's own children: the wrapper only carries `inert`. */
+.mac-boot-camp-assistant-step {
+  display: contents;
+}
+
+.mac-boot-camp-assistant-sheet-anchor {
+  position: absolute;
+  /* The assistant's content box starts under the title bar. */
+  top: 0;
+  inset-inline: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.mac-boot-camp-assistant-tasks,
+.mac-boot-camp-assistant-partition,
+.mac-boot-camp-assistant-progress {
+  display: grid;
+  align-content: start;
+  gap: var(--mac-space-control-gap);
+  padding-inline-start: 7.5px;
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+}
+
+.mac-boot-camp-assistant-progress {
+  align-content: center;
+  padding-inline-end: 7.5px;
+}
+
+.mac-boot-camp-assistant-choices {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.mac-boot-camp-assistant-partition {
+  padding-inline-end: 7.5px;
+}
+
+.mac-boot-camp-assistant .mac-boot-camp-assistant-sizes {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}

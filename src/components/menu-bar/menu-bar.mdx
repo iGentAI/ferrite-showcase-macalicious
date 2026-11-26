@@ -1,0 +1,173 @@
+---
+title: Menu Bar
+description: The strip along the top of the screen that holds the application's menu titles. A title opens its menu under the bar and is highlighted in the accent colour while it is open.
+order: 65
+---
+
+<Example name="basic" both />
+
+AppKit's main menu (`NSApplication.mainMenu`) in the system menu bar. The titles are a
+[Base UI Menubar](https://base-ui.com/react/components/menubar), which supplies the roles,
+the arrow-key navigation between titles and the switching of menus while one is open. Each
+menu is a [`Menu`](/components/menu) whose popup is attached under the bar; the trailing end
+holds the [menu bar extras](/components/menu-bar-extra).
+
+The example shows the bar in both appearances. A menu opened from it renders in a portal and
+takes the appearance of the page, not of the bar it hangs from.
+
+## Usage
+
+```tsx
+import { MenuBar, MenuBarMenu } from "macalicious/menu-bar";
+import { MenuItem, MenuSeparator } from "macalicious/menu-item";
+import "macalicious/menu.css";
+import "macalicious/menu-item.css";
+import "macalicious/menu-bar.css";
+
+<MenuBar>
+  <MenuBarMenu title={<AppMark />} aria-label="System">
+    <MenuItem>About This Computer</MenuItem>
+  </MenuBarMenu>
+  <MenuBarMenu title="Notes" application>
+    <MenuItem keyEquivalent="command+,">Preferences…</MenuItem>
+    <MenuSeparator />
+    <MenuItem keyEquivalent="command+q" onClick={quit}>Quit Notes</MenuItem>
+  </MenuBarMenu>
+  <MenuBarMenu title="File">
+    <MenuItem keyEquivalent="command+n" onClick={newNote}>New Note</MenuItem>
+  </MenuBarMenu>
+</MenuBar>
+```
+
+Or copy the source into your project: `npx macalicious add menu-bar menu-item`.
+
+`MenuBarMenu` assembles one menu: a `Menu`, its title cell and a `MenuPopup attached`. The
+first menu after the system menu is the application menu; mark it with `application`, which
+sets its title in bold. For a title that needs more than `MenuBarMenu` offers, build the menu
+from the parts: a `Menu` with a `MenuBarTitle` and a `MenuPopup attached`.
+
+The bar does not position itself. On a desktop page, fix it to the top
+(`style={{ position: "fixed", inset: "0 0 auto", zIndex: 1 }}`); the material then shows a
+blurred copy of what is behind it. The mark of the Apple menu is Apple's and is not included:
+pass an image of your own as the title, with an `aria-label`.
+
+A menu's items do not exist while it is closed, so key equivalents are not handled by the bar:
+listen for them with `onMenuKeyEquivalents` ([Menu Item](/components/menu-item)).
+
+## Guidelines
+
+From the macOS Human Interface Guidelines,
+[Menu Bar Menus](https://web.archive.org/web/20200503110758/https://developer.apple.com/design/human-interface-guidelines/macos/menus/menu-bar-menus/):
+
+- Keep the standard menus in their standard order: the application menu, File, Edit, Format,
+  View, application-specific menus, Window, Help.
+- Use one-word titles where possible, in title case.
+- Keep a menu's title enabled even when all of its items are unavailable, so that people can
+  still open it and see what it holds.
+- Every command of the application should be in the menu bar; toolbars and contextual menus
+  repeat commands, they do not replace the bar.
+
+## Variants and states
+
+| Part or state | Look | Basis |
+| --- | --- | --- |
+| Bar | 22 pt strip of the menu bar material, with a 1 pt line under it (black at 16%; 36% in Dark Aqua) | Measured |
+| Title cell | The text and 10 pt on each side; cells abut; the first starts 10 pt from the edge | Measured |
+| Titles | 14 pt, the application's name bold; black at 85% in Aqua, white in Dark Aqua | Measured, computed |
+| Menu open | The cell is filled with the accent's highlight from top to bottom, square, and its title is white | Measured, per accent |
+| Keyboard focus | The same highlight | Provisional |
+| Menu disabled | The title in the disabled menu item colour | Provisional |
+| Window not key | Unchanged: the bar belongs to the screen, not to a window | Catalog |
+
+The highlight is a table of its own (`--mac-menu-bar-highlight`), fitted for each of the eight
+accents to the open application title of the sixteen accent screenshots.
+
+Auto-hiding the bar in full screen and dimming it while another display has the focus are not
+reproduced.
+
+## Sizes
+
+The menu bar has one size: 22 pt high, with the 14 pt menu bar font.
+
+## API
+
+<PropsTable name="MenuBarProps" />
+
+`MenuBarMenu` takes the props of [`Menu`](/components/menu) (`open`, `defaultOpen`,
+`onOpenChange`, `disabled`) and these:
+
+<PropsTable name="MenuBarMenuProps" />
+
+`MenuBarTitle` takes the props of Base UI's Menu.Trigger and this:
+
+<PropsTable name="MenuBarTitleProps" />
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-application` | title | present or absent | Reflects `application`. |
+| `data-popup-open` | title | present or absent | The title's menu is open. Set by Base UI. |
+| `data-disabled` | title | present or absent | Its menu, or the bar, is disabled. |
+| `data-has-submenu-open` | titles | present or absent | A menu of the bar is open. Set by Base UI. |
+
+| CSS variable | Description |
+| --- | --- |
+| `--mac-menu-bar-highlight` | Fill of the open title; one value for each accent. |
+| `--mac-menu-bar-text`, `--mac-menu-bar-text-disabled` | Colour of the titles. |
+| `--mac-menu-bar-line` | The line under the bar. |
+
+Classes: `.mac-menu-bar` (the strip), `.mac-menu-bar-menus` (the titles) and
+`.mac-menu-bar-title` (one cell).
+
+## Accessibility
+
+- The titles are a `menubar` of `menuitem`s with `aria-haspopup="menu"` and `aria-expanded`.
+  One title is in the tab order; Left and Right Arrow move between titles and wrap, and Down
+  Arrow, Return or Space opens the menu. In an open menu, Left and Right Arrow go to the
+  neighbouring menu, and Escape closes it and returns focus to its title.
+- While a menu is open, moving the pointer to another title switches to its menu, as in
+  macOS. Hovering does not open a menu while none is open.
+- A title that is an image needs an `aria-label`. Give the bar an `aria-label` when the page
+  has more than one.
+- An open menu is modal, as in AppKit: the page behind it does not scroll or take clicks.
+  `modal={false}` switches that off.
+- macOS moves focus to the menu bar with Control-F2. The bar adds no global shortcut; bind one
+  yourself if your page needs it.
+- With `prefers-reduced-transparency` the material is opaque; under `forced-colors` the bar
+  has a solid lower border and the open title uses the system highlight colours.
+
+## Visual comparison
+
+`npm run visual -- menu-bar/` compares the left end of Finder's menu bar with the Desktop
+screenshots, the bar with the Apple menu open with the Apple-Menu screenshots, and the open
+application title with the sixteen accent screenshots (`menu-bar.visual.json`). Scores at 2x,
+in Chromium on Linux with the fallback font:
+
+| Crop | Aqua, whole crop | Aqua, drawing only | Dark Aqua, whole crop | Dark Aqua, drawing only |
+| --- | --- | --- | --- | --- |
+| Bar, no menu open: pixels that differ | 15.69% | 1.68% | 16.74% | 1.70% |
+| Bar, no menu open: mean Δ of 255 | 24.60 | 5.75 | 26.94 | 3.93 |
+| Apple menu open: pixels that differ | 15.68% | 5.85% | 16.74% | 1.48% |
+| Apple menu open: mean Δ of 255 | 24.04 | 5.79 | 26.69 | 4.04 |
+| Open title, eight accents: pixels that differ | | 4.45% | | 0.00% |
+| Open title, eight accents: mean Δ of 255 | | 2.05 to 4.32 | | 1.59 to 2.41 |
+
+"Drawing only" masks the mark and the titles and counts a pixel as differing at a colour
+distance of 0.05, half the default. The bar is a thin crop that is mostly text, so the
+whole-crop scores are dominated by the titles, set in the fallback font instead of San
+Francisco, and by the stand-in for the Apple mark.
+
+The switching of menus is checked with real input as well: with the Finder menu open the
+pointer moves to the File title, and chosen pixels must show File highlighted and Finder not.
+
+What is not exact:
+
+- **The desktop picture.** The bar is compared over the colour of the sky just under it, a
+  stand-in for Apple's picture, which is not shipped.
+- **The material.** Over that sky the shared menu bar material comes out about 4 levels off
+  the capture in each channel ([Fidelity limits](/fidelity)).
+- **Vibrant titles.** Over the sky Catalina draws the titles navy; here they are black at 85%.
+- **The line under an open menu's title in Aqua.** At 2x the attached menu's first half point
+  differs from the capture under the open title, which is the 4.45% of the accent comparisons.
+
+Provisional: keyboard focus, the disabled title, and a custom accent, which uses the shared
+menu selection colour.

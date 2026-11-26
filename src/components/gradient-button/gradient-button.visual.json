@@ -1,0 +1,582 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "network-bar-dark",
+      "description": "The Network pane's bar drawn with the group's network variant, Dark Aqua: add, remove, the action button and the filler cell. The gear and its chevron are masked: they are the library's own drawing. What is scored is the bar: its lighter fill and its three line colours.",
+      "example": "visual-network-bar",
+      "appearance": "dark",
+      "masks": [{ "x": 56.5, "y": 8.5, "width": 23, "height": 14 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.02, "2x": 0.0032 },
+      "deltaBudget": { "1x": 1.5, "2x": 0.6 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Network.png",
+        "crop": { "x": 144, "y": 1024, "width": 180, "height": 58 }
+      }
+    },
+    {
+      "name": "network-bar-light",
+      "description": "The Network pane's bar drawn with the group's network variant, Aqua, with the gear and its chevron masked.",
+      "example": "visual-network-bar",
+      "appearance": "light",
+      "masks": [{ "x": 56.5, "y": 8.5, "width": 23, "height": 14 }],
+      "threshold": 0.05,
+      "budget": { "1x": 0.016, "2x": 0.0005 },
+      "deltaBudget": { "1x": 1.7, "2x": 0.45 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Network.png",
+        "crop": { "x": 144, "y": 1024, "width": 180, "height": 58 }
+      }
+    },
+    {
+      "name": "action-bar-light",
+      "description": "Add, remove and the action button under the services list of the Network pane, with the filler cell, Aqua. The gear and its chevron are masked: they are the library's own drawing. What is scored is the bar: the 28 pt action cell, the borders and the fills.",
+      "example": "visual-action-bar",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 56.5,
+          "y": 8.5,
+          "width": 23,
+          "height": 14
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.016,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 1.64,
+        "2x": 0.45
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Network.png",
+        "crop": {
+          "x": 144,
+          "y": 1024,
+          "width": 180,
+          "height": 58
+        }
+      }
+    },
+    {
+      "name": "action-bar-light-artwork",
+      "description": "As action-bar-light with nothing masked, Aqua: the gear and its chevron are substitute artwork, drawn on the measured ink box, and this scores that drawing against Apple's.",
+      "example": "visual-action-bar",
+      "appearance": "light",
+      "budget": {
+        "1x": 0.053,
+        "2x": 0.027
+      },
+      "deltaBudget": {
+        "1x": 5.55,
+        "2x": 4.28
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Network.png",
+        "crop": {
+          "x": 144,
+          "y": 1024,
+          "width": 180,
+          "height": 58
+        }
+      }
+    },
+    {
+      "name": "pull-down-light",
+      "description": "An action button that is the trigger of a Base UI menu, after a real click has opened the menu, Aqua: it is drawn as pressed while the menu is open.",
+      "example": "visual-pull-down",
+      "appearance": "light",
+      "actions": [
+        {
+          "click": "#action"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 70,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 59.5,
+            "y": 11,
+            "color": "#d9d9d9",
+            "tolerance": 2,
+            "note": "pressed fill (spec: gradient-button, States, pressed, inferred); that an open pull-down is drawn as pressed is this library's reading of AppKit, not shown in any screenshot"
+          },
+          {
+            "x": 12,
+            "y": 11,
+            "color": "#f9f9f9",
+            "tolerance": 2,
+            "note": "the add button beside it keeps the resting fill (spec: Fill, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pull-down-dark",
+      "description": "An action button that is the trigger of a Base UI menu, after a real click has opened the menu, Dark Aqua: it is drawn as pressed while the menu is open.",
+      "example": "visual-pull-down",
+      "appearance": "dark",
+      "actions": [
+        {
+          "click": "#action"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 70,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 59.5,
+            "y": 11,
+            "color": "#5a5a5a",
+            "tolerance": 2,
+            "note": "pressed fill (spec: gradient-button, States, pressed, inferred); that an open pull-down is drawn as pressed is this library's reading of AppKit, not shown in any screenshot"
+          },
+          {
+            "x": 12,
+            "y": 11,
+            "color": "#3c3c3c",
+            "tolerance": 2,
+            "note": "the add button beside it keeps the resting fill (spec: Fill, measured)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "wide-cells-light",
+      "description": "Add and remove, both disabled, with the 24 pt fills of the Internet Accounts pane (each button 26 pt wide), and the filler cell, Aqua. No text: the whole crop is scored at half the colour distance.",
+      "example": "visual-wide-cells",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.33,
+        "2x": 0.32
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Internet-Accounts.png",
+        "crop": {
+          "x": 144,
+          "y": 958,
+          "width": 118,
+          "height": 58
+        }
+      }
+    },
+    {
+      "name": "wide-cells-dark",
+      "description": "Add and remove, both disabled, with the 24 pt fills of the Internet Accounts pane (each button 26 pt wide), and the filler cell, Dark Aqua. No text: the whole crop is scored at half the colour distance.",
+      "example": "visual-wide-cells",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.11,
+        "2x": 0.12
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Internet-Accounts.png",
+        "crop": {
+          "x": 144,
+          "y": 958,
+          "width": 118,
+          "height": 58
+        }
+      }
+    },
+    {
+      "name": "list-buttons-light",
+      "description": "Add (enabled), remove (disabled) and the filler cell under the Preferred languages list of the Language & Region pane, Aqua. No text: the whole crop is scored at half the colour distance.",
+      "example": "visual-list-buttons",
+      "appearance": "light",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.33,
+        "2x": 0.38
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-Language-and-Region.png",
+        "crop": {
+          "x": 184,
+          "y": 884,
+          "width": 114,
+          "height": 58
+        }
+      }
+    },
+    {
+      "name": "rest-light",
+      "description": "An enabled button, one that is on and a disabled one, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 89,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 18.5,
+            "color": "#f7f7f7",
+            "note": "fill at mid height (spec: gradient-button, Fill, measured)"
+          },
+          {
+            "x": 20,
+            "y": 8.5,
+            "color": "#b4b4b4",
+            "note": "top border, 1 pt (spec: Border, outer, measured)"
+          },
+          {
+            "x": 8.5,
+            "y": 18.5,
+            "color": "#b4b4b4",
+            "note": "left border"
+          },
+          {
+            "x": 32.5,
+            "y": 18.5,
+            "color": "#b7b7b7",
+            "note": "the single 1 pt line between two cells (spec: Border between cells, measured)"
+          },
+          {
+            "x": 17,
+            "y": 18.5,
+            "color": "#252525",
+            "tolerance": 3,
+            "note": "bar of the plus glyph, label colour at 85% over the fill (spec: Glyph, enabled, measured)"
+          },
+          {
+            "x": 68.5,
+            "y": 18.5,
+            "color": "#b9b9b9",
+            "tolerance": 3,
+            "note": "bar of the disabled minus glyph, at 25% (spec: Glyph, disabled, measured)"
+          },
+          {
+            "x": 36,
+            "y": 12,
+            "color": "#d9d9d9",
+            "note": "a button that is on is drawn as pressed (spec: States, on, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The add button held down with the mouse, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "press": "#add"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 89,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 18.5,
+            "color": "#d9d9d9",
+            "note": "pressed fill: darker in Aqua, lighter in Dark Aqua (spec: States, pressed, inferred)"
+          },
+          {
+            "x": 8.5,
+            "y": 18.5,
+            "color": "#b4b4b4",
+            "note": "the border does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the add button, reached with Tab, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 89,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "ring over the page, measured on a text field (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 20,
+            "y": 6.75,
+            "color": "#82abf1",
+            "tolerance": 4,
+            "note": "the same band above the cell"
+          },
+          {
+            "x": 4.75,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the edge of the cell (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 12,
+            "y": 18.5,
+            "color": "#f7f7f7",
+            "note": "the fill does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-light",
+      "description": "The same after Tab in an inactive window, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 89,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#ececec",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          },
+          {
+            "x": 12,
+            "y": 18.5,
+            "color": "#f7f7f7",
+            "note": "the cell does not change in an inactive window (spec: States, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "list-buttons-dark",
+      "description": "Add (enabled), remove (disabled) and the filler cell under the Preferred languages list of the Language & Region pane, Dark Aqua. No text: the whole crop is scored at half the colour distance.",
+      "example": "visual-list-buttons",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.005,
+        "2x": 0.0005
+      },
+      "deltaBudget": {
+        "1x": 0.12,
+        "2x": 0.14
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-Language-and-Region.png",
+        "crop": {
+          "x": 184,
+          "y": 884,
+          "width": 114,
+          "height": 58
+        }
+      }
+    },
+    {
+      "name": "rest-dark",
+      "description": "An enabled button, one that is on and a disabled one, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 89,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 18.5,
+            "color": "#3c3c3c",
+            "note": "fill at mid height (spec: gradient-button, Fill, measured)"
+          },
+          {
+            "x": 20,
+            "y": 8.5,
+            "color": "#7f7f7f",
+            "note": "top border, 1 pt (spec: Border, outer, measured)"
+          },
+          {
+            "x": 8.5,
+            "y": 18.5,
+            "color": "#7f7f7f",
+            "note": "left border"
+          },
+          {
+            "x": 32.5,
+            "y": 18.5,
+            "color": "#7f7f7f",
+            "note": "the single 1 pt line between two cells (spec: Border between cells, measured)"
+          },
+          {
+            "x": 17,
+            "y": 18.5,
+            "color": "#e2e2e2",
+            "tolerance": 3,
+            "note": "bar of the plus glyph, label colour at 85% over the fill (spec: Glyph, enabled, measured)"
+          },
+          {
+            "x": 68.5,
+            "y": 18.5,
+            "color": "#6d6d6d",
+            "tolerance": 3,
+            "note": "bar of the disabled minus glyph, at 25% (spec: Glyph, disabled, measured)"
+          },
+          {
+            "x": 36,
+            "y": 12,
+            "color": "#5a5a5a",
+            "note": "a button that is on is drawn as pressed (spec: States, on, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "The add button held down with the mouse, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "press": "#add"
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 89,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 18.5,
+            "color": "#5a5a5a",
+            "note": "pressed fill: darker in Aqua, lighter in Dark Aqua (spec: States, pressed, inferred)"
+          },
+          {
+            "x": 8.5,
+            "y": 18.5,
+            "color": "#7f7f7f",
+            "note": "the border does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the add button, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 89,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#2d6c99",
+            "tolerance": 6,
+            "note": "ring over the page, measured on a text field (spec: focus-ring, sRGB)"
+          },
+          {
+            "x": 20,
+            "y": 6.75,
+            "color": "#2d6c99",
+            "tolerance": 6,
+            "note": "the same band above the cell"
+          },
+          {
+            "x": 4.75,
+            "y": 18.5,
+            "color": "#323232",
+            "note": "page just outside the ring: it ends 2.5 pt beyond the edge of the cell (spec: focus-ring, Geometry)"
+          },
+          {
+            "x": 12,
+            "y": 18.5,
+            "color": "#3c3c3c",
+            "note": "the fill does not change"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-dark",
+      "description": "The same after Tab in an inactive window, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [
+        {
+          "tab": 1
+        }
+      ],
+      "expect": {
+        "size": {
+          "width": 89,
+          "height": 37
+        },
+        "pixels": [
+          {
+            "x": 7,
+            "y": 18.5,
+            "color": "#323232",
+            "note": "no focus ring outside the key window (spec: focus-ring, States)"
+          },
+          {
+            "x": 12,
+            "y": 18.5,
+            "color": "#3c3c3c",
+            "note": "the cell does not change in an inactive window (spec: States, inferred)"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+---
+title: Boot Camp Assistant
+description: The Boot Camp Assistant of macOS 10.15, a fixed window that walks through a task one step at a time, built on the library's assistant window.
+layout: full
+order: 135
+---
+
+Boot Camp Assistant is not part of the Ferrite build: this page shows its interface, and the window changes nothing
+outside itself.
+
+<Example name="basic" />
+
+Continue goes to the next step and Go Back, or Escape, to the one before; Open Boot Camp Help
+opens a sheet. Nothing is downloaded, partitioned or installed: the steps keep what is chosen in
+them for as long as the page is open, and the installation is a five-second clock. Only the
+first step, Introduction, is in the reference screenshots; the others are the demo's.
+
+## What it shows
+
+The source is `demos/boot-camp-assistant/`: `boot-camp-assistant.tsx` is the app,
+`boot-camp-assistant-artwork.tsx` the placeholder of the artwork column, and
+`boot-camp-assistant.css` the layout of the steps that no screenshot shows.
+
+- The window is the library's [Assistant Window](/components/assistant-window), which is a
+  [Window](/components/window) with a title bar and draws the artwork column, the step's
+  heading (`AssistantWindowHeading`), the bordered box of text (`AssistantWindowText`), an area
+  for anything else (`AssistantWindowContent`) and the button row (`AssistantWindowActions`,
+  with the help button as its `leading` control) at the places measured on the screenshots.
+  The assistant window keeps no step of its own: the demo holds the step in state and renders
+  the parts of the one it is at.
+- The [Window Controls](/components/window-controls) are passed as `controls`: close and
+  minimize, and a green button that is always unavailable, because an assistant has one size.
+- The buttons are [Push Buttons](/components/push-button). Continue is not a default button:
+  in the screenshots it is not in the accent colour.
+- Select Tasks is three [Checkboxes](/components/checkbox) in a group named by a
+  [Label](/components/label).
+- Create a Partition for Windows is a [Slider](/components/slider) whose value is the size of
+  the Windows partition; the two sizes under it are computed from it, and
+  `getAriaValueText` says both.
+- Installing is a [Progress Bar](/components/progress-bar) named by the label that says what
+  is being done.
+- Open Boot Camp Help opens a [Sheet](/components/sheet) that hangs under the title bar. While
+  it is open the window is main, not key, and the step is inert.
+- Escape is the assistant window's `onCancel`: it goes back a step.
+
+| Control | What it does |
+| --- | --- |
+| Continue | Goes to the next step. Unavailable on Select Tasks while no task is chosen. |
+| Go Back, Escape | Goes back a step and keeps what was chosen. From the last step it returns to the partition. Unavailable while the installation runs. |
+| The three checkboxes | Choose the tasks; the last step says how many there were. |
+| The slider | Divides the demo's 251 GB disk: Windows takes 42 to 171 GB and macOS keeps the rest. |
+| Install | Starts the installation, a clock of five seconds that names three phases. |
+| Stop | Ends the installation and returns to the partition. |
+| Quit | On the last step: calls `onClose`, which closes the window when it is hosted. |
+| Open Boot Camp Help | Opens a sheet with a few lines; OK or Escape closes it. |
+
+## Hosting the window
+
+<Example name="hosted" />
+
+`BootCampAssistant` renders the library's `AssistantWindow` as its root and passes every
+`Window` prop to it, so it does not assume it fills the page. Place it with `style`; a window
+manager gives it `state` and eight more props, the ones a
+[Managed Window](/components/managed-window)'s `render` form supplies, so the component can be
+spread with them as they come.
+
+```tsx
+import { ManagedWindow } from "macalicious/managed-window";
+import { app } from "./app";
+
+<ManagedWindow
+  id={app.id}
+  title={app.name}
+  resizable={app.resizable}
+  defaultFrame={{ x: 80, y: 60, ...app.defaultSize }}
+  render={(props) => <app.component {...props} />}
+/>;
+```
+
+| Prop | Type | Use |
+| --- | --- | --- |
+| `defaultStep` | `"introduction" \| "tasks" \| "partition" \| "installing" \| "finished"` | The step the assistant opens on; `"introduction"` by default. |
+| `onClose`, `onMinimize`, `minimizeDisabled` | as on `WindowControls` | Passed to the `WindowControls`; `onClose` is also what Quit calls. |
+| `onZoom`, `zoomRole`, `zoomDisabled` | as on `WindowControls` | Accepted and not used: the green button is always unavailable. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Called for a press with the primary button, or a double click, on the title bar that is not on a window control. |
+| `state` | `"key" \| "main" \| "inactive"` | The window's state. While the help sheet is open a key window shows itself as main. |
+| the rest | `AssistantWindowProps` | `width`, `height`, `style`, `className`, `ref`, pointer and focus events and so on. |
+
+The assistant window draws its title bar itself and hands the two drag-region callbacks to
+it, so the bar says what a press or a double click on the bar itself is (the primary button,
+not on a window control). The bar is inside the window and hears an event first, so the demo
+holds the bar's report until the window's own `onPointerDown` or `onDoubleClick` has run: a
+handler there that calls `preventDefault` cancels the callback, and one that does not is
+followed by it.
+
+`app.ts` exports the descriptor a desktop page reads, as `bootCampAssistantApp` and as `app`:
+`id`, `name`, `component`, `defaultSize` and `minSize` (both 783 by 548), `resizable: false`
+and `menus`, the menu titles after the Apple menu. The [Desktop](/demos/desktop) finds it
+there, so Boot Camp Assistant is in its Dock.
+
+## Accessibility
+
+- The window is a `region` named by its title. The step's name is a heading and a polite live
+  region, so a screen reader says the new step when it changes.
+- The box of text is a `group` named by the heading and a tab stop, so the keyboard can scroll
+  it. The three checkboxes are a `group` named by the line above them.
+- The slider is named by the line above it, and its value is said as both sizes: "Windows 45
+  GB, macOS 206 GB".
+- The progress bar is named by the phase it is in.
+- The help sheet is a modal `dialog` named by its title; Escape closes it, and Escape pressed
+  in the window itself goes back a step.
+- The mark in the artwork column is decorative and hidden from assistive technology.
+- Continue is not a default button, as in the screenshots, so Return does not activate it
+  unless it has the focus.
+
+## Fidelity
+
+`boot-camp-assistant.visual.json` compares the demo with the two Boot Camp Assistant
+screenshots, cropped at the window's frame, in each appearance: once with the artwork masked
+(`window-light`, `window-dark`), and once with the text masked as well
+(`window-layout-light`, `window-layout-dark`). The artwork is masked in all four: the
+screenshots have Boot Camp's diamonds there, which are Apple's logo and reach over the left
+edge of the text box, and the demo has an abstract placeholder; the comparison is of Catalina's
+chrome and layout, not of that picture. The four corners of the frame are masked too, because
+the screenshots are of the whole screen and show the desktop picture there. The layout
+comparisons also mask the title, the heading, the text and the two button titles.
+
+Scores from `npm run visual -- boot-camp-assistant/` (Chromium on Linux, fallback font), share
+of pixels that differ and mean colour distance out of 255:
+
+| Comparison | 1x | 2x |
+| --- | --- | --- |
+| `window-light` | 5.6%, 6.9 | 4.7%, 7.0 |
+| `window-layout-light` | 0.55%, 0.22 | 0.05%, 0.19 |
+| `window-dark` | 5.7%, 6.6 | 4.8%, 6.5 |
+| `window-layout-dark` | 0.29%, 0.50 | 0.03%, 0.37 |
+
+The budgets in `boot-camp-assistant.visual.json` are set just above these. What the
+whole-window scores hold beyond the layout scores is the text, in the fallback font.
+
+The frame, the title bar, the 174.5 pt artwork column, the heading, the 592.5 by 423 pt text
+box and the button row are the library's assistant window, laid out to the screenshots; the
+demo adds the wording, which is the screenshots', and the 164 pt help button.
+
+What differs, and why:
+
+- **Artwork.** Boot Camp's four diamonds are not reproduced or imitated. The column shows the
+  usual mark for a picture, in a grey of the window, and the area is masked in every
+  comparison.
+- **Window background in the comparisons.** The screenshots' window background is tinted by
+  the desktop picture behind the window. The visual example sets the library's tinted window
+  colour for that; the demo elsewhere has the plain one.
+- **Help button.** Its bezel is 164 pt in the screenshots. The demo gives it that as a least
+  width: in the fallback font the title needs a few points more, and it is not cut.
+- **Text.** Set in the fallback font off Apple devices, so the lines of the text break a word
+  or two from where the screenshots break them.
+- **Not in a screenshot (provisional):** every step after Introduction (Select Tasks, Create a
+  Partition for Windows, Installing, Finished), with their wording, the size of the disk and
+  the limits of the slider; Go Back, Install, Stop and Quit; the help sheet; the window when
+  it is not key.
+- **Not built:** downloading anything, partitioning, a Windows installer, choosing an ISO
+  image or a USB drive, and the pages of Boot Camp Help.

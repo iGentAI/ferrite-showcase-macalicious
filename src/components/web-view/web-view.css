@@ -1,0 +1,317 @@
+/*
+ * Web view: a frameless surface that scrolls its content, and the pages Safari draws in it
+ * itself (start page, Reader, error, Tab Overview). Measures are on the docs page.
+ * [data-surface] picks the canvas; [data-frame] marks the form with an iframe.
+ *
+ * Hooks
+ *   --mac-web-view-background        a page's own canvas
+ *   --mac-web-view-columns           tiles in a row
+ *   --mac-web-view-tile-fill         one tile's fill
+ *   --mac-web-view-thumbnail-aspect  a thumbnail's width / height
+ */
+.mac-web-view {
+  --_canvas: var(--mac-color-text-background);
+
+  position: relative;
+  box-sizing: border-box;
+  overflow: auto;
+  background: var(--mac-web-view-background, var(--_canvas));
+  color: var(--mac-color-text);
+  font: var(--mac-font-body);
+  outline: none;
+}
+
+.mac-web-view:where([data-surface="start"]) {
+  --_canvas: var(--mac-web-view-start);
+}
+
+.mac-web-view:where([data-surface="overview"]) {
+  --_canvas: var(--mac-web-view-overview);
+}
+
+.mac-web-view:where([data-surface="reader"]) {
+  --_canvas: var(--mac-web-view-reader-canvas);
+}
+
+.mac-web-view:where([data-frame]) {
+  overflow: hidden;
+}
+
+.mac-web-view-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Loading line [provisional]: 2 pt, over the page; grey outside the key window. */
+.mac-web-view-progress {
+  position: sticky;
+  z-index: 1;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  height: var(--mac-web-view-progress-height);
+  margin-block-end: calc(-1 * var(--mac-web-view-progress-height));
+  pointer-events: none;
+}
+
+.mac-web-view-progress-indicator {
+  height: 100%;
+  background: var(--mac-accent);
+}
+
+.mac-web-view-progress-indicator:where([data-indeterminate]) {
+  width: 10%;
+}
+
+.mac-web-view-progress-indicator:where(
+  :where([data-window-state="main"], [data-window-state="inactive"]) *
+) {
+  background: var(--mac-color-label-tertiary);
+}
+
+/* Start page: 80 pt tiles at a 115 x 148 pt pitch, 75 pt under the top edge. */
+.mac-web-view-favorites {
+  --_gap: calc(var(--mac-web-view-pitch) - var(--mac-web-view-tile-size));
+
+  width: calc(var(--mac-web-view-columns, 6) * var(--mac-web-view-pitch) - var(--_gap));
+  margin-inline: auto;
+  padding: 32px 20px 20px;
+  color: var(--mac-web-view-start-text);
+}
+
+.mac-web-view-heading {
+  margin: 0 0 19px;
+  font: var(--mac-web-view-heading-font);
+}
+
+.mac-web-view-favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--mac-web-view-columns, 6), var(--mac-web-view-tile-size));
+  grid-auto-rows: var(--mac-web-view-row);
+  column-gap: var(--_gap);
+}
+
+.mac-web-view-favorite {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: var(--mac-font-icon-label);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: default;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-web-view-tile {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--mac-web-view-tile-size);
+  height: var(--mac-web-view-tile-size);
+  overflow: hidden;
+  border-radius: var(--mac-web-view-tile-radius);
+  background: var(--mac-web-view-tile-fill, var(--mac-web-view-tile));
+  box-shadow: var(--mac-web-view-tile-shadow);
+  color: var(--mac-web-view-tile-text);
+  font: var(--mac-web-view-tile-font);
+}
+
+/* Titles may be wider than the tile. */
+.mac-web-view-favorite-label,
+.mac-web-view-favorite-detail {
+  box-sizing: border-box;
+  width: var(--mac-web-view-label-width);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mac-web-view-favorite-label {
+  margin-block-start: 7px;
+  font:
+    var(--mac-font-weight-semibold) var(--mac-font-size-regular) / var(--mac-line-height-regular)
+    var(--mac-font-family-system);
+}
+
+.mac-web-view-favorite-detail {
+  color: var(--mac-web-view-start-detail);
+}
+
+/* Reader: a 786 pt sheet, 22 pt under the top edge. */
+.mac-web-view-reader {
+  box-sizing: border-box;
+  max-width: var(--mac-web-view-reader-width);
+  min-height: calc(100% - 22px);
+  margin: 22px auto 0;
+  padding: 53px 70px 70px;
+  background: var(--mac-web-view-reader-paper);
+  box-shadow: var(--mac-web-view-reader-shadow);
+  color: var(--mac-web-view-reader-text);
+  font: var(--mac-web-view-reader-font);
+}
+
+.mac-web-view-reader-title {
+  margin: 0 0 17px;
+  font: var(--mac-web-view-reader-title-font);
+}
+
+/* A page that cannot be opened [provisional] */
+.mac-web-view-error {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: 20px 20px 15%;
+  color: var(--mac-color-label-secondary);
+  text-align: center;
+}
+
+.mac-web-view-error-title {
+  margin: 0;
+  font: var(--mac-web-view-error-title-font);
+}
+
+.mac-web-view-error-message {
+  max-width: var(--mac-web-view-error-width);
+}
+
+/* Tab Overview: thumbnails 18 pt apart, 49 pt from the sides and 62 pt from the top. */
+.mac-web-view-tab-overview {
+  display: grid;
+  grid-template-columns: repeat(var(--mac-web-view-columns, 4), minmax(0, 1fr));
+  gap: 18px;
+  padding: 62px 49px 49px;
+}
+
+.mac-web-view-thumbnail {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  aspect-ratio: var(--mac-web-view-thumbnail-aspect, 293 / 220);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--mac-web-view-thumbnail-border);
+  border-radius: 0;
+  background: var(--mac-web-view-thumbnail-band) padding-box;
+  color: var(--mac-web-view-thumbnail-text);
+  font: var(--mac-font-body);
+  text-align: center;
+  text-decoration: none;
+  cursor: default;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* The shadow must also darken the canvas under the translucent border: this box is the tile
+   without its border. */
+.mac-web-view-thumbnail:where([data-variant="page"])::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: var(--mac-web-view-thumbnail-shadow);
+  pointer-events: none;
+}
+
+.mac-web-view-thumbnail-title {
+  flex: none;
+  box-sizing: border-box;
+  height: var(--mac-web-view-thumbnail-title-height);
+  padding: 4px 8px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-web-view-thumbnail-page {
+  display: block;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--mac-color-text-background);
+  text-align: start;
+}
+
+/* New-tab tile: the + is 22% of its height, half a point above the centre. */
+.mac-web-view-thumbnail:where([data-variant="new-tab"]) {
+  align-items: center;
+  justify-content: center;
+  background: var(--mac-web-view-new-tab) padding-box;
+  color: var(--mac-web-view-new-tab-glyph);
+}
+
+.mac-web-view-thumbnail:where([data-variant="new-tab"])::before {
+  content: "";
+  height: 22.3%;
+  margin-block-end: 1px;
+  aspect-ratio: 1;
+  background:
+    linear-gradient(currentColor, currentColor) center / 100% 6.6% no-repeat,
+    linear-gradient(currentColor, currentColor) center / 6.6% 100% no-repeat;
+}
+
+/* Pressed [provisional] */
+.mac-web-view-favorite:where(:active, [data-force~="pressed"]) > .mac-web-view-tile,
+.mac-web-view-thumbnail:where(:active, [data-force~="pressed"]) {
+  filter: brightness(var(--mac-web-view-thumbnail-pressed-brightness));
+}
+
+/* Focus ring, in the key window only; the view's own is inside its edge. */
+.mac-web-view:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+.mac-web-view-favorite:where(:focus-visible, [data-force~="focus"]):where(
+    :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+  )
+  > .mac-web-view-tile,
+.mac-web-view-thumbnail:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-web-view-progress-indicator {
+    background: Highlight;
+    forced-color-adjust: none;
+  }
+
+  .mac-web-view-tile,
+  .mac-web-view-reader {
+    border: 1px solid CanvasText;
+    box-shadow: none;
+  }
+
+  .mac-web-view-thumbnail {
+    border-color: ButtonText;
+  }
+
+  .mac-web-view-thumbnail::after {
+    box-shadow: none;
+  }
+
+  .mac-web-view-thumbnail:where([data-variant="new-tab"])::before {
+    forced-color-adjust: none;
+    color: ButtonText;
+  }
+}

@@ -1,0 +1,138 @@
+/*
+ * Assistant window (Boot Camp Assistant): a window frame (window, title-bar, window-controls)
+ * whose body is a column of artwork and a step.
+ *
+ * Measured on the Introduction step, from the window's top-left corner (783 x 548 pt, title
+ * bar 22): the step's column starts at 174.5 and ends 16 from the right edge; heading baseline
+ * at 53.5, its text 3.5 after the column's edge; text box 592.5 x 423 at 174.5, 65 with a 1 pt
+ * border, its text 7.5 inside the edge and the first baseline 20.5 below the top, on a 16 pt
+ * line; button bezels at 508.5, 20 high, the leading one from 174.5, the trailing one ending
+ * at 762.5; 19.5 below them.
+ *
+ * A push button's box reaches half a point beyond its bezel, which the row's margins allow
+ * for.
+ *
+ * States
+ *   :focus-visible on the text box       focus ring inside its edge, in the key window only
+ *
+ * Hooks
+ *   --mac-assistant-window-artwork-width      width of the artwork column (default 174.5px)
+ *   --mac-assistant-window-button-min-width   least width of a navigation button (default
+ *                                             86px: the 85 pt bezel of Continue)
+ */
+.mac-assistant-window-body {
+  display: grid;
+  grid-template-columns: var(--mac-assistant-window-artwork-width, 174.5px) minmax(0, 1fr);
+  /* One row as tall as the body and no taller: artwork that is taller is clipped by the
+     window and never pushes the step's buttons out of it. */
+  grid-template-rows: minmax(0, 1fr);
+}
+
+/* Above the step: Boot Camp's diamonds reach over the edge of the text box. The window clips
+   what goes beyond its own edge. */
+.mac-assistant-window-artwork {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  min-height: 0;
+  /* Cut at the body's bottom edge, so the body never scrolls; free to reach sideways. */
+  overflow-y: clip;
+  pointer-events: none;
+}
+
+.mac-assistant-window-step {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  padding: 19px 16px 19px 0;
+}
+
+.mac-assistant-window-heading {
+  flex: none;
+  margin: 0 0 8px;
+  padding-inline-start: 3.5px;
+  color: var(--mac-color-label);
+  font: var(--mac-font-headline);
+  letter-spacing: var(--mac-tracking-regular);
+}
+
+.mac-assistant-window-text,
+.mac-assistant-window-content {
+  flex: 1 1 0;
+  box-sizing: border-box;
+  min-height: 0;
+}
+
+.mac-assistant-window-text {
+  overflow-y: auto;
+  padding: 7px 6.5px;
+  border: 1px solid var(--mac-assistant-window-text-border);
+  background: var(--mac-assistant-window-text-fill);
+  color: var(--mac-color-text);
+  font: var(--mac-font-body);
+  letter-spacing: var(--mac-tracking-regular);
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
+  outline: none;
+}
+
+/* Paragraphs are a blank line apart. */
+.mac-assistant-window-text > :where(p) {
+  margin: 0;
+}
+
+.mac-assistant-window-text > :where(p + p) {
+  margin-top: var(--mac-line-height-regular);
+}
+
+/* Content taller than its room scrolls and never covers the buttons. The box reaches 4 pt
+   beyond its place on every side, so that a focus ring at its edge is not cut. */
+.mac-assistant-window-content {
+  overflow: auto;
+  margin: -4px;
+  padding: 4px;
+}
+
+.mac-assistant-window-actions {
+  display: flex;
+  flex: none;
+  gap: var(--mac-space-control-gap);
+  align-items: center;
+  margin: 20px 4px 0 -0.5px;
+}
+
+.mac-assistant-window-actions:where(:first-child) {
+  margin-top: auto;
+}
+
+.mac-assistant-window-actions-leading,
+.mac-assistant-window-actions-trailing {
+  display: flex;
+  gap: var(--mac-space-control-gap);
+  align-items: center;
+}
+
+.mac-assistant-window-actions-trailing {
+  margin-inline-start: auto;
+}
+
+.mac-assistant-window-actions-trailing > :where(*) {
+  min-width: var(--mac-assistant-window-button-min-width, 86px);
+}
+
+/* Keyboard focus ring, drawn inside the box's edge; only in the key window. */
+.mac-assistant-window-text:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+@media (forced-colors: active) {
+  .mac-assistant-window-text {
+    border-color: CanvasText;
+  }
+}

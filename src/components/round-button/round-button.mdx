@@ -1,0 +1,139 @@
+---
+title: Round Button
+description: A circular bezel around one small glyph or character, and the flat red disc that removes a row. No reference screenshot shows the AppKit bezel; the red disc is measured in Contacts.
+order: 14
+---
+
+<Example name="basic" both />
+
+AppKit calls this control a *round button* (`NSButton` with the circular bezel style). It is
+built on [Base UI's Button](https://base-ui.com/react/components/button), which supplies the
+button semantics, keyboard handling, `disabled`, `focusableWhenDisabled` and the `render` prop.
+
+**No visual reference for the bezel.** None of the Catalina screenshots contains AppKit's round
+button. The bezel is built from Apple's description of the control and from the help button,
+which AppKit draws with the same bezel and which is measured. The `destructive` variant is
+measured: Contacts draws it. See [Visual comparison](#visual-comparison).
+
+## Usage
+
+```tsx
+import { RoundButton } from "macalicious/round-button";
+import "macalicious/round-button.css";
+
+<RoundButton aria-label="Add" onClick={add}>
+  <PlusIcon />
+</RoundButton>
+```
+
+The content is one glyph of up to 11 x 11 pt that uses `currentColor`, or a single character.
+Or copy the source into your project: `npx macalicious add round-button`. See
+[Installation](/installation).
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for round buttons:
+
+- A round button holds a small centred icon. It resembles a help button or a radio button, so
+  the guidelines discourage it in modern applications: prefer a push button, a
+  [help button](/components/help-button) or a radio button.
+- Use it in a view, not in a toolbar or status bar.
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | White circular bezel (translucent white in Dark Aqua) |
+| Pressed | `:active` | The fill darkens in Aqua and lightens in Dark Aqua; never the accent |
+| Keyboard focus | `:focus-visible` | Circular focus ring in the accent colour |
+| Disabled | `disabled` | Bezel at half opacity, content at 25% |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | Unchanged, but no focus ring |
+
+### Destructive
+
+`variant="destructive"` is the red disc Contacts puts before each field of a card that is
+being edited: a flat disc in the system red with white content, without the bezel's edge and
+shadow. Use it for an action that removes the thing it sits beside, at the `mini` size, and
+name it for what it removes ("Remove phone").
+
+<Example name="destructive" both />
+
+| State | Look | Status |
+| --- | --- | --- |
+| Normal | Flat red disc, white content | measured in Aqua (Contacts); the Dark Aqua red is the dark system red, provisional |
+| Pressed | The fill an eighth darker | provisional |
+| Disabled | The disc at the bezel's disabled opacity | provisional |
+| Keyboard focus | The circular focus ring | provisional |
+
+## Sizes
+
+<Example name="sizes" />
+
+| Size | Box | Bezel |
+| --- | --- | --- |
+| `regular` | 21 pt | 20 pt (the help button's measured diameter) |
+| `small` | 18 pt | 17 pt (provisional) |
+| `mini` | 15 pt | 14 pt (provisional) |
+
+The element's box is AppKit's *alignment rectangle*; the visible bezel is one hairline smaller
+on every side, as for a push button.
+
+## API
+
+<PropsTable name="RoundButtonProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-size` | `regular`, `small`, `mini` | Reflects `size`. |
+| `data-variant` | `bezel`, `destructive` | Reflects `variant`. |
+| `data-disabled` | present or absent | Set by Base UI while the button is disabled. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+## Accessibility
+
+- Renders a native `<button>`. Space and Return activate it; Tab reaches it.
+- It has no title, so it needs an `aria-label` (or `aria-labelledby`). Hide a decorative glyph
+  with `aria-hidden`.
+- A disabled button leaves the tab order unless `focusableWhenDisabled` is set.
+- In forced-colours mode the bezel is drawn with system colours. The destructive disc, which
+  has no edge of its own, gets a `ButtonText` edge there, and a disabled destructive button
+  the `GrayText` edge of any disabled button (`round-button.browser.test.tsx`, Chromium and
+  Firefox; Playwright cannot emulate forced colours in WebKit).
+
+## Visual comparison
+
+There is no screenshot of the bezel to compare with: the spec lists AppKit's round button as
+not seen in any of the 294 captures. The circular buttons that do appear are other controls:
+Contacts' remove buttons (the destructive variant, compared below), the help button (its own
+component, with its own comparisons) and the 14 pt stop disc in the Time Machine pane, which
+the spec's remeasure files under the progress bar. Everything about the bezel's look is
+therefore provisional. What it is built from:
+
+| Part | Source |
+| --- | --- |
+| Bezel: edge, fill, highlight and shadow rows | Measured on the help button and the push button, which share them |
+| 20 pt diameter at regular size | The help button's measured diameter; that the round button equals it is inferred |
+| 17 and 14 pt diameters | Inferred from the control-size steps of the push button |
+| Pressed fill | Inferred |
+| Focus ring | Measured on a text field's ring; its circular shape here is inferred |
+
+`npm run visual -- round-button` checks the component against those values in a real browser
+(the `expect` comparisons of `round-button.visual.json`): the three hairlines and the fill at
+rest, the disabled fill, the size of the small and mini bezels, the pressed fill under a real
+mouse press, the focus ring after a real Tab, and that the ring is absent in an inactive
+window. These checks hold the component to the spec; they do not show that Catalina draws a
+round button this way. The pressed fill is the shared pressed bezel of the spec's token sheet
+(`#f0f0f0`, white at 36% in Dark Aqua); the spec's help-button page, which the round button
+follows, infers a slightly darker one (`#e5e5e5`, white at 35%), and no screenshot settles
+which is right.
+
+The destructive variant is compared with a screenshot: `contacts-remove-light` is the remove
+button of the first field of the card being edited in the Aqua Contacts capture (crop
+`920,317,50,50`), unmasked. In Chromium on Linux 2.00% of pixels differ at 2x and 8.48% at
+1x: the antialiased rim of a 14 pt disc is a large share of a 25 pt crop. No capture shows
+the card being edited in Dark Aqua.

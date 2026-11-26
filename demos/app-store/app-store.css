@@ -1,0 +1,308 @@
+/*
+ * App Store demo: the layout of the window and the store's own content. The window, the
+ * sidebar, the search field, the split view, the scroll view, the hero, the story cards, the
+ * section headers, the lockups and the offer buttons are library components; nothing of
+ * theirs is restyled here. This file places them and draws what only the store has: the
+ * content of the account button and the stand-in artwork.
+ *
+ * Parts
+ *   .mac-app-store                the window
+ *   .mac-app-store-split          the split view, filling it
+ *   .mac-app-store-sidebar-pane   the sidebar column, 220 pt
+ *   .mac-app-store-top            over the sidebar's rows: window controls and search field;
+ *                                 the window's drag region
+ *   .mac-app-store-sidebar        the library sidebar, with room over its rows for that block
+ *   .mac-app-store-account        the content of the account button under the rows: an
+ *                                 avatar and a name
+ *   .mac-app-store-pane           the content column
+ *   .mac-app-store-scroll         its scroll view
+ *   .mac-app-store-page           the page of a section
+ *   .mac-app-store-title          the large title of a page that has no hero
+ *   .mac-app-store-hero           the place of the hero, the editorial card across the top
+ *                                 of Discover
+ *   .mac-app-store-hero-picture   the abstract placeholder that is the hero's artwork
+ *   .mac-app-store-collections    the lists of apps under the stories
+ *   .mac-app-store-icon           a stand-in app icon
+ *   .mac-app-store-art            the abstract placeholder of a story's round artwork
+ *   .mac-app-store-hidden         text for assistive technology only
+ */
+.mac-app-store-split {
+  flex: 1 1 auto;
+}
+
+/* Sidebar column: the top block lies over the room the sidebar leaves above its rows. */
+.mac-app-store-sidebar-pane {
+  position: relative;
+}
+
+/* The first row starts 94 pt under the window's top: 89 pt and the tree's own 5. Row labels
+   are 18 pt, in the store's own grey. */
+.mac-app-store-sidebar {
+  height: 100%;
+  padding-block-start: var(--mac-app-store-sidebar-padding-block-start);
+  color: var(--mac-app-store-row-label);
+  font:
+    var(--mac-font-weight-regular) var(--mac-app-store-row-font-size) /
+    var(--mac-app-store-row-line-height) var(--mac-font-family-system);
+}
+
+/* The library's row centres its label half a point under the row's middle; the store's
+   label sits half a point above it. */
+.mac-app-store-row-name {
+  position: relative;
+  inset-block-start: var(--mac-app-store-row-name-inset-block-start);
+}
+
+.mac-app-store-top {
+  position: absolute;
+  z-index: 1;
+  inset: 0 0 auto;
+  height: var(--mac-app-store-top-height);
+}
+
+/* The window controls float over the sidebar: the close button's centre is 19 pt in. */
+.mac-app-store-controls {
+  position: absolute;
+  inset-block-start: var(--mac-app-store-controls-top);
+  inset-inline-start: var(--mac-app-store-controls-left);
+}
+
+/* 180 x 26 pt, 20 pt from the edge and 49 pt from the top. */
+.mac-app-store-search {
+  position: absolute;
+  inset-block-start: var(--mac-app-store-search-top);
+  inset-inline-start: var(--mac-app-store-search-left);
+}
+
+/* The content of the account button, which is the library's image button: a 40 pt avatar
+   20 pt from the pane's edge, the name 11 pt after it in 13 pt Semibold (its ink is 71.5 to
+   113 pt across and 9.5 pt high, with stems of 3 px at 2x, in both captures). */
+.mac-app-store-account {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-app-store-account-gap);
+  box-sizing: border-box;
+  max-width: var(--mac-app-store-account-max-width);
+  padding-inline: var(--mac-app-store-account-padding-inline);
+  color: var(--mac-app-store-account-glyph);
+  font:
+    var(--mac-font-weight-semibold) var(--mac-app-store-account-font-size) /
+    var(--mac-app-store-account-line-height) var(--mac-font-family-system);
+  text-align: start;
+}
+
+.mac-app-store-account > :where(svg) {
+  flex: none;
+}
+
+.mac-app-store-account-name {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--mac-app-store-account-label);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Content column */
+.mac-app-store-pane {
+  background: var(--mac-app-store-content);
+}
+
+.mac-app-store-scroll {
+  height: 100%;
+}
+
+.mac-app-store-page {
+  padding-block: var(--mac-app-store-page-padding-block);
+  color: var(--mac-color-label);
+  font: var(--mac-font-body);
+  cursor: default;
+}
+
+.mac-app-store-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The large title of a page without a hero (provisional: no screenshot shows one). */
+.mac-app-store-title {
+  margin: 0;
+  padding: var(--mac-app-store-title-padding);
+  overflow: hidden;
+  font:
+    var(--mac-font-weight-bold) var(--mac-app-store-title-font-size) /
+    var(--mac-app-store-title-line-height) var(--mac-font-family-system);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-app-store-note {
+  margin: var(--mac-app-store-note-margin);
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-app-store-account-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--mac-app-store-account-bar-gap);
+  margin: var(--mac-app-store-account-bar-margin);
+}
+
+.mac-app-store-account-bar > .mac-app-store-note {
+  margin: 0;
+}
+
+.mac-app-store-empty {
+  height: var(--mac-app-store-empty-height);
+}
+
+/* The hero's place: the editorial card is as wide as its container, 945 pt in the 40 pt
+   margins at the captured width, and 20 pt over the story cards. The card draws itself. */
+.mac-app-store-hero {
+  padding: var(--mac-app-store-hero-padding);
+}
+
+.mac-app-store-art {
+  background: var(--mac-app-store-placeholder-field);
+}
+
+/* A generated picture in a story's artwork is wrapped in a span that fills the same box. */
+.mac-app-store-art:where(span) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* The first collection's line is 36 pt under the story cards: the grid's 32 pt and these. */
+.mac-app-store-collections {
+  padding-block-start: var(--mac-app-store-collections-padding-block-start);
+}
+
+/* A stand-in app icon fills the lockup's 50 pt box. */
+.mac-app-store-icon {
+  display: grid;
+  overflow: hidden;
+  border-radius: var(--mac-app-store-icon-radius);
+  color: var(--mac-app-store-icon-glyph);
+}
+
+/* An app's name in a list, which opens its page: the lockup's own line, as a button. */
+.mac-app-store-app-name {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+}
+
+/* An app's page. */
+.mac-app-store-preferences {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--mac-app-store-account-bar-gap);
+}
+
+.mac-app-store-product-head {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-app-store-product-gap);
+  padding: var(--mac-app-store-product-head-padding);
+}
+
+.mac-app-store-product-icon {
+  display: grid;
+  flex: none;
+  width: var(--mac-app-store-product-icon-size);
+  height: var(--mac-app-store-product-icon-size);
+}
+
+.mac-app-store-product-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mac-app-store-product-title {
+  margin: 0;
+  font:
+    var(--mac-font-weight-bold) var(--mac-app-store-title-font-size) /
+    var(--mac-app-store-title-line-height) var(--mac-font-family-system);
+}
+
+.mac-app-store-product-line {
+  margin: 0;
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-app-store-product-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--mac-app-store-account-bar-gap);
+}
+
+.mac-app-store-product-part {
+  margin: var(--mac-app-store-product-part-margin);
+  padding-block-start: var(--mac-app-store-product-part-padding);
+  border-block-start: 1px solid var(--mac-color-grid);
+}
+
+.mac-app-store-product-heading {
+  margin: var(--mac-app-store-product-heading-margin);
+  font:
+    var(--mac-font-weight-semibold) var(--mac-app-store-product-heading-font-size) /
+    var(--mac-app-store-product-heading-line-height) var(--mac-font-family-system);
+}
+
+.mac-app-store-product-note {
+  margin: var(--mac-app-store-product-heading-margin);
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-app-store-product-rating {
+  display: flex;
+  align-items: center;
+  gap: var(--mac-app-store-account-bar-gap);
+  margin: var(--mac-app-store-product-heading-margin);
+}
+
+.mac-app-store-product-review {
+  flex: 1 1 auto;
+  max-width: var(--mac-app-store-product-review-width);
+}
+
+.mac-app-store-product-facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--mac-app-store-product-facts-gap);
+  margin: 0;
+}
+
+.mac-app-store-product-facts > dt {
+  color: var(--mac-color-label-secondary);
+}
+
+.mac-app-store-product-facts > dd {
+  margin: 0;
+}
+
+/* An action that cannot be used now, such as Update All with nothing to update. */
+.mac-app-store-action:where(:disabled) {
+  opacity: var(--mac-app-store-action-disabled-opacity);
+}
+
+@media (forced-colors: active) {
+  .mac-app-store-icon,
+  .mac-app-store-art,
+  .mac-app-store-hero-picture {
+    forced-color-adjust: none;
+  }
+}

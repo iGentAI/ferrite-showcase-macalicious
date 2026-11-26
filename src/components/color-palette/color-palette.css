@@ -1,0 +1,166 @@
+/*
+ * Colour palette (the palette and pencil pickers of NSColorPanel): a radio group whose radios
+ * are named colours. Each radio carries its colour in --_color.
+ *
+ * States
+ *   [data-variant="list" | "pencils"]  a list of swatches with names, or rows of crayons
+ *   [data-checked]                     the chosen colour (set by Base UI on the radio)
+ *   [data-disabled]                    disabled: dimmed
+ *   :focus-visible                     keyboard focus ring on the radio
+ *   :where([data-window-state="main"], [data-window-state="inactive"]) *
+ *                                      not the key window: unemphasised selection, no ring
+ */
+.mac-color-palette {
+  box-sizing: border-box;
+  inline-size: 200px;
+  max-inline-size: 100%;
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+.mac-color-palette-color {
+  position: relative;
+  box-sizing: border-box;
+  outline: none;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-color-palette:where([data-disabled]) {
+  opacity: 0.5;
+}
+
+/* List: a framed, scrolling column of 19 pt rows, a swatch and the name. */
+.mac-color-palette:where([data-variant="list"]) {
+  display: flex;
+  flex-direction: column;
+  max-block-size: 180px;
+  overflow-y: auto;
+  border: var(--mac-hairline) solid var(--mac-color-palette-frame);
+  background: var(--mac-color-text-background);
+}
+
+.mac-color-palette:where([data-variant="list"]) > .mac-color-palette-color {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  block-size: 19px;
+  padding-inline: 4px;
+}
+
+.mac-color-palette:where([data-variant="list"]) .mac-color-palette-swatch {
+  flex: none;
+  box-sizing: border-box;
+  inline-size: 26px;
+  block-size: 13px;
+  border: var(--mac-hairline) solid var(--mac-color-palette-edge);
+  background: var(--_color);
+}
+
+.mac-color-palette-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The chosen row: emphasised in the key window, unemphasised elsewhere. */
+.mac-color-palette:where([data-variant="list"]) > .mac-color-palette-color:where([data-checked]) {
+  background: var(--mac-color-selected-content-background);
+  color: var(--mac-color-selected-content-text);
+}
+
+.mac-color-palette:where([data-variant="list"])
+  > .mac-color-palette-color:where([data-checked]):where(
+    :where([data-window-state="main"], [data-window-state="inactive"]) *
+  ) {
+  background: var(--mac-color-selected-content-background-unemphasized);
+  color: var(--mac-color-control-text);
+}
+
+/* Pencils: rows of twelve crayons, each row standing in front of the one above it, and a
+   line under them for the name of the chosen one. */
+.mac-color-palette:where([data-variant="pencils"]) {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  padding-block: 4px 38px;
+}
+
+.mac-color-palette:where([data-variant="pencils"]) > .mac-color-palette-color {
+  position: static;
+  block-size: 34px;
+  padding-block-start: 6px;
+}
+
+.mac-color-palette:where([data-variant="pencils"]) .mac-color-palette-swatch {
+  display: block;
+  block-size: 48px;
+  margin-inline: 1px;
+  /* The flanks' shading over the colour, and the wood of the tip above it. */
+  background:
+    linear-gradient(
+      to right,
+      var(--mac-color-palette-pencil-light) 30%,
+      transparent 30% 70%,
+      var(--mac-color-palette-pencil-shade) 70%
+    )
+    0 14px / 100% 100% no-repeat,
+    linear-gradient(
+      var(--_color) 5px,
+      var(--mac-color-palette-pencil-wood) 5px 14px,
+      var(--_color) 14px
+    );
+  /* A sharpened tip on a straight body. */
+  clip-path: polygon(50% 0, 100% 14px, 100% 100%, 0 100%, 0 14px);
+  filter: drop-shadow(0 0 0.5px var(--mac-color-palette-edge));
+}
+
+/* The chosen crayon stands 6 pt above its row. */
+.mac-color-palette:where([data-variant="pencils"])
+  > .mac-color-palette-color:where([data-checked])
+  > .mac-color-palette-swatch {
+  block-size: 54px;
+  margin-block-start: -6px;
+}
+
+.mac-color-palette:where([data-variant="pencils"]) .mac-color-palette-name {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 2px;
+  display: none;
+  text-align: center;
+}
+
+.mac-color-palette:where([data-variant="pencils"])
+  > .mac-color-palette-color:where([data-checked])
+  > .mac-color-palette-name {
+  display: block;
+}
+
+/* Keyboard focus ring; only in the key window. */
+.mac-color-palette-color:where(:focus-visible):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(-1 * var(--mac-focus-ring-width));
+}
+
+@media (forced-colors: active) {
+  /* The colours are the content: keep them. The chosen one is marked with a system colour. */
+  .mac-color-palette-swatch {
+    forced-color-adjust: none;
+  }
+
+  .mac-color-palette:where([data-variant="list"]) > .mac-color-palette-color:where([data-checked]) {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .mac-color-palette:where([data-variant="pencils"])
+    > .mac-color-palette-color:where([data-checked]) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}

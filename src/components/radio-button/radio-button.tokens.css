@@ -1,0 +1,80 @@
+/*
+ * Radio button colours missing from src/styles/tokens. Measured on General (Theme-Light-Blue,
+ * Theme-Dark-Blue @ 1480,878 on and 1480,922 off) and Security and Privacy (@ 328,778 and
+ * 328,822, disabled), in sRGB; radio-button.mdx tabulates the pixels. All
+ * [measured, computed] unless tagged otherwise. The recipe is the checkbox's.
+ */
+:root {
+  /* Off well: #ffffff; dark is white at 15% to 28.5% (#505051 to #6b6a6c on #303032) */
+  --mac-radio-button-fill-top: light-dark(#ffffff, rgb(255 255 255 / 0.15));
+  --mac-radio-button-fill-bottom: light-dark(#ffffff, rgb(255 255 255 / 0.285));
+  /* Hairline inside the circle. Light: #9c9c9c, #b2b2b2, #b6b4b5 over white. Dark: only a
+     top highlight row, #707072. */
+  --mac-radio-button-border-top: light-dark(rgb(0 0 0 / 0.388), rgb(255 255 255 / 0.2));
+  --mac-radio-button-border-side: light-dark(rgb(0 0 0 / 0.302), transparent);
+  --mac-radio-button-border-bottom: light-dark(rgb(0 0 0 / 0.29), transparent);
+  /* Inner shadow of the light well (#d2d3d3, #e4e4e4, #f5f5f5, #fdfdfd under the top
+     hairline); dark: the second row, #565658 */
+  --mac-radio-button-well-shadow:
+    inset 0 0.5px 0 0 light-dark(rgb(0 0 0 / 0.028), rgb(255 255 255 / 0.03)),
+    inset 0 1px 0 0 light-dark(rgb(0 0 0 / 0.054), transparent),
+    inset 0 1.5px 0 0 light-dark(rgb(0 0 0 / 0.032), transparent),
+    inset 0 2px 0 0 light-dark(rgb(0 0 0 / 0.008), transparent),
+    inset 0 0 0 0.5px light-dark(rgb(0 0 0 / 0.05), transparent),
+    inset 0 0 0 1px light-dark(rgb(0 0 0 / 0.016), transparent);
+  /* Dark: second row of an on circle, #2573e8 over #1869e7 */
+  --mac-radio-button-on-well-shadow: inset 0 0.5px 0 0
+    light-dark(transparent, rgb(255 255 255 / 0.05));
+  /* Dark: hairline ring outside the circle (#2c2c2e above, #272728 below on #303032) and the
+     push button's shadow beyond it (#2b2b2d) */
+  --mac-radio-button-ring-top: light-dark(transparent, rgb(0 0 0 / 0.083));
+  --mac-radio-button-ring-side: light-dark(transparent, rgb(0 0 0 / 0.125));
+  --mac-radio-button-ring-bottom: light-dark(transparent, rgb(0 0 0 / 0.19));
+  --mac-radio-button-shadow:
+    0 0 0 0.5px light-dark(transparent, rgb(0 0 0 / 0.022)),
+    0 0.5px 0 0 light-dark(transparent, rgb(0 0 0 / 0.045)),
+    0 1px 0 0 light-dark(transparent, rgb(0 0 0 / 0.038));
+  /* Disabled: the circle is at half opacity; these are the hairline (#b8b8b8, #c1c1c1 on
+     #e3e3e3) and dot (black at 40%, white at 25%) alphas before that opacity */
+  --mac-radio-button-border-top-disabled: light-dark(rgb(0 0 0 / 0.447), rgb(255 255 255 / 0.2));
+  --mac-radio-button-border-side-disabled: light-dark(rgb(0 0 0 / 0.376), transparent);
+  --mac-radio-button-dot-disabled: light-dark(rgb(0 0 0 / 0.8), rgb(255 255 255 / 0.5));
+  /* [provisional] pressed off well: no pressed radio button is captured */
+  --mac-radio-button-fill-pressed-top: light-dark(#f0f0f0, rgb(255 255 255 / 0.23));
+  --mac-radio-button-fill-pressed-bottom: light-dark(#f0f0f0, rgb(255 255 255 / 0.365));
+}
+
+:root,
+[data-accent] {
+  /* Top hairline of an on circle: the accent edge in light, the bezel highlight in dark */
+  --mac-radio-button-on-border-top: light-dark(
+    var(--mac-accent-control-edge),
+    var(--mac-accent-bezel-highlight)
+  );
+  /* Side hairline of an on circle: the accent edge at 99%. Chromium draws a circle whose four
+     border colours are equal and opaque by a path that loses the hairline (the rim came out
+     #3e89fa where the screenshot has #2f81fc); a colour that differs keeps it (#3182fb). */
+  --mac-radio-button-on-border-side: color-mix(
+    in srgb,
+    var(--mac-accent-control-edge) 99%,
+    transparent
+  );
+  /* Light: shadow under the white dot (#216ee4, #2f7bf0, #3984fa on #3b88fd), a 0.83 pt
+     Gaussian 0.5 pt down, 29 levels below the glyph-shadow token */
+  --mac-radio-button-dot-shadow: 0 0.5px 1.65px
+    light-dark(
+      rgb(from var(--mac-accent-glyph-shadow) calc(r - 29) calc(g - 29) calc(b - 29)),
+      transparent
+    );
+  /* [provisional] pressed on fill: multiplied by 0.88, as the pressed accent bezel */
+  --mac-radio-button-on-fill-pressed-top: color-mix(
+    in srgb,
+    var(--mac-accent-control-fill-top) 88%,
+    black
+  );
+  --mac-radio-button-on-fill-pressed-bottom: color-mix(
+    in srgb,
+    var(--mac-accent-control-fill-bottom) 88%,
+    black
+  );
+}

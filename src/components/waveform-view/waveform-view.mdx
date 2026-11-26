@@ -1,0 +1,185 @@
+---
+title: Waveform View
+description: The waveform of Voice Memos, a detailed view of a recording's amplitude under a fixed red playhead with a time ruler, and an overview strip whose handle is the slider that seeks.
+---
+
+<Example name="basic" both />
+
+Voice Memos shows a recording twice. The detailed view draws its amplitude as red bars mirrored
+around a centre axis, in a dark panel with a ruler of seconds under it; the playhead stands
+still at the middle and the waveform moves beneath it. The overview shows the whole recording
+in a rounded strip with a red handle at the current position. The app is an iPad app running
+through Mac Catalyst and this content is dark in both appearances. AppKit has no waveform
+class. `WaveformView` draws both views from an amplitude envelope; the overview is Base UI's
+Slider.
+
+## Usage
+
+```tsx
+import {
+  WaveformView,
+  WaveformViewDetail,
+  WaveformViewOverview,
+} from "macalicious/waveform-view";
+import "macalicious/waveform-view.css";
+
+const [position, setPosition] = useState(0);
+
+<WaveformView
+  samples={envelope}
+  duration={audio.duration}
+  value={position}
+  onValueChange={(seconds) => {
+    audio.currentTime = seconds;
+    setPosition(seconds);
+  }}
+  aria-label="New Recording"
+>
+  <WaveformViewDetail />
+  <WaveformViewOverview style={{ margin: "66px 33px 0" }} />
+</WaveformView>
+```
+
+Or copy the source into your project: `npx macalicious add waveform-view`.
+
+`WaveformView` holds the recording and the position and lays nothing out; the two views inside
+it show the same position and can stand in any arrangement, or alone. `samples` is the
+amplitude envelope: numbers from 0 to 1, evenly spaced over `duration`. Each bar shows the
+loudest sample of its stretch of time, so any resolution works. The component does not decode
+audio: compute the envelope from an `AudioBuffer` (the peak of each fiftieth of a second, say)
+or load it with the recording.
+
+During playback, set `value` from the audio element's time. The detailed view rebuilds its
+bars only when the position crosses a four-second boundary, and holds no more than the bars
+and labels near the playhead, so an hour of audio costs no more than a minute.
+
+<Example name="controlled" both />
+
+## Guidelines
+
+The Human Interface Guidelines have no entry for a waveform. The nearest are those on
+[sliders](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/selectors/sliders/)
+and the
+[keyboard](https://web.archive.org/web/20200503145009/https://developer.apple.com/design/human-interface-guidelines/macos/user-interaction/keyboard/),
+and what follows also reads the two Voice Memos screenshots (not verified against a published
+guideline for this view):
+
+- A position in time is one value. Expose it once, as a slider with a readable value, not as
+  hundreds of bars.
+- Everything the pointer can do, the keyboard can do: the arrow keys seek by a small step.
+- The area after the end of the recording is future time and stays empty. Do not draw grey
+  bars there.
+- The audio red belongs to the app. It does not follow the system accent colour.
+- Put the transport controls (play, record, skip) beside the views; they are not part of them.
+
+## Variants and states
+
+| Variant or state | Look | Status |
+| --- | --- | --- |
+| Detailed view | Panel `#151515` on black, bars `#ff3b30`, 1 pt playhead with a 7.1 pt dot at each end | measured |
+| Ruler | A 10 pt tick every quarter second (`#2b2b2b`), brighter every second (`#424242`), labels `#5d5d5d` starting at their tick | measured |
+| Overview | Strip `#151515` with 5 pt corners, bars `#df3329`, handle 5.2 x 48.4 pt `#ff3b30` | measured |
+| Overview of a short recording | With `span`, the strip stands for more time than was recorded | measured (both captures; the span itself is fitted) |
+| Bar heights | 200 pt (detailed) and 32 pt (overview) for an amplitude of 1, at least 1.5 pt | provisional: no screenshot shows a known amplitude |
+| Audio after the playhead | The same red bars | provisional: both captures stand at the end |
+| Keyboard focus | Focus ring outside the overview's handle | provisional |
+| Dragging, hover | No change of look | provisional |
+| Disabled | No change of look; nothing seeks | provisional |
+| Window not key | No change | provisional (inferred) |
+
+The selection of a range to trim, which Voice Memos draws over the detailed view while
+editing, is not built: neither screenshot shows it, and the spec records that nothing
+establishes its colours.
+
+## Sizes
+
+One size. The detailed view is 280 pt tall and as wide as it is given, up to 1848 pt (it
+draws 924 pt of audio either side of the playhead): 7.6 pt for the
+playhead's upper dot, the 243.5 pt panel, then the ruler. A second is 77 pt wide (`scale`) and
+a bar stands every 4.15 pt, 1.5 pt thick. The overview is 68 pt tall: the 44.1 pt strip, which
+the handle overlaps by 2.15 pt above and below, and the labels 9 pt under it. Its 310 bars are
+placed by share of the width, 2.33 pt apart in the 723 pt strip of Voice Memos. Text is
+13.5 pt with tabular digits.
+
+## API
+
+<PropsTable name="WaveformViewProps" />
+
+The remaining props are those of a `<div>`.
+
+<PropsTable name="WaveformViewDetailProps" />
+
+The remaining props are those of a `<div>`.
+
+<PropsTable name="WaveformViewOverviewProps" />
+
+The remaining props are those of Base UI's `Slider.Root` that the view does not set itself
+(`name`, `form`, `onValueCommitted`, `render` and the like).
+
+| Attribute or variable | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-disabled` | root, overview | present or absent | Reflects `disabled`. |
+| `data-dragging` | overview and handle | present or absent | While the handle is dragged. |
+| `--mac-waveform-view-background` | any ancestor | a colour | The content around the panel and the strip. |
+| `--mac-waveform-view-panel` | any ancestor | a colour | Fill of the panel and the strip. |
+| `--mac-waveform-view-bar` | any ancestor | a colour | Bars of the detailed view. |
+| `--mac-waveform-view-overview-bar` | any ancestor | a colour | Bars of the overview. |
+| `--mac-waveform-view-playhead` | any ancestor | a colour | Playhead and handle. |
+| `--mac-waveform-view-tick-major`, `-tick-minor` | any ancestor | a colour | Ruler ticks. |
+| `--mac-waveform-view-label` | any ancestor | a colour | Ruler and overview labels. |
+
+Classes: `.mac-waveform-view`, `.mac-waveform-view-detail`, `.mac-waveform-view-panel`,
+`.mac-waveform-view-bars`, `.mac-waveform-view-ruler`, `.mac-waveform-view-ticks`,
+`.mac-waveform-view-ruler-labels`, `.mac-waveform-view-ruler-label`,
+`.mac-waveform-view-playhead`, `.mac-waveform-view-overview`, `.mac-waveform-view-strip`,
+`.mac-waveform-view-overview-bars`, `.mac-waveform-view-control`, `.mac-waveform-view-track`,
+`.mac-waveform-view-handle` and `.mac-waveform-view-overview-labels`.
+
+## Accessibility
+
+- The root is a `group`; name it with `aria-label`, usually the recording's title.
+- The overview is one `slider` named "Recording position" (`aria-label` or `aria-labelledby`
+  renames it), from 0 to the duration in seconds, with the position as its value text, "00:03"
+  (`formatTime` writes it; by default minutes and seconds). Left and Right move by `step`, Page Up, Page Down and the
+  arrows with Shift by `largeStep`, Home and End go to the ends. A recording of no length is
+  a disabled slider at 0, from 0 to 1: Base UI's slider needs a range.
+- The detailed view is an image named "Waveform". It can be dragged with a pointer but takes
+  no keyboard focus and is announced once, so the position is not read twice. A page that
+  shows the detailed view alone must offer another way to seek from the keyboard.
+- The ruler is part of the image and the overview's two labels are hidden from assistive
+  technology: the slider's value text carries the time.
+- The labels' grey on black is about 3:1, as in Voice Memos: below the 4.5:1 that small text
+  needs. Raise `--mac-waveform-view-label` where the times must be read.
+- In forced-colours mode the bars and the ruler's ticks use the system's text colours and
+  the playhead and handle the highlight colour.
+
+## Visual comparison
+
+`npm run visual -- waveform-view` compares the detailed view and the overview with the Voice
+Memos screenshots in both appearances; the recordings differ between the two (3.095 s and
+3.065 s), so each has its own example. The bars are masked in every comparison: the
+screenshots do not hold the recordings' samples, and a made-up envelope cannot match them.
+Share of pixels that differ at 2x, in Chromium on Linux with the fallback font:
+
+| Crop | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Detailed view, 789 x 280 pt (`112,210,1578,560`), with ruler labels | 0.93% | 1.25% |
+| Detailed view, labels masked | 0.33% | 0.51% |
+| Playhead alone, 10 x 259 pt (`892,210,20,518`), nothing masked | 5.62% | 5.63% |
+| Overview, 723 x 68 pt (`178,860,1446,136`), with labels | 0.89% | 0.93% |
+| Overview, labels masked | 0.24% | 0.23% |
+
+Measured: the panel, the playhead's line and dots, the ticks' size, pitch and colours, the
+labels' size, colour and position, the strip and its corners, the handle, and the bars' width,
+pitch and colours (not compared, but read from the screenshots). What remains with the labels
+masked is the ticks, which fall on fractions of a pixel in the screenshots, and the soft edges
+of the playhead. The playhead's own crop is ten points wide, so that half a point of offset
+would show as a tenth of it: what differs there is the line's leading edge, which is soft in
+the captures and sharp in a browser, and the rims of the dots. At 1x that crop scores 20%,
+because the line lies across two pixels of the scaled capture and on one in the browser.
+
+Provisional, because no screenshot shows them: the height of a bar for a given amplitude; bars
+after the playhead; the focus ring; the disabled view; and seeking, which is checked in a real
+browser (`expect` comparison: Tab, then Home, moves the handle to the strip's start). The time
+the overview's strip stands for (`span`, about 20 s in both captures) is fitted to the two
+handle positions.

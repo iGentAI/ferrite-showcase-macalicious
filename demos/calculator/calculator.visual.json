@@ -1,0 +1,190 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "window-light",
+      "description": "The whole Aqua capture, 344 by 433 pt: the window with its shadow over the white behind the capture's transparent margin, showing 42 after a click on 4 and on 2, which also turns the clear key from AC to C. Whole crop: the digits and the function labels are set in the fallback font.",
+      "example": "visual-window",
+      "appearance": "light",
+      "actions": [{ "click": "role=button[name='4']" }, { "click": "role=button[name='2']" }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Calculator.png",
+        "crop": { "x": 0, "y": 0, "width": 688, "height": 866 }
+      },
+      "budget": { "1x": 0.012, "2x": 0.0095 },
+      "deltaBudget": { "1x": 1.5, "2x": 1.8 }
+    },
+    {
+      "name": "frame-light",
+      "description": "The window's 232 by 321 pt frame alone, Aqua capture, after the same two clicks: the rim, the corners, the window controls and the keypad, without the shadow, which is two thirds of window-light's pixels. Whole crop, text in the fallback font.",
+      "example": "visual-window",
+      "appearance": "light",
+      "selector": ".mac-calculator",
+      "actions": [{ "click": "role=button[name='4']" }, { "click": "role=button[name='2']" }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Calculator.png",
+        "crop": { "x": 112, "y": 76, "width": 464, "height": 642 }
+      },
+      "budget": { "1x": 0.022, "2x": 0.019 },
+      "deltaBudget": { "1x": 2.3, "2x": 2.3 }
+    },
+    {
+      "name": "frame-light-layout",
+      "description": "As frame-light with the text masked (the display's number and the labels of the thirteen keys that show text), to score the frame, its rim and corners, the window controls where the capture has them, the grid and the drawn symbols.",
+      "example": "visual-window",
+      "appearance": "light",
+      "selector": ".mac-calculator",
+      "threshold": 0.05,
+      "actions": [{ "click": "role=button[name='4']" }, { "click": "role=button[name='2']" }],
+      "masks": [
+        { "x": 150, "y": 30, "width": 72, "height": 40 },
+        { "x": 12.5, "y": 93.5, "width": 30, "height": 22 },
+        { "x": 128, "y": 93.5, "width": 30, "height": 22 },
+        { "x": 12.5, "y": 141.5, "width": 30, "height": 22 },
+        { "x": 70, "y": 141.5, "width": 30, "height": 22 },
+        { "x": 128, "y": 141.5, "width": 30, "height": 22 },
+        { "x": 12.5, "y": 189.5, "width": 30, "height": 22 },
+        { "x": 70, "y": 189.5, "width": 30, "height": 22 },
+        { "x": 128, "y": 189.5, "width": 30, "height": 22 },
+        { "x": 12.5, "y": 237.5, "width": 30, "height": 22 },
+        { "x": 70, "y": 237.5, "width": 30, "height": 22 },
+        { "x": 128, "y": 237.5, "width": 30, "height": 22 },
+        { "x": 41.5, "y": 286, "width": 30, "height": 22 },
+        { "x": 128, "y": 286, "width": 30, "height": 22 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Calculator.png",
+        "crop": { "x": 112, "y": 76, "width": 464, "height": 642 }
+      },
+      "budget": { "1x": 0.0115, "2x": 0.0033 },
+      "deltaBudget": { "1x": 0.65, "2x": 0.6 }
+    },
+    {
+      "name": "window-dark",
+      "description": "The whole Dark Aqua capture, 344 by 433 pt: the window with its shadow, cleared, as the demo opens: 0 in the display and the clear key reading AC. Whole crop, text in the fallback font.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Calculator.png",
+        "crop": { "x": 0, "y": 0, "width": 688, "height": 866 }
+      },
+      "budget": { "1x": 0.01, "2x": 0.0077 },
+      "deltaBudget": { "1x": 1.2, "2x": 1.5 }
+    },
+    {
+      "name": "frame-dark",
+      "description": "The window's frame alone, Dark Aqua capture, cleared. Whole crop, text in the fallback font.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "selector": ".mac-calculator",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Calculator.png",
+        "crop": { "x": 112, "y": 76, "width": 464, "height": 642 }
+      },
+      "budget": { "1x": 0.019, "2x": 0.0154 },
+      "deltaBudget": { "1x": 1.75, "2x": 1.75 }
+    },
+    {
+      "name": "frame-dark-layout",
+      "description": "As frame-dark with the same text masked as frame-light-layout, to score the frame, its rim and corners, the window controls, the grid in its Dark Aqua fills and the drawn symbols.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "selector": ".mac-calculator",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 150, "y": 30, "width": 72, "height": 40 },
+        { "x": 12.5, "y": 93.5, "width": 30, "height": 22 },
+        { "x": 128, "y": 93.5, "width": 30, "height": 22 },
+        { "x": 12.5, "y": 141.5, "width": 30, "height": 22 },
+        { "x": 70, "y": 141.5, "width": 30, "height": 22 },
+        { "x": 128, "y": 141.5, "width": 30, "height": 22 },
+        { "x": 12.5, "y": 189.5, "width": 30, "height": 22 },
+        { "x": 70, "y": 189.5, "width": 30, "height": 22 },
+        { "x": 128, "y": 189.5, "width": 30, "height": 22 },
+        { "x": 12.5, "y": 237.5, "width": 30, "height": 22 },
+        { "x": 70, "y": 237.5, "width": 30, "height": 22 },
+        { "x": 128, "y": 237.5, "width": 30, "height": 22 },
+        { "x": 41.5, "y": 286, "width": 30, "height": 22 },
+        { "x": 128, "y": 286, "width": 30, "height": 22 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Calculator.png",
+        "crop": { "x": 112, "y": 76, "width": 464, "height": 642 }
+      },
+      "budget": { "1x": 0.0115, "2x": 0.0033 },
+      "deltaBudget": { "1x": 0.65, "2x": 0.6 }
+    },
+    {
+      "name": "armed-operator-light",
+      "description": "After a click on 6 and on multiply, Aqua: the multiply key waits for its second number and carries a 1 pt darker outline inside its edge. Inferred: no screenshot shows an armed operator.",
+      "example": "visual-window",
+      "appearance": "light",
+      "selector": ".mac-calculator",
+      "actions": [
+        { "click": "role=button[name='6']" },
+        { "click": "role=button[name='Multiply']" }
+      ],
+      "expect": {
+        "size": { "width": 232, "height": 321 },
+        "pixels": [
+          {
+            "x": 173.5,
+            "y": 150,
+            "color": "#bf7708",
+            "tolerance": 3,
+            "note": "armed outline at the multiply key's leading edge: black at 25% over #ff9f0b, inferred (spec: calculator-keypad, States)"
+          },
+          {
+            "x": 180,
+            "y": 138,
+            "color": "#ff9f0b",
+            "note": "inside the outline the key keeps the measured operator fill"
+          },
+          {
+            "x": 173.5,
+            "y": 200,
+            "color": "#ff9f0b",
+            "note": "the subtract key below it is not armed: measured operator fill up to its edge"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inactive-dark",
+      "description": "The window when it is not key, Dark Aqua: the keypad does not change. Inferred: both captures show the key window.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "selector": ".mac-calculator",
+      "expect": {
+        "size": { "width": 232, "height": 321 },
+        "pixels": [
+          {
+            "x": 8,
+            "y": 140,
+            "color": "#616365",
+            "note": "digit key: the fill measured in the dark capture's key window, inferred to hold when the window is not key"
+          },
+          {
+            "x": 8,
+            "y": 90,
+            "color": "#424447",
+            "note": "function key: measured Dark Aqua fill, inferred unchanged"
+          },
+          {
+            "x": 180,
+            "y": 138,
+            "color": "#ff9f0b",
+            "note": "operator key: measured fill, inferred unchanged"
+          },
+          {
+            "x": 120,
+            "y": 14,
+            "color": "#2d3134",
+            "note": "display: measured Dark Aqua fill, inferred unchanged"
+          }
+        ]
+      }
+    }
+  ]
+}

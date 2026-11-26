@@ -1,0 +1,279 @@
+/*
+ * Launchpad: a full-desktop overlay with a search field, a grid of icons and page dots.
+ * It fills the positioned element it is rendered into.
+ *
+ * Parts
+ *   .mac-launchpad                 the overlay (Base UI Dialog.Popup): scrim and blur
+ *   .mac-launchpad-dismiss         the background, a button that closes Launchpad
+ *   .mac-launchpad-search          the search field, 250 x 25 pt, 25 pt from the top
+ *   .mac-launchpad-search-input    its input
+ *   .mac-launchpad-search-hint     magnifier and placeholder, centred while the field is empty
+ *   .mac-launchpad-search-glyph    the magnifier
+ *   .mac-launchpad-search-placeholder  the placeholder text
+ *   .mac-launchpad-grid            the grid: 195 x 166 pt cells
+ *   .mac-launchpad-item            an app: a button holding icon and label
+ *   .mac-launchpad-item-icon       its icon box, 112 pt
+ *   .mac-launchpad-item-label      its name
+ *   .mac-launchpad-pages           the page dots (a Page Control)
+ *
+ * States
+ *   [data-starting-style], [data-ending-style]   fading in and out (Base UI)
+ *   [data-nested-dialog-open]      a folder is open: everything but the background is hidden
+ *   :active, :focus-visible        on an item: icon darkened; focus ring and plate
+ *   :focus-within                  on the search field: focus ring, hint at the leading edge
+ *   [data-force~="pressed" | "focus"]  static previews of transient states
+ *
+ * Hooks
+ *   --mac-launchpad-layer          z-index of the overlay (950)
+ *   --mac-launchpad-inset-bottom   space kept clear at the bottom for the Dock (80px)
+ */
+.mac-launchpad {
+  position: absolute;
+  z-index: var(--mac-launchpad-layer, 950);
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 25px 0 var(--mac-launchpad-inset-bottom, 80px);
+  overflow: hidden;
+  outline: none;
+  background: var(--mac-launchpad-scrim);
+  backdrop-filter: blur(35px) saturate(180%);
+  color: var(--mac-launchpad-text);
+  font: var(--mac-font-weight-medium) 13px / 16px var(--mac-font-family-system);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: opacity 0.25s;
+}
+
+.mac-launchpad:where([data-starting-style], [data-ending-style]) {
+  opacity: 0;
+}
+
+.mac-launchpad-dismiss {
+  position: absolute;
+  inset: 0;
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  cursor: default;
+}
+
+/* Search field. The border is 1 pt, not a hairline (two device pixels in the capture). */
+.mac-launchpad-search {
+  position: relative;
+  display: block;
+  flex: none;
+  box-sizing: border-box;
+  width: 250px;
+  max-width: calc(100% - 40px);
+  height: 25px;
+  border: 1px solid var(--mac-launchpad-search-border);
+  border-radius: 4.5px;
+  background: var(--mac-launchpad-search-fill) padding-box;
+  font: var(--mac-font-weight-regular) 15px / 23px var(--mac-font-family-system);
+  transition: opacity 0.25s;
+}
+
+.mac-launchpad-search:where(:focus-within, [data-force~="focus"]) {
+  box-shadow: 0 0 0 var(--mac-focus-ring-width) var(--mac-focus-ring-color);
+}
+
+.mac-launchpad-search-input {
+  appearance: none;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0 8px 0 27px;
+  border: 0;
+  outline: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+}
+
+.mac-launchpad-search-input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+/* Magnifier (11.5 pt) and placeholder, 10 pt apart, centred as a pair. The magnifier sits
+   0.75 pt above the middle of the field, as measured. */
+.mac-launchpad-search-hint {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform: translateX(-50%);
+  color: var(--mac-launchpad-placeholder);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.mac-launchpad-search-glyph {
+  flex: none;
+  width: 11.5px;
+  height: 11.5px;
+  margin-top: -1.5px;
+  fill: none;
+  stroke: var(--mac-launchpad-text);
+  stroke-linecap: round;
+  stroke-width: 1;
+}
+
+/* Focused or filled: the magnifier moves to the leading edge and text starts after it. */
+.mac-launchpad-search-input:where(:focus, :not(:placeholder-shown)) + .mac-launchpad-search-hint {
+  left: 8px;
+  transform: none;
+}
+
+.mac-launchpad-search-input:where(:not(:placeholder-shown))
+  + .mac-launchpad-search-hint
+  > .mac-launchpad-search-placeholder {
+  visibility: hidden;
+}
+
+/* Grid. The first row of icons starts 75.5 pt from the top; the columns are centred 1 pt left
+   of the middle, as measured (first column centre at 254 pt of 1680). Columns and rows shrink
+   in a smaller desktop. */
+.mac-launchpad-grid {
+  position: relative;
+  display: grid;
+  flex: 1 1 0;
+  grid-template-rows: repeat(var(--_rows), minmax(0, 166px));
+  grid-template-columns: repeat(var(--_columns), minmax(0, 195px));
+  place-content: start center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 0;
+  margin-top: 25.5px;
+  padding-right: 2px;
+  pointer-events: none;
+  transition:
+    opacity 0.25s,
+    transform 0.25s;
+}
+
+.mac-launchpad-item {
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* A button is as wide as its content unless told otherwise; it fills its cell. */
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-shadow: 0 1px 2.5px var(--mac-launchpad-label-shadow);
+  cursor: default;
+  pointer-events: auto;
+}
+
+.mac-launchpad-item-icon {
+  display: grid;
+  flex: 0 1 112px;
+  place-items: center;
+  max-width: 100%;
+  min-height: 0;
+  aspect-ratio: 1;
+  border-radius: 14px;
+}
+
+.mac-launchpad-item-icon > * {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* The capital letters start 5 pt under the icon box. */
+.mac-launchpad-item-label {
+  flex: none;
+  max-width: 100%;
+  margin-top: 1.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-launchpad-item:where(:focus-visible, [data-force~="focus"]) > .mac-launchpad-item-icon {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  background: var(--mac-launchpad-highlight);
+}
+
+.mac-launchpad-item:where(:active, [data-force~="pressed"]) > .mac-launchpad-item-icon {
+  filter: brightness(0.5);
+}
+
+/* The dots' centre is 52 pt above the Dock; the control's box is 20 pt high. Like the grid,
+   the dots are 1 pt left of the middle. */
+.mac-launchpad-pages {
+  position: relative;
+  flex: none;
+  margin: 0 2px 42px 0;
+  transition: opacity 0.25s;
+}
+
+/* An open folder replaces the grid, the field and the dots. */
+.mac-launchpad:where([data-nested-dialog-open]) > :where(:not(.mac-launchpad-dismiss)) {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mac-launchpad:where([data-starting-style], [data-ending-style]) > .mac-launchpad-grid {
+    transform: scale(1.2);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .mac-launchpad {
+    background: var(--mac-launchpad-scrim-opaque);
+    backdrop-filter: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mac-launchpad {
+    background: Canvas;
+    backdrop-filter: none;
+    color: CanvasText;
+  }
+
+  .mac-launchpad-search {
+    border-color: CanvasText;
+  }
+
+  .mac-launchpad-search-hint {
+    color: GrayText;
+  }
+
+  .mac-launchpad-search-glyph {
+    stroke: CanvasText;
+  }
+
+  .mac-launchpad-item {
+    text-shadow: none;
+  }
+
+  .mac-launchpad-item:where(:focus-visible, [data-force~="focus"]) > .mac-launchpad-item-icon {
+    outline-color: Highlight;
+  }
+
+  .mac-launchpad-search:where(:focus-within, [data-force~="focus"]) {
+    outline: 2px solid Highlight;
+  }
+}

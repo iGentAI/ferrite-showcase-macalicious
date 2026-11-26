@@ -1,0 +1,21 @@
+/*
+ * Split view: the divider colours no shared token holds
+ * (reference/spec/components/split-view.md). The line between opaque panes is the shared
+ * --mac-color-split-divider.
+ */
+:root {
+  /* [provisional] pane splitter band; no screenshot shows this style */
+  --mac-split-view-splitter-fill: light-dark(#ececec, #323232);
+  /* [measured] The dimple of a thick divider, between the two lists of the Sharing pane
+     (10-15-Catalina-Light-System-Preferences-Sharing.png, column x=913: #a0a0a0 at y=757,
+     #c5c5c5 at y=763, #bbbbbb at y=768, on the box's #e3e3e3: black at 29.5%, 13% and 17.5%;
+     Dark: a flat #4a4a4b on #353637, white at 10.5%). The pane splitter's dimple is taken to
+     be the same; no screenshot shows that style. */
+  --mac-split-view-dimple: linear-gradient(
+    light-dark(rgb(0 0 0 / 0.295), rgb(255 255 255 / 0.105)),
+    light-dark(rgb(0 0 0 / 0.13), rgb(255 255 255 / 0.105)) 55%,
+    light-dark(rgb(0 0 0 / 0.175), rgb(255 255 255 / 0.105))
+  );
+  /* The dimple in forced colours: the system's text colour, as the divider's line. */
+  --mac-split-view-dimple-forced: CanvasText;
+}

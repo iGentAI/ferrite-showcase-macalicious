@@ -1,0 +1,34 @@
+/*
+ * Notification alert colours. light-dark(<Aqua>, <Dark Aqua>); tags as in CONTRIBUTING, "Token
+ * tags". Read from 10-15-Catalina-Light-Finder-Eject-Warning.png and its Dark twin, which are
+ * window captures: the material is recorded opaque, over nothing. The material is a shared
+ * token.
+ */
+:root {
+  /* [measured] the surface as captured @ 300,50 */
+  --mac-notification-alert-fill-opaque: light-dark(#ededed, #383838);
+  /* [measured] title and message, plateau of the stems in column 143 (#3b3b3b over a fill
+     dithered to #eeeeee) and the dark capture's #ffffff */
+  --mac-notification-alert-text: light-dark(#3a3a3a, #ffffff);
+  /* [measured] button title, plateau of the "l" of Close in column 643 */
+  --mac-notification-alert-button-text: light-dark(#6e6e6e, #b4b4b4);
+  /* [measured, computed] the 1 pt divider before the button column @ 584,100: #d6d6d6 over
+     #ededed is black at 9.7%, #5b5b5b over #383838 is white at 17.6% */
+  --mac-notification-alert-divider: light-dark(rgb(0 0 0 / 0.097), rgb(255 255 255 / 0.176));
+  /* [measured, computed] 1 pt inner rim of the dark alert: #575757 at the sides, #565656 at the
+     top and #555555 at the bottom over #383838, white at 15.2% on average. Aqua has none. */
+  --mac-notification-alert-rim: light-dark(transparent, rgb(255 255 255 / 0.152));
+  /* [provisional] a pressed button darkens its part of the column; no screenshot shows it */
+  --mac-notification-alert-button-fill-pressed: rgb(0 0 0 / 0.1);
+  /* [measured, computed] fitted to the alpha of the captures' transparent margins. Aqua: 0.243
+     in the first pixel beside the alert, 0.153, 0.110 and 0.094 in the next three, then a slow
+     fall to nothing 15 pt out (0.059 at 4.5 pt, 0.035 at 7 pt), slightly more below (0.106 at
+     2.5 pt) than above (0.075). Dark Aqua: a near-black first pixel (0.78), then 0.133 falling
+     to 0.055 at 5 pt and 0.012 at 10 pt. The shared --mac-shadow-notification is heavier below
+     the alert in Aqua (0 4px 16px at 26%); the fit stays here until the token owner decides. */
+  --mac-notification-alert-shadow:
+    0 0 0 0.5px light-dark(rgb(0 0 0 / 0.09), rgb(0 0 0 / 0.75)),
+    0 0 3px light-dark(rgb(0 0 0 / 0.18), transparent),
+    0 1px 14px light-dark(rgb(0 0 0 / 0.21), transparent),
+    0 1px 13px light-dark(transparent, rgb(0 0 0 / 0.28));
+}

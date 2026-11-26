@@ -1,0 +1,245 @@
+---
+title: Card Grid
+description: A titled section of artwork cards, as a wrapping grid or a sideways-scrolling shelf, as in TV, Music, Podcasts and the App Store.
+---
+
+<Example name="basic" both />
+
+The browsing layout of Catalina's store and media apps: a page is a column of sections, each
+with a header (a title and an optional `See All`) over a shelf or a grid of cards. In AppKit
+these are `NSCollectionView`s with item views the apps draw themselves; there is no system
+card style, so each of the four card variants here is measured from one app. Base UI has no
+collection primitive: the section and its list are plain elements with list semantics, and
+the card and the header's action use Base UI's `useRender`, which keeps the `render` prop
+working.
+
+## Usage
+
+```tsx
+import { CardGrid, CardGridAction, CardGridCard } from "macalicious/card-grid";
+import "macalicious/card-grid.css";
+
+<CardGrid
+  title="Recently Added"
+  action={<CardGridAction href="/albums">See All</CardGridAction>}
+>
+  {albums.map((album) => (
+    <CardGridCard
+      key={album.id}
+      variant="square"
+      render={<a href={album.url} />}
+      artwork={<img src={album.cover} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+      title={album.title}
+      subtitle={album.artist}
+    />
+  ))}
+</CardGrid>
+```
+
+Or copy the source into your project: `npx macalicious add card-grid`. See
+[Installation](/installation).
+
+Pass the cards as direct children: each child becomes one list item (an array is fine; a
+fragment counts as one item). The library ships no artwork. The examples on this page draw
+gradients; supply your own images.
+
+## Guidelines
+
+The Human Interface Guidelines have no page for these layouts. What the four apps do:
+
+- Give every section a short title; add `See All` when the section shows only part of a
+  collection.
+- Use a shelf for a row that continues sideways, and a grid for a collection shown in full.
+- Keep one card variant per section, and the 20 pt gap and 40 pt side margins throughout a
+  page.
+- Divide sections with the 1 pt line (`separator`), not with boxes.
+- A card is one target: make the whole card the link or the button, not parts of it. The
+  lockup is the exception, because it carries its own button.
+
+## Variants and states
+
+<Example name="shelf" both />
+
+| Variant | From | Artwork | Text |
+| --- | --- | --- | --- |
+| `landscape` | TV, "What to Watch" | 16:9, corners of 12px (see below), hairline on three sides, shadow | none in TV; if given, as `square` |
+| `square` | Music, Albums | 1:1, corners of 4 pt, hairline, short shadow below | title and subtitle, 13 pt, 16.5 pt apart |
+| `episode` | Podcasts, "Up Next" | 1:1, corners of 3 pt, soft wide shadow | caption 11 pt Semibold capitals, title 15.5 pt, description 12 pt on up to three lines, footnote |
+| `lockup` | App Store lists | 50 pt icon, not clipped or shadowed | beside the icon: title 14 pt, subtitle 12 pt, three lines together (a title on two lines leaves the subtitle one, otherwise the subtitle has two); `accessory` at the trailing edge; 1 pt line below |
+
+<Example name="episodes" both />
+
+<Example name="lockups" both />
+
+A lockup row is 69 pt with its line, so a list of lockups has no row gap: set
+`--mac-card-grid-row-gap: 0px` on the section, as the example does. The accessory is normally
+a [store pill button](/components/store-pill-button).
+
+The states of a card apply when it is a link or a button. Pressed and keyboard-focused are
+transient, so this gallery pins them.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | Artwork with its edge and shadow |
+| Hover | – | No change |
+| Pressed | `:active` on a link or button card | Artwork dimmed by a tenth |
+| Keyboard focus | `:focus-visible` | Focus ring around the artwork; on the header's action, around its text |
+| Disabled | the card is a disabled button, or has `aria-disabled="true"` | Half opacity. A disabled button leaves the tab order; a card with `aria-disabled` stays in it and ignores activation on whatever element it is rendered as: a click on it or anywhere inside it does nothing (no `onClick` is called, a link is not followed), and Enter and Space pressed on the card do not reach its key handlers. The card does not disable what you put inside it: a field, a button or a link in a line or in the accessory still takes focus, typing, keys and pointer events other than the click. Disable such content yourself (`disabled`, `inert`) or leave it out of a disabled card. A capture-phase handler given on the `render` element itself runs before the card's |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | No focus ring; nothing else changes |
+
+Measured, in both appearances: the header of TV (title, `See All`, their positions), the
+margins and the gap, the size, corner, hairline and shadow of the landscape card, the album
+cell, the episode card, the lockup row with its lines, and the line between sections.
+Provisional, because no screenshot shows them: the pressed and disabled looks, the focus
+ring, the text of a landscape card, the fill of an empty artwork box, and the hairline of the
+square card, which is measured on a single near-black cover and read as translucent black.
+TV and Music show a round play button over a card under the pointer; it is not built, because
+no screenshot shows it and the spec infers only that it exists, with no size, position or
+colours to build from. The
+paging chevrons in a shelf's margins are a component of their own,
+[Shelf Pager](/components/shelf-pager).
+
+Three values were fitted again from the pixels and differ from the measured spec's first
+fits. The shadows are `0 4px 7px` black at 25% (landscape), `0 4px 6px -2.5px` at 18%
+(square) and `0 4px 15px` at 8% (episode), each the same in both appearances. The landscape
+card's hairline is a grey at 20%, lighter than dark artwork and darker than light artwork, and
+is absent along the bottom edge. TV's corner is a continuous curve, which `border-radius`
+cannot draw: the spec's circular fit is 11 pt, and 12px matches the pixels best.
+
+## Sizes
+
+Cards have no size of their own: the section sizes them.
+
+| Layout | Without `columns` | With `columns` |
+| --- | --- | --- |
+| `grid` | as many columns of at least `minCardWidth` as fit, sharing the width | exactly that many columns, sharing the width |
+| `shelf` | every card `minCardWidth` wide | that many cards fill the width; the rest scroll in |
+
+Measured widths, for `minCardWidth` or `columns`: TV shows four landscape cards of 288.5 pt in
+1214 pt (`columns={4}`); Music's album cell is 168 pt, the default; Podcasts' episode card is
+252 pt; the App Store has three lockup columns of 301 pt.
+
+The section includes its side margins, 40 pt, so that a shelf scrolls under them, and 32 pt
+below its cards. In a container that already has margins, set `--mac-card-grid-margin: 0px`.
+A shelf pads itself by at least 14 pt at the sides so that the cards' shadows are not cut off;
+with a smaller margin that padding reaches outside the section.
+
+The header is 48 pt with TV's type. The App Store and Podcasts set theirs differently; use
+the variables:
+
+| | Title | Action | Colours |
+| --- | --- | --- | --- |
+| TV (default) | 18 pt Bold | 15 pt | title `#0c0c0c` / `#e9e9e9`, line `#f4f4f4` / `#282a2c` |
+| App Store | 20.5 pt Semibold, header 44 pt (`11px 0 8px`) | 15.5 pt | title as `--mac-color-label`, line as `--mac-color-grid`, action `#0884ff` in Dark Aqua |
+| Podcasts | 18.5 pt Bold | 15.5 pt | title as `--mac-color-label`, line as `--mac-color-grid` |
+
+## API
+
+<PropsTable name="CardGridProps" />
+
+<PropsTable name="CardGridActionProps" />
+
+<PropsTable name="CardGridCardProps" />
+
+`CardGrid` renders `<section class="mac-card-grid">` with a header
+(`mac-card-grid-header`, `mac-card-grid-title`) and the list (`mac-card-grid-list`), whose
+items are `mac-card-grid-item`. A card is `mac-card-grid-card` with the parts
+`mac-card-grid-card-artwork`, `-text`, `-caption`, `-title`, `-subtitle`, `-footnote` and
+`-accessory`.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-separator` | section | present or absent | Reflects `separator`. |
+| `data-layout` | list | `grid`, `shelf` | Reflects `layout`. |
+| `data-columns` | list | a number, or absent | Reflects `columns`. |
+| `data-variant` | card | `landscape`, `square`, `episode`, `lockup` | Reflects `variant`. |
+| `data-force` | card, action, list | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+Set these on the section or on an ancestor:
+
+| CSS variable | Default | Description |
+| --- | --- | --- |
+| `--mac-card-grid-margin` | `40px` | Side margin of the section. |
+| `--mac-card-grid-gap` | `20px` | Distance between cards; set by `gap`. |
+| `--mac-card-grid-row-gap` | the gap | Distance between rows of a grid. |
+| `--mac-card-grid-min-card-width` | `168px` | Narrowest card; set by `minCardWidth`. |
+| `--mac-card-grid-columns` | none | Fixed number of columns; set by `columns`. |
+| `--mac-card-grid-header-padding` | `12.5px 0 13.5px` | Padding of the header around the title's line. |
+| `--mac-card-grid-title-font` | 18 pt Bold on a 22 pt line | Font of the title. |
+| `--mac-card-grid-action-font` | 15 pt on an 18 pt line | Font of the action. Keep its line shorter than the title's. |
+| `--mac-card-grid-title` | `#0c0c0c`, `#e9e9e9` in Dark Aqua | Colour of the title. |
+| `--mac-card-grid-action` | `#027aff` | Colour of the action. |
+| `--mac-card-grid-separator` | `#f4f4f4`, `#282a2c` in Dark Aqua | Colour of the line above the header. |
+
+## Accessibility
+
+- The section is a `<section>` named by its title, which is a heading (`<h2>` unless
+  `headingLevel` says otherwise). A section without a title needs an `aria-label`.
+- The cards are a list (`role="list"`, each card in a `role="listitem"`), so assistive
+  technology announces how many there are.
+- A card is static unless you render it as a link or a button with `render`. Then Tab moves
+  from card to card and Return (and Space, for a button) activates it. The arrow keys do not
+  move between cards, as they do in an AppKit collection view.
+- A link or button card is named by its text. A card without text, as in TV, needs an
+  `aria-label`. Leave the `alt` of its artwork empty when the text already names it.
+- Do not render a lockup that has an accessory as a link or a button: a button inside a link
+  is not valid. Make its title a link instead.
+- A shelf scrolls sideways. It is a tab stop named after its section and shows the focus ring
+  inside its box; while it has the focus the left and right arrow keys scroll it by one card
+  and Home and End go to either end, also when its cards are static. When its cards are links
+  or buttons, focusing one scrolls it into view as well.
+- The focus ring is drawn only in a key window. The shelf has no scroll animation of its own.
+- In forced-colours mode the hairline of the artwork is drawn in a system colour.
+
+## Visual comparison
+
+Six examples reproduce parts of four captures and are compared with them in both appearances
+by `npm run visual` (`card-grid.visual.json`). Licensed artwork is masked in every
+comparison, and the stand-ins are flat colour. Share of pixels that differ, in Chromium on
+Linux with the fallback font:
+
+| Comparison | Aqua 2x | Aqua 1x | Dark Aqua 2x | Dark Aqua 1x |
+| --- | --- | --- | --- | --- |
+| Landscape card, top corner (TV), nothing masked | 0.00% | 0.13% | 0.22% | 0.81% |
+| Landscape card, bottom corner (TV), nothing masked | 0.05% | 0.64% | 0.27% | 2.31% |
+| Whole shelf with header (TV), cards masked | 0.89% | 1.28% | 0.87% | 0.95% |
+| The same, text masked too | 0.00% | 0.28% | 0.00% | 0.00% |
+| Album cell (Music), middle of the cover masked | 4.19% | 5.07% | 4.33% | 5.03% |
+| The same, text masked too | 0.10% | 0.16% | 0.00% | 0.00% |
+| Episode card (Podcasts), artwork masked | 8.55% | 9.66% | 9.50% | 10.56% |
+| The same, text masked too | 0.00% | 0.01% | 0.00% | 0.01% |
+| Lockup list (App Store), icons masked | 7.29% | 8.46% | 7.43% | 9.12% |
+| The same, text masked too | 0.00% | 0.00% | 0.12% | 0.92% |
+
+The two corner comparisons mask nothing, because the artwork of TV's third card is white at
+its edges in both captures; they and the rows with the text masked count a pixel as differing
+at a colour distance of 0.05, half the default, and each has a 2x budget about 0.05
+percentage points above its score. With a corner of 11px or 12.5px instead of 12px the dark
+corner comparisons fail. In the album, episode and lockup rows the text is other words than
+the capture's, in the fallback font, which is what the unmasked scores show. The lockup
+example sets the App Store's header through the variables, and its list is 943 pt wide in the
+945 pt column, as measured.
+
+No screenshot shows a pressed or focused card or a window that is not key. Those states are
+checked in a real browser against values from the spec (the `expect` comparisons): the
+example is pressed with the mouse or focused with Tab, and chosen pixels must have the
+expected colour.
+
+| State | What is checked | Source of the values |
+| --- | --- | --- |
+| At rest | The hairline along the top and the side, none along the bottom, the shadow at 0.5 and 5 pt under the card | Measured |
+| Pressed | White artwork at 90% brightness; the other card untouched | Inferred |
+| Keyboard focus | Ring colour above the artwork and that it ends 2.5 pt out | Ring measured on a text field; that a card shows it, inferred |
+| Inactive and main window | No focus ring | The library's rule; no screenshot |
+| Shelf with keyboard focus | Ring inside the shelf's edge; the right arrow key scrolls a shelf of static cards by one card, End to its end | Inferred: no screenshot shows keyboard focus on a shelf |
+
+Not compared here: the hero banner and the App Store's editorial panel, which are
+[Editorial Card](/components/editorial-card), and the paging chevrons, which are
+[Shelf Pager](/components/shelf-pager). The book cover of Books is
+[Book Cover](/components/book-cover) and the story card of News is
+[Story Card](/components/story-card): neither fits the 3 kB budget of this component's
+stylesheet. TV's trailer card is a `landscape` card in a shelf
+of three (`columns={3}`) and has no comparison of its own. Podcasts' header and the App
+Store's are reached through variables and only the latter is compared.

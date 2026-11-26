@@ -1,0 +1,106 @@
+---
+title: Help Button
+description: The round button with a question mark that opens help for the window it is in.
+order: 12
+---
+
+<Example name="basic" both />
+
+AppKit calls this control a *help button* (`NSButton` with the help-button bezel style). It is
+a [round button](/components/round-button) with a fixed question mark and a single size, and
+like it is built on [Base UI's Button](https://base-ui.com/react/components/button).
+
+## Usage
+
+```tsx
+import { HelpButton } from "macalicious/help-button";
+import "macalicious/round-button.css";
+import "macalicious/help-button.css";
+
+<HelpButton onClick={openHelp} />
+```
+
+Or copy the source into your project: `npx macalicious add help-button`. See
+[Installation](/installation).
+
+## Guidelines
+
+From the macOS Human Interface Guidelines for help buttons:
+
+- A help button opens help for the current context: the topic of the pane or dialog it is in,
+  or else the top of the application's help.
+- Use at most one per window, in a view, never in a toolbar or status bar. It has no label
+  beside it.
+- In a dialog with dismissal buttons put it in the lower-left corner, level with them. In a
+  dialog without them and in a preference pane, the lower-left or lower-right corner.
+
+<Example name="in-a-pane" />
+
+In the screenshots the button sits 20.5 pt from the window's edges and 13 pt from a push
+button on its row, measured between visible edges: with the library's boxes that is
+`var(--mac-space-window-margin)` and `var(--mac-space-control-gap)`.
+
+## Variants and states
+
+Pressed and keyboard-focused are transient, so this gallery pins them. In an application they
+appear on their own.
+
+<Example name="states" both hideCode />
+
+| State | How it is triggered | Look |
+| --- | --- | --- |
+| Normal | – | White circular bezel (translucent white in Dark Aqua), question mark at 85% |
+| Pressed | `:active` | The fill darkens in Aqua and lightens in Dark Aqua; never the accent |
+| Keyboard focus | `:focus-visible` | Circular focus ring in the accent colour |
+| Disabled | `disabled` | Bezel at half opacity, question mark at 25% |
+| Window not key | an ancestor has `data-window-state="main"` or `"inactive"` | Unchanged, but no focus ring |
+
+## Sizes
+
+One size: a 20 pt circle in a 21 pt box. AppKit ignores the control size for this bezel in
+10.15, so the component has no `size` prop.
+
+## API
+
+<PropsTable name="HelpButtonProps" />
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-disabled` | present or absent | Set by Base UI while the button is disabled. |
+| `data-force` | `pressed`, `focus` | Documentation and visual tests only: pins a transient state. |
+
+The element carries the classes `mac-round-button` and `mac-help-button`.
+
+## Accessibility
+
+- Renders a native `<button>`. Space and Return activate it; Tab reaches it.
+- Its accessible name is "Help" unless `label` says otherwise. Translate it, and make it
+  specific when a page holds several ("Bluetooth help").
+- The question mark is decorative and hidden from assistive technology.
+- In forced-colours mode the bezel is drawn with system colours.
+
+## Visual comparison
+
+The example `visual-pane-help` reproduces the help button of the Bluetooth preference pane and
+is compared with the screenshots in both appearances by `npm run visual`
+(`help-button.visual.json`). Share of pixels that differ at 2x, in Chromium on Linux:
+
+| Crop | Aqua | Dark Aqua |
+| --- | --- | --- |
+| Whole button, 31 x 31 pt | 1.35% | 1.14% |
+| Bezel only, question mark masked, at half the colour distance | 0.39% | 0.36% |
+
+The bezel (diameter, hairlines, fill, dark highlight rows, shadow rows) is measured; what the
+second row counts is about a dozen antialiased pixels on the rim of the circle. The question
+mark is drawn for this library on the measured 6.5 x 11 pt ink box:
+Apple's glyph is San Francisco's and is not copied, so what remains in the whole-button score
+is the outline of the two shapes.
+
+No screenshot shows a help button pressed, focused or disabled. Those states are checked in a
+real browser against values from the spec (the `expect` comparisons): the pressed fill under a
+real mouse press, the focus ring after a real Tab, the disabled fill, and that the ring is
+absent in an inactive window. The pressed and disabled looks are the spec's inference, so they
+are provisional. The pressed fill is the shared pressed bezel of the spec's token sheet
+(`#f0f0f0`, white at 36% in Dark Aqua), which the help, round and disclosure buttons use;
+the spec's help-button page infers a slightly darker one (`#e5e5e5`, white at 35%), and no
+screenshot settles which is right.

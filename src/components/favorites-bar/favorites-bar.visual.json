@@ -1,0 +1,487 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "pending": "No Catalina screenshot shows Safari's Favorites bar: all fourteen Safari captures have it hidden, so there is no reference crop in either appearance and none can be added. The comparisons below check the inferred values of the spec with real input instead.",
+  "comparisons": [
+    {
+      "name": "rest-light",
+      "description": "The bar at rest in the key window, Aqua: the fill, the two separator rows and a folder's chevron. Every expected colour is the spec's inferred value, not a measurement.",
+      "example": "visual-states",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 320, "height": 25 },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 12,
+            "color": "#d0d0d0",
+            "note": "bar fill inside the first item, which has no pill at rest (spec: favorites-bar, Bar fill, inferred)"
+          },
+          { "x": 300, "y": 12, "color": "#d0d0d0", "note": "bar fill beyond the items" },
+          {
+            "x": 300,
+            "y": 24.25,
+            "color": "#bdbdbd",
+            "scale": 2,
+            "note": "upper separator row (spec: Bottom rows, inferred)"
+          },
+          {
+            "x": 300,
+            "y": 24.75,
+            "color": "#a7a7a7",
+            "scale": 2,
+            "note": "lower separator row (spec: Bottom rows, inferred)"
+          },
+          {
+            "x": 300,
+            "y": 24.5,
+            "color": "#b2b2b2",
+            "scale": 1,
+            "note": "at 1x the two rows share one pixel: their mean"
+          },
+          {
+            "x": 140.6,
+            "y": 13.2,
+            "color": "#4c4c4c",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "the point of the folder's chevron, in the title colour (spec: Item text, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rest-dark",
+      "description": "The bar at rest in the key window, Dark Aqua. Inferred values, as for rest-light.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 320, "height": 25 },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 12,
+            "color": "#343536",
+            "note": "bar fill inside the first item (spec: favorites-bar, Bar fill, inferred)"
+          },
+          { "x": 300, "y": 12, "color": "#343536", "note": "bar fill beyond the items" },
+          {
+            "x": 300,
+            "y": 24.25,
+            "color": "#2a2a2a",
+            "scale": 2,
+            "note": "upper separator row (spec: Bottom rows, inferred)"
+          },
+          {
+            "x": 300,
+            "y": 24.75,
+            "color": "#000000",
+            "scale": 2,
+            "note": "lower separator row (spec: Bottom rows, inferred)"
+          },
+          {
+            "x": 300,
+            "y": 24.5,
+            "color": "#151515",
+            "scale": 1,
+            "note": "at 1x the two rows share one pixel: their mean"
+          },
+          {
+            "x": 140.6,
+            "y": 13.2,
+            "color": "#e1e1e1",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "the point of the folder's chevron: white at 85% over the fill (spec: Item text, inferred)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "hover-light",
+      "description": "The pointer over a bookmark: a pill behind it, Aqua. The pill's colour is the library's own inference (favorites-bar.tokens.css); the spec gives only its geometry.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "hover": "#bookmark" }],
+      "expect": {
+        "size": { "width": 320, "height": 25 },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 12,
+            "color": "#c4c4c4",
+            "note": "pill: black at 6% over #d0d0d0 (favorites-bar.tokens.css, provisional)"
+          },
+          {
+            "x": 12,
+            "y": 1.5,
+            "color": "#d0d0d0",
+            "note": "bar fill above the pill, which is 19 pt high in the 24 pt bar (spec: Hover / pressed pill, inferred)"
+          },
+          {
+            "x": 90,
+            "y": 12,
+            "color": "#d0d0d0",
+            "note": "bar fill in the 4 pt gap after the pill"
+          },
+          { "x": 96, "y": 12, "color": "#d0d0d0", "note": "the folder beside it has no pill" }
+        ]
+      }
+    },
+    {
+      "name": "hover-dark",
+      "description": "The pointer over a bookmark: a pill behind it, Dark Aqua. Inferred, as for hover-light.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "hover": "#bookmark" }],
+      "expect": {
+        "size": { "width": 320, "height": 25 },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 12,
+            "color": "#404142",
+            "note": "pill: white at 6% over #343536 (favorites-bar.tokens.css, provisional)"
+          },
+          { "x": 12, "y": 1.5, "color": "#343536", "note": "bar fill above the pill" },
+          { "x": 96, "y": 12, "color": "#343536", "note": "the folder beside it has no pill" }
+        ]
+      }
+    },
+    {
+      "name": "pressed-light",
+      "description": "The mouse held down on a folder: the pressed pill, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "press": "#folder" }],
+      "expect": {
+        "size": { "width": 320, "height": 25 },
+        "pixels": [
+          {
+            "x": 96,
+            "y": 12,
+            "color": "#bbbbbb",
+            "note": "pill: black at 10% over #d0d0d0 (spec: favorites-bar, Pressed pill, inferred)"
+          },
+          { "x": 12, "y": 12, "color": "#d0d0d0", "note": "the bookmark beside it has no pill" }
+        ]
+      }
+    },
+    {
+      "name": "pressed-dark",
+      "description": "The mouse held down on a folder: the pressed pill, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "press": "#folder" }],
+      "expect": {
+        "size": { "width": 320, "height": 25 },
+        "pixels": [
+          {
+            "x": 96,
+            "y": 12,
+            "color": "#48494a",
+            "note": "pill: white at 10% over #343536 (spec: favorites-bar, Pressed pill, inferred)"
+          },
+          { "x": 12, "y": 12, "color": "#343536", "note": "the bookmark beside it has no pill" }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-light",
+      "description": "Keyboard focus on the first item, reached with Tab, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 320, "height": 25 },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 12,
+            "color": "#749de3",
+            "tolerance": 3,
+            "note": "the shared focus ring colour (--mac-focus-ring-color, measured elsewhere) over the inferred bar fill; the ring reaches 2.5 pt beyond the pill"
+          },
+          { "x": 4.5, "y": 12, "color": "#d0d0d0", "note": "bar fill just outside the ring" },
+          { "x": 96, "y": 12, "color": "#d0d0d0", "note": "the folder beside it is unchanged" }
+        ]
+      }
+    },
+    {
+      "name": "focus-ring-dark",
+      "description": "Keyboard focus on the first item, reached with Tab, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 320, "height": 25 },
+        "pixels": [
+          {
+            "x": 6.5,
+            "y": 12,
+            "color": "#306f9b",
+            "tolerance": 3,
+            "note": "the shared focus ring colour over the inferred bar fill"
+          },
+          { "x": 4.5, "y": 12, "color": "#343536", "note": "bar fill just outside the ring" }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-light",
+      "description": "The bar in an inactive window, with keyboard focus on the first item: the bar is flat, with the lighter rows, and there is no focus ring, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 320, "height": 25 },
+        "pixels": [
+          {
+            "x": 300,
+            "y": 12,
+            "color": "#f6f6f6",
+            "note": "the inactive title bar colour (--mac-material-titlebar-inactive, measured); that the bar takes it is inferred"
+          },
+          { "x": 6.5, "y": 12, "color": "#f6f6f6", "note": "no focus ring outside the key window" },
+          {
+            "x": 300,
+            "y": 24.25,
+            "color": "#e7e7e7",
+            "scale": 2,
+            "note": "upper row, measured under Safari's inactive tab bar (Light-Safari-v13-Picture-in-Picture @ 700,228); inferred for this bar"
+          },
+          {
+            "x": 300,
+            "y": 24.75,
+            "color": "#cecece",
+            "scale": 2,
+            "note": "lower row, measured in the same place (@ 700,229)"
+          },
+          {
+            "x": 300,
+            "y": 24.5,
+            "color": "#dadada",
+            "scale": 1,
+            "note": "at 1x the two rows share one pixel: their mean"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-inactive-dark",
+      "description": "The bar in an inactive window, with keyboard focus on the first item, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "inactive",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 320, "height": 25 },
+        "pixels": [
+          {
+            "x": 300,
+            "y": 12,
+            "color": "#2d2d2d",
+            "note": "the inactive title bar colour (--mac-material-titlebar-inactive, measured); inferred for this bar"
+          },
+          { "x": 6.5, "y": 12, "color": "#2d2d2d", "note": "no focus ring outside the key window" },
+          {
+            "x": 300,
+            "y": 24.25,
+            "color": "#222326",
+            "scale": 2,
+            "note": "upper row, measured under Safari's inactive tab bar (Dark-Safari-v13-Picture-in-Picture @ 700,202); inferred for this bar"
+          },
+          {
+            "x": 300,
+            "y": 24.75,
+            "color": "#000000",
+            "scale": 2,
+            "note": "lower row, measured in the same place (@ 700,203)"
+          },
+          {
+            "x": 300,
+            "y": 24.5,
+            "color": "#111113",
+            "scale": 1,
+            "note": "at 1x the two rows share one pixel: their mean"
+          }
+        ]
+      }
+    },
+    {
+      "name": "window-main-light",
+      "description": "The bar in a window that is main but not key, with keyboard focus on the first item: the bar keeps its active look and shows no focus ring, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "windowState": "main",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 320, "height": 25 },
+        "pixels": [
+          {
+            "x": 300,
+            "y": 12,
+            "color": "#d0d0d0",
+            "note": "the frame of a main window is drawn as in a key window (CONTRIBUTING, Window state)"
+          },
+          { "x": 6.5, "y": 12, "color": "#d0d0d0", "note": "no focus ring outside the key window" }
+        ]
+      }
+    },
+    {
+      "name": "window-main-dark",
+      "description": "The bar in a window that is main but not key, with keyboard focus on the first item, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "windowState": "main",
+      "actions": [{ "tab": 1 }],
+      "expect": {
+        "size": { "width": 320, "height": 25 },
+        "pixels": [
+          {
+            "x": 300,
+            "y": 12,
+            "color": "#343536",
+            "note": "the frame of a main window is drawn as in a key window"
+          },
+          { "x": 6.5, "y": 12, "color": "#343536", "note": "no focus ring outside the key window" }
+        ]
+      }
+    },
+    {
+      "name": "disabled-light",
+      "description": "The pointer over a disabled item: no pill, Aqua.",
+      "example": "visual-states",
+      "appearance": "light",
+      "actions": [{ "hover": "#disabled" }],
+      "expect": {
+        "size": { "width": 320, "height": 25 },
+        "pixels": [
+          {
+            "x": 160,
+            "y": 12,
+            "color": "#d0d0d0",
+            "note": "bar fill: a disabled item does not react to the pointer"
+          }
+        ]
+      }
+    },
+    {
+      "name": "disabled-dark",
+      "description": "The pointer over a disabled item: no pill, Dark Aqua.",
+      "example": "visual-states",
+      "appearance": "dark",
+      "actions": [{ "hover": "#disabled" }],
+      "expect": {
+        "size": { "width": 320, "height": 25 },
+        "pixels": [
+          {
+            "x": 160,
+            "y": 12,
+            "color": "#343536",
+            "note": "bar fill: a disabled item does not react to the pointer"
+          }
+        ]
+      }
+    },
+    {
+      "name": "overflow-light",
+      "description": "Three 80 pt items in a 300 pt bar, which holds them, and in a 220 pt bar, which holds two, Aqua: the third item is cut off whole, and the bar that fits draws no overflow button. The capture is taken with animations off, which also switches off the scroll-driven animation that shows the button, so the fixture makes the second bar's button visible itself and the check reads the chevrons' drawing only; that the button appears by itself is tested in favorites-bar.browser.test.tsx.",
+      "example": "visual-overflow",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 300, "height": 50 },
+        "pixels": [
+          {
+            "x": 281.2,
+            "y": 12.2,
+            "color": "#d0d0d0",
+            "note": "first bar: bar fill where the overflow button's first chevron would be"
+          },
+          {
+            "x": 201.2,
+            "y": 37.2,
+            "color": "#4c4c4c",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "second bar: the point of the overflow button's first chevron, in the title colour (spec: favorites-bar, Item text, inferred)"
+          },
+          {
+            "x": 180,
+            "y": 37,
+            "color": "#d0d0d0",
+            "note": "second bar: bar fill where the third item would start; it is cut off whole"
+          },
+          { "x": 250, "y": 37, "color": "#ececec", "note": "the page beside the shorter bar" }
+        ]
+      }
+    },
+    {
+      "name": "overflow-dark",
+      "description": "The third item cut off whole, no overflow button in the bar that fits, and the drawing of the overflow chevrons, Dark Aqua. The limits are those of overflow-light.",
+      "example": "visual-overflow",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 300, "height": 50 },
+        "pixels": [
+          {
+            "x": 281.2,
+            "y": 12.2,
+            "color": "#343536",
+            "note": "first bar: bar fill where the overflow button's first chevron would be"
+          },
+          {
+            "x": 201.2,
+            "y": 37.2,
+            "color": "#e1e1e1",
+            "scale": 2,
+            "tolerance": 3,
+            "note": "second bar: the point of the overflow button's first chevron: white at 85% over the fill"
+          },
+          {
+            "x": 180,
+            "y": 37,
+            "color": "#343536",
+            "note": "second bar: bar fill where the third item would start"
+          }
+        ]
+      }
+    },
+    {
+      "name": "forced-colors-light",
+      "description": "Forced colours, with the pointer over the bookmark: the pill is the system's highlight colour, the bar the canvas, and the separator survives as a border in the canvas text colour. The colours are the browser's emulated system colours, not Catalina's.",
+      "example": "visual-states",
+      "appearance": "light",
+      "forcedColors": true,
+      "actions": [{ "hover": "#bookmark" }],
+      "expect": {
+        "size": { "width": 320, "height": 25 },
+        "pixels": [
+          {
+            "x": 12,
+            "y": 12,
+            "color": "#37336d",
+            "tolerance": 6,
+            "note": "the pill: Highlight, as Chromium emulates it"
+          },
+          { "x": 300, "y": 12, "color": "#ffffff", "tolerance": 4, "note": "the bar: Canvas" },
+          {
+            "x": 300,
+            "y": 24.5,
+            "color": "#000000",
+            "tolerance": 4,
+            "note": "the bar's bottom border: CanvasText"
+          },
+          {
+            "x": 140.6,
+            "y": 13.2,
+            "color": "#000000",
+            "scale": 2,
+            "tolerance": 4,
+            "note": "the folder's chevron: CanvasText"
+          }
+        ]
+      }
+    }
+  ]
+}

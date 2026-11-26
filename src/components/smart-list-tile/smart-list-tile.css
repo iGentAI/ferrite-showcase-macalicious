@@ -1,0 +1,121 @@
+/*
+ * Smart List Tile: a smart list of Reminders as a tile, and the grid of them.
+ *
+ * 120 x 59 pt in the captures (the grid sets the width): a 24 pt disc 8 pt in, the count's
+ * ink 11 pt from the right edge, the name's ink 10 pt from the left with its baseline 10.5 pt
+ * above the bottom.
+ *
+ * Parts
+ *   .mac-smart-list-tile         the tile, a toggle button
+ *   .mac-smart-list-tile-disc    the 24 pt disc with the glyph
+ *   .mac-smart-list-tile-count   the count
+ *   .mac-smart-list-tile-name    the name
+ *   .mac-smart-list-tile-grid    two columns of tiles, 8 pt apart
+ *
+ * States
+ *   [data-pressed]                     the tile whose list is shown: the list's colour
+ *   :active, [data-force~="pressed"]   under the pointer's press
+ *   [data-disabled]                    disabled
+ *   :focus-visible, [data-force~="focus"]
+ *                                      focus ring, in the key window only
+ *   :where([data-window-state="main"], [data-window-state="inactive"]) *
+ *                                      not the key window: no focus ring
+ *
+ * Variables
+ *   --mac-smart-list-tile-tint         the list's colour; the `tint` prop sets it on one tile
+ */
+.mac-smart-list-tile {
+  --_list-tint: var(--mac-smart-list-tile-tint, var(--mac-color-system-blue));
+
+  display: grid;
+  grid-template: "disc count" 24px "name name" 1fr / 24px 1fr;
+  box-sizing: border-box;
+  min-width: 0;
+  height: 59px;
+  margin: 0;
+  padding: 8px 10px 0 8px;
+  border: 0;
+  border-radius: 6.5px;
+  background: var(--mac-smart-list-tile-fill);
+  color: var(--mac-color-label-secondary);
+  font: var(--mac-font-body);
+  text-align: start;
+  cursor: default;
+  outline: none;
+  appearance: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mac-smart-list-tile:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  background: var(--mac-smart-list-tile-fill-pressed);
+}
+
+/* The smart list that is shown: the tile takes its colour, and its content turns white. */
+.mac-smart-list-tile:where([data-pressed]) {
+  background: var(--_list-tint);
+  color: var(--mac-smart-list-tile-selected-text);
+}
+
+.mac-smart-list-tile:where([data-disabled]) {
+  opacity: 0.5;
+}
+
+.mac-smart-list-tile:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+}
+
+.mac-smart-list-tile-disc {
+  grid-area: disc;
+  display: flex;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--_list-tint);
+  color: var(--mac-smart-list-tile-glyph);
+}
+
+.mac-smart-list-tile:where([data-pressed]) > .mac-smart-list-tile-disc {
+  background: var(--mac-smart-list-tile-selected-text);
+  color: var(--_list-tint);
+}
+
+.mac-smart-list-tile-count {
+  grid-area: count;
+  justify-self: end;
+  margin-block-start: 0.5px;
+  font: var(--mac-font-weight-bold) 20px / 24px var(--mac-font-family-system);
+}
+
+.mac-smart-list-tile-name {
+  grid-area: name;
+  align-self: end;
+  margin: 0 0 7px 2px;
+  overflow: hidden;
+  font: var(--mac-font-weight-semibold) 13px / 16px var(--mac-font-family-system);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-smart-list-tile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+@media (forced-colors: active) {
+  .mac-smart-list-tile {
+    border: 1px solid ButtonText;
+  }
+
+  .mac-smart-list-tile:where([data-pressed]) {
+    border-color: Highlight;
+    outline: 2px solid Highlight;
+  }
+
+  .mac-smart-list-tile-disc {
+    border: 1px solid ButtonText;
+  }
+}

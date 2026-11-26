@@ -1,0 +1,80 @@
+/*
+ * Outline view (NSOutlineView): a table view whose first column is indented by level and
+ * carries the disclosure triangles. Rows, stripes, selection, header and focus ring are the
+ * table view's.
+ *
+ * Parts
+ *   .mac-outline-view              the root, on the table view's root
+ *   .mac-outline-view-cell         content of a first-column cell: indentation, triangle, label
+ *   .mac-outline-view-triangle     the disclosure triangle, or the empty slot of a leaf, so
+ *                                  that labels of one level align
+ *   .mac-outline-view-label        the caller's content after the triangle
+ *   .mac-outline-view-row-dimmed   a dimmed row
+ *
+ * States
+ *   [aria-expanded] on a row           expanded or collapsed parent
+ *   [aria-selected="true"] on a row    in a focused view of a key window the triangle and a
+ *                                      dimmed row's text turn white with the selection
+ *   [data-force~="focus"]              static preview of the emphasised selection
+ */
+.mac-outline-view .mac-outline-view-triangle {
+  color: var(--mac-outline-view-triangle);
+}
+
+.mac-outline-view .mac-outline-view-triangle:where(:active, [data-force~="pressed"]) {
+  color: var(--mac-color-label);
+}
+
+.mac-outline-view-cell {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 100%;
+  /* Centred in the highlight, which is the row less its last point. */
+  padding-block-end: 1px;
+}
+
+/* The triangle's 13 pt frame starts 5.5 pt from the pane's edge, which puts the collapsed
+   triangle at 8.5 pt and the expanded one at 7.5 pt. The label follows closer in smaller
+   text: 1.75 pt after the frame at 13 pt, 0.5 pt at 11 pt (all measured in Font Book and
+   System Information). */
+.mac-outline-view-triangle {
+  flex: none;
+  width: 13px;
+  margin-inline: 2.5px calc(0.625em - 6.4px);
+}
+
+.mac-outline-view-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mac-outline-view-row-dimmed {
+  color: var(--mac-outline-view-dimmed);
+}
+
+.mac-outline-view:where(:focus-within, [data-force~="focus"]):not(
+    :where([data-window-state="main"], [data-window-state="inactive"]) *
+  )
+  :where([aria-selected="true"])
+  .mac-outline-view-triangle {
+  color: var(--mac-color-selected-content-text);
+}
+
+.mac-outline-view:where(:focus-within, [data-force~="focus"]):not(
+    :where([data-window-state="main"], [data-window-state="inactive"]) *
+  )
+  .mac-outline-view-row-dimmed:where([aria-selected="true"]) {
+  color: var(--mac-color-selected-content-text);
+}
+
+/* A selected row is drawn in the system's highlight colours (the table view's rule), which
+   are not adjusted: what the row holds takes its text colour. As specific as the rules above. */
+@media (forced-colors: active) {
+  .mac-outline-view :where([aria-selected="true"]) .mac-outline-view-triangle,
+  .mac-outline-view .mac-outline-view-row-dimmed:where([aria-selected="true"]) {
+    color: HighlightText;
+  }
+}

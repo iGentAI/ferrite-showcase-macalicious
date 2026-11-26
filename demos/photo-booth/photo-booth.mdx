@@ -1,0 +1,167 @@
+---
+title: Photo Booth
+description: The Photo Booth window of macOS 10.15 with its Effects browser, four pages of nine previews under a page control, and a camera view where the shutter counts down and takes a picture, over an original generated picture of an empty room that the effects filter and distort.
+layout: full
+order: 89
+---
+
+<Example name="basic" />
+
+Page through the effects with the dots or the arrows and choose a preview: the window turns to
+the camera view with that effect. Take Photo counts down from three and adds a picture to the
+strip; Effects returns to the browser. As a page of its own (here, and on the static desktop) no
+camera is used and nothing is recorded: the picture is an original generated photograph of an
+empty, lamp-lit living room, and an effect is a CSS filter or transform applied to it. On the
+desktop served by the `macalicious-desktop` Ferrite application (`ferrite-apps/desktop`), the
+previews and the camera view show the browser's camera instead, once the person allows it, and
+every picture taken is saved, with its effect drawn in, to the person's Photos library: the
+original goes to Pictures/Photo Booth on the person's drive, and Photos lists it under Photo
+Booth. The strip shows those pictures; a click on one shows it large from its original, until
+Back to Camera or Escape. Delete or Backspace on one moves it to Photos' Recently
+Deleted. Edit > Undo and Redo take back and bring back a delete, a flip, a change of effect, a
+Cut and a Paste, as long as the window stays open. Copy puts the chosen pictures on the desktop's
+clipboard, and the first still also on the browser's as a PNG, for other programs; Paste brings
+in either.
+
+## What it shows
+
+- A [Window](/components/window) of 720 by 562 pt at its smallest, as captured, with a plain 22 pt
+  [Title Bar](/components/title-bar) and the [Window Controls](/components/window-controls).
+- The stage, 480 pt high in the measured dark grey that both appearances share. In the
+  Effects browser it holds nine [Image Buttons](/components/image-button), 236 by 156 pt and
+  3 pt apart, each with a preview of the placeholder under its effect and the effect's name
+  over it. The button's clear space is taken away through `--mac-image-button-padding`; the
+  name's 18 pt white text is the demo's own.
+- In the camera view the stage holds the picture in an [Image View](/components/image-view),
+  the countdown's figure over it, and every picture taken as a scrolling list of small image
+  views.
+- The bar, 60 pt in the measured colour of each appearance: a
+  [Page Control](/components/page-control) in its `pager` variant on the window's centre, or
+  the shutter in the camera view, and the Effects [Push Button](/components/push-button) at
+  the right.
+
+### The source
+
+| File | What is in it |
+| --- | --- |
+| `photo-booth.tsx` | `PhotoBooth`: the window, the two views of the stage and the bar. Its state is the view, the page, the chosen effect, the pictures and the countdown's count. |
+| `photo-booth-data.ts` | The four pages of effects, each a name with a CSS `filter`, a `transform` or neither, and `findEffect`, `clampPage` and `takePicture`. The tests call them directly. |
+| `photo-booth-artwork.tsx` | `Scene`, the placeholder picture, which takes an effect and applies it to itself. |
+| `photo-booth-desktop.tsx` | `DesktopPhotoBooth`, the window the desktop opens: with the Ferrite application it asks for the camera, draws the camera's frame under the chosen effect at the shutter, and saves it as a JPEG into the Photos library (`demos/photos/photos-library.ts`, `importPicture`), whose Photo Booth pictures it lists when it opens; elsewhere it is `PhotoBooth`. |
+| `photo-booth-bake.ts` | `bakeEffect`: the effect drawn into the frame, computed where `photo-booth-effects.ts` has it; otherwise the transform with the canvas's transform and the filter computed on the pixels with the matrices of the Filter Effects specification, since WebKit's canvas draws no `filter`. |
+| `photo-booth-effects.ts` | The first two pages' effects computed on a frame's RGBA pixels: eight colour treatments and eight warps, centred on the frame. The same arithmetic serves the live preview, the saved picture and a clip. |
+| `photo-booth-live.tsx` | `ComputedEffectCanvas`: a canvas over the camera's video, repainted with a computed effect. Canvases share an 8 ms budget per animation frame, so nine previews take turns. |
+| `photo-booth-tracked.ts` | Dizzy, Love Birds and Balloons: original art drawn around each face that `demos/desktop/desktop-faces.ts` finds, in the live canvas, the saved picture and a clip. |
+| `photo-booth-face-model.ts`, `photo-booth-face-model.worker.ts`, `vendor/` | MediaPipe's BlazeFace short-range model (Apache 2.0) and the small interpreter that runs it in a worker, for `desktop-faces.ts`. `vendor/face-fixture.jpg`, a NASA portrait of Mae Jemison in the public domain, is what the tests find a face in. |
+| `photo-booth-shutter.ts` | `playShutter`: the shutter's two clicks, made with Web Audio under Output volume and Mute. |
+| `photo-booth-clipboard.ts` | The picture on the browser's clipboard: written as a PNG for Copy and Cut, read for Paste. The desktop's own clipboard holds the drive files (`demos/desktop/desktop-clipboard.ts`). |
+| `photo-booth.css`, `photo-booth.tokens.css` | The layout of the stage and the bar, and the colours the demo adds, each tagged measured or provisional. |
+| `app.ts` | The descriptor the desktop demo reads. |
+
+The countdown is one timer for each count: an effect that depends on the count sets the next
+one, and at the last it takes the picture through a ref, so that the picture is taken with
+the pictures and the effect of that moment. Leaving the count clears the timer, which is all
+Cancel and Escape have to do.
+
+## Hosting the window
+
+`PhotoBooth` renders the library's `Window` as its root and passes every prop it does not use
+to it, so a window manager can place and activate it.
+
+| Prop | Type | What it does |
+| --- | --- | --- |
+| `defaultView` | `"effects" \| "camera"` | What the window shows when it opens. Default: the Effects browser, as captured. |
+| `defaultPage` | `number` | The browser's page at first, from 0. Default: 1, the captured page. |
+| `defaultEffect` | `string` | The id of the effect chosen at first. Default: `"normal"`. |
+| `countdownStepDuration` | `number` | Milliseconds each of the three counts lasts. Default: 1000. |
+| `onEffectChange` | `(effect: string) => void` | Called with the id of an effect when one is chosen. |
+| `onPictureTaken` | `(picture) => void` | Called with `{ number, effect }` when a picture is taken. |
+| `pictures` | `PhotoBoothPicture[]` | The strip's pictures, when the owner keeps them (each may carry an `id` and an image `src`). Without it the window keeps its own. |
+| `source` | `(effect) => ReactNode` | What a preview and the camera view show under an effect, such as a camera's video. Default: the placeholder picture. |
+| `takeDisabled` | `boolean` | Disables the shutter, as when there is no camera. |
+| `notice` | `ReactNode` | A line over the stage, such as why no picture can be taken. |
+| `onDeletePictures` | `(pictures) => void` | Makes each picture of the strip a button; Delete or Backspace on it calls this, with the selection when it is in one. |
+| `onPicturePointerDown` | `(event, picture) => void` | Called when a picture of the strip is pressed, which may start a drag of it. |
+| `shareMenu` | `ReactNode` | The Share button, in the bar left of Effects. |
+| `readPicture` | `(picture) => Promise<Blob>` | Reads a picture at full size, to show it large when it is clicked, and again when its `rev` changes. Without it a click shows the strip's image. |
+| `onClose`, `onMinimize`, `onZoom` | functions | Passed to the `WindowControls`. |
+| `zoomRole`, `minimizeDisabled`, `zoomDisabled` | as on `WindowControls` | Passed to the `WindowControls`. |
+| `onDragRegionPointerDown`, `onDragRegionDoubleClick` | functions | Passed to the `TitleBar`: a press or a double click on the bar that is not on a control. |
+| `width`, `height` | `number \| string` | The frame; 720 by 562 by default, as captured. The previews share the stage, so they grow with it. |
+| the rest | `WindowProps` | `state`, `fullScreen`, `style`, `className`, `ref`, pointer events and so on. |
+
+`app.ts` exports the descriptor a desktop page reads, as `photoBoothApp` and as `app`: `id`,
+`name`, `component`, `defaultSize` and `minSize` (both 720 by 562), `resizable` (true, for full screen) and
+`menus`, the menu titles after the Apple menu. The [desktop demo](/demos/desktop) finds it
+there and lists Photo Booth among its applications.
+
+## Accessibility
+
+- The window is a `region` named by its title.
+- The browser is a `group` named with its page, such as “Effects, page 2 of 3”. Each preview
+  is a button named by its effect; the chosen one has `aria-current`. The picture in a
+  preview is decoration. Choosing one moves the keyboard focus to the shutter.
+- The page control is a `group` named “Effects pages”: the dots are one tab stop, the arrow
+  keys, Home and End move between them, and the current dot has `aria-current="page"`.
+- The camera's picture is an image named as a placeholder with its effect. A picture in the
+  strip is an image named with its number and effect, in a list named “Photos”.
+- The countdown's figure is decoration: each count, the picture that is taken, a cancelled
+  countdown and a chosen effect are announced in a `status` region. While it counts, the
+  shutter is a Cancel button, Escape cancels too, and Effects is disabled.
+
+## Fidelity
+
+`photo-booth.visual.json` compares the window's chrome with the two Photo Booth screenshots.
+
+**Not compared: the nine previews**, 236 by 156 pt each at x 3, 242 and 481 and y 25, 184
+and 343, with the names over them. In the captures they show the camera through nine filters;
+the demo shows its own picture of an empty room in their place, which takes
+nothing from those pictures, so there is nothing to compare. They are four fifths of the
+window, more than a comparison may mask, so instead of the whole window with the previews
+masked the strips of chrome around them are compared, with nothing masked: the top 25 pt (the
+title bar and the stage's top edge) and the bottom 63 pt (the stage's bottom edge and the
+bar). `stage-geometry-*` then holds the stage to its 720 by 480 pt and to the stage's colour
+in the eight gaps around and between the previews. No budget was raised for the artwork.
+
+Scores from `npm run visual -- photo-booth/` in Chromium on Linux with the fallback font: the
+share of pixels that differ and the mean colour difference out of 255.
+
+| Comparison | Mismatch 1x | Mean Δ 1x | Mismatch 2x | Mean Δ 2x |
+| --- | --- | --- | --- | --- |
+| `title-bar-light` | 2.75% | 6.49 | 4.55% | 6.70 |
+| `bar-light` | 1.11% | 0.80 | 0.80% | 0.68 |
+| `title-bar-dark` | 6.76% | 4.49 | 4.52% | 4.49 |
+| `bar-dark` | 0.88% | 0.88 | 0.59% | 0.76 |
+
+Measured in the screenshots and reproduced: the 720 by 562 pt frame; the stage's colour and
+its 480 pt; the nine 236 by 156 pt cells with their 3 pt gaps; the bar's colour in both
+appearances; the page control on the window's centre, 20 pt under the bar's top, with its
+triangles, its three dots at a 36 pt pitch and the blue of the current one (the Page
+Control's own measurements, compared with three pages as the captures have them, where the
+app has a fourth, of backdrops); and the Effects button, 95 pt wide and 19.5 pt from the right
+edge.
+
+What differs, and why:
+
+- **Artwork.** The previews are the camera's picture; an abstract placeholder stands in its
+  place and is not compared.
+- **The title bar.** Photo Booth's bar meets the stage with no line under it and is a little
+  darker than the standard bar (`#dfdfdf` to `#c9c9ca`). The library's title bar is used as
+  it is, with its shadow row and separator and its own gradient, which is nearly all of the
+  two title bar scores.
+- **The effects.** Photo Booth filters the camera with Core Image. Here, on the placeholder, an
+  effect is a CSS filter or transform, which only suggests it. On the Ferrite-served desktop the
+  camera's frames of the first two pages are computed on their pixels; the numbers were chosen by eye,
+  as no capture shows those effects on a known picture, and the distortions are centred on the first
+  face found, or on the frame without one. The names of the first and third pages are not in a capture,
+  and the third page's art and warps are made here, not taken from Apple's.
+- **Faces.** The detector's short-range model finds faces near a camera, within about two metres,
+  and takes the whole frame, so a small face in the distance gets no art.
+- **The shutter.** Photo Booth draws a large round red shutter; the library has no such
+  control, and the camera view uses a push button titled Take Photo.
+- **Text.** Set in the fallback font off Apple devices.
+- **Not in a screenshot (provisional):** the camera view with its countdown and strip, the
+  other two pages of effects, and the window when it is not key.
+- **Not built:** the camera itself (except on the Ferrite-served desktop, where the browser's
+  camera is shown and the effect is drawn into the saved picture; a blur there is a box blur, an
+  approximation of the CSS one), the backdrops and the effects that follow a face.

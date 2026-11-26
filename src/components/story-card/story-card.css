@@ -1,0 +1,179 @@
+/*
+ * Story card: a story of News. Measured on News in both appearances, distances from the top
+ * of the text under a lead story's picture:
+ *   lead        picture 399 x 300 pt with 3 pt corners; the publisher's logo from 13 pt, 16 pt
+ *               tall; headline 22 pt bold on a 24 pt pitch, cap top at 43 pt, room for three
+ *               lines; the age 9 pt bold, cap top at 124 pt
+ *   secondary   258 pt: text in 162 pt, then 8 pt, then an 88 pt thumbnail; logo 10 pt tall;
+ *               headline 15.5 pt bold on a 16 pt pitch, cap top at 19.5 pt, three lines and an
+ *               ellipsis; the age's cap top at 82.5 pt
+ *   video       a 44 pt disc with a 19 x 22 pt triangle over the middle of the picture
+ *
+ * States
+ *   [data-variant="lead" | "secondary"]   layout
+ *   [data-video]                          the play badge
+ *   :active on a link or a button         dimmed by a tenth (provisional)
+ *   :focus-visible                        focus ring, in the key window only
+ *   :disabled, [aria-disabled="true"]     half opacity (provisional)
+ *   [data-force~="pressed" | "focus"]     previews of the transient states
+ *
+ * Consumer variables
+ *   --mac-story-card-aspect               the lead picture's proportions (399 / 300)
+ *   --mac-story-card-publisher-height     height of the publisher's line (lead 16 pt,
+ *                                         secondary 10 pt): News fits it to the logo
+ */
+.mac-story-card {
+  display: grid;
+  box-sizing: border-box;
+  grid-template-columns: minmax(0, 1fr) auto;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--mac-story-card-title);
+  font: var(--mac-font-weight-bold) 22px / 24px var(--mac-font-family-system);
+  text-align: start;
+  text-decoration: none;
+  cursor: default;
+  appearance: none;
+  outline: none;
+}
+
+.mac-story-card-artwork {
+  position: relative;
+  display: grid;
+  grid-area: 1 / 1 / auto / -1;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  aspect-ratio: var(--mac-story-card-aspect, 399 / 300);
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--mac-story-card-placeholder);
+}
+
+.mac-story-card-artwork > :where(*) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mac-story-card-text {
+  display: flex;
+  grid-area: 2 / 1 / auto / -1;
+  flex-direction: column;
+  padding-top: 13px;
+}
+
+.mac-story-card-publisher {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: var(--mac-story-card-publisher-height, 16px);
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 13px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* A logo is as tall as the publisher's line. */
+.mac-story-card-publisher > :where(img, svg) {
+  width: auto;
+  height: 100%;
+}
+
+.mac-story-card-title {
+  display: -webkit-box;
+  flex: none;
+  min-height: 72px;
+  margin-top: 9.75px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.mac-story-card-time {
+  margin-top: 11px;
+  color: var(--mac-story-card-time);
+  font-size: 9px;
+  line-height: 11px;
+}
+
+/* Secondary: the text beside a square thumbnail, the age level with the thumbnail's foot. */
+.mac-story-card:where([data-variant="secondary"]) {
+  column-gap: 8px;
+  font-size: 15.5px;
+  line-height: 16px;
+}
+
+:where(.mac-story-card[data-variant="secondary"]) > .mac-story-card-artwork {
+  grid-area: 1 / 2;
+  align-self: start;
+  width: 88px;
+  aspect-ratio: 1;
+}
+
+:where(.mac-story-card[data-variant="secondary"]) > .mac-story-card-text {
+  grid-area: 1 / 1;
+  min-height: 90.5px;
+  padding-top: 0;
+}
+
+:where(.mac-story-card[data-variant="secondary"]) .mac-story-card-publisher {
+  height: var(--mac-story-card-publisher-height, 10px);
+}
+
+:where(.mac-story-card[data-variant="secondary"]) .mac-story-card-title {
+  min-height: 0;
+  margin-top: 7px;
+}
+
+:where(.mac-story-card[data-variant="secondary"]) .mac-story-card-time {
+  margin-top: auto;
+}
+
+/* Video: the disc, then the triangle on it. */
+:where(.mac-story-card[data-video]) > .mac-story-card-artwork::before,
+:where(.mac-story-card[data-video]) > .mac-story-card-artwork::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 44px;
+  height: 44px;
+  margin: auto;
+  border-radius: 50%;
+  background: var(--mac-story-card-badge);
+}
+
+:where(.mac-story-card[data-video]) > .mac-story-card-artwork::after {
+  left: 4px;
+  width: 19px;
+  height: 22px;
+  border-radius: 0;
+  background: var(--mac-story-card-badge-glyph);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+/* Pressed: a card that is a link or a button dims */
+.mac-story-card:where(:where(:any-link, :enabled):active, [data-force~="pressed"]) {
+  filter: brightness(0.9);
+}
+
+.mac-story-card:where(:disabled, [aria-disabled="true"]) {
+  opacity: 0.5;
+}
+
+/* Keyboard focus ring; key window only */
+.mac-story-card:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: var(--mac-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .mac-story-card-artwork {
+    border: 1px solid CanvasText;
+  }
+}

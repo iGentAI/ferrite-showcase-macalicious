@@ -1,0 +1,135 @@
+{
+  "$schema": "../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "window-light",
+      "description": "The whole Script Editor window with the Mail rule action script and the Description view, Aqua. Whole crop: the text is set in fallback fonts, and the toolbar's and the bottom bar's glyphs are stand-in drawings.",
+      "example": "visual-window",
+      "appearance": "light",
+      "reference": {
+        "file": "10-15-Catalina-Light-Script-Editor.png",
+        "crop": { "x": 112, "y": 76, "width": 1400, "height": 1410 }
+      },
+      "budget": { "1x": 0.081, "2x": 0.065 },
+      "deltaBudget": { "1x": 8.5, "2x": 8.3 }
+    },
+    {
+      "name": "window-light-layout",
+      "description": "As window-light with the text and the stand-in drawings masked (the window title, the six glyphs of the toolbar, the titles of the two pop-up buttons, the script, the header's title and the three glyphs of the bottom bar), to score the frame, the title bar and its controls' bezels, the navigation bar with its dividers and lines, the paper, the split view's divider, the header, the accessory view and the bottom bar.",
+      "example": "visual-window",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 214, "y": 3, "width": 272, "height": 17 },
+        { "x": 18, "y": 27, "width": 18, "height": 18 },
+        { "x": 64, "y": 27, "width": 18, "height": 18 },
+        { "x": 111, "y": 27, "width": 16, "height": 18 },
+        { "x": 156, "y": 27, "width": 17, "height": 18 },
+        { "x": 627, "y": 27, "width": 22, "height": 18 },
+        { "x": 662, "y": 27, "width": 22, "height": 18 },
+        { "x": 5, "y": 57, "width": 58, "height": 15 },
+        { "x": 91, "y": 58, "width": 132, "height": 14 },
+        { "x": 4, "y": 76, "width": 694, "height": 418 },
+        { "x": 8, "y": 499, "width": 70, "height": 15 },
+        { "x": 7, "y": 685, "width": 20, "height": 19 },
+        { "x": 41, "y": 686, "width": 16, "height": 17 },
+        { "x": 70, "y": 686, "width": 20, "height": 17 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Light-Script-Editor.png",
+        "crop": { "x": 112, "y": 76, "width": 1400, "height": 1410 }
+      },
+      "budget": { "1x": 0.013, "2x": 0.0018 },
+      "deltaBudget": { "1x": 0.65, "2x": 0.45 }
+    },
+    {
+      "name": "window-dark",
+      "description": "The whole Script Editor window of the dark capture, Dark Aqua: the same script scrolled 10 pt down on paper that stays white. Whole crop: fallback fonts and stand-in glyphs; the capture also shows the script's scroller, which is not drawn while nothing scrolls.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Script-Editor.png",
+        "crop": { "x": 112, "y": 76, "width": 1400, "height": 1410 }
+      },
+      "budget": { "1x": 0.074, "2x": 0.058 },
+      "deltaBudget": { "1x": 8.1, "2x": 7.3 }
+    },
+    {
+      "name": "window-dark-layout",
+      "description": "As window-dark with the same regions masked as window-light-layout; the script's mask also covers the scroller the dark capture shows. Scores the frame, the title bar and its controls' bezels, the navigation bar, the white paper, the divider, the header and the bottom bar, Dark Aqua.",
+      "example": "visual-window-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [
+        { "x": 214, "y": 3, "width": 272, "height": 17 },
+        { "x": 18, "y": 27, "width": 18, "height": 18 },
+        { "x": 64, "y": 27, "width": 18, "height": 18 },
+        { "x": 111, "y": 27, "width": 16, "height": 18 },
+        { "x": 156, "y": 27, "width": 17, "height": 18 },
+        { "x": 627, "y": 27, "width": 22, "height": 18 },
+        { "x": 662, "y": 27, "width": 22, "height": 18 },
+        { "x": 5, "y": 57, "width": 58, "height": 15 },
+        { "x": 91, "y": 58, "width": 132, "height": 14 },
+        { "x": 4, "y": 76, "width": 694, "height": 418 },
+        { "x": 8, "y": 499, "width": 70, "height": 15 },
+        { "x": 7, "y": 685, "width": 20, "height": 19 },
+        { "x": 41, "y": 686, "width": 16, "height": 17 },
+        { "x": 70, "y": 686, "width": 20, "height": 17 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Script-Editor.png",
+        "crop": { "x": 112, "y": 76, "width": 1400, "height": 1410 }
+      },
+      "budget": { "1x": 0.012, "2x": 0.0018 },
+      "deltaBudget": { "1x": 1.35, "2x": 1.2 }
+    },
+    {
+      "name": "accessory-hidden-light",
+      "description": "A state no screenshot shows, reached with real input: a click on the toolbar's accessory view toggle hides the view under the script, so the script's paper reaches the bottom bar, Aqua.",
+      "example": "visual-window",
+      "appearance": "light",
+      "actions": [{ "click": "button[aria-label='Accessory view']" }],
+      "expect": {
+        "size": { "width": 700, "height": 705 },
+        "pixels": [
+          {
+            "x": 680,
+            "y": 506,
+            "color": "#ffffff",
+            "note": "the script's paper where the header was: measured #ffffff (spec: script-editor, script text view)"
+          },
+          {
+            "x": 680,
+            "y": 694,
+            "color": "#ececec",
+            "note": "the bottom bar, which stays: measured #ececec (spec: script-editor, bottom bar)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accessory-hidden-dark",
+      "description": "As accessory-hidden-light, Dark Aqua: the paper is white there too.",
+      "example": "visual-window",
+      "appearance": "dark",
+      "actions": [{ "click": "button[aria-label='Accessory view']" }],
+      "expect": {
+        "size": { "width": 700, "height": 705 },
+        "pixels": [
+          {
+            "x": 680,
+            "y": 506,
+            "color": "#ffffff",
+            "note": "the script's paper where the header was: measured #ffffff in the dark capture too (spec: script-editor, script text view)"
+          },
+          {
+            "x": 680,
+            "y": 694,
+            "color": "#323232",
+            "note": "the bottom bar, which stays: measured #323332 (spec: script-editor, bottom bar)"
+          }
+        ]
+      }
+    }
+  ]
+}

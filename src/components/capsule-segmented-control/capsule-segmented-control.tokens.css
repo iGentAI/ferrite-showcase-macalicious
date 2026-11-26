@@ -1,0 +1,25 @@
+/*
+ * Capsule segmented control: the colours that belong to this component alone. The Aqua values
+ * are measured on the Info / Picture control of a Contacts card being edited
+ * (10-15-Catalina-Light-Contacts.png, column x=1250 and row y=265). No Dark Aqua capture shows
+ * the control, so every token is provisional: one tag per token, and the dark half is inferred.
+ */
+:root {
+  /* [provisional] Aqua measured: the outline #e5e5e5 over the card's #ffffff is black at
+     10.2%. Dark Aqua inferred. */
+  --mac-capsule-segmented-control-border: light-dark(rgb(0 0 0 / 0.102), rgb(255 255 255 / 0.15));
+  /* [provisional] Aqua measured: the selected segment #f5f5f5 over #ffffff is black at 4%.
+     Dark Aqua inferred. */
+  --mac-capsule-segmented-control-fill-selected: light-dark(
+    rgb(0 0 0 / 0.04),
+    rgb(255 255 255 / 0.08)
+  );
+  /* [provisional] Aqua measured: the selected title's ink is #000000, the other title's
+     #262626 (the control text colour). Dark Aqua inferred. */
+  --mac-capsule-segmented-control-text-selected: light-dark(#000000, #ffffff);
+  /* [provisional] no capture shows a segment being pressed: twice the selected tint */
+  --mac-capsule-segmented-control-fill-pressed: light-dark(
+    rgb(0 0 0 / 0.08),
+    rgb(255 255 255 / 0.16)
+  );
+}

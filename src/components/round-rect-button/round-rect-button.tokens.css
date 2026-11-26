@@ -1,0 +1,21 @@
+/*
+ * Round-rect button: the values that differ between Aqua and Dark Aqua and belong to this
+ * component alone. Measured on "Connect As…" in Finder's Network window,
+ * 10-15-Catalina-Light-Finder-Network.png row 442 and its dark twin.
+ */
+:root {
+  /* [measured, computed] the 1 pt outline: #ababab over #f5f5f5 is black at 30%; #676869
+     over #252628 is white at 30% */
+  --mac-round-rect-button-border: light-dark(rgb(0 0 0 / 0.3), rgb(255 255 255 / 0.3));
+  /* [provisional] no capture shows the button disabled or pressed: half the outline's alpha,
+     and the pressed tint of the scope bar's round-rect actions */
+  --mac-round-rect-button-border-disabled: light-dark(rgb(0 0 0 / 0.15), rgb(255 255 255 / 0.15));
+  --mac-round-rect-button-fill-pressed: light-dark(rgb(0 0 0 / 0.12), rgb(255 255 255 / 0.16));
+  /* [measured, computed] in an inactive window, on the add button under Collections in Books'
+     sidebar: outline #dfdfdf over #f6f6f6 (black at 9.3%) and #4f5153 over #2c2e30 (white at
+     16.6%, 16.7% and 16.9% in red, green and blue); the plus #777777 (black at 51.6%) and
+     #a8aaac (white at 58.8% to 59.9%)
+     (10-15-Catalina-Light-Books.png @ 183,572-573 and 183,590; Dark the same pixels) */
+  --mac-round-rect-button-border-inactive: light-dark(rgb(0 0 0 / 0.093), rgb(255 255 255 / 0.167));
+  --mac-round-rect-button-text-inactive: light-dark(rgb(0 0 0 / 0.516), rgb(255 255 255 / 0.59));
+}

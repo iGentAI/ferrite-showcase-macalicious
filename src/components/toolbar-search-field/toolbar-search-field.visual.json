@@ -1,0 +1,248 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "finder-light",
+      "description": "Empty search field in the key Finder window, Aqua. Whole crop, with the placeholder in the fallback font.",
+      "example": "visual-finder",
+      "appearance": "light",
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Network.png",
+        "crop": { "x": 1296, "y": 120, "width": 660, "height": 56 }
+      },
+      "budget": { "1x": 0.084, "2x": 0.0165 },
+      "deltaBudget": { "1x": 7.4, "2x": 2.7 }
+    },
+    {
+      "name": "finder-light-bezel",
+      "description": "As finder-light with the placeholder masked, to score the bezel and the magnifier: the placeholder is set in the fallback font off Apple platforms.",
+      "example": "visual-finder",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [{ "x": 28, "y": 7, "width": 50, "height": 14 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Finder-Network.png",
+        "crop": { "x": 1296, "y": 120, "width": 660, "height": 56 }
+      },
+      "budget": { "1x": 0.116, "2x": 0.003 },
+      "deltaBudget": { "1x": 6.2, "2x": 1.5 }
+    },
+    {
+      "name": "finder-dark",
+      "description": "Empty search field in the key Finder window, Dark Aqua. Whole crop.",
+      "example": "visual-finder-dark",
+      "appearance": "dark",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Network.png",
+        "crop": { "x": 1442, "y": 120, "width": 660, "height": 56 }
+      },
+      "budget": { "1x": 0.07, "2x": 0.0097 },
+      "deltaBudget": { "1x": 5.6, "2x": 2.2 }
+    },
+    {
+      "name": "finder-dark-bezel",
+      "description": "As finder-dark with the placeholder masked.",
+      "example": "visual-finder-dark",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [{ "x": 24, "y": 7, "width": 50, "height": 14 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Network.png",
+        "crop": { "x": 1442, "y": 120, "width": 660, "height": 56 }
+      },
+      "budget": { "1x": 0.066, "2x": 0.0027 },
+      "deltaBudget": { "1x": 5.1, "2x": 1.6 }
+    },
+    {
+      "name": "focused-light",
+      "description": "Focused field with text and the clear button in the Help Viewer, Aqua. Whole crop, with the typed text in the fallback font. The click leaves the caret after the text, as in the capture; a toolbar that selected the text on a pointer focus would fail this comparison.",
+      "example": "visual-focused",
+      "appearance": "light",
+      "actions": [{ "click": "input" }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Help-Search.png",
+        "crop": { "x": 1126, "y": 64, "width": 672, "height": 68 }
+      },
+      "budget": { "1x": 0.064, "2x": 0.0113 },
+      "deltaBudget": { "1x": 5.9, "2x": 3.1 }
+    },
+    {
+      "name": "focused-light-bezel",
+      "description": "As focused-light with the typed text masked, to score the focus ring, the bezel's border under the ring, the magnifier and the clear button.",
+      "example": "visual-focused",
+      "appearance": "light",
+      "actions": [{ "click": "input" }],
+      "threshold": 0.05,
+      "masks": [{ "x": 26, "y": 9, "width": 60, "height": 16 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Help-Search.png",
+        "crop": { "x": 1126, "y": 64, "width": 672, "height": 68 }
+      },
+      "budget": { "1x": 0.099, "2x": 0.0075 },
+      "deltaBudget": { "1x": 4.7, "2x": 1.4 }
+    },
+    {
+      "name": "focused-dark",
+      "description": "Focused field with text and the clear button in the Help Viewer, Dark Aqua. Whole crop. The click leaves the caret after the text, as in the capture; a toolbar that selected the text on a pointer focus would fail this comparison.",
+      "example": "visual-focused",
+      "appearance": "dark",
+      "actions": [{ "click": "input" }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Help-Search.png",
+        "crop": { "x": 1126, "y": 64, "width": 672, "height": 68 }
+      },
+      "budget": { "1x": 0.06, "2x": 0.0097 },
+      "deltaBudget": { "1x": 8.7, "2x": 5.2 }
+    },
+    {
+      "name": "focused-dark-bezel",
+      "description": "As focused-dark with the typed text masked.",
+      "example": "visual-focused",
+      "appearance": "dark",
+      "actions": [{ "click": "input" }],
+      "threshold": 0.05,
+      "masks": [{ "x": 26, "y": 9, "width": 60, "height": 16 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Help-Search.png",
+        "crop": { "x": 1126, "y": 64, "width": 672, "height": 68 }
+      },
+      "budget": { "1x": 0.098, "2x": 0.0049 },
+      "deltaBudget": { "1x": 7.9, "2x": 4.0 }
+    },
+    {
+      "name": "token-dark",
+      "description": "Focused field holding the token Name: Aqua and the clear button, in the Finder window during a search, Dark Aqua. Whole crop, with the token's text in the fallback font. Only the Dark Aqua capture shows a token.",
+      "example": "visual-token-dark",
+      "appearance": "dark",
+      "actions": [{ "click": "input" }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Search.png",
+        "crop": { "x": 1356, "y": 120, "width": 660, "height": 56 }
+      },
+      "budget": { "1x": 0.09, "2x": 0.04 },
+      "deltaBudget": { "1x": 8.0, "2x": 4.6 }
+    },
+    {
+      "name": "token-dark-drawing",
+      "description": "As token-dark with the text of the token's two parts masked, to score the capsule's place, size and two fills, the chevron, the caret, the clear button and the focus ring.",
+      "example": "visual-token-dark",
+      "appearance": "dark",
+      "actions": [{ "click": "input" }],
+      "threshold": 0.05,
+      "masks": [
+        { "x": 33, "y": 10, "width": 26, "height": 9 },
+        { "x": 76, "y": 9, "width": 30, "height": 12 }
+      ],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Finder-Search.png",
+        "crop": { "x": 1356, "y": 120, "width": 660, "height": 56 }
+      },
+      "budget": { "1x": 0.105, "2x": 0.0111 },
+      "deltaBudget": { "1x": 6.0, "2x": 2.0 }
+    },
+    {
+      "name": "console-light",
+      "description": "The leading end of Console's empty search field, the bright variant, Aqua, where it is the standard field. Whole crop, with the placeholder in the fallback font.",
+      "example": "visual-console",
+      "appearance": "light",
+      "reference": {
+        "file": "10-15-Catalina-Light-Console.png",
+        "crop": { "x": 926, "y": 118, "width": 400, "height": 60 }
+      },
+      "budget": { "1x": 0.093, "2x": 0.0332 },
+      "deltaBudget": { "1x": 8.0, "2x": 4.5 }
+    },
+    {
+      "name": "console-light-bezel",
+      "description": "As console-light with the placeholder masked, to score the bezel and the magnifier.",
+      "example": "visual-console",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [{ "x": 28, "y": 8, "width": 42, "height": 14 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Console.png",
+        "crop": { "x": 926, "y": 118, "width": 400, "height": 60 }
+      },
+      "budget": { "1x": 0.12, "2x": 0.0125 },
+      "deltaBudget": { "1x": 6.7, "2x": 2.5 }
+    },
+    {
+      "name": "console-dark",
+      "description": "The leading end of Console's empty search field, the bright variant, Dark Aqua: the brighter fill and placeholder. Whole crop.",
+      "example": "visual-console",
+      "appearance": "dark",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Console.png",
+        "crop": { "x": 926, "y": 118, "width": 400, "height": 60 }
+      },
+      "budget": { "1x": 0.08, "2x": 0.0272 },
+      "deltaBudget": { "1x": 7.8, "2x": 4.0 }
+    },
+    {
+      "name": "console-dark-bezel",
+      "description": "As console-dark with the placeholder masked.",
+      "example": "visual-console",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [{ "x": 28, "y": 8, "width": 42, "height": 14 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Console.png",
+        "crop": { "x": 926, "y": 118, "width": 400, "height": 60 }
+      },
+      "budget": { "1x": 0.07, "2x": 0.01 },
+      "deltaBudget": { "1x": 7.1, "2x": 2.6 }
+    },
+    {
+      "name": "font-book-light",
+      "description": "The leading end of Font Book's empty search field, Aqua: the search menu button (magnifier and chevron) and the placeholder 4 pt later than in a field without it. Whole crop, with the placeholder in the fallback font.",
+      "example": "visual-font-book",
+      "appearance": "light",
+      "reference": {
+        "file": "10-15-Catalina-Light-Font-Book.png",
+        "crop": { "x": 1276, "y": 118, "width": 400, "height": 60 }
+      },
+      "budget": { "1x": 0.099, "2x": 0.027 },
+      "deltaBudget": { "1x": 8.2, "2x": 3.8 }
+    },
+    {
+      "name": "font-book-light-bezel",
+      "description": "As font-book-light with the placeholder masked, to score the bezel, the magnifier and the chevron.",
+      "example": "visual-font-book",
+      "appearance": "light",
+      "threshold": 0.05,
+      "masks": [{ "x": 32, "y": 8, "width": 44, "height": 14 }],
+      "reference": {
+        "file": "10-15-Catalina-Light-Font-Book.png",
+        "crop": { "x": 1276, "y": 118, "width": 400, "height": 60 }
+      },
+      "budget": { "1x": 0.117, "2x": 0.0067 },
+      "deltaBudget": { "1x": 6.4, "2x": 1.8 }
+    },
+    {
+      "name": "font-book-dark",
+      "description": "The leading end of Font Book's empty search field, Dark Aqua. Whole crop.",
+      "example": "visual-font-book",
+      "appearance": "dark",
+      "reference": {
+        "file": "10-15-Catalina-Dark-Font-Book.png",
+        "crop": { "x": 1276, "y": 118, "width": 400, "height": 60 }
+      },
+      "budget": { "1x": 0.074, "2x": 0.016 },
+      "deltaBudget": { "1x": 6.5, "2x": 3.4 }
+    },
+    {
+      "name": "font-book-dark-bezel",
+      "description": "As font-book-dark with the placeholder masked.",
+      "example": "visual-font-book",
+      "appearance": "dark",
+      "threshold": 0.05,
+      "masks": [{ "x": 32, "y": 8, "width": 44, "height": 14 }],
+      "reference": {
+        "file": "10-15-Catalina-Dark-Font-Book.png",
+        "crop": { "x": 1276, "y": 118, "width": 400, "height": 60 }
+      },
+      "budget": { "1x": 0.07, "2x": 0.0058 },
+      "deltaBudget": { "1x": 5.7, "2x": 2.5 }
+    }
+  ]
+}

@@ -1,0 +1,479 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "bar-light",
+      "description": "The Spaces bar, Aqua, fourth space current. The four thumbnails are masked: in the capture they are pictures of Apple's desktops, in the example plain stand-ins. The bar's fill and the strip of desktop picture under it are painted by the example as measured.",
+      "example": "visual-bar-light",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 504,
+          "y": 28,
+          "width": 144,
+          "height": 90
+        },
+        {
+          "x": 680,
+          "y": 28,
+          "width": 144,
+          "height": 90
+        },
+        {
+          "x": 856,
+          "y": 28,
+          "width": 144,
+          "height": 90
+        },
+        {
+          "x": 1032,
+          "y": 28,
+          "width": 144,
+          "height": 90
+        }
+      ],
+      "budget": {
+        "1x": 0.008,
+        "2x": 0.007
+      },
+      "deltaBudget": {
+        "1x": 2.15,
+        "2x": 2.05
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mission-Control.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 3360,
+          "height": 296
+        }
+      }
+    },
+    {
+      "name": "bar-light-drawing",
+      "description": "The same with the four names masked too (text, set in the fallback font off Apple platforms): ring, thumbnail shadows, plus and the edge under the bar alone.",
+      "example": "visual-bar-light",
+      "appearance": "light",
+      "masks": [
+        {
+          "x": 504,
+          "y": 28,
+          "width": 144,
+          "height": 90
+        },
+        {
+          "x": 680,
+          "y": 28,
+          "width": 144,
+          "height": 90
+        },
+        {
+          "x": 856,
+          "y": 28,
+          "width": 144,
+          "height": 90
+        },
+        {
+          "x": 1032,
+          "y": 28,
+          "width": 144,
+          "height": 90
+        },
+        {
+          "x": 500,
+          "y": 124,
+          "width": 680,
+          "height": 18
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.01,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 1.65,
+        "2x": 1.45
+      },
+      "reference": {
+        "file": "10-15-Catalina-Light-Mission-Control.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 3360,
+          "height": 296
+        }
+      }
+    },
+    {
+      "name": "bar-dark",
+      "description": "The Spaces bar, Dark Aqua, first space current, thumbnails masked as in bar-light.",
+      "example": "visual-bar-dark",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 504,
+          "y": 28,
+          "width": 144,
+          "height": 90
+        },
+        {
+          "x": 680,
+          "y": 28,
+          "width": 144,
+          "height": 90
+        },
+        {
+          "x": 856,
+          "y": 28,
+          "width": 144,
+          "height": 90
+        },
+        {
+          "x": 1032,
+          "y": 28,
+          "width": 144,
+          "height": 90
+        }
+      ],
+      "budget": {
+        "1x": 0.0075,
+        "2x": 0.0065
+      },
+      "deltaBudget": {
+        "1x": 1.75,
+        "2x": 1.8
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mission-Control.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 3360,
+          "height": 296
+        }
+      }
+    },
+    {
+      "name": "bar-dark-drawing",
+      "description": "The same with the four names masked too: ring, thumbnail shadows and plus alone.",
+      "example": "visual-bar-dark",
+      "appearance": "dark",
+      "masks": [
+        {
+          "x": 504,
+          "y": 28,
+          "width": 144,
+          "height": 90
+        },
+        {
+          "x": 680,
+          "y": 28,
+          "width": 144,
+          "height": 90
+        },
+        {
+          "x": 856,
+          "y": 28,
+          "width": 144,
+          "height": 90
+        },
+        {
+          "x": 1032,
+          "y": 28,
+          "width": 144,
+          "height": 90
+        },
+        {
+          "x": 500,
+          "y": 124,
+          "width": 680,
+          "height": 18
+        }
+      ],
+      "threshold": 0.05,
+      "budget": {
+        "1x": 0.001,
+        "2x": 0.001
+      },
+      "deltaBudget": {
+        "1x": 1.05,
+        "2x": 1.05
+      },
+      "reference": {
+        "file": "10-15-Catalina-Dark-Mission-Control.png",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 3360,
+          "height": 296
+        }
+      }
+    },
+    {
+      "name": "windows-light",
+      "description": "Mission Control over a flat mid grey, Aqua: the bar's material, the ring of the current space, and two windows of the captures' sizes laid out side by side at 97.9%.",
+      "example": "visual-windows",
+      "appearance": "light",
+      "expect": {
+        "size": {
+          "width": 1680,
+          "height": 1050
+        },
+        "pixels": [
+          {
+            "x": 300,
+            "y": 140,
+            "color": "#a0a0a0",
+            "note": "--mac-mission-control-bar-fill, 25% white over #808080 (blur and saturation leave a flat grey unchanged); the spec's recipe, inferred"
+          },
+          {
+            "x": 300,
+            "y": 150,
+            "color": "#808080",
+            "note": "the desktop 4 pt under the 146 pt bar (measured height), past its edge shadow"
+          },
+          {
+            "x": 765.5,
+            "y": 73,
+            "color": "#3b98fc",
+            "note": "--mac-mission-control-ring, 3 pt wide from 4 pt outside the single, centred 144 pt thumbnail (measured)"
+          },
+          {
+            "x": 840,
+            "y": 73,
+            "color": "#606060",
+            "note": "the example's picture in the thumbnail"
+          },
+          {
+            "x": 16.5,
+            "y": 500,
+            "color": "#808080",
+            "note": "desktop left of the first thumbnail, which starts 18 pt from the side (measured: px 36 of the captures)"
+          },
+          {
+            "x": 19.5,
+            "y": 500,
+            "color": "#404040",
+            "note": "the left window's stand-in content, from 18 pt"
+          },
+          {
+            "x": 994.5,
+            "y": 500,
+            "color": "#404040",
+            "note": "still the left window: 999 pt at 97.9% ends at 996.2 pt (measured: px 1991)"
+          },
+          {
+            "x": 1002,
+            "y": 500,
+            "color": "#808080",
+            "note": "the 12 pt between the thumbnails (measured: px 1992 to 2015). The content is scaled: at life size it would reach 1017 pt"
+          },
+          {
+            "x": 1009.5,
+            "y": 500,
+            "color": "#c0c0c0",
+            "note": "the right window's stand-in content, from 1007.9 pt (measured: px 2016)"
+          },
+          {
+            "x": 1660.5,
+            "y": 500,
+            "color": "#c0c0c0",
+            "note": "the right window reaches 1662 pt, 18 pt from the side (measured: px 3323)"
+          },
+          {
+            "x": 1663.5,
+            "y": 500,
+            "color": "#808080",
+            "note": "desktop right of it"
+          },
+          {
+            "x": 500,
+            "y": 173.5,
+            "color": "#808080",
+            "note": "desktop above the left window. The pair is 764.7 pt high and centred in the 788 pt between bar and Dock inset (inferred; the captures have it 10 pt lower)"
+          },
+          {
+            "x": 500,
+            "y": 177.5,
+            "color": "#404040",
+            "note": "the left window, from 175.6 pt down (inferred placement)"
+          },
+          {
+            "x": 1300,
+            "y": 395.5,
+            "color": "#808080",
+            "note": "desktop above the right window, which keeps its 227 pt below the left one, scaled to 222 (measured: px 372 and 816)"
+          },
+          {
+            "x": 1300,
+            "y": 399.5,
+            "color": "#c0c0c0",
+            "note": "the right window, from 397.9 pt down"
+          },
+          {
+            "x": 1300,
+            "y": 938.5,
+            "color": "#c0c0c0",
+            "note": "the right window ends at 940.4 pt: 554 pt at 97.9%"
+          },
+          {
+            "x": 1300,
+            "y": 942.5,
+            "color": "#808080",
+            "note": "desktop under it"
+          }
+        ]
+      }
+    },
+    {
+      "name": "windows-dark",
+      "description": "Mission Control over a flat mid grey, Dark Aqua: the bar's material, the ring, and the same layout.",
+      "example": "visual-windows",
+      "appearance": "dark",
+      "expect": {
+        "size": {
+          "width": 1680,
+          "height": 1050
+        },
+        "pixels": [
+          {
+            "x": 300,
+            "y": 140,
+            "color": "#6d6d6d",
+            "note": "--mac-mission-control-bar-fill, 15% black over #808080; the spec's recipe, inferred"
+          },
+          {
+            "x": 300,
+            "y": 146.25,
+            "color": "#808080",
+            "scale": 2,
+            "note": "the desktop directly under the bar: no edge in Dark Aqua (measured)"
+          },
+          {
+            "x": 765.5,
+            "y": 73,
+            "color": "#3b98fc",
+            "note": "--mac-mission-control-ring, the same in both appearances (measured)"
+          },
+          {
+            "x": 19.5,
+            "y": 500,
+            "color": "#404040",
+            "note": "the left window, from 18 pt"
+          },
+          {
+            "x": 1002,
+            "y": 500,
+            "color": "#808080",
+            "note": "the 12 pt between the thumbnails"
+          },
+          {
+            "x": 1660.5,
+            "y": 500,
+            "color": "#c0c0c0",
+            "note": "the right window reaches 1662 pt"
+          }
+        ]
+      }
+    },
+    {
+      "name": "keyboard-light",
+      "description": "Arrow Down from the freshly opened overview focuses the first window, Aqua: a ring around its thumbnail and its title on a plate. Inferred; no screenshot shows a window under the pointer or the focus.",
+      "example": "visual-windows",
+      "appearance": "light",
+      "actions": [
+        {
+          "key": "ArrowDown"
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 15.5,
+            "y": 500,
+            "color": "#3b98fc",
+            "note": "--mac-mission-control-ring, 3 pt wide from 1 pt outside the thumbnail (inferred: the spec's 3 pt outline)"
+          },
+          {
+            "x": 12.5,
+            "y": 500,
+            "color": "#808080",
+            "note": "desktop outside the ring"
+          },
+          {
+            "x": 484,
+            "y": 829,
+            "color": "#1a1a1a",
+            "tolerance": 3,
+            "note": "--mac-mission-control-caption-fill, 60% black over the window's #404040, in the plate's padding left of the title (inferred)"
+          },
+          {
+            "x": 1300,
+            "y": 829,
+            "color": "#c0c0c0",
+            "note": "the other window shows no caption"
+          }
+        ]
+      }
+    },
+    {
+      "name": "hover-dark",
+      "description": "The pointer over the second window, Dark Aqua: the same ring and plate. Inferred.",
+      "example": "visual-windows",
+      "appearance": "dark",
+      "actions": [
+        {
+          "hover": ".mac-mission-control-slot:last-child > .mac-mission-control-window"
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 1664.5,
+            "y": 500,
+            "color": "#3b98fc",
+            "note": "--mac-mission-control-ring around the right window, which ends at 1662 pt (inferred)"
+          },
+          {
+            "x": 15.5,
+            "y": 500,
+            "color": "#808080",
+            "note": "no ring around the other window"
+          }
+        ]
+      }
+    },
+    {
+      "name": "chosen-light",
+      "description": "Arrow Down, then Return, Aqua: the window is chosen and Mission Control closes, leaving the example's bare desktop.",
+      "example": "visual-windows",
+      "appearance": "light",
+      "actions": [
+        {
+          "key": "ArrowDown"
+        },
+        {
+          "key": "Enter"
+        }
+      ],
+      "expect": {
+        "pixels": [
+          {
+            "x": 300,
+            "y": 140,
+            "color": "#808080",
+            "note": "where the bar was: the example's own #808080"
+          },
+          {
+            "x": 500,
+            "y": 500,
+            "color": "#808080",
+            "note": "where the left thumbnail was"
+          }
+        ]
+      }
+    }
+  ]
+}

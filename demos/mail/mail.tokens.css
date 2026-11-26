@@ -1,0 +1,157 @@
+/*
+ * Colours and sizes of the Mail demo that no shared token holds. Both captures show the viewer
+ * window inactive behind the New Message window, so its values are those of an inactive window; the
+ * demo uses them in a key window too, which no screenshot shows.
+ */
+:root,
+[data-appearance] {
+  /* [measured] Message list under the sort bar: Light-Mail @ 1000,196,1,132; Dark-Mail. */
+  --mac-mail-list-background: light-dark(#f6f6f6, #2b2c2f);
+  /* [measured] Message pane: Light-Mail @ 1400,230; Dark-Mail @ 1520,200. */
+  --mac-mail-viewer-background: light-dark(#ffffff, #1e1f22);
+  /* [measured] Line between the panes: Light-Mail @ 452,300; Dark-Mail @ 440,300. */
+  --mac-mail-divider: light-dark(#dedede, #000000);
+  /* [provisional] Smart Mailbox sheet: no capture shows it; the system's control gap and a field
+     wide enough for five digits. */
+  --mac-mail-smart-gap: 8px;
+  /* [provisional] The classic layout's column heads: over the rows' text. */
+  --mac-mail-classic-head-inset: 24px;
+  /* [provisional] Markup's sheet and its inks: no capture shows them. */
+  --mac-mail-markup-red: #e0352b;
+  --mac-mail-markup-blue: #1b6fe0;
+  --mac-mail-markup-black: #1a1a1a;
+  --mac-mail-markup-ink-size: 18px;
+  --mac-mail-markup-handle-size: 9px;
+  --mac-mail-markup-handle: #ffffff;
+  --mac-mail-markup-tool-padding: 2px 8px;
+  --mac-mail-markup-tool-radius: 4px;
+  --mac-mail-markup-radius: 8px;
+  --mac-mail-markup-shadow: 0 8px 32px rgb(0 0 0 / 40%);
+  --mac-mail-markup-width: 640px;
+  --mac-mail-markup-height: 480px;
+  --mac-mail-smart-days-width: 56px;
+  /* [provisional] A thread's count: no capture shows it. */
+  --mac-mail-row-count-fill: light-dark(#0000001f, #ffffff29);
+  /* [provisional] Find bar's matches: no capture shows the bar. The current match has the system's
+     find colour, the others a paler one. */
+  --mac-mail-find-match: light-dark(#fff2a8, #6b6a1f);
+  --mac-mail-find-current-text: #000000;
+  /* [provisional] The search's suggestions: no capture shows them. */
+  --mac-mail-suggest-active-text: #ffffff;
+  --mac-mail-suggest-shadow: 0 4px 12px light-dark(#00000040, #00000080);
+  /* [measured] Line under the sort bar: Light-Mail @ 1020,240, two device pixels, #e7e7e7
+     over #d4d4d4; Dark-Mail @ 1020,238, #3a3b3e over #4d4e51. Drawn as their means. */
+  --mac-mail-sort-line: light-dark(#dedede, #434447);
+  /* [measured] Monogram disc and its letter: Light-Mail @ 2046,260,69,1; Dark-Mail @
+     2060,244 (the disc is a soft gradient; these are its middle values). */
+  --mac-mail-avatar-fill: light-dark(#999eaa, #636363);
+  --mac-mail-avatar-text: #ffffff;
+  /* [measured] Rules between the header fields of a new message: Light-Mail @ 1400,318,1,290;
+     the Dark Aqua value is read from Dark-Mail the same way. */
+  --mac-mail-compose-rule: light-dark(#e6e6e6, #343436);
+  /* [measured] Text area of a new message: Light-Mail @ 1400,318,1,290; Dark-Mail. */
+  --mac-mail-compose-background: light-dark(#ffffff, #1e1e20);
+  /* [provisional] a quote level: Mail's blue, its rule and its inset; no capture shows one */
+  --mac-mail-quote-color: light-dark(#2c6bd6, #6ea2f5);
+  --mac-mail-quote-rule-width: 2px;
+  --mac-mail-quote-padding: 8px;
+  /* [provisional] What the visual examples paint where the captures show the desktop picture,
+     which is not reproduced, and behind the Preferences window, whose capture has a
+     transparent margin (the comparison's matte is white). The comparisons mask the first. */
+  --mac-mail-visual-desktop: light-dark(#7d9cc0, #1d2c4a);
+  --mac-mail-visual-matte: #ffffff;
+
+  /* Sizes, in points, the same in both appearances. mail.css says where each lies. */
+  /* [measured] the message list in Light-Mail and Dark-Mail: the 22 pt sort bar and its line,
+     and the rows' lines 15 pt apart */
+  --mac-mail-sort-height: 23px;
+  /* [provisional] a thread's row: no capture shows it. */
+  --mac-mail-row-count-padding: 5px;
+  --mac-mail-row-count-radius: 7px;
+  --mac-mail-row-child-indent: 12px;
+  /* [provisional] a contact photo in a row: no capture shows it. */
+  --mac-mail-row-photo-size: 18px;
+  /* [provisional] the search's suggestions: no capture shows them. */
+  --mac-mail-suggest-margin: 10px;
+  --mac-mail-suggest-width: 300px;
+  --mac-mail-suggest-padding: 3px;
+  --mac-mail-suggest-radius: 5px;
+  --mac-mail-suggest-item-padding: 10px;
+  /* [provisional] the Rules and Signatures panes: no capture shows them. */
+  --mac-mail-rules-margin: 16px 20px;
+  --mac-mail-rules-list-height: 220px;
+  --mac-mail-signatures-list-width: 160px;
+  /* [provisional] the ring round a mailbox while messages are dragged over it: as Photos' */
+  --mac-mail-drop-width: 2px;
+  --mac-mail-sort-padding-start: 14.5px;
+  --mac-mail-sort-padding-end: 3px;
+  --mac-mail-row-sender-gap: 6px;
+  --mac-mail-row-line-height: 15px;
+  /* [provisional] the message pane: its margins, the header with the monogram, and the space
+     after a paragraph. The captures show a message, but no measurement of it is recorded. */
+  --mac-mail-message-padding-top: 17px;
+  --mac-mail-message-padding-right: 28.75px;
+  --mac-mail-message-padding-bottom: 20px;
+  --mac-mail-message-padding-left: 36px;
+  --mac-mail-header-gap: 16px;
+  --mac-mail-header-margin-bottom: 16px;
+  --mac-mail-header-padding-bottom: 14px;
+  --mac-mail-header-text-gap: 3px;
+  --mac-mail-header-line-gap: 12px;
+  --mac-mail-avatar-size: 36px;
+  --mac-mail-avatar-margin-top: 2px;
+  --mac-mail-paragraph-margin-bottom: 12px;
+  /* The buttons over a message the pointer is on: drawn to match the toolbar's, not measured */
+  --mac-mail-hover-bar-top: 1px;
+  --mac-mail-hover-bar-gap: 6px;
+  --mac-mail-hover-bar-padding: 1px 6px;
+  --mac-mail-hover-bar-radius: 5px;
+  /* [measured] the New Message window in both captures: header fields 33 pt apart, ruled from
+     the labels' edge 24 pt in, then the text */
+  --mac-mail-compose-field-gap: 6px;
+  --mac-mail-compose-field-min-height: 33px;
+  --mac-mail-compose-field-margin-start: 24px;
+  --mac-mail-compose-field-padding-top: 6px;
+  --mac-mail-compose-field-padding-bottom: 5px;
+  --mac-mail-compose-text-padding-top: 12px;
+  --mac-mail-compose-text-padding-right: 20px;
+  --mac-mail-compose-text-padding-left: 24px;
+  /* [provisional] the text of a new message: Mail's default message font, Helvetica 12 (Mail >
+     Preferences > Fonts & Colors), on a line 7/6 of its size as in TextEdit; no capture shows
+     text in a new message. Systems without Helvetica get Arial. */
+  --mac-mail-compose-message-font: 12px / 1.1667 Helvetica, Arial, sans-serif;
+  /* [provisional] the format bar under the header fields, which no capture shows: small
+     controls 16 pt high, 5 pt from the bar's edges and 3 pt apart, as in TextEdit's bar */
+  --mac-mail-format-bar-gap: 3px;
+  --mac-mail-format-bar-padding-block: 5px;
+  --mac-mail-format-bar-padding-end: 20px;
+  /* [provisional] the Fonts and Colors panels float at the top right of the page, under a
+     menu bar's 30 pt, 12 pt apart and from the page's edges */
+  --mac-mail-panels-gap: 12px;
+  --mac-mail-panels-padding-top: 30px;
+  --mac-mail-panels-padding: 12px;
+  /* [measured] the Preferences pane the Mail-Preferences captures show: the groups of
+     checkboxes 40 and 58 pt from the window's edge, 20 pt from row to row; the help button on
+     the last checkbox's row */
+  --mac-mail-preferences-form-padding-end: 68px;
+  --mac-mail-preferences-checks-gap: 6px;
+  --mac-mail-preferences-checks-margin-top: 16px;
+  --mac-mail-preferences-checks-margin-start: 20px;
+  --mac-mail-preferences-indent-margin-top: 8px;
+  --mac-mail-preferences-indent-margin-start: 38px;
+  --mac-mail-preferences-heading-margin-top: 16px;
+  --mac-mail-preferences-heading-margin-start: 20px;
+  --mac-mail-preferences-footer-margin-top: -17.5px;
+  --mac-mail-preferences-footer-margin-end: -4px;
+  /* [provisional] the desktop served by Ferrite, which no capture shows: a notice over the
+     message list or a new message's text */
+  --mac-mail-live-notice-padding: 6px;
+  /* [provisional] the attachments of a message, which no capture shows */
+  --mac-mail-live-attachments-max-height: 120px;
+  --mac-mail-live-attachments-padding: 8px;
+  --mac-mail-live-attachment-gap: 8px;
+  --mac-mail-live-picture-max-width: 480px;
+  --mac-mail-live-picture-max-height: 320px;
+  --mac-mail-panel-layer-z-index: 800;
+  --mac-mail-panel-layer-margin: 16px;
+}

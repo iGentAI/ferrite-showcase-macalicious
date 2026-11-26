@@ -1,0 +1,122 @@
+/*
+ * Network Utility demo: the layout of the window around the library's tab view, boxes and
+ * forms. Every colour is the library's: the tab view's box tints the window background and
+ * the group boxes tint that again, which gives the fills of both captures.
+ *
+ * Measured on 10-15-Catalina-Light-Network-Utility.png (frame 644 x 385 pt at x=112, y=76 of
+ * the 2x image; the dark capture agrees within a pixel). Distances below are points from the
+ * window's top-left corner.
+ *
+ *   tab strip        bezel x 61.5..582.5, top 34.5 (12.5 under the 22 pt title bar)
+ *   pane             starts with its line at y=44 and runs to the window's bottom edge and
+ *                    past both sides: the box is wider and taller than the body and clipped
+ *   prompt           ink from x=22.5, cap top y=77
+ *   pop-up button    x 30.5..342.5, y 104..124
+ *   boxes            surfaces x 30..342.5 and 357..618.5, y 147..354.5; titles above
+ *   rows             cap tops at y=161 and every 24 pt; a wrapped value continues after 16 pt
+ *   keys             end at x=160 and x=456.5; values start 10 pt after
+ */
+.mac-network-utility-body {
+  position: relative;
+  overflow: hidden;
+}
+
+/* The tab view's box runs past the window's sides and bottom, so that only its top edge is
+   seen; the strip is centred on the window because the overhang is the same on both sides
+   to within the half point the capture shows. */
+.mac-network-utility-tabs {
+  position: absolute;
+  top: var(--mac-network-utility-tabs-top);
+  right: var(--mac-network-utility-tabs-right);
+  bottom: var(--mac-network-utility-tabs-bottom);
+  left: var(--mac-network-utility-tabs-left);
+}
+
+/* A pane's own box is the part of the tab view's box inside the window, under the strip:
+   the box starts at the strip's centre line, 11 pt higher. */
+.mac-network-utility-pane {
+  position: absolute;
+  top: var(--mac-network-utility-pane-top);
+  right: var(--mac-network-utility-pane-right);
+  bottom: var(--mac-network-utility-pane-bottom);
+  left: var(--mac-network-utility-pane-left);
+  box-sizing: border-box;
+}
+
+.mac-network-utility-prompt {
+  display: block;
+}
+
+/* The pane's contextual menu covers the pane and adds no box of its own. */
+.mac-network-utility-pane-menu {
+  display: contents;
+}
+
+.mac-network-utility-prompt-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.mac-network-utility-prompt-row > .mac-network-utility-prompt {
+  margin-inline-end: auto;
+}
+
+/* Info */
+.mac-network-utility-info {
+  display: grid;
+  grid-template-columns:
+    var(--mac-network-utility-info-column-start)
+    var(--mac-network-utility-info-column-end);
+  column-gap: var(--mac-network-utility-info-gap);
+  align-content: start;
+  justify-items: start;
+  padding: var(--mac-network-utility-info-padding-top) 0 0
+    var(--mac-network-utility-info-padding-start);
+}
+
+.mac-network-utility-info > .mac-network-utility-prompt {
+  grid-column: 1 / -1;
+  margin-inline-start: var(--mac-network-utility-prompt-margin-start);
+}
+
+.mac-network-utility-interface {
+  grid-column: 1 / -1;
+  width: var(--mac-network-utility-interface-width);
+  margin-block: var(--mac-network-utility-interface-margin-top)
+    var(--mac-network-utility-interface-margin-bottom);
+}
+
+.mac-network-utility-box {
+  justify-self: stretch;
+  height: var(--mac-network-utility-box-height);
+}
+
+/* The tools: no screenshot shows these panes, so their layout is provisional. */
+.mac-network-utility-tool {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--mac-network-utility-tool-gap);
+  padding: var(--mac-network-utility-tool-padding-top) var(--mac-network-utility-tool-padding-end)
+    var(--mac-network-utility-tool-padding-bottom) var(--mac-network-utility-tool-padding-start);
+}
+
+.mac-network-utility-entry {
+  display: flex;
+  gap: var(--mac-network-utility-entry-gap);
+  align-items: center;
+  padding-inline-start: var(--mac-network-utility-entry-padding-start);
+}
+
+.mac-network-utility-run {
+  margin-inline-start: auto;
+  min-width: var(--mac-network-utility-run-min-width);
+  align-self: flex-end;
+}
+
+.mac-network-utility-output {
+  flex: 1 1 0;
+  min-height: 0;
+  margin-inline-start: var(--mac-network-utility-output-margin-start);
+}

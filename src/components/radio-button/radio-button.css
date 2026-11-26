@@ -1,0 +1,193 @@
+/*
+ * Radio button (NSButton, radio type) and its group. The button has role="radio" and holds the
+ * circle and the title; its height is the circle's, AppKit's alignment rectangle.
+ *
+ *   .mac-radio-button-circle            the well: hairline, fill, inner shadow
+ *   .mac-radio-button-circle::before    Dark Aqua: the ring and shadow outside the circle
+ *   .mac-radio-button-circle::after     the dot, or the dash of the mixed state
+ *
+ * States: [data-checked], [data-disabled] from Base UI; [data-mixed]; [data-size]; :active;
+ * :focus-visible; a window that is not key (no accent, no focus ring);
+ * [data-force~="pressed" | "focus"] pin the transient states for docs and visual tests.
+ */
+.mac-radio-button-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--mac-space-3);
+}
+
+.mac-radio-button-group:where([data-orientation="horizontal"]) {
+  flex-direction: row;
+  gap: 10px;
+}
+
+.mac-radio-button {
+  --_size: 16px;
+  --_line: var(--mac-line-height-regular);
+  --_fill-top: var(--mac-radio-button-fill-top);
+  --_fill-bottom: var(--mac-radio-button-fill-bottom);
+  --_border-top: var(--mac-radio-button-border-top);
+  --_border-side: var(--mac-radio-button-border-side);
+  --_border-bottom: var(--mac-radio-button-border-bottom);
+  --_well-shadow: var(--mac-radio-button-well-shadow);
+  --_ring-top: var(--mac-radio-button-ring-top);
+  --_ring-side: var(--mac-radio-button-ring-side);
+  --_ring-bottom: var(--mac-radio-button-ring-bottom);
+  --_dot: var(--mac-color-control-text);
+  --_dot-shadow: none;
+
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 3px;
+  color: var(--mac-color-control-text);
+  font: var(--mac-font-control-regular);
+  letter-spacing: var(--mac-tracking-regular);
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.mac-radio-button-circle {
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  inline-size: var(--_size);
+  block-size: var(--_size);
+  border: var(--mac-hairline) solid;
+  border-color: var(--_border-top) var(--_border-side) var(--_border-bottom);
+  border-radius: 50%;
+  background: linear-gradient(to bottom, var(--_fill-top), var(--_fill-bottom)) border-box;
+  box-shadow: var(--_well-shadow);
+  color: var(--_dot);
+}
+
+.mac-radio-button-circle::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--mac-hairline) * -2);
+  border: var(--mac-hairline) solid;
+  border-color: var(--_ring-top) var(--_ring-side) var(--_ring-bottom);
+  border-radius: 50%;
+  box-shadow: var(--mac-radio-button-shadow);
+  pointer-events: none;
+}
+
+/* The dot: 5.5 pt across in the 16 pt circle, and in proportion at the other sizes. Its box is
+   6 pt, whole device pixels, scaled to 0.92: a 5.5 pt box would be snapped to 5 pt. */
+.mac-radio-button:where([data-checked], [data-mixed]) .mac-radio-button-circle::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  inline-size: calc(var(--_size) * 0.375);
+  block-size: calc(var(--_size) * 0.375);
+  margin: auto;
+  border-radius: var(--_size);
+  background: currentColor;
+  box-shadow: var(--_dot-shadow);
+  transform: scale(0.92);
+}
+
+/* Mixed: an 8 x 2 pt dash instead of the dot. */
+.mac-radio-button:where([data-mixed]) .mac-radio-button-circle::after {
+  inline-size: calc(var(--_size) * 0.5);
+  block-size: calc(var(--_size) * 0.125);
+  transform: none;
+}
+
+.mac-radio-button-title {
+  margin-block: calc((var(--_size) - var(--_line)) / 2);
+}
+
+/* Sizes [provisional]: only the regular size is captured. */
+.mac-radio-button:where([data-size="small"]) {
+  --_size: 14px;
+  --_line: var(--mac-line-height-small);
+  font: var(--mac-font-control-small);
+  letter-spacing: var(--mac-tracking-small);
+}
+
+.mac-radio-button:where([data-size="mini"]) {
+  --_size: 12px;
+  --_line: var(--mac-line-height-mini);
+  font: var(--mac-font-control-mini);
+  letter-spacing: var(--mac-tracking-mini);
+}
+
+/* Pressed, off */
+.mac-radio-button:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  --_fill-top: var(--mac-radio-button-fill-pressed-top);
+  --_fill-bottom: var(--mac-radio-button-fill-pressed-bottom);
+}
+
+/* On and mixed: accent fill. Only in the key window. */
+.mac-radio-button:where([data-checked], [data-mixed]):where(:not([data-disabled])):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  --_fill-top: var(--mac-accent-control-fill-top);
+  --_fill-bottom: var(--mac-accent-control-fill-bottom);
+  --_border-top: var(--mac-radio-button-on-border-top);
+  --_border-side: var(--mac-radio-button-on-border-side);
+  --_border-bottom: var(--mac-accent-control-edge);
+  --_well-shadow: var(--mac-radio-button-on-well-shadow);
+  --_ring-top: var(--mac-bezel-accent-border-top);
+  --_ring-side: var(--mac-bezel-accent-border-side);
+  --_ring-bottom: var(--mac-bezel-accent-border-bottom);
+  --_dot: var(--mac-color-control-text-on-accent);
+  --_dot-shadow: var(--mac-radio-button-dot-shadow);
+}
+
+.mac-radio-button:where([data-checked], [data-mixed]):where(:active, [data-force~="pressed"]):where(
+  :not([data-disabled])
+):where(:not(:where([data-window-state="main"], [data-window-state="inactive"]) *)) {
+  --_fill-top: var(--mac-radio-button-on-fill-pressed-top);
+  --_fill-bottom: var(--mac-radio-button-on-fill-pressed-bottom);
+}
+
+/* Disabled: the circle at half opacity, the title in the disabled text colour */
+.mac-radio-button:where([data-disabled]) {
+  --_border-top: var(--mac-radio-button-border-top-disabled);
+  --_border-side: var(--mac-radio-button-border-side-disabled);
+  --_border-bottom: var(--mac-radio-button-border-side-disabled);
+  --_dot: var(--mac-radio-button-dot-disabled);
+  color: var(--mac-color-control-text-disabled);
+}
+
+.mac-radio-button:where([data-disabled]) .mac-radio-button-circle {
+  opacity: var(--mac-bezel-opacity-disabled);
+}
+
+/* Focus ring around the circle, from its hairline to 2.5 pt beyond; only in the key window. */
+.mac-radio-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) .mac-radio-button-circle {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(var(--mac-focus-ring-offset) - var(--mac-hairline));
+}
+
+@media (forced-colors: active) {
+  .mac-radio-button-circle {
+    border-color: ButtonText;
+  }
+
+  .mac-radio-button:where([data-disabled]) .mac-radio-button-circle {
+    border-color: GrayText;
+    opacity: 1;
+  }
+
+  /* Named colours: currentColor is forced to the canvas, the ring to the text colour. */
+  .mac-radio-button .mac-radio-button-circle::after {
+    background: ButtonText;
+  }
+
+  .mac-radio-button:where([data-disabled]) .mac-radio-button-circle::after {
+    background: GrayText;
+  }
+
+  .mac-radio-button-circle::before {
+    display: none;
+  }
+}

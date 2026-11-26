@@ -1,0 +1,631 @@
+/*
+ * Preview on the Ferrite desktop: the window that opens the person's own pictures and PDFs
+ * (preview-app.tsx). The toolbar, the sidebar, the markup bar and the find bar keep the rules of
+ * preview.css; this file adds the pages drawn on canvases, the thumbnails, the text being typed
+ * on a page, the status line and the sheets.
+ */
+
+.mac-preview-app-search {
+  width: var(--mac-preview-app-search-width);
+}
+
+/* The pages, one under the other, centred in the view, with a margin all round. */
+.mac-preview-app-pages {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-preview-app-page-gap);
+  align-items: center;
+  box-sizing: border-box;
+  width: max-content;
+  min-width: 100%;
+  min-height: 100%;
+  padding: var(--mac-preview-app-page-margin);
+}
+
+.mac-preview-app-pages:where([data-kind="image"]) {
+  justify-content: center;
+}
+
+.mac-preview-app-pages:where([data-display="single"], [data-display="two"]) {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.mac-preview-app-pages:where([data-display="contact"]) {
+  flex-flow: row wrap;
+  align-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* A page of the contact sheet: its drawing and number, chosen as a sidebar row is. */
+.mac-preview-app-contact {
+  padding: var(--mac-space-2);
+  border: 0;
+  border-radius: var(--mac-preview-app-contact-radius);
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.mac-preview-app-contact:where([aria-current="page"]) {
+  background: var(--mac-color-selected-text-background-unemphasized);
+}
+
+.mac-preview-app-page {
+  position: relative;
+  isolation: isolate;
+  flex: none;
+  background: var(--mac-preview-paper);
+  box-shadow: var(--mac-preview-app-page-shadow);
+}
+
+/* A picture keeps its own transparency over the canvas, as Preview shows it. */
+.mac-preview-app-pages:where([data-kind="image"]) .mac-preview-app-page {
+  background: none;
+}
+
+.mac-preview-app-page-canvas,
+.mac-preview-app-page-tint,
+.mac-preview-app-page-marks {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* A highlight and what is found colour the page under them and keep its text dark. */
+.mac-preview-app-page-tint,
+.mac-preview-app-page-found {
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+.mac-preview-app-page-found {
+  position: absolute;
+  background: var(--mac-preview-highlight-green);
+}
+
+.mac-preview-app-page-marks {
+  pointer-events: none;
+  touch-action: none;
+}
+
+/* A PDF page's text, laid out by pdf.js over the drawing, transparent until it is selected. These
+   are the rules pdf.js's own stylesheet gives its text layer. */
+.mac-preview-app-page-text {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  opacity: 1;
+  line-height: 1;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-align: initial;
+  text-size-adjust: none;
+  forced-color-adjust: none;
+  transform-origin: 0 0;
+  --_text-scale-factor: calc(var(--total-scale-factor) * var(--min-font-size, 1));
+  --_min-font-size-inv: calc(1 / var(--min-font-size, 1));
+}
+
+.mac-preview-app-page-text :is(span, br) {
+  position: absolute;
+  color: transparent;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0% 0%;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.mac-preview-app-page-text > :not([class="markedContent"]),
+.mac-preview-app-page-text [class="markedContent"] span:not([class="markedContent"]) {
+  z-index: 1;
+  font-size: calc(var(--_text-scale-factor) * var(--font-height, 0));
+  transform: rotate(var(--rotate, 0deg)) scaleX(var(--scale-x, 1)) scale(var(--_min-font-size-inv));
+}
+
+.mac-preview-app-page-text [class="markedContent"] {
+  display: contents;
+}
+
+.mac-preview-app-page-text[data-main-rotation="90"] {
+  transform: rotate(90deg) translateY(-100%);
+}
+
+.mac-preview-app-page-text[data-main-rotation="180"] {
+  transform: rotate(180deg) translate(-100%, -100%);
+}
+
+.mac-preview-app-page-text[data-main-rotation="270"] {
+  transform: rotate(270deg) translateX(-100%);
+}
+
+.mac-preview-app-page-text ::selection {
+  background: color-mix(in srgb, var(--mac-highlight) 60%, transparent);
+}
+
+/* Above the text's spans, which stand at 1: a tool in hand presses on a word as on blank paper. */
+.mac-preview-app-page-marks:where([data-interactive]) {
+  z-index: 2;
+  pointer-events: auto;
+}
+
+/* The text being typed, where it will stand, in its own size and colour. */
+.mac-preview-app-typing {
+  position: absolute;
+  z-index: 1;
+  min-width: var(--mac-preview-app-typing-min-width);
+  outline: var(--mac-preview-app-typing-frame);
+}
+
+.mac-preview-app-typing textarea {
+  width: auto;
+  height: auto;
+  min-width: 100%;
+  field-sizing: content;
+  background: transparent;
+  color: var(--mac-preview-app-typing-color);
+  font-family: var(--mac-preview-app-typing-font, inherit);
+  font-style: var(--mac-preview-app-typing-style, normal);
+  font-weight: var(--mac-preview-app-typing-weight, normal);
+  text-decoration: var(--mac-preview-app-typing-decoration, none);
+  font-size: var(--mac-preview-app-typing-size);
+  line-height: var(--mac-preview-app-typing-line-height);
+  text-align: var(--mac-preview-app-typing-align, left);
+  white-space: pre;
+}
+
+/* A form field of a PDF, over its place on the page. */
+.mac-preview-app-field {
+  position: absolute;
+  z-index: 1;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 var(--mac-space-1);
+  border: 0;
+  background: var(--mac-preview-app-field-background);
+  color: var(--mac-preview-ink);
+  font: var(--mac-font-body);
+  resize: none;
+}
+
+.mac-preview-app-field:focus {
+  outline: var(--mac-preview-app-typing-frame);
+}
+
+/* A row of View > Customize Toolbar. */
+.mac-preview-app-tool-choice {
+  display: flex;
+  margin-block-end: var(--mac-space-1);
+}
+
+/* The Inspector's Keywords tab. */
+.mac-preview-app-keywords {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-space-2);
+  margin: var(--mac-space-2);
+}
+
+/* Spelling and Substitutions over the desktop, and the text they read, out of sight. */
+.mac-preview-app-tool-panels {
+  position: fixed;
+  inset-block-start: var(--mac-preview-app-tool-panels-top);
+  inset-inline-end: var(--mac-preview-app-tool-panels-end);
+  z-index: var(--mac-preview-app-slideshow-layer);
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-space-2);
+}
+
+.mac-preview-app-tool-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* A note on a page: the place to press to read it, over its icon on the marks' canvas. */
+.mac-preview-app-note-spot {
+  position: absolute;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+/* A note being written, beside its icon, on paper of its colour in both appearances. */
+.mac-preview-app-note-editor {
+  position: absolute;
+  z-index: 2;
+  box-sizing: border-box;
+  width: var(--mac-preview-app-note-editor-width);
+  height: var(--mac-preview-app-note-editor-height);
+  padding: var(--mac-preview-app-note-editor-padding);
+  background: var(--mac-preview-highlight-yellow);
+  box-shadow: var(--mac-preview-app-page-shadow);
+}
+
+.mac-preview-app-note-editor textarea {
+  background: none;
+  color: var(--mac-preview-highlight-text);
+}
+
+/* A thumbnail: the page drawn small, its markup over it, and its number under it. */
+.mac-preview-app-thumbnail {
+  display: flex;
+  grid-column: 1 / -1;
+  flex-direction: column;
+  gap: var(--mac-preview-app-thumbnail-gap);
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  width: 100%;
+}
+
+.mac-preview-app-thumbnail-page {
+  position: relative;
+  isolation: isolate;
+  display: block;
+  max-width: var(--mac-preview-app-thumbnail-box);
+  max-height: var(--mac-preview-app-thumbnail-box);
+  outline: var(--mac-hairline) solid var(--mac-preview-thumbnail-border);
+  background: var(--mac-preview-paper);
+}
+
+.mac-preview-app-thumbnails [aria-selected="true"] .mac-preview-app-thumbnail-page {
+  outline-color: var(--mac-preview-app-thumbnail-selected);
+}
+
+.mac-preview-app-thumbnails-menu,
+.mac-preview-app-page-menu {
+  display: contents;
+}
+
+/* A row of a PDF's table of contents, stood in by its level. */
+.mac-preview-app-contents-row {
+  overflow: hidden;
+  padding-inline-start: calc(
+    var(--mac-preview-app-contents-padding) +
+    var(--mac-preview-app-contents-level) *
+    var(--mac-preview-app-contents-indent)
+  );
+  font: var(--mac-font-subheadline);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Tools > Show Magnifier: follows the pointer, and takes none of it. */
+.mac-preview-app .mac-preview-content {
+  position: relative;
+}
+
+.mac-preview-app-magnifier {
+  position: absolute;
+  z-index: 3;
+  width: var(--mac-preview-app-magnifier-side);
+  height: var(--mac-preview-app-magnifier-side);
+  border: var(--mac-preview-app-magnifier-border);
+  border-radius: 50%;
+  background: var(--mac-preview-paper);
+  box-shadow: var(--mac-preview-app-magnifier-shadow);
+  pointer-events: none;
+}
+
+.mac-preview-app-magnifier[hidden] {
+  display: none;
+}
+
+/* View > Slideshow. */
+.mac-preview-app-slideshow {
+  position: fixed;
+  z-index: var(--mac-preview-app-slideshow-layer);
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--mac-preview-app-slideshow-background);
+  outline: none;
+}
+
+.mac-preview-app-slideshow-controls {
+  position: absolute;
+  inset-block-end: var(--mac-preview-app-slideshow-controls-bottom);
+  display: flex;
+  gap: var(--mac-preview-app-status-gap);
+}
+
+.mac-preview-app-inspector-tabs {
+  display: flex;
+  justify-content: center;
+  margin: var(--mac-space-2);
+}
+
+.mac-preview-app-inspector-marks {
+  height: var(--mac-preview-app-inspector-marks-height);
+}
+
+.mac-preview-app-thumbnails-frame {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+}
+
+/* Where the pages dragged in the sidebar will go. */
+.mac-preview-app-thumbnails-line {
+  position: absolute;
+  inset-inline: 0;
+  height: var(--mac-preview-app-thumbnails-line-width);
+  background: var(--mac-preview-app-thumbnail-selected);
+  pointer-events: none;
+}
+
+.mac-preview-app-thumbnail-page canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mac-preview-app-thumbnail-page canvas:where([data-tint]) {
+  mix-blend-mode: multiply;
+}
+
+/* A contact sheet's page is larger than a sidebar's, at the size it is given. */
+.mac-preview-app-contact .mac-preview-app-thumbnail-page {
+  max-width: none;
+  max-height: none;
+}
+
+.mac-preview-app-thumbnail-label {
+  font: var(--mac-font-subheadline);
+}
+
+/* A page found: its number and matches, then the words around the first match. A highlight or
+   a note is listed the same way, with a spot of its colour. */
+.mac-preview-app-result {
+  display: block;
+  grid-column: 1 / -1;
+  align-self: stretch;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--mac-preview-app-result-padding);
+  font: var(--mac-font-subheadline);
+}
+
+.mac-preview-app-annotation-color {
+  display: inline-block;
+  width: var(--mac-preview-app-annotation-spot);
+  height: var(--mac-preview-app-annotation-spot);
+  margin-inline-end: var(--mac-preview-app-annotation-spot-gap);
+  border-radius: 50%;
+}
+
+.mac-preview-app-annotations-empty {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.mac-preview-app-empty {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--mac-preview-app-sheet-gap);
+  align-items: center;
+  justify-content: center;
+}
+
+/* Show Inspector: General Info, floating over the document at its top right, as Preview's
+   Inspector stands beside the window's content. */
+.mac-preview-app .mac-preview-body {
+  position: relative;
+}
+
+.mac-preview-app-inspector {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: var(--mac-preview-app-page-margin);
+  inset-inline-end: var(--mac-preview-app-page-margin);
+}
+
+/* The status line: what Preview is doing, under the document. */
+.mac-preview-app-status {
+  display: flex;
+  flex: none;
+  gap: var(--mac-preview-app-status-gap);
+  align-items: center;
+  box-sizing: border-box;
+  height: var(--mac-preview-app-status-height);
+  padding: var(--mac-preview-app-status-padding);
+  border-block-start: var(--mac-hairline) solid var(--mac-color-separator);
+}
+
+.mac-preview-app-status > :last-child:not(:first-child) {
+  width: var(--mac-preview-app-progress-width);
+}
+
+.mac-preview-app-format {
+  display: flex;
+  gap: var(--mac-preview-app-status-gap);
+  align-items: center;
+  justify-content: center;
+}
+
+.mac-preview-app-format > [role="group"] {
+  width: var(--mac-preview-app-progress-width);
+}
+
+/* A link of a PDF, over its words. */
+.mac-preview-app-link {
+  position: absolute;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+/* A file dragged by the title's icon, and the chevron that opens the title's pop-over. */
+.mac-preview-app-proxy {
+  display: inline-flex;
+  pointer-events: auto;
+}
+
+.mac-preview-app-title-chevron {
+  margin-inline-start: var(--mac-preview-app-chevron-gap);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  vertical-align: middle;
+  pointer-events: auto;
+  opacity: 0;
+}
+
+[data-window-drag-region]:hover .mac-preview-app-title-chevron,
+.mac-preview-app-title-chevron:focus-visible,
+.mac-preview-app-title-chevron[data-popup-open] {
+  opacity: 1;
+}
+
+.mac-preview-app-title-popover {
+  display: grid;
+  grid-template-columns: max-content var(--mac-preview-app-title-field-width);
+  gap: var(--mac-preview-app-status-gap);
+  align-items: center;
+  padding: var(--mac-preview-app-sheet-padding);
+}
+
+/* Text Style's Show Fonts: over the document at its top right. */
+.mac-preview-app-fonts {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: var(--mac-preview-app-page-margin);
+  inset-inline-end: var(--mac-preview-app-page-margin);
+}
+
+/* Tools > Adjust Color: over the document at its top left, the Inspector being at its right. */
+.mac-preview-app-adjust {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: var(--mac-preview-app-page-margin);
+  inset-inline-start: var(--mac-preview-app-page-margin);
+}
+
+.mac-preview-app-levels {
+  display: flex;
+  align-items: flex-end;
+  height: var(--mac-preview-app-levels-height);
+  margin-block-end: var(--mac-preview-app-status-gap);
+  border-block-end: var(--mac-hairline) solid var(--mac-color-separator);
+}
+
+.mac-preview-app-level {
+  flex: 1;
+  background: var(--mac-color-secondary-label);
+}
+
+.mac-preview-app-adjust-sliders {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-preview-app-status-gap);
+  margin-block-end: var(--mac-preview-app-sheet-gap);
+}
+
+.mac-preview-app-adjust-row {
+  display: grid;
+  grid-template-columns: var(--mac-preview-app-adjust-label-width) var(
+      --mac-preview-app-adjust-slider-width
+    );
+  gap: var(--mac-preview-app-status-gap);
+  align-items: center;
+}
+
+/* Adjust Size. */
+.mac-preview-app-size {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--mac-preview-app-status-gap);
+  align-items: center;
+}
+
+/* The browser's colour chooser, opened from the Border Color and Fill Color menus. */
+.mac-preview-app-color-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mac-preview-app-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mac-preview-app-sheet-gap);
+  padding: var(--mac-preview-app-sheet-padding);
+}
+
+.mac-preview-app-fields {
+  display: grid;
+  grid-template-columns: max-content var(--mac-preview-app-field-width) max-content;
+  gap: var(--mac-preview-app-status-gap);
+  align-items: center;
+}
+
+.mac-preview-app-sheet-buttons {
+  display: flex;
+  gap: var(--mac-preview-app-status-gap);
+  justify-content: flex-end;
+}
+
+.mac-preview-app-gap {
+  flex: 1;
+}
+
+.mac-preview-app-camera {
+  position: relative;
+  height: var(--mac-preview-app-pad-height);
+  overflow: hidden;
+  border: var(--mac-hairline) solid var(--mac-preview-app-pad-border);
+  background: var(--mac-preview-app-camera-background);
+}
+
+.mac-preview-app-camera video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+/* The line to hold the writing on. */
+.mac-preview-app-camera::after {
+  position: absolute;
+  right: 8%;
+  bottom: 25%;
+  left: 8%;
+  border-bottom: 2px solid var(--mac-preview-app-camera-line);
+  content: "";
+}
+
+.mac-preview-app-camera-problem {
+  margin: 0;
+  font: var(--mac-font-body);
+}
+
+.mac-preview-app-pad {
+  display: block;
+  width: 100%;
+  height: var(--mac-preview-app-pad-height);
+  border: var(--mac-hairline) solid var(--mac-preview-app-pad-border);
+  background: var(--mac-preview-paper);
+  cursor: crosshair;
+  touch-action: none;
+}

@@ -1,0 +1,141 @@
+{
+  "$schema": "../../../visual/visual.schema.json",
+  "comparisons": [
+    {
+      "name": "system-preferences-light",
+      "description": "The whole account header of System Preferences, Aqua. The picture and the two destinations' artwork are masked: the example draws stand-in blocks, not the tennis ball or Apple's icons.",
+      "example": "visual-system-preferences",
+      "appearance": "light",
+      "masks": [
+        { "x": 25, "y": 23, "width": 64, "height": 64 },
+        { "x": 518, "y": 17, "width": 41, "height": 40 },
+        { "x": 600, "y": 17, "width": 41, "height": 40 }
+      ],
+      "budget": { "1x": 0.0284, "2x": 0.0252 },
+      "deltaBudget": { "1x": 3.1, "2x": 3.24 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-0.png",
+        "crop": { "x": 112, "y": 152, "width": 1336, "height": 224 }
+      }
+    },
+    {
+      "name": "system-preferences-light-masked",
+      "description": "As system-preferences-light with the name, the subtitle and the captions masked too, which are set in the fallback font off Apple platforms: scores the band and its separator.",
+      "example": "visual-system-preferences",
+      "appearance": "light",
+      "masks": [
+        { "x": 25, "y": 23, "width": 64, "height": 64 },
+        { "x": 518, "y": 17, "width": 41, "height": 40 },
+        { "x": 600, "y": 17, "width": 41, "height": 40 },
+        { "x": 96, "y": 27, "width": 220, "height": 42 },
+        { "x": 497, "y": 62, "width": 165, "height": 34 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0002, "2x": 0.0005 },
+      "deltaBudget": { "1x": 0.05, "2x": 0.05 },
+      "reference": {
+        "file": "10-15-Catalina-Light-System-Preferences-0.png",
+        "crop": { "x": 112, "y": 152, "width": 1336, "height": 224 }
+      }
+    },
+    {
+      "name": "system-preferences-dark",
+      "description": "The whole account header of System Preferences, Dark Aqua. The picture and the two destinations' artwork are masked: the example draws stand-in blocks, not the tennis ball or Apple's icons.",
+      "example": "visual-system-preferences",
+      "appearance": "dark",
+      "masks": [
+        { "x": 25, "y": 23, "width": 64, "height": 64 },
+        { "x": 518, "y": 17, "width": 41, "height": 40 },
+        { "x": 600, "y": 17, "width": 41, "height": 40 }
+      ],
+      "budget": { "1x": 0.0323, "2x": 0.0287 },
+      "deltaBudget": { "1x": 3, "2x": 3.07 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-0.png",
+        "crop": { "x": 112, "y": 152, "width": 1336, "height": 224 }
+      }
+    },
+    {
+      "name": "system-preferences-dark-masked",
+      "description": "As system-preferences-dark with the name, the subtitle and the captions masked too, which are set in the fallback font off Apple platforms: scores the band and its separator. What remains is the Dark Aqua window's own lighter edge, half a point wide at each end of the crop, which belongs to the window and not to the header.",
+      "example": "visual-system-preferences",
+      "appearance": "dark",
+      "masks": [
+        { "x": 25, "y": 23, "width": 64, "height": 64 },
+        { "x": 518, "y": 17, "width": 41, "height": 40 },
+        { "x": 600, "y": 17, "width": 41, "height": 40 },
+        { "x": 96, "y": 27, "width": 220, "height": 42 },
+        { "x": 497, "y": 62, "width": 165, "height": 34 }
+      ],
+      "threshold": 0.05,
+      "budget": { "1x": 0.0047, "2x": 0.0048 },
+      "deltaBudget": { "1x": 0.23, "2x": 0.23 },
+      "reference": {
+        "file": "10-15-Catalina-Dark-System-Preferences-0.png",
+        "crop": { "x": 112, "y": 152, "width": 1336, "height": 224 }
+      }
+    },
+    {
+      "name": "placeholder-light",
+      "description": "The header without a picture: the silhouette, Aqua.",
+      "example": "visual-placeholder",
+      "appearance": "light",
+      "expect": {
+        "size": { "width": 240, "height": 112 },
+        "pixels": [
+          {
+            "x": 32,
+            "y": 55,
+            "color": "#c4c4c8",
+            "note": "the disc, inside the 64 pt circle measured for the picture at 25,23 (silhouette colours are the library's own: inferred)"
+          },
+          { "x": 57, "y": 48, "color": "#f4f4f6", "note": "the head of the silhouette" },
+          {
+            "x": 26,
+            "y": 24,
+            "color": "#ececec",
+            "note": "the corner of the picture's square is outside the circle"
+          },
+          {
+            "x": 120,
+            "y": 111.5,
+            "color": "#d4d4d4",
+            "tolerance": 3,
+            "note": "the 1 pt separator under the band (spec: Colours, separator #d5d5d5, measured)"
+          },
+          {
+            "x": 120,
+            "y": 110.5,
+            "color": "#ececec",
+            "note": "the band above the separator has no fill of its own"
+          }
+        ]
+      }
+    },
+    {
+      "name": "placeholder-dark",
+      "description": "The header without a picture: the silhouette, Dark Aqua.",
+      "example": "visual-placeholder",
+      "appearance": "dark",
+      "expect": {
+        "size": { "width": 240, "height": 112 },
+        "pixels": [
+          {
+            "x": 32,
+            "y": 55,
+            "color": "#5b5b60",
+            "note": "the disc (silhouette colours are the library's own: inferred)"
+          },
+          { "x": 57, "y": 48, "color": "#a9a9ae", "note": "the head of the silhouette" },
+          {
+            "x": 120,
+            "y": 111.5,
+            "color": "#474747",
+            "tolerance": 3,
+            "note": "the 1 pt separator: the separator colour over the window background #323232 (spec: Colours, separator, measured over the System Preferences band)"
+          }
+        ]
+      }
+    }
+  ]
+}

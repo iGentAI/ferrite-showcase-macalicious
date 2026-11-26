@@ -1,0 +1,187 @@
+---
+title: Bordered List
+description: A framed list in a preference pane with the gradient buttons that add to it and remove from it directly below.
+---
+
+<Example name="basic" both />
+
+The list on the leading side of the Network, Users & Groups and Sharing panes: AppKit's
+bezel-bordered `NSScrollView` around a table, with a bar of
+[gradient buttons](/components/gradient-button) attached to its bottom edge. `BorderedList`
+draws the frame and places the buttons; `BorderedListRows` is the list of rows inside it. For
+a list with columns put a [table view](/components/table-view) in the frame instead, and for
+the translucent source list of a window use a [sidebar](/components/sidebar).
+
+## Usage
+
+```tsx
+import { BorderedList, BorderedListRow, BorderedListRows } from "macalicious/bordered-list";
+import { GradientButton } from "macalicious/gradient-button";
+import "macalicious/scroll-view.css"; // the stylesheets of the parts come first
+import "macalicious/gradient-button.css";
+import "macalicious/bordered-list.css";
+
+<BorderedList
+  style={{ width: 170, height: 220 }}
+  footerLabel="Edit services"
+  footer={
+    <>
+      <GradientButton glyph="add" aria-label="Add a service" />
+      <GradientButton glyph="remove" aria-label="Remove the selected service" />
+    </>
+  }
+>
+  <BorderedListRows aria-label="Network services" rowHeight={42} defaultValue={["wifi"]}>
+    <BorderedListRow value="wifi" title="Wi-Fi" subtitle="Connected" />
+    <BorderedListRow value="bluetooth" title="Bluetooth PAN" subtitle="Not Connected" />
+  </BorderedListRows>
+</BorderedList>
+```
+
+Or copy the source into your project: `npx macalicious add bordered-list`.
+
+Give the root a size; the frame takes the height the buttons leave and the rows scroll
+inside it. The list holds its selection (`defaultValue`), or you do (`value` and
+`onValueChange`); the value is always an array of row values. A row shows a `title`, an
+optional `subtitle`, and content before (`leading`: a status dot or an icon) and
+after (`trailing`) the text. `rowHeight` is a row's smallest height, so a row with more
+content grows.
+
+<Example name="variants" both />
+
+## Guidelines
+
+The macOS Human Interface Guidelines have no page for this arrangement; these points are
+taken from their pages on gradient buttons and tables and from Catalina's own panes, and are
+not verified against a source.
+
+- Put the buttons that act on the list directly under it: add first, then remove, then an
+  action button if the list needs one. Do not label them with text.
+- Disable the remove button while nothing is selected, and all of them while the pane is
+  locked.
+- Keep one row selected when the pane beside the list shows the selected row's settings.
+- Use group rows to name kinds of rows ("Current User", "Other Users"), not to hold
+  controls.
+
+## Variants and states
+
+| Variant or state | How it is triggered | Look |
+| --- | --- | --- |
+| Attached footer | `footer` (the default placement) | The bar's top line is the frame's bottom line, and the bar runs to the list's trailing edge |
+| Detached footer | `footerPlacement="detached"` | The buttons are a control of their own, 8 pt below the frame |
+| Network footer | `footerVariant="network"` | The bar as the Network pane alone draws it, lighter in Dark Aqua: the `network` variant of the [gradient button](/components/gradient-button) group |
+| No footer | no `footer` | The frame alone |
+| Selected, list not focused | a row's value in `value` | Grey highlight over the whole row |
+| Selected, list focused | focus in the list, in a key window | Accent highlight, white text |
+| Window not key | `data-window-state` on an ancestor | Grey highlight, no focus ring |
+| Disabled row | `disabled` on a row | Dimmed text; cannot be selected, and the arrow keys pass over it |
+| Group row | `BorderedListGroupRow` | A 23 pt heading in small dimmed text; not selectable |
+| Alternating rows | `alternatingRows` | Every second row pitch is striped, also below the last row. For rows of one height without group rows |
+
+Measured in the Network pane: the frame and its colour, the list background in both
+appearances, the 42 pt rows with their two text lines and status dot, the grey selection, and
+how the bar meets the frame. Provisional: the group row (its height is the spec's value from
+Users & Groups; it is not compared with a screenshot here), the disabled row, the detached
+placement's 8 pt gap, the focus ring and the emphasised selection, which the panes'
+screenshots do not show.
+
+## Sizes
+
+There is one size. `rowHeight` sets the rows: Catalina's panes use 18, 20 and 22 pt for one
+line of text and 34, 41 and 42 pt for two.
+
+## API
+
+<PropsTable name="BorderedListProps" />
+
+<PropsTable name="BorderedListRowsProps" />
+
+<PropsTable name="BorderedListRowProps" />
+
+`BorderedListRows` also takes the [scroll view's](/components/scroll-view) props
+(`scrollerStyle`, `knobStyle`, `size`) and the root element's attributes.
+`BorderedListGroupRow` takes the attributes of a `div`.
+
+| Attribute | On | Values | Description |
+| --- | --- | --- | --- |
+| `data-footer` | root | `attached`, `detached` | Present when there is a footer. |
+| `data-alternating` | rows | present or absent | Striped rows. |
+| `aria-selected` | row | `true`, `false` | Whether the row is selected. |
+| `aria-disabled` | row | `true` or absent | A row that cannot be selected. |
+
+| Class | Part |
+| --- | --- |
+| `.mac-bordered-list` | Root |
+| `.mac-bordered-list-frame` | The 1 pt frame around the list |
+| `.mac-bordered-list-footer` | The gradient button group |
+| `.mac-bordered-list-rows` | The list: a scroll view and the tab stop |
+| `.mac-bordered-list-content` | Everything that scrolls |
+| `.mac-bordered-list-row` | A row; its parts are `-row-leading`, `-row-text`, `-row-title`, `-row-subtitle`, `-row-trailing` |
+| `.mac-bordered-list-group-row` | A group heading |
+
+`--mac-bordered-list-border` sets the colour of the frame.
+
+## Accessibility
+
+- `BorderedListRows` is a `listbox`; name it with `aria-label`. Rows are `option`s with
+  `aria-selected`. It is one tab stop and names the current row with
+  `aria-activedescendant`. The scrolling element inside it is a `group`, which keeps it out
+  of the tab order.
+- Keys: Up and Down Arrow move the selection, passing over disabled rows; Page Up and Page
+  Down move it by the rows in view less one; Home and End go to the first and last row;
+  typing the start of a title selects that row (`textValue` gives the text when the title is
+  not a string); Return calls `onRowAction`, as a double click does. With
+  `selectionMode="multiple"`, Shift with these keys extends the selection from the row it
+  started at, Command-A (or Control-A) selects every row, and a Command (or Control) click
+  toggles a row. With Control the same keys move the current row without changing the
+  selection, and Control-Space adds the current row to the selection or takes it out. AppKit
+  has no such keys; they are here so that any set of rows can be selected without a pointer.
+- Every row is in the document: the list is for the tens of rows a pane holds. It stays
+  usable well beyond that: with 3,000 rows in Chromium scrolling keeps its frame rate and a
+  change of selection shows in the next frame (median 16 ms), because the list moves
+  `aria-selected` between rows without rendering them again. For longer lists put a
+  [table view](/components/table-view) in the frame; it renders only the rows in view.
+- Rows take content that is not interactive: an `option` must not contain buttons,
+  checkboxes, fields or links, because assistive technology does not expose controls inside
+  an option. Rows that need a control (a checkbox per service, say) belong in a
+  [table view](/components/table-view), whose cells can hold one. As a safeguard only, a
+  press on such an element inside a row is left to it and does not select the row.
+- With `selectionMode="none"` no row is selected, whatever `value` names. When the list
+  takes the keyboard focus, the current row is scrolled into view.
+- A group row is presentational: its text is not announced as a heading of the rows that
+  follow. Where the grouping matters, repeat it in each row's `aria-label`.
+- The footer is a `group` of buttons; name it with `footerLabel` and give every button an
+  `aria-label`, because the buttons show glyphs only.
+
+## Visual comparison
+
+`visual-network-top` reproduces the top of the Network pane's service list (two 42 pt rows,
+the first selected with the grey highlight) and `visual-network-footer` its bottom edge with
+the attached bar. Results in Chromium on Linux:
+
+| Comparison | 2x | 1x |
+| --- | --- | --- |
+| Top, Aqua, whole crop | 9.49% of pixels differ, mean Δ 10.46 | 12.29%, 11.73 |
+| Top, Dark Aqua, whole crop | 9.45%, 10.33 | 12.07%, 11.70 |
+| Top, Aqua, text and icons masked | 0.21%, 0.19 | 0.35%, 0.17 |
+| Top, Dark Aqua, text and icons masked | 0.19%, 0.16 | 0.71%, 0.18 |
+| Footer, Aqua, gear masked | 0.00%, 0.24 | 0.40%, 0.69 |
+| Footer, Dark Aqua, bar masked | 0.00%, 0.00 | 0.00%, 0.00 |
+
+The whole-crop figures are the text in the fallback font and the service icons, which are
+not reproduced. With those masked, what remains is the antialiased edge of the status dots.
+
+The Dark Aqua footer comparison masks the bar itself and so scores only the frame, the list
+background and where the bar ends. The gradient button's Dark Aqua colours were measured in
+a locked pane (a flat `#3c3c3c` with a `#7f7f7f` border); this pane's enabled bar measures
+`#4e4f50` to `#48494a` with a `#808080` top line, and unmasked the comparison differs in
+42.9% of pixels. That is the gradient button's to correct, not something this component
+overrides.
+
+`visual-states` is checked with real input in both appearances: at rest, the grey selection
+running to the frame's inner edge, the frame, the list background and the single line
+between list and bar; after a click, the accent selection covering the whole 20 pt row;
+after Down Arrow, the selection on the row after the disabled one; and in an inactive
+window, the grey selection. The click check also runs with the purple accent, whose selection
+colour is the token's formula, computed: no screenshot shows a selection in an accent other
+than blue.

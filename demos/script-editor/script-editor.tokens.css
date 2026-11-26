@@ -1,0 +1,44 @@
+/*
+ * Colours of Script Editor's own that no shared token holds.
+ */
+:root {
+  /* [measured] The navigation bar and the accessory view's header, and the line under each:
+     10-15-Catalina-Light-Script-Editor.png and 10-15-Catalina-Dark-Script-Editor.png
+     @ 1000,186,1,38 and 1000,1066,1,46. */
+  --mac-script-editor-bar: light-dark(#ececec, #323232);
+  --mac-script-editor-bar-line: light-dark(#b1b2b2, #656564);
+  /* [measured] The line after each pop-up button of the navigation bar: both captures
+     @ 284,216 and 579,216. */
+  --mac-script-editor-bar-divider: light-dark(#b2b2b2, #646464);
+  /* [measured] The divider over the accessory view: both captures @ 1000,1064,1,2. */
+  --mac-script-editor-divider: light-dark(#d5d5d5, #000000);
+  /* [measured] The record dot: both captures @ 166,148. */
+  --mac-script-editor-record: light-dark(#ee4d3f, #ec5f52);
+  /* [measured] AppleScript's formatting styles on the editor's paper, which is white in both
+     appearances: application terms @ 1000,292, variables @ 1000,349, comments in the box
+     @ 357,463,296,24 of the Aqua capture; the dark capture has the same values. */
+  --mac-script-editor-term: #0432ff;
+  --mac-script-editor-variable: #4e8f00;
+  --mac-script-editor-comment: #5e6060;
+  /* [provisional] JavaScript's values on the same white paper; no capture shows a JavaScript
+     script. The AppleScript capture sets its values in the plain style. */
+  --mac-script-editor-string: #c41a16;
+  --mac-script-editor-number: #1c00cf;
+  --mac-script-editor-pattern: #8a4b08;
+  --mac-script-editor-template: #a2217f;
+  /* [provisional] The Fonts and Colors panels float at the top right of the page, under a menu
+     bar's 30 pt, 12 pt apart and from the page's edges, as Mail's do; no capture shows them. */
+  --mac-script-editor-panels-gap: 12px;
+  --mac-script-editor-panels-padding-top: 30px;
+  --mac-script-editor-panels-padding: 12px;
+  /* [provisional] The Log's tabs after its title; no capture shows them. */
+  --mac-script-editor-log-tabs-margin: 12px;
+}
+
+:root,
+[data-accent] {
+  /* [provisional] The glyph of a pane toggle that is on. Measured with the blue accent only:
+     the accent itself in Aqua (#027aff @ 1370,136) and a lighter blue in Dark Aqua (#2bb9ff
+     @ 1371,136), which is kept for every accent. */
+  --mac-script-editor-toggle-on: light-dark(var(--mac-accent), #2bb9ff);
+}

@@ -1,0 +1,160 @@
+/*
+ * Offer button (the App Store's GET / price capsule).
+ *
+ * The element's box is the capsule: 66 x 21 pt, fully rounded, flat, with no border and no
+ * shadow. The caption hangs below the box and takes no space, so a row centres the capsule.
+ *
+ * States
+ *   [data-variant="filled"]            confirmation step: blue capsule, white title
+ *   [data-progress]                    downloading: a 21 pt ring with a stop square
+ *   :active                            pressed: the whole control at half opacity
+ *   :focus-visible                     keyboard focus ring
+ *   [data-disabled]                    set by Base UI for `disabled`: title at 35%
+ *   [data-window-state="main" | "inactive"] *
+ *                                      window that is not key: grey instead of the blue and no
+ *                                      focus ring (CONTRIBUTING, Window state)
+ *   [data-force~="pressed" | "focus"]  static previews of transient states (docs, visual tests)
+ *
+ * Hover changes nothing: the store has no hover treatment for it.
+ */
+.mac-store-pill-button {
+  --_tint: var(--mac-store-pill-button-tint);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  /* Every title in the screenshots, six-character prices included, sits in 66 pt (the widest,
+     a price, with 13 pt to spare at each end). A longer one widens the capsule and keeps
+     10 pt at each end: the spec infers about 12, and 10 keeps a six-character price at 66 pt
+     in the wider fallback font too. */
+  min-width: var(--mac-store-pill-button-width);
+  height: var(--mac-store-pill-button-height);
+  margin: 0;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--mac-store-pill-button-radius);
+  background: var(--mac-store-pill-button-fill);
+  color: var(--_tint);
+  /* 12 pt Bold: GET is 23 pt of ink and $14.99 40 in the App Store captures. Its 16 pt line,
+     centred in 21 pt, puts the cap top 6 pt below the capsule's top, as measured. */
+  font: var(--mac-font-weight-bold) 12px / 16px var(--mac-font-family-system);
+  letter-spacing: var(--mac-tracking-regular);
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
+}
+
+/* The store sets words in capitals (GET, OPEN); a price is unchanged by it. */
+.mac-store-pill-button-label {
+  text-transform: uppercase;
+}
+
+/* 7 pt caption, centred on the capsule, cap top 7 pt below it. Outside the hit area. */
+.mac-store-pill-button-caption {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 50%;
+  translate: -50% 0;
+  color: var(--mac-store-pill-button-caption);
+  font: var(--mac-store-pill-button-caption-font);
+  letter-spacing: normal;
+  pointer-events: none;
+}
+
+/* Filled: the confirmation step */
+.mac-store-pill-button:where([data-variant="filled"]) {
+  background: var(--_tint);
+  color: var(--mac-store-pill-button-on-tint);
+}
+
+/* Downloading: the capsule gives way to a ring, 2 pt wide, filled clockwise from the top,
+   around a 6 pt stop square. The title stays in the tree as the button's name. */
+.mac-store-pill-button:where([data-progress]) {
+  width: var(--mac-store-pill-button-height);
+  min-width: 0;
+  padding: 0;
+  background: none;
+}
+
+.mac-store-pill-button:where([data-progress])::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background: var(--_tint);
+}
+
+.mac-store-pill-button:where([data-progress]) > .mac-store-pill-button-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.mac-store-pill-button-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--_tint) calc(var(--_value) * 1turn),
+    var(--mac-store-pill-button-track) 0
+  );
+  /* raw-color-ok: mask alpha */
+  mask: radial-gradient(closest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
+}
+
+/* Pressed: the whole control dims, caption included */
+.mac-store-pill-button:where(:active, [data-force~="pressed"]):where(:not([data-disabled])) {
+  opacity: var(--mac-store-pill-button-pressed-opacity);
+}
+
+/* Disabled: the title (or the ring) fades; the capsule stays */
+.mac-store-pill-button:where([data-disabled]) > :where(:not(.mac-store-pill-button-caption)),
+.mac-store-pill-button:where([data-disabled])::after {
+  opacity: var(--mac-store-pill-button-disabled-opacity);
+}
+
+/* Window that is not key: the blue is withheld */
+.mac-store-pill-button:where(:where([data-window-state="main"], [data-window-state="inactive"]) *) {
+  --_tint: var(--mac-store-pill-button-tint-not-key);
+}
+
+/* Keyboard focus ring, following the capsule; only in the key window, as in AppKit. It
+   overlaps the capsule's edge by a hairline and reaches 2.5 pt beyond it. */
+.mac-store-pill-button:where(:focus-visible, [data-force~="focus"]):where(
+  :not(:where([data-window-state="main"], [data-window-state="inactive"]) *)
+) {
+  outline: var(--mac-focus-ring-width) solid var(--mac-focus-ring-color);
+  outline-offset: calc(var(--mac-focus-ring-offset) - var(--mac-hairline));
+}
+
+@media (forced-colors: active) {
+  .mac-store-pill-button {
+    border: 1px solid ButtonText;
+    color: ButtonText;
+  }
+
+  .mac-store-pill-button:where([data-disabled]) {
+    border-color: GrayText;
+    color: GrayText;
+  }
+
+  .mac-store-pill-button-ring {
+    forced-color-adjust: none;
+  }
+
+  /* The stop square is a background, which forced colours would replace with the page's. */
+  .mac-store-pill-button:where([data-progress])::after {
+    background: ButtonText;
+    forced-color-adjust: none;
+  }
+}
